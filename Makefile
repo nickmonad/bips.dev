@@ -5,3 +5,7 @@ submodule:
 .PHONY: serve
 serve:
 	cd web && zola serve && cd ..
+
+.PHONY: build
+build:
+	cd web && zola build && cd ..
