@@ -18,7 +18,7 @@ transcode() {
 
     echo "processing $path -> $bip"
     mkdir -p web/content/$bip
-    pandoc $path -f mediawiki -t gfm -s -o web/content/$bip/index.md.pre
+    pandoc $path -f mediawiki -t gfm -o web/content/$bip/index.md.pre
 
     # apply page data to markdown
     cargo run $path | cat - web/content/$bip/index.md.pre > web/content/$bip/index.md

@@ -7,6 +7,7 @@ in_search_index = true
 [extra]
 bip = 109
 status = "Rejected"
+github = "https://github.com/bitcoin/bips/blob/master/bip-0109.mediawiki"
 +++
 
       BIP: 109

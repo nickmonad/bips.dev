@@ -46,10 +46,11 @@ struct BipInfo {
     title: String,
     created: String,
     status: String,
+    github: String,
 }
 
 impl BipInfo {
-    fn from_node(node: &wiki::Node) -> BipInfo {
+    fn from_node(path: String, node: &wiki::Node) -> BipInfo {
         let mut info = BipInfo::default();
         if let wiki::Node::Preformatted { nodes, .. } = node {
             for node in nodes {
@@ -71,6 +72,10 @@ impl BipInfo {
             }
         }
 
+        // apply github link
+        let base = path.split("/").nth(1).unwrap();
+        info.github = format!("https://github.com/bitcoin/bips/blob/master/{}", base);
+
         info
     }
 }
@@ -82,19 +87,20 @@ impl Default for BipInfo {
             title: String::from(""),
             created: String::from(""),
             status: String::from(""),
+            github: String::from(""),
         }
     }
 }
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
-    let filename = &args[1];
+    let path = &args[1];
 
     // create tera instance
     let templater = Templater::new("templates/**/*");
 
     // read input bip.mediawiki
-    let mut input = File::open(filename)?;
+    let mut input = File::open(path)?;
     let mut content = String::new();
     input.read_to_string(&mut content)?;
 
@@ -109,7 +115,7 @@ fn main() -> io::Result<()> {
         })
         .unwrap();
 
-    let info = BipInfo::from_node(&preformatted);
+    let info = BipInfo::from_node(path.to_string(), &preformatted);
     println!("{}", templater.render(info).unwrap());
 
     Ok(())
