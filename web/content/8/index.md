@@ -273,16 +273,16 @@ ensure that they signal as required. For example:
 
 `   if (GetStateForBlock(block) == MUST_SIGNAL) {`  
 `       int nonsignal = 0;`  
-`       int count = 1 + (block.nHeight % 2016);`  
 `       walk = block;`  
-`       while (count > 0) {`  
-`           --count;`  
+`       while (true) {`  
 `           if ((walk.nVersion & 0xE0000000) != 0x20000000 || ((walk.nVersion >> bit) & 1) != 1) {`  
 `               ++nonsignal;`  
-`               if (nonsignal + threshold > 2016) {`  
+`               if (nonsignal > 2016 - threshold) {`  
 `                   return state.Invalid(BlockValidationResult::RECENT_CONSENSUS_CHANGE, "bad-version-bip8-must-signal");`  
 `               }`  
-`           } else if (nonsignal == 0) {`  
+`           }`  
+`           if (walk.nHeight % 2016 == 0) {`  
+`               // checked every block in this retarget period`  
 `               break;`  
 `           }`  
 `           walk = walk.parent;`  

@@ -54,10 +54,10 @@ over the P2P network, so that other peers can connect to them.
 
 The `addrv2` message is defined as a message where
 `pchCommand == "addrv2"`. It is serialized in the standard encoding for
-P2P messages. Its format is similar to the current `addr` message format
-[3], with the difference that the fixed 16-byte IP address is replaced
-by a network ID and a variable-length address, and the services format
-has been changed to
+P2P messages. Its format is similar to the current `addr` message
+format, with the difference that the fixed 16-byte IP address is
+replaced by a network ID and a variable-length address, and the services
+format has been changed to
 [CompactSize](https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer).
 
 This means that the message contains a serialized `std::vector` of the
@@ -147,7 +147,7 @@ receive if they come with the `IPV6` network ID.
 
 ## Appendix B: Tor v3 address encoding
 
-According to the spec [4], next-gen `.onion` addresses are encoded as
+According to the spec [3], next-gen `.onion` addresses are encoded as
 follows:
 
     onion_address = base32(PUBKEY | CHECKSUM | VERSION) + ".onion"
@@ -167,7 +167,7 @@ onion address.
 
 ## Appendix C: I2P address encoding
 
-Like Tor, I2P naming uses a base32-encoded address format[5].
+Like Tor, I2P naming uses a base32-encoded address format[4].
 
 I2P uses 52 characters (256 bits) to represent the full SHA-256 hash,
 followed by `.b32.i2p`.
@@ -177,7 +177,7 @@ SHA-256 hash as address field.
 
 ## Appendix D: Cjdns address encoding
 
-Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range[6].
+Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range[5].
 They MUST be sent with the `CJDNS` network ID.
 
 ## References
@@ -189,14 +189,11 @@ They MUST be sent with the `CJDNS` network ID.
 
 [2] [RFC 2119](https://tools.ietf.org/html/rfc2119)
 
-[3] [Bitcoin Developer Reference: addr
-message](https://bitcoin.org/en/developer-reference#addr)
-
-[4] [Tor Rendezvous Specification - Version 3: Encoding onion
+[3] [Tor Rendezvous Specification - Version 3: Encoding onion
 addresses](https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt)
 
-[5] [I2P: Naming and address
+[4] [I2P: Naming and address
 book](https://geti2p.net/en/docs/naming#base32)
 
-[6] [Cjdns whitepaper: Pulling It All
+[5] [Cjdns whitepaper: Pulling It All
 Together](https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together)

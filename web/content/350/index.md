@@ -104,9 +104,10 @@ could be written using:
         check = bech32_polymod(bech32_hrp_expand(hrp) + data)
         if check == 1:
             return Encoding.BECH32
-        if const == BECH32M_CONST:
+        elif check == BECH32M_CONST:
             return Encoding.BECH32M
-        return None
+        else:
+            return None
 
 which returns either None for failure, or one of the BECH32 / BECH32M
 enumeration values to indicate successful decoding according to the
@@ -206,21 +207,21 @@ funds when attempting to send to a Bech32m address.
 
 -   Reference encoder and decoder:
     -   [Reference Python
-        implementation](https://github.com/sipa/bech32/tree/bech32m/ref/python)
+        implementation](https://github.com/sipa/bech32/blob/master/ref/python)
     -   [Reference C
-        implementation](https://github.com/sipa/bech32/tree/bech32m/ref/c)
+        implementation](https://github.com/sipa/bech32/blob/master/ref/c)
     -   [Reference C++
-        implementation](https://github.com/sipa/bech32/tree/bech32m/ref/c++)
+        implementation](https://github.com/sipa/bech32/blob/master/ref/c++)
     -   [Bitcoin Core C++
         implementation](https://github.com/bitcoin/bitcoin/pull/20861)
     -   [Reference Javascript
-        implementation](https://github.com/sipa/bech32/tree/bech32m/ref/javascript)
+        implementation](https://github.com/sipa/bech32/blob/master/ref/javascript)
 
 <!-- -->
 
 -   Fancy decoder that localizes errors:
     -   [For
-        JavaScript](https://github.com/sipa/bech32/tree/bech32m/ecc/javascript)
+        JavaScript](https://github.com/sipa/bech32/blob/master/ecc/javascript)
         ([demo website](http://bitcoin.sipa.be/bech32/demo/demo.html))
 
 ## Test vectors
@@ -400,9 +401,10 @@ are:
     insertions, and duplications)
 -   **window** The maximum size of the window in which the errors have
     to occur[4]
--   **code/verifier** Whether it is about Bech32 or Bech32m encoded
-    strings, and whether they are evaluated regarding their probability
-    of being accepted by either a Bech32 or a Bech32m verifier.[5][6]
+-   **code/verifier** Whether this line is about Bech32 or Bech32m
+    encoded strings, and whether those are evaluated regarding their
+    probability of being accepted by either a Bech32 or a Bech32m
+    verifier.[5][6]
 -   **error patterns with failure probability** For each probability
     (*0*, *2<sup>-30</sup>*, *2<sup>-25</sup>*, *2<sup>-20</sup>*,
     *2<sup>-15</sup>*, and *2<sup>-10</sup>*) this reports what
@@ -431,24 +433,24 @@ segregated witness addresses[7].
 | ≤ 2                                                       | any               | any               | 4.58%             | 92.21%                                  |
 | ≤ 3                                                       | any               | ≤ 69              | 6.69%             | 92.23%                                  |
 | ≤ 3                                                       | any               | any               | 6.66%             | 92.19%                                  |
-| ≤ 1                                                       | any               | \-                | Bech32m/Bech32    | 46.53%                                  |
-| 0                                                         | \-                | \-                | 100.00%           | none<sup>(a)</sup>                      |
+| 0                                                         | \-                | \-                | Bech32m/Bech32    | 100.00%                                 |
+| 1                                                         | any               | \-                | 46.53%            | 53.46%                                  |
 | ≤ 2                                                       | any               | any               | 22.18%            | 77.77%                                  |
 | Properties for segregated witness addresses with HRP "bc" |                   |                   |                   |                                         |
 | ≤ 4                                                       | only subst.       | any               | Bech32m/Bech32m   | 100.00%                                 |
-| ≤ 1                                                       | any               | \-                | 24.34%            | 75.66%                                  |
+| 1                                                         | any               | \-                | 24.34%            | 75.66%                                  |
 | ≤ 2                                                       | any               | ≤ 28              | 16.85%            | 83.15%                                  |
-| ≤ 2                                                       | any               | any               | 15.72%            | 84.23%                                  |
 | any                                                       | any               | ≤ 4               | 74.74%            | 25.25%                                  |
+| ≤ 2                                                       | any               | any               | 15.72%            | 84.23%                                  |
 | ≤ 3                                                       | any               | any               | 13.98%            | 85.94%                                  |
 | ≤ 4                                                       | only subst.       | any               | Bech32/Bech32     | 100.00%                                 |
-| ≤ 1                                                       | any               | \-                | 14.63%            | 75.71%                                  |
+| 1                                                         | any               | \-                | 14.63%            | 75.71%                                  |
 | ≤ 2                                                       | any               | ≤ 28              | 14.22%            | 83.15%                                  |
-| ≤ 2                                                       | any               | any               | 12.79%            | 84.24%                                  |
 | any                                                       | any               | ≤ 4               | 73.23%            | 25.26%                                  |
+| ≤ 2                                                       | any               | any               | 12.79%            | 84.24%                                  |
 | ≤ 3                                                       | any               | any               | 13.00%            | 85.94%                                  |
 | ≤ 3                                                       | only subst.       | any               | Bech32m/Bech32    | 100.00%                                 |
-| ≤ 1                                                       | any               | \-                | 70.89%            | 29.11%                                  |
+| 1                                                         | any               | \-                | 70.89%            | 29.11%                                  |
 | ≤ 2                                                       | any               | any               | 36.12%            | 63.79%                                  |
 
 The numbers in this table, as well as a comparison with the numbers for
@@ -482,10 +484,12 @@ but in short:
 
 ## Acknowledgements
 
-Thanks to Rusty Russell for starting the discussion around intentionally
+Thanks to Greg Maxwell for doing most of the computation for code
+selection and analysis, and comments. Thanks to Mark Erhardt for help
+with writing and editing this document. Thanks to Rusty Russell and
+others on the bitcoin-dev list for the discussion around intentionally
 breaking compatibility with existing senders, which is used in this
-specification. Thanks to Greg Maxwell for doing most of the computation
-for code selection and analysis.
+specification.
 
 [1] **Why not permit both Bech32 and Bech32m for v0 addresses?**
 Permitting both encodings reduces the error detection capabilities (it

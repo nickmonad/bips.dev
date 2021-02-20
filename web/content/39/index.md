@@ -168,6 +168,10 @@ Go:
 
 -   <https://github.com/tyler-smith/go-bip39>
 
+Python:
+
+-   <https://github.com/meherett/python-hdwallet>
+
 Elixir:
 
 -   <https://github.com/aerosol/mnemo>
@@ -205,6 +209,7 @@ Ruby:
 Rust:
 
 -   <https://github.com/maciejhirsz/tiny-bip39/>
+-   <https://github.com/koushiro/bip0039-rs>
 
 Swift:
 
