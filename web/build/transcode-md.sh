@@ -1,5 +1,6 @@
 #!env bash
 set -e
+BIPS="${BIPS_PATH:-../bips}"
 
 bip_number() {
     if [[ $1 =~ ^bip-([0-9]+).*$ ]]
@@ -41,8 +42,8 @@ export -f bip_number
 export -f transcode
 export -f move_static
 
-find bips -type f -name 'bip*.mediawiki' -maxdepth 1 \
+find $BIPS -type f -name 'bip*.mediawiki' -maxdepth 1 \
     | xargs -I{} bash -c 'transcode "{}"'
 
-find bips -type d -name 'bip-*' -maxdepth 1 \
+find $BIPS -type d -name 'bip-*' -maxdepth 1 \
     | xargs -I{} bash -c 'move_static "{}"'

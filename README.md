@@ -16,7 +16,7 @@ The version live on [bips.dev](https://bips.dev) shows a simple [`pandoc`](https
 mediawiki text to "GitHub-flavored" markdown, and a few things are broken. Tables seem to be the biggest problem,
 with internal links and code snippets being a close second. I've tried using [`Parsoid`](https://www.mediawiki.org/wiki/Parsoid)
 to convert the mediawiki to HTML, then to markdown, but it doesn't work when encountering things like top-level
-`<img>` tags in the BIP source (which shouldn't be there anyway, [according to Wikimedia themselves](https://www.mediawiki.org/wiki/Help:Formatting#HTML_tags))
+`<img>` tags in the BIP source (which shouldn't be there anyway, [according to Wikimedia](https://www.mediawiki.org/wiki/Help:Formatting#HTML_tags))
 
 ### Ideas
 
@@ -24,3 +24,8 @@ to convert the mediawiki to HTML, then to markdown, but it doesn't work when enc
 * Better taxonomy - list by author, status, etc
 
 ## Building
+
+* Install [Rust](https://www.rust-lang.org/) and [zola](https://www.getzola.org/)
+* Clone [`bitcoin/bips`](https://github.com/bitcoin/bips)
+* Run, `BIPS_PATH=../path/to/bips/clone ./web/build/transcode-md.sh`
+* `make build` or `make serve`

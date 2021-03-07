@@ -7,7 +7,7 @@ in_search_index = true
 [extra]
 bip = 81
 status = "Deferred"
-github = "https://github.com/bitcoin/bips/blob/master/bip-0081.mediawiki"
+github = "https://github.com/bitcoin/bips/blob/master/bips"
 +++
 
       BIP: 81

@@ -7,7 +7,7 @@ in_search_index = true
 [extra]
 bip = 325
 status = "Proposed"
-github = "https://github.com/bitcoin/bips/blob/master/bip-0325.mediawiki"
+github = "https://github.com/bitcoin/bips/blob/master/bips"
 +++
 
       BIP: 325

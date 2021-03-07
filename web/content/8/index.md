@@ -7,7 +7,7 @@ in_search_index = true
 [extra]
 bip = 8
 status = "Draft"
-github = "https://github.com/bitcoin/bips/blob/master/bip-0008.mediawiki"
+github = "https://github.com/bitcoin/bips/blob/master/bips"
 +++
 
       BIP: 8
@@ -27,9 +27,9 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0008.mediawiki"
 This document specifies an alternative to
 [BIP9](bip-0009.mediawiki "wikilink") that corrects for a number of
 perceived mistakes. Block heights are used for start and timeout rather
-than POSIX timestamps. It additionally introduces an additional
-activation parameter to guarantee activation of backward-compatible
-changes (further called "soft forks").
+than POSIX timestamps. It additionally introduces an activation
+parameter that can guarantee activation of backward-compatible changes
+(further called "soft forks").
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -46,9 +46,8 @@ activation where the majority hash power enforces the new rules in lieu
 of full nodes upgrading. Since all consensus rules are ultimately
 enforced by full nodes, eventually any new soft fork will be enforced by
 the economy. This proposal combines these two aspects to provide
-eventual flag day activation after a reasonable time (recommended a
-year), as well as for accelerated activation by majority of hash rate
-before the flag date.
+optional flag day activation after a reasonable time, as well as for
+accelerated activation by majority of hash rate before the flag date.
 
 Due to using timestamps rather than block heights, it was found to be a
 risk that a sudden loss of significant hashrate could interfere with a
@@ -70,9 +69,7 @@ Each soft fork deployment is specified by the following per-chain
 parameters (further elaborated below):
 
 1.  The **name** specifies a very brief description of the soft fork,
-    reasonable for use as an identifier. For deployments described in a
-    single BIP, it is recommended to use the name "bipN" where N is the
-    appropriate BIP number.
+    reasonable for use as an identifier.
 2.  The **bit** determines which bit in the nVersion field of the block
     is to be used to signal the soft fork lock-in and activation. It is
     chosen from the set {0,1,2,...,28}.
@@ -82,7 +79,10 @@ parameters (further elaborated below):
     signalling ends. Once this height has been reached, if the soft fork
     has not yet locked in (excluding this block's bit state), the
     deployment is considered failed on all descendants of the block.
-5.  The **lockinontimeout** boolean if set to true, blocks are required
+5.  The **threshold** specifies the minimum number of block per retarget
+    period which indicate lock-in of the soft fork during the subsequent
+    period.
+6.  The **lockinontimeout** boolean if set to true, blocks are required
     to signal in the final period, ensuring the soft fork has locked in
     by timeoutheight.
 
@@ -92,19 +92,25 @@ The following guidelines are suggested for selecting these parameters
 for a soft fork:
 
 1.  **name** should be selected such that no two softforks, concurrent
-    or otherwise, ever use the same name.
+    or otherwise, ever use the same name. For deployments described in a
+    single BIP, it is recommended to use the name "bipN" where N is the
+    appropriate BIP number.
 2.  **bit** should be selected such that no two concurrent softforks use
-    the same bit.
-3.  **startheight** should be set to some block height in the future,
-    approximately 30 days (or 4320 blocks) after a software release date
-    including the soft fork. This allows for some release delays, while
-    preventing triggers as a result of parties running pre-release
-    software, and ensures a reasonable number of full nodes have
-    upgraded prior to activation. It should be rounded up to the next
-    height which begins a retarget period for simplicity.
-4.  **timeoutheight** should be 1 year, or 52416 blocks (26 retarget
+    the same bit. The bit chosen should not overlap with active usage
+    (legitimately or otherwise) for other purposes.
+3.  **startheight** should be set to some block height in the future
+    when a majority of economic activity is expected to have upgraded to
+    a software release including the activation parameters. Some
+    allowance should be made for potential release delays. It should be
+    rounded up to the next height which begins a retarget period for
+    simplicity.
+4.  **timeoutheight** should be set to a block height when it is
+    considered reasonable to expect the entire economy to have upgraded
+    by, probably at least 1 year, or 52416 blocks (26 retarget
     intervals) after **startheight**.
-5.  **lockinontimeout** should be set to true for any softfork that is
+5.  **threshold** should be 1815 blocks (90% of 2016), or 1512 (75%) for
+    testnet.
+6.  **lockinontimeout** should be set to true for any softfork that is
     expected or found to have political opposition from a non-negligible
     percent of miners. (It can be set after the initial deployment, but
     cannot be cleared once set.)
@@ -204,12 +210,11 @@ We remain in the initial state until we reach the start block height.
 
 After a period in the STARTED state, we tally the bits set, and
 transition to LOCKED\_IN if a sufficient number of blocks in the past
-period set the deployment bit in their version numbers. The threshold is
-≥1916 blocks (95% of 2016), or ≥1512 for testnet (75% of 2016). If the
-threshold hasn't been met, lockinontimeout is true, and we are at the
-last period before the timeout, then we transition to MUST\_SIGNAL. If
-the threshold hasn't been met and we reach the timeout, we transition
-directly to FAILED.
+period set the deployment bit in their version numbers. If the threshold
+hasn't been met, lockinontimeout is true, and we are at the last period
+before the timeout, then we transition to MUST\_SIGNAL. If the threshold
+hasn't been met and we reach the timeout, we transition directly to
+FAILED.
 
 Note that a block's state never depends on its own nVersion; only on
 that of its ancestors.

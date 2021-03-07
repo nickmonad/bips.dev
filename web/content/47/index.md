@@ -7,7 +7,7 @@ in_search_index = true
 [extra]
 bip = 47
 status = "Draft"
-github = "https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki"
+github = "https://github.com/bitcoin/bips/blob/master/bips"
 +++
 
 RECENT CHANGES:

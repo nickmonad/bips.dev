@@ -7,7 +7,7 @@ in_search_index = true
 [extra]
 bip = 125
 status = "Proposed"
-github = "https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki"
+github = "https://github.com/bitcoin/bips/blob/master/bips"
 +++
 
       BIP: 125
@@ -223,13 +223,13 @@ satisfied:
 1.  Enough hash rate has upgraded to support replacement, allowing for
     reasonable probability that a replacement can be mined.
 
-## Client support
+## Backwards compatibility
 
-No known wallet currently creates transactions by default with nSequence
-set below (0xffffffff - 1), so no known existing wallet explicitly
-signals replaceability by default. No known popular wallet spends other
-users' unconfirmed transactions by default, so no known existing wallets
-signals inherited replaceability.
+At the time opt-in RBF support was added/proposed, no known wallet
+created transactions by default with nSequence set below (0xffffffff -
+1), so no known wallet explicitly signaled replaceability by default.
+Also no known popular wallet spent other users' unconfirmed transactions
+by default, so no known wallets signaled inherited replaceability.
 
 ## See also
 

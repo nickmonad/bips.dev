@@ -7,7 +7,7 @@ in_search_index = true
 [extra]
 bip = 62
 status = "Withdrawn"
-github = "https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki"
+github = "https://github.com/bitcoin/bips/blob/master/bips"
 +++
 
 **NOTICE: This document is a work in progress and is not complete,
