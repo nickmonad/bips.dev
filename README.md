@@ -26,6 +26,6 @@ to convert the mediawiki to HTML, then to markdown, but it doesn't work when enc
 ## Building
 
 * Install [Rust](https://www.rust-lang.org/) and [zola](https://www.getzola.org/)
-* Clone [`bitcoin/bips`](https://github.com/bitcoin/bips)
-* Run, `BIPS_PATH=../path/to/bips/clone ./web/build/transcode-md.sh`
+* `make bips`
+* `./web/build/transcode-md.sh`
 * `make build` or `make serve`

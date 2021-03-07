@@ -1,5 +1,5 @@
-.PHONY: submodule
-submodule:
+.PHONY: bips
+bips:
 	git submodule init && git submodule update --recursive --remote
 
 .PHONY: serve
