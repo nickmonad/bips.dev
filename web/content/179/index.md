@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Emil Engler", "MarcoFalke", "Luke Dashjr"]
+status = ["Draft"]
 
 [extra]
 bip = 179
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0179.mediawiki"
 +++
 

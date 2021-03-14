@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Chris Priest"]
+status = ["Rejected"]
 
 [extra]
 bip = 131
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0131.mediawiki"
 +++
 

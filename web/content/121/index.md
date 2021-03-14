@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Kalle Rosenbaum"]
+status = ["Withdrawn"]
 
 [extra]
 bip = 121
-status = "Withdrawn"
+status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0121.mediawiki"
 +++
 

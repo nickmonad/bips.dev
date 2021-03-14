@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Eric Lombrozo", "William Swanson"]
+status = ["Rejected"]
 
 [extra]
 bip = 124
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0124.mediawiki"
 +++
 

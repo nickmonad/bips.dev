@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Upal Chakraborty"]
+status = ["Rejected"]
 
 [extra]
 bip = 106
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0106.mediawiki"
 +++
 

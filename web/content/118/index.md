@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Christian Decker"]
+status = ["Draft"]
 
 [extra]
 bip = 118
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0118.mediawiki"
 +++
 

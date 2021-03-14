@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Велеслав", "Jonas Schnelli", "Daniel Pape"]
+status = ["Draft"]
 
 [extra]
 bip = 136
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0136.mediawiki"
 +++
 

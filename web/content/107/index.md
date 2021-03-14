@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Washington Y. Sanchez"]
+status = ["Rejected"]
 
 [extra]
 bip = 107
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0107.mediawiki"
 +++
 

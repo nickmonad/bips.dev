@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Christopher Gilliard"]
+status = ["Final"]
 
 [extra]
 bip = 137
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0137.mediawiki"
 +++
 

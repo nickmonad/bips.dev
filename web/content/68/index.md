@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Mark Friedenbach", "BtcDrak", "Nicolas Dorier", "kinoshitajona"]
+status = ["Final"]
 
 [extra]
 bip = 68
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki"
 +++
 

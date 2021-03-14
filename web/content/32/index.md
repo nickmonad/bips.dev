@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Pieter Wuille"]
+status = ["Final"]
 
 [extra]
 bip = 32
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki"
 +++
 

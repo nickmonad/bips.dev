@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Stephen Pair"]
+status = ["Final"]
 
 [extra]
 bip = 73
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0073.mediawiki"
 +++
 

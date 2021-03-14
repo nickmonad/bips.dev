@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Karl-Johan Alm"]
+status = ["Withdrawn"]
 
 [extra]
 bip = 154
-status = "Withdrawn"
+status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0154.mediawiki"
 +++
 

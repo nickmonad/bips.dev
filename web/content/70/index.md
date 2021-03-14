@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Gavin Andresen", "Mike Hearn"]
+status = ["Final"]
 
 [extra]
 bip = 70
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki"
 +++
 

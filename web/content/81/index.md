@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Justus Ranvier", "Jimmy Song"]
+status = ["Deferred"]
 
 [extra]
 bip = 81
-status = "Deferred"
+status = ["Deferred"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0081.mediawiki"
 +++
 

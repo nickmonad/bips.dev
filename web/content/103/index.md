@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Pieter Wuille"]
+status = ["Withdrawn"]
 
 [extra]
 bip = 103
-status = "Withdrawn"
+status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0103.mediawiki"
 +++
 

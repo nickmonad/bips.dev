@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Manuel Araoz", "Ryan X. Charles", "Matias Alejo Garcia"]
+status = ["Proposed"]
 
 [extra]
 bip = 45
-status = "Proposed"
+status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0045.mediawiki"
 +++
 

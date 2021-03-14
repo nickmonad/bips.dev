@@ -74,8 +74,8 @@ struct BipInfo {
     bip: u32,
     title: String,
     created: String,
-    status: String,
     github: String,
+    status: Vec<String>,
     authors: Vec<String>,
 }
 
@@ -97,7 +97,7 @@ impl BipInfo {
                         "BIP" => info.bip = v.parse::<u32>().unwrap(),
                         "Title" => info.title = v.to_string(),
                         "Created" => info.created = v.to_string(),
-                        "Status" => info.status = v.to_string(),
+                        "Status" => info.status = vec![format!("\"{}\"", v)],
                         "Author" => {
                             let mut authors = vec![clean_author(v)];
                             loop {
@@ -136,8 +136,8 @@ impl Default for BipInfo {
             bip: 0,
             title: String::from(""),
             created: String::from(""),
-            status: String::from(""),
             github: String::from(""),
+            status: vec![],
             authors: vec![],
         }
     }

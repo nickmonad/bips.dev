@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Pavel Moravec", "Jan Čapek"]
+status = ["Draft"]
 
 [extra]
 bip = 310
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0310.mediawiki"
 +++
 

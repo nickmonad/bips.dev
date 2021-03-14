@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Jimmy Song"]
+status = ["Draft"]
 
 [extra]
 bip = 176
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0176.mediawiki"
 +++
 

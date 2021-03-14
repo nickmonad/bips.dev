@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Suhas Daftuar"]
+status = ["Final"]
 
 [extra]
 bip = 90
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0090.mediawiki"
 +++
 

@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Johnson Lau"]
+status = ["Final"]
 
 [extra]
 bip = 147
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0147.mediawiki"
 +++
 

@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Nils Schneider", "Matt Corallo"]
+status = ["Final"]
 
 [extra]
 bip = 21
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki"
 +++
 

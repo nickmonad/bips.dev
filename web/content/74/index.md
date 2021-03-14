@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Toby Padilla"]
+status = ["Rejected"]
 
 [extra]
 bip = 74
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0074.mediawiki"
 +++
 

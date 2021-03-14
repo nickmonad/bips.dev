@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Jeff Garzik"]
+status = ["Final"]
 
 [extra]
 bip = 35
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0035.mediawiki"
 +++
 

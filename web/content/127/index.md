@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Steven Roose"]
+status = ["Draft"]
 
 [extra]
 bip = 127
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0127.mediawiki"
 +++
 

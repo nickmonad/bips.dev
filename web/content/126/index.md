@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Kristov Atlas"]
+status = ["Draft"]
 
 [extra]
 bip = 126
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0126.mediawiki"
 +++
 

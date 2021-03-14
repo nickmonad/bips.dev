@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Gleb Naumenko", "Pieter Wuille"]
+status = ["Draft"]
 
 [extra]
 bip = 330
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0330.mediawiki"
 +++
 

@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Shaolin Fry", "Luke Dashjr"]
+status = ["Draft"]
 
 [extra]
 bip = 8
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0008.mediawiki"
 +++
 

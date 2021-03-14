@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Daniel Weigl"]
+status = ["Final"]
 
 [extra]
 bip = 49
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki"
 +++
 

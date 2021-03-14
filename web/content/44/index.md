@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Marek Palatinus", "Pavol Rusnak"]
+status = ["Proposed"]
 
 [extra]
 bip = 44
-status = "Proposed"
+status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki"
 +++
 

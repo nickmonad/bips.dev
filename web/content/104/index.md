@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["t.khan"]
+status = ["Rejected"]
 
 [extra]
 bip = 104
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0104.mediawiki"
 +++
 

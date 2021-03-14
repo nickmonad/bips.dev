@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["BtcDrak"]
+status = ["Draft"]
 
 [extra]
 bip = 320
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0320.mediawiki"
 +++
 

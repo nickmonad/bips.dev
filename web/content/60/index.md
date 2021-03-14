@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Amir Taaki"]
+status = ["Draft"]
 
 [extra]
 bip = 60
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0060.mediawiki"
 +++
 

@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Thomas Kerin", "Mark Friedenbach"]
+status = ["Final"]
 
 [extra]
 bip = 113
-status = "Final"
+status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0113.mediawiki"
 +++
 

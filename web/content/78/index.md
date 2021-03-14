@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Nicolas Dorier"]
+status = ["Draft"]
 
 [extra]
 bip = 78
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki"
 +++
 

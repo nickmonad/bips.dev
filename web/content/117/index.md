@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Mark Friedenbach", "Kalle Alm", "BtcDrak"]
+status = ["Draft"]
 
 [extra]
 bip = 117
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0117.mediawiki"
 +++
 

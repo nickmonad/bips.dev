@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Gavin Andresen"]
+status = ["Rejected"]
 
 [extra]
 bip = 109
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0109.mediawiki"
 +++
 

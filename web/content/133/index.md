@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Alex Morcos"]
+status = ["Draft"]
 
 [extra]
 bip = 133
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0133.mediawiki"
 +++
 

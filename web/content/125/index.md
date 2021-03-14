@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["David A. Harding", "Peter Todd"]
+status = ["Proposed"]
 
 [extra]
 bip = 125
-status = "Proposed"
+status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki"
 +++
 

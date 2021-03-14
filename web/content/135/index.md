@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Sancho Panza"]
+status = ["Rejected"]
 
 [extra]
 bip = 135
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0135.mediawiki"
 +++
 

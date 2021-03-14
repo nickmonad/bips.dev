@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Gavin Andresen"]
+status = ["Withdrawn"]
 
 [extra]
 bip = 101
-status = "Withdrawn"
+status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0101.mediawiki"
 +++
 

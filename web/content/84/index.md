@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Pavol Rusnak"]
+status = ["Draft"]
 
 [extra]
 bip = 84
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki"
 +++
 

@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Sean Bowe", "Daira Hopwood"]
+status = ["Draft"]
 
 [extra]
 bip = 199
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0199.mediawiki"
 +++
 

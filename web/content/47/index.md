@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Justus Ranvier"]
+status = ["Draft"]
 
 [extra]
 bip = 47
-status = "Draft"
+status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki"
 +++
 

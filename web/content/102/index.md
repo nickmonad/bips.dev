@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Jeff Garzik"]
+status = ["Rejected"]
 
 [extra]
 bip = 102
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0102.mediawiki"
 +++
 

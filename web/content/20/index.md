@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Luke Dashjr"]
+status = ["Replaced"]
 
 [extra]
 bip = 20
-status = "Replaced"
+status = ["Replaced"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki"
 +++
 

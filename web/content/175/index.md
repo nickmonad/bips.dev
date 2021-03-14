@@ -6,10 +6,11 @@ in_search_index = true
 
 [taxonomies]
 authors = ["Omar Shibli", "Nicholas Gregory"]
+status = ["Rejected"]
 
 [extra]
 bip = 175
-status = "Rejected"
+status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0175.mediawiki"
 +++
 
