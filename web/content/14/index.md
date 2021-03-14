@@ -4,6 +4,9 @@ date = 2011-11-10
 weight = 14
 in_search_index = true
 
+[taxonomies]
+authors = ["Amir Taaki", "Patrick Strateman"]
+
 [extra]
 bip = 14
 status = "Final"

@@ -4,6 +4,9 @@ date = 2016-01-29
 weight = 74
 in_search_index = true
 
+[taxonomies]
+authors = ["Toby Padilla"]
+
 [extra]
 bip = 74
 status = "Rejected"

@@ -4,6 +4,9 @@ date = 2017-03-12
 weight = 148
 in_search_index = true
 
+[taxonomies]
+authors = ["Shaolin Fry"]
+
 [extra]
 bip = 148
 status = "Final"

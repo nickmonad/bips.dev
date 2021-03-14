@@ -4,6 +4,9 @@ date = 2015-08-24
 weight = 106
 in_search_index = true
 
+[taxonomies]
+authors = ["Upal Chakraborty"]
+
 [extra]
 bip = 106
 status = "Rejected"

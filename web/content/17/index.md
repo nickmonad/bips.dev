@@ -4,6 +4,9 @@ date = 2012-01-18
 weight = 17
 in_search_index = true
 
+[taxonomies]
+authors = ["Luke Dashjr"]
+
 [extra]
 bip = 17
 status = "Withdrawn"

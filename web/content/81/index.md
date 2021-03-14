@@ -4,6 +4,9 @@ date = 2014-08-11
 weight = 81
 in_search_index = true
 
+[taxonomies]
+authors = ["Justus Ranvier", "Jimmy Song"]
+
 [extra]
 bip = 81
 status = "Deferred"

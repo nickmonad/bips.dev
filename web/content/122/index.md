@@ -4,6 +4,9 @@ date = 2015-08-29
 weight = 122
 in_search_index = true
 
+[taxonomies]
+authors = ["Marco Pontello"]
+
 [extra]
 bip = 122
 status = "Draft"

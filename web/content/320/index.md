@@ -4,6 +4,9 @@ date = 2018-03-01
 weight = 320
 in_search_index = true
 
+[taxonomies]
+authors = ["BtcDrak"]
+
 [extra]
 bip = 320
 status = "Draft"

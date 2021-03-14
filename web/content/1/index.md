@@ -4,6 +4,9 @@ date = 2011-09-19
 weight = 1
 in_search_index = true
 
+[taxonomies]
+authors = ["Amir Taaki"]
+
 [extra]
 bip = 1
 status = "Replaced"

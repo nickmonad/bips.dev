@@ -4,6 +4,9 @@ date = 2015-12-24
 weight = 142
 in_search_index = true
 
+[taxonomies]
+authors = ["Johnson Lau"]
+
 [extra]
 bip = 142
 status = "Withdrawn"

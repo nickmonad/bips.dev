@@ -4,6 +4,9 @@ date = 2020-09-03
 weight = 338
 in_search_index = true
 
+[taxonomies]
+authors = ["Suhas Daftuar"]
+
 [extra]
 bip = 338
 status = "Draft"

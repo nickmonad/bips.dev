@@ -4,6 +4,9 @@ date = 2020-01-06
 weight = 119
 in_search_index = true
 
+[taxonomies]
+authors = ["Jeremy Rubin"]
+
 [extra]
 bip = 119
 status = "Draft"

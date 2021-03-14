@@ -4,6 +4,9 @@ date = 2019-02-27
 weight = 155
 in_search_index = true
 
+[taxonomies]
+authors = ["Wladimir J. van der Laan"]
+
 [extra]
 bip = 155
 status = "Draft"

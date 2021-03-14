@@ -4,6 +4,9 @@ date = 2014-04-24
 weight = 44
 in_search_index = true
 
+[taxonomies]
+authors = ["Marek Palatinus", "Pavol Rusnak"]
+
 [extra]
 bip = 44
 status = "Proposed"

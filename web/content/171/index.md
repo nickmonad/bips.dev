@@ -4,6 +4,9 @@ date = 2017-03-04
 weight = 171
 in_search_index = true
 
+[taxonomies]
+authors = ["Luke Dashjr"]
+
 [extra]
 bip = 171
 status = "Rejected"

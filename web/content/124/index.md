@@ -4,6 +4,9 @@ date = 2015-11-20
 weight = 124
 in_search_index = true
 
+[taxonomies]
+authors = ["Eric Lombrozo", "William Swanson"]
+
 [extra]
 bip = 124
 status = "Rejected"

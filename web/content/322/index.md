@@ -4,6 +4,9 @@ date = 2018-09-10
 weight = 322
 in_search_index = true
 
+[taxonomies]
+authors = ["Karl-Johan Alm"]
+
 [extra]
 bip = 322
 status = "Draft"

@@ -4,6 +4,9 @@ date = 2015-11-20
 weight = 75
 in_search_index = true
 
+[taxonomies]
+authors = ["Justin Newton", "Matt David", "Aaron Voisine", "James MacWhyte"]
+
 [extra]
 bip = 75
 status = "Final"

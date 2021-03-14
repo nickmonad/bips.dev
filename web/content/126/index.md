@@ -4,6 +4,9 @@ date = 2016-02-10
 weight = 126
 in_search_index = true
 
+[taxonomies]
+authors = ["Kristov Atlas"]
+
 [extra]
 bip = 126
 status = "Draft"

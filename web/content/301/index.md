@@ -4,6 +4,9 @@ date = 2019-07-23
 weight = 301
 in_search_index = true
 
+[taxonomies]
+authors = ["Paul Sztorc", "CryptAxe"]
+
 [extra]
 bip = 301
 status = "Draft"

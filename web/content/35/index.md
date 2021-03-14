@@ -4,6 +4,9 @@ date = 2012-08-16
 weight = 35
 in_search_index = true
 
+[taxonomies]
+authors = ["Jeff Garzik"]
+
 [extra]
 bip = 35
 status = "Final"

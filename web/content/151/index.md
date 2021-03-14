@@ -4,6 +4,9 @@ date = 2016-03-23
 weight = 151
 in_search_index = true
 
+[taxonomies]
+authors = ["Jonas Schnelli"]
+
 [extra]
 bip = 151
 status = "Withdrawn"

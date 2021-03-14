@@ -4,6 +4,9 @@ date = 2016-04-27
 weight = 152
 in_search_index = true
 
+[taxonomies]
+authors = ["Matt Corallo"]
+
 [extra]
 bip = 152
 status = "Final"

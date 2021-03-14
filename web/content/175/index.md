@@ -4,6 +4,9 @@ date = 2017-07-17
 weight = 175
 in_search_index = true
 
+[taxonomies]
+authors = ["Omar Shibli", "Nicholas Gregory"]
+
 [extra]
 bip = 175
 status = "Rejected"

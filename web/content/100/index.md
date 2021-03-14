@@ -4,6 +4,9 @@ date = 2015-06-11
 weight = 100
 in_search_index = true
 
+[taxonomies]
+authors = ["Jeff Garzik", "Tom Harding", "Dagur Valberg Johannsson"]
+
 [extra]
 bip = 100
 status = "Rejected"

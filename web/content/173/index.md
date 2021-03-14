@@ -4,6 +4,9 @@ date = 2017-03-20
 weight = 173
 in_search_index = true
 
+[taxonomies]
+authors = ["Pieter Wuille", "Greg Maxwell"]
+
 [extra]
 bip = 173
 status = "Final"

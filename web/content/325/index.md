@@ -4,6 +4,9 @@ date = 2019-03-20
 weight = 325
 in_search_index = true
 
+[taxonomies]
+authors = ["Karl-Johan Alm", "Anthony Towns"]
+
 [extra]
 bip = 325
 status = "Proposed"

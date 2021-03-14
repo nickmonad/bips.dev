@@ -4,6 +4,9 @@ date = 2017-02-01
 weight = 8
 in_search_index = true
 
+[taxonomies]
+authors = ["Shaolin Fry", "Luke Dashjr"]
+
 [extra]
 bip = 8
 status = "Draft"

@@ -4,6 +4,9 @@ date = 2016-11-08
 weight = 90
 in_search_index = true
 
+[taxonomies]
+authors = ["Suhas Daftuar"]
+
 [extra]
 bip = 90
 status = "Final"

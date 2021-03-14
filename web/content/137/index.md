@@ -4,6 +4,9 @@ date = 2019-02-16
 weight = 137
 in_search_index = true
 
+[taxonomies]
+authors = ["Christopher Gilliard"]
+
 [extra]
 bip = 137
 status = "Final"

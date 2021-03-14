@@ -4,6 +4,9 @@ date = 2013-06-16
 weight = 60
 in_search_index = true
 
+[taxonomies]
+authors = ["Amir Taaki"]
+
 [extra]
 bip = 60
 status = "Draft"

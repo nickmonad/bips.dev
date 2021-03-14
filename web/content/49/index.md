@@ -4,6 +4,9 @@ date = 2016-05-19
 weight = 49
 in_search_index = true
 
+[taxonomies]
+authors = ["Daniel Weigl"]
+
 [extra]
 bip = 49
 status = "Final"

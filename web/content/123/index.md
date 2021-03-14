@@ -4,6 +4,9 @@ date = 2015-08-26
 weight = 123
 in_search_index = true
 
+[taxonomies]
+authors = ["Eric Lombrozo"]
+
 [extra]
 bip = 123
 status = "Active"

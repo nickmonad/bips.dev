@@ -4,6 +4,9 @@ date = 2017-02-28
 weight = 118
 in_search_index = true
 
+[taxonomies]
+authors = ["Christian Decker"]
+
 [extra]
 bip = 118
 status = "Draft"

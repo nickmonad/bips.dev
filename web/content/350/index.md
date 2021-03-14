@@ -4,6 +4,9 @@ date = 2020-12-16
 weight = 350
 in_search_index = true
 
+[taxonomies]
+authors = ["Pieter Wuille"]
+
 [extra]
 bip = 350
 status = "Draft"

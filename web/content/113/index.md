@@ -4,6 +4,9 @@ date = 2015-08-10
 weight = 113
 in_search_index = true
 
+[taxonomies]
+authors = ["Thomas Kerin", "Mark Friedenbach"]
+
 [extra]
 bip = 113
 status = "Final"

@@ -4,6 +4,9 @@ date = 2017-04-12
 weight = 154
 in_search_index = true
 
+[taxonomies]
+authors = ["Karl-Johan Alm"]
+
 [extra]
 bip = 154
 status = "Withdrawn"

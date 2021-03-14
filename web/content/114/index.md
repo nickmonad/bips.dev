@@ -4,6 +4,9 @@ date = 2016-04-02
 weight = 114
 in_search_index = true
 
+[taxonomies]
+authors = ["Johnson Lau"]
+
 [extra]
 bip = 114
 status = "Rejected"

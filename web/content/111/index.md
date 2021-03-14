@@ -4,6 +4,9 @@ date = 2015-08-20
 weight = 111
 in_search_index = true
 
+[taxonomies]
+authors = ["Matt Corallo", "Peter Todd"]
+
 [extra]
 bip = 111
 status = "Proposed"

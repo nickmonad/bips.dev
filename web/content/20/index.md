@@ -4,6 +4,9 @@ date = 2011-01-10
 weight = 20
 in_search_index = true
 
+[taxonomies]
+authors = ["Luke Dashjr"]
+
 [extra]
 bip = 20
 status = "Replaced"

@@ -4,6 +4,9 @@ date = 2015-10-14
 weight = 140
 in_search_index = true
 
+[taxonomies]
+authors = ["Christian Decker"]
+
 [extra]
 bip = 140
 status = "Rejected"

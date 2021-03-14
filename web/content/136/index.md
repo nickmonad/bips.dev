@@ -4,6 +4,9 @@ date = 2017-07-09
 weight = 136
 in_search_index = true
 
+[taxonomies]
+authors = ["Велеслав", "Jonas Schnelli", "Daniel Pape"]
+
 [extra]
 bip = 136
 status = "Draft"

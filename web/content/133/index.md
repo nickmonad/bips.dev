@@ -4,6 +4,9 @@ date = 2016-02-13
 weight = 133
 in_search_index = true
 
+[taxonomies]
+authors = ["Alex Morcos"]
+
 [extra]
 bip = 133
 status = "Draft"

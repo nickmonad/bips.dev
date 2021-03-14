@@ -2,10 +2,14 @@
 bips:
 	git submodule init && git submodule update --recursive --remote
 
+.PHONY: npm
+npm:
+	cd web && npm install && cd ..
+
 .PHONY: serve
-serve:
+serve: npm
 	cd web && zola serve && cd ..
 
 .PHONY: build
-build:
+build: npm
 	cd web && zola build && cd ..

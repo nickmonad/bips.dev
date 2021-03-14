@@ -4,6 +4,9 @@ date = 2015-06-23
 weight = 102
 in_search_index = true
 
+[taxonomies]
+authors = ["Jeff Garzik"]
+
 [extra]
 bip = 102
 status = "Rejected"

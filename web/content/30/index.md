@@ -4,6 +4,9 @@ date = 2012-02-22
 weight = 30
 in_search_index = true
 
+[taxonomies]
+authors = ["Pieter Wuille"]
+
 [extra]
 bip = 30
 status = "Final"

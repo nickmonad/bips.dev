@@ -4,6 +4,9 @@ date = 2019-10-17
 weight = 179
 in_search_index = true
 
+[taxonomies]
+authors = ["Emil Engler", "MarcoFalke", "Luke Dashjr"]
+
 [extra]
 bip = 179
 status = "Draft"

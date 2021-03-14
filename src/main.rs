@@ -8,6 +8,35 @@ use std::io::Read;
 use tera;
 use tera::{Context, Tera};
 
+fn main() -> io::Result<()> {
+    let args: Vec<String> = env::args().collect();
+    let path = &args[1];
+
+    // create tera instance
+    let templater = Templater::new("templates/**/*");
+
+    // read input bip.mediawiki
+    let mut input = File::open(path)?;
+    let mut content = String::new();
+    input.read_to_string(&mut content)?;
+
+    // parse mediawiki content
+    let wikitext = wiki::Configuration::default().parse(&content);
+    let preformatted = wikitext
+        .nodes
+        .iter()
+        .find_map(|node| match node {
+            wiki::Node::Preformatted { .. } => Some(node),
+            _ => None,
+        })
+        .unwrap();
+
+    let info = BipInfo::from_node(path.to_string(), &preformatted);
+    println!("{}", templater.render(info).unwrap());
+
+    Ok(())
+}
+
 struct Templater {
     client: Tera,
 }
@@ -47,13 +76,16 @@ struct BipInfo {
     created: String,
     status: String,
     github: String,
+    authors: Vec<String>,
 }
 
 impl BipInfo {
     fn from_node(path: String, node: &wiki::Node) -> BipInfo {
         let mut info = BipInfo::default();
+
         if let wiki::Node::Preformatted { nodes, .. } = node {
-            for node in nodes {
+            let mut nodes = nodes.iter().peekable();
+            while let Some(node) = nodes.next() {
                 if let wiki::Node::Text { value, .. } = node {
                     let split = value.trim().splitn(2, ':').collect::<Vec<&str>>();
                     if split.len() < 2 {
@@ -66,6 +98,24 @@ impl BipInfo {
                         "Title" => info.title = v.to_string(),
                         "Created" => info.created = v.to_string(),
                         "Status" => info.status = v.to_string(),
+                        "Author" => {
+                            let mut authors = vec![clean_author(v)];
+                            loop {
+                                if let Some(n) = nodes.peek() {
+                                    if is_new_section(n) {
+                                        break;
+                                    }
+                                }
+
+                                if let Some(n) = nodes.next() {
+                                    if let wiki::Node::Text { value, .. } = n {
+                                        authors.push(clean_author(value))
+                                    }
+                                }
+                            }
+
+                            info.authors = authors;
+                        }
                         _ => {}
                     }
                 }
@@ -88,35 +138,20 @@ impl Default for BipInfo {
             created: String::from(""),
             status: String::from(""),
             github: String::from(""),
+            authors: vec![],
         }
     }
 }
 
-fn main() -> io::Result<()> {
-    let args: Vec<String> = env::args().collect();
-    let path = &args[1];
+fn clean_author(author: &str) -> String {
+    let split = author.trim().splitn(2, '<').collect::<Vec<&str>>();
+    format!("\"{}\"", &split[0][..].trim())
+}
 
-    // create tera instance
-    let templater = Templater::new("templates/**/*");
+fn is_new_section(node: &wiki::Node) -> bool {
+    if let wiki::Node::Text { value, .. } = node {
+        return value.trim().splitn(2, ':').collect::<Vec<&str>>().len() >= 2;
+    }
 
-    // read input bip.mediawiki
-    let mut input = File::open(path)?;
-    let mut content = String::new();
-    input.read_to_string(&mut content)?;
-
-    // parse mediawiki content
-    let wikitext = wiki::Configuration::default().parse(&content);
-    let preformatted = wikitext
-        .nodes
-        .iter()
-        .find_map(|node| match node {
-            wiki::Node::Preformatted { .. } => Some(node),
-            _ => None,
-        })
-        .unwrap();
-
-    let info = BipInfo::from_node(path.to_string(), &preformatted);
-    println!("{}", templater.render(info).unwrap());
-
-    Ok(())
+    false
 }

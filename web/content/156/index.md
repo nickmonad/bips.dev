@@ -4,6 +4,9 @@ date = 2017-06-09
 weight = 156
 in_search_index = true
 
+[taxonomies]
+authors = ["Brad Denby", "Andrew Miller", "Giulia Fanti", "Surya Bakshi", "Shaileshh Bojja Venkatakrishnan", "Pramod Viswanath"]
+
 [extra]
 bip = 156
 status = "Rejected"

@@ -4,6 +4,9 @@ date = 2014-06-10
 weight = 64
 in_search_index = true
 
+[taxonomies]
+authors = ["Mike Hearn"]
+
 [extra]
 bip = 64
 status = "Obsolete"

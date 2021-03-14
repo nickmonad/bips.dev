@@ -4,6 +4,9 @@ date = 2019-01-28
 weight = 127
 in_search_index = true
 
+[taxonomies]
+authors = ["Steven Roose"]
+
 [extra]
 bip = 127
 status = "Draft"

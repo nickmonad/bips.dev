@@ -4,6 +4,9 @@ date = 2017-05-11
 weight = 159
 in_search_index = true
 
+[taxonomies]
+authors = ["Jonas Schnelli"]
+
 [extra]
 bip = 159
 status = "Draft"

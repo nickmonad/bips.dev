@@ -4,6 +4,9 @@ date = 2013-08-27
 weight = 73
 in_search_index = true
 
+[taxonomies]
+authors = ["Stephen Pair"]
+
 [extra]
 bip = 73
 status = "Final"

@@ -4,6 +4,9 @@ date = 2015-05-28
 weight = 68
 in_search_index = true
 
+[taxonomies]
+authors = ["Mark Friedenbach", "BtcDrak", "Nicolas Dorier", "kinoshitajona"]
+
 [extra]
 bip = 68
 status = "Final"

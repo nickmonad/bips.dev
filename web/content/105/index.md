@@ -4,6 +4,9 @@ date = 2015-08-21
 weight = 105
 in_search_index = true
 
+[taxonomies]
+authors = ["BtcDrak"]
+
 [extra]
 bip = 105
 status = "Rejected"

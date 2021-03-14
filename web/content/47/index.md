@@ -4,6 +4,9 @@ date = 2015-04-24
 weight = 47
 in_search_index = true
 
+[taxonomies]
+authors = ["Justus Ranvier"]
+
 [extra]
 bip = 47
 status = "Draft"

@@ -4,6 +4,9 @@ date = 2020-01-19
 weight = 340
 in_search_index = true
 
+[taxonomies]
+authors = ["Pieter Wuille", "Jonas Nick", "Tim Ruffing"]
+
 [extra]
 bip = 340
 status = "Draft"

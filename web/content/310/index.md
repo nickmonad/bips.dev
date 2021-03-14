@@ -4,6 +4,9 @@ date = 2018-03-10
 weight = 310
 in_search_index = true
 
+[taxonomies]
+authors = ["Pavel Moravec", "Jan Čapek"]
+
 [extra]
 bip = 310
 status = "Draft"

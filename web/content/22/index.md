@@ -4,6 +4,9 @@ date = 2012-02-28
 weight = 22
 in_search_index = true
 
+[taxonomies]
+authors = ["Luke Dashjr"]
+
 [extra]
 bip = 22
 status = "Final"

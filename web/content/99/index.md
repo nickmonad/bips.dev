@@ -4,6 +4,9 @@ date = 2015-06-20
 weight = 99
 in_search_index = true
 
+[taxonomies]
+authors = ["Jorge Timón"]
+
 [extra]
 bip = 99
 status = "Rejected"

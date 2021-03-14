@@ -4,6 +4,9 @@ date = 2011-10-28
 weight = 10
 in_search_index = true
 
+[taxonomies]
+authors = ["Alan Reiner"]
+
 [extra]
 bip = 10
 status = "Withdrawn"

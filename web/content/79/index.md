@@ -4,6 +4,9 @@ date = 2018-10-05
 weight = 79
 in_search_index = true
 
+[taxonomies]
+authors = ["Ryan Havar"]
+
 [extra]
 bip = 79
 status = "Replaced"

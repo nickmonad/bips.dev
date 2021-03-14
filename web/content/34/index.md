@@ -4,6 +4,9 @@ date = 2012-07-06
 weight = 34
 in_search_index = true
 
+[taxonomies]
+authors = ["Gavin Andresen"]
+
 [extra]
 bip = 34
 status = "Final"

@@ -4,6 +4,9 @@ date = 2019-03-19
 weight = 197
 in_search_index = true
 
+[taxonomies]
+authors = ["Matthew Black", "Tony Cai"]
+
 [extra]
 bip = 197
 status = "Draft"

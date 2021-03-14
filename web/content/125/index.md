@@ -4,6 +4,9 @@ date = 2015-12-04
 weight = 125
 in_search_index = true
 
+[taxonomies]
+authors = ["David A. Harding", "Peter Todd"]
+
 [extra]
 bip = 125
 status = "Proposed"

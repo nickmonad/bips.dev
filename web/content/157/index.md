@@ -4,6 +4,9 @@ date = 2017-05-24
 weight = 157
 in_search_index = true
 
+[taxonomies]
+authors = ["Olaoluwa Osuntokun", "Alex Akselrod", "Jim Posen"]
+
 [extra]
 bip = 157
 status = "Draft"

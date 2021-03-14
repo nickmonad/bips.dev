@@ -4,6 +4,9 @@ date = 2015-07-21
 weight = 103
 in_search_index = true
 
+[taxonomies]
+authors = ["Pieter Wuille"]
+
 [extra]
 bip = 103
 status = "Withdrawn"

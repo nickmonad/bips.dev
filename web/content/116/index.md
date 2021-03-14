@@ -4,6 +4,9 @@ date = 2017-08-25
 weight = 116
 in_search_index = true
 
+[taxonomies]
+authors = ["Mark Friedenbach", "Kalle Alm", "BtcDrak"]
+
 [extra]
 bip = 116
 status = "Draft"

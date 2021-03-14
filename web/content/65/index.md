@@ -4,6 +4,9 @@ date = 2014-10-01
 weight = 65
 in_search_index = true
 
+[taxonomies]
+authors = ["Peter Todd"]
+
 [extra]
 bip = 65
 status = "Final"

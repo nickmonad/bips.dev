@@ -4,6 +4,9 @@ date = 2017-03-29
 weight = 135
 in_search_index = true
 
+[taxonomies]
+authors = ["Sancho Panza"]
+
 [extra]
 bip = 135
 status = "Rejected"

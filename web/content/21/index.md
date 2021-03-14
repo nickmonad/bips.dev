@@ -4,6 +4,9 @@ date = 2012-01-29
 weight = 21
 in_search_index = true
 
+[taxonomies]
+authors = ["Nils Schneider", "Matt Corallo"]
+
 [extra]
 bip = 21
 status = "Final"

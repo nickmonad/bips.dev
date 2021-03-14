@@ -4,6 +4,9 @@ date = 2017-12-28
 weight = 84
 in_search_index = true
 
+[taxonomies]
+authors = ["Pavol Rusnak"]
+
 [extra]
 bip = 84
 status = "Draft"

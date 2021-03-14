@@ -4,6 +4,9 @@ date = 2015-07-27
 weight = 121
 in_search_index = true
 
+[taxonomies]
+authors = ["Kalle Rosenbaum"]
+
 [extra]
 bip = 121
 status = "Withdrawn"

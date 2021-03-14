@@ -4,6 +4,9 @@ date = 2017-03-27
 weight = 199
 in_search_index = true
 
+[taxonomies]
+authors = ["Sean Bowe", "Daira Hopwood"]
+
 [extra]
 bip = 199
 status = "Draft"

@@ -4,6 +4,9 @@ date = 2016-01-28
 weight = 109
 in_search_index = true
 
+[taxonomies]
+authors = ["Gavin Andresen"]
+
 [extra]
 bip = 109
 status = "Rejected"

@@ -4,6 +4,9 @@ date = 2017-04-14
 weight = 149
 in_search_index = true
 
+[taxonomies]
+authors = ["Shaolin Fry"]
+
 [extra]
 bip = 149
 status = "Withdrawn"

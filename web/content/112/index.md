@@ -4,6 +4,9 @@ date = 2015-08-10
 weight = 112
 in_search_index = true
 
+[taxonomies]
+authors = ["BtcDrak", "Mark Friedenbach", "Eric Lombrozo"]
+
 [extra]
 bip = 112
 status = "Final"

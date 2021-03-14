@@ -4,6 +4,9 @@ date = 2017-05-22
 weight = 91
 in_search_index = true
 
+[taxonomies]
+authors = ["James Hilliard"]
+
 [extra]
 bip = 91
 status = "Final"

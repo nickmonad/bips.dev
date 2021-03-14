@@ -4,6 +4,9 @@ date = 2016-07-27
 weight = 134
 in_search_index = true
 
+[taxonomies]
+authors = ["Tom Zander"]
+
 [extra]
 bip = 134
 status = "Rejected"

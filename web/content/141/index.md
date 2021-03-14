@@ -4,6 +4,9 @@ date = 2015-12-21
 weight = 141
 in_search_index = true
 
+[taxonomies]
+authors = ["Eric Lombrozo", "Johnson Lau", "Pieter Wuille"]
+
 [extra]
 bip = 141
 status = "Final"

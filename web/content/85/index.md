@@ -4,6 +4,9 @@ date = 2020-03-20
 weight = 85
 in_search_index = true
 
+[taxonomies]
+authors = ["Ethan Kosakovsky"]
+
 [extra]
 bip = 85
 status = "Draft"

@@ -4,6 +4,9 @@ date = 2012-05-15
 weight = 33
 in_search_index = true
 
+[taxonomies]
+authors = ["Amir Taaki"]
+
 [extra]
 bip = 33
 status = "Rejected"

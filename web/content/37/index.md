@@ -4,6 +4,9 @@ date = 2012-10-24
 weight = 37
 in_search_index = true
 
+[taxonomies]
+authors = ["Mike Hearn", "Matt Corallo"]
+
 [extra]
 bip = 37
 status = "Final"

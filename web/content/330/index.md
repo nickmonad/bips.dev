@@ -4,6 +4,9 @@ date = 2019-09-25
 weight = 330
 in_search_index = true
 
+[taxonomies]
+authors = ["Gleb Naumenko", "Pieter Wuille"]
+
 [extra]
 bip = 330
 status = "Draft"

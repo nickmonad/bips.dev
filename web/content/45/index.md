@@ -4,6 +4,9 @@ date = 2014-04-25
 weight = 45
 in_search_index = true
 
+[taxonomies]
+authors = ["Manuel Araoz", "Ryan X. Charles", "Matias Alejo Garcia"]
+
 [extra]
 bip = 45
 status = "Proposed"

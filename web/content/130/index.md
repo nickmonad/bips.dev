@@ -4,6 +4,9 @@ date = 2015-05-08
 weight = 130
 in_search_index = true
 
+[taxonomies]
+authors = ["Suhas Daftuar"]
+
 [extra]
 bip = 130
 status = "Proposed"

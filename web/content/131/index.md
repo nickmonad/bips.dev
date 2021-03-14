@@ -4,6 +4,9 @@ date = 2015-11-30
 weight = 131
 in_search_index = true
 
+[taxonomies]
+authors = ["Chris Priest"]
+
 [extra]
 bip = 131
 status = "Rejected"

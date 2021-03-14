@@ -4,6 +4,9 @@ date = 2019-05-01
 weight = 78
 in_search_index = true
 
+[taxonomies]
+authors = ["Nicolas Dorier"]
+
 [extra]
 bip = 78
 status = "Draft"

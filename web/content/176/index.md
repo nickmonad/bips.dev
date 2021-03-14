@@ -4,6 +4,9 @@ date = 2017-12-12
 weight = 176
 in_search_index = true
 
+[taxonomies]
+authors = ["Jimmy Song"]
+
 [extra]
 bip = 176
 status = "Draft"
