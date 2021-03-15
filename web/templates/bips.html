@@ -7,20 +7,52 @@
     <div id="what-is-a-bip" class="box">
         {{ section.content | safe }}
     </div>
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <h5 class="title is-5 mr-2">View BIPs by</h5>
-                <a href="/authors" class="button is-warning is-light mr-2">Authors</a>
-                <a href="/status" class="button is-warning is-light">Status</a>
+
+    <div class="columns is-vcentered">
+        <div class="column is-one-third">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h5 class="title is-5 mr-2">View BIPs by</h5>
+                        <a href="/authors" class="button is-warning is-light mr-2">Authors</a>
+                        <a href="/status" class="button is-warning is-light">Status</a>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="column">
+            <form autocomplete="off" onsubmit="return false;">
+                <input id="search" class="input" type="text" placeholder="Search BIPs" />
+            </form>
+        </div>
     </div>
+
+    <div class="search-results mb-5">
+        <div class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <h5 class="title is-5">Search Results</h5>
+                </div>
+                <div class="level-item">
+                    <button class="button is-info is-outlined is-small" onclick="clearSearch()">Clear</button>
+                </div>
+            </div>
+        </div>
+        <ul class="search-results__items">
+        </ul>
+    </div>
+
     <ul class="list-all-bips">
-      {% for page in section.pages %}
-      <li class="list-bip">
-          <span>{{ page.extra.bip }}</span> <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
-      </li>
-      {% endfor %}
+        {% for page in section.pages %}
+        <li class="list-bip">
+            <span>{{ page.extra.bip }}</span> <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+        </li>
+        {% endfor %}
     </ul>
 {% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript" src="/search_index.en.js"></script>
+<script type="text/javascript" src="/elasticlunr.min.js"></script>
+<script type="text/javascript" src="/search.js"></script>
+{% endblock scripts %}
