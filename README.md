@@ -21,7 +21,7 @@ to convert the mediawiki to HTML, then to markdown, but it doesn't work when enc
 ### Ideas
 
 * Local, full-text search
-* Better taxonomy - list by author, status, etc
+* Visual "mind map" of BIPs and their references.
 
 ## Building
 
