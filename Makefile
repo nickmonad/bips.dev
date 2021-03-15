@@ -1,6 +1,7 @@
 .PHONY: bips
 bips:
 	git submodule init && git submodule update --recursive --remote
+	bash ./web/build/transcode-md.sh
 
 .PHONY: npm
 npm:
