@@ -370,7 +370,7 @@ provides revisions that meaningfully address public criticism of the
 proposal, or to Proposed status if it meets the criteria required as
 described in the previous paragraph.
 
-An Proposed BIP may progress to Final only when specific criteria
+A Proposed BIP may progress to Final only when specific criteria
 reflecting real-world adoption has occurred. This is different for each
 BIP depending on the nature of its proposed changes, which will be
 expanded on below. Evaluation of this status change should be
@@ -656,9 +656,9 @@ the terms of \*either\* license. In other words, the license list is an
 "OR choice", not an "AND also" requirement.
 
 It is also possible to license source code differently from the BIP
-text. A optional License-Code header is placed after the License header.
-Again, each license must be referenced by their respective abbreviation
-given below.
+text. An optional License-Code header is placed after the License
+header. Again, each license must be referenced by their respective
+abbreviation given below.
 
 For example, a preamble specifying the optional License-Code header
 might look like:

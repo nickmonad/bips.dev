@@ -65,7 +65,7 @@ used to derive keychains. As a consequence, a backup of just the BIP32
 root key is sufficient to include all keys derived from it. BIP32 does
 not have a human friendly serialization of the BIP32 root key (or BIP32
 extended keys in general) which makes paper backups or manually
-restoring the key more error-prone. BIP39 was designed solve this
+restoring the key more error-prone. BIP39 was designed to solve this
 problem but rather than serialize the BIP32 root key, it takes some
 entropy, encoded to a "seed mnemonic", which is then hashed to derive
 the BIP39 seed which can be turned into the BIP32 root key. Saving the
@@ -73,30 +73,29 @@ BIP39 mnemonic is enough to reconstruct the entire BIP32 keychain, but a
 BIP32 root key cannot be reversed back to the BIP39 mnemonic.
 
 Most wallets implement BIP39, so on initialization or restoration, the
-user must interact with a BIP39 mnemonic. Most wallets do not support of
-BIP32 extended private keys so each wallet must either share the same
+user must interact with a BIP39 mnemonic. Most wallets do not support
+BIP32 extended private keys, so each wallet must either share the same
 BIP39 mnemonic, or have a separate BIP39 mnemonic entirely. Neither
 scenarios are particularly satisfactory for security reasons. For
 example, some wallets may be inherently less secure like hot wallets on
-smartphones, Join Market servers, Lightning Network nodes. Having
-multiple seeds is far from desirable especially for those who rely on
+smartphones, Join Market servers, or Lightning Network nodes. Having
+multiple seeds is far from desirable, especially for those who rely on
 split key or redundancy backups in different geological locations.
 Adding is necessarily difficult and may result in users being more lazy
-with subsequent keys, such that compromises security or leads to key
-loss.
+with subsequent keys, resulting in compromised security or loss of keys.
 
 There is added complication with wallets that implement other standards,
 or no standards at all. Bitcoin Core wallet uses a WIF as the *hdseed*,
-and yet other wallets use different mnemonic schemes like Electrum to
-derive the BIP32 root key. Other cryptocurrencies like Monero also use a
-different mnemonic scheme entirely.
+and yet other wallets like Electrum use different mnemonic schemes to
+derive the BIP32 root key. Other cryptocurrencies like Monero also use
+an entirely different mnemonic scheme.
 
 Ultimately, all of the mnemonic/seed schemes start with some "initial
 entropy" to derive a mnemonic/seed, and then process the mnemonic into a
 BIP32 key, or private key. We can use BIP32 itself to derive the
 "initial entropy" to then recreate the same mnemonic or seed according
-the specific application standard of the target wallet. We can use a
-BIP44 like categorization to ensure unitform derivation according to the
+to the specific application standard of the target wallet. We can use a
+BIP44-like categorization to ensure uniform derivation according to the
 target application type.
 
 ## Specification
@@ -106,13 +105,13 @@ concerned with how this was derived (e.g. directly or via a mnemonic
 scheme such as BIP39).
 
 For each application that requires its own wallet, a unique private key
-is derived from the BIP32 master root key using fully hardened
+is derived from the BIP32 master root key using a fully hardened
 derivation path. The resulting private key (k) is then processed with
 HMAC-SHA512, where the key is "bip-entropy-from-k", and the message
 payload is the private key k:
 `HMAC-SHA512(key="bip-entropy-from-k", msg=k)`. The result produces 512
 bits of entropy. Each application SHOULD use up to the required number
-of bits necessary for their operation truncating the rest
+of bits necessary for their operation truncating the rest.
 
 The HMAC-SHA512 function is specified in [RFC
 4231](http://tools.ietf.org/html/rfc4231).
@@ -178,7 +177,7 @@ OUTPUT
 -   DERIVED
     KEY=cca20ccb0e9a90feb0912870c3323b24874b0ca3d8018c4b96d0b97c0e82ded0
 -   DERIVED
-    ENTROPY=6bea85e51a05e6dbaf2ccee05097758213807997ba936589cef01c8f19c0079f395a0cd045efa3438677f3ef9ad34c9a68506626c5a17e51ed5e177852ee7fdc
+    ENTROPY=efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7
 
 <!-- -->
 
@@ -203,25 +202,25 @@ OUTPUT
 
 ## Applications
 
-Application number define how entropy will be used post processing. Some
-basic examples follow:
+The Application number defines how entropy will be used post processing.
+Some basic examples follow:
 
 Derivation path uses the format `m/83696968'/{app_no}'/{index}'` where
-*{app\_no}* path for the application, and *{index}* in the index.
+*{app\_no}* is the path for the application, and *{index}* is the index.
 
 ### BIP39
 
 Application number: 39'
 
 Truncate trailing (least significant) bytes of the entropy to the number
-of bits required to map to the relevant word length 128 bits for 12
+of bits required to map to the relevant word length: 128 bits for 12
 words, 256 bits for 24 words.
 
 The derivation path format is:
 `m/83696968'/39'/{language}'/{words}'/{index}'`
 
-Example a BIP39 mnemonic with 12 English words (first index) would have
-the path `m/83696968'/39'/0'/12'/0'` the next key would be
+Example: a BIP39 mnemonic with 12 English words (first index) would have
+the path `m/83696968'/39'/0'/12'/0'`, the next key would be
 `m/83696968'/39'/0'/12'/1'` etc.
 
 Language Table
@@ -417,7 +416,7 @@ SIGNATURE capabilities and loaded into the SIGNATURE capable slot (for
 example where the smart-card has only three slots and the CERTIFY
 capability is required on the same card). In this case, the SIGNATURE
 capable sub-key would be disregarded because the CERTIFY capable key
-serves dual purpose.
+serves a dual purpose.
 
 ## Backwards Compatibility
 
@@ -425,23 +424,22 @@ This specification is not backwards compatible with any other existing
 specification.
 
 This specification relies on BIP32 but is agnostic to how the BIP32 root
-key is derived, as such this standard is allows it to derive wallets
-with initialization schemes like BIP39 or Electrum wallet style
-mnemonics.
+key is derived. As such, this standard is able to derive wallets with
+initialization schemes like BIP39 or Electrum wallet style mnemonics.
 
 ## Discussion
 
 The reason for running the derived key through HMAC-SHA512 and
 truncating the result as necessary is to prevent leakage of the parent
-tree should the derived key (k) be compromized. While the specification
-requires the use of hardended key derivation which would prevent this,
-we cannot enforce hardened derivation, so this method ensures the
-derived entropy is hardened. Also from a semantic point of view, since
-the purpose is to derive entropy and not a private key, we are required
-to transform the child key. This acts in an abundance of caution to ward
-off unwanted side effects should k be used for a dual purpose, including
-as a nonce hash(k), where undesirable and unforeseen interactions could
-occur.
+tree should the derived key (*k*) be compromized. While the
+specification requires the use of hardended key derivation which would
+prevent this, we cannot enforce hardened derivation, so this method
+ensures the derived entropy is hardened. Also, from a semantic point of
+view, since the purpose is to derive entropy and not a private key, we
+are required to transform the child key. This is done out of an
+abundance of caution, in order to ward off unwanted side effects should
+*k* be used for a dual purpose, including as a nonce *hash(k)*, where
+undesirable and unforeseen interactions could occur.
 
 ## Acknowledgements
 
@@ -456,11 +454,11 @@ BIP32, BIP39
 
 \[1\] There is a very small chance that you'll make an invalid key that
 is zero or bigger than the order of the curve. If this occurs, software
-should hard fail (forcing users should iterate to the next index).
+should hard fail (forcing users to iterate to the next index).
 
-From BIP32: &gt; In case parse<sub>256</sub>(I<sub>L</sub>) is 0 or ≥ n,
-the resulting key is invalid, and one should proceed with the next value
-for i. (Note: this has probability lower than 1 in 2<sup>127</sup>.)
+From BIP32: In case parse<sub>256</sub>(I<sub>L</sub>) is 0 or ≥ n, the
+resulting key is invalid, and one should proceed with the next value for
+i. (Note: this has probability lower than 1 in 2<sup>127</sup>.)
 
 ## Copyright
 
