@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}bips.dev - BIP Index{% endblock title %}
+{% block title %}bips.dev{% endblock title %}
 
 {% block content %}
     <img src="bips-dev-header.png" width="750" height="200" />
@@ -21,25 +21,19 @@
             </div>
         </div>
         <div class="column">
-            <form autocomplete="off" onsubmit="return false;">
-                <input id="search" class="input" type="text" placeholder="Search BIPs" />
+            <form id="form-search" autocomplete="off" action="/search" method="GET">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input name="q" id="search" class="input" type="text" placeholder="Search BIPs" />
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-warning">
+                            Search
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
-    </div>
-
-    <div class="search-results mb-5">
-        <div class="level">
-            <div class="level-left">
-                <div class="level-item">
-                    <h5 class="title is-5">Search Results</h5>
-                </div>
-                <div class="level-item">
-                    <button class="button is-info is-outlined is-small" onclick="clearSearch()">Clear</button>
-                </div>
-            </div>
-        </div>
-        <ul class="search-results__items">
-        </ul>
     </div>
 
     <ul class="list-all-bips">
@@ -50,9 +44,3 @@
         {% endfor %}
     </ul>
 {% endblock content %}
-
-{% block scripts %}
-<script type="text/javascript" src="/search_index.en.js"></script>
-<script type="text/javascript" src="/elasticlunr.min.js"></script>
-<script type="text/javascript" src="/search.js"></script>
-{% endblock scripts %}

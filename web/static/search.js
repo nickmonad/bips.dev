@@ -3,21 +3,6 @@
 // Granted under the MIT license.
 //
 
-function debounce(func, wait) {
-    var timeout;
-
-    return function () {
-        var context = this;
-        var args = arguments;
-        clearTimeout(timeout);
-
-        timeout = setTimeout(function () {
-            timeout = null;
-            func.apply(context, args);
-        }, wait);
-    };
-}
-
 // Taken from mdbook
 // The strategy is as follows:
 // First, assign a value to each word in the document:
@@ -156,31 +141,34 @@ function initSearch() {
         }
     };
 
-    var currentTerm = "";
+    // check for search query from url params
+    var params = new URLSearchParams(window.location.search);
+    var query = params.get("q");
+
+    if (query === "") {
+        return;
+    }
+
+    // set input
+    $searchInput.value = query;
+
+    // load search index
     var index = elasticlunr.Index.load(window.searchIndex);
 
-    $searchInput.addEventListener("keyup", debounce(function() {
-        var term = $searchInput.value.trim();
-        if (!index) return;
+    $searchResults.style.display = query === "" ? "none" : "block";
+    $searchResultsItems.innerHTML = "";
 
-        $searchResults.style.display = term === "" ? "none" : "block";
-        $searchResultsItems.innerHTML = "";
+    var results = index.search(query, options);
+    if (results.length === 0) {
+        $searchResults.style.display = "none";
+        return;
+    }
 
-        if (term === "") return;
-
-        var results = index.search(term, options);
-        if (results.length === 0) {
-            $searchResults.style.display = "none";
-            return;
-        }
-
-        currentTerm = term;
-        for (var i = 0; i < Math.min(results.length, MAX_ITEMS); i++) {
-            var item = createListItem();
-            item.innerHTML = formatSearchResultItem(results[i], term.split(" "));
-            $searchResultsItems.appendChild(item);
-        }
-    }, 150));
+    for (var i = 0; i < Math.min(results.length, MAX_ITEMS); i++) {
+        var item = createListItem();
+        item.innerHTML = formatSearchResultItem(results[i], query.split(" "));
+        $searchResultsItems.appendChild(item);
+    }
 }
 
 function clearSearch() {
