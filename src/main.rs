@@ -1,157 +1,74 @@
-use parse_wiki_text as wiki;
-use serde::Serialize;
-use std::collections::HashMap;
-use std::env;
-use std::fs::File;
+#[macro_use]
+extern crate lazy_static;
+
+use crossbeam::channel;
+use crossbeam::sync::WaitGroup;
+use regex::Regex;
 use std::io;
-use std::io::Read;
-use tera;
-use tera::{Context, Tera};
+use std::io::prelude::*;
+use std::thread;
+mod bip;
+
+const WORKERS: usize = 10;
+lazy_static! {
+    static ref BIP_NUMBER: Regex =
+        Regex::new(r"^bips/bip-([0-9]+)\.mediawiki$").expect("error parsing regex");
+}
 
 fn main() -> io::Result<()> {
-    let args: Vec<String> = env::args().collect();
-    let path = &args[1];
-
-    // create tera instance
-    let templater = Templater::new("templates/**/*");
-
-    // read input bip.mediawiki
-    let mut input = File::open(path)?;
-    let mut content = String::new();
-    input.read_to_string(&mut content)?;
-
-    // parse mediawiki content
-    let wikitext = wiki::Configuration::default().parse(&content);
-    let preformatted = wikitext
-        .nodes
+    let stdin = io::stdin();
+    let lines = stdin.lock().lines().collect::<io::Result<Vec<String>>>()?;
+    let bips = lines
         .iter()
-        .find_map(|node| match node {
-            wiki::Node::Preformatted { .. } => Some(node),
-            _ => None,
+        .filter_map(|path| {
+            // parse the bip number from the path
+            // and map into tuple (number, path)
+            BIP_NUMBER
+                .captures(&path)?
+                .get(1)?
+                .as_str()
+                .parse::<u32>()
+                .map_or(None, |n| Some((n, path.clone())))
         })
-        .unwrap();
+        .collect::<Vec<(u32, String)>>();
 
-    let info = BipInfo::from_node(path.to_string(), &preformatted);
-    println!("{}", templater.render(info).unwrap());
+    // Create a bounded channel for worker threads.
+    let (tx, rx) = channel::bounded::<(u32, String)>(WORKERS);
 
-    Ok(())
-}
+    // Setup the worker pool.
+    // This thread pushes work onto the "queue" (channel), and each worker thread reads
+    // one job from the queue. All threads reference the same WaitGroup. This thread will
+    // continue once all jobs have been pushed onto the queue, and the worker threads will
+    // terminate once the channel has been marked as empty and disconnected.
+    let wg = WaitGroup::new();
 
-struct Templater {
-    client: Tera,
-}
+    // Spawn worker threads
+    for _ in 0..WORKERS {
+        let wg = wg.clone();
+        let rx = rx.clone();
 
-impl Templater {
-    fn new(dir: &str) -> Templater {
-        let mut t = Tera::new(dir).unwrap();
-        t.register_filter("dequote", Templater::filter_dequote);
-
-        Templater { client: t }
-    }
-
-    fn filter_dequote(
-        value: &tera::Value,
-        _args: &HashMap<String, tera::Value>,
-    ) -> tera::Result<tera::Value> {
-        match value {
-            tera::Value::String(s) => Ok(tera::Value::String(
-                s.as_str().replace("\'", "").replace("\"", "").to_string(),
-            )),
-            _ => Err(tera::Error::msg("must be applied to string values")),
-        }
-    }
-
-    fn render(&self, bip: BipInfo) -> io::Result<String> {
-        Ok(self
-            .client
-            .render("front-matter.toml", &Context::from_serialize(bip).unwrap())
-            .unwrap())
-    }
-}
-
-#[derive(Debug, Serialize)]
-struct BipInfo {
-    bip: u32,
-    title: String,
-    created: String,
-    github: String,
-    status: Vec<String>,
-    authors: Vec<String>,
-}
-
-impl BipInfo {
-    fn from_node(path: String, node: &wiki::Node) -> BipInfo {
-        let mut info = BipInfo::default();
-
-        if let wiki::Node::Preformatted { nodes, .. } = node {
-            let mut nodes = nodes.iter().peekable();
-            while let Some(node) = nodes.next() {
-                if let wiki::Node::Text { value, .. } = node {
-                    let split = value.trim().splitn(2, ':').collect::<Vec<&str>>();
-                    if split.len() < 2 {
-                        continue;
-                    }
-
-                    let (k, v) = (&split[0][..], split[1].trim());
-                    match k {
-                        "BIP" => info.bip = v.parse::<u32>().unwrap(),
-                        "Title" => info.title = v.to_string(),
-                        "Created" => info.created = v.to_string(),
-                        "Status" => info.status = vec![format!("\"{}\"", v)],
-                        "Author" => {
-                            let mut authors = vec![clean_author(v)];
-                            loop {
-                                if let Some(n) = nodes.peek() {
-                                    if is_new_section(n) {
-                                        break;
-                                    }
-                                }
-
-                                if let Some(n) = nodes.next() {
-                                    if let wiki::Node::Text { value, .. } = n {
-                                        authors.push(clean_author(value))
-                                    }
-                                }
-                            }
-
-                            info.authors = authors;
-                        }
-                        _ => {}
-                    }
+        thread::spawn(move || loop {
+            match rx.recv() {
+                Ok((number, path)) => match bip::process(number, path.as_str()) {
+                    Err(e) => println!("error processing BIP {}: {:?}", number, e),
+                    _ => {}
+                },
+                Err(_) => {
+                    drop(wg);
+                    break;
                 }
             }
-        }
-
-        // apply github link
-        let base = path.split("/").nth(1).unwrap();
-        info.github = format!("https://github.com/bitcoin/bips/blob/master/{}", base);
-
-        info
-    }
-}
-
-impl Default for BipInfo {
-    fn default() -> BipInfo {
-        BipInfo {
-            bip: 0,
-            title: String::from(""),
-            created: String::from(""),
-            github: String::from(""),
-            status: vec![],
-            authors: vec![],
-        }
-    }
-}
-
-fn clean_author(author: &str) -> String {
-    let split = author.trim().splitn(2, '<').collect::<Vec<&str>>();
-    format!("\"{}\"", &split[0][..].trim())
-}
-
-fn is_new_section(node: &wiki::Node) -> bool {
-    if let wiki::Node::Text { value, .. } = node {
-        return value.trim().splitn(2, ':').collect::<Vec<&str>>().len() >= 2;
+        });
     }
 
-    false
+    for bip in bips {
+        tx.send(bip).unwrap();
+    }
+
+    // Signal no more work
+    drop(tx);
+    // Wait for workers to finish in-flight jobs
+    wg.wait();
+
+    Ok(())
 }

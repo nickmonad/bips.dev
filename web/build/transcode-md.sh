@@ -11,20 +11,6 @@ bip_number() {
     fi
 }
 
-transcode() {
-    path=$1
-    base=$(basename $path)
-    bip=$(bip_number $base)
-
-    echo "processing $path -> $bip"
-    mkdir -p web/content/$bip
-    pandoc $path -f mediawiki -t gfm -o web/content/$bip/index.md.pre
-
-    # apply page data to markdown
-    cargo run $path | cat - web/content/$bip/index.md.pre > web/content/$bip/index.md
-    rm web/content/$bip/index.md.pre
-}
-
 move_static() {
     path=$1
     base=$(basename $path)
@@ -38,11 +24,10 @@ move_static() {
 }
 
 export -f bip_number
-export -f transcode
 export -f move_static
 
 find bips -type f -name 'bip*.mediawiki' -maxdepth 1 \
-    | xargs -I{} bash -c 'transcode "{}"'
+    | cargo run --release
 
 find bips -type d -name 'bip-*' -maxdepth 1 \
     | xargs -I{} bash -c 'move_static "{}"'
