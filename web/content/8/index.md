@@ -104,17 +104,16 @@ for a soft fork:
 2.  **bit** should be selected such that no two concurrent softforks use
     the same bit. The bit chosen should not overlap with active usage
     (legitimately or otherwise) for other purposes.
-3.  **startheight** should be set to some block height in the future. It
-    should be rounded up to the next height which begins a retarget
-    period for simplicity. If **minimum\_activation\_height** is not
-    going to be set, then **startheight** should be set to a height when
-    a majority of economic activity is expected to have upgraded to
-    software including the activation parameters. Some allowance should
-    be made for potential release delays. If
-    **minimum\_activation\_height** is going to be set, then
-    **startheight** can be set to be soon after software with parameters
-    is expected to be released. This shifts the time for upgrading from
-    before signaling begins to during the LOCKED\_IN state.
+3.  **startheight** should be set to some block height in the future. If
+    **minimum\_activation\_height** is not going to be set, then
+    **startheight** should be set to a height when a majority of
+    economic activity is expected to have upgraded to software including
+    the activation parameters. Some allowance should be made for
+    potential release delays. If **minimum\_activation\_height** is
+    going to be set, then **startheight** can be set to be soon after
+    software with parameters is expected to be released. This shifts the
+    time for upgrading from before signaling begins to during the
+    LOCKED\_IN state.
 4.  **timeoutheight** should be set to a block height when it is
     considered reasonable to expect the entire economy to have upgraded
     by, probably at least 1 year, or 52416 blocks (26 retarget
@@ -142,7 +141,7 @@ pause in between to detect buggy software.
 
 **startheight**, **timeoutheight**, and **minimum\_activation\_height**
 must be an exact multiple of 2016 (ie, at a retarget boundary), and
-**timeoutheight** must be at least 4096 blocks (2 retarget intervals)
+**timeoutheight** must be at least 4032 blocks (2 retarget intervals)
 after **startheight**.
 
 ### States
