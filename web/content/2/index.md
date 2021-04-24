@@ -14,17 +14,19 @@ status = ["Active"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0002.mediawiki"
 +++
 
-      BIP: 2
-      Title: BIP process, revised
-      Author: Luke Dashjr <luke+bip@dashjr.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0002
-      Status: Active
-      Type: Process
-      Created: 2016-02-03
-      License: BSD-2-Clause
-               OPL
-      Replaces: 1
+``` 
+  BIP: 2
+  Title: BIP process, revised
+  Author: Luke Dashjr <luke+bip@dashjr.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0002
+  Status: Active
+  Type: Process
+  Created: 2016-02-03
+  License: BSD-2-Clause
+           OPL
+  Replaces: 1
+```
 
 ## Abstract
 
@@ -145,7 +147,7 @@ such decisions can't be reversed :).
 ### BIP Editors
 
 The current BIP editor is Luke Dashjr who can be contacted at
-<luke_bipeditor@dashjr.org>.
+[luke\_bipeditor@dashjr.org](mailto:luke_bipeditor@dashjr.org "wikilink").
 
 ### BIP Editor Responsibilities & Workflow
 
@@ -155,17 +157,17 @@ luke\_bipeditor@dashjr.org.
 
 For each new BIP that comes in an editor does the following:
 
--   Read the BIP to check if it is ready: sound and complete. The ideas
+  - Read the BIP to check if it is ready: sound and complete. The ideas
     must make technical sense, even if they don't seem likely to be
     accepted.
--   The title should accurately describe the content.
--   The BIP draft must have been sent to the Bitcoin development mailing
+  - The title should accurately describe the content.
+  - The BIP draft must have been sent to the Bitcoin development mailing
     list for discussion.
--   Motivation and backward compatibility (when applicable) must be
+  - Motivation and backward compatibility (when applicable) must be
     addressed.
--   The defined Layer header must be correctly assigned for the given
+  - The defined Layer header must be correctly assigned for the given
     specification.
--   Licensing terms must be acceptable for BIPs.
+  - Licensing terms must be acceptable for BIPs.
 
 If the BIP isn't ready, the editor will send it back to the author for
 revision, with specific instructions.
@@ -177,15 +179,15 @@ feedback.
 
 The BIP editor will:
 
--   Assign a BIP number in the pull request.
+  - Assign a BIP number in the pull request.
 
-<!-- -->
+<!-- end list -->
 
--   Merge the pull request when it is ready.
+  - Merge the pull request when it is ready.
 
-<!-- -->
+<!-- end list -->
 
--   List the BIP in [README.mediawiki](README.mediawiki "wikilink")
+  - List the BIP in [README.mediawiki](README.mediawiki "wikilink")
 
 The BIP editors are intended to fulfill administrative and editorial
 responsibilities. The BIP editors monitor BIP changes, and update BIP
@@ -199,52 +201,52 @@ BIPs should be written in mediawiki format.
 
 Each BIP should have the following parts:
 
--   Preamble -- Headers containing metadata about the BIP ([see
+  - Preamble -- Headers containing metadata about the BIP ([see
     below](#BIP_header_preamble "wikilink")).
 
-<!-- -->
+<!-- end list -->
 
--   Abstract -- A short (\~200 word) description of the technical issue
+  - Abstract -- A short (\~200 word) description of the technical issue
     being addressed.
 
-<!-- -->
+<!-- end list -->
 
--   Copyright -- The BIP must be explicitly licensed under acceptable
+  - Copyright -- The BIP must be explicitly licensed under acceptable
     copyright terms ([see below](#BIP_licensing "wikilink")).
 
-<!-- -->
+<!-- end list -->
 
--   Specification -- The technical specification should describe the
+  - Specification -- The technical specification should describe the
     syntax and semantics of any new feature. The specification should be
     detailed enough to allow competing, interoperable implementations
     for any of the current Bitcoin platforms.
 
-<!-- -->
+<!-- end list -->
 
--   Motivation -- The motivation is critical for BIPs that want to
+  - Motivation -- The motivation is critical for BIPs that want to
     change the Bitcoin protocol. It should clearly explain why the
     existing protocol is inadequate to address the problem that the BIP
     solves.
 
-<!-- -->
+<!-- end list -->
 
--   Rationale -- The rationale fleshes out the specification by
+  - Rationale -- The rationale fleshes out the specification by
     describing what motivated the design and why particular design
     decisions were made. It should describe alternate designs that were
     considered and related work. The rationale should provide evidence
     of consensus within the community and discuss important objections
     or concerns raised during discussion.
 
-<!-- -->
+<!-- end list -->
 
--   Backwards compatibility -- All BIPs that introduce backwards
+  - Backwards compatibility -- All BIPs that introduce backwards
     incompatibilities must include a section describing these
     incompatibilities and their severity. The BIP must explain how the
     author proposes to deal with these incompatibilities.
 
-<!-- -->
+<!-- end list -->
 
--   Reference implementation -- The reference implementation must be
+  - Reference implementation -- The reference implementation must be
     completed before any BIP is given status "Final", but it need not be
     completed before the BIP is accepted. It is better to finish the
     specification and rationale first and reach consensus on it before
@@ -257,23 +259,25 @@ Each BIP must begin with an RFC 822 style header preamble. The headers
 must appear in the following order. Headers marked with "\*" are
 optional and are described below. All other headers are required.
 
-      BIP: <BIP number, or "?" before being assigned>
-    * Layer: <Consensus (soft fork) | Consensus (hard fork) | Peer Services | API/RPC | Applications>
-      Title: <BIP title; maximum 44 characters>
-      Author: <list of authors' real names and email addrs>
-    * Discussions-To: <email address>
-    * Comments-Summary: <summary tone>
-      Comments-URI: <links to wiki page for comments>
-      Status: <Draft | Active | Proposed | Deferred | Rejected |
-               Withdrawn | Final | Replaced | Obsolete>
-      Type: <Standards Track | Informational | Process>
-      Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
-      License: <abbreviation for approved license(s)>
-    * License-Code: <abbreviation for code under different approved license(s)>
-    * Post-History: <dates of postings to bitcoin mailing list, or link to thread in mailing list archive>
-    * Requires: <BIP number(s)>
-    * Replaces: <BIP number>
-    * Superseded-By: <BIP number>
+``` 
+  BIP: <BIP number, or "?" before being assigned>
+* Layer: <Consensus (soft fork) | Consensus (hard fork) | Peer Services | API/RPC | Applications>
+  Title: <BIP title; maximum 44 characters>
+  Author: <list of authors' real names and email addrs>
+* Discussions-To: <email address>
+* Comments-Summary: <summary tone>
+  Comments-URI: <links to wiki page for comments>
+  Status: <Draft | Active | Proposed | Deferred | Rejected |
+           Withdrawn | Final | Replaced | Obsolete>
+  Type: <Standards Track | Informational | Process>
+  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
+  License: <abbreviation for approved license(s)>
+* License-Code: <abbreviation for code under different approved license(s)>
+* Post-History: <dates of postings to bitcoin mailing list, or link to thread in mailing list archive>
+* Requires: <BIP number(s)>
+* Replaces: <BIP number>
+* Superseded-By: <BIP number>
+```
 
 The Layer header (only for Standards Track BIPs) documents which layer
 of Bitcoin the BIP applies to. See [BIP
@@ -324,19 +328,19 @@ BIP-XXXX-Y.ext, where "XXXX" is the BIP number, "Y" is a serial number
 
 There are three kinds of BIP:
 
--   A Standards Track BIP describes any change that affects most or all
+  - A Standards Track BIP describes any change that affects most or all
     Bitcoin implementations, such as a change to the network protocol, a
     change in block or transaction validity rules, or any change or
     addition that affects the interoperability of applications using
     Bitcoin. Standards Track BIPs consist of two parts, a design
     document and a reference implementation.
--   An Informational BIP describes a Bitcoin design issue, or provides
+  - An Informational BIP describes a Bitcoin design issue, or provides
     general guidelines or information to the Bitcoin community, but does
     not propose a new feature. Informational BIPs do not necessarily
     represent a Bitcoin community consensus or recommendation, so users
     and implementors are free to ignore Informational BIPs or follow
     their advice.
--   A Process BIP describes a process surrounding Bitcoin, or proposes a
+  - A Process BIP describes a process surrounding Bitcoin, or proposes a
     change to (or an event in) a process. Process BIPs are like
     Standards Track BIPs but apply to areas other than the Bitcoin
     protocol itself. They may propose an implementation, but not to
@@ -439,7 +443,7 @@ updated to Final status.
 
 Why is this necessary at all?
 
--   BIP 1 defines an ambiguous criteria for the Status field of BIPs,
+  - BIP 1 defines an ambiguous criteria for the Status field of BIPs,
     which is often a source of confusion. As a result, many BIPs with
     significant real-world use have been left as Draft or Proposed
     status longer than appropriate. By giving objective criteria to
@@ -449,7 +453,7 @@ Why is this necessary at all?
 How is the entire Bitcoin economy defined by people selling
 goods/services and holders?
 
--   For Bitcoin to function as a currency, it must be accepted as
+  - For Bitcoin to function as a currency, it must be accepted as
     payment. Bitcoins have no value if you cannot acquire anything in
     exchange for them. If everyone accepting such payments requires a
     particular set of consensus rules, "bitcoins" are de facto defined
@@ -464,25 +468,25 @@ goods/services and holders?
 
 Why aren't <x> included in the economy?
 
--   Some entities may, to some degree, also be involved in offering
+  - Some entities may, to some degree, also be involved in offering
     goods and/or services in exchange for bitcoins, thus in that
     capacity (but not their capacity as <x>) be involved in the economy.
--   Miners are not included in the economy, because they merely \*rely
+  - Miners are not included in the economy, because they merely \*rely
     on\* others to sell/spend their otherwise-worthless mined produce.
     Therefore, they must accept everyone else's direction in deciding
     the consensus rules.
--   Exchanges are not included in the economy, because they merely
+  - Exchanges are not included in the economy, because they merely
     provide services of connecting the merchants and users who wish to
     trade. Even if all exchanges were to defect from Bitcoin, those
     merchants and users can always trade directly and/or establish their
     own exchanges.
--   Developers are not included in the economy, since they merely write
+  - Developers are not included in the economy, since they merely write
     code, and it is up to others to decide to use that code or not.
 
 But they're doing something important and have invested a lot in
-Bitcoin! Shouldn't they be included in such an important decision?
+Bitcoin\! Shouldn't they be included in such an important decision?
 
--   This BIP does not aim to address what "should" be the basis of
+  - This BIP does not aim to address what "should" be the basis of
     decisions. Such a statement, no matter how perfect in its
     justification, would be futile without some way to force others to
     use it. The BIP process does not aim to be a kind of forceful
@@ -495,9 +499,9 @@ Bitcoin! Shouldn't they be included in such an important decision?
 
 What if a single merchant wishes to block a hard-fork?
 
--   This BIP addresses only the progression of the BIP Status field, not
+  - This BIP addresses only the progression of the BIP Status field, not
     the deployment of the hard-fork (or any other change) itself.
--   Regardless, one shop cannot operate in a vacuum: if they are indeed
+  - Regardless, one shop cannot operate in a vacuum: if they are indeed
     alone, they will soon find themselves no longer selling in exchange
     for bitcoin payments, as nobody else would exist willing to use the
     previous blockchain to pay them. If they are no longer selling, they
@@ -506,13 +510,13 @@ What if a single merchant wishes to block a hard-fork?
 How about a small number of merchants (maybe only two) who sell products
 to each other?
 
--   In this scenario, it would seem the previous Bitcoin is alive and
+  - In this scenario, it would seem the previous Bitcoin is alive and
     working, and that the hard-fork has failed. How to resolve such a
     split is outside the scope of this BIP.
 
 How can economic agreement veto a soft-fork?
 
--   The group of miners is determined by the consensus rules for the
+  - The group of miners is determined by the consensus rules for the
     dynamic-membership multi-party signature (for Bitcoin, the
     proof-of-work algorithm), which can be modified with a hard-fork.
     Thus, if the same conditions required to modify this group are met
@@ -524,14 +528,14 @@ How can economic agreement veto a soft-fork?
 What happens if the economy decides to hard-fork away from a
 controversial soft-fork, more than three months later?
 
--   The controversial soft-fork, in this circumstance, changes from
+  - The controversial soft-fork, in this circumstance, changes from
     Final to Replaced status to reflect the nature of the hard-fork
     replacing the previous (final) soft-fork.
 
 What is the ideal percentage of listening nodes needed to adopt peer
 services proposals?
 
--   This is unknown, and set rather arbitrarily at this time. For a
+  - This is unknown, and set rather arbitrarily at this time. For a
     random selection of peers to have at least one other peer
     implementing the extension, 13% or more would be necessary, but
     nodes could continue to scan the network for such peers with perhaps
@@ -542,15 +546,15 @@ Why is it necessary for at least two software projects to release an
 implementation of API/RPC and application layer BIPs, before they become
 Final?
 
--   If there is only one implementation of a specification, there is no
+  - If there is only one implementation of a specification, there is no
     other program for which a standard interface is used with or needed.
--   Even if there are only two projects rather than more, some standard
+  - Even if there are only two projects rather than more, some standard
     coordination between them exists.
 
 What if a BIP is proposed that only makes sense for a single specific
 project?
 
--   The BIP process exists for standardisation between independent
+  - The BIP process exists for standardisation between independent
     projects. If something only affects one project, it should be done
     through that project's own internal processes, and never be proposed
     as a BIP in the first place.
@@ -596,17 +600,17 @@ the comments. Summary tones may be chosen from the following, but this
 BIP does not intend to cover all possible nuances and other summaries
 may be used as needed:
 
--   No comments yet.
--   Unanimously Recommended for implementation
--   Unanimously Discourage for implementation
--   Mostly Recommended for implementation, with some Discouragement
--   Mostly Discouraged for implementation, with some Recommendation
+  - No comments yet.
+  - Unanimously Recommended for implementation
+  - Unanimously Discourage for implementation
+  - Mostly Recommended for implementation, with some Discouragement
+  - Mostly Discouraged for implementation, with some Recommendation
 
 For example, the preamble to BIP 1 might be updated to include the line:
 
 `   Comments-Summary: No comments yet.`  
-`   Comments-URI: `[`https://github.com/bitcoin/bips/wiki/Comments:BIP-0001`](https://github.com/bitcoin/bips/wiki/Comments:BIP-0001)  
-`                 `[`https://some-other-wiki.org/BIP_1_Comments`](https://some-other-wiki.org/BIP_1_Comments)
+`   Comments-URI: `<https://github.com/bitcoin/bips/wiki/Comments:BIP-0001>  
+`                 `<https://some-other-wiki.org/BIP_1_Comments>
 
 These fields must follow the "Discussions-To" header defined in BIP 1
 (if that header is not present, it should follow the position where it
@@ -620,7 +624,7 @@ BIP, and neither should be directly influencing the other.
 
 What is the purpose of BIP comments?
 
--   Various BIPs have been adopted (the criteria required for "Final"
+  - Various BIPs have been adopted (the criteria required for "Final"
     Status) despite being considered generally inadvisable. Some
     presently regard BIPs as a "good idea" simply by virtue of them
     being assigned a BIP number. Due to the low barrier of entry for
@@ -631,7 +635,7 @@ What is the purpose of BIP comments?
 Will BIP comments be censored or limited to particular
 participants/"experts"?
 
--   Participants should freely refrain from commenting outside of their
+  - Participants should freely refrain from commenting outside of their
     area of knowledge or expertise. However, comments should not be
     censored, and participation should be open to the public.
 
@@ -693,13 +697,13 @@ headers.
 
 #### Recommended licenses
 
--   BSD-2-Clause: [OSI-approved BSD 2-clause
+  - BSD-2-Clause: [OSI-approved BSD 2-clause
     license](https://opensource.org/licenses/BSD-2-Clause)
--   BSD-3-Clause: [OSI-approved BSD 3-clause
+  - BSD-3-Clause: [OSI-approved BSD 3-clause
     license](https://opensource.org/licenses/BSD-3-Clause)
--   CC0-1.0: [Creative Commons CC0 1.0
+  - CC0-1.0: [Creative Commons CC0 1.0
     Universal](https://creativecommons.org/publicdomain/zero/1.0/)
--   GNU-All-Permissive: [GNU All-Permissive
+  - GNU-All-Permissive: [GNU All-Permissive
     License](http://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html)
 
 In addition, it is recommended that literal code included in the BIP be
@@ -710,22 +714,22 @@ with the rest of the BIP text.
 
 #### Not recommended, but acceptable licenses
 
--   Apache-2.0: [Apache License, version
-    2.0](http://www.apache.org/licenses/LICENSE-2.0)
--   BSL-1.0: [Boost Software License, version
-    1.0](http://www.boost.org/LICENSE_1_0.txt)
--   CC-BY-4.0: [Creative Commons Attribution 4.0
+  - Apache-2.0: [Apache License,
+    version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+  - BSL-1.0: [Boost Software License,
+    version 1.0](http://www.boost.org/LICENSE_1_0.txt)
+  - CC-BY-4.0: [Creative Commons Attribution 4.0
     International](https://creativecommons.org/licenses/by/4.0/)
--   CC-BY-SA-4.0: [Creative Commons Attribution-ShareAlike 4.0
+  - CC-BY-SA-4.0: [Creative Commons Attribution-ShareAlike 4.0
     International](https://creativecommons.org/licenses/by-sa/4.0/)
--   MIT: [Expat/MIT/X11 license](https://opensource.org/licenses/MIT)
--   AGPL-3.0+: [GNU Affero General Public License (AGPL), version 3 or
+  - MIT: [Expat/MIT/X11 license](https://opensource.org/licenses/MIT)
+  - AGPL-3.0+: [GNU Affero General Public License (AGPL), version 3 or
     newer](http://www.gnu.org/licenses/agpl-3.0.en.html)
--   FDL-1.3: [GNU Free Documentation License, version
-    1.3](http://www.gnu.org/licenses/fdl-1.3.en.html)
--   GPL-2.0+: [GNU General Public License (GPL), version 2 or
+  - FDL-1.3: [GNU Free Documentation License,
+    version 1.3](http://www.gnu.org/licenses/fdl-1.3.en.html)
+  - GPL-2.0+: [GNU General Public License (GPL), version 2 or
     newer](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
--   LGPL-2.1+: [GNU Lesser General Public License (LGPL), version 2.1 or
+  - LGPL-2.1+: [GNU Lesser General Public License (LGPL), version 2.1 or
     newer](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)
 
 #### Not acceptable licenses
@@ -736,62 +740,62 @@ extends this one to add them. However, BIPs predating the acceptance of
 this BIP were allowed under other terms, and should use these
 abbreviation when no other license is granted:
 
--   OPL: [Open Publication License, version
-    1.0](http://opencontent.org/openpub/)
--   PD: Released into the public domain
+  - OPL: [Open Publication License,
+    version 1.0](http://opencontent.org/openpub/)
+  - PD: Released into the public domain
 
 ### Rationale
 
 BIP 1 allowed the Open Publication License or releasing into the public
 domain; was this insufficient?
 
--   The OPL is generally regarded as obsolete, and not a license
+  - The OPL is generally regarded as obsolete, and not a license
     suitable for new publications.
--   Many are unfamiliar with the OPL terms, and may just prefer to use
+  - Many are unfamiliar with the OPL terms, and may just prefer to use
     the public domain rather than license under uncertain terms.
--   The OPL license terms allowed for the author to prevent publication
+  - The OPL license terms allowed for the author to prevent publication
     and derived works, which was widely considered inappropriate for
     Bitcoin standards.
--   Public domain is not universally recognised as a legitimate action,
+  - Public domain is not universally recognised as a legitimate action,
     thus it is inadvisable.
 
 Why are there software licenses included?
 
--   Some BIPs, especially consensus layer, may include literal code in
+  - Some BIPs, especially consensus layer, may include literal code in
     the BIP itself which may not be available under the exact license
     terms of the BIP.
--   Despite this, not all software licenses would be acceptable for
+  - Despite this, not all software licenses would be acceptable for
     content included in BIPs.
 
 Why is Public Domain no longer acceptable for new BIPs?
 
--   In some jurisdictions, public domain is not recognised as a
+  - In some jurisdictions, public domain is not recognised as a
     legitimate legal action, leaving the BIP simply copyrighted with no
     redistribution or modification allowed at all.
 
 ## Changes from BIP 1
 
--   Acceptable licenses are entirely rechosen, allowing a wide variety
+  - Acceptable licenses are entirely rechosen, allowing a wide variety
     of open licenses, while prohibiting the problematic older choices.
--   Accepted Status has been renamed to Proposed.
--   An implementation is now required (when applicable) before BIPs can
+  - Accepted Status has been renamed to Proposed.
+  - An implementation is now required (when applicable) before BIPs can
     proceed to Proposed Status.
--   BIP Comments are newly introduced.
--   The License preamble headers have been added.
--   The Layer header is included from BIP 123.
--   Non-image auxiliary files are permitted in the bip-XXXX
+  - BIP Comments are newly introduced.
+  - The License preamble headers have been added.
+  - The Layer header is included from BIP 123.
+  - Non-image auxiliary files are permitted in the bip-XXXX
     subdirectory.
--   Email addresses are now required for authors.
--   The Post-History header may be provided as a link instead of a
+  - Email addresses are now required for authors.
+  - The Post-History header may be provided as a link instead of a
     simple date.
--   Markdown format is no longer permitted for BIPs.
--   The Resolution header has been dropped, as it is not applicable to a
+  - Markdown format is no longer permitted for BIPs.
+  - The Resolution header has been dropped, as it is not applicable to a
     decentralised system where no authority exists to make final
     decisions.
 
 ## See Also
 
--   [BIP 1: BIP Purpose and Guidelines](bip-0001.mediawiki "wikilink")
--   [BIP 123: BIP Classification](bip-0123.mediawiki "wikilink")
--   [RFC 7282: On Consensus and Humming in the
+  - [BIP 1: BIP Purpose and Guidelines](bip-0001.mediawiki "wikilink")
+  - [BIP 123: BIP Classification](bip-0123.mediawiki "wikilink")
+  - [RFC 7282: On Consensus and Humming in the
     IETF](https://tools.ietf.org/html/rfc7282)

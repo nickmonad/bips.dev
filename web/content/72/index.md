@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0072.mediawiki"
 +++
 
-      BIP: 72
-      Layer: Applications
-      Title: bitcoin: uri extensions for Payment Protocol
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0072
-      Status: Final
-      Type: Standards Track
-      Created: 2013-07-29
+``` 
+  BIP: 72
+  Layer: Applications
+  Title: bitcoin: uri extensions for Payment Protocol
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0072
+  Status: Final
+  Type: Standards Track
+  Created: 2013-07-29
+```
 
 ## Abstract
 

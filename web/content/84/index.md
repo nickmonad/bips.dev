@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki"
 +++
 
-      BIP: 84
-      Layer: Applications
-      Title: Derivation scheme for P2WPKH based accounts
-      Author: Pavol Rusnak <stick@satoshilabs.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0084
-      Status: Draft
-      Type: Informational
-      Created: 2017-12-28
-      License: CC0-1.0
+``` 
+  BIP: 84
+  Layer: Applications
+  Title: Derivation scheme for P2WPKH based accounts
+  Author: Pavol Rusnak <stick@satoshilabs.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0084
+  Status: Draft
+  Type: Informational
+  Created: 2017-12-28
+  License: CC0-1.0
+```
 
 ## Abstract
 
@@ -94,40 +96,42 @@ at all and the user will notice that something is wrong.
 
 ## Test vectors
 
-      mnemonic = abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
-      rootpriv = zprvAWgYBBk7JR8Gjrh4UJQ2uJdG1r3WNRRfURiABBE3RvMXYSrRJL62XuezvGdPvG6GFBZduosCc1YP5wixPox7zhZLfiUm8aunE96BBa4Kei5
-      rootpub  = zpub6jftahH18ngZxLmXaKw3GSZzZsszmt9WqedkyZdezFtWRFBZqsQH5hyUmb4pCEeZGmVfQuP5bedXTB8is6fTv19U1GQRyQUKQGUTzyHACMF
+``` 
+  mnemonic = abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+  rootpriv = zprvAWgYBBk7JR8Gjrh4UJQ2uJdG1r3WNRRfURiABBE3RvMXYSrRJL62XuezvGdPvG6GFBZduosCc1YP5wixPox7zhZLfiUm8aunE96BBa4Kei5
+  rootpub  = zpub6jftahH18ngZxLmXaKw3GSZzZsszmt9WqedkyZdezFtWRFBZqsQH5hyUmb4pCEeZGmVfQuP5bedXTB8is6fTv19U1GQRyQUKQGUTzyHACMF
 
-      // Account 0, root = m/84'/0'/0'
-      xpriv = zprvAdG4iTXWBoARxkkzNpNh8r6Qag3irQB8PzEMkAFeTRXxHpbF9z4QgEvBRmfvqWvGp42t42nvgGpNgYSJA9iefm1yYNZKEm7z6qUWCroSQnE
-      xpub  = zpub6rFR7y4Q2AijBEqTUquhVz398htDFrtymD9xYYfG1m4wAcvPhXNfE3EfH1r1ADqtfSdVCToUG868RvUUkgDKf31mGDtKsAYz2oz2AGutZYs
+  // Account 0, root = m/84'/0'/0'
+  xpriv = zprvAdG4iTXWBoARxkkzNpNh8r6Qag3irQB8PzEMkAFeTRXxHpbF9z4QgEvBRmfvqWvGp42t42nvgGpNgYSJA9iefm1yYNZKEm7z6qUWCroSQnE
+  xpub  = zpub6rFR7y4Q2AijBEqTUquhVz398htDFrtymD9xYYfG1m4wAcvPhXNfE3EfH1r1ADqtfSdVCToUG868RvUUkgDKf31mGDtKsAYz2oz2AGutZYs
 
-      // Account 0, first receiving address = m/84'/0'/0'/0/0
-      privkey = KyZpNDKnfs94vbrwhJneDi77V6jF64PWPF8x5cdJb8ifgg2DUc9d
-      pubkey  = 0330d54fd0dd420a6e5f8d3624f5f3482cae350f79d5f0753bf5beef9c2d91af3c
-      address = bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu
+  // Account 0, first receiving address = m/84'/0'/0'/0/0
+  privkey = KyZpNDKnfs94vbrwhJneDi77V6jF64PWPF8x5cdJb8ifgg2DUc9d
+  pubkey  = 0330d54fd0dd420a6e5f8d3624f5f3482cae350f79d5f0753bf5beef9c2d91af3c
+  address = bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu
 
-      // Account 0, second receiving address = m/84'/0'/0'/0/1
-      privkey = Kxpf5b8p3qX56DKEe5NqWbNUP9MnqoRFzZwHRtsFqhzuvUJsYZCy
-      pubkey  = 03e775fd51f0dfb8cd865d9ff1cca2a158cf651fe997fdc9fee9c1d3b5e995ea77
-      address = bc1qnjg0jd8228aq7egyzacy8cys3knf9xvrerkf9g
+  // Account 0, second receiving address = m/84'/0'/0'/0/1
+  privkey = Kxpf5b8p3qX56DKEe5NqWbNUP9MnqoRFzZwHRtsFqhzuvUJsYZCy
+  pubkey  = 03e775fd51f0dfb8cd865d9ff1cca2a158cf651fe997fdc9fee9c1d3b5e995ea77
+  address = bc1qnjg0jd8228aq7egyzacy8cys3knf9xvrerkf9g
 
-      // Account 0, first change address = m/84'/0'/0'/1/0
-      privkey = KxuoxufJL5csa1Wieb2kp29VNdn92Us8CoaUG3aGtPtcF3AzeXvF
-      pubkey  = 03025324888e429ab8e3dbaf1f7802648b9cd01e9b418485c5fa4c1b9b5700e1a6
-      address = bc1q8c6fshw2dlwun7ekn9qwf37cu2rn755upcp6el
+  // Account 0, first change address = m/84'/0'/0'/1/0
+  privkey = KxuoxufJL5csa1Wieb2kp29VNdn92Us8CoaUG3aGtPtcF3AzeXvF
+  pubkey  = 03025324888e429ab8e3dbaf1f7802648b9cd01e9b418485c5fa4c1b9b5700e1a6
+  address = bc1q8c6fshw2dlwun7ekn9qwf37cu2rn755upcp6el
+```
 
 ## Reference
 
--   [BIP32 - Hierarchical Deterministic
+  - [BIP32 - Hierarchical Deterministic
     Wallets](bip-0032.mediawiki "wikilink")
--   [BIP43 - Purpose Field for Deterministic
+  - [BIP43 - Purpose Field for Deterministic
     Wallets](bip-0043.mediawiki "wikilink")
--   [BIP44 - Multi-Account Hierarchy for Deterministic
+  - [BIP44 - Multi-Account Hierarchy for Deterministic
     Wallets](bip-0044.mediawiki "wikilink")
--   [BIP49 - Derivation scheme for P2WPKH-nested-in-P2SH based
+  - [BIP49 - Derivation scheme for P2WPKH-nested-in-P2SH based
     accounts](bip-0049.mediawiki "wikilink")
--   [BIP141 - Segregated Witness (Consensus
+  - [BIP141 - Segregated Witness (Consensus
     layer)](bip-0141.mediawiki "wikilink")
--   [BIP173 - Base32 address format for native v0-16 witness
+  - [BIP173 - Base32 address format for native v0-16 witness
     outputs](bip-0173.mediawiki "wikilink")

@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki"
 +++
 
-      BIP: 16
-      Layer: Consensus (soft fork)
-      Title: Pay to Script Hash
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0016
-      Status: Final
-      Type: Standards Track
-      Created: 2012-01-03
+``` 
+  BIP: 16
+  Layer: Consensus (soft fork)
+  Title: Pay to Script Hash
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0016
+  Status: Final
+  Type: Standards Track
+  Created: 2012-01-03
+```
 
 ## Abstract
 
@@ -73,9 +75,9 @@ considering them for inclusion in a new block are as follows:
     deserialized script as the scriptPubKey.
 
 These new rules should only be applied when validating transactions in
-blocks with timestamps &gt;= 1333238400 (Apr 1 2012) [1]. There are
+blocks with timestamps \>= 1333238400 (Apr 1 2012) \[1\]. There are
 transactions earlier than 1333238400 in the block chain that fail these
-new validation rules. [2]. Older transactions must be validated under
+new validation rules. \[2\]. Older transactions must be validated under
 the old rules. (see the Backwards Compatibility section for details).
 
 For example, the scriptPubKey and corresponding scriptSig for a
@@ -97,11 +99,11 @@ maximum number allowed per block (20,000) as follows:
 
 Examples:
 
-+3 signature operations:
+\+3 signature operations:
 
 `   {2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG}`
 
-+22 signature operations
+\+22 signature operations
 
 `   {OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF}`
 
@@ -166,7 +168,7 @@ support this BIP, but will do no other validation.
 Avoiding a block-chain split by malicious pay-to-script transactions
 requires careful handling of one case:
 
--   A pay-to-script-hash transaction that is invalid for new
+  - A pay-to-script-hash transaction that is invalid for new
     clients/miners but valid for old clients/miners.
 
 To gracefully upgrade and ensure no long-lasting block-chain split
@@ -197,7 +199,7 @@ As a consequence of the requirement for backwards compatibility the
 serialized script is itself subject to the same rules as any other
 PUSHDATA operation, including the rule that no data greater than 520
 bytes may be pushed to the stack. Thus it is not possible to spend a
-P2SH output if the redemption script it refers to is &gt;520 bytes in
+P2SH output if the redemption script it refers to is \>520 bytes in
 length. For instance while the OP\_CHECKMULTISIG opcode can itself
 accept up to 20 pubkeys, with 33-byte compressed pubkeys it is only
 possible to spend a P2SH output requiring a maximum of 15 pubkeys to
@@ -209,19 +211,17 @@ redeem: 3 bytes + 15 pubkeys \* 34 bytes/pubkey = 513 bytes.
 
 ## See Also
 
--   <https://bitcointalk.org/index.php?topic=46538>
--   The [Address format for Pay to Script Hash
+  - <https://bitcointalk.org/index.php?topic=46538>
+  - The [Address format for Pay to Script Hash
     BIP](bip-0013.mediawiki "wikilink")
--   M-of-N Multisignature Transactions [BIP
+  - M-of-N Multisignature Transactions [BIP
     11](bip-0011.mediawiki "wikilink")
--   [Quality Assurance test checklist](bip-0016/qa.mediawiki "wikilink")
+  - [Quality Assurance test checklist](bip-0016/qa.mediawiki "wikilink")
 
 ## References
 
 <references>
 
-[1] [Remove -bip16 and -paytoscripthashtime command-line
-arguments](https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff)
-
-[2] [Transaction
-6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192](http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192)
+1.  [Remove -bip16 and -paytoscripthashtime command-line
+    arguments](https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff)
+2.  [Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192](http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192)

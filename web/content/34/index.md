@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki"
 +++
 
-      BIP: 34
-      Layer: Consensus (soft fork)
-      Title: Block v2, Height in Coinbase
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0034
-      Status: Final
-      Type: Standards Track
-      Created: 2012-07-06
+``` 
+  BIP: 34
+  Layer: Consensus (soft fork)
+  Title: Block v2, Height in Coinbase
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0034
+  Status: Final
+  Type: Standards Track
+  Created: 2012-07-06
+```
 
 ## Abstract
 

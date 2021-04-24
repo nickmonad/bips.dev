@@ -14,17 +14,19 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki"
 +++
 
-      BIP: 37
-      Layer: Peer Services
-      Title: Connection Bloom filtering
-      Author: Mike Hearn <hearn@google.com>
-              Matt Corallo <bip37@bluematt.me>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0037
-      Status: Final
-      Type: Standards Track
-      Created: 2012-10-24
-      License: PD
+``` 
+  BIP: 37
+  Layer: Peer Services
+  Title: Connection Bloom filtering
+  Author: Mike Hearn <hearn@google.com>
+          Matt Corallo <bip37@bluematt.me>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0037
+  Status: Final
+  Type: Standards Track
+  Created: 2012-10-24
+  License: PD
+```
 
 ## Abstract
 
@@ -69,7 +71,7 @@ The most obvious way to implement the stated goal would be for clients
 to upload lists of their keys to the remote node. We take a more complex
 approach for the following reasons:
 
--   Privacy: Because Bloom filters are probabilistic, with the false
+  - Privacy: Because Bloom filters are probabilistic, with the false
     positive rate chosen by the client, nodes can trade off precision vs
     bandwidth usage. A node with access to lots of bandwidth may choose
     to have a high FP rate, meaning the remote peer cannot accurately
@@ -78,7 +80,7 @@ approach for the following reasons:
     meaning that they only get sent transactions actually relevant to
     their wallet, but remote peers may be able to correlate transactions
     with IP addresses (and each other).
--   Bloom filters are compact and testing membership in them is fast.
+  - Bloom filters are compact and testing membership in them is fast.
     This results in satisfying performance characteristics with minimal
     risk of opening up potential for DoS attacks.
 
@@ -88,10 +90,10 @@ approach for the following reasons:
 
 We start by adding three new messages to the protocol:
 
--   `filterload`, which sets the current Bloom filter on the connection
--   `filteradd`, which adds the given data element to the connections
+  - `filterload`, which sets the current Bloom filter on the connection
+  - `filteradd`, which adds the given data element to the connections
     current filter without requiring a completely new one to be set
--   `filterclear`, which deletes the current filter and goes back to
+  - `filterclear`, which deletes the current filter and goes back to
     regular pre-BIP37 usage.
 
 Note that there is no filterremove command because by their nature,
@@ -102,7 +104,7 @@ scratch.
 The `filterload` command is defined as follows:
 
 | Field Size | Description | Data type    | Comments                                                                                                  |
-|------------|-------------|--------------|-----------------------------------------------------------------------------------------------------------|
+| ---------- | ----------- | ------------ | --------------------------------------------------------------------------------------------------------- |
 | ?          | filter      | uint8\_t\[\] | The filter itself is simply a bit field of arbitrary byte-aligned size. The maximum size is 36,000 bytes. |
 | 4          | nHashFuncs  | uint32\_t    | The number of hash functions to use in this filter. The maximum value allowed in this field is 50.        |
 | 4          | nTweak      | uint32\_t    | A random value to add to the seed value in the hash function used by the bloom filter.                    |
@@ -120,7 +122,7 @@ algorithm.
 The `filteradd` command is defined as follows:
 
 | Field Size | Description | Data type    | Comments                                       |
-|------------|-------------|--------------|------------------------------------------------|
+| ---------- | ----------- | ------------ | ---------------------------------------------- |
 | ?          | data        | uint8\_t\[\] | The data element to add to the current filter. |
 
 The data field must be smaller than or equal to 520 bytes in size (the
@@ -141,11 +143,11 @@ filtered block is defined by the `merkleblock` message and is defined
 like this:
 
 | Field Size | Description         | Data type   | Comments                                                                                               |
-|------------|---------------------|-------------|--------------------------------------------------------------------------------------------------------|
+| ---------- | ------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
 | 4          | version             | uint32\_t   | Block version information, based upon the software version creating this block                         |
 | 32         | prev\_block         | char\[32\]  | The hash value of the previous block this particular block references                                  |
 | 32         | merkle\_root        | char\[32\]  | The reference to a Merkle tree collection which is a hash of all transactions related to this block    |
-| 4          | timestamp           | uint32\_t   | A timestamp recording when this block was created (Limited to 2106!)                                   |
+| 4          | timestamp           | uint32\_t   | A timestamp recording when this block was created (Limited to 2106\!)                                  |
 | 4          | bits                | uint32\_t   | The calculated difficulty target being used for this block                                             |
 | 4          | nonce               | uint32\_t   | The nonce used to generate this block… to allow variations of the header and compute different hashes  |
 | 4          | total\_transactions | uint32\_t   | Number of transactions in the block (including unmatched ones)                                         |
@@ -167,7 +169,7 @@ omission is still possible.
 The `version` command is extended with a new field:
 
 | Field Size | Description | Data type | Comments                                                                                                                                                                   |
-|------------|-------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------- | ----------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1 byte     | fRelay      | bool      | If false then broadcast transactions will not be announced until a filter{load,add,clear} command is received. If missing or true, no change in protocol behaviour occurs. |
 
 SPV clients that wish to use Bloom filtering would normally set fRelay
@@ -247,12 +249,12 @@ pause between the node processing the first and second blocks.
 The nFlags field of the filter controls the nodes precise update
 behaviour and is a bit field.
 
--   `BLOOM_UPDATE_NONE (0)` means the filter is not adjusted when a
+  - `BLOOM_UPDATE_NONE (0)` means the filter is not adjusted when a
     match is found.
--   `BLOOM_UPDATE_ALL (1)` means if the filter matches any data element
+  - `BLOOM_UPDATE_ALL (1)` means if the filter matches any data element
     in a scriptPubKey the outpoint is serialized and inserted into the
     filter.
--   `BLOOM_UPDATE_P2PUBKEY_ONLY (2)` means the outpoint is inserted into
+  - `BLOOM_UPDATE_P2PUBKEY_ONLY (2)` means the outpoint is inserted into
     the filter only if a data element in the scriptPubKey is matched,
     and that script is of the standard "pay to pubkey" or "pay to
     multisig" forms.
@@ -287,20 +289,20 @@ proof is much smaller than the size of the original block.
 
 #### Constructing a partial merkle tree object
 
--   Traverse the merkle tree from the root down, and for each
+  - Traverse the merkle tree from the root down, and for each
     encountered node:
-    -   Check whether this node corresponds to a leaf node (transaction)
+      - Check whether this node corresponds to a leaf node (transaction)
         that is to be included OR any parent thereof:
-        -   If so, append a '1' bit to the flag bits
-        -   Otherwise, append a '0' bit.
-    -   Check whether this node is a internal node (non-leaf) AND is the
+          - If so, append a '1' bit to the flag bits
+          - Otherwise, append a '0' bit.
+      - Check whether this node is a internal node (non-leaf) AND is the
         parent of an included leaf node:
-        -   If so:
-            -   Descend into its left child node, and process the
+          - If so:
+              - Descend into its left child node, and process the
                 subtree beneath it entirely (depth-first).
-            -   If this node has a right child node too, descend into it
+              - If this node has a right child node too, descend into it
                 as well.
-        -   Otherwise: append this node's hash to the hash list.
+          - Otherwise: append this node's hash to the hash list.
 
 #### Parsing a partial merkle tree object
 
@@ -308,32 +310,32 @@ As the partial block message contains the number of transactions in the
 entire block, the shape of the merkle tree is known before hand. Again,
 traverse this tree, computing traversed node's hashes along the way:
 
--   Read a bit from the flag bit list:
-    -   If it is '0':
-        -   Read a hash from the hashes list, and return it as this
+  - Read a bit from the flag bit list:
+      - If it is '0':
+          - Read a hash from the hashes list, and return it as this
             node's hash.
-    -   If it is '1' and this is a leaf node:
-        -   Read a hash from the hashes list, store it as a matched
+      - If it is '1' and this is a leaf node:
+          - Read a hash from the hashes list, store it as a matched
             txid, and return it as this node's hash.
-    -   If it is '1' and this is an internal node:
-        -   Descend into its left child tree, and store its computed
+      - If it is '1' and this is an internal node:
+          - Descend into its left child tree, and store its computed
             hash as L.
-        -   If this node has a right child as well:
-            -   Descend into its right child, and store its computed
+          - If this node has a right child as well:
+              - Descend into its right child, and store its computed
                 hash as R.
-            -   If L == R, the partial merkle tree object is invalid.
-            -   Return Hash(L \|\| R).
-        -   If this node has no right child, return Hash(L \|\| L).
+              - If L == R, the partial merkle tree object is invalid.
+              - Return Hash(L || R).
+          - If this node has no right child, return Hash(L || L).
 
 The partial merkle tree object is only valid if:
 
--   All hashes in the hash list were consumed and no more.
--   All bits in the flag bits list were consumed (except padding to make
+  - All hashes in the hash list were consumed and no more.
+  - All bits in the flag bits list were consumed (except padding to make
     it into a full byte), and no more.
--   The hash computed for the root node matches the block header's
+  - The hash computed for the root node matches the block header's
     merkle root.
--   The block header is valid, and matches its claimed proof of work.
--   In two-child nodes, the hash of the left and right branches was
+  - The block header is valid, and matches its claimed proof of work.
+  - In two-child nodes, the hash of the left and right branches was
     never equal.
 
 ### Bloom filter format
@@ -359,11 +361,11 @@ Let N be the number of elements you wish to insert into the set and P be
 the probability of a false positive, where 1.0 is "match everything" and
 zero is unachievable.
 
-The size S of the filter in bytes is given by
-`(-1 / pow(log(2), 2) * N * log(P)) / 8`. Of course you must ensure it
-does not go over the maximum size (36,000: selected as it represents a
-filter of 20,000 items with false positive rate of &lt; 0.1% or 10,000
-items and a false positive rate of &lt; 0.0001%).
+The size S of the filter in bytes is given by `(-1 / pow(log(2), 2) * N
+* log(P)) / 8`. Of course you must ensure it does not go over the
+maximum size (36,000: selected as it represents a filter of 20,000 items
+with false positive rate of \< 0.1% or 10,000 items and a false positive
+rate of \< 0.0001%).
 
 The number of hash functions required is given by `S * 8 / N * log(2)`.
 

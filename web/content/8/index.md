@@ -14,17 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0008.mediawiki"
 +++
 
-      BIP: 8
-      Title: Version bits with lock-in by height
-      Author: Shaolin Fry <shaolinfry@protonmail.ch>
-              Luke Dashjr <luke+bip@dashjr.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0008
-      Status: Draft
-      Type: Informational
-      Created: 2017-02-01
-      License: BSD-3-Clause
-               CC0-1.0
+``` 
+  BIP: 8
+  Title: Version bits with lock-in by height
+  Author: Shaolin Fry <shaolinfry@protonmail.ch>
+          Luke Dashjr <luke+bip@dashjr.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0008
+  Status: Draft
+  Type: Informational
+  Created: 2017-02-01
+  License: BSD-3-Clause
+           CC0-1.0
+```
 
 ## Abstract
 
@@ -168,7 +170,7 @@ possible states are:
 
 The nVersion block header field is to be interpreted as a 32-bit
 little-endian integer (as present), and bits are selected within this
-integer as values (1 &lt;&lt; N) where N is the bit number.
+integer as values (1 \<\< N) where N is the bit number.
 
 Blocks in the STARTED state get an nVersion whose bit position bit is
 set to 1. The top 3 bits of such blocks must be 001, so the range of
@@ -345,7 +347,7 @@ to preferentially peer with each other.
 ### Warning mechanism
 
 To support upgrade warnings, an extra "unknown upgrade" is tracked,
-using the "implicit bit" mask = (block.nVersion & \~expectedVersion) !=
+using the "implicit bit" mask = (block.nVersion & \~expectedVersion) \!=
 0. Mask will be non-zero whenever an unexpected bit is set in nVersion.
 Whenever LOCKED\_IN for the unknown upgrade is detected, the software
 should warn loudly about the upcoming soft fork. It should warn even
@@ -357,14 +359,14 @@ in the ACTIVE state).
 The template request Object is extended to include a new item:
 
 | template request |
-|------------------|
+| ---------------- |
 | Key              |
 | rules            |
 
 The template Object is also extended:
 
 | template    |
-|-------------|
+| ----------- |
 | Key         |
 | rules       |
 | vbavailable |
@@ -381,8 +383,8 @@ for deployments in MUST\_SIGNAL state, to ensure blocks produced are
 valid.
 
 Softfork deployment names listed in "rules" or as keys in "vbavailable"
-may be prefixed by a '!' character. Without this prefix, GBT clients may
-assume the rule will not impact usage of the template as-is; typical
+may be prefixed by a '\!' character. Without this prefix, GBT clients
+may assume the rule will not impact usage of the template as-is; typical
 examples of this would be when previously valid transactions cease to be
 valid, such as BIPs 16, 65, 66, 68, 112, and 113. If a client does not
 understand a rule without the prefix, it may use it unmodified for
@@ -391,7 +393,7 @@ subtle change to the block structure or generation transaction; examples
 of this would be BIP 34 (because it modifies coinbase construction) and
 141 (since it modifies the txid hashing and adds a commitment to the
 generation transaction). A client that does not understand a rule
-prefixed by '!' must not attempt to process the template, and must not
+prefixed by '\!' must not attempt to process the template, and must not
 attempt to use it for mining even unmodified.
 
 ### Reference implementation
@@ -400,9 +402,9 @@ attempt to use it for mining even unmodified.
 
 ## Contrasted with BIP 9
 
--   The **lockinontimeout** flag is added, providing a way to guarantee
+  - The **lockinontimeout** flag is added, providing a way to guarantee
     transition to LOCKED\_IN.
--   Block heights are used for the deployment monotonic clock, rather
+  - Block heights are used for the deployment monotonic clock, rather
     than median-time-past.
 
 ## Backwards compatibility

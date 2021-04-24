@@ -14,18 +14,20 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0197.mediawiki"
 +++
 
-      BIP: 197
-      Layer: Applications
-      Title: Hashed Time-Locked Collateral Contract
-      Author: Matthew Black <matthew@atomicloans.io>
-              Tony Cai <tony@atomicloans.io>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0197
-      Status: Draft
-      Type: Standards Track
-      Created: 2019-03-19
-      License: BSD-3-Clause
-               CC0-1.0
+``` 
+  BIP: 197
+  Layer: Applications
+  Title: Hashed Time-Locked Collateral Contract
+  Author: Matthew Black <matthew@atomicloans.io>
+          Tony Cai <tony@atomicloans.io>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0197
+  Status: Draft
+  Type: Standards Track
+  Created: 2019-03-19
+  License: BSD-3-Clause
+           CC0-1.0
+```
 
 ## Abstract
 
@@ -94,7 +96,7 @@ OP\_CHECKLOCKTIMEVERIFY.
 
 ### Interaction
 
--   Alice (the "borrower") and Bob (the "lender") exchange public keys
+  - Alice (the "borrower") and Bob (the "lender") exchange public keys
     as well as two secret hashes A1, A2 created by Alice and three
     hashes B1, B2, B3 created by Bob. They then mutually agree upon a
     timeout threshold for the Loan Period, Liquidation Period, and
@@ -103,39 +105,39 @@ OP\_CHECKLOCKTIMEVERIFY.
     constructs the script for the blockchain on which the loan principal
     will be issued - the principal blockchain.
 
-<!-- -->
+<!-- end list -->
 
--   Bob sends loan principal funds to the loan script on the principal
+  - Bob sends loan principal funds to the loan script on the principal
     blockchain
 
-<!-- -->
+<!-- end list -->
 
--   Alice sends funds to the Refundable Collateral P2SH address and the
+  - Alice sends funds to the Refundable Collateral P2SH address and the
     Seizable Collateral P2SH address. The amount of funds she sends to
     the two addresses will be determined beforehand off-chain between
     Alice and Bob.
 
-<!-- -->
+<!-- end list -->
 
--   Either
-    -   Bob accepts locking of collateral by Alice and reveals B1,
+  - Either
+      - Bob accepts locking of collateral by Alice and reveals B1,
         allowing Alice to withdraw the loan amount on the principal
         blockchain.
-    -   Bob doesn't accept locking of collateral by Alice, and recovers
+      - Bob doesn't accept locking of collateral by Alice, and recovers
         the funds after the approve expiration while revealing B2, which
         allows Alice to refund the Refundable and Seizable collateral.
 
-<!-- -->
+<!-- end list -->
 
--   -   If Bob accepts the locking of collateral by Alice
+  -   - If Bob accepts the locking of collateral by Alice
 
-<!-- -->
+<!-- end list -->
 
--   -   Either
-        -   Alice repays the loan by the end of the Loan Period and Bob
+  -   - Either
+          - Alice repays the loan by the end of the Loan Period and Bob
             reveals the secret to Alice by revealing it in the loan
             repayment acceptance transaction; OR
-        -   Alice defaults on the loan and Alice and Bob both opt for
+          - Alice defaults on the loan and Alice and Bob both opt for
             collateral liquidation, where any third-party is able to bid
             on the collateral. The winning bidder, Charlie, will
             subsequently receive the liquidated collateral by way of an
@@ -145,11 +147,11 @@ OP\_CHECKLOCKTIMEVERIFY.
             the loan currency, put forth by Charlie as part of his bid).
             This is done by both Alice and Bob signing a multisig and
             revealing A2 and B2; OR
-        -   Alice defaults on the loan and at least one of Alice or Bob
+          - Alice defaults on the loan and at least one of Alice or Bob
             opts out of collateral liquidation, then Alice recovers the
             Refundable Collateral funds and Bob spends the Seizable
             Collateral funds.
-        -   Alice defaults on the loan and at least one of Alice or Bob
+          - Alice defaults on the loan and at least one of Alice or Bob
             opts out of collateral liquidation. But Bob doesn't spend
             the Seizable Collateral funds, so Alice recovers both the
             Refundable Collateral funds and the Seizable Collateral

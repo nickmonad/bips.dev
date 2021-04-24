@@ -14,18 +14,20 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0300.mediawiki"
 +++
 
-      BIP: 300
-      Layer: Consensus (soft fork)
-      Title: Hashrate Escrows (Consensus layer)
-      Author: Paul Sztorc <truthcoin@gmail.com>
-              CryptAxe <cryptaxe@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0300
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-08-14
-      License: BSD-2-Clause
-      Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-May/014364.html
+``` 
+  BIP: 300
+  Layer: Consensus (soft fork)
+  Title: Hashrate Escrows (Consensus layer)
+  Author: Paul Sztorc <truthcoin@gmail.com>
+          CryptAxe <cryptaxe@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0300
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-08-14
+  License: BSD-2-Clause
+  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-May/014364.html
+```
 
 ## Abstract
 
@@ -68,10 +70,10 @@ Sidechains have many potential benefits, including:
 Hashrate Escrows are built of two types of component: \[1\] new
 databases, and \[2\] new message-interpretations.
 
-##### 1. New Databases
+##### 1\. New Databases
 
--   D1. "Escrow\_DB" -- a database of "accounts" and their attributes.
--   D2. "Withdrawal\_DB" -- a database of pending withdrawals from these
+  - D1. "Escrow\_DB" -- a database of "accounts" and their attributes.
+  - D2. "Withdrawal\_DB" -- a database of pending withdrawals from these
     accounts, and their statuses.
 
 Please note that these structures (D1 and D2) will not literally exist
@@ -79,14 +81,14 @@ anywhere in the blockchain. Instead they are constructed from
 messages...these messages, in contrast, \*will\* exist in the blockchain
 (with the exception of M4).
 
-##### 2. New Messages
+##### 2\. New Messages
 
--   M1. "Propose New Escrow"
--   M2. "ACK Escrow Proposal"
--   M3. "Propose Withdrawal"
--   M4. (implied) "ACK Withdrawal"
--   M5. "Execute Deposit" -- a transfer of BTC from-main-to-side
--   M6. "Execute Withdrawal" -- a transfer of BTC from-side-to-main
+  - M1. "Propose New Escrow"
+  - M2. "ACK Escrow Proposal"
+  - M3. "Propose Withdrawal"
+  - M4. (implied) "ACK Withdrawal"
+  - M5. "Execute Deposit" -- a transfer of BTC from-main-to-side
+  - M6. "Execute Withdrawal" -- a transfer of BTC from-side-to-main
 
 ### Adding Sidechains (D1, M1, M2)
 
@@ -97,7 +99,7 @@ and their purpose. In general, an escrow designer (for example, a
 sidechain-designer), is free to choose any value for these.
 
 | Field No. | Label                        | Type     | Description / Purpose                                                                                                                         |
-|-----------|------------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ---------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         | Escrow Number                | uint8\_t | A number assigned to the entire escrow. Used to make it easy to refer to each escrow.                                                         |
 | 2         | Sidechain Deposit Script Hex | string   | The script that will be deposited to, and update the CTIP of the sidechain.                                                                   |
 | 3         | Sidechain Private Key        | string   | The private key of the sidechain deposit script.                                                                                              |
@@ -148,7 +150,7 @@ and
 D2 changes deterministically with respect to M3, M4, M5, and M6.
 
 | Field No. | Label                  | Type      | Description / Purpose                                                                                                                   |
-|-----------|------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ---------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         | Escrow Number          | uint8\_t  | Links the withdrawal-request to a specific escrow.                                                                                      |
 | 2         | WT^ Hash               | uint256   | This is a "blinded transaction id" (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a withdrawal-attempt. |
 | 3         | ACKs (Work Score)      | uint16\_t | The current total number of ACKs (PoW)                                                                                                  |
@@ -188,12 +190,12 @@ M4 is a way of describing changes to the "ACKs" column of D2.
 
 From one block to the next, "ACKs" can only change as follows:
 
--   The ACK-counter of any withdrawal can only change by (-1,0,+1).
--   Within a sidechain-group, upvoting one withdrawal ("+1") requires
+  - The ACK-counter of any withdrawal can only change by (-1,0,+1).
+  - Within a sidechain-group, upvoting one withdrawal ("+1") requires
     you to downvote all other withdrawals in that group. However, the
     minimum ACK-value is zero (and, therefore, downvotes cannot reduce
     it below zero).
--   While only one withdrawal can be upvoted at once, they can all be
+  - While only one withdrawal can be upvoted at once, they can all be
     unchanged at once ("abstain") and they can all be downvoted at once
     ("alarm").
 
@@ -204,7 +206,7 @@ One option for explicit transmission of M4 is:
 `   1-byte - Length (in bytes) of this message; total number of withdrawal attempts; y = ceiling( sum_i(m_i +2)/8 ). Nodes should already know what length to expect, because they know the sequence of M3s and therefore the vector of WT^s.`  
 `   N-byte - stream of bits (not bytes), with a 1 indicating the position of the chosen action [downvote all, abstain, upvote1, upvote2, ...]`
 
-But sometimes M4 does not need to be transmitted at all! If there are n
+But sometimes M4 does not need to be transmitted at all\! If there are n
 Escrows and m Withdrawals-per-escrow, then there are (m+2)^n total
 candidates for the next D2. So, when m and n are low, all of the
 possible D2s can be trivially computed in advance.

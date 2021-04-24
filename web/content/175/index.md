@@ -14,17 +14,19 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0175.mediawiki"
 +++
 
-      BIP: 175
-      Layer: Applications
-      Title: Pay to Contract Protocol
-      Author: Omar Shibli <omar@commerceblock.com>
-              Nicholas Gregory <nicholas@commerceblock.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0175
-      Status: Rejected
-      Type: Informational
-      Created: 2017-07-17
-      License: BSD-2-Clause
+``` 
+  BIP: 175
+  Layer: Applications
+  Title: Pay to Contract Protocol
+  Author: Omar Shibli <omar@commerceblock.com>
+          Nicholas Gregory <nicholas@commerceblock.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0175
+  Status: Rejected
+  Type: Informational
+  Created: 2017-07-17
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -306,22 +308,22 @@ and generating the path requires significant modification to the wallet.
 
 ## Reference implementations
 
--   Reference wallet implementation, based on Copay project :
+  - Reference wallet implementation, based on Copay project :
     <https://github.com/commerceblock/copay>
     ([pull\_request](https://github.com/commerceblock/copay/pull/1 "wikilink"))
--   Reference implementation to Hash to Partial Derivation Path Mapping
+  - Reference implementation to Hash to Partial Derivation Path Mapping
     in javascript
     ([<https://github.com/commerceblock/pay-to-contract-lib>](https://github.com/commerceblock/pay-to-contract-lib/blob/master/lib/contract.js "wikilink"))
 
 ## Reference
 
--   [BIP32 - Hierarchical Deterministic
+  - [BIP32 - Hierarchical Deterministic
     Wallets](bip-0032.mediawiki "wikilink")
--   [BIP43 - Purpose Field for Deterministic
+  - [BIP43 - Purpose Field for Deterministic
     Wallets](bip-0043.mediawiki "wikilink")
--   [BIP44 - Multi-Account Hierarchy for Deterministic
+  - [BIP44 - Multi-Account Hierarchy for Deterministic
     Wallets](bip-0044.mediawiki "wikilink")
--   [Homomorphic Payment Addresses and the Pay-to-Contract
+  - [Homomorphic Payment Addresses and the Pay-to-Contract
     Protocol](https://arxiv.org/abs/1212.3257 "wikilink")
 
 ## Copyright

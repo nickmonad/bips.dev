@@ -14,15 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0126.mediawiki"
 +++
 
-      BIP: 126
-      Title: Best Practices for Heterogeneous Input Script Transactions
-      Author: Kristov Atlas <kristov@openbitcoinprivacyproject.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0126
-      Status: Draft
-      Type: Informational
-      Created: 2016-02-10
-      License: PD
+``` 
+  BIP: 126
+  Title: Best Practices for Heterogeneous Input Script Transactions
+  Author: Kristov Atlas <kristov@openbitcoinprivacyproject.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0126
+  Status: Draft
+  Type: Informational
+  Created: 2016-02-10
+  License: PD
+```
 
 ## Abstract
 
@@ -44,16 +46,16 @@ This BIP is in the public domain.
 
 ## Definitions
 
--   **Heterogenous input script transaction (HIT)**: A transaction
+  - **Heterogenous input script transaction (HIT)**: A transaction
     containing multiple inputs where the scripts of the previous
     transaction outputs being consumed are not identical (e.g. a
     transaction spending outputs which were sent to more than one
     Bitcoin address)
--   **Unavoidable heterogenous input script transaction**: A HIT created
+  - **Unavoidable heterogenous input script transaction**: A HIT created
     as a result of a user’s desire to create a new output with a value
     larger than the value of his wallet's largest existing unspent
     output
--   **Intentional heterogenous input script transaction**: A HIT created
+  - **Intentional heterogenous input script transaction**: A HIT created
     as part of a user protection protocol for reducing uncontrolled
     disclosure of personally-identifying information (PII)
 
@@ -200,5 +202,5 @@ procedure.
 
 ## Reference
 
--   [BIP69 - Lexicographical Indexing of Transaction Inputs and
+  - [BIP69 - Lexicographical Indexing of Transaction Inputs and
     Outputs](bip-0069.mediawiki "wikilink")

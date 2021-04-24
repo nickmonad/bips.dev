@@ -14,17 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0301.mediawiki"
 +++
 
-      BIP: 301
-      Layer: Consensus (soft fork)
-      Title: Blind Merged Mining (Consensus layer)
-      Author: Paul Sztorc <truthcoin@gmail.com>
-              CryptAxe <cryptaxe@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0301
-      Status: Draft
-      Type: Standards Track
-      Created: 2019-07-23
-      License: BSD-2-Clause
+``` 
+  BIP: 301
+  Layer: Consensus (soft fork)
+  Title: Blind Merged Mining (Consensus layer)
+  Author: Paul Sztorc <truthcoin@gmail.com>
+          CryptAxe <cryptaxe@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0301
+  Status: Draft
+  Type: Standards Track
+  Created: 2019-07-23
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -110,12 +112,14 @@ requirements for validation.
 
 The following data is required:
 
-        32-bytes  - h* sideHeaderHash
-        ?~?-bytes - critical data extended serialization
-            3-bytes - 0x00bf00 identifying bytes
-            1-byte  - nSidechain
-            2-bytes - prevSideBlockRef
-            4-bytes - prevMainHeaderBytes
+``` 
+    32-bytes  - h* sideHeaderHash
+    ?~?-bytes - critical data extended serialization
+        3-bytes - 0x00bf00 identifying bytes
+        1-byte  - nSidechain
+        2-bytes - prevSideBlockRef
+        4-bytes - prevMainHeaderBytes
+```
 
 sideHeaderHash comes from side:chain (side:nodes build
 side:blocks/headers). The identifying bytes are given here. nSidechain
@@ -204,11 +208,13 @@ LN txns cannot make use of prevSideBlockRef, as no one knows for sure
 when (or if) they will be broadcast on-chain. Instead, they must use
 prevSideBlockHash. But they otherwise require the same data:
 
-       
-        4-bytes - Message header (0xD0520C6E)   
-        1-byte - sidechain number
-        32-bytes  - h* side:block hash  
-        32-bytes  - prevSideBlockHash   
+``` 
+   
+    4-bytes - Message header (0xD0520C6E)   
+    1-byte - sidechain number
+    32-bytes  - h* side:block hash  
+    32-bytes  - prevSideBlockHash   
+```
 
 Notice that, in OnChain BMMRs, Simon could reuse the same h\\\* all he
 wanted, because only one OnChain BMMR could be included per main:block
@@ -233,36 +239,42 @@ to Mary.
 
 We start with (I):
 
-        Simon 13 in, Mary 40 in ; 53 in total
-            Simon's version [signed by Mary]
-                13 ; to Simon if TimeLock=over; OR to Mary if SimonSig
-                40 ; to Mary
-            Mary's version [signed by Simon]
-                40 ; to me if TimeLock=over; OR to Simon if MarySig
-                13 ; to Simon
+``` 
+    Simon 13 in, Mary 40 in ; 53 in total
+        Simon's version [signed by Mary]
+            13 ; to Simon if TimeLock=over; OR to Mary if SimonSig
+            40 ; to Mary
+        Mary's version [signed by Simon]
+            40 ; to me if TimeLock=over; OR to Simon if MarySig
+            13 ; to Simon
+```
 
 And both parties move, from there to (II):
 
-        Simon 13 in, Mary 40 in ; 53 in total
-            Simon's version [signed by Mary]
-                6 ; to Simon if TimeLock=over; OR to Mary if SimonSig
-                40 ; to Mary
-                7 ; to Mary if critical data requirements met; OR to Simon if LongTimeLock=over
-            Mary's version [signed by Simon]
-                40 ; to Mary if TimeLock=over; OR to Simon if MarySig
-                6 ; to Simon
-                7 ; to Mary if critical data requirements met; OR to Simon if LongTimeLock=over
+``` 
+    Simon 13 in, Mary 40 in ; 53 in total
+        Simon's version [signed by Mary]
+            6 ; to Simon if TimeLock=over; OR to Mary if SimonSig
+            40 ; to Mary
+            7 ; to Mary if critical data requirements met; OR to Simon if LongTimeLock=over
+        Mary's version [signed by Simon]
+            40 ; to Mary if TimeLock=over; OR to Simon if MarySig
+            6 ; to Simon
+            7 ; to Mary if critical data requirements met; OR to Simon if LongTimeLock=over
+```
 
 From here, if the h\\\* side:block in question is BMMed, they can
 proceed to (III):
 
-        Simon 13 in, Mary 40 in ; 53 in total
-            Simon's version [signed by Mary]
-                6 ; to Simon if TimeLock=over; OR to Mary if SimonSig
-                47 ; to Mary
-            Mary's version [signed by Simon]
-                47 ; to me if TimeLock=over; OR to Simon if MarySig
-                6 ; to Simon
+``` 
+    Simon 13 in, Mary 40 in ; 53 in total
+        Simon's version [signed by Mary]
+            6 ; to Simon if TimeLock=over; OR to Mary if SimonSig
+            47 ; to Mary
+        Mary's version [signed by Simon]
+            47 ; to me if TimeLock=over; OR to Simon if MarySig
+            6 ; to Simon
+```
 
 If Simon proceeds immediately, he removes Mary's incentive to care about
 blocks being built on this side:block. If Simon's side:block is
@@ -336,10 +348,10 @@ Also, for interest, see an example sidechain here:
 
 ## References
 
--   <http://www.drivechain.info/literature/index.html>
--   <http://www.truthcoin.info/blog/blind-merged-mining/>
--   <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-July/014789.html>
--   <http://www.truthcoin.info/images/bmm-outline.txt>
+  - <http://www.drivechain.info/literature/index.html>
+  - <http://www.truthcoin.info/blog/blind-merged-mining/>
+  - <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-July/014789.html>
+  - <http://www.truthcoin.info/images/bmm-outline.txt>
 
 ## Thanks
 

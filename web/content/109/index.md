@@ -14,16 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0109.mediawiki"
 +++
 
-      BIP: 109
-      Layer: Consensus (hard fork)
-      Title: Two million byte size limit with sigop and sighash limits
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0109
-      Status: Rejected
-      Type: Standards Track
-      Created: 2016-01-28
-      License: PD
+``` 
+  BIP: 109
+  Layer: Consensus (hard fork)
+  Title: Two million byte size limit with sigop and sighash limits
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0109
+  Status: Rejected
+  Type: Standards Track
+  Created: 2016-01-28
+  License: PD
+```
 
 ## Abstract
 
@@ -51,16 +53,16 @@ validate the block shall be counted.
 
 In particular:
 
--   The coinbase scriptSig is not counted
--   Signature operations in un-executed branches of a Script are not
+  - The coinbase scriptSig is not counted
+  - Signature operations in un-executed branches of a Script are not
     counted
--   OP\_CHECKMULTISIG evaluations are counted accurately; if the
+  - OP\_CHECKMULTISIG evaluations are counted accurately; if the
     signature for a 1-of-20 OP\_CHECKMULTISIG is satisified by the
     public key nearest the top of the execution stack, it is counted as
     one signature operation. If it is satisfied by the public key
     nearest the bottom of the execution stack, it is counted as twenty
     signature operations.
--   Signature operations involving invalidly encoded signatures or
+  - Signature operations involving invalidly encoded signatures or
     public keys are not counted towards the limit
 
 ### Add a new limit of 1,300,000,000 bytes hashed to compute transaction signatures per block
@@ -116,13 +118,13 @@ block, to minimize the impact on existing mining or wallet software.
 The choices of constants for the deployment scheme were motivated by
 prior experience with upgrades to the Bitcoin consensus rules:
 
--   0x10000000 was chosen to be compatible with the BIP 9 proposal for
+  - 0x10000000 was chosen to be compatible with the BIP 9 proposal for
     parallel deployment of soft forks
--   75% was chosen instead of 95% to minimize the opportunity for a
+  - 75% was chosen instead of 95% to minimize the opportunity for a
     single large mining pool or miner to be able to veto an increase,
     either because of ideological opposition or threat of violence or
     extortion.
--   A four-week grace period after the voting period was chosen as a
+  - A four-week grace period after the voting period was chosen as a
     balance between giving people sufficient time to upgrade and keeping
     people's attention on the urgent need to upgrade.
 

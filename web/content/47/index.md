@@ -16,22 +16,24 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki"
 
 RECENT CHANGES:
 
--   (19 Apr 2016) Define version 2 payment codes
--   (17 Apr 2016) Clarify usage of outpoints in notification
+  - (19 Apr 2016) Define version 2 payment codes
+  - (17 Apr 2016) Clarify usage of outpoints in notification
     transactions
--   (18 Dec 2015) Update explanations to resolve FAQs
+  - (18 Dec 2015) Update explanations to resolve FAQs
 
-<!-- -->
+<!-- end list -->
 
-      BIP: 47
-      Layer: Applications
-      Title: Reusable Payment Codes for Hierarchical Deterministic Wallets
-      Author: Justus Ranvier <justus@openbitcoinprivacyproject.org>
-      Comments-Summary: Unanimously Discourage for implementation
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0047
-      Status: Draft
-      Type: Informational
-      Created: 2015-04-24
+``` 
+  BIP: 47
+  Layer: Applications
+  Title: Reusable Payment Codes for Hierarchical Deterministic Wallets
+  Author: Justus Ranvier <justus@openbitcoinprivacyproject.org>
+  Comments-Summary: Unanimously Discourage for implementation
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0047
+  Status: Draft
+  Type: Informational
+  Created: 2015-04-24
+```
 
 ## Abstract
 
@@ -136,18 +138,18 @@ between each other.
 
 Currently specified versions:
 
--   Version 1
-    -   Address type: P2PKH
-    -   Notification type: address
--   Version 2
-    -   Address type: P2PKH
-    -   Notification type: bloom-multisig
+  - Version 1
+      - Address type: P2PKH
+      - Notification type: address
+  - Version 2
+      - Address type: P2PKH
+      - Notification type: bloom-multisig
 
 ### Recommended Versions
 
--   Wallets which have bloom filtering capabilities SHOULD create
+  - Wallets which have bloom filtering capabilities SHOULD create
     version 2 payment codes instead of version 1 payment codes.
--   Version 1 payment codes are only recommended for wallets which lack
+  - Version 1 payment codes are only recommended for wallets which lack
     access to bloom filtering capability.
 
 ## Version 1
@@ -158,15 +160,15 @@ Currently specified versions:
 
 A payment code contains the following elements:
 
--   Byte 0: version. required value: 0x01
--   Byte 1: features bit field. All bits must be zero except where
+  - Byte 0: version. required value: 0x01
+  - Byte 1: features bit field. All bits must be zero except where
     specified elsewhere in this specification
-    -   Bit 0: Bitmessage notification
-    -   Bits 1-7: reserved
--   Byte 2: sign. required value: 0x02 or 0x03
--   Bytes 3 - 34: x value, must be a member of the secp256k1 group
--   Bytes 35 - 66: chain code
--   Bytes 67 - 79: reserved for future expansion, zero-filled unless
+      - Bit 0: Bitmessage notification
+      - Bits 1-7: reserved
+  - Byte 2: sign. required value: 0x02 or 0x03
+  - Bytes 3 - 34: x value, must be a member of the secp256k1 group
+  - Bytes 35 - 66: chain code
+  - Bytes 67 - 79: reserved for future expansion, zero-filled unless
     otherwise noted
 
 #### Base58 Serialization
@@ -174,9 +176,9 @@ A payment code contains the following elements:
 When a payment code is presented to the user, it SHOULD be presented
 encoded in Base58Check form.
 
--   The version byte is: 0x47 (produces a "P" as the first character of
+  - The version byte is: 0x47 (produces a "P" as the first character of
     the serialized form)
--   The payload is the binary serialization of the payment code
+  - The payload is the binary serialization of the payment code
 
 ### Protocol
 
@@ -189,18 +191,18 @@ suitable method outside the scope of the payment code protocol.
 
 #### Definitions
 
--   Payment code: an extended public key and associated metadata which
+  - Payment code: an extended public key and associated metadata which
     is associated with a particular identity/account
--   Notification address: the P2PKH address associated with the
+  - Notification address: the P2PKH address associated with the
     0<sup>th</sup> public key derived from a payment code
--   Notification transaction: a transaction which sends an output to a
+  - Notification transaction: a transaction which sends an output to a
     notification address which includes an embedded payment code
--   Designated input: the first input in the notification transaction
+  - Designated input: the first input in the notification transaction
     which exposes an secp256k1 pubkey in either its signature script, or
     in the redeem script or pubkey script of the output being spent
--   Designated pubkey: the first secp256k1 pubkey pushed to the stack
+  - Designated pubkey: the first secp256k1 pubkey pushed to the stack
     during script execution for the designated input
--   Outpoint: the specific output of a previous transaction which is
+  - Outpoint: the specific output of a previous transaction which is
     being spent. See the Reference section for the binary serialization
 
 #### Notification Transaction
@@ -220,7 +222,9 @@ specification.
 2.  Alice derives a unique shared secret using ECDH:
     1.  Alice selects the private key corresponding to the designated
         pubkey:
-            a
+        ``` 
+        a
+        ```
     2.  Alice selects the public key associated with Bob's notification
         address:
             B, where B = bG
@@ -228,7 +232,6 @@ specification.
             S = aB
     4.  Alice calculates a 64 byte blinding factor:
             s = HMAC-SHA512(x, o)
-
         1.  "x" is the x value of the secret point
         2.  "o" is the outpoint being spent by the designated input
 3.  Alice serializes her payment code in binary form.
@@ -237,8 +240,8 @@ specification.
             x' = x XOR (first 32 bytes of s)
     2.  Replace the chain code with c':
             c' = c XOR (last 32 bytes of s)
-5.  Alice adds an OP\_RETURN output to her transaction which consists
-    of P.
+5.  Alice adds an OP\_RETURN output to her transaction which consists of
+    P.
 
 <img src="bip-0047/reusable_payment_codes-01.png" />
 
@@ -253,12 +256,13 @@ specification.
             A, where A = aG
     2.  Bob selects the private key associated with his notification
         address:
-            b
+        ``` 
+        b
+        ```
     3.  Bob calculates a secret point:
             S = bA
     4.  Bob calculates the blinding factor:
             s = HMAC-SHA512(x, o)
-
         1.  "x" is the x value of the secret point
         2.  "o" is the outpoint being spent by the designated input.
     5.  Bob interprets the 80 byte payload as a payment code, except:
@@ -295,10 +299,10 @@ Alice SHOULD use an input script in one of the following standard forms
 to expose a public key, and compliant applications SHOULD recognize all
 of these forms.
 
--   P2PK (pay to pubkey)
--   P2PKH (pay to pubkey hash)
--   Multisig (bare multisig, without P2SH)
--   a script which spends any of the above script forms via P2SH (pay to
+  - P2PK (pay to pubkey)
+  - P2PKH (pay to pubkey hash)
+  - Multisig (bare multisig, without P2SH)
+  - a script which spends any of the above script forms via P2SH (pay to
     script hash)
 
 Compatible wallets MAY provide a method for a user to manually specify
@@ -316,9 +320,9 @@ between the sender and the recipient of the notification transaction.
 
 The following actions are recommended to reduce this risk:
 
--   Wallets which support mixing SHOULD mix change outputs from
+  - Wallets which support mixing SHOULD mix change outputs from
     notification transactions prior to spending them
--   Wallets which do not support mixing MAY simulate mixing by creating
+  - Wallets which do not support mixing MAY simulate mixing by creating
     a transaction which spends the change output to the next external
     BIP44 address
 
@@ -328,18 +332,18 @@ The following actions are recommended to reduce this risk:
     derives a unique P2PKH address for the transaction using ECDH as
     follows:
     1.  Alice selects the 0th private key derived from her payment code:
-            a
+        ``` 
+        a
+        ```
     2.  Alice selects the next unused public key derived from Bob's
         payment code, starting from zero:
             B, where B = bG
-
         1.  The "next unused" public key is based on an index specific
             to the Alice-Bob context, not global to either Alice or Bob
     3.  Alice calculates a secret point:
             S = aB
     4.  Alice calculates a scalar shared secret using the x value of S:
             s = SHA256(Sx)
-
         1.  If the value of s is not in the secp256k1 group, Alice MUST
             increment the index used to derive Bob's public key and try
             again.
@@ -387,34 +391,34 @@ If Alice does not want her payment to Bob to be associated with her
 identity, she generates an ephemeral payment code to use for the
 transaction.
 
--   Ephemeral payment codes are the hardened children of a payment code,
+  - Ephemeral payment codes are the hardened children of a payment code,
     starting from an index of zero.
--   An ephemeral payment code SHOULD only be used for a single outgoing
+  - An ephemeral payment code SHOULD only be used for a single outgoing
     payment.
--   The notification address of an ephemeral payment code MUST be
+  - The notification address of an ephemeral payment code MUST be
     monitored for notification transactions in order to detect incoming
     refund payments
--   The correspondence between BIP44 accounts and ephemeral payment
+  - The correspondence between BIP44 accounts and ephemeral payment
     codes is 1:many
 
 #### Cold Storage
 
--   Unlike traditional watching-only wallets, those associated with
+  - Unlike traditional watching-only wallets, those associated with
     payment codes held in cold storage can not detect incoming payments
     immediately.
--   When the watching-only wallet detects an incoming notification
+  - When the watching-only wallet detects an incoming notification
     transaction, it packages the transaction in an
     implementation-specific format suitable for transfer to the offline
     device.
--   The offline device recovers the payment code, then pre-generates a
+  - The offline device recovers the payment code, then pre-generates a
     large number of relevant keypairs (example: 10000) in order to
     minimize the need for air gap round trips.
--   The offline device then packages the relevant public keys in an
+  - The offline device then packages the relevant public keys in an
     implementation-specific format suitable for transfer to the online
     device.
--   The online device can then watch for incoming payments using a
+  - The online device can then watch for incoming payments using a
     suitable lookahead window.
--   If the lookahead window reaches the end of the pre-generated public
+  - If the lookahead window reaches the end of the pre-generated public
     keys, the user must generate more keys on the offline device and
     transfer them to the online device.
 
@@ -514,10 +518,10 @@ setting the appropriate bits in the feature byte of their payment code.
 A recipient which prefers to receive notifications via Bitmessage
 indicates this preference by:
 
--   Setting bit 0 of the features byte to 1
--   Setting byte 67 of the serialized payment code to the desired
+  - Setting bit 0 of the features byte to 1
+  - Setting byte 67 of the serialized payment code to the desired
     Bitmessage address version
--   Setting byte 68 of the serialized payment code to the desired
+  - Setting byte 68 of the serialized payment code to the desired
     Bitmessage stream number
 
 The sender uses this information to construct a valid notification
@@ -526,7 +530,9 @@ Bitmessage address:
 1.  Derive a Bitmessage signing key as:
         B = payment code / 0 / 0
 2.  Initialize a counter at 1:
-        n
+    ``` 
+    n
+    ```
 3.  Derive a candidate encryption key as:
         B' = payment code / 0 / n
 4.  If the combination of B and B\` do not form a valid Bitmessage
@@ -551,16 +557,16 @@ except as modified below.
 
 #### Binary Serialization
 
--   Byte 0: version. required value: 0x02
+  - Byte 0: version. required value: 0x02
 
 ### Protocol
 
 #### Definitions
 
--   Notification change output: the change output from a notification
+  - Notification change output: the change output from a notification
     transaction which which resides in the sender's wallet, but can be
     automatically located by the intended recipient
--   Payment code identifier: a 33 byte representation of a payment code
+  - Payment code identifier: a 33 byte representation of a payment code
     constructed by prepending 0x02 to the SHA256 hash of the binary
     serialization of the payment code
 
@@ -578,7 +584,7 @@ specification.
     1.  Obtain the pubkey corresponding to the next change address
     2.  Construct a multisig output in the form:
 
-<!-- -->
+<!-- end list -->
 
     OP_1 <Bob's payment code identifier> <change address pubkey> OP_2 OP_CHECKMULTISIG
 
@@ -597,21 +603,21 @@ appropriate opportunity.
 
 ## Test Vectors
 
--   [BIP47 Reusable Payment Codes Test
+  - [BIP47 Reusable Payment Codes Test
     Vectors](https://gist.github.com/SamouraiDev/6aad669604c5930864bd "wikilink")
 
 ## Reference
 
--   [BIP32 - Hierarchical Deterministic
+  - [BIP32 - Hierarchical Deterministic
     Wallets](bip-0032.mediawiki "wikilink")
--   [BIP43 - Purpose Field for Deterministic
+  - [BIP43 - Purpose Field for Deterministic
     Wallets](bip-0043.mediawiki "wikilink")
--   [BIP44 - Multi-Account Hierarchy for Deterministic
+  - [BIP44 - Multi-Account Hierarchy for Deterministic
     Wallets](bip-0044.mediawiki "wikilink")
--   [Outpoint](https://bitcoin.org/en/developer-reference#outpoint "wikilink")
--   [dust-b-gone](https://github.com/petertodd/dust-b-gone "wikilink")
--   [Base58Check
+  - [Outpoint](https://bitcoin.org/en/developer-reference#outpoint "wikilink")
+  - [dust-b-gone](https://github.com/petertodd/dust-b-gone "wikilink")
+  - [Base58Check
     encoding](https://en.bitcoin.it/wiki/Base58Check_encoding "wikilink")
--   [Bitmessage](https://bitmessage.org/bitmessage.pdf "wikilink")
--   [Mailing list
+  - [Bitmessage](https://bitmessage.org/bitmessage.pdf "wikilink")
+  - [Mailing list
     discussion](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-April/007812.html "wikilink")

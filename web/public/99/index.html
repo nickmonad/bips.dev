@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 99
+<code><span style="color:#61676c;">  BIP: 99
   Title: Motivation and deployment of consensus rule changes ([soft/hard]forks)
   Author: Jorge Timón &lt;jtimon@jtimon.cc&gt;
   Comments-Summary: No comments yet.
@@ -57,7 +57,7 @@
   Created: 2015-06-20
   License: PD
   Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008936.html
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP attempts to create a taxonomy of the different types of
 consensus forks and proposes a deployment mechanism for each of them.</p>
 <h2 id="motivation">Motivation</h2>
@@ -68,43 +68,57 @@ being deployed. Discussing such changes without a uniform view on the
 deployment paths often leads to misunderstandings and unnecessarily
 delays the deployment of changes.</p>
 <h2 id="definitions">Definitions</h2>
-<p>Software fork<br />
+<ul>
+<li>Software fork<br />
 A copy of an existing project. In free software, this can be done
-without the permission of the original project's maintainers.</p>
-<!-- -->
-<p>Consensus fork<br />
-A divergence in the implementation of the verification consensus rules
-can impede the expected eventual convergence of the network in a single
-chain that has the most proof of work and also satisfies the rules. This
-can be intentional or be caused by a bug in consensus validation
-reimplementations.</p>
-<!-- -->
-<p>Softfork<br />
-A consensus fork wherein everything that was previously invalid remains
-invalid while blocks that would have previously considered valid become
-invalid. A hashrate majority of miners can impose the new rules. They
-have some deployment advantages like backward compatibility.</p>
-<!-- -->
-<p>Hardfork<br />
-A consensus fork that makes previously invalid blocks valid. Hardforks
-require all users to upgrade.</p>
-<!-- -->
-<p>Libconsensus<br />
-a theoretical piece of software that contains the specifications that
-define the validity of a block for a given state and chain parameters
-(ie it may act differently on, for example, regtest).</p>
-<!-- -->
-<p>Libbitcoinconsensus<br />
+without the permission of the original project's maintainers.</li>
+</ul>
+<!-- end list -->
+<ul>
+<li>Consensus fork<br />
+A divergence in the implementation of the verification consensus
+rules can impede the expected eventual convergence of the network in
+a single chain that has the most proof of work and also satisfies
+the rules. This can be intentional or be caused by a bug in
+consensus validation reimplementations.</li>
+</ul>
+<!-- end list -->
+<ul>
+<li>Softfork<br />
+A consensus fork wherein everything that was previously invalid
+remains invalid while blocks that would have previously considered
+valid become invalid. A hashrate majority of miners can impose the
+new rules. They have some deployment advantages like backward
+compatibility.</li>
+</ul>
+<!-- end list -->
+<ul>
+<li>Hardfork<br />
+A consensus fork that makes previously invalid blocks valid.
+Hardforks require all users to upgrade.</li>
+</ul>
+<!-- end list -->
+<ul>
+<li>Libconsensus<br />
+a theoretical piece of software that contains the specifications
+that define the validity of a block for a given state and chain
+parameters (ie it may act differently on, for example, regtest).</li>
+</ul>
+<!-- end list -->
+<ul>
+<li>Libbitcoinconsensus<br />
 the existing implementation is a library that is compiled by default
 with Bitcoin Core master and exposes a single C function named
 bitcoinconsensus_verify_script(). Although it has a deterministic
-build and implements the most complex rules (most of the cryptography,
-which is itself heavily based on libsecp256k1 after
-#REPLACE_libsecp256k1_PR), it is still not a complete specification
-of the consensus rules. Since libconsensus doesn't manage the current
-state but only the validation of the next block given that state, it is
-known that this long effort of encapsulation and decoupling will
-eventually finish, and that the person who moves the last line</p>
+build and implements the most complex rules (most of the
+cryptography, which is itself heavily based on libsecp256k1 after
+#REPLACE_libsecp256k1_PR), it is still not a complete
+specification of the consensus rules. Since libconsensus doesn't
+manage the current state but only the validation of the next block
+given that state, it is known that this long effort of encapsulation
+and decoupling will eventually finish, and that the person who moves
+the last line</li>
+</ul>
 <h2 id="taxonomy-of-consensus-forks">Taxonomy of consensus forks</h2>
 <h3 id="accidental-consensus-fork">Accidental consensus fork</h3>
 <p>Software forks are very different in nature from consensus rules forks.

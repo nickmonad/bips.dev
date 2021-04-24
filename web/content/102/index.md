@@ -14,15 +14,17 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0102.mediawiki"
 +++
 
-      BIP: 102
-      Layer: Consensus (hard fork)
-      Title: Block size increase to 2MB
-      Author: Jeff Garzik <jgarzik@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0102
-      Status: Rejected
-      Type: Standards Track
-      Created: 2015-06-23
+``` 
+  BIP: 102
+  Layer: Consensus (hard fork)
+  Title: Block size increase to 2MB
+  Author: Jeff Garzik <jgarzik@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0102
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-06-23
+```
 
 ## Abstract
 

@@ -14,19 +14,21 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0116.mediawiki"
 +++
 
-      BIP: 116
-      Layer: Consensus (soft fork)
-      Title: MERKLEBRANCHVERIFY
-      Author: Mark Friedenbach <mark@friedenbach.org>
-              Kalle Alm <kalle.alm@gmail.com>
-              BtcDrak <btcdrak@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0116
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-08-25
-      License: CC-BY-SA-4.0
-      License-Code: MIT
+``` 
+  BIP: 116
+  Layer: Consensus (soft fork)
+  Title: MERKLEBRANCHVERIFY
+  Author: Mark Friedenbach <mark@friedenbach.org>
+          Kalle Alm <kalle.alm@gmail.com>
+          BtcDrak <btcdrak@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0116
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-08-25
+  License: CC-BY-SA-4.0
+  License-Code: MIT
+```
 
 ## Abstract
 

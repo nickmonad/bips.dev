@@ -14,16 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0105.mediawiki"
 +++
 
-      BIP: 105
-      Layer: Consensus (hard fork)
-      Title: Consensus based block size retargeting algorithm
-      Author: BtcDrak <btcdrak@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0105
-      Status: Rejected
-      Type: Standards Track
-      Created: 2015-08-21
-      License: PD
+``` 
+  BIP: 105
+  Layer: Consensus (hard fork)
+  Title: Consensus based block size retargeting algorithm
+  Author: BtcDrak <btcdrak@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0105
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-08-21
+  License: PD
+```
 
 ## Abstract
 

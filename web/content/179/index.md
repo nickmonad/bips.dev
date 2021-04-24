@@ -14,17 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0179.mediawiki"
 +++
 
-      BIP: 179
-      Title: Name for payment recipient identifiers
-      Author: Emil Engler <me@emilengler.com>
-              MarcoFalke <falke.marco@gmail.com>
-              Luke Dashjr <luke+bip@dashjr.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0179
-      Status: Draft
-      Type: Informational
-      Created: 2019-10-17
-      License: CC0-1.0
+``` 
+  BIP: 179
+  Title: Name for payment recipient identifiers
+  Author: Emil Engler <me@emilengler.com>
+          MarcoFalke <falke.marco@gmail.com>
+          Luke Dashjr <luke+bip@dashjr.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0179
+  Status: Draft
+  Type: Informational
+  Created: 2019-10-17
+  License: CC0-1.0
+```
 
 ## Abstract
 
@@ -57,21 +59,21 @@ The reason why we use *Bitcoin Invoice Address* or just *Invoice* is to
 emphasize that it is single-use. The terms *Bitcoin* and *Address* are
 optional for the following reasons: For *Bitcoin*:
 
--   Useful for multicoin wallets to indicate that it belongs to Bitcoin
--   Indicates a difference between a lightning and an on-chain invoice
+  - Useful for multicoin wallets to indicate that it belongs to Bitcoin
+  - Indicates a difference between a lightning and an on-chain invoice
 
 For *Address*:
 
--   To not confuse users with a completely new term
--   To show that it is where you send something to
--   To not break backwards compatibility
+  - To not confuse users with a completely new term
+  - To show that it is where you send something to
+  - To not break backwards compatibility
 
 This gives us the four following possibilities:
 
--   Bitcoin Invoice Address
--   Bitcoin Invoice
--   Invoice Address
--   Invoice
+  - Bitcoin Invoice Address
+  - Bitcoin Invoice
+  - Invoice Address
+  - Invoice
 
 ## Backwards Compatibility
 

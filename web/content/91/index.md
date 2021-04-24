@@ -14,17 +14,19 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0091.mediawiki"
 +++
 
-      BIP: 91
-      Layer: Consensus (soft fork)
-      Title: Reduced threshold Segwit MASF
-      Author: James Hilliard <james.hilliard1@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0091
-      Status: Final
-      Type: Standards Track
-      Created: 2017-05-22
-      License: BSD-3-Clause
-               CC0-1.0
+``` 
+  BIP: 91
+  Layer: Consensus (soft fork)
+  Title: Reduced threshold Segwit MASF
+  Author: James Hilliard <james.hilliard1@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0091
+  Status: Final
+  Type: Standards Track
+  Created: 2017-05-22
+  License: BSD-3-Clause
+           CC0-1.0
+```
 
 ## Abstract
 
@@ -56,9 +58,9 @@ so before expiry would greatly complicate testing.
 ## Specification
 
 While this BIP is active, all blocks must set the nVersion header top 3
-bits to 001 together with bit field (1&lt;&lt;1) (according to the
-existing segwit deployment). Blocks that do not signal as required will
-be rejected.
+bits to 001 together with bit field (1\<\<1) (according to the existing
+segwit deployment). Blocks that do not signal as required will be
+rejected.
 
 ## Deployment
 
@@ -79,11 +81,11 @@ locked-in, active, or failed
     consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nTimeout = 1510704000; // November 15th, 2017.
     consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nOverrideMinerConfirmationWindow = 336; // ~2.33 days
     consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nOverrideRuleChangeActivationThreshold = 269; // 80%
-
+    
     class VersionBitsConditionChecker : public AbstractThresholdConditionChecker {
     private:
         const Consensus::DeploymentPos id;
-
+    
     protected:
         int64_t BeginTime(const Consensus::Params& params) const { return params.vDeployments[id].nStartTime; }
         int64_t EndTime(const Consensus::Params& params) const { return params.vDeployments[id].nTimeout; }
@@ -97,17 +99,17 @@ locked-in, active, or failed
                 return params.vDeployments[id].nOverrideRuleChangeActivationThreshold;
             return params.nRuleChangeActivationThreshold;
         }
-
+    
         bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const
         {
             return (((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) && (pindex->nVersion & Mask(params)) != 0);
         }
-
+    
     public:
         VersionBitsConditionChecker(Consensus::DeploymentPos id_) : id(id_) {}
         uint32_t Mask(const Consensus::Params& params) const { return ((uint32_t)1) << params.vDeployments[id].bit; }
     };
-
+    
     // SEGSIGNAL mandatory segwit signalling.
     if (VersionBitsState(pindex->pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGSIGNAL, versionbitscache) == THRESHOLD_ACTIVE &&
         VersionBitsState(pindex->pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGWIT,    versionbitscache) == THRESHOLD_STARTED)
@@ -145,24 +147,24 @@ activate without needing to release a new deployment.
 
 ## References
 
--   [Mailing list
+  - [Mailing list
     discussion](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-March/013714.html)
--   [P2SH flag day
+  - [P2SH flag day
     activation](https://github.com/bitcoin/bitcoin/blob/v0.6.0/src/main.cpp#L1281-L1283)
--   [BIP9 Version bits with timeout and
+  - [BIP9 Version bits with timeout and
     delay](bip-0009.mediawiki "wikilink")
--   [BIP16 Pay to Script Hash](bip-0016.mediawiki "wikilink")
--   [BIP141 Segregated Witness (Consensus
+  - [BIP16 Pay to Script Hash](bip-0016.mediawiki "wikilink")
+  - [BIP141 Segregated Witness (Consensus
     layer)](bip-0141.mediawiki "wikilink")
--   [BIP143 Transaction Signature Verification for Version 0 Witness
+  - [BIP143 Transaction Signature Verification for Version 0 Witness
     Program](bip-0143.mediawiki "wikilink")
--   [BIP147 Dealing with dummy stack element
+  - [BIP147 Dealing with dummy stack element
     malleability](bip-0147.mediawiki "wikilink")
--   [BIP148 Mandatory activation of segwit
+  - [BIP148 Mandatory activation of segwit
     deployment](bip-0148.mediawiki "wikilink")
--   [BIP149 Segregated Witness (second
+  - [BIP149 Segregated Witness (second
     deployment)](bip-0149.mediawiki "wikilink")
--   [Segwit
+  - [Segwit
     benefits](https://bitcoincore.org/en/2016/01/26/segwit-benefits/)
 
 ## Copyright

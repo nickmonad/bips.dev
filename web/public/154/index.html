@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 154
+<code><span style="color:#61676c;">  BIP: 154
   Layer: Peer Services
   Title: Rate Limiting via peer specified challenges
   Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
@@ -57,7 +57,7 @@
   Type: Standards Track
   Created: 2017-04-12
   License: BSD-2-Clause
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>An anti-DoS system which provides additional service for peers which
 perform proof of work.</p>
 <h2 id="definitions">Definitions</h2>
@@ -246,9 +246,8 @@ Purpose Identifiers)</li>
 <li>The expiration date is a UNIX timestamp indicating when the
 challenge expires</li>
 <li>The signed content should contain a signature of the hash
-<code>SHA256(SHA256(pow-count || pow-id || pow-params || ... || purpose-id || expiration))</code>,
-i.e. the hash of the entire challenge except for the signature
-length and data.</li>
+<code>SHA256(SHA256(pow-count || pow-id || pow-params || ... || purpose-id || expiration))</code>, i.e. the hash of the entire challenge
+except for the signature length and data.</li>
 </ul>
 <table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Description</th></tr></thead><tbody>
 <tr><td>1 byte</td><td>pow-count</td><td>uint8</td><td>Number of POW algorithms in the range [1..255]</td></tr>
@@ -333,9 +332,8 @@ the output of the successor. Example solution:</p>
 <tr><td>1..4</td><td>nonce32</td><td>0x12345</td><td>The nonce used as input is 0x12345</td></tr>
 </tbody></table>
 <p>The above example will provide a single nonce for the inner POW. For the
-SHA256(SHA256(challenge data || nonce32)) case, the solution would
-claim that SHA256(SHA256(challenge data || 0x00012345)) solves the
-challenge.</p>
+SHA256(SHA256(challenge data || nonce32)) case, the solution would claim
+that SHA256(SHA256(challenge data || 0x00012345)) solves the challenge.</p>
 <h2 id="signing-and-verifying-challenges">Signing and Verifying Challenges</h2>
 <p>Below is a suggestion for how to sign a challenge. The implementation
 generates a new, random key-pair at launch and uses that to sign all
@@ -394,8 +392,7 @@ solution given the algorithm <code>alg</code> succeeds</li>
 <li>If <code>date() + eta &gt;= expiration</code>, discard challenge</li>
 <li>If <code>eta &gt; t</code>, discard challenge</li>
 </ol>
-<p>Example:
-<code>SHA256(cuckoo-cycle(...)) &lt; 0x7fffff0000000000000000000000000000000000000000000000000000000000</code></p>
+<p>Example: <code>SHA256(cuckoo-cycle(...)) &lt; 0x7fffff0000000000000000000000000000000000000000000000000000000000</code></p>
 <ol>
 <li><code>p(cuckoo-cycle) = 1</code>, <code>p(sha256, 0x7fffff000...) ~= (1/2)^1 = 1/2</code></li>
 <li><code>w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)</code>,
@@ -403,8 +400,7 @@ solution given the algorithm <code>alg</code> succeeds</li>
 <li><code>Wc = 0, Wm = 1, Wi = 1</code>
 <ol>
 <li><code>p = p(cuckoo-cycle) = 1, w = w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)</code></li>
-<li><code>Wc = 0 + 1.5e11 = 1.5e11</code>, <code>Wi = 1 * 1 = 1</code>,
-<code>Wm = 1 + 5e7 = 5e7</code></li>
+<li><code>Wc = 0 + 1.5e11 = 1.5e11</code>, <code>Wi = 1 * 1 = 1</code>, <code>Wm = 1 + 5e7 = 5e7</code></li>
 <li><code>p = p(sha256) = 1/2, w = w(sha256) = (11e3 cycles)</code></li>
 <li><code>Wc = 1.5e11 + 11e3 ~= 1.5e11, Wi = 1 * 2 = 2, Wm = 5e7 + 0 = 5e7</code></li>
 </ol>

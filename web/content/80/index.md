@@ -14,16 +14,18 @@ status = ["Deferred"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0080.mediawiki"
 +++
 
-      BIP: 80
-      Title: Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets
-      Author: Justus Ranvier <justus@opentransactions.org>
-              Jimmy Song <jimmy@monetas.net>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0080
-      Status: Deferred
-      Type: Informational
-      Created: 2014-08-11
-      License: PD
+``` 
+  BIP: 80
+  Title: Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets
+  Author: Justus Ranvier <justus@opentransactions.org>
+          Jimmy Song <jimmy@monetas.net>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0080
+  Status: Deferred
+  Type: Informational
+  Created: 2014-08-11
+  License: PD
+```
 
 ## Abstract
 
@@ -95,7 +97,7 @@ Public derivation is used at this level.
 
 ## Compatible wallets
 
--   [btcwallet](https://github.com/btcsuite/btcwallet "wikilink") is the
+  - [btcwallet](https://github.com/btcsuite/btcwallet "wikilink") is the
     reference Bitcoin wallet for voting pools.
 
 ## Copyright
@@ -104,9 +106,9 @@ This document is placed in the public domain.
 
 ## Reference
 
--   [BIP32 - Hierarchical Deterministic
+  - [BIP32 - Hierarchical Deterministic
     Wallets](bip-0032.mediawiki "wikilink")
--   [BIP43 - Purpose Field for Deterministic
+  - [BIP43 - Purpose Field for Deterministic
     Wallets](bip-0043.mediawiki "wikilink")
--   [BIP44 - Multi-Account Hierarchy for Deterministic
+  - [BIP44 - Multi-Account Hierarchy for Deterministic
     Wallets](bip-0044.mediawiki "wikilink")

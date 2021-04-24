@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 134
+<code><span style="color:#61676c;">  BIP: 134
   Layer: Consensus (hard fork)
   Title: Flexible Transactions
   Author: Tom Zander &lt;tomz@freedommail.ch&gt;
@@ -58,7 +58,7 @@
   Created: 2016-07-27
   License: CC-BY-SA-4.0
            OPL
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP describes the next step in making Bitcoin's most basic element,
 the transaction, more flexible and easier to extend. At the same time
 this fixes all known cases of malleability and resolves significant
@@ -152,14 +152,14 @@ make the transaction that contains it invalid.</p>
 <tr><td>TxEnd</td><td>0</td><td>BoolTrue</td><td>Required</td><td>A marker that is the end of the transaction</td></tr>
 <tr><td>TxInPrevHash</td><td>1</td><td>ByteArray</td><td>Required</td><td>TxId we are spending</td></tr>
 <tr><td>TxPrevIndex</td><td>2</td><td>Integer</td><td>0</td><td>Index in prev tx we are spending (applied to previous TxInPrevHash)</td></tr>
-<tr><td>TxInputStackItem</td><td>3</td><td>ByteArray</td><td> </td><td>A 'push' of the input script</td></tr>
+<tr><td>TxInputStackItem</td><td>3</td><td>ByteArray</td><td></td><td>A 'push' of the input script</td></tr>
 <tr><td>TxInputStackItemContinued</td><td>4</td><td>ByteArray</td><td>&amp;nsbp;</td><td>Another section for the same input</td></tr>
 <tr><td>TxOutValue</td><td>5</td><td>Integer</td><td>Required</td><td>Amount of Satoshis to transfer</td></tr>
 <tr><td>TxOutScript</td><td>6</td><td>ByteArray</td><td>Required</td><td>The output script</td></tr>
 <tr><td>TxRelativeBlockLock</td><td>7</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of blocks (max 0XFFFF) after that input was mined, it can be mined</td></tr>
 <tr><td>TxRelativeTimeLock</td><td>8</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of time (max 0XFFFF) after that input was mined, it can be mined. 1 Unit is 512 seconds</td></tr>
 <tr><td>CoinbaseMessage</td><td>9</td><td>ByteArray</td><td>Optional</td><td>A message and some data for a coinbase transaction. Can't be used in combination with any TxIn\* tags</td></tr>
-<tr><td>NOP_1x</td><td>1x</td><td> </td><td>Optional</td><td>Values that will be ignored by anyone parsing the transaction</td></tr>
+<tr><td>NOP_1x</td><td>1x</td><td></td><td>Optional</td><td>Values that will be ignored by anyone parsing the transaction</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
 </tbody></table>
 <h3 id="scripting-changes">Scripting changes</h3>
@@ -200,7 +200,7 @@ followed by a number of TxInputStackItemContinued items.</p>
 <table><thead><tr><th>Segment</th><th>Tags</th><th>Description</th></tr></thead><tbody>
 <tr><td>Transaction</td><td>all not elsewhere used</td><td>This section is used to make the TxId</td></tr>
 <tr><td>Signatures</td><td>TxInputStackItem, TxInputStackItemContinued</td><td>The input-proofs</td></tr>
-<tr><td>TxEnd</td><td>TxEnd</td><td> </td></tr>
+<tr><td>TxEnd</td><td>TxEnd</td><td></td></tr>
 </tbody></table>
 <p>The TxId is calculated by taking the serialized transaction without the
 Signatures and the TxEnd and hashing that.</p>

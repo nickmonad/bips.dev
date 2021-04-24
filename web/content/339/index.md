@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki"
 +++
 
-      BIP: 339
-      Layer: Peer Services
-      Title: WTXID-based transaction relay
-      Author: Suhas Daftuar <sdaftuar@chaincode.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0339
-      Status: Draft
-      Type: Standards Track
-      Created: 2020-02-03
-      License: BSD-2-Clause
+``` 
+  BIP: 339
+  Layer: Peer Services
+  Title: WTXID-based transaction relay
+  Author: Suhas Daftuar <sdaftuar@chaincode.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0339
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-02-03
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -60,9 +62,9 @@ when announcing and fetching transactions.
 2.  The protocol version of nodes implementing this BIP must be set to
     70016 or higher.
 3.  The wtxidrelay message MUST be sent in response to a version message
-    from a peer whose protocol version is &gt;= 70016 and prior to
-    sending a verack. A wtxidrelay message received after a verack
-    message MUST be ignored or treated as invalid.
+    from a peer whose protocol version is \>= 70016 and prior to sending
+    a verack. A wtxidrelay message received after a verack message MUST
+    be ignored or treated as invalid.
 4.  A new inv type MSG\_WTX (0x00000005) is added, for use in both inv
     messages and getdata requests, indicating that the hash being
     referenced is a transaction's wtxid. In the case of getdata

@@ -14,15 +14,17 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0012.mediawiki"
 +++
 
-      BIP: 12
-      Layer: Consensus (soft fork)
-      Title: OP_EVAL
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0012
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2011-10-18
+``` 
+  BIP: 12
+  Layer: Consensus (soft fork)
+  Title: OP_EVAL
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0012
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2011-10-18
+```
 
 ## Abstract
 
@@ -42,16 +44,16 @@ backwards-compatible for old clients and miners.
 OP\_EVAL will re-define the existing OP\_NOP1 opcode, and will function
 as follows:
 
--   When executed during transaction verification, pops the item from
+  - When executed during transaction verification, pops the item from
     the top of the stack, deserializes it, and executes the resulting
     script.
--   If there is no item on the top of the stack or the item is not a
+  - If there is no item on the top of the stack or the item is not a
     valid script then transaction validation fails.
--   If there are any OP\_CODESEPARATORs in the deserialized script then
+  - If there are any OP\_CODESEPARATORs in the deserialized script then
     transaction validation fails.
--   If there are any OP\_EVALs in the deserialized script they are also
+  - If there are any OP\_EVALs in the deserialized script they are also
     executed, but recursion is limited to a depth of 2.
--   Transaction verification must fail if interpreting OP\_EVAL as a
+  - Transaction verification must fail if interpreting OP\_EVAL as a
     no-op would cause the verification to fail.
 
 A new standard transaction type (scriptPubKey) that is relayed by

@@ -14,17 +14,19 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0325.mediawiki"
 +++
 
-      BIP: 325
-      Layer: Applications
-      Title: Signet
-      Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
-              Anthony Towns <aj@erisian.com.au>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0325
-      Status: Proposed
-      Type: Standards Track
-      Created: 2019-03-20
-      License: CC0-1.0
+``` 
+  BIP: 325
+  Layer: Applications
+  Title: Signet
+  Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
+          Anthony Towns <aj@erisian.com.au>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0325
+  Status: Proposed
+  Type: Standards Track
+  Created: 2019-03-20
+  License: CC0-1.0
+```
 
 ## Abstract
 
@@ -152,10 +154,10 @@ challenge script as a single data push (see below).
 
 ### Genesis Block
 
--   Time stamp: 1598918400
--   Nonce: 52613770
--   Difficulty: 0x1e0377ae
--   Version: 1
+  - Time stamp: 1598918400
+  - Nonce: 52613770
+  - Difficulty: 0x1e0377ae
+  - Version: 1
 
 The resulting genesis block hash is
 00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6, and
@@ -168,11 +170,11 @@ The message start is defined as the first four bytes of the sha256d of
 the challenge script, as a single push (i.e. prefixed with the challenge
 script length). Example:
 
--   Challenge script =
+  - Challenge script =
     512103ad5e0edad18cb1f0fc0d28a3d4f1f3e445640337489abb10404f2d1e086be43051ae
--   Sha256d(len \|\| challenge script) = sha256d(25512103ad...51ae) =
+  - Sha256d(len || challenge script) = sha256d(25512103ad...51ae) =
     7ec653a59b1912f9db10da2c461ed827d48f9404d5ef0346a6c94aadd4203646
--   First four bytes = the message start = 7ec653a5
+  - First four bytes = the message start = 7ec653a5
 
 ## Compatibility
 

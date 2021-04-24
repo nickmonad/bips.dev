@@ -14,16 +14,18 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0011.mediawiki"
 +++
 
-      BIP: 11
-      Layer: Applications
-      Title: M-of-N Standard Transactions
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0011
-      Status: Final
-      Type: Standards Track
-      Created: 2011-10-18
-      Post-History: 2011-10-02
+``` 
+  BIP: 11
+  Layer: Applications
+  Title: M-of-N Standard Transactions
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0011
+  Status: Final
+  Type: Standards Track
+  Created: 2011-10-18
+  Post-History: 2011-10-02
+```
 
 ## Abstract
 
@@ -37,7 +39,7 @@ redeeming funds requires more than a single signature.
 
 A couple of motivating use cases:
 
--   A wallet secured by a "wallet protection service" (WPS). 2-of-2
+  - A wallet secured by a "wallet protection service" (WPS). 2-of-2
     signatures required transactions will be used, with one signature
     coming from the (possibly compromised) computer with the wallet and
     the second signature coming from the WPS. When sending protected
@@ -51,9 +53,9 @@ A couple of motivating use cases:
     can safely store off-line, so that their coins can be spent even if
     the WPS goes out of business.
 
-<!-- -->
+<!-- end list -->
 
--   Three-party escrow (buyer, seller, and trusted dispute agent).
+  - Three-party escrow (buyer, seller, and trusted dispute agent).
     2-of-3 signatures required transactions will be used. The buyer and
     seller and agent will each provide a public key, and the buyer will
     then send coins into a 2-of-3 CHECKMULTISIG transaction and send the
@@ -122,4 +124,4 @@ non-standard transaction type.
 
 ## Post History
 
--   [OP\_EVAL proposal](https://bitcointalk.org/index.php?topic=46538)
+  - [OP\_EVAL proposal](https://bitcointalk.org/index.php?topic=46538)

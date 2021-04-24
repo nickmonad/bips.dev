@@ -14,15 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0119.mediawiki"
 +++
 
-      BIP: 119
-      Layer: Consensus (soft fork)
-      Title: CHECKTEMPLATEVERIFY
-      Author: Jeremy Rubin <j@rubin.io>
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0119
-      Status: Draft
-      Type: Standards Track
-      Created: 2020-01-06
-      License: BSD-3-Clause
+``` 
+  BIP: 119
+  Layer: Consensus (soft fork)
+  Title: CHECKTEMPLATEVERIFY
+  Author: Jeremy Rubin <j@rubin.io>
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0119
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-01-06
+  License: BSD-3-Clause
+```
 
 ## Abstract
 
@@ -40,9 +42,9 @@ upgrade.
 
 OP\_CHECKTEMPLATEVERIFY does the following:
 
--   There is at least one element on the stack, fail otherwise
--   The element on the stack is 32 bytes long, NOP otherwise
--   The StandardTemplateHash of the transaction at the current input
+  - There is at least one element on the stack, fail otherwise
+  - The element on the stack is 32 bytes long, NOP otherwise
+  - The StandardTemplateHash of the transaction at the current input
     index is equal to the element on the stack, fail otherwise
 
 The StandardTemplateHash commits to the serialized version, locktime,
@@ -52,7 +54,7 @@ input index.
 
 The recommended standardness rules additionally:
 
--   Reject non-32 byte as SCRIPT\_ERR\_DISCOURAGE\_UPGRADABLE\_NOPS.
+  - Reject non-32 byte as SCRIPT\_ERR\_DISCOURAGE\_UPGRADABLE\_NOPS.
 
 ## Motivation
 
@@ -342,7 +344,7 @@ a second output, pay Bob 2 BTC. If 24 hours lapses, then Alice may
 redeem her 1 BTC from the contract. Both input UTXOs may have the exact
 same Path B, or only one.
 
-The issue with these constructs is that there are N! orders that the
+The issue with these constructs is that there are N\! orders that the
 inputs can be ordered in and it's not generally possible to restrict the
 ordering.
 
@@ -442,7 +444,7 @@ to most.
 
 1.  nVersion
 2.  nLockTime
-3.  scriptSig hash (maybe!)
+3.  scriptSig hash (maybe\!)
 4.  input count
 5.  sequences hash
 6.  output count
@@ -622,19 +624,19 @@ but not upgraded to a newer major release.
 
 ## References
 
--   [utxos.org informational site](https://utxos.org)
--   [Scaling Bitcoin
+  - [utxos.org informational site](https://utxos.org)
+  - [Scaling Bitcoin
     Presentation](https://www.youtube.com/watch?v=YxsjdIl0034&t=2451)
--   [Optech Newsletter Covering
+  - [Optech Newsletter Covering
     OP\_CHECKOUTPUTSHASHVERIFY](https://bitcoinops.org/en/newsletters/2019/05/29/)
--   [Structuring Multi Transaction Contracts in
+  - [Structuring Multi Transaction Contracts in
     Bitcoin](https://cyber.stanford.edu/sites/g/files/sbiybj9936/f/jeremyrubin.pdf)
--   [Lazuli Notes (ECDSA based N-of-N Signatures for Certified
+  - [Lazuli Notes (ECDSA based N-of-N Signatures for Certified
     Post-Dated UTXOs)](https://github.com/jeremyrubin/lazuli)
--   [Bitcoin Covenants](https://fc16.ifca.ai/bitcoin/papers/MES16.pdf)
--   [CoinCovenants using SCIP signatures, an amusingly bad
+  - [Bitcoin Covenants](https://fc16.ifca.ai/bitcoin/papers/MES16.pdf)
+  - [CoinCovenants using SCIP signatures, an amusingly bad
     idea.](https://bitcointalk.org/index.php?topic=278122.0)
--   [Enhancing Bitcoin Transactions with
+  - [Enhancing Bitcoin Transactions with
     Covenants](https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf)
 
 ### Note on Similar Alternatives

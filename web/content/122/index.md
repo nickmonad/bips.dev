@@ -14,17 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0122.mediawiki"
 +++
 
-      BIP: 122
-      Layer: Applications
-      Title: URI scheme for Blockchain references / exploration
-      Author: Marco Pontello <marcopon@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0122
-      Status: Draft
-      Type: Standards Track
-      Created: 2015-08-29
-      License: PD
-      Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010712.html
+``` 
+  BIP: 122
+  Layer: Applications
+  Title: URI scheme for Blockchain references / exploration
+  Author: Marco Pontello <marcopon@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0122
+  Status: Draft
+  Type: Standards Track
+  Created: 2015-08-29
+  License: PD
+  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010712.html
+```
 
 ## Abstract
 
@@ -53,7 +55,7 @@ The URI follow this form:
 Where:
 
 | Element | Description                                                                                                                                  | Required?         |
-|---------|----------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
 | chain   | **chain ID** (see below) of the desired chain, leading 0s included. If omitted (which would be the usual case), Bitcoin main net is assumed. | optional          |
 | type    | tx                                                                                                                                           | for transactions. |
 | block   | for blocks (supports both hash or height).                                                                                                   |                   |
@@ -70,7 +72,7 @@ Where:
     blockheight = 1*15DIGIT ; 15 is somehow arbitrary, i.e. a "small" int.
     address = base58 ; https://en.wikipedia.org/wiki/Base58
 
-------------------------------------------------------------------------
+-----
 
 ### Definition of chain ID
 

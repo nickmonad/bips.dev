@@ -14,15 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0176.mediawiki"
 +++
 
-      BIP: 176
-      Title: Bits Denomination
-      Author: Jimmy Song <jaejoon@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0176
-      Status: Draft
-      Type: Informational
-      Created: 2017-12-12
-      License: BSD-2-Clause
+``` 
+  BIP: 176
+  Title: Bits Denomination
+  Author: Jimmy Song <jaejoon@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0176
+  Status: Draft
+  Type: Informational
+  Created: 2017-12-12
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -88,10 +90,10 @@ to "bits".
 The term "bit" has many different definitions, but the ones of
 particular note are these:
 
--   1 bit = 1/8 dollar (e.g. That candy cost me 2 bits)
--   bit meaning some amount of data (e.g. The first bit of the version
+  - 1 bit = 1/8 dollar (e.g. That candy cost me 2 bits)
+  - bit meaning some amount of data (e.g. The first bit of the version
     field is 0)
--   bit meaning strength of a cryptographic algorithm (e.g. 256-bit
+  - bit meaning strength of a cryptographic algorithm (e.g. 256-bit
     ECDSA is used in Bitcoin)
 
 The first is a bit dated and isn't likely to confuse people dealing with

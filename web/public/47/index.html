@@ -53,9 +53,9 @@
 transactions</li>
 <li>(18 Dec 2015) Update explanations to resolve FAQs</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <pre style="background-color:#fafafa;">
-<code>  BIP: 47
+<code><span style="color:#61676c;">  BIP: 47
   Layer: Applications
   Title: Reusable Payment Codes for Hierarchical Deterministic Wallets
   Author: Justus Ranvier &lt;justus@openbitcoinprivacyproject.org&gt;
@@ -64,7 +64,7 @@ transactions</li>
   Status: Draft
   Type: Informational
   Created: 2015-04-24
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP defines a technique for creating a payment code which can be
 publicly advertised and associated with a real-life identity without
 creating the loss of security or privacy inherent to P2PKH address
@@ -218,23 +218,17 @@ associated with Alice's notification address</li>
 </li>
 <li>Alice derives a unique shared secret using ECDH:
 <ol>
-<li>
-<p>Alice selects the private key corresponding to the designated
-pubkey:
-a</p>
-</li>
-<li>
-<p>Alice selects the public key associated with Bob's notification
+<li>Alice selects the private key corresponding to the designated
+pubkey:<pre style="background-color:#fafafa;">
+<code><span style="color:#61676c;">a
+</span></code></pre></li>
+<li>Alice selects the public key associated with Bob's notification
 address:
-B, where B = bG</p>
-</li>
-<li>
-<p>Alice calculates a secret point:
-S = aB</p>
-</li>
-<li>
-<p>Alice calculates a 64 byte blinding factor:
-s = HMAC-SHA512(x, o)</p>
+B, where B = bG</li>
+<li>Alice calculates a secret point:
+S = aB</li>
+<li>Alice calculates a 64 byte blinding factor:
+s = HMAC-SHA512(x, o)
 <ol>
 <li>&quot;x&quot; is the x value of the secret point</li>
 <li>&quot;o&quot; is the outpoint being spent by the designated input</li>
@@ -251,8 +245,8 @@ x' = x XOR (first 32 bytes of s)</li>
 c' = c XOR (last 32 bytes of s)</li>
 </ol>
 </li>
-<li>Alice adds an OP_RETURN output to her transaction which consists
-of P.</li>
+<li>Alice adds an OP_RETURN output to her transaction which consists of
+P.</li>
 </ol>
 <img src="bip-0047/reusable_payment_codes-01.png" />
 <ol>
@@ -264,29 +258,22 @@ if it contains a standard OP_RETURN output with an 80 byte payload
 <li>If the first byte of the payload in a notification transaction is
 0x01:
 <ol>
-<li>
-<p>Bob selects the designated pubkey:
-A, where A = aG</p>
-</li>
-<li>
-<p>Bob selects the private key associated with his notification
-address:
-b</p>
-</li>
-<li>
-<p>Bob calculates a secret point:
-S = bA</p>
-</li>
-<li>
-<p>Bob calculates the blinding factor:
-s = HMAC-SHA512(x, o)</p>
+<li>Bob selects the designated pubkey:
+A, where A = aG</li>
+<li>Bob selects the private key associated with his notification
+address:<pre style="background-color:#fafafa;">
+<code><span style="color:#61676c;">b
+</span></code></pre></li>
+<li>Bob calculates a secret point:
+S = bA</li>
+<li>Bob calculates the blinding factor:
+s = HMAC-SHA512(x, o)
 <ol>
 <li>&quot;x&quot; is the x value of the secret point</li>
 <li>&quot;o&quot; is the outpoint being spent by the designated input.</li>
 </ol>
 </li>
-<li>
-<p>Bob interprets the 80 byte payload as a payment code, except:</p>
+<li>Bob interprets the 80 byte payload as a payment code, except:
 <ol>
 <li>Replace the x value with x':
 x' = x XOR (first 32 bytes of s)</li>
@@ -294,14 +281,10 @@ x' = x XOR (first 32 bytes of s)</li>
 c' = c XOR (last 32 bytes of s)</li>
 </ol>
 </li>
-<li>
-<p>If the updated x value is a member of the secp256k1 group, the
-payment code is valid.</p>
-</li>
-<li>
-<p>If the updated x value is not a member of the secp256k1 group,
-the payment code is ignored.</p>
-</li>
+<li>If the updated x value is a member of the secp256k1 group, the
+payment code is valid.</li>
+<li>If the updated x value is not a member of the secp256k1 group,
+the payment code is ignored.</li>
 </ol>
 </li>
 </ol>
@@ -355,38 +338,31 @@ BIP44 address</li>
 derives a unique P2PKH address for the transaction using ECDH as
 follows:
 <ol>
-<li>
-<p>Alice selects the 0th private key derived from her payment code:
-a</p>
-</li>
-<li>
-<p>Alice selects the next unused public key derived from Bob's
+<li>Alice selects the 0th private key derived from her payment code:<pre style="background-color:#fafafa;">
+<code><span style="color:#61676c;">a
+</span></code></pre></li>
+<li>Alice selects the next unused public key derived from Bob's
 payment code, starting from zero:
-B, where B = bG</p>
+B, where B = bG
 <ol>
 <li>The &quot;next unused&quot; public key is based on an index specific
 to the Alice-Bob context, not global to either Alice or Bob</li>
 </ol>
 </li>
-<li>
-<p>Alice calculates a secret point:
-S = aB</p>
-</li>
-<li>
-<p>Alice calculates a scalar shared secret using the x value of S:
-s = SHA256(Sx)</p>
+<li>Alice calculates a secret point:
+S = aB</li>
+<li>Alice calculates a scalar shared secret using the x value of S:
+s = SHA256(Sx)
 <ol>
 <li>If the value of s is not in the secp256k1 group, Alice MUST
 increment the index used to derive Bob's public key and try
 again.</li>
 </ol>
 </li>
-<li>
-<p>Alice uses the scalar shared secret to calculate the ephemeral
+<li>Alice uses the scalar shared secret to calculate the ephemeral
 public key used to generate the P2PKH address for this
 transaction:
-B' = B + sG</p>
-</li>
+B' = B + sG</li>
 </ol>
 </li>
 </ol>
@@ -558,8 +534,9 @@ Bitmessage address:</p>
 <ol>
 <li>Derive a Bitmessage signing key as:
 B = payment code / 0 / 0</li>
-<li>Initialize a counter at 1:
-n</li>
+<li>Initialize a counter at 1:<pre style="background-color:#fafafa;">
+<code><span style="color:#61676c;">n
+</span></code></pre></li>
 <li>Derive a candidate encryption key as:
 B' = payment code / 0 / n</li>
 <li>If the combination of B and B` do not form a valid Bitmessage
@@ -607,7 +584,7 @@ address</li>
 </ol>
 </li>
 </ol>
-<!-- -->
+<!-- end list -->
 <pre style="background-color:#fafafa;">
 <code>OP_1 &lt;Bob's payment code identifier&gt; &lt;change address pubkey&gt; OP_2 OP_CHECKMULTISIG
 </code></pre>

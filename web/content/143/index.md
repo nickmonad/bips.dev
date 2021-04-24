@@ -14,17 +14,19 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki"
 +++
 
-      BIP: 143
-      Layer: Consensus (soft fork)
-      Title: Transaction Signature Verification for Version 0 Witness Program
-      Author: Johnson Lau <jl2012@xbt.hk>
-              Pieter Wuille <pieter.wuille@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0143
-      Status: Final
-      Type: Standards Track
-      Created: 2016-01-03
-      License: PD
+``` 
+  BIP: 143
+  Layer: Consensus (soft fork)
+  Title: Transaction Signature Verification for Version 0 Witness Program
+  Author: Johnson Lau <jl2012@xbt.hk>
+          Pieter Wuille <pieter.wuille@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0143
+  Status: Final
+  Type: Standards Track
+  Created: 2016-01-03
+  License: PD
+```
 
 ## Abstract
 
@@ -41,12 +43,12 @@ script system: `CHECKSIG`, `CHECKSIGVERIFY`, `CHECKMULTISIG`,
 `NONE`, `SINGLE`, `ANYONECANPAY`), a transaction digest is generated
 with a double SHA256 of a serialized subset of the transaction, and the
 signature is verified against this digest with a given public key. The
-detailed procedure is described in a Bitcoin Wiki article. [1]
+detailed procedure is described in a Bitcoin Wiki article. \[1\]
 
 Unfortunately, there are at least 2 weaknesses in the original
 SignatureHash transaction digest algorithm:
 
--   For the verification of each signature, the amount of data hashing
+  - For the verification of each signature, the amount of data hashing
     is proportional to the size of the transaction. Therefore, data
     hashing grows in O(n<sup>2</sup>) as the number of sigops in a
     transaction increases. While a 1 MB block would normally take 2
@@ -54,8 +56,8 @@ SignatureHash transaction digest algorithm:
     transaction with 5569 sigops may take 25 seconds to verify. This
     could be fixed by optimizing the digest algorithm by introducing
     some reusable “midstate”, so the time complexity becomes O(n).
-    [2][3][4]
--   The algorithm does not involve the amount of Bitcoin being spent by
+    \[2\]\[3\]\[4\]
+  - The algorithm does not involve the amount of Bitcoin being spent by
     the input. This is usually not a problem for online network nodes as
     they could request for the specified transaction to acquire the
     output value. For an offline transaction signing device ("cold
@@ -67,7 +69,7 @@ SignatureHash transaction digest algorithm:
     input value of part of the transaction digest, a cold wallet may
     safely sign a transaction by learning the value from an untrusted
     source. In the case that a wrong value is provided and signed, the
-    signature would be invalid and no funding might be lost. [5]
+    signature would be invalid and no funding might be lost. \[5\]
 
 Deploying the aforementioned fixes in the original script system is not
 a simple task. That would be either a hardfork, or a softfork for new
@@ -76,7 +78,7 @@ introduction of segregated witness softfork offers an opportunity to
 define a different set of script semantics without disrupting the
 original system, as the unupgraded nodes would always consider such a
 transaction output is spendable by arbitrary signature or no signature
-at all. [6]
+at all. \[6\]
 
 ## Specification
 
@@ -113,17 +115,17 @@ followings:
     each pair is located at an equivalent index.
 
 The items 1, 4, 7, 9, 10 have the same meaning as the original
-algorithm. [7]
+algorithm. \[7\]
 
 The item 5:
 
--   For `P2WPKH` witness program, the `scriptCode` is
+  - For `P2WPKH` witness program, the `scriptCode` is
     `0x1976a914{20-byte-pubkey-hash}88ac`.
--   For `P2WSH` witness program,
-    -   if the `witnessScript` does not contain any `OP_CODESEPARATOR`,
+  - For `P2WSH` witness program,
+      - if the `witnessScript` does not contain any `OP_CODESEPARATOR`,
         the `scriptCode` is the `witnessScript` serialized as scripts
         inside `CTxOut`.
-    -   if the `witnessScript` contains any `OP_CODESEPARATOR`, the
+      - if the `witnessScript` contains any `OP_CODESEPARATOR`, the
         `scriptCode` is the `witnessScript` but removing everything up
         to and including the last executed `OP_CODESEPARATOR` before the
         signature checking opcode being executed, serialized as scripts
@@ -135,27 +137,27 @@ input.
 
 `hashPrevouts`:
 
--   If the `ANYONECANPAY` flag is not set, `hashPrevouts` is the double
+  - If the `ANYONECANPAY` flag is not set, `hashPrevouts` is the double
     SHA256 of the serialization of all input outpoints;
--   Otherwise, `hashPrevouts` is a `uint256` of `0x0000......0000`.
+  - Otherwise, `hashPrevouts` is a `uint256` of `0x0000......0000`.
 
 `hashSequence`:
 
--   If none of the `ANYONECANPAY`, `SINGLE`, `NONE` sighash type is set,
+  - If none of the `ANYONECANPAY`, `SINGLE`, `NONE` sighash type is set,
     `hashSequence` is the double SHA256 of the serialization of
     `nSequence` of all inputs;
--   Otherwise, `hashSequence` is a `uint256` of `0x0000......0000`.
+  - Otherwise, `hashSequence` is a `uint256` of `0x0000......0000`.
 
 `hashOutputs`:
 
--   If the sighash type is neither `SINGLE` nor `NONE`, `hashOutputs` is
+  - If the sighash type is neither `SINGLE` nor `NONE`, `hashOutputs` is
     the double SHA256 of the serialization of all output amount (8-byte
     little endian) with `scriptPubKey` (serialized as scripts inside
     CTxOuts);
--   If sighash type is `SINGLE` and the input index is smaller than the
+  - If sighash type is `SINGLE` and the input index is smaller than the
     number of outputs, `hashOutputs` is the double SHA256 of the output
     amount with `scriptPubKey` of the same index as the input;
--   Otherwise, `hashOutputs` is a `uint256` of `0x0000......0000`.[8]
+  - Otherwise, `hashOutputs` is a `uint256` of `0x0000......0000`.\[8\]
 
 The `hashPrevouts`, `hashSequence`, and `hashOutputs` calculated in an
 earlier verification may be reused in other inputs of the same
@@ -712,7 +714,7 @@ in this proposal. Therefore, the private keys are unknown.
 `                   21034ffc99dd9a79dd3cb31e2ab3e0b09e0e67db41ac068c625cd1f491576016c84e`  
 `                   9552af4830450220487fb382c4974de3f7d834c1b617fe15860828c7f96454490edd6d891556dcc9022100baf95feb48f845d5bfc9882eb6aeefa1bc3790e39f59eaa46ff7f15ae626c53e0148304502205286f726690b2e9b0207f0345711e63fa7012045b9eb0f19c2458ce1db90cf43022100e89f17f86abc5b149eba4115d4f128bcf45d77fb3ecdd34f594091340c0395960175`
 
-The new serialization format is described in BIP144 [9]
+The new serialization format is described in BIP144 \[9\]
 
 ## Deployment
 
@@ -737,28 +739,27 @@ redefined sigops, as anyone-can-spend scripts.
 
 This document is placed in the public domain.
 
-[1] [1](https://en.bitcoin.it/wiki/OP_CHECKSIG)
+1.  [1](https://en.bitcoin.it/wiki/OP_CHECKSIG)
 
-[2] [CVE-2013-2292](https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292)
+2.  [CVE-2013-2292](https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292)
 
-[3] [New Bitcoin vulnerability: A transaction that takes at least 3
-minutes to verify](https://bitcointalk.org/?topic=140078)
+3.  [New Bitcoin vulnerability: A transaction that takes at least 3
+    minutes to verify](https://bitcointalk.org/?topic=140078)
 
-[4] [The Megatransaction: Why Does It Take 25
-Seconds?](http://rusty.ozlabs.org/?p=522)
+4.  [The Megatransaction: Why Does It Take 25
+    Seconds?](http://rusty.ozlabs.org/?p=522)
 
-[5] [SIGHASH\_WITHINPUTVALUE: Super-lightweight HW wallets and offline
-data](https://bitcointalk.org/index.php?topic=181734.0)
+5.  [SIGHASH\_WITHINPUTVALUE: Super-lightweight HW wallets and offline
+    data](https://bitcointalk.org/index.php?topic=181734.0)
 
-[6] [BIP141: Segregated Witness (Consensus
-layer)](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)
+6.  [BIP141: Segregated Witness (Consensus
+    layer)](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)
 
-[7] 
+7.  
+8.  In the original algorithm, a `uint256` of `0x0000......0001` is
+    committed if the input index for a `SINGLE` signature is greater
+    than or equal to the number of outputs. In this BIP a
+    `0x0000......0000` is committed, without changing the semantics.
 
-[8] In the original algorithm, a `uint256` of `0x0000......0001` is
-committed if the input index for a `SINGLE` signature is greater than or
-equal to the number of outputs. In this BIP a `0x0000......0000` is
-committed, without changing the semantics.
-
-[9] [BIP144: Segregated Witness (Peer
-Services)](bip-0144.mediawiki "wikilink")
+9.  [BIP144: Segregated Witness (Peer
+    Services)](bip-0144.mediawiki "wikilink")

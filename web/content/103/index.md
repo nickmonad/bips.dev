@@ -14,16 +14,18 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0103.mediawiki"
 +++
 
-      BIP: 103
-      Layer: Consensus (hard fork)
-      Title: Block size following technological growth
-      Author: Pieter Wuille <pieter.wuille@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0103
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2015-07-21
-      License: BSD-2-Clause
+``` 
+  BIP: 103
+  Layer: Consensus (hard fork)
+  Title: Block size following technological growth
+  Author: Pieter Wuille <pieter.wuille@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0103
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2015-07-21
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -94,7 +96,7 @@ enough in the future.
 The block size limitation is replaced by the function below, applied to
 the median of the timestamps of the previous 11 blocks, or in code
 terms: the block size limit for pindexBlock is
-GetMaxBlockSize(pindexBlock-&gt;pprev-&gt;GetMedianTimePast()).
+GetMaxBlockSize(pindexBlock-\>pprev-\>GetMedianTimePast()).
 
 The sigop limit scales proportionally.
 

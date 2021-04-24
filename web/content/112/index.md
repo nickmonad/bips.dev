@@ -14,18 +14,20 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0112.mediawiki"
 +++
 
-      BIP: 112
-      Layer: Consensus (soft fork)
-      Title: CHECKSEQUENCEVERIFY
-      Author: BtcDrak <btcdrak@gmail.com>
-              Mark Friedenbach <mark@friedenbach.org>
-              Eric Lombrozo <elombrozo@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0112
-      Status: Final
-      Type: Standards Track
-      Created: 2015-08-10
-      License: PD
+``` 
+  BIP: 112
+  Layer: Consensus (soft fork)
+  Title: CHECKSEQUENCEVERIFY
+  Author: BtcDrak <btcdrak@gmail.com>
+          Mark Friedenbach <mark@friedenbach.org>
+          Eric Lombrozo <elombrozo@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0112
+  Status: Final
+  Type: Standards Track
+  Created: 2015-08-10
+  License: PD
+```
 
 ## Abstract
 
@@ -40,15 +42,15 @@ CHECKSEQUENCEVERIFY redefines the existing NOP3 opcode. When executed,
 if any of the following conditions are true, the script interpreter will
 terminate with an error:
 
--   the stack is empty; or
--   the top item on the stack is less than 0; or
--   the top item on the stack has the disable flag (1 &lt;&lt; 31)
-    unset; and
-    -   the transaction version is less than 2; or
-    -   the transaction input sequence number disable flag (1
-        &lt;&lt; 31) is set; or
-    -   the relative lock-time type is not the same; or
-    -   the top stack item is greater than the transaction input
+  - the stack is empty; or
+  - the top item on the stack is less than 0; or
+  - the top item on the stack has the disable flag (1 \<\< 31) unset;
+    and
+      - the transaction version is less than 2; or
+      - the transaction input sequence number disable flag (1 \<\< 31)
+        is set; or
+      - the relative lock-time type is not the same; or
+      - the top stack item is greater than the transaction input
         sequence (when masked according to the BIP68);
 
 Otherwise, script execution will continue as if a NOP had been executed.
@@ -275,12 +277,12 @@ semantics and detailed rationale for those semantics.
     /* If this flag set, CTxIn::nSequence is NOT interpreted as a
      * relative lock-time. */
     static const uint32_t SEQUENCE_LOCKTIME_DISABLE_FLAG = (1 << 31);
-
+    
     /* If CTxIn::nSequence encodes a relative lock-time and this flag
      * is set, the relative lock-time has units of 512 seconds,
      * otherwise it specifies blocks with a granularity of 1. */
     static const uint32_t SEQUENCE_LOCKTIME_TYPE_FLAG = (1 << 22);
-
+    
     /* If CTxIn::nSequence encodes a relative lock-time, this mask is
      * applied to extract that lock-time from the sequence field. */
     static const uint32_t SEQUENCE_LOCKTIME_MASK = 0x0000ffff;
@@ -294,10 +296,10 @@ semantics and detailed rationale for those semantics.
             }
             break;
         }
-
+    
         if (stack.size() < 1)
            return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
-
+    
         // Note that elsewhere numeric opcodes are limited to
         // operands in the range -2**31+1 to 2**31-1, however it is
         // legal for opcodes to produce results exceeding that
@@ -308,23 +310,23 @@ semantics and detailed rationale for those semantics.
         // to 5-byte bignums, which are good until 2**39-1, well
         // beyond the 2**32-1 limit of the nSequence field itself.
         const CScriptNum nSequence(stacktop(-1), fRequireMinimal, 5);
-
+    
         // In the rare event that the argument may be < 0 due to
         // some arithmetic being done first, you can always use
         // 0 MAX CHECKSEQUENCEVERIFY.
         if (nSequence < 0)
             return set_error(serror, SCRIPT_ERR_NEGATIVE_LOCKTIME);
-
+    
         // To provide for future soft-fork extensibility, if the
         // operand has the disabled lock-time flag set,
         // CHECKSEQUENCEVERIFY behaves as a NOP.
         if ((nSequence & CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG) != 0)
             break;
-
+    
         // Compare the specified sequence number with the input.
         if (!checker.CheckSequence(nSequence))
             return set_error(serror, SCRIPT_ERR_UNSATISFIED_LOCKTIME);
-
+    
         break;
     }
         
@@ -333,25 +335,25 @@ semantics and detailed rationale for those semantics.
         // Relative lock times are supported by comparing the passed
         // in operand to the sequence number of the input.
         const int64_t txToSequence = (int64_t)txTo->vin[nIn].nSequence;
-
+    
         // Fail if the transaction's version number is not set high
         // enough to trigger BIP 68 rules.
         if (static_cast<uint32_t>(txTo->nVersion) < 2)
             return false;
-
+    
         // Sequence numbers with their most significant bit set are not
         // consensus constrained. Testing that the transaction's sequence
         // number do not have this bit set prevents using this property
         // to get around a CHECKSEQUENCEVERIFY check.
         if (txToSequence & CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG)
             return false;
-
+    
         // Mask off any bits that do not have consensus-enforced meaning
         // before doing the integer comparisons
         const uint32_t nLockTimeMask = CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG | CTxIn::SEQUENCE_LOCKTIME_MASK;
         const int64_t txToSequenceMasked = txToSequence & nLockTimeMask;
         const CScriptNum nSequenceMasked = nSequence & nLockTimeMask;
-
+    
         // There are two kinds of nSequence: lock-by-blockheight
         // and lock-by-blocktime, distinguished by whether
         // nSequenceMasked < CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG.
@@ -364,12 +366,12 @@ semantics and detailed rationale for those semantics.
             (txToSequenceMasked >= CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG && nSequenceMasked >= CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG)
         ))
             return false;
-
+    
         // Now that we know we're comparing apples-to-apples, the
         // comparison is a simple numeric one.
         if (nSequenceMasked > txToSequenceMasked)
             return false;
-
+    
         return true;
     }
 
@@ -419,8 +421,7 @@ Relative lock-time through consensus-enforced sequence numbers
 [BIP 65](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki)
 OP\_CHECKLOCKTIMEVERIFY
 
-[BIP
-113](https://github.com/bitcoin/bips/blob/master/bip-0113.mediawiki)
+[BIP 113](https://github.com/bitcoin/bips/blob/master/bip-0113.mediawiki)
 Median past block time for time-lock constraints
 
 [HTLCs using OP\_CHECKSEQUENCEVERIFY/OP\_LOCKTIMEVERIFY and revocation

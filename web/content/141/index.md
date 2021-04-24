@@ -14,18 +14,20 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki"
 +++
 
-      BIP: 141
-      Layer: Consensus (soft fork)
-      Title: Segregated Witness (Consensus layer)
-      Author: Eric Lombrozo <elombrozo@gmail.com>
-              Johnson Lau <jl2012@xbt.hk>
-              Pieter Wuille <pieter.wuille@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0141
-      Status: Final
-      Type: Standards Track
-      Created: 2015-12-21
-      License: PD
+``` 
+  BIP: 141
+  Layer: Consensus (soft fork)
+  Title: Segregated Witness (Consensus layer)
+  Author: Eric Lombrozo <elombrozo@gmail.com>
+          Johnson Lau <jl2012@xbt.hk>
+          Pieter Wuille <pieter.wuille@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0141
+  Status: Final
+  Type: Standards Track
+  Created: 2015-12-21
+  License: PD
+```
 
 ## Abstract
 
@@ -56,15 +58,15 @@ transaction merkle tree, several problems are fixed:
     identification. As a solution of transaction malleability, this is
     superior to the canonical signature approach
     ([BIP62](https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki)):
-    -   It prevents involuntary transaction malleability for any type of
+      - It prevents involuntary transaction malleability for any type of
         scripts, as long as all inputs are signed (with at least one
         CHECKSIG or CHECKMULTISIG operation)
-    -   In the case of an m-of-n CHECKMULTISIG script, a transaction is
+      - In the case of an m-of-n CHECKMULTISIG script, a transaction is
         malleable only with agreement of m private key holders (as
         opposed to only 1 private key holder with BIP62)
-    -   It prevents involuntary transaction malleability due to unknown
+      - It prevents involuntary transaction malleability due to unknown
         ECDSA signature malleability
-    -   It allows creation of unconfirmed transaction dependency chains
+      - It allows creation of unconfirmed transaction dependency chains
         without counterparty risk, an important feature for offchain
         protocols such as the Lightning Network
 2.  **Transmission of signature data becomes optional**. It is needed
@@ -75,12 +77,12 @@ transaction merkle tree, several problems are fixed:
 3.  **Some constraints could be bypassed with a soft fork** by moving
     part of the transaction data to a structure unknown to current
     protocol, for example:
-    -   Size of witness could be ignored / discounted when calculating
+      - Size of witness could be ignored / discounted when calculating
         the block size, effectively increasing the block size to some
         extent
-    -   Hard coded constants, such as maximum data push size (520 bytes)
+      - Hard coded constants, such as maximum data push size (520 bytes)
         or sigops limit could be reevaluated or removed
-    -   New script system could be introduced without any limitation
+      - New script system could be introduced without any limitation
         from the existing script semantic. For example, a new
         transaction digest algorithm for transaction signature
         verification is described in
@@ -175,36 +177,37 @@ program, as well as the form of the scriptSig:
 
 If the version byte is 0, and the witness program is 20 bytes:
 
--   It is interpreted as a pay-to-witness-public-key-hash (P2WPKH)
+  - It is interpreted as a pay-to-witness-public-key-hash (P2WPKH)
     program.
--   The witness must consist of exactly 2 items (≤ 520 bytes each). The
+  - The witness must consist of exactly 2 items (≤ 520 bytes each). The
     first one a signature, and the second one a public key.
--   The HASH160 of the public key must match the 20-byte witness
+  - The HASH160 of the public key must match the 20-byte witness
     program.
--   After normal script evaluation, the signature is verified against
+  - After normal script evaluation, the signature is verified against
     the public key with CHECKSIG operation. The verification must result
     in a single TRUE on the stack.
 
 If the version byte is 0, and the witness program is 32 bytes:
 
--   It is interpreted as a pay-to-witness-script-hash (P2WSH) program.
--   The witness must consist of an input stack to feed to the script,
+  - It is interpreted as a pay-to-witness-script-hash (P2WSH) program.
+  - The witness must consist of an input stack to feed to the script,
     followed by a serialized script (`witnessScript`).
--   The `witnessScript` (≤ 10,000 bytes) is popped off the initial
+  - The `witnessScript` (≤ 10,000 bytes) is popped off the initial
     witness stack. SHA256 of the `witnessScript` must match the 32-byte
     witness program.
--   The `witnessScript` is deserialized, and executed after normal
+  - The `witnessScript` is deserialized, and executed after normal
     script evaluation with the remaining witness stack (≤ 520 bytes for
     each stack item).
--   The script must not fail, and result in exactly a single TRUE on the
+  - The script must not fail, and result in exactly a single TRUE on the
     stack.
 
 If the version byte is 0, but the witness program is neither 20 nor 32
-bytes, the script must fail.[1]
+bytes, the script must fail.\[1\]
 
 If the version byte is 1 to 16, no further interpretation of the witness
 program or witness stack happens, and there is no size restriction for
-the witness stack. These versions are reserved for future extensions.[2]
+the witness stack. These versions are reserved for future
+extensions.\[2\]
 
 ### Other consensus critical limits
 
@@ -214,7 +217,7 @@ Blocks are currently limited to 1,000,000 bytes (1MB) total size. We
 change this restriction as follows:
 
 *Block weight* is defined as *Base size* \* 3 + *Total size*.
-(rationale[3])
+(rationale\[3\])
 
 *Base size* is the block size in bytes with the original transaction
 serialization without any witness-related data, as seen by a
@@ -288,7 +291,7 @@ semantics carefully:
 
 1.  Only compressed public keys are accepted in P2WPKH and P2WSH (See
     [BIP143](https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki#Restrictions_on_public_key_type))
-2.  The argument of OP\_IF/NOTIF in P2WSH must be minimal[4]
+2.  The argument of OP\_IF/NOTIF in P2WSH must be minimal\[4\]
 3.  Signature(s) must be null vector(s) if an OP\_CHECKSIG or
     OP\_CHECKMULTISIG is failed (for both pre-segregated witness script
     and P2WSH. See
@@ -400,20 +403,19 @@ also requires 35 bytes in scriptSig.
 
 ### Extensible commitment structure
 
-The new commitment in coinbase transaction is a hash of the
-`witness root hash` and a `witness reserved value`. The
-`witness reserved value` currently has no consensus meaning, but in the
-future allows new commitment values for future softforks. For example,
-if a new consensus-critical commitment is required in the future, the
-commitment in coinbase becomes:
+The new commitment in coinbase transaction is a hash of the `witness
+root hash` and a `witness reserved value`. The `witness reserved value`
+currently has no consensus meaning, but in the future allows new
+commitment values for future softforks. For example, if a new
+consensus-critical commitment is required in the future, the commitment
+in coinbase becomes:
 
 ` Double-SHA256(Witness root hash|Hash(new commitment|witness reserved value))`
 
-For backward compatibility, the
-`Hash(new commitment|witness reserved value)` will go to the coinbase
-witness, and the `witness reserved value` will be recorded in another
-location specified by the future softfork. Any number of new commitment
-could be added in this way.
+For backward compatibility, the `Hash(new commitment|witness reserved
+value)` will go to the coinbase witness, and the `witness reserved
+value` will be recorded in another location specified by the future
+softfork. Any number of new commitment could be added in this way.
 
 Any commitments that are not consensus-critical to Bitcoin, such as
 merge-mining, MUST NOT use the `witness reserved value` to preserve the
@@ -539,19 +541,19 @@ the new features.
 
 **What a non-upgraded wallet can do**
 
--   Receiving bitcoin from non-upgraded and upgraded wallets
--   Sending bitcoin to non-upgraded and upgraded wallets with
+  - Receiving bitcoin from non-upgraded and upgraded wallets
+  - Sending bitcoin to non-upgraded and upgraded wallets with
     traditional P2PKH address (without any benefit of segregated
     witness)
--   Sending bitcoin to upgraded wallets using a P2SH address
--   Sending bitcoin to upgraded wallets using a native witness program
+  - Sending bitcoin to upgraded wallets using a P2SH address
+  - Sending bitcoin to upgraded wallets using a native witness program
     through
     [BIP70](https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki)
     payment protocol
 
 **What a non-upgraded wallet cannot do**
 
--   Validating segregated witness transaction. It assumes such a
+  - Validating segregated witness transaction. It assumes such a
     transaction is always valid
 
 ## Deployment
@@ -582,39 +584,37 @@ this BIP and Luke-Jr for figuring out how to deploy this as a soft fork.
 
 ## References
 
--   [BIP16 Pay to Script Hash](bip-0016.mediawiki "wikilink")
--   [BIP143 Transaction Signature Verification for Version 0 Witness
+  - [BIP16 Pay to Script Hash](bip-0016.mediawiki "wikilink")
+  - [BIP143 Transaction Signature Verification for Version 0 Witness
     Program](bip-0143.mediawiki "wikilink")
--   [BIP144 Segregated Witness (Peer
+  - [BIP144 Segregated Witness (Peer
     Services)](bip-0144.mediawiki "wikilink")
--   [BIP173 Base32 address format for native v0-16 witness
+  - [BIP173 Base32 address format for native v0-16 witness
     outputs](bip-0173.mediawiki "wikilink")
 
 ## Copyright
 
 This document is placed in the public domain.
 
-[1] For example, a scriptPubKey with OP\_0 followed by a 40-byte
-non-zero data push will fail due to incorrect program size. However, a
-scriptPubKey with OP\_0 followed by a 41-byte non-zero data push will
-pass, since it is not considered to be a witness program
-
-[2] For backward compatibility, for any version byte from 0 to 16, the
-script must fail if the witness program has a `CastToBool` value of
-zero. However, having a hash like this is a successful preimage attack
-against the hash function, and the risk is negligible.
-
-[3] Rationale of using a single composite constraint, instead of two
-separate limits such as 1MB base data and 3MB witness data: Using two
-separate limits would make mining and fee estimation nearly impossible.
-Miners would need to solve a complex non-linear optimization problem to
-find the set of transactions that maximize fees given both constraints,
-and wallets would not be able to know what to pay as it depends on which
-of the two conditions is most constrained by the time miners try to
-produce blocks with their transactions in. Another problem with such an
-approach is freeloading. Once a set of transactions hit the base data
-1MB constraint, up to 3MB extra data could be added to the witness by
-just minimally increasing the fee. The marginal cost for extra witness
-space effectively becomes zero in that case.
-
-[4] <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html>
+1.  For example, a scriptPubKey with OP\_0 followed by a 40-byte
+    non-zero data push will fail due to incorrect program size. However,
+    a scriptPubKey with OP\_0 followed by a 41-byte non-zero data push
+    will pass, since it is not considered to be a witness program
+2.  For backward compatibility, for any version byte from 0 to 16, the
+    script must fail if the witness program has a `CastToBool` value of
+    zero. However, having a hash like this is a successful preimage
+    attack against the hash function, and the risk is negligible.
+3.  Rationale of using a single composite constraint, instead of two
+    separate limits such as 1MB base data and 3MB witness data: Using
+    two separate limits would make mining and fee estimation nearly
+    impossible. Miners would need to solve a complex non-linear
+    optimization problem to find the set of transactions that maximize
+    fees given both constraints, and wallets would not be able to know
+    what to pay as it depends on which of the two conditions is most
+    constrained by the time miners try to produce blocks with their
+    transactions in. Another problem with such an approach is
+    freeloading. Once a set of transactions hit the base data 1MB
+    constraint, up to 3MB extra data could be added to the witness by
+    just minimally increasing the fee. The marginal cost for extra
+    witness space effectively becomes zero in that case.
+4.  <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html>

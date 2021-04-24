@@ -14,16 +14,18 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0018.mediawiki"
 +++
 
-      BIP: 18
-      Layer: Consensus (soft fork)
-      Title: hashScriptCheck
-      Author: Luke Dashjr <luke+bip17@dashjr.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0018
-      Status: Proposed
-      Type: Standards Track
-      Created: 2012-01-27
-      License: BSD-2-Clause
+``` 
+  BIP: 18
+  Layer: Consensus (soft fork)
+  Title: hashScriptCheck
+  Author: Luke Dashjr <luke+bip17@dashjr.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0018
+  Status: Proposed
+  Type: Standards Track
+  Created: 2012-01-27
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -58,12 +60,12 @@ addresses.
 
 To replace these, there are 3 new elements:
 
--   dataSig is included in place of scriptSig in transaction inputs, and
+  - dataSig is included in place of scriptSig in transaction inputs, and
     contains multiple serialized data elements
--   scriptCheck is the final element of dataSig, and is executed with
+  - scriptCheck is the final element of dataSig, and is executed with
     the preceding dataSig elements preloaded onto the stack (the element
     immediately before scriptCheck is the top of the stack)
--   hashScriptCheck is included in place of scriptPubKey in transaction
+  - hashScriptCheck is included in place of scriptPubKey in transaction
     outputs, to specify the hash of the scriptCheck allowed to redeem it
 
 dataSig is to be encoded the same as a push-only script.
@@ -84,14 +86,14 @@ scriptSig+scriptPubKey rather than dataSig+scriptCheck+hashScriptCheck.
 
 A hashScriptCheck-compliant input is valid only if:
 
--   dataSig MUST NOT contain any operations other than "push data" (it
+  - dataSig MUST NOT contain any operations other than "push data" (it
     is data, not a script; no mixing scriptSig with hashScriptCheck)
--   scriptCheck MUST hash (using Bitcoin's Hash160 algorithm) to the
+  - scriptCheck MUST hash (using Bitcoin's Hash160 algorithm) to the
     output's hashScriptCheck.
--   scriptCheck MUST be executed with the dataSig-based stack specified
+  - scriptCheck MUST be executed with the dataSig-based stack specified
     above (ie, not including scriptCheck itself) to perform validation
     (this does not imply clients are required to validate transactions).
--   scriptCheck must not abort, and must leave a true value on the top
+  - scriptCheck must not abort, and must leave a true value on the top
     of the stack. This is the current behaviour for
     scriptSig+scriptPubKey.
 
@@ -121,11 +123,11 @@ contribute to the maximum number allowed per block (20,000) as follows:
 
 Examples:
 
-+3 signature operations:
+\+3 signature operations:
 
 `   2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG`
 
-+22 signature operations
+\+22 signature operations
 
 `   OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF`
 
@@ -188,7 +190,7 @@ BIP, but will do no other validation.
 Avoiding a block-chain split by malicious pay-to-script transactions
 requires careful handling of one case:
 
--   A pay-to-script-hash transaction that is invalid for new
+  - A pay-to-script-hash transaction that is invalid for new
     clients/miners but valid for old clients/miners.
 
 To gracefully upgrade and ensure no long-lasting block-chain split
@@ -226,9 +228,9 @@ implementing others.
 
 ## See Also
 
--   The [Address format for Pay to Script Hash
+  - The [Address format for Pay to Script Hash
     BIP](bip-0013.mediawiki "wikilink")
--   [BIP 16 - Pay to Script Hash (aka
+  - [BIP 16 - Pay to Script Hash (aka
     "/P2SH/")](bip-0016.mediawiki "wikilink")
--   M-of-N Multisignature Transactions [BIP
+  - M-of-N Multisignature Transactions [BIP
     11](bip-0011.mediawiki "wikilink")

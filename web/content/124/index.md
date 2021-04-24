@@ -14,18 +14,20 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0124.mediawiki"
 +++
 
-      BIP: 124
-      Layer: Applications
-      Title: Hierarchical Deterministic Script Templates
-      Author: Eric Lombrozo <eric@ciphrex.com>
-              William Swanson <swansontec@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0124
-      Status: Rejected
-      Type: Informational
-      Created: 2015-11-20
-      License: PD
-      Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-November/011795.html
+``` 
+  BIP: 124
+  Layer: Applications
+  Title: Hierarchical Deterministic Script Templates
+  Author: Eric Lombrozo <eric@ciphrex.com>
+          William Swanson <swansontec@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0124
+  Status: Rejected
+  Type: Informational
+  Created: 2015-11-20
+  License: PD
+  Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-November/011795.html
+```
 
 ## Abstract
 
@@ -170,12 +172,12 @@ The *k*th script with timeout **t** is given by
 
 ## References
 
--   [BIP16 - Pay to Script Hash](bip-0016.mediawiki "wikilink")
--   [BIP32 - Hierarchical Deterministic
+  - [BIP16 - Pay to Script Hash](bip-0016.mediawiki "wikilink")
+  - [BIP32 - Hierarchical Deterministic
     Wallets](bip-0032.mediawiki "wikilink")
--   [BIP65 - OP\_CHECKLOCKTIMEVERIFY](bip-0065.mediawiki "wikilink")
--   [BIP112 - CHECKSEQUENCEVERIFY](bip-0112.mediawiki "wikilink")
--   [Lightning Network
+  - [BIP65 - OP\_CHECKLOCKTIMEVERIFY](bip-0065.mediawiki "wikilink")
+  - [BIP112 - CHECKSEQUENCEVERIFY](bip-0112.mediawiki "wikilink")
+  - [Lightning Network
     Whitepaper](https://lightning.network/lightning-network-paper.pdf "wikilink")
 
 ## Copyright

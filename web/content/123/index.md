@@ -14,16 +14,18 @@ status = ["Active"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0123.mediawiki"
 +++
 
-      BIP: 123
-      Title: BIP Classification
-      Author: Eric Lombrozo <elombrozo@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0123
-      Status: Active
-      Type: Process
-      Created: 2015-08-26
-      License: CC0-1.0
-               GNU-All-Permissive
+``` 
+  BIP: 123
+  Title: BIP Classification
+  Author: Eric Lombrozo <elombrozo@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0123
+  Status: Active
+  Type: Process
+  Created: 2015-08-26
+  License: CC0-1.0
+           GNU-All-Permissive
+```
 
 ## Abstract
 
@@ -63,7 +65,7 @@ Standards BIPs are placed in one of four layers:
 
 Non-standards BIPs may be placed in these layers, or none at all.
 
-### 1. Consensus Layer
+### 1\. Consensus Layer
 
 The consensus layer defines cryptographic commitment structures. Its
 purpose is ensuring that anyone can locally evaluate whether a
@@ -89,7 +91,7 @@ the old rules continue to be invalid under the new rules.
 In a hard fork, structures that were invalid under the old rules become
 valid under the new rules.
 
-### 2. Peer Services Layer
+### 2\. Peer Services Layer
 
 The peer services layer specifies how nodes find each other and
 propagate messages.
@@ -102,7 +104,7 @@ with existing services, then gradually deprecate older services. In this
 manner, the entire network can be upgraded without serious risks of
 service disruption.
 
-### 3. API/RPC Layer
+### 3\. API/RPC Layer
 
 The API/RPC layer specifies higher level calls accessible to
 applications. Support for these BIPs is not required for basic network
@@ -111,7 +113,7 @@ interoperability but might be expected by some client applications.
 There's room at this layer to allow for competing standards without
 breaking basic network interoperability.
 
-### 4. Applications Layer
+### 4\. Applications Layer
 
 The applications layer specifies high level structures, abstractions,
 and conventions that allow different applications to support similar
@@ -120,7 +122,7 @@ features and share data.
 ## Classification of existing BIPs
 
 | Number                               | Layer                 | Title                                                                                 | Owner                                                    | Type          | Status    |
-|--------------------------------------|-----------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------|---------------|-----------|
+| ------------------------------------ | --------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------- | --------- |
 | [1](bip-0001.mediawiki "wikilink")   |                       | BIP Purpose and Guidelines                                                            | Amir Taaki                                               | Process       | Active    |
 | [2](bip-0002.mediawiki "wikilink")   |                       | BIP process, revised                                                                  | Luke Dashjr                                              | Process       | Draft     |
 | [9](bip-0009.mediawiki "wikilink")   |                       | Version bits with timeout and delay                                                   | Pieter Wuille, Peter Todd, Greg Maxwell, Rusty Russell   | Informational | Final     |

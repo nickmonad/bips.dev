@@ -14,17 +14,19 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki"
 +++
 
-      BIP: 144
-      Layer: Peer Services
-      Title: Segregated Witness (Peer Services)
-      Author: Eric Lombrozo <elombrozo@gmail.com>
-              Pieter Wuille <pieter.wuille@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0144
-      Status: Final
-      Type: Standards Track
-      Created: 2016-01-08
-      License: PD
+``` 
+  BIP: 144
+  Layer: Peer Services
+  Title: Segregated Witness (Peer Services)
+  Author: Eric Lombrozo <elombrozo@gmail.com>
+          Pieter Wuille <pieter.wuille@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0144
+  Status: Final
+  Type: Standards Track
+  Created: 2016-01-08
+  License: PD
+```
 
 ## Abstract
 
@@ -51,7 +53,7 @@ protocol.
 The serialization has the following structure:
 
 | Field Size | Name              | Type                  | Description                                                         |
-|------------|-------------------|-----------------------|---------------------------------------------------------------------|
+| ---------- | ----------------- | --------------------- | ------------------------------------------------------------------- |
 | 4          | version           | int32\_t              | Transaction data format version                                     |
 | 1          | marker            | char                  | Must be zero                                                        |
 | 1          | flag              | char                  | Must be nonzero                                                     |
@@ -80,21 +82,21 @@ txin\_count. Empty script witnesses are encoded as a zero byte. The
 order of the script witnesses follows the same order as the associated
 txins.
 
--   **Rationale for not having an independent message type with its own
+  - **Rationale for not having an independent message type with its own
     serialization**: this would require separate "tx" and "block"
     messages, and all RPC calls operating on raw transactions would need
     to be duplicated, or need inefficient or nondeterministic guesswork
     to know which type is to be used.
 
-<!-- -->
+<!-- end list -->
 
--   **Rationale for not using just a single 0x00 byte as marker**: that
+  - **Rationale for not using just a single 0x00 byte as marker**: that
     would lead to empty transactions (no inputs, no outputs, which are
     used in some tests) to be interpreted as new serialized data.
 
-<!-- -->
+<!-- end list -->
 
--   **Rationale for the 0x01 flag byte in between**: this will allow us
+  - **Rationale for the 0x01 flag byte in between**: this will allow us
     to easily add more extra non-committed data to transactions (like
     txouts being spent, ...). It can be interpreted as a bitvector.
 
@@ -120,14 +122,14 @@ they have witness hash equal to normal hash.)
 
 ### Relay
 
-New inv types MSG\_WITNESS\_TX (0x40000001, or (1&lt;&lt;30)+MSG\_TX)
-and MSG\_WITNESS\_BLOCK (0x40000002, or (1&lt;&lt;30)+MSG\_BLOCK) are
-added, only for use in getdata. Inventory messages themselves still use
-just MSG\_TX and MSG\_BLOCK, similar to MSG\_FILTERED\_BLOCK. A further
-inv type MSG\_FILTERED\_WITNESS\_BLOCK (0x40000003, or
-(1&lt;&lt;30)+MSG\_FILTERED\_BLOCK) is reserved for future use.
+New inv types MSG\_WITNESS\_TX (0x40000001, or (1\<\<30)+MSG\_TX) and
+MSG\_WITNESS\_BLOCK (0x40000002, or (1\<\<30)+MSG\_BLOCK) are added,
+only for use in getdata. Inventory messages themselves still use just
+MSG\_TX and MSG\_BLOCK, similar to MSG\_FILTERED\_BLOCK. A further inv
+type MSG\_FILTERED\_WITNESS\_BLOCK (0x40000003, or
+(1\<\<30)+MSG\_FILTERED\_BLOCK) is reserved for future use.
 
--   **Rationale for not advertizing witnessness in invs**: we don't
+  - **Rationale for not advertizing witnessness in invs**: we don't
     always use invs anymore (with 'sendheaders' BIP 130), plus it's not
     useful: implicitly, every transaction and block have a witness, old
     ones just have empty ones.

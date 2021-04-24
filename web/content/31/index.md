@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0031.mediawiki"
 +++
 
-      BIP: 31
-      Layer: Peer Services
-      Title: Pong message
-      Author: Mike Hearn <hearn@google.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0031
-      Status: Final
-      Type: Standards Track
-      Created: 2012-04-11
+``` 
+  BIP: 31
+  Layer: Peer Services
+  Title: Pong message
+  Author: Mike Hearn <hearn@google.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0031
+  Status: Final
+  Type: Standards Track
+  Created: 2012-04-11
+```
 
 ## Abstract
 
@@ -78,7 +80,7 @@ should simply set the nonce value to zero.
 ## Backward compatibility
 
 Clients must opt-in to the new feature by advertising a protocol version
-&gt; 60000. Clients with older protocol versions are not expected to
+\> 60000. Clients with older protocol versions are not expected to
 provide a nonce in the ping message and will not be sent a pong.
 
 ## Implementation

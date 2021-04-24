@@ -14,16 +14,18 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki"
 +++
 
-      BIP: 21
-      Layer: Applications
-      Title: URI Scheme
-      Author: Nils Schneider <nils.schneider@gmail.com>
-              Matt Corallo <bip21@bluematt.me>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0021
-      Status: Final
-      Type: Standards Track
-      Created: 2012-01-29
+``` 
+  BIP: 21
+  Layer: Applications
+  Title: URI Scheme
+  Author: Nils Schneider <nils.schneider@gmail.com>
+          Matt Corallo <bip21@bluematt.me>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0021
+  Status: Final
+  Type: Standards Track
+  Created: 2012-01-29
+```
 
 This BIP is a modification of an earlier [BIP
 0020](bip-0020.mediawiki "wikilink") by Luke Dashjr. BIP 0020 was based
@@ -41,7 +43,7 @@ payments by simply clicking links on webpages or scanning QR Codes.
 
 ## Specification
 
-### General rules for handling (important!)
+### General rules for handling (important\!)
 
 Bitcoin clients MUST NOT act on URIs without getting the user's
 authorization. They SHOULD require the user to manually approve each
@@ -92,13 +94,13 @@ parameter keys.
 
 ### Query Keys
 
--   label: Label for that address (e.g. name of receiver)
--   address: bitcoin address
--   message: message that describes the transaction to the user ([see
+  - label: Label for that address (e.g. name of receiver)
+  - address: bitcoin address
+  - message: message that describes the transaction to the user ([see
     examples below](#Examples "wikilink"))
--   size: amount of base bitcoin units ([see
+  - size: amount of base bitcoin units ([see
     below](#Transfer_amount/size "wikilink"))
--   (others): optional, for future extensions
+  - (others): optional, for future extensions
 
 #### Transfer amount/size
 
@@ -159,7 +161,7 @@ of old clients to upgrade.
 This section is non-normative and does not cover all possible syntax.
 Please see the BNF grammar above for the normative syntax.
 
-\[foo\] means optional, &lt;bar&gt; are placeholders
+\[foo\] means optional, \<bar\> are placeholders
 
 `bitcoin:<address>[?amount=<amount>][?label=<label>][?message=<message>]`
 
@@ -167,29 +169,29 @@ Please see the BNF grammar above for the normative syntax.
 
 Just the address:
 
-[`bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W`](bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W)
+<bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W>
 
 Address with name:
 
-[`bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr`](bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr)
+<bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr>
 
 Request 20.30 BTC to "Luke-Jr":
 
-[`bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&label=Luke-Jr`](bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&label=Luke-Jr)
+<bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&label=Luke-Jr>
 
 Request 50 BTC with message:
 
-[`bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Luke-Jr&message=Donation%20for%20project%20xyz`](bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Luke-Jr&message=Donation%20for%20project%20xyz)
+<bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Luke-Jr&message=Donation%20for%20project%20xyz>
 
 Some future version that has variables which are (currently) not
 understood and required and thus invalid:
 
-[`bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999`](bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999)
+<bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999>
 
 Some future version that has variables which are (currently) not
 understood but not required and thus valid:
 
-[`bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&somethingelseyoudontget=999`](bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&somethingelseyoudontget=999)
+<bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&somethingelseyoudontget=999>
 
 Characters must be URI encoded properly.
 
@@ -197,12 +199,12 @@ Characters must be URI encoded properly.
 
 ### Bitcoin clients
 
--   Bitcoin-Qt supports the old version of Bitcoin URIs (ie without the
+  - Bitcoin-Qt supports the old version of Bitcoin URIs (ie without the
     req- prefix), with Windows and KDE integration as of commit
     70f55355e29c8e45b607e782c5d76609d23cc858.
 
 ### Libraries
 
--   Javascript - <https://github.com/bitcoinjs/bip21>
--   Java - <https://github.com/SandroMachado/BitcoinPaymentURI>
--   Swift - <https://github.com/SandroMachado/BitcoinPaymentURISwift>
+  - Javascript - <https://github.com/bitcoinjs/bip21>
+  - Java - <https://github.com/SandroMachado/BitcoinPaymentURI>
+  - Swift - <https://github.com/SandroMachado/BitcoinPaymentURISwift>

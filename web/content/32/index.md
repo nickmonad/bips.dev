@@ -16,28 +16,30 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki"
 
 RECENT CHANGES:
 
--   (16 Apr 2013) Added private derivation for i ≥ 0x80000000 (less risk
+  - (16 Apr 2013) Added private derivation for i ≥ 0x80000000 (less risk
     of parent private key leakage)
--   (30 Apr 2013) Switched from multiplication by I<sub>L</sub> to
+  - (30 Apr 2013) Switched from multiplication by I<sub>L</sub> to
     addition of I<sub>L</sub> (faster, easier implementation)
--   (25 May 2013) Added test vectors
--   (15 Jan 2014) Rename keys with index ≥ 0x80000000 to hardened keys,
+  - (25 May 2013) Added test vectors
+  - (15 Jan 2014) Rename keys with index ≥ 0x80000000 to hardened keys,
     and add explicit conversion functions.
--   (24 Feb 2017) Added test vectors for hardened derivation with
+  - (24 Feb 2017) Added test vectors for hardened derivation with
     leading zeros
 
-<!-- -->
+<!-- end list -->
 
-      BIP: 32
-      Layer: Applications
-      Title: Hierarchical Deterministic Wallets
-      Author: Pieter Wuille <pieter.wuille@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0032
-      Status: Final
-      Type: Informational
-      Created: 2012-02-11
-      License: BSD-2-Clause
+``` 
+  BIP: 32
+  Layer: Applications
+  Title: Hierarchical Deterministic Wallets
+  Author: Pieter Wuille <pieter.wuille@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0032
+  Status: Final
+  Type: Informational
+  Created: 2012-02-11
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -96,28 +98,28 @@ in Bitcoin, namely elliptic curve cryptography using the field and curve
 parameters defined by secp256k1 (http://www.secg.org/sec2-v2.pdf).
 Variables below are either:
 
--   Integers modulo the order of the curve (referred to as n).
--   Coordinates of points on the curve.
--   Byte sequences.
+  - Integers modulo the order of the curve (referred to as n).
+  - Coordinates of points on the curve.
+  - Byte sequences.
 
 Addition (+) of two coordinate pair is defined as application of the EC
-group operation. Concatenation (\|\|) is the operation of appending one
+group operation. Concatenation (||) is the operation of appending one
 byte sequence onto another.
 
 As standard conversion functions, we assume:
 
--   point(p): returns the coordinate pair resulting from EC point
+  - point(p): returns the coordinate pair resulting from EC point
     multiplication (repeated application of the EC group operation) of
     the secp256k1 base point with the integer p.
--   ser<sub>32</sub>(i): serialize a 32-bit unsigned integer i as a
+  - ser<sub>32</sub>(i): serialize a 32-bit unsigned integer i as a
     4-byte sequence, most significant byte first.
--   ser<sub>256</sub>(p): serializes the integer p as a 32-byte
+  - ser<sub>256</sub>(p): serializes the integer p as a 32-byte
     sequence, most significant byte first.
--   ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) as a
-    byte sequence using SEC1's compressed form: (0x02 or 0x03) \|\|
+  - ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) as a
+    byte sequence using SEC1's compressed form: (0x02 or 0x03) ||
     ser<sub>256</sub>(x), where the header byte depends on the parity of
     the omitted y coordinate.
--   parse<sub>256</sub>(p): interprets a 32-byte sequence as a 256-bit
+  - parse<sub>256</sub>(p): interprets a 32-byte sequence as a 256-bit
     number, most significant byte first.
 
 ### Extended keys
@@ -154,26 +156,26 @@ The function CKDpriv((k<sub>par</sub>, c<sub>par</sub>), i) →
 (k<sub>i</sub>, c<sub>i</sub>) computes a child extended private key
 from the parent extended private key:
 
--   Check whether i ≥ 2<sup>31</sup> (whether the child is a hardened
+  - Check whether i ≥ 2<sup>31</sup> (whether the child is a hardened
     key).
-    -   If so (hardened child): let I = HMAC-SHA512(Key =
-        c<sub>par</sub>, Data = 0x00 \|\|
-        ser<sub>256</sub>(k<sub>par</sub>) \|\| ser<sub>32</sub>(i)).
+      - If so (hardened child): let I = HMAC-SHA512(Key =
+        c<sub>par</sub>, Data = 0x00 ||
+        ser<sub>256</sub>(k<sub>par</sub>) || ser<sub>32</sub>(i)).
         (Note: The 0x00 pads the private key to make it 33 bytes long.)
-    -   If not (normal child): let I = HMAC-SHA512(Key =
+      - If not (normal child): let I = HMAC-SHA512(Key =
         c<sub>par</sub>, Data = ser<sub>P</sub>(point(k<sub>par</sub>))
-        \|\| ser<sub>32</sub>(i)).
--   Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.
--   The returned child key k<sub>i</sub> is
+        || ser<sub>32</sub>(i)).
+  - Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.
+  - The returned child key k<sub>i</sub> is
     parse<sub>256</sub>(I<sub>L</sub>) + k<sub>par</sub> (mod n).
--   The returned chain code c<sub>i</sub> is I<sub>R</sub>.
--   In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or k<sub>i</sub> = 0,
+  - The returned chain code c<sub>i</sub> is I<sub>R</sub>.
+  - In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or k<sub>i</sub> = 0,
     the resulting key is invalid, and one should proceed with the next
     value for i. (Note: this has probability lower than 1 in
     2<sup>127</sup>.)
 
-The HMAC-SHA512 function is specified in [RFC
-4231](http://tools.ietf.org/html/rfc4231).
+The HMAC-SHA512 function is specified in
+[RFC 4231](http://tools.ietf.org/html/rfc4231).
 
 #### Public parent key → public child key
 
@@ -182,17 +184,17 @@ The function CKDpub((K<sub>par</sub>, c<sub>par</sub>), i) →
 the parent extended public key. It is only defined for non-hardened
 child keys.
 
--   Check whether i ≥ 2<sup>31</sup> (whether the child is a hardened
+  - Check whether i ≥ 2<sup>31</sup> (whether the child is a hardened
     key).
-    -   If so (hardened child): return failure
-    -   If not (normal child): let I = HMAC-SHA512(Key =
-        c<sub>par</sub>, Data = ser<sub>P</sub>(K<sub>par</sub>) \|\|
+      - If so (hardened child): return failure
+      - If not (normal child): let I = HMAC-SHA512(Key =
+        c<sub>par</sub>, Data = ser<sub>P</sub>(K<sub>par</sub>) ||
         ser<sub>32</sub>(i)).
--   Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.
--   The returned child key K<sub>i</sub> is
+  - Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.
+  - The returned child key K<sub>i</sub> is
     point(parse<sub>256</sub>(I<sub>L</sub>)) + K<sub>par</sub>.
--   The returned chain code c<sub>i</sub> is I<sub>R</sub>.
--   In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or K<sub>i</sub> is
+  - The returned chain code c<sub>i</sub> is I<sub>R</sub>.
+  - In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or K<sub>i</sub> is
     the point at infinity, the resulting key is invalid, and one should
     proceed with the next value for i.
 
@@ -202,13 +204,13 @@ The function N((k, c)) → (K, c) computes the extended public key
 corresponding to an extended private key (the "neutered" version, as it
 removes the ability to sign transactions).
 
--   The returned key K is point(k).
--   The returned chain code c is just the passed chain code.
+  - The returned key K is point(k).
+  - The returned chain code c is just the passed chain code.
 
 To compute the public child key of a parent private key:
 
--   N(CKDpriv((k<sub>par</sub>, c<sub>par</sub>), i)) (works always).
--   CKDpub(N(k<sub>par</sub>, c<sub>par</sub>), i) (works only for
+  - N(CKDpriv((k<sub>par</sub>, c<sub>par</sub>), i)) (works always).
+  - CKDpub(N(k<sub>par</sub>, c<sub>par</sub>), i) (works only for
     non-hardened child keys).
 
 The fact that they are equivalent is what makes non-hardened keys useful
@@ -234,8 +236,8 @@ CKDpriv(CKDpriv(CKDpriv(m,3<sub>H</sub>),2),5) as m/3<sub>H</sub>/2/5.
 Equivalently for public keys, we write CKDpub(CKDpub(CKDpub(M,3),2),5)
 as M/3/2/5. This results in the following identities:
 
--   N(m/a/b/c) = N(m/a/b)/c = N(m/a)/b/c = N(m)/a/b/c = M/a/b/c.
--   N(m/a<sub>H</sub>/b/c) = N(m/a<sub>H</sub>/b)/c =
+  - N(m/a/b/c) = N(m/a/b)/c = N(m/a)/b/c = N(m)/a/b/c = M/a/b/c.
+  - N(m/a<sub>H</sub>/b/c) = N(m/a<sub>H</sub>/b)/c =
     N(m/a<sub>H</sub>)/b/c.
 
 However, N(m/a<sub>H</sub>) cannot be rewritten as N(m)/a<sub>H</sub>,
@@ -265,18 +267,18 @@ The first 32 bits of the identifier are called the key fingerprint.
 
 Extended public and private keys are serialized as follows:
 
--   4 byte: version bytes (mainnet: 0x0488B21E public, 0x0488ADE4
+  - 4 byte: version bytes (mainnet: 0x0488B21E public, 0x0488ADE4
     private; testnet: 0x043587CF public, 0x04358394 private)
--   1 byte: depth: 0x00 for master nodes, 0x01 for level-1 derived keys,
+  - 1 byte: depth: 0x00 for master nodes, 0x01 for level-1 derived keys,
     ....
--   4 bytes: the fingerprint of the parent's key (0x00000000 if master
+  - 4 bytes: the fingerprint of the parent's key (0x00000000 if master
     key)
--   4 bytes: child number. This is ser<sub>32</sub>(i) for i in
+  - 4 bytes: child number. This is ser<sub>32</sub>(i) for i in
     x<sub>i</sub> = x<sub>par</sub>/i, with x<sub>i</sub> the key being
     serialized. (0x00000000 if master key)
--   32 bytes: the chain code
--   33 bytes: the public key or private key data (ser<sub>P</sub>(K) for
-    public keys, 0x00 \|\| ser<sub>256</sub>(k) for private keys)
+  - 32 bytes: the chain code
+  - 33 bytes: the public key or private key data (ser<sub>P</sub>(K) for
+    public keys, 0x00 || ser<sub>256</sub>(k) for private keys)
 
 This 78 byte structure can be encoded like other Bitcoin data in Base58,
 by first adding 32 checksum bits (derived from the double SHA-256
@@ -301,11 +303,11 @@ The total number of possible extended keypairs is almost
 about half of that in terms of security. Therefore, master keys are not
 generated directly, but instead from a potentially short seed value.
 
--   Generate a seed byte sequence S of a chosen length (between 128 and
+  - Generate a seed byte sequence S of a chosen length (between 128 and
     512 bits; 256 bits is advised) from a (P)RNG.
--   Calculate I = HMAC-SHA512(Key = "Bitcoin seed", Data = S)
--   Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.
--   Use parse<sub>256</sub>(I<sub>L</sub>) as master secret key, and
+  - Calculate I = HMAC-SHA512(Key = "Bitcoin seed", Data = S)
+  - Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.
+  - Use parse<sub>256</sub>(I<sub>L</sub>) as master secret key, and
     I<sub>R</sub> as master chain code.
 
 In case I<sub>L</sub> is 0 or ≥n, the master key is invalid.
@@ -332,9 +334,9 @@ addresses, while the internal keychain is used for all other operations
 to be communicated). Clients that do not support separate keychains for
 these should use the external one for everything.
 
--   m/i<sub>H</sub>/0/k corresponds to the k'th keypair of the external
+  - m/i<sub>H</sub>/0/k corresponds to the k'th keypair of the external
     chain of account number i of the HDW derived from master m.
--   m/i<sub>H</sub>/1/k corresponds to the k'th keypair of the internal
+  - m/i<sub>H</sub>/1/k corresponds to the k'th keypair of the internal
     chain of account number i of the HDW derived from master m.
 
 ### Use cases
@@ -403,18 +405,18 @@ call for a more complex tree structure.
 In addition to the expectations from the EC public-key cryptography
 itself:
 
--   Given a public key K, an attacker cannot find the corresponding
+  - Given a public key K, an attacker cannot find the corresponding
     private key more efficiently than by solving the EC discrete
     logarithm problem (assumed to require 2<sup>128</sup> group
     operations).
 
 the intended security properties of this standard are:
 
--   Given a child extended private key (k<sub>i</sub>,c<sub>i</sub>) and
+  - Given a child extended private key (k<sub>i</sub>,c<sub>i</sub>) and
     the integer i, an attacker cannot find the parent private key
     k<sub>par</sub> more efficiently than a 2<sup>256</sup> brute force
     of HMAC-SHA512.
--   Given any number (2 ≤ N ≤ 2<sup>32</sup>-1) of (index, extended
+  - Given any number (2 ≤ N ≤ 2<sup>32</sup>-1) of (index, extended
     private key) tuples
     (i<sub>j</sub>,(k<sub>i<sub>j</sub></sub>,c<sub>i<sub>j</sub></sub>)),
     with distinct i<sub>j</sub>'s, determining whether they are derived
@@ -427,9 +429,9 @@ the intended security properties of this standard are:
 
 Note however that the following properties does not exist:
 
--   Given a parent extended public key (K<sub>par</sub>,c<sub>par</sub>)
+  - Given a parent extended public key (K<sub>par</sub>,c<sub>par</sub>)
     and a child public key (K<sub>i</sub>), it is hard to find i.
--   Given a parent extended public key (K<sub>par</sub>,c<sub>par</sub>)
+  - Given a parent extended public key (K<sub>par</sub>,c<sub>par</sub>)
     and a non-hardened child private key (k<sub>i</sub>), it is hard to
     find k<sub>par</sub>.
 
@@ -458,35 +460,35 @@ master or other accounts.
 
 Seed (hex): 000102030405060708090a0b0c0d0e0f
 
--   Chain m
-    -   ext pub:
+  - Chain m
+      - ext pub:
         xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8
-    -   ext prv:
+      - ext prv:
         xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi
--   Chain m/0<sub>H</sub>
-    -   ext pub:
+  - Chain m/0<sub>H</sub>
+      - ext pub:
         xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw
-    -   ext prv:
+      - ext prv:
         xprv9uHRZZhk6KAJC1avXpDAp4MDc3sQKNxDiPvvkX8Br5ngLNv1TxvUxt4cV1rGL5hj6KCesnDYUhd7oWgT11eZG7XnxHrnYeSvkzY7d2bhkJ7
--   Chain m/0<sub>H</sub>/1
-    -   ext pub:
+  - Chain m/0<sub>H</sub>/1
+      - ext pub:
         xpub6ASuArnXKPbfEwhqN6e3mwBcDTgzisQN1wXN9BJcM47sSikHjJf3UFHKkNAWbWMiGj7Wf5uMash7SyYq527Hqck2AxYysAA7xmALppuCkwQ
-    -   ext prv:
+      - ext prv:
         xprv9wTYmMFdV23N2TdNG573QoEsfRrWKQgWeibmLntzniatZvR9BmLnvSxqu53Kw1UmYPxLgboyZQaXwTCg8MSY3H2EU4pWcQDnRnrVA1xe8fs
--   Chain m/0<sub>H</sub>/1/2<sub>H</sub>
-    -   ext pub:
+  - Chain m/0<sub>H</sub>/1/2<sub>H</sub>
+      - ext pub:
         xpub6D4BDPcP2GT577Vvch3R8wDkScZWzQzMMUm3PWbmWvVJrZwQY4VUNgqFJPMM3No2dFDFGTsxxpG5uJh7n7epu4trkrX7x7DogT5Uv6fcLW5
-    -   ext prv:
+      - ext prv:
         xprv9z4pot5VBttmtdRTWfWQmoH1taj2axGVzFqSb8C9xaxKymcFzXBDptWmT7FwuEzG3ryjH4ktypQSAewRiNMjANTtpgP4mLTj34bhnZX7UiM
--   Chain m/0<sub>H</sub>/1/2<sub>H</sub>/2
-    -   ext pub:
+  - Chain m/0<sub>H</sub>/1/2<sub>H</sub>/2
+      - ext pub:
         xpub6FHa3pjLCk84BayeJxFW2SP4XRrFd1JYnxeLeU8EqN3vDfZmbqBqaGJAyiLjTAwm6ZLRQUMv1ZACTj37sR62cfN7fe5JnJ7dh8zL4fiyLHV
-    -   ext prv:
+      - ext prv:
         xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334
--   Chain m/0<sub>H</sub>/1/2<sub>H</sub>/2/1000000000
-    -   ext pub:
+  - Chain m/0<sub>H</sub>/1/2<sub>H</sub>/2/1000000000
+      - ext pub:
         xpub6H1LXWLaKsWFhvm6RVpEL9P4KfRZSW7abD2ttkWP3SSQvnyA8FSVqNTEcYFgJS2UaFcxupHiYkro49S8yGasTvXEYBVPamhGW6cFJodrTHy
-    -   ext prv:
+      - ext prv:
         xprvA41z7zogVVwxVSgdKUHDy1SKmdb533PjDz7J6N6mV6uS3ze1ai8FHa8kmHScGpWmj4WggLyQjgPie1rFSruoUihUZREPSL39UNdE3BBDu76
 
 ### Test vector 2
@@ -494,35 +496,35 @@ Seed (hex): 000102030405060708090a0b0c0d0e0f
 Seed (hex):
 fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542
 
--   Chain m
-    -   ext pub:
+  - Chain m
+      - ext pub:
         xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
-    -   ext prv:
+      - ext prv:
         xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U
--   Chain m/0
-    -   ext pub:
+  - Chain m/0
+      - ext pub:
         xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH
-    -   ext prv:
+      - ext prv:
         xprv9vHkqa6EV4sPZHYqZznhT2NPtPCjKuDKGY38FBWLvgaDx45zo9WQRUT3dKYnjwih2yJD9mkrocEZXo1ex8G81dwSM1fwqWpWkeS3v86pgKt
--   Chain m/0/2147483647<sub>H</sub>
-    -   ext pub:
+  - Chain m/0/2147483647<sub>H</sub>
+      - ext pub:
         xpub6ASAVgeehLbnwdqV6UKMHVzgqAG8Gr6riv3Fxxpj8ksbH9ebxaEyBLZ85ySDhKiLDBrQSARLq1uNRts8RuJiHjaDMBU4Zn9h8LZNnBC5y4a
-    -   ext prv:
+      - ext prv:
         xprv9wSp6B7kry3Vj9m1zSnLvN3xH8RdsPP1Mh7fAaR7aRLcQMKTR2vidYEeEg2mUCTAwCd6vnxVrcjfy2kRgVsFawNzmjuHc2YmYRmagcEPdU9
--   Chain m/0/2147483647<sub>H</sub>/1
-    -   ext pub:
+  - Chain m/0/2147483647<sub>H</sub>/1
+      - ext pub:
         xpub6DF8uhdarytz3FWdA8TvFSvvAh8dP3283MY7p2V4SeE2wyWmG5mg5EwVvmdMVCQcoNJxGoWaU9DCWh89LojfZ537wTfunKau47EL2dhHKon
-    -   ext prv:
+      - ext prv:
         xprv9zFnWC6h2cLgpmSA46vutJzBcfJ8yaJGg8cX1e5StJh45BBciYTRXSd25UEPVuesF9yog62tGAQtHjXajPPdbRCHuWS6T8XA2ECKADdw4Ef
--   Chain m/0/2147483647<sub>H</sub>/1/2147483646<sub>H</sub>
-    -   ext pub:
+  - Chain m/0/2147483647<sub>H</sub>/1/2147483646<sub>H</sub>
+      - ext pub:
         xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL
-    -   ext prv:
+      - ext prv:
         xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc
--   Chain m/0/2147483647<sub>H</sub>/1/2147483646<sub>H</sub>/2
-    -   ext pub:
+  - Chain m/0/2147483647<sub>H</sub>/1/2147483646<sub>H</sub>/2
+      - ext pub:
         xpub6FnCn6nSzZAw5Tw7cgR9bi15UV96gLZhjDstkXXxvCLsUXBGXPdSnLFbdpq8p9HmGsApME5hQTZ3emM2rnY5agb9rXpVGyy3bdW6EEgAtqt
-    -   ext prv:
+      - ext prv:
         xprvA2nrNbFZABcdryreWet9Ea4LvTJcGsqrMzxHx98MMrotbir7yrKCEXw7nadnHM8Dq38EGfSh6dqA9QWTyefMLEcBYJUuekgW4BYPJcr9E7j
 
 ### Test vector 3
@@ -536,23 +538,23 @@ for more information.
 Seed (hex):
 4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be
 
--   Chain m
-    -   ext pub:
+  - Chain m
+      - ext pub:
         xpub661MyMwAqRbcEZVB4dScxMAdx6d4nFc9nvyvH3v4gJL378CSRZiYmhRoP7mBy6gSPSCYk6SzXPTf3ND1cZAceL7SfJ1Z3GC8vBgp2epUt13
-    -   ext prv:
+      - ext prv:
         xprv9s21ZrQH143K25QhxbucbDDuQ4naNntJRi4KUfWT7xo4EKsHt2QJDu7KXp1A3u7Bi1j8ph3EGsZ9Xvz9dGuVrtHHs7pXeTzjuxBrCmmhgC6
--   Chain m/0<sub>H</sub>
-    -   ext pub:
+  - Chain m/0<sub>H</sub>
+      - ext pub:
         xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y
-    -   ext prv:
+      - ext prv:
         xprv9uPDJpEQgRQfDcW7BkF7eTya6RPxXeJCqCJGHuCJ4GiRVLzkTXBAJMu2qaMWPrS7AANYqdq6vcBcBUdJCVVFceUvJFjaPdGZ2y9WACViL4L
 
 ## Acknowledgements
 
--   Gregory Maxwell for the original idea of type-2 deterministic
+  - Gregory Maxwell for the original idea of type-2 deterministic
     wallets, and many discussions about it.
--   Alan Reiner for the implementation of this scheme in Armory, and the
+  - Alan Reiner for the implementation of this scheme in Armory, and the
     suggestions that followed from that.
--   Eric Lombrozo for reviewing and revising this BIP.
--   Mike Caldwell for the version bytes to obtain human-recognizable
+  - Eric Lombrozo for reviewing and revising this BIP.
+  - Mike Caldwell for the version bytes to obtain human-recognizable
     Base58 strings.

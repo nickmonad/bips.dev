@@ -14,15 +14,17 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0120.mediawiki"
 +++
 
-      BIP: 120
-      Layer: Applications
-      Title: Proof of Payment
-      Author: Kalle Rosenbaum <kalle@rosenbaum.se>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0120
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2015-07-28
+``` 
+  BIP: 120
+  Layer: Applications
+  Title: Proof of Payment
+  Author: Kalle Rosenbaum <kalle@rosenbaum.se>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0120
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2015-07-28
+```
 
 ## Abstract
 
@@ -36,16 +38,16 @@ you have made a payment.
 There are several scenarios in which it would be useful to prove that
 you have paid for something. For example:
 
--   A pre-paid hotel room where your PoP functions as a key to the door.
--   An online video rental service where you pay for a video and watch
+  - A pre-paid hotel room where your PoP functions as a key to the door.
+  - An online video rental service where you pay for a video and watch
     it on any device.
--   An ad-sign where you pay in advance for e.g. 2 weeks exclusivity.
+  - An ad-sign where you pay in advance for e.g. 2 weeks exclusivity.
     During this period you can upload new content to the sign whenever
     you like using PoP.
--   Log in to a pay site using a PoP.
--   A parking lot you pay for monthly and the car authenticates itself
+  - Log in to a pay site using a PoP.
+  - A parking lot you pay for monthly and the car authenticates itself
     using PoP.
--   A lottery where all participants pay to the same address, and the
+  - A lottery where all participants pay to the same address, and the
     winner is selected among the transactions to that address. You
     exchange the prize for a PoP for the winning transaction.
 
@@ -68,12 +70,12 @@ Desirable properties:
 
 Current methods of proving a payment:
 
--   In BIP0070, the PaymentRequest together with the transactions
+  - In BIP0070, the PaymentRequest together with the transactions
     fulfilling the request makes some sort of proof. However, it does
     not meet 1, 2 or 4 and it obviously only meets 3 if the payment is
     made through BIP0070. Also, there's no standard way to
     request/provide the proof. If standardized it would probably meet 5.
--   Signing messages, chosen by the server, with the private keys used
+  - Signing messages, chosen by the server, with the private keys used
     to sign the transaction. This could meet 1 and 2 but probably not 3.
     This is not standardized either. 4 Could be met if designed so.
 
@@ -97,11 +99,11 @@ pop output, with value 0. The pop output must have the following format:
 
 `OP_RETURN `<version>` `<txid>` `<nonce>
 
-| Field           | Size \[B\] | Description                                 |
-|-----------------|------------|---------------------------------------------|
-| &lt;version&gt; | 2          | Version, little endian, currently 0x01 0x00 |
-| &lt;txid&gt;    | 32         | The transaction to prove                    |
-| &lt;nonce&gt;   | 6          | Random data                                 |
+| Field       | Size \[B\] | Description                                 |
+| ----------- | ---------- | ------------------------------------------- |
+| \<version\> | 2          | Version, little endian, currently 0x01 0x00 |
+| \<txid\>    | 32         | The transaction to prove                    |
+| \<nonce\>   | 6          | Random data                                 |
 
 The lock\_time of the PoP must be set to 499999999 to prevent the PoP
 from being included in a block, should it appear on the bitcoin p2p
@@ -114,28 +116,30 @@ effective. This is for simplicity reasons.
 An illustration of the PoP data structure and its original payment is
 shown below.
 
-      T
-     +------------------------------------------------+
-     |inputs                | outputs                 |
-     |       Value,Sequence | Value,Script            |
-     +------------------------------------------------+
-     |input0 1,ffffffff     | 0,pay to A              |
-     |input1 3,ffffffff     | 2,OP_RETURN <some data> |
-     |input2 4,ffffffff     | 1,pay to B              |
-     |                      | 4,pay to C              |
-     +------------------------------------------------+
-     
-      PoP(T)
-     +-------------------------------------------------------------+
-     | inputs               | outputs                              |
-     |       Value,Sequence | Value,Script                         |
-     +-------------------------------------------------------------+
-     |input0 1,00000000     | 0,OP_RETURN <version> <txid> <nonce> |
-     |input1 3,00000000     |                                      |
-     |input2 4,00000000     |                                      |
-     +-------------------------------------------------------------+
-     | lock_time=499999999                                         |
-     +-------------------------------------------------------------+
+``` 
+  T
+ +------------------------------------------------+
+ |inputs                | outputs                 |
+ |       Value,Sequence | Value,Script            |
+ +------------------------------------------------+
+ |input0 1,ffffffff     | 0,pay to A              |
+ |input1 3,ffffffff     | 2,OP_RETURN <some data> |
+ |input2 4,ffffffff     | 1,pay to B              |
+ |                      | 4,pay to C              |
+ +------------------------------------------------+
+ 
+  PoP(T)
+ +-------------------------------------------------------------+
+ | inputs               | outputs                              |
+ |       Value,Sequence | Value,Script                         |
+ +-------------------------------------------------------------+
+ |input0 1,00000000     | 0,OP_RETURN <version> <txid> <nonce> |
+ |input1 3,00000000     |                                      |
+ |input2 4,00000000     |                                      |
+ +-------------------------------------------------------------+
+ | lock_time=499999999                                         |
+ +-------------------------------------------------------------+
+```
 
 The PoP is signed using the same signing process that is used for
 bitcoin transactions.
@@ -152,10 +156,10 @@ will generate a new nonce for every PoP request.
     2.  a destination where to send the PoP, for example a https URL
     3.  data hinting the wallet which transaction to create a proof for.
         For example:
-        -   txid, if known by the server
-        -   PaymentRequest.PaymentDetails.merchant\_data (in case of a
+          - txid, if known by the server
+          - PaymentRequest.PaymentDetails.merchant\_data (in case of a
             BIP0070 payment)
-        -   amount, label, message or other information from a BIP0021
+          - amount, label, message or other information from a BIP0021
             URI
 2.  The wallet identifies a transaction T, if possible. Otherwise it
     asks the user to select among the ones that match the hints in
@@ -171,10 +175,10 @@ will generate a new nonce for every PoP request.
 
 **Remarks:**
 
--   The method of transferring the PoP request at step 1 is not
+  - The method of transferring the PoP request at step 1 is not
     specified here. Instead that is specified in separate
     specifications, see BIP0121.
--   The nonce must be randomly generated by the server for every new PoP
+  - The nonce must be randomly generated by the server for every new PoP
     request.
 
 ### Validating a PoP
@@ -201,23 +205,23 @@ validation is aborted and "invalid" is returned:
 
 ## Security considerations
 
--   Someone can intercept the PoP-request and change any parameter in
+  - Someone can intercept the PoP-request and change any parameter in
     it. These can be mitigated by using secure connections. Examples of
     tampered parameters:
-    -   Pop destination - Stealing your PoP.
-    -   label - Trick you to sign an unintended pop or set a label that
+      - Pop destination - Stealing your PoP.
+      - label - Trick you to sign an unintended pop or set a label that
         your wallet doesn't have any record for, resulting in a broken
         service. Always check the PoP before signing.
-    -   nonce - Your pop will not validate on server.
--   Someone can steal a PoP, for example by tampering with the PoP
+      - nonce - Your pop will not validate on server.
+  - Someone can steal a PoP, for example by tampering with the PoP
     request, and try to use the service hoping to get a matching nonce.
     Probability per try: 1/(2^48). The server should have a mechanism
     for detecting a brute force attack of this kind, or at least slow
     down the process by delaying the PoP request by some 100 ms or so.
--   Even if a wallet has no funds it might still be valuable as a
+  - Even if a wallet has no funds it might still be valuable as a
     generator for PoPs. This makes it important to keep the security of
     the wallet after it has been emptied.
--   Transaction malleability may cause the server to have a different
+  - Transaction malleability may cause the server to have a different
     transaction id for a payment than the client's wallet. In that case
     the wallet will not be able to prove the transaction to the server.
     Wallets should not rely on the transaction id of the outgoing

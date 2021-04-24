@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0159.mediawiki"
 +++
 
-      BIP: 159
-      Layer: Peer Services
-      Title: NODE_NETWORK_LIMITED service bit
-      Author: Jonas Schnelli <dev@jonasschnelli.ch>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0159
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-05-11
-      License: BSD-2-Clause
+``` 
+  BIP: 159
+  Layer: Peer Services
+  Title: NODE_NETWORK_LIMITED service bit
+  Author: Jonas Schnelli <dev@jonasschnelli.ch>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0159
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-05-11
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -51,7 +53,7 @@ historical blocks.
 This BIP proposes a new service bit
 
 |                        |                |                                                                                                  |
-|------------------------|----------------|--------------------------------------------------------------------------------------------------|
+| ---------------------- | -------------- | ------------------------------------------------------------------------------------------------ |
 | NODE\_NETWORK\_LIMITED | bit 10 (0x400) | If signaled, the peer <I>MUST</I> be capable of serving at least the last 288 blocks (\~2 days). |
 
 A safety buffer of 144 blocks to handle chain reorganizations
@@ -91,8 +93,8 @@ This proposal is backward compatible.
 
 ## Reference implementation
 
--   <https://github.com/bitcoin/bitcoin/pull/11740> (signaling)
--   <https://github.com/bitcoin/bitcoin/pull/10387> (connection and
+  - <https://github.com/bitcoin/bitcoin/pull/11740> (signaling)
+  - <https://github.com/bitcoin/bitcoin/pull/10387> (connection and
     relay)
 
 ## Copyright

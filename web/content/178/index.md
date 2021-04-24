@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0178.mediawiki"
 +++
 
-      BIP: 178
-      Layer: Applications
-      Title: Version Extended WIF
-      Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
-      Comments-Summary: Discouraged for implementation (one person)
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0178
-      Status: Draft
-      Type: Standards Track
-      Created: 2018-04-04
-      License: CC0-1.0
+``` 
+  BIP: 178
+  Layer: Applications
+  Title: Version Extended WIF
+  Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
+  Comments-Summary: Discouraged for implementation (one person)
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0178
+  Status: Draft
+  Type: Standards Track
+  Created: 2018-04-04
+  License: CC0-1.0
+```
 
 ## Abstract
 
@@ -53,7 +55,7 @@ followed by an optional uint8 (compressed flag). The latter is extended
 to specify the address types:
 
 | Value     | Type                | Compr | Clarification                                                   |
-|-----------|---------------------|-------|-----------------------------------------------------------------|
+| --------- | ------------------- | ----- | --------------------------------------------------------------- |
 | No suffix | P2PKH\_UNCOMPRESSED | No    | Uncompressed legacy public key. Unknown public key format       |
 | `0x01`    | P2PKH\_COMPRESSED   | Yes   | Compressed legacy public key. Unknown public key format         |
 | `0x10`    | P2PKH               | Yes   | Compressed legacy public key. Legacy public key format (`1...`) |
@@ -62,9 +64,9 @@ to specify the address types:
 
 When a wallet imports a private key, it will have two outcomes:
 
--   the key is using one of the legacy types, in which case all types
+  - the key is using one of the legacy types, in which case all types
     must be accounted for
--   the key is using one of the extended types, in which case the wallet
+  - the key is using one of the extended types, in which case the wallet
     need only track the specific corresponding address
 
 Note: the difference between \`0x01\` and \`0x10\` is that the former
@@ -87,8 +89,8 @@ have to track all of them, as it has to today.
 ## Acknowledgements
 
 This BIP is based on the initial proposal by Thomas Voegtlin (thomasv at
-electrum dot org) on the Bitcoin Dev mailing list[1] and the Electrum
-3.0 implementation[2]
+electrum dot org) on the Bitcoin Dev mailing list\[1\] and the Electrum
+3.0 implementation\[2\]
 
 ## Reference implementation
 
@@ -105,6 +107,5 @@ types described in this BIP here:
 This document is licensed under the Creative Commons CC0 1.0 Universal
 license.
 
-[1] <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html>
-
-[2] <https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108>
+1.  <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html>
+2.  <https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108>

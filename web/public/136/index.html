@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 136
+<code><span style="color:#61676c;">  BIP: 136
   Layer: Applications
   Title: Bech32 Encoded Tx Position References
   Author: Велеслав &lt;veleslav.bips@protonmail.com&gt;
@@ -59,7 +59,7 @@
   Type: Informational
   Created: 2017-07-09
   License: BSD-2-Clause
-</code></pre><h2 id="introduction">Introduction</h2>
+</span></code></pre><h2 id="introduction">Introduction</h2>
 <h3 id="abstract">Abstract</h3>
 <p>This document proposes a convenient human useable format, <strong>&quot;TxRef&quot;</strong>,
 as a standard way to refer to a transaction position within the Bitcoin
@@ -156,10 +156,12 @@ they may choose to not include the HRP as specified here.</p>
 added:</p>
 <ul>
 <li>A Colon[2] <strong>&quot;:&quot;</strong> added after '1'.</li>
-<li>Hyphens[3] <strong>&quot;-&quot;</strong> added after every 4 characters beyond the colon.</li>
+<li>Hyphens[3] <strong>&quot;-&quot;</strong> added after every 4 characters beyond the
+colon.</li>
 </ul>
 <p>All non-bech32-alphabet characters after the bech32 code separator MUST
-be ignored/removed when parsing (except for terminating characters).[4]</p>
+be ignored/removed when parsing (except for terminating
+characters).[4]</p>
 <table><thead><tr><th></th><th>Bit</th><th>Character</th><th>Characters</th><th>Value</th></tr></thead><tbody>
 <tr><td>Human Readable Part</td><td></td><td>1 – 2</td><td>2</td><td>Bitcoin Mainnet: &quot;<strong>tx</strong>&quot;, Bitcoin Testnet: &quot;<strong>txtest</strong>&quot;</td></tr>
 <tr><td>Separator</td><td></td><td>3</td><td>1</td><td>&quot;<strong>1</strong>&quot;</td></tr>
@@ -288,8 +290,11 @@ their invalidity.</p>
 <code>(0xFFFFFF, 0x7FFF)</code></li>
 <li><code>tx1:rjk0-u5ng-gghq-fkg7</code>: Valid Bech32, but 10x5bit packages
 instead of 8.</li>
-<li><code>tx1:rjk0-u5qd-s43z</code>: Valid Bech32, but 6x5bit packages instead
-of 8.</li>
+<li><code>tx1:rjk0-u5qd-s43z</code>: Valid Bech32, but 6x5bit packages instead of
+<ol start="8">
+<li></li>
+</ol>
+</li>
 </ul>
 <h4 id="bitcoin-txref-with-outpoints-mainnet-and-testnet">Bitcoin TxRef with Outpoints (mainnet and testnet)</h4>
 <p>The following list gives properly encoded Bitcoin mainnet TxRef's with
@@ -301,14 +306,14 @@ index)</p>
 <li><code>tx1:y7ll-llqq-qqqq-a5zy-tc</code>: <code>(0xFFFFFF, 0x0, 0x0)</code></li>
 <li><code>tx1:y7ll-llll-lqqq-8tee-t5</code>: <code>(0xFFFFFF, 0x7FFF, 0x0)</code></li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><code>tx1:yqqq-qqqq-qpqq-5j9q-nz</code>: <code>(0x0, 0x0, 0x1)</code></li>
 <li><code>tx1:yqqq-qqll-lpqq-wd7a-nw</code>: <code>(0x0, 0x7FFF, 0x1)</code></li>
 <li><code>tx1:y7ll-llqq-qpqq-lktn-jq</code>: <code>(0xFFFFFF, 0x0, 0x1)</code></li>
 <li><code>tx1:y7ll-llll-lpqq-9fsw-jv</code>: <code>(0xFFFFFF, 0x7FFF, 0x1)</code></li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><code>tx1:yjk0-uqay-zrfq-g2cg-t8</code>: <code>(0x71F69, 0x89D, 0x123)</code></li>
 <li><code>tx1:yjk0-uqay-zu4x-nk6u-pc</code>: <code>(0x71F69, 0x89D, 0x1ABC)</code></li>
@@ -322,14 +327,14 @@ index)</p>
 <li><code>txtest1:87ll-llqq-qqqq-nvd0-gl</code>: <code>(0xFFFFFF, 0x0, 0x0)</code></li>
 <li><code>txtest1:87ll-llll-lqqq-fnkj-gn</code>: <code>(0xFFFFFF, 0x7FFF, 0x0)</code></li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><code>txtest1:8qqq-qqqq-qpqq-622t-s9</code>: <code>(0x0, 0x0, 0x1)</code></li>
 <li><code>txtest1:8qqq-qqll-lpqq-q43k-sf</code>: <code>(0x0, 0x7FFF, 0x1)</code></li>
 <li><code>txtest1:87ll-llqq-qpqq-3wyc-38</code>: <code>(0xFFFFFF, 0x0, 0x1)</code></li>
 <li><code>txtest1:87ll-llll-lpqq-t3l9-3t</code>: <code>(0xFFFFFF, 0x7FFF, 0x1)</code></li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><code>txtest1:8jk0-uqay-zrfq-xjhr-gq</code>: <code>(0x71F69, 0x89D, 0x123)</code></li>
 <li><code>txtest1:8jk0-uqay-zu4x-aw4h-zl</code>: <code>(0x71F69, 0x89D, 0x1ABC)</code></li>
@@ -368,23 +373,25 @@ length + 0B signature script + 4B sequence + 1B tx_out count +
 <h2 id="acknowledgements">Acknowledgements</h2>
 <p>Special Thanks to Pieter Wuille and Greg Maxwell for Bech32, a wonderful
 user-facing data encoding.</p>
-<p>[1] <strong>Why use Bech32 Encoding for Confirmed Transaction References?</strong>
-The error detection and correction properties of this encoding format
-make it very attractive. We expect that it will be reasonable for
-software to correct a maximum of two characters; however, we haven’t
-specified this yet.</p>
-<p>[2] <strong>Why add a colon here?</strong> This allows it to conform better with W3C
-URN/URL standards.</p>
-<p>[3] <strong>Why hyphens within the TxRef?</strong> As TxRef's are short, we expect
-that they will be quoted via voice or written by hand. The inclusion of
-hyphens every 4 characters breaks up the string and means people don't
-lose their place so easily.</p>
-<p>[4] <strong>Why strip all non-bech32-alphabet characters?</strong> We do not wish to
-expect the users to keep their TxRef's in good unicode form (hyphens,
-colons, invisible spaces, random unicode characters, etc). We expect
-them to copy, paste, write by-hand, write in a mix of character sets,
-etc. Parsers should automatically correct for all sorts of these common
-errors.</p>
+<ol>
+<li><strong>Why use Bech32 Encoding for Confirmed Transaction References?</strong>
+The error detection and correction properties of this encoding
+format make it very attractive. We expect that it will be reasonable
+for software to correct a maximum of two characters; however, we
+haven’t specified this yet.</li>
+<li><strong>Why add a colon here?</strong> This allows it to conform better with W3C
+URN/URL standards.</li>
+<li><strong>Why hyphens within the TxRef?</strong> As TxRef's are short, we expect
+that they will be quoted via voice or written by hand. The inclusion
+of hyphens every 4 characters breaks up the string and means people
+don't lose their place so easily.</li>
+<li><strong>Why strip all non-bech32-alphabet characters?</strong> We do not wish to
+expect the users to keep their TxRef's in good unicode form
+(hyphens, colons, invisible spaces, random unicode characters, etc).
+We expect them to copy, paste, write by-hand, write in a mix of
+character sets, etc. Parsers should automatically correct for all
+sorts of these common errors.</li>
+</ol>
 
     </div>
 

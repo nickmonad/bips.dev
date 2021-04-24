@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 301
+<code><span style="color:#61676c;">  BIP: 301
   Layer: Consensus (soft fork)
   Title: Blind Merged Mining (Consensus layer)
   Author: Paul Sztorc &lt;truthcoin@gmail.com&gt;
@@ -58,7 +58,7 @@
   Type: Standards Track
   Created: 2019-07-23
   License: BSD-2-Clause
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>Blind Merged Mining (BMM) is a way of mining optional extension blocks
 (ie, &quot;asymmetric sidechains&quot;). BMM produces weak guarantees that the
 block is valid, for *any* arbitrary set of rules; and yet it does so
@@ -124,13 +124,13 @@ requirements for validation.</p>
 <h5 id="structure">Structure</h5>
 <p>The following data is required:</p>
 <pre style="background-color:#fafafa;">
-<code>    32-bytes  - h* sideHeaderHash
+<code><span style="color:#61676c;">    32-bytes  - h* sideHeaderHash
     ?~?-bytes - critical data extended serialization
         3-bytes - 0x00bf00 identifying bytes
         1-byte  - nSidechain
         2-bytes - prevSideBlockRef
         4-bytes - prevMainHeaderBytes
-</code></pre>
+</span></code></pre>
 <p>sideHeaderHash comes from side:chain (side:nodes build
 side:blocks/headers). The identifying bytes are given here. nSidechain
 identifies which sidechain we are BMMing. By the time Blind Merged
@@ -204,11 +204,12 @@ today.</p>
 when (or if) they will be broadcast on-chain. Instead, they must use
 prevSideBlockHash. But they otherwise require the same data:</p>
 <pre style="background-color:#fafafa;">
-<code>    4-bytes - Message header (0xD0520C6E)   
+<code><span style="color:#61676c;">   
+    4-bytes - Message header (0xD0520C6E)   
     1-byte - sidechain number
     32-bytes  - h* side:block hash  
     32-bytes  - prevSideBlockHash   
-</code></pre>
+</span></code></pre>
 <p>Notice that, in OnChain BMMRs, Simon could reuse the same h\* all he
 wanted, because only one OnChain BMMR could be included per main:block
 per sidechain. However, on the LN no such rule can be enforced, as the
@@ -228,37 +229,37 @@ total 7.1 BTC, and Simon is keeping 0.1 BTC for himself and paying 7 BTC
 to Mary.</p>
 <p>We start with (I):</p>
 <pre style="background-color:#fafafa;">
-<code>    Simon 13 in, Mary 40 in ; 53 in total
-        Simon's version [signed by Mary]
+<code><span style="color:#61676c;">    Simon 13 in, Mary 40 in ; 53 in total
+        Simon&#39;s version [signed by Mary]
             13 ; to Simon if TimeLock=over; OR to Mary if SimonSig
             40 ; to Mary
-        Mary's version [signed by Simon]
+        Mary&#39;s version [signed by Simon]
             40 ; to me if TimeLock=over; OR to Simon if MarySig
             13 ; to Simon
-</code></pre>
+</span></code></pre>
 <p>And both parties move, from there to (II):</p>
 <pre style="background-color:#fafafa;">
-<code>    Simon 13 in, Mary 40 in ; 53 in total
-        Simon's version [signed by Mary]
+<code><span style="color:#61676c;">    Simon 13 in, Mary 40 in ; 53 in total
+        Simon&#39;s version [signed by Mary]
             6 ; to Simon if TimeLock=over; OR to Mary if SimonSig
             40 ; to Mary
             7 ; to Mary if critical data requirements met; OR to Simon if LongTimeLock=over
-        Mary's version [signed by Simon]
+        Mary&#39;s version [signed by Simon]
             40 ; to Mary if TimeLock=over; OR to Simon if MarySig
             6 ; to Simon
             7 ; to Mary if critical data requirements met; OR to Simon if LongTimeLock=over
-</code></pre>
+</span></code></pre>
 <p>From here, if the h\* side:block in question is BMMed, they can
 proceed to (III):</p>
 <pre style="background-color:#fafafa;">
-<code>    Simon 13 in, Mary 40 in ; 53 in total
-        Simon's version [signed by Mary]
+<code><span style="color:#61676c;">    Simon 13 in, Mary 40 in ; 53 in total
+        Simon&#39;s version [signed by Mary]
             6 ; to Simon if TimeLock=over; OR to Mary if SimonSig
             47 ; to Mary
-        Mary's version [signed by Simon]
+        Mary&#39;s version [signed by Simon]
             47 ; to me if TimeLock=over; OR to Simon if MarySig
             6 ; to Simon
-</code></pre>
+</span></code></pre>
 <p>If Simon proceeds immediately, he removes Mary's incentive to care about
 blocks being built on this side:block. If Simon's side:block is
 orphaned, he loses his 7 BTC. Simon can either play it safe, and wait

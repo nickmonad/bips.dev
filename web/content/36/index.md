@@ -14,16 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0036.mediawiki"
 +++
 
-      BIP: 36
-      Layer: Peer Services
-      Title: Custom Services
-      Author: Stefan Thomas <justmoon@members.fsf.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0036
-      Status: Rejected
-      Type: Standards Track
-      Created: 2012-08-03
-      License: PD
+``` 
+  BIP: 36
+  Layer: Peer Services
+  Title: Custom Services
+  Author: Stefan Thomas <justmoon@members.fsf.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0036
+  Status: Rejected
+  Type: Standards Track
+  Created: 2012-08-03
+  License: PD
+```
 
 ## Abstract
 
@@ -47,14 +49,14 @@ This BIP provides such a framework.
 Two new fields are added to the `version` command, after `extra_height`:
 
 | Field Size | Description    | Data type                                                             | Comments                    |
-|------------|----------------|-----------------------------------------------------------------------|-----------------------------|
+| ---------- | -------------- | --------------------------------------------------------------------- | --------------------------- |
 | 1+         | service\_count | [var\_int](Protocol_specification#Variable_length_integer "wikilink") | Number of extra services    |
 | ?          | service\_list  | service\[\]                                                           | List of service definitions |
 
 The service definitions `service[]` are given in the following format:
 
 | Field Size | Description      | Data type                                      | Comments                                          |
-|------------|------------------|------------------------------------------------|---------------------------------------------------|
+| ---------- | ---------------- | ---------------------------------------------- | ------------------------------------------------- |
 | ?          | service\_name    | [var\_str](#Variable_length_string "wikilink") | Unique service identifier                         |
 | 4          | service\_version | uint32\_t                                      | Identifies service version being used by the node |
 | ?          | service\_data    | [var\_str](#Variable_length_string "wikilink") | Additional service-specific data                  |
@@ -100,21 +102,21 @@ long. Service identifiers MUST use only ASCII characters, excluding: /
 
 Valid examples:
 
--   `MySampleSvc`
--   `smartserv`
--   `P-Pool`
+  - `MySampleSvc`
+  - `smartserv`
+  - `P-Pool`
 
 Valid, but discouraged examples:
 
--   `MySVC 1.0` (use `service_version` to differentiate versions)
--   `@@---.` (identifiers should be pronounceable)
--   `lightweight` (avoid too generic names)
+  - `MySVC 1.0` (use `service_version` to differentiate versions)
+  - `@@---.` (identifiers should be pronounceable)
+  - `lightweight` (avoid too generic names)
 
 Invalid examples:
 
--   `Pppc` (too short)
--   `SuperService` (too long)
--   `Cool_Svc` (invalid character)
+  - `Pppc` (too short)
+  - `SuperService` (too long)
+  - `Cool_Svc` (invalid character)
 
 ### Optional: Custom commands
 
@@ -130,7 +132,7 @@ The service-specific command name SHOULD then be specified in an extra
 header in the payload:
 
 | Field Size | Description | Data type  | Comments                                                                                                |
-|------------|-------------|------------|---------------------------------------------------------------------------------------------------------|
+| ---------- | ----------- | ---------- | ------------------------------------------------------------------------------------------------------- |
 | 12         | subcommand  | char\[12\] | ASCII string identifying the service command, NULL padded (non-NULL padding results in packet rejected) |
 | ?          | subpayload  | uchar\[\]  | The actual data                                                                                         |
 
@@ -150,17 +152,17 @@ Full hexdump of an example `MySampleSvc:search` message:
     0000   F9 BE B4 D9 5F 4D 79 53  61 6D 70 6C 65 53 76 63   ...._MySampleSvc
     0010   14 00 00 00 73 D5 56 77  73 65 61 72 63 68 00 00   ....s.Vwsearch..
     0020   00 00 00 00 12 34 56 78  9A BC DE F0               .....4Vx....
-
+    
     Message header:
      F9 BE B4 D9                                                                   - Main network magic bytes
      5F 4D 79 53 61 6D 70 6C 65 53 76 63                                           - "_MySampleSvc" command
      14 00 00 00                                                                   - Payload is 20 bytes long
                                                                                      (includes 12 bytes for subcommand)
      73 D5 56 77                                                                   - Checksum
-
+    
     Service header:
      73 65 61 72 63 68 00 00 00 00 00 00                                           - "search" subcommand
-
+    
     Search message:
      12 34 56 78 9A BC DE F0                                                       - Payload
 
@@ -170,11 +172,11 @@ Custom services may become standard parts of the protocol. Services
 which wish to become part of the Bitcoin protocol MUST fulfill the
 following criteria:
 
--   MUST NOT use `service_data`; Standard services have no corresponding
+  - MUST NOT use `service_data`; Standard services have no corresponding
     field
--   MUST use a peer discovery mechanism which specifies one bit per
+  - MUST use a peer discovery mechanism which specifies one bit per
     node, same as the `services` field in `addr` messages
--   MUST NOT use any subcommands that conflict with current or planned
+  - MUST NOT use any subcommands that conflict with current or planned
     Bitcoin protocol commands
 
 The standardization process will usually take place as follows:
@@ -184,17 +186,17 @@ The standardization process will usually take place as follows:
     submitted as a BIP.
 3.  Once the BIP is accepted, the service is assigned a `NODE_*`
     constant and the transitional period starts:
-    -   Clients MUST understand both the announcement of the service via
+      - Clients MUST understand both the announcement of the service via
         the `services` field and via `service_list` and include both
         methods in their own `version` message.
-    -   Clients MUST accept both the wrapped form messages like
+      - Clients MUST accept both the wrapped form messages like
         `MySampleSvc:search` as well as the corresponding non-namespaced
         messages like `search`. Clients MUST only send wrapped messages.
-    -   During the transitional period the API of the service MUST NOT
+      - During the transitional period the API of the service MUST NOT
         change.
 4.  After the transitional period:
-    -   Clients MUST only announce the service via the `services` field.
-    -   Clients MUST only send unwrapped messages.
+      - Clients MUST only announce the service via the `services` field.
+      - Clients MUST only send unwrapped messages.
 5.  Future changes to the service API now require a BIP and an increase
     in the Bitcoin protocol version.
 
@@ -207,13 +209,13 @@ maintaining the custom service format.
 
 This BIP aims to fulfill the following goals:
 
--   Minimize the risk of namespace collisions, ambiguities or other
+  - Minimize the risk of namespace collisions, ambiguities or other
     issues arising from conflicting custom services
--   Provide an easy upgrade path for custom services to become
+  - Provide an easy upgrade path for custom services to become
     standardized services with their own `NODE_*` flag
--   Place minimum restrictions on custom service authors
--   Allow custom services to be created with minimum effort
--   Allow clients to support multiple/many custom services at once
+  - Place minimum restrictions on custom service authors
+  - Allow custom services to be created with minimum effort
+  - Allow clients to support multiple/many custom services at once
 
 To achieve these goals this BIP adds two new fields to the `version`
 message. It would have been possible to avoid changes to `version` by

@@ -14,18 +14,20 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0330.mediawiki"
 +++
 
-      BIP: 330
-      Layer: Peer Services
-      Title: Transaction announcements reconciliation
-      Author: Gleb Naumenko <naumenko.gs@gmail.com>
-              Pieter Wuille <pieter.wuille@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0330
-      Status: Draft
-      Type: Standards Track
-      Created: 2019-09-25
-      License: CC0-1.0
-      License-Code: MIT
+``` 
+  BIP: 330
+  Layer: Peer Services
+  Title: Transaction announcements reconciliation
+  Author: Gleb Naumenko <naumenko.gs@gmail.com>
+          Pieter Wuille <pieter.wuille@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0330
+  Status: Draft
+  Type: Standards Track
+  Created: 2019-09-25
+  License: CC0-1.0
+  License-Code: MIT
+```
 
 ## Abstract
 
@@ -81,12 +83,12 @@ details can be found in the paper.
 
 Erlay allows us to:
 
--   save 40% of the bandwidth consumed by a node, given typical network
+  - save 40% of the bandwidth consumed by a node, given typical network
     connectivity as of July 2019.
--   achieve similar latency
--   increase network connectivity for almost no bandwidth or latency
+  - achieve similar latency
+  - increase network connectivity for almost no bandwidth or latency
     cost
--   improves privacy as a side-effect
+  - improves privacy as a side-effect
 
 This document proposes a P2P-layer extension which is required to enable
 efficient reconciliation-based protocols (like Erlay) for transaction
@@ -109,22 +111,22 @@ contributed by both communication partners.
 
 Short IDs are computed as follows:
 
--   Let *salt<sub>1</sub>* and *salt<sub>2</sub>* be the entropy
+  - Let *salt<sub>1</sub>* and *salt<sub>2</sub>* be the entropy
     contributed by both sides; see the "sendrecon" message further for
     details how they are exchanged.
--   Sort the two salts such that *salt<sub>1</sub> ≤ salt<sub>2</sub>*
+  - Sort the two salts such that *salt<sub>1</sub> ≤ salt<sub>2</sub>*
     (which side sent what doesn't matter).
--   Compute *h = SHA256("Tx Relay Salting" \|\| salt<sub>1</sub> \|\|
+  - Compute *h = SHA256("Tx Relay Salting" || salt<sub>1</sub> ||
     salt<sub>2</sub>)*, where the two salts are encoded in 64-bit
     little-endian byte order.
--   Let *k<sub>0</sub>* be the 64-bit integer obtained by interpreting
+  - Let *k<sub>0</sub>* be the 64-bit integer obtained by interpreting
     the first 8 bytes of *h* in little-endian byte order.
--   Let *k<sub>1</sub>* be the 64-bit integer obtained by interpreting
+  - Let *k<sub>1</sub>* be the 64-bit integer obtained by interpreting
     the second 8 bytes of *h* in little-endian byte order.
--   Let *s = SipHash-2-4((k<sub>0</sub>,k<sub>1</sub>),wtxid)*, where
+  - Let *s = SipHash-2-4((k<sub>0</sub>,k<sub>1</sub>),wtxid)*, where
     *wtxid* is the transaction hash including witness data as defined by
     BIP141.
--   The short ID is equal to *1 + (s mod 0xFFFFFFFF)*.
+  - The short ID is equal to *1 + (s mod 0xFFFFFFFF)*.
 
 This results in approximately uniformly distributed IDs in the range
 *\[1..0xFFFFFFFF\]*, which is a requirement for using them as elements
@@ -138,12 +140,12 @@ secure sketches as introduced by the [Fuzzy Extractors
 paper](https://www.cs.bu.edu/~reyzin/fuzzy.html). They are a form of set
 checksums with the following properties:
 
--   Sketches have a predetermined capacity, and when the number of
+  - Sketches have a predetermined capacity, and when the number of
     elements in the set does not exceed the capacity, it is always
     possible to recover the entire set from the sketch by decoding the
     sketch. A sketch of nonzero b-bit elements with capacity c can be
     stored in bc bits.
--   A sketch of the [symmetric
+  - A sketch of the [symmetric
     difference](https://en.wikipedia.org/wiki/Symmetric_difference)
     between the two sets (i.e., all elements that occur in one but not
     both input sets), can be obtained by combining the sketches of those
@@ -172,18 +174,18 @@ The following Python 3.2+ code implements the creation of sketches:
 
     FIELD_BITS = 32
     FIELD_MODULUS = (1 << FIELD_BITS) + 0b10001101
-
+    
     def mul2(x):
         """Compute 2*x in GF(2^FIELD_BITS)"""
         return (x << 1) ^ (FIELD_MODULUS if x.bit_length() >= FIELD_BITS else 0)
-
+    
     def mul(x, y):
         """Compute x*y in GF(2^FIELD_BITS)"""
         ret = 0
         for bit in [(x >> i) & 1 for i in range(x.bit_length())]:
             ret, y = ret ^ bit * y, mul2(y)
         return ret
-
+    
     def create_sketch(shortids, capacity):
         """Compute the bytes of a sketch for given shortids and given capacity."""
         odd_sums = [0 for _ in range(capacity)]
@@ -213,7 +215,7 @@ bandwidth as well. Instead, we truncate the wtxid to just their first
 Set reconciliation primarily consists of the transmission and decoding
 of a reconciliation set sketch upon request.
 
-[framed\|center\|Set reconciliation protocol
+[framed|center|Set reconciliation protocol
 flow](File:bip-0330/recon_scheme_merged.png "wikilink")
 
 #### Bisection
@@ -226,7 +228,7 @@ of the linearity of sketches, a sketch of a subset of transactions would
 allow the node to compute a sketch for the remainder, which saves
 bandwidth.
 
-[framed\|300px\|center\|Bisection](File:bip-0330/bisection.png "wikilink")
+[framed|300px|center|Bisection](File:bip-0330/bisection.png "wikilink")
 
 ### New messages
 
@@ -248,7 +250,7 @@ support it.
 Its payload consists of:
 
 | Data type | Name      | Description                                                                        |
-|-----------|-----------|------------------------------------------------------------------------------------|
+| --------- | --------- | ---------------------------------------------------------------------------------- |
 | bool      | sender    | Indicates whether the sender will send "reqreconcil" message                       |
 | bool      | responder | Indicates whether the sender will respond to "reqreconcil" messages.               |
 | uint32    | version   | Sender must set this to 1 currently, otherwise receiver should ignore the message. |
@@ -263,17 +265,17 @@ Its payload consists of:
 The reqreconcil message initiates a reconciliation round.
 
 | Data type | Name      | Description                                                                                                                                     |
-|-----------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | uint16    | set\_size | Size of the sender's reconciliation set, used to estimate set difference.                                                                       |
 | uint8     | q         | Coefficient used to estimate set difference. Multiplied by PRECISION=2^6 and rounded up by the sender and divided by PRECISION by the receiver. |
 
 Upon receipt of a "reqreconcil" message, the receiver:
 
--   Constructs and sends a "sketch" message (see below), with a sketch
-    of capacity computed as *\|set\_size - local\_set\_size\| + q \*
+  - Constructs and sends a "sketch" message (see below), with a sketch
+    of capacity computed as *|set\_size - local\_set\_size| + q \*
     (set\_size + local\_set\_size) + c*, where *local\_set\_size*
     represents size of the receiver's reconciliation set.
--   Makes a snapshot of their current reconciliation set, and clears the
+  - Makes a snapshot of their current reconciliation set, and clears the
     set itself. The snapshot is kept until a "reconcildiff" message is
     received by the node.
 
@@ -287,8 +289,8 @@ given peer, once the actual set sizes and set difference are known.
 Alternatively, *q=0.1* should be used as a default value. For example,
 if in previous round *set\_size=30* and *local\_set\_size=20*, and the
 \*actual\* difference was *4*, then a node should compute *q* as
-following: *q=(\|30-20\| - 1) / (30+20)=0.18* The derivation of *q* can
-be changed according to the version of the protocol.
+following: *q=(|30-20| - 1) / (30+20)=0.18* The derivation of *q* can be
+changed according to the version of the protocol.
 
 No new "reqreconcil" message can be sent until a "reconcildiff" message
 is sent.
@@ -299,7 +301,7 @@ The sketch message is used to communicate a sketch required to perform
 set reconciliation.
 
 | Data type | Name   | Description                                        |
-|-----------|--------|----------------------------------------------------|
+| --------- | ------ | -------------------------------------------------- |
 | byte\[\]  | skdata | The sketch of the sender's reconciliation snapshot |
 
 Upon receipt of a "sketch" message, a node computes the set difference
@@ -311,10 +313,10 @@ are obtained, one for the first half and one for the second half of the
 short id range. The receiving node then tries to decode this sketch (or
 sketches), and based on the result:
 
--   If decoding fails, a "reconcildiff" message is sent with the failure
+  - If decoding fails, a "reconcildiff" message is sent with the failure
     flag set (success=false). If this was the first "sketch" in the
     round, a "reqbisec" message may be sent instead.
--   If decoding succeeds, a "reconcildiff" message is sent with the
+  - If decoding succeeds, a "reconcildiff" message is sent with the
     truncated IDs of all locally known transactions that appear in the
     decode result, and the short IDs of the unrecognized ones.
 
@@ -340,7 +342,7 @@ The reconcildiff message is used to announce transactions which are
 found to be missing during set reconciliation on the sender's side.
 
 | Data type  | Name          | Description                                                                   |
-|------------|---------------|-------------------------------------------------------------------------------|
+| ---------- | ------------- | ----------------------------------------------------------------------------- |
 | uint8      | success       | Indicates whether sender of the message succeeded at set difference decoding. |
 | uint32\[\] | ask\_shortids | The short IDs that the sender did not have.                                   |
 
@@ -370,7 +372,7 @@ is the truncated ID analogue of "inv" (which cannot be used because it
 has 256-bit elements).
 
 | Data type   | Name          | Description                                                                       |
-|-------------|---------------|-----------------------------------------------------------------------------------|
+| ----------- | ------------- | --------------------------------------------------------------------------------- |
 | uint128\[\] | inv\_truncids | The truncated IDs of transactions the sender believes the receiver does not have. |
 
 Upon receipt a "invtx" message, a node requests announced transactions
@@ -383,7 +385,7 @@ The gettx message is used to request transactions by 128-bit truncated
 IDs. It is the truncated ID analogue of "getdata".
 
 | Data type   | Name          | Description                                                                       |
-|-------------|---------------|-----------------------------------------------------------------------------------|
+| ----------- | ------------- | --------------------------------------------------------------------------------- |
 | uint128\[\] | ask\_truncids | The truncated IDs of transactions the sender wants the full transaction data for. |
 
 Upon receipt a "gettx" message, a node sends "tx" messages for the

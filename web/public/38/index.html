@@ -47,18 +47,18 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 38
+<code><span style="color:#61676c;">  BIP: 38
   Layer: Applications
   Title: Passphrase-protected private key
   Author: Mike Caldwell &lt;mcaldwell@swipeclock.com&gt;
           Aaron Voisine &lt;voisine@gmail.com&gt;
   Comments-Summary: Unanimously Discourage for implementation
   Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0038
-  Status: Draft (Some confusion applies: The announcements for this never made it to the list, so it hasn't had public discussion)
+  Status: Draft (Some confusion applies: The announcements for this never made it to the list, so it hasn&#39;t had public discussion)
   Type: Standards Track
   Created: 2012-11-20
   License: PD
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>A method is proposed for encrypting and encoding a passphrase-protected
 Bitcoin private key record in the form of a 58-character
 Base58Check-encoded printable string. Encrypted private key records are
@@ -129,28 +129,31 @@ password-protected private keys are numerous.</p>
 <h2 id="copyright">Copyright</h2>
 <p>This proposal is hereby placed in the public domain.</p>
 <h2 id="rationale">Rationale</h2>
-<p><em><strong>User story:</strong> As a Bitcoin user who uses paper wallets, I would like
-the ability to add encryption, so that my Bitcoin paper storage can be
-two factor: something I have plus something I know.</em></p>
-<p><em><strong>User story:</strong> As a Bitcoin user who would like to pay a person or a
-company with a private key, I do not want to worry that any part of the
-communication path may result in the interception of the key and theft
-of my funds. I would prefer to offer an encrypted private key, and then
-follow it up with the password using a different communication channel
-(e.g. a phone call or SMS).</em></p>
-<p><em><strong>User story:</strong> (EC-multiplied keys) As a user of physical bitcoins, I
-would like a third party to be able to create password-protected Bitcoin
-private keys for me, without them knowing the password, so I can benefit
-from the physical bitcoin without the issuer having access to the
-private key. I would like to be able to choose a password whose minimum
-length and required format does not preclude me from memorizing it or
-engraving it on my physical bitcoin, without exposing me to an undue
-risk of password cracking and/or theft by the manufacturer of the item.</em></p>
-<p>'<strong>'User story:</strong> (EC multiplied keys) As a user of paper wallets, I
-would like the ability to generate a large number of Bitcoin addresses
-protected by the same password, while enjoying a high degree of security
-(highly expensive scrypt parameters), but without having to incur the
-scrypt delay for each address I generate.</p>
+<ul>
+<li><em><strong>User story:</strong> As a Bitcoin user who uses paper wallets, I would
+like the ability to add encryption, so that my Bitcoin paper storage
+can be two factor: something I have plus something I know.</em>
+<em><strong>User story:</strong> As a Bitcoin user who would like to pay a person or
+a company with a private key, I do not want to worry that any part
+of the communication path may result in the interception of the key
+and theft of my funds. I would prefer to offer an encrypted private
+key, and then follow it up with the password using a different
+communication channel (e.g. a phone call or SMS).</em>
+<em><strong>User story:</strong> (EC-multiplied keys) As a user of physical
+bitcoins, I would like a third party to be able to create
+password-protected Bitcoin private keys for me, without them knowing
+the password, so I can benefit from the physical bitcoin without the
+issuer having access to the private key. I would like to be able to
+choose a password whose minimum length and required format does not
+preclude me from memorizing it or engraving it on my physical
+bitcoin, without exposing me to an undue risk of password cracking
+and/or theft by the manufacturer of the item.</em>
+'<strong>'User story:</strong> (EC multiplied keys) As a user of paper wallets, I
+would like the ability to generate a large number of Bitcoin
+addresses protected by the same password, while enjoying a high
+degree of security (highly expensive scrypt parameters), but without
+having to incur the scrypt delay for each address I generate.</li>
+</ul>
 <h2 id="specification">Specification</h2>
 <p>This proposal makes use of the following functions and definitions:</p>
 <ul>
@@ -446,9 +449,12 @@ call it <em>addresshash</em>.</li>
 using scrypt
 <ul>
 <li>Parameters: <em>passphrase</em> is <em>passpoint</em> provided from the first
-party (expressed in binary as 33 bytes). <em>salt</em> is
-<em>addresshash</em> + <em>ownerentropy</em>, n=1024, r=1, p=1, length=64. The
-&quot;+&quot; operator is concatenation.</li>
+party (expressed in binary as 33 bytes). <em>salt</em> is <em>addresshash</em>
+<ul>
+<li><em>ownerentropy</em>, n=1024, r=1, p=1, length=64. The &quot;+&quot; operator
+is concatenation.</li>
+</ul>
+</li>
 <li>Split the result into two 32-byte halves and call them
 <em>derivedhalf1</em> and <em>derivedhalf2</em>.</li>
 </ul>
@@ -587,11 +593,13 @@ following properties:</p>
 <li>Encryption/decryption in javascript requiring several seconds per
 operation</li>
 <li>Use of the parallelization parameter provides a modest opportunity
-for speedups in environments where concurrent threading is
-available - such environments would be selected for processes that
-must handle bulk quantities of encryption/decryption operations.
-Estimated time for an operation is in the tens or hundreds of
-milliseconds.</li>
+for speedups in environments where concurrent threading is available
+<ul>
+<li>such environments would be selected for processes that must handle
+bulk quantities of encryption/decryption operations. Estimated time
+for an operation is in the tens or hundreds of milliseconds.</li>
+</ul>
+</li>
 </ul>
 <h2 id="reference-implementation">Reference implementation</h2>
 <p>Added to alpha version of Casascius Bitcoin Address Utility for Windows

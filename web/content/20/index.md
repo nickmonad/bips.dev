@@ -14,16 +14,18 @@ status = ["Replaced"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki"
 +++
 
-      BIP: 20
-      Layer: Applications
-      Title: URI Scheme
-      Author: Luke Dashjr <luke+bip@dashjr.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0020
-      Status: Replaced
-      Type: Standards Track
-      Created: 2011-01-10
-      License: BSD-2-Clause
+``` 
+  BIP: 20
+  Layer: Applications
+  Title: URI Scheme
+  Author: Luke Dashjr <luke+bip@dashjr.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0020
+  Status: Replaced
+  Type: Standards Track
+  Created: 2011-01-10
+  License: BSD-2-Clause
+```
 
 BIP 0020 is based off an earlier document by Nils Schneider. **And has
 been replaced by BIP 0021**
@@ -43,7 +45,7 @@ payments by simply clicking links on webpages or scanning QR Codes.
 
 ## Specification
 
-### General rules for handling (important!)
+### General rules for handling (important\!)
 
 Bitcoin clients MUST NOT act on URIs without getting the user's
 authorization. They SHOULD require the user to manually approve each
@@ -78,19 +80,19 @@ syntax](#Simpler_syntax "wikilink"))
 
 ### Query Keys
 
--   label: Label for that address (e.g. name of receiver)
--   address: bitcoin address
--   message: message that shown to the user after scanning the QR code
--   size: amount of base bitcoin units ([see
+  - label: Label for that address (e.g. name of receiver)
+  - address: bitcoin address
+  - message: message that shown to the user after scanning the QR code
+  - size: amount of base bitcoin units ([see
     below](#Transfer_amount/size "wikilink"))
--   send: used to send bitcoin, rather than to request them
--   (others): optional, for future extensions
+  - send: used to send bitcoin, rather than to request them
+  - (others): optional, for future extensions
 
 #### Transfer amount/size
 
 If an amount is provided, it may be specified either in decimal or, when
 prefixed with a single "x" character, hexadecimal. The number SHOULD be
-followed by "X" &lt;digits&gt; to signify an exponent to the base
+followed by "X" \<digits\> to signify an exponent to the base
 multiplier. Thus, "X8" multiplies your number by 100,000,000. For
 decimal values, this means the standard BTC unit. For hexadecimal
 values, this means ᵇTBC units (which are equivalent to 42.94967296 BTC).
@@ -142,43 +144,45 @@ This section is non-normative and does not cover all possible syntax.
 Please see the [BNF grammar](#BNF_grammar "wikilink") above for the
 normative syntax.
 
-\[foo\] means optional, &lt;bar&gt; are placeholders
+\[foo\] means optional, \<bar\> are placeholders
 
-     bitcoin:<address>[;version=1.0][?amount=<amount>][?label=<label>][?message=<message>][?send=<private key>]
+``` 
+ bitcoin:<address>[;version=1.0][?amount=<amount>][?label=<label>][?message=<message>][?send=<private key>]
+```
 
 ### Examples
 
 Just the address:
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L>
 
 Address with name:
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?label=Luke-Jr`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?label=Luke-Jr)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?label=Luke-Jr>
 
 Request 20.30 BTC to "Luke-Jr":
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=20.3X8&label=Luke-Jr`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=20.3X8&label=Luke-Jr)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=20.3X8&label=Luke-Jr>
 
 Request 400 TBC:
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x400X4`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x400X4)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x400X4>
 
 Request 4000 TBC:
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x4X7`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x4X7)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x4X7>
 
 Request 5 uBTC:
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=5X2`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=5X2)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=5X2>
 
 Request 50 BTC with message:
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=50X8&label=Luke-Jr&message=Donation%20for%20project%20xyz`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=50X8&label=Luke-Jr&message=Donation%20for%20project%20xyz)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=50X8&label=Luke-Jr&message=Donation%20for%20project%20xyz>
 
 Send 1 BTC:
 
-[`bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=1X8&send=S4b3N3oGqDqR5jNuxEvDwf`](bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=1X8&send=S4b3N3oGqDqR5jNuxEvDwf)
+<bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=1X8&send=S4b3N3oGqDqR5jNuxEvDwf>
 
 Characters must be URI encoded properly.
 
@@ -192,19 +196,25 @@ long you expect to pass before a claim. Now create and publish a
 transaction with an output of the amount you wish to send. Use this
 script in that output:
 
-     <pubkey> OP_CHECKSIG
+``` 
+ <pubkey> OP_CHECKSIG
+```
 
 Construct an address from the public key. Encode the URI as below:
 
-     bitcoin:<address>?send=<base 58 encoded private key>
+``` 
+ bitcoin:<address>?send=<base 58 encoded private key>
+```
 
 You may optionally include amount or message fields as well. In a wallet
 to claim money sent this way search for an incoming transaction with the
-output script form above, where &lt;address&gt; matches the public key
-in the script. When you find the transaction create a claim transaction
+output script form above, where \<address\> matches the public key in
+the script. When you find the transaction create a claim transaction
 with an input script of this form:
 
-     <sig>
+``` 
+ <sig>
+```
 
 This claims the money you were sent. Until your claim transaction has
 confirmed the sender may take their money back.
@@ -213,71 +223,77 @@ confirmed the sender may take their money back.
 
 ### Bitcoin clients
 
--   [Spesmilo](Spesmilo "wikilink") supports all valid Bitcoin URIs,
+  - [Spesmilo](Spesmilo "wikilink") supports all valid Bitcoin URIs,
     with Windows and KDE integration
 
 ### Parsing amount
 
 #### ECMAScript
 
-     reAmount = /^(([\d.]+)(X(\d+))?|x([\da-f]*)(\.([\da-f]*))?(X([\da-f]+))?)$/i;
-     function parseAmount(txt) {
-        var m = txt.match(reAmount);
-        return m[5] ? (
-            (
-                parseInt(m[5], 16) +
-                (m[7] ? (parseInt(m[7], 16) * Math.pow(16, -(m[7].length))) : 0)
-            ) * (
-                m[9] ? Math.pow(16, parseInt(m[9], 16)) : 0x10000
-            )
-        ) : (
-                m[2]
-            *
-                (m[4] ? Math.pow(10, m[4]) : 1e8)
-        );
-     }
+``` 
+ reAmount = /^(([\d.]+)(X(\d+))?|x([\da-f]*)(\.([\da-f]*))?(X([\da-f]+))?)$/i;
+ function parseAmount(txt) {
+    var m = txt.match(reAmount);
+    return m[5] ? (
+        (
+            parseInt(m[5], 16) +
+            (m[7] ? (parseInt(m[7], 16) * Math.pow(16, -(m[7].length))) : 0)
+        ) * (
+            m[9] ? Math.pow(16, parseInt(m[9], 16)) : 0x10000
+        )
+    ) : (
+            m[2]
+        *
+            (m[4] ? Math.pow(10, m[4]) : 1e8)
+    );
+ }
+```
 
 #### Python
 
-     m = re.match(r'^(([\d.]+)(X(\d+))?|x([\da-f]*)(\.([\da-f]*))?(X([\da-f]+))?)$', amount, re.IGNORECASE)
-     if m.group(5):
-         amount = float(int(m.group(5), 16))
-         if m.group(7):
-             amount += float(int(m.group(7), 16)) * pow(16, -(len(m.group(7))))
-         if m.group(9):
-             amount *= pow(16, int(m.group(9), 16))
-         else:
-             amount *= 0x10000
+``` 
+ m = re.match(r'^(([\d.]+)(X(\d+))?|x([\da-f]*)(\.([\da-f]*))?(X([\da-f]+))?)$', amount, re.IGNORECASE)
+ if m.group(5):
+     amount = float(int(m.group(5), 16))
+     if m.group(7):
+         amount += float(int(m.group(7), 16)) * pow(16, -(len(m.group(7))))
+     if m.group(9):
+         amount *= pow(16, int(m.group(9), 16))
      else:
-         amount = Decimal(m.group(2))
-         if m.group(4):
-             amount *= 10 ** int(m.group(4))
-         else:
-             amount *= 100000000
+         amount *= 0x10000
+ else:
+     amount = Decimal(m.group(2))
+     if m.group(4):
+         amount *= 10 ** int(m.group(4))
+     else:
+         amount *= 100000000
+```
 
 #### C\#
 
-     Regex amountExpression = new Regex(@"^(([\d.]+)(X(\d+))?|x([\da-f]*)(\.([\da-f]*))?(X([\da-f]+))?)$", RegexOptions.IgnoreCase);
-     Match match = amountExpression.Match(value);
-     if (match.Success)
+``` 
+ Regex amountExpression = new Regex(@"^(([\d.]+)(X(\d+))?|x([\da-f]*)(\.([\da-f]*))?(X([\da-f]+))?)$", RegexOptions.IgnoreCase);
+ Match match = amountExpression.Match(value);
+ if (match.Success)
+ {
+     if (match.Groups[5].Success)
      {
-         if (match.Groups[5].Success)
-         {
-             long hexDecimal = 0;
-             if (match.Groups[7].Success)
-                 hexDecimal = Convert.ToInt64(match.Groups[7].Value, 16) * (long)Math.Pow(16, -match.Groups[7].Length);
+         long hexDecimal = 0;
+         if (match.Groups[7].Success)
+             hexDecimal = Convert.ToInt64(match.Groups[7].Value, 16) * (long)Math.Pow(16, -match.Groups[7].Length);
 
-             long hexExponent = 0x10000;
-             if (match.Groups[9].Success)
-                 hexExponent = (long)Math.Pow(16, Convert.ToInt32(match.Groups[9].Value, 16));
+         long hexExponent = 0x10000;
+         if (match.Groups[9].Success)
+             hexExponent = (long)Math.Pow(16, Convert.ToInt32(match.Groups[9].Value, 16));
 
-             Amount = (Convert.ToInt64(match.Groups[5].Value, 16) + hexDecimal) * hexExponent;
-         }
-         else
-         {
-             long decimalExponent = 100000000;
-             if (match.Groups[4].Success)
-                 decimalExponent = (long)Math.Pow(10, int.Parse(match.Groups[4].Value));
-             Amount = (long)(decimal.Parse(match.Groups[2].Value) * decimalExponent);
-         }
+         Amount = (Convert.ToInt64(match.Groups[5].Value, 16) + hexDecimal) * hexExponent;
      }
+     else
+     {
+         long decimalExponent = 100000000;
+         if (match.Groups[4].Success)
+             decimalExponent = (long)Math.Pow(10, int.Parse(match.Groups[4].Value));
+         Amount = (long)(decimal.Parse(match.Groups[2].Value) * decimalExponent);
+     }
+ }
+```

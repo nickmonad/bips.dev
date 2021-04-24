@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0035.mediawiki"
 +++
 
-      BIP: 35
-      Layer: Peer Services
-      Title: mempool message
-      Author: Jeff Garzik <jgarzik@exmulti.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0035
-      Status: Final
-      Type: Standards Track
-      Created: 2012-08-16
+``` 
+  BIP: 35
+  Layer: Peer Services
+  Title: mempool message
+  Author: Jeff Garzik <jgarzik@exmulti.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0035
+  Status: Final
+  Type: Standards Track
+  Created: 2012-08-16
+```
 
 ## Abstract
 
@@ -55,11 +57,11 @@ transaction memory pool:
     message support to querying the memory pool.
 4.  Feature discovery is enabled by checking two "version" message
     attributes:
-    1.  Protocol version &gt;= 60002
+    1.  Protocol version \>= 60002
     2.  NODE\_NETWORK bit set in nServices
 
 Note that existing implementations drop "inv" messages with a vector
-size &gt; 50000.
+size \> 50000.
 
 ## Backward compatibility
 

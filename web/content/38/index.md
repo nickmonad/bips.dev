@@ -14,17 +14,19 @@ status = ["Draft (Some confusion applies: The announcements for this never made 
 github = "https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki"
 +++
 
-      BIP: 38
-      Layer: Applications
-      Title: Passphrase-protected private key
-      Author: Mike Caldwell <mcaldwell@swipeclock.com>
-              Aaron Voisine <voisine@gmail.com>
-      Comments-Summary: Unanimously Discourage for implementation
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0038
-      Status: Draft (Some confusion applies: The announcements for this never made it to the list, so it hasn't had public discussion)
-      Type: Standards Track
-      Created: 2012-11-20
-      License: PD
+``` 
+  BIP: 38
+  Layer: Applications
+  Title: Passphrase-protected private key
+  Author: Mike Caldwell <mcaldwell@swipeclock.com>
+          Aaron Voisine <voisine@gmail.com>
+  Comments-Summary: Unanimously Discourage for implementation
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0038
+  Status: Draft (Some confusion applies: The announcements for this never made it to the list, so it hasn't had public discussion)
+  Type: Standards Track
+  Created: 2012-11-20
+  License: PD
+```
 
 ## Abstract
 
@@ -111,55 +113,53 @@ This proposal is hereby placed in the public domain.
 
 ## Rationale
 
-  
-***User story:** As a Bitcoin user who uses paper wallets, I would like
-the ability to add encryption, so that my Bitcoin paper storage can be
-two factor: something I have plus something I know.*
-
-***User story:** As a Bitcoin user who would like to pay a person or a
-company with a private key, I do not want to worry that any part of the
-communication path may result in the interception of the key and theft
-of my funds. I would prefer to offer an encrypted private key, and then
-follow it up with the password using a different communication channel
-(e.g. a phone call or SMS).*
-
-***User story:** (EC-multiplied keys) As a user of physical bitcoins, I
-would like a third party to be able to create password-protected Bitcoin
-private keys for me, without them knowing the password, so I can benefit
-from the physical bitcoin without the issuer having access to the
-private key. I would like to be able to choose a password whose minimum
-length and required format does not preclude me from memorizing it or
-engraving it on my physical bitcoin, without exposing me to an undue
-risk of password cracking and/or theft by the manufacturer of the item.*
-
-'**'User story:** (EC multiplied keys) As a user of paper wallets, I
-would like the ability to generate a large number of Bitcoin addresses
-protected by the same password, while enjoying a high degree of security
-(highly expensive scrypt parameters), but without having to incur the
-scrypt delay for each address I generate.
+  -   
+    ***User story:** As a Bitcoin user who uses paper wallets, I would
+    like the ability to add encryption, so that my Bitcoin paper storage
+    can be two factor: something I have plus something I know.*
+    ***User story:** As a Bitcoin user who would like to pay a person or
+    a company with a private key, I do not want to worry that any part
+    of the communication path may result in the interception of the key
+    and theft of my funds. I would prefer to offer an encrypted private
+    key, and then follow it up with the password using a different
+    communication channel (e.g. a phone call or SMS).*
+    ***User story:** (EC-multiplied keys) As a user of physical
+    bitcoins, I would like a third party to be able to create
+    password-protected Bitcoin private keys for me, without them knowing
+    the password, so I can benefit from the physical bitcoin without the
+    issuer having access to the private key. I would like to be able to
+    choose a password whose minimum length and required format does not
+    preclude me from memorizing it or engraving it on my physical
+    bitcoin, without exposing me to an undue risk of password cracking
+    and/or theft by the manufacturer of the item.*
+    '**'User story:** (EC multiplied keys) As a user of paper wallets, I
+    would like the ability to generate a large number of Bitcoin
+    addresses protected by the same password, while enjoying a high
+    degree of security (highly expensive scrypt parameters), but without
+    having to incur the scrypt delay for each address I generate.
 
 ## Specification
 
 This proposal makes use of the following functions and definitions:
 
--   **AES256Encrypt, AES256Decrypt**: the simple form of the well-known
+  - **AES256Encrypt, AES256Decrypt**: the simple form of the well-known
     AES block cipher without consideration for initialization vectors or
     block chaining. Each of these functions takes a 256-bit key and 16
     bytes of input, and deterministically yields 16 bytes of output.
--   **SHA256**, a well-known hashing algorithm that takes an arbitrary
+  - **SHA256**, a well-known hashing algorithm that takes an arbitrary
     number of bytes as input and deterministically yields a 32-byte
     hash.
--   **scrypt**: A well-known key derivation algorithm. It takes the
+  - **scrypt**: A well-known key derivation algorithm. It takes the
     following parameters: (string) password, (string) salt, (int) n,
     (int) r, (int) p, (int) length, and deterministically yields an
     array of bytes whose length is equal to the length parameter.
--   **ECMultiply**: Multiplication of an elliptic curve point by a
+  - **ECMultiply**: Multiplication of an elliptic curve point by a
     scalar integer with respect to the [secp256k1](secp256k1 "wikilink")
     elliptic curve.
--   **G, N**: Constants defined as part of the
+  - **G, N**: Constants defined as part of the
     [secp256k1](secp256k1 "wikilink") elliptic curve. G is an elliptic
     curve point, and N is a large positive integer.
--   **[Base58Check](Base58Check "wikilink")**: a method for encoding
+  - **[Base58Check](Base58Check "wikilink")**: a method for encoding
     arrays of bytes using 58 alphanumeric characters commonly used in
     the Bitcoin ecosystem.
 
@@ -185,73 +185,73 @@ a 32-bit hash of the resulting Bitcoin address as salt.
 
 ### Proposed specification
 
--   Object identifier prefix: 0x0142 (non-EC-multiplied) or 0x0143
+  - Object identifier prefix: 0x0142 (non-EC-multiplied) or 0x0143
     (EC-multiplied). These are constant bytes that appear at the
     beginning of the Base58Check-encoded record, and their presence
     causes the resulting string to have a predictable prefix.
--   How the user sees it: 58 characters always starting with '6P'
-    -   Visual cues are present in the third character for visually
+  - How the user sees it: 58 characters always starting with '6P'
+      - Visual cues are present in the third character for visually
         identifying the EC-multiply and compress flag.
--   Count of payload bytes (beyond prefix): 37
-    -   1 byte (*flagbyte*):
-        -   the most significant two bits are set as follows to preserve
+  - Count of payload bytes (beyond prefix): 37
+      - 1 byte (*flagbyte*):
+          - the most significant two bits are set as follows to preserve
             the visibility of the compression flag in the prefix, as
             well as to keep the payload within the range of allowable
             values that keep the "6P" prefix intact. For
             non-EC-multiplied keys, the bits are 11. For EC-multiplied
             keys, the bits are 00.
-        -   the bit with value 0x20 when set indicates the key should be
+          - the bit with value 0x20 when set indicates the key should be
             converted to a bitcoin address using the compressed public
             key format.
-        -   the bits with values 0x10 and 0x08 are reserved for a future
+          - the bits with values 0x10 and 0x08 are reserved for a future
             specification that contemplates using multisig as a way to
             combine the factors such that parties in possession of the
             separate factors can independently sign a proposed
             transaction without requiring that any party possess both
             factors. These bits must be 0 to comply with this version of
             the specification.
-        -   the bit with value 0x04 indicates whether a lot and sequence
+          - the bit with value 0x04 indicates whether a lot and sequence
             number are encoded into the first factor, and activates
             special behavior for including them in the decryption
             process. This applies to EC-multiplied keys only. Must be 0
             for non-EC-multiplied keys.
-        -   remaining bits are reserved for future use and must all be 0
+          - remaining bits are reserved for future use and must all be 0
             to comply with this version of the specification.
-    -   4 bytes: SHA256(SHA256(expected\_bitcoin\_address))\[0...3\],
+      - 4 bytes: SHA256(SHA256(expected\_bitcoin\_address))\[0...3\],
         used both for typo checking and as salt
-    -   16 bytes: Contents depend on whether EC multiplication is used.
-    -   16 bytes: lasthalf: An AES-encrypted key material record
+      - 16 bytes: Contents depend on whether EC multiplication is used.
+      - 16 bytes: lasthalf: An AES-encrypted key material record
         (contents depend on whether EC multiplication is used)
--   Range in base58check encoding for non-EC-multiplied keys without
+  - Range in base58check encoding for non-EC-multiplied keys without
     compression (prefix 6PR):
-    -   Minimum value:
+      - Minimum value:
         6PRHv1jg1ytiE4kT2QtrUz8gEjMQghZDWg1FuxjdYDzjUkcJeGdFj9q9Vi
         (based on 01 42 C0 plus thirty-six 00's)
-    -   Maximum value:
+      - Maximum value:
         6PRWdmoT1ZursVcr5NiD14p5bHrKVGPG7yeEoEeRb8FVaqYSHnZTLEbYsU
         (based on 01 42 C0 plus thirty-six FF's)
--   Range in base58check encoding for non-EC-multiplied keys with
+  - Range in base58check encoding for non-EC-multiplied keys with
     compression (prefix 6PY):
-    -   Minimum value:
+      - Minimum value:
         6PYJxKpVnkXUsnZAfD2B5ZsZafJYNp4ezQQeCjs39494qUUXLnXijLx6LG
         (based on 01 42 E0 plus thirty-six 00's)
-    -   Maximum value:
+      - Maximum value:
         6PYXg5tGnLYdXDRZiAqXbeYxwDoTBNthbi3d61mqBxPpwZQezJTvQHsCnk
         (based on 01 42 E0 plus thirty-six FF's)
--   Range in base58check encoding for EC-multiplied keys without
+  - Range in base58check encoding for EC-multiplied keys without
     compression (prefix 6Pf):
-    -   Minimum value:
+      - Minimum value:
         6PfKzduKZXAFXWMtJ19Vg9cSvbFg4va6U8p2VWzSjtHQCCLk3JSBpUvfpf
         (based on 01 43 00 plus thirty-six 00's)
-    -   Maximum value:
+      - Maximum value:
         6PfYiPy6Z7BQAwEHLxxrCEHrH9kasVQ95ST1NnuEnnYAJHGsgpNPQ9dTHc
         (based on 01 43 00 plus thirty-six FF's)
--   Range in base58check encoding for EC-multiplied keys with
+  - Range in base58check encoding for EC-multiplied keys with
     compression (prefix 6Pn):
-    -   Minimum value:
+      - Minimum value:
         6PnM2wz9LHo2BEAbvoGpGjMLGXCom35XwsDQnJ7rLiRjYvCxjpLenmoBsR
         (based on 01 43 20 plus thirty-six 00's)
-    -   Maximum value:
+      - Maximum value:
         6PnZki3vKspApf2zym6Anp2jd5hiZbuaZArPfa2ePcgVf196PLGrQNyVUh
         (based on 01 43 20 plus thirty-six FF's)
 
@@ -266,11 +266,11 @@ Encryption steps:
 1.  Compute the Bitcoin address (ASCII), and take the first four bytes
     of SHA256(SHA256()) of it. Let's call this "addresshash".
 2.  Derive a key from the passphrase using scrypt
-    -   Parameters: *passphrase* is the passphrase itself encoded in
+      - Parameters: *passphrase* is the passphrase itself encoded in
         UTF-8 and normalized using Unicode Normalization Form C (NFC).
         salt is *addresshash* from the earlier step, n=16384, r=8, p=8,
         length=64 (n, r, p are provisional and subject to consensus)
-    -   Let's split the resulting 64 bytes in half, and call them
+      - Let's split the resulting 64 bytes in half, and call them
         *derivedhalf1* and *derivedhalf2*.
 3.  Do AES256Encrypt(block = bitcoinprivkey\[0...15\] xor
     derivedhalf1\[0...15\], key = derivedhalf2), call the 16-byte result
@@ -282,7 +282,7 @@ Encryption steps:
 The encrypted private key is the Base58Check-encoded concatenation of
 the following, which totals 39 bytes without Base58 checksum:
 
--   0x01 0x42 + *flagbyte* + *salt* + *encryptedhalf1* +
+  - 0x01 0x42 + *flagbyte* + *salt* + *encryptedhalf1* +
     *encryptedhalf2*
 
 Decryption steps:
@@ -355,11 +355,11 @@ lot and sequence numbers are being included:
 3.  Concatenate *ownersalt* + *lotsequence* and call this
     *ownerentropy*.
 4.  Derive a key from the passphrase using scrypt
-    -   Parameters: *passphrase* is the passphrase itself encoded in
+      - Parameters: *passphrase* is the passphrase itself encoded in
         UTF-8 and normalized using Unicode Normalization Form C (NFC).
         salt is *ownersalt*. n=16384, r=8, p=8, length=32.
-    -   Call the resulting 32 bytes *prefactor*.
-    -   Take SHA256(SHA256(*prefactor* + *ownerentropy*)) and call this
+      - Call the resulting 32 bytes *prefactor*.
+      - Take SHA256(SHA256(*prefactor* + *ownerentropy*)) and call this
         *passfactor*. The "+" operator is concatenation.
 5.  Compute the elliptic curve point G \* *passfactor*, and convert the
     result to compressed notation (33 bytes). Call this *passpoint*.
@@ -368,7 +368,7 @@ lot and sequence numbers are being included:
     public keys.
 6.  Convey *ownersalt* and *passpoint* to the party generating the keys,
     along with a checksum to ensure integrity.
-    -   The following Base58Check-encoded format is recommended for this
+      - The following Base58Check-encoded format is recommended for this
         purpose: magic bytes "2C E9 B3 E1 FF 39 E2 51" followed by
         *ownerentropy*, and then *passpoint*. The resulting string will
         start with the word "passphrase" due to the constant bytes, will
@@ -380,11 +380,11 @@ lot and sequence numbers are being included:
 If lot and sequence numbers are not being included, then follow the same
 procedure with the following changes:
 
--   *ownersalt* is 8 random bytes instead of 4, and *lotsequence* is
+  - *ownersalt* is 8 random bytes instead of 4, and *lotsequence* is
     omitted. *ownerentropy* becomes an alias for *ownersalt*.
--   The SHA256 conversion of *prefactor* to *passfactor* is omitted.
+  - The SHA256 conversion of *prefactor* to *passfactor* is omitted.
     Instead, the output of scrypt is used directly as *passfactor*.
--   The magic bytes are "2C E9 B3 E1 FF 39 E2 53" instead (the last byte
+  - The magic bytes are "2C E9 B3 E1 FF 39 E2 53" instead (the last byte
     is 0x53 instead of 0x51).
 
 Steps to create new encrypted private keys given
@@ -393,10 +393,10 @@ Steps to create new encrypted private keys given
 passphrase):
 
 1.  Set *flagbyte*.
-    -   Turn on bit 0x20 if the Bitcoin address will be formed by
+      - Turn on bit 0x20 if the Bitcoin address will be formed by
         hashing the compressed public key (optional, saves space, but
         many Bitcoin implementations aren't compatible with it)
-    -   Turn on bit 0x04 if *ownerentropy* contains a value for
+      - Turn on bit 0x04 if *ownerentropy* contains a value for
         *lotsequence*. (While it has no effect on the keypair generation
         process, the decryption process needs this flag to know how to
         process *ownerentropy*)
@@ -411,11 +411,11 @@ passphrase):
     call it *addresshash*.
 5.  Now we will encrypt *seedb*. Derive a second key from *passpoint*
     using scrypt
-    -   Parameters: *passphrase* is *passpoint* provided from the first
-        party (expressed in binary as 33 bytes). *salt* is
-        *addresshash* + *ownerentropy*, n=1024, r=1, p=1, length=64. The
-        "+" operator is concatenation.
-    -   Split the result into two 32-byte halves and call them
+      - Parameters: *passphrase* is *passpoint* provided from the first
+        party (expressed in binary as 33 bytes). *salt* is *addresshash*
+        + *ownerentropy*, n=1024, r=1, p=1, length=64. The "+" operator
+        is concatenation.
+      - Split the result into two 32-byte halves and call them
         *derivedhalf1* and *derivedhalf2*.
 6.  Do AES256Encrypt(block = (seedb\[0...15\] xor
     derivedhalf1\[0...15\]), key = derivedhalf2), call the 16-byte
@@ -428,7 +428,7 @@ passphrase):
 The encrypted private key is the Base58Check-encoded concatenation of
 the following, which totals 39 bytes without Base58 checksum:
 
--   0x01 0x43 + *flagbyte* + *addresshash* + *ownerentropy* +
+  - 0x01 0x43 + *flagbyte* + *addresshash* + *ownerentropy* +
     *encryptedpart1*\[0...7\] + *encryptedpart2*
 
 ##### Confirmation code
@@ -464,7 +464,7 @@ operation.
 
 The result is a Base58Check-encoded concatenation of the following:
 
--   0x64 0x3B 0xF6 0xA8 0x9A + *flagbyte* + *addresshash* +
+  - 0x64 0x3B 0xF6 0xA8 0x9A + *flagbyte* + *addresshash* +
     *ownerentropy* + *encryptedpointb*
 
 A confirmation tool, given a passphrase and a confirmation code, can
@@ -562,28 +562,27 @@ javascript-based decryptors).
 The preliminary values of 16384, 8, and 8 are hoped to offer the
 following properties:
 
--   Encryption/decryption in javascript requiring several seconds per
+  - Encryption/decryption in javascript requiring several seconds per
     operation
--   Use of the parallelization parameter provides a modest opportunity
-    for speedups in environments where concurrent threading is
-    available - such environments would be selected for processes that
-    must handle bulk quantities of encryption/decryption operations.
-    Estimated time for an operation is in the tens or hundreds of
-    milliseconds.
+  - Use of the parallelization parameter provides a modest opportunity
+    for speedups in environments where concurrent threading is available
+    - such environments would be selected for processes that must handle
+    bulk quantities of encryption/decryption operations. Estimated time
+    for an operation is in the tens or hundreds of milliseconds.
 
 ## Reference implementation
 
 Added to alpha version of Casascius Bitcoin Address Utility for Windows
 available at:
 
--   via https: <https://casascius.com/btcaddress-alpha.zip>
--   at github: <https://github.com/casascius/Bitcoin-Address-Utility>
+  - via https: <https://casascius.com/btcaddress-alpha.zip>
+  - at github: <https://github.com/casascius/Bitcoin-Address-Utility>
 
 Click "Tools" then "PPEC Keygen" (provisional name)
 
 ## Other implementations
 
--   Javascript - <https://github.com/bitcoinjs/bip38>
+  - Javascript - <https://github.com/bitcoinjs/bip38>
 
 ## Test vectors
 
@@ -591,38 +590,38 @@ Click "Tools" then "PPEC Keygen" (provisional name)
 
 Test 1:
 
--   Passphrase: TestingOneTwoThree
--   Encrypted:
+  - Passphrase: TestingOneTwoThree
+  - Encrypted:
     6PRVWUbkzzsbcVac2qwfssoUJAN1Xhrg6bNk8J7Nzm5H7kxEbn2Nh2ZoGg
--   Unencrypted (WIF):
+  - Unencrypted (WIF):
     5KN7MzqK5wt2TP1fQCYyHBtDrXdJuXbUzm4A9rKAteGu3Qi5CVR
--   Unencrypted (hex):
+  - Unencrypted (hex):
     CBF4B9F70470856BB4F40F80B87EDB90865997FFEE6DF315AB166D713AF433A5
 
 Test 2:
 
--   Passphrase: Satoshi
--   Encrypted:
+  - Passphrase: Satoshi
+  - Encrypted:
     6PRNFFkZc2NZ6dJqFfhRoFNMR9Lnyj7dYGrzdgXXVMXcxoKTePPX1dWByq
--   Unencrypted (WIF):
+  - Unencrypted (WIF):
     5HtasZ6ofTHP6HCwTqTkLDuLQisYPah7aUnSKfC7h4hMUVw2gi5
--   Unencrypted (hex):
+  - Unencrypted (hex):
     09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE
 
 Test 3:
 
--   Passphrase ϓ␀𐐀💩 (`\u03D2\u0301\u0000\U00010400\U0001F4A9`; [GREEK
+  - Passphrase ϓ␀𐐀💩 (`\u03D2\u0301\u0000\U00010400\U0001F4A9`; [GREEK
     UPSILON WITH HOOK](http://codepoints.net/U+03D2), [COMBINING ACUTE
     ACCENT](http://codepoints.net/U+0301),
     [NULL](http://codepoints.net/U+0000), [DESERET CAPITAL LETTER LONG
     I](http://codepoints.net/U+10400), [PILE OF
     POO](http://codepoints.net/U+1F4A9))
--   Encrypted key:
+  - Encrypted key:
     6PRW5o9FLp4gJDDVqJQKJFTpMvdsSGJxMYHtHaQBF3ooa8mwD69bapcDQn
--   Bitcoin Address: 16ktGzmfrurhbhi6JGqsMWf7TyqK9HNAeF
--   Unencrypted private key (WIF):
+  - Bitcoin Address: 16ktGzmfrurhbhi6JGqsMWf7TyqK9HNAeF
+  - Unencrypted private key (WIF):
     5Jajm8eQ22H3pGWLEVCXyvND8dQZhiQhoLJNKjYXk9roUFTMSZ4
--   *Note:* The non-standard UTF-8 characters in this passphrase should
+  - *Note:* The non-standard UTF-8 characters in this passphrase should
     be NFC normalized to result in a passphrase of
     `0xcf9300f0909080f09f92a9` before further processing
 
@@ -630,83 +629,83 @@ Test 3:
 
 Test 1:
 
--   Passphrase: TestingOneTwoThree
--   Encrypted:
+  - Passphrase: TestingOneTwoThree
+  - Encrypted:
     6PYNKZ1EAgYgmQfmNVamxyXVWHzK5s6DGhwP4J5o44cvXdoY7sRzhtpUeo
--   Unencrypted (WIF):
+  - Unencrypted (WIF):
     L44B5gGEpqEDRS9vVPz7QT35jcBG2r3CZwSwQ4fCewXAhAhqGVpP
--   Unencrypted (hex):
+  - Unencrypted (hex):
     CBF4B9F70470856BB4F40F80B87EDB90865997FFEE6DF315AB166D713AF433A5
 
 Test 2:
 
--   Passphrase: Satoshi
--   Encrypted:
+  - Passphrase: Satoshi
+  - Encrypted:
     6PYLtMnXvfG3oJde97zRyLYFZCYizPU5T3LwgdYJz1fRhh16bU7u6PPmY7
--   Unencrypted (WIF):
+  - Unencrypted (WIF):
     KwYgW8gcxj1JWJXhPSu4Fqwzfhp5Yfi42mdYmMa4XqK7NJxXUSK7
--   Unencrypted (hex):
+  - Unencrypted (hex):
     09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE
 
 ### EC multiply, no compression, no lot/sequence numbers
 
 Test 1:
 
--   Passphrase: TestingOneTwoThree
--   Passphrase code:
+  - Passphrase: TestingOneTwoThree
+  - Passphrase code:
     passphrasepxFy57B9v8HtUsszJYKReoNDV6VHjUSGt8EVJmux9n1J3Ltf1gRxyDGXqnf9qm
--   Encrypted key:
+  - Encrypted key:
     6PfQu77ygVyJLZjfvMLyhLMQbYnu5uguoJJ4kMCLqWwPEdfpwANVS76gTX
--   Bitcoin address: 1PE6TQi6HTVNz5DLwB1LcpMBALubfuN2z2
--   Unencrypted private key (WIF):
+  - Bitcoin address: 1PE6TQi6HTVNz5DLwB1LcpMBALubfuN2z2
+  - Unencrypted private key (WIF):
     5K4caxezwjGCGfnoPTZ8tMcJBLB7Jvyjv4xxeacadhq8nLisLR2
--   Unencrypted private key (hex):
+  - Unencrypted private key (hex):
     A43A940577F4E97F5C4D39EB14FF083A98187C64EA7C99EF7CE460833959A519
 
 Test 2:
 
--   Passphrase: Satoshi
--   Passphrase code:
+  - Passphrase: Satoshi
+  - Passphrase code:
     passphraseoRDGAXTWzbp72eVbtUDdn1rwpgPUGjNZEc6CGBo8i5EC1FPW8wcnLdq4ThKzAS
--   Encrypted key:
+  - Encrypted key:
     6PfLGnQs6VZnrNpmVKfjotbnQuaJK4KZoPFrAjx1JMJUa1Ft8gnf5WxfKd
--   Bitcoin address: 1CqzrtZC6mXSAhoxtFwVjz8LtwLJjDYU3V
--   Unencrypted private key (WIF):
+  - Bitcoin address: 1CqzrtZC6mXSAhoxtFwVjz8LtwLJjDYU3V
+  - Unencrypted private key (WIF):
     5KJ51SgxWaAYR13zd9ReMhJpwrcX47xTJh2D3fGPG9CM8vkv5sH
--   Unencrypted private key (hex):
+  - Unencrypted private key (hex):
     C2C8036DF268F498099350718C4A3EF3984D2BE84618C2650F5171DCC5EB660A
 
 ### EC multiply, no compression, lot/sequence numbers
 
 Test 1:
 
--   Passphrase: MOLON LABE
--   Passphrase code:
+  - Passphrase: MOLON LABE
+  - Passphrase code:
     passphraseaB8feaLQDENqCgr4gKZpmf4VoaT6qdjJNJiv7fsKvjqavcJxvuR1hy25aTu5sX
--   Encrypted key:
+  - Encrypted key:
     6PgNBNNzDkKdhkT6uJntUXwwzQV8Rr2tZcbkDcuC9DZRsS6AtHts4Ypo1j
--   Bitcoin address: 1Jscj8ALrYu2y9TD8NrpvDBugPedmbj4Yh
--   Unencrypted private key (WIF):
+  - Bitcoin address: 1Jscj8ALrYu2y9TD8NrpvDBugPedmbj4Yh
+  - Unencrypted private key (WIF):
     5JLdxTtcTHcfYcmJsNVy1v2PMDx432JPoYcBTVVRHpPaxUrdtf8
--   Unencrypted private key (hex):
+  - Unencrypted private key (hex):
     44EA95AFBF138356A05EA32110DFD627232D0F2991AD221187BE356F19FA8190
--   Confirmation code:
+  - Confirmation code:
     cfrm38V8aXBn7JWA1ESmFMUn6erxeBGZGAxJPY4e36S9QWkzZKtaVqLNMgnifETYw7BPwWC9aPD
--   Lot/Sequence: 263183/1
+  - Lot/Sequence: 263183/1
 
 Test 2:
 
--   Passphrase (all letters are Greek - test UTF-8 compatibility with
+  - Passphrase (all letters are Greek - test UTF-8 compatibility with
     this): ΜΟΛΩΝ ΛΑΒΕ
--   Passphrase code:
+  - Passphrase code:
     passphrased3z9rQJHSyBkNBwTRPkUGNVEVrUAcfAXDyRU1V28ie6hNFbqDwbFBvsTK7yWVK
--   Encrypted private key:
+  - Encrypted private key:
     6PgGWtx25kUg8QWvwuJAgorN6k9FbE25rv5dMRwu5SKMnfpfVe5mar2ngH
--   Bitcoin address: 1Lurmih3KruL4xDB5FmHof38yawNtP9oGf
--   Unencrypted private key (WIF):
+  - Bitcoin address: 1Lurmih3KruL4xDB5FmHof38yawNtP9oGf
+  - Unencrypted private key (WIF):
     5KMKKuUmAkiNbA3DazMQiLfDq47qs8MAEThm4yL8R2PhV1ov33D
--   Unencrypted private key (hex):
+  - Unencrypted private key (hex):
     CA2759AA4ADB0F96C414F36ABEB8DB59342985BE9FA50FAAC228C8E7D90E3006
--   Confirmation code:
+  - Confirmation code:
     cfrm38V8G4qq2ywYEFfWLD5Cc6msj9UwsG2Mj4Z6QdGJAFQpdatZLavkgRd1i4iBMdRngDqDs51
--   Lot/Sequence: 806938/1
+  - Lot/Sequence: 806938/1

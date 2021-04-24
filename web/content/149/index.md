@@ -14,17 +14,19 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0149.mediawiki"
 +++
 
-      BIP: 149
-      Layer: Consensus (soft fork)
-      Title: Segregated Witness (second deployment)
-      Author: Shaolin Fry <shaolinfry@protonmail.ch>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0149
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2017-04-14
-      License: BSD-3-Clause
-               CC0-1.0
+``` 
+  BIP: 149
+  Layer: Consensus (soft fork)
+  Title: Segregated Witness (second deployment)
+  Author: Shaolin Fry <shaolinfry@protonmail.ch>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0149
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2017-04-14
+  License: BSD-3-Clause
+           CC0-1.0
+```
 
 ## Abstract
 
@@ -55,7 +57,7 @@ then.
 
 ## Specification
 
-This deployment will set service bit (1&lt;&lt;5) as NODE\_UAWITNESS.
+This deployment will set service bit (1\<\<5) as NODE\_UAWITNESS.
 
 ## Deployment
 

@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 151
+<code><span style="color:#61676c;">  BIP: 151
   Layer: Peer Services
   Title: Peer-to-Peer Communication Encryption
   Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
@@ -57,7 +57,7 @@
   Type: Standards Track
   Created: 2016-03-23
   License: PD
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP describes an alternative way that a peer can encrypt their
 communication between a selective subset of remote peers.</p>
 <h2 id="motivation">Motivation</h2>
@@ -100,19 +100,15 @@ be ignored).</p>
 by sharing the pubkeys of an ephemeral key. Once the ECDH secret is
 calculated on each side, the symmetric encryption cipher keys must be
 derived with HKDF [2] after the following specification:</p>
-<p>1. HKDF extraction
-<code>PRK = HKDF_EXTRACT(hash=SHA256, salt=&quot;bitcoinecdh&quot;, ikm=ecdh_secret|cipher-type)</code>.</p>
-<p>2. Derive Key1
-<code>K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK1&quot;, L=32)</code></p>
-<p>3. Derive Key2
-<code>K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK2&quot;, L=32)</code></p>
+<p>1. HKDF extraction <code>PRK = HKDF_EXTRACT(hash=SHA256, salt=&quot;bitcoinecdh&quot;, ikm=ecdh_secret|cipher-type)</code>.</p>
+<p>2. Derive Key1 <code>K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK1&quot;, L=32)</code></p>
+<p>3. Derive Key2 <code>K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK2&quot;, L=32)</code></p>
 <p>It is important to include the cipher-type into the symmetric cipher key
 derivation to avoid weak-cipher-attacks.</p>
 <h3 id="session-id">Session ID</h3>
-<p>Both sides must also calculate the 256bit session-id using
-<code>SID = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinSessionID&quot;, L=32)</code>.
-The session-id can be used for linking the encryption-session to an
-identity check.</p>
+<p>Both sides must also calculate the 256bit session-id using <code>SID = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinSessionID&quot;, L=32)</code>. The
+session-id can be used for linking the encryption-session to an identity
+check.</p>
 <h3 id="the-encinit-message-type">The <code>encinit</code> message type</h3>
 <p>To request encrypted communication, the requesting peer generates an EC
 ephemeral-session-keypair and sends an <code>encinit</code> message to the

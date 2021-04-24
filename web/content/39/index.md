@@ -14,18 +14,20 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki"
 +++
 
-      BIP: 39
-      Layer: Applications
-      Title: Mnemonic code for generating deterministic keys
-      Author: Marek Palatinus <slush@satoshilabs.com>
-              Pavol Rusnak <stick@satoshilabs.com>
-              Aaron Voisine <voisine@gmail.com>
-              Sean Bowe <ewillbefull@gmail.com>
-      Comments-Summary: Unanimously Discourage for implementation
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0039
-      Status: Proposed
-      Type: Standards Track
-      Created: 2013-09-10
+``` 
+  BIP: 39
+  Layer: Applications
+  Title: Mnemonic code for generating deterministic keys
+  Author: Marek Palatinus <slush@satoshilabs.com>
+          Pavol Rusnak <stick@satoshilabs.com>
+          Aaron Voisine <voisine@gmail.com>
+          Sean Bowe <ewillbefull@gmail.com>
+  Comments-Summary: Unanimously Discourage for implementation
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0039
+  Status: Proposed
+  Type: Standards Track
+  Created: 2013-09-10
+```
 
 ## Abstract
 
@@ -73,7 +75,7 @@ mnemonic sentence (MS) in words.
 
     CS = ENT / 32
     MS = (ENT + CS) / 11
-
+    
     |  ENT  | CS | ENT+CS |  MS  |
     +-------+----+--------+------+
     |  128  |  4 |   132  |  12  |
@@ -86,18 +88,18 @@ mnemonic sentence (MS) in words.
 
 An ideal wordlist has the following characteristics:
 
-a\) smart selection of words
+a) smart selection of words
 
 `  - the wordlist is created in such a way that it's enough to type the first four`  
 `    letters to unambiguously identify the word`
 
-b\) similar words avoided
+b) similar words avoided
 
 `  - word pairs like "build" and "built", "woman" and "women", or "quick" and "quickly"`  
 `    not only make remembering the sentence difficult but are also more error`  
 `    prone and more difficult to guess`
 
-c\) sorted wordlists
+c) sorted wordlists
 
 `  - the wordlist is sorted which allows for more efficient lookup of the code words`  
 `    (i.e. implementations can use binary search instead of linear search)`  
@@ -146,7 +148,7 @@ for generating the mnemonic sentences.
 If you still feel your application really needs to use a localized
 wordlist, use one of the following instead of inventing your own.
 
--   [Wordlists](bip-0039/bip-0039-wordlists.md "wikilink")
+  - [Wordlists](bip-0039/bip-0039-wordlists.md "wikilink")
 
 ## Test vectors
 
@@ -170,63 +172,63 @@ Reference implementation including wordlists is available from
 
 Go:
 
--   <https://github.com/tyler-smith/go-bip39>
+  - <https://github.com/tyler-smith/go-bip39>
 
 Python:
 
--   <https://github.com/meherett/python-hdwallet>
+  - <https://github.com/meherett/python-hdwallet>
 
 Elixir:
 
--   <https://github.com/aerosol/mnemo>
+  - <https://github.com/aerosol/mnemo>
 
 Objective-C:
 
--   <https://github.com/nybex/NYMnemonic>
+  - <https://github.com/nybex/NYMnemonic>
 
 Haskell:
 
--   <https://github.com/haskoin/haskoin>
+  - <https://github.com/haskoin/haskoin>
 
 .NET C\# (PCL):
 
--   <https://github.com/Thashiznets/BIP39.NET>
+  - <https://github.com/Thashiznets/BIP39.NET>
 
 .NET C\# (PCL):
 
--   <https://github.com/NicolasDorier/NBitcoin>
+  - <https://github.com/NicolasDorier/NBitcoin>
 
 JavaScript:
 
--   <https://github.com/bitpay/bitcore-mnemonic>
--   <https://github.com/bitcoinjs/bip39> (used by
+  - <https://github.com/bitpay/bitcore-mnemonic>
+  - <https://github.com/bitcoinjs/bip39> (used by
     [blockchain.info](https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/hd-wallet.js#L121-L146 "wikilink"))
 
 Java:
 
--   <https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/crypto/MnemonicCode.java>
+  - <https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/crypto/MnemonicCode.java>
 
 Ruby:
 
--   <https://github.com/sreekanthgs/bip_mnemonic>
+  - <https://github.com/sreekanthgs/bip_mnemonic>
 
 Rust:
 
--   <https://github.com/maciejhirsz/tiny-bip39/>
--   <https://github.com/koushiro/bip0039-rs>
+  - <https://github.com/maciejhirsz/tiny-bip39/>
+  - <https://github.com/koushiro/bip0039-rs>
 
 Swift:
 
--   <https://github.com/CikeQiu/CKMnemonic>
--   <https://github.com/yuzushioh/WalletKit>
--   <https://github.com/pengpengliu/BIP39>
--   <https://github.com/matter-labs/web3swift/blob/develop/Sources/web3swift/KeystoreManager/BIP39.swift>
--   <https://github.com/zcash-hackworks/MnemonicSwift>
+  - <https://github.com/CikeQiu/CKMnemonic>
+  - <https://github.com/yuzushioh/WalletKit>
+  - <https://github.com/pengpengliu/BIP39>
+  - <https://github.com/matter-labs/web3swift/blob/develop/Sources/web3swift/KeystoreManager/BIP39.swift>
+  - <https://github.com/zcash-hackworks/MnemonicSwift>
 
 C++:
 
--   <https://github.com/libbitcoin/libbitcoin-system/blob/master/include/bitcoin/system/wallet/mnemonic.hpp>
+  - <https://github.com/libbitcoin/libbitcoin-system/blob/master/include/bitcoin/system/wallet/mnemonic.hpp>
 
 C (with Python/Java/Javascript bindings):
 
--   <https://github.com/ElementsProject/libwally-core>
+  - <https://github.com/ElementsProject/libwally-core>

@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 50
+<code><span style="color:#61676c;">  BIP: 50
   Title: March 2013 Chain Fork Post-Mortem
   Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
   Comments-Summary: No comments yet.
@@ -56,7 +56,7 @@
   Type: Informational
   Created: 2013-03-20
   License: PD
-</code></pre><h2 id="what-went-wrong">What went wrong</h2>
+</span></code></pre><h2 id="what-went-wrong">What went wrong</h2>
 <p>A block that had a larger number of total transaction inputs than
 previously seen was mined and broadcasted. Bitcoin 0.8 nodes were able
 to handle this, but some pre-0.8 Bitcoin nodes rejected it, causing an
@@ -93,11 +93,13 @@ was not intending to actually steal money.</li>
 Berkeley DB locks to process large but otherwise valid blocks. Berkeley
 DB locks have to be manually configured by API users depending on
 anticipated load. The manual says this:</p>
-<p>The recommended algorithm for selecting the maximum number of locks,
+<ul>
+<li>The recommended algorithm for selecting the maximum number of locks,
 lockers, and lock objects is to run the application under stressful
-conditions and then review the lock system's statistics to determine the
-maximum number of locks, lockers, and lock objects that were used. Then,
-double these values for safety.</p>
+conditions and then review the lock system's statistics to determine
+the maximum number of locks, lockers, and lock objects that were
+used. Then, double these values for safety.</li>
+</ul>
 <p>With the insufficiently high BDB lock configuration, it implicitly had
 become a network consensus rule determining block validity (albeit an
 inconsistent and unsafe rule, since the lock usage could vary from node

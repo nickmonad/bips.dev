@@ -14,15 +14,17 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0106.mediawiki"
 +++
 
-      BIP: 106
-      Layer: Consensus (hard fork)
-      Title: Dynamically Controlled Bitcoin Block Size Max Cap
-      Author: Upal Chakraborty <bitcoin@upalc.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0106
-      Status: Rejected
-      Type: Standards Track
-      Created: 2015-08-24
+``` 
+  BIP: 106
+  Layer: Consensus (hard fork)
+  Title: Dynamically Controlled Bitcoin Block Size Max Cap
+  Author: Upal Chakraborty <bitcoin@upalc.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0106
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-08-24
+```
 
 ## Abstract
 
@@ -31,9 +33,9 @@ with a dynamically controlled maximum block size that may increase or
 decrease with difficulty change depending on various network factors. I
 have two proposals regarding this...
 
-i\. Depending only on previous block size calculation.
+i. Depending only on previous block size calculation.
 
-ii\. Depending on previous block size calculation and previous Tx fee
+ii. Depending on previous block size calculation and previous Tx fee
 collected by miners.
 
 ## Motivation

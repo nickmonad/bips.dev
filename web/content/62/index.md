@@ -17,16 +17,18 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki"
 **NOTICE: This document is a work in progress and is not complete,
 implemented, or otherwise suitable for deployment.**
 
-      BIP: 62
-      Layer: Consensus (soft fork)
-      Title: Dealing with malleability
-      Author: Pieter Wuille <pieter.wuille@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0062
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2014-03-12
-      License: BSD-2-Clause
+``` 
+  BIP: 62
+  Layer: Consensus (soft fork)
+  Title: Dealing with malleability
+  Author: Pieter Wuille <pieter.wuille@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0062
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2014-03-12
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -47,12 +49,12 @@ keys.
 
 This is a problem for multiple reasons:
 
--   The sender may not recognize his own transaction after being
+  - The sender may not recognize his own transaction after being
     modified.
--   The sender may create transactions that spend change created by the
+  - The sender may create transactions that spend change created by the
     original transaction. In case the modified transaction gets mined,
     this becomes invalid.
--   Modified transactions are effectively double-spends which can be
+  - Modified transactions are effectively double-spends which can be
     created without malicious intent (of the sender), but can be used to
     make other attacks easier.
 
@@ -148,8 +150,8 @@ treated identically to v1 transactions. The same mechanism as in BIP
 0034 is used to introduce v3 blocks. When 75% of the past 1000 blocks
 are v3, a new consensus rule is activated:
 
--   All transactions in v3 blocks are required to follow rules \#1-\#2.
--   v3 (and higher) transactions in v3 blocks are required to follow
+  - All transactions in v3 blocks are required to follow rules \#1-\#2.
+  - v3 (and higher) transactions in v3 blocks are required to follow
     rules \#3-\#7 as well.
 
 When 95% of the past 1000 blocks are v3 or higher, v2 blocks become
@@ -185,16 +187,16 @@ For reference, here is how to encode signatures correctly in DER format.
 0x30 \[total-length\] 0x02 \[R-length\] \[R\] 0x02 \[S-length\] \[S\]
 \[sighash-type\]
 
--   total-length: 1-byte length descriptor of everything that follows,
+  - total-length: 1-byte length descriptor of everything that follows,
     excluding the sighash byte.
--   R-length: 1-byte length descriptor of the R value that follows.
--   R: arbitrary-length big-endian encoded R value. It cannot start with
+  - R-length: 1-byte length descriptor of the R value that follows.
+  - R: arbitrary-length big-endian encoded R value. It cannot start with
     any 0x00 bytes, unless the first byte that follows is 0x80 or
     higher, in which case a single 0x00 is required.
--   S-length: 1-byte length descriptor of the S value that follows.
--   S: arbitrary-length big-endian encoded S value. The same rules apply
+  - S-length: 1-byte length descriptor of the S value that follows.
+  - S: arbitrary-length big-endian encoded S value. The same rules apply
     as for R.
--   sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81,
+  - sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81,
     0x82 and 0x83 are allowed).
 
 This is already enforced by the reference client as of version 0.8.0
@@ -206,17 +208,17 @@ signature size being at most 72 bytes (and on average 71.494 bytes).
 
 #### Push operators
 
--   Pushing an empty byte sequence must use OP\_0.
--   Pushing a 1-byte sequence of byte 0x01 through 0x10 must use OP\_n.
--   Pushing the byte 0x81 must use OP\_1NEGATE.
--   Pushing any other byte sequence up to 75 bytes must use the normal
+  - Pushing an empty byte sequence must use OP\_0.
+  - Pushing a 1-byte sequence of byte 0x01 through 0x10 must use OP\_n.
+  - Pushing the byte 0x81 must use OP\_1NEGATE.
+  - Pushing any other byte sequence up to 75 bytes must use the normal
     data push (opcode byte n, with n the number of bytes, followed n
     bytes of data being pushed).
--   Pushing 76 to 255 bytes must use OP\_PUSHDATA1.
--   Pushing 256 to 520 bytes must use OP\_PUSHDATA2.
--   OP\_PUSHDATA4 can never be used, as pushes over 520 bytes are not
+  - Pushing 76 to 255 bytes must use OP\_PUSHDATA1.
+  - Pushing 256 to 520 bytes must use OP\_PUSHDATA2.
+  - OP\_PUSHDATA4 can never be used, as pushes over 520 bytes are not
     allowed, and those below can be done using other operators.
--   Any other operation is not considered to be a push.
+  - Any other operation is not considered to be a push.
 
 #### Numbers
 
@@ -226,19 +228,19 @@ endian with an explicit sign bit (the highest bit of the last byte). The
 shortest encodings for numbers are (with the range boundaries encodings
 given in hex between ()).
 
--   0: OP\_0; (00)
--   1..16: OP\_1..OP\_16; (51)..(60)
--   -1: OP\_1NEGATE; (79)
--   -127..-2 and 17..127: normal 1-byte data push; (01 FF)..(01 82) and
+  - 0: OP\_0; (00)
+  - 1..16: OP\_1..OP\_16; (51)..(60)
+  - \-1: OP\_1NEGATE; (79)
+  - \-127..-2 and 17..127: normal 1-byte data push; (01 FF)..(01 82) and
     (01 11)..(01 7F)
--   -32767..-128 and 128..32767: normal 2-byte data push; (02 FF
+  - \-32767..-128 and 128..32767: normal 2-byte data push; (02 FF
     FF)..(02 80 80) and (02 80 00)..(02 FF 7F)
--   -8388607..-32768 and 32768..8388607: normal 3-byte data push; (03 FF
-    FF FF)..(03 00 80 80) and (03 00 80 00)..(03 FF FF 7F)
--   -2147483647..-8388608 and 8388608..2147483647: normal 4-byte data
+  - \-8388607..-32768 and 32768..8388607: normal 3-byte data push; (03
+    FF FF FF)..(03 00 80 80) and (03 00 80 00)..(03 FF FF 7F)
+  - \-2147483647..-8388608 and 8388608..2147483647: normal 4-byte data
     push; (04 FF FF FF FF)..(04 00 00 80 80) and (04 00 00 80 00)..(04
     FF FF FF 7F)
--   Any other numbers cannot be encoded.
+  - Any other numbers cannot be encoded.
 
 In particular, note that zero could be encoded as (01 80) (negative
 zero) if using the non-shortest form is allowed.

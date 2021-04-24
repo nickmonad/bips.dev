@@ -14,16 +14,18 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki"
 +++
 
-      BIP: 65
-      Layer: Consensus (soft fork)
-      Title: OP_CHECKLOCKTIMEVERIFY
-      Author: Peter Todd <pete@petertodd.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0065
-      Status: Final
-      Type: Standards Track
-      Created: 2014-10-01
-      License: PD
+``` 
+  BIP: 65
+  Layer: Consensus (soft fork)
+  Title: OP_CHECKLOCKTIMEVERIFY
+  Author: Peter Todd <pete@petertodd.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0065
+  Status: Final
+  Type: Standards Track
+  Created: 2014-10-01
+  License: PD
+```
 
 ## Abstract
 
@@ -37,13 +39,13 @@ CHECKLOCKTIMEVERIFY redefines the existing NOP2 opcode. When executed,
 if any of the following conditions are true, the script interpreter will
 terminate with an error:
 
--   the stack is empty; or
--   the top item on the stack is less than 0; or
--   the lock-time type (height vs. timestamp) of the top stack item and
+  - the stack is empty; or
+  - the top item on the stack is less than 0; or
+  - the lock-time type (height vs. timestamp) of the top stack item and
     the nLockTime field are not the same; or
--   the top stack item is greater than the transaction's nLockTime
+  - the top stack item is greater than the transaction's nLockTime
     field; or
--   the nSequence field of the txin is 0xffffffff;
+  - the nSequence field of the txin is 0xffffffff;
 
 Otherwise, script execution will continue as if a NOP had been executed.
 
@@ -295,12 +297,12 @@ We reuse the double-threshold IsSuperMajority() switchover mechanism
 used in BIP66 with the same thresholds, but for nVersion = 4. The new
 rules are in effect for every block (at height H) with nVersion = 4 and
 at least 750 out of 1000 blocks preceding it (with heights H-1000..H-1)
-also have nVersion &gt;= 4. Furthermore, when 950 out of the 1000 blocks
-preceding a block do have nVersion &gt;= 4, nVersion &lt; 4 blocks
-become invalid, and all further blocks enforce the new rules.
+also have nVersion \>= 4. Furthermore, when 950 out of the 1000 blocks
+preceding a block do have nVersion \>= 4, nVersion \< 4 blocks become
+invalid, and all further blocks enforce the new rules.
 
 It should be noted that BIP9 involves permanently setting a high-order
-bit to 1 which results in nVersion &gt;= all prior IsSuperMajority()
+bit to 1 which results in nVersion \>= all prior IsSuperMajority()
 soft-forks and thus no bits in nVersion are permanently lost.
 
 ### SPV Clients
@@ -308,10 +310,10 @@ soft-forks and thus no bits in nVersion are permanently lost.
 While SPV clients are (currently) unable to validate blocks in general,
 trusting miners to do validation for them, they are able to validate
 block headers and thus can validate a subset of the deployment rules.
-SPV clients should reject nVersion &lt; 4 blocks if 950 out of 1000
-preceding blocks have nVersion &gt;= 4 to prevent false confirmations
-from the remaining 5% of non-upgraded miners when the 95% threshold has
-been reached.
+SPV clients should reject nVersion \< 4 blocks if 950 out of 1000
+preceding blocks have nVersion \>= 4 to prevent false confirmations from
+the remaining 5% of non-upgraded miners when the 95% threshold has been
+reached.
 
 ## Credits
 
@@ -323,21 +325,21 @@ block height and time.
 
 PayPub
 
--   <https://github.com/unsystem/paypub>
+  - <https://github.com/unsystem/paypub>
 
 Jeremy Spilman Payment Channels
 
--   <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html>
+  - <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html>
 
 ## Implementations
 
 Python / python-bitcoinlib
 
--   <https://github.com/petertodd/checklocktimeverify-demos>
+  - <https://github.com/petertodd/checklocktimeverify-demos>
 
 JavaScript / Node.js / bitcore
 
--   <https://github.com/mruddy/bip65-demos>
+  - <https://github.com/mruddy/bip65-demos>
 
 ## Copyright
 

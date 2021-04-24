@@ -14,21 +14,23 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki"
 +++
 
-      BIP: 341
-      Layer: Consensus (soft fork)
-      Title: Taproot: SegWit version 1 spending rules
-      Author: Pieter Wuille <pieter.wuille@gmail.com>
-              Jonas Nick <jonasd.nick@gmail.com>
-              Anthony Towns <aj@erisian.com.au>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0341
-      Status: Draft
-      Type: Standards Track
-      Created: 2020-01-19
-      License: BSD-3-Clause
-      Requires: 340
-      Post-History: 2019-05-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-May/016914.html [bitcoin-dev] Taproot proposal
-                    2019-10-09: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-October/017378.html [bitcoin-dev] Taproot updates
+``` 
+  BIP: 341
+  Layer: Consensus (soft fork)
+  Title: Taproot: SegWit version 1 spending rules
+  Author: Pieter Wuille <pieter.wuille@gmail.com>
+          Jonas Nick <jonasd.nick@gmail.com>
+          Anthony Towns <aj@erisian.com.au>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0341
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-01-19
+  License: BSD-3-Clause
+  Requires: 340
+  Post-History: 2019-05-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-May/016914.html [bitcoin-dev] Taproot proposal
+                2019-10-09: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-October/017378.html [bitcoin-dev] Taproot updates
+```
 
 ## Introduction
 
@@ -45,10 +47,10 @@ This document is licensed under the 3-clause BSD license.
 
 This proposal aims to improve privacy, efficiency, and flexibility of
 Bitcoin's scripting capabilities without adding new security
-assumptions[1]. Specifically, it seeks to minimize how much information
-about the spendability conditions of a transaction output is revealed on
-chain at creation or spending time and to add a number of upgrade
-mechanisms, while fixing a few minor but long-standing issues.
+assumptions\[1\]. Specifically, it seeks to minimize how much
+information about the spendability conditions of a transaction output is
+revealed on chain at creation or spending time and to add a number of
+upgrade mechanisms, while fixing a few minor but long-standing issues.
 
 ## Design
 
@@ -86,20 +88,20 @@ downsides.
 
 As a result we choose this combination of technologies:
 
--   **Merkle branches** let us only reveal the actually executed part of
+  - **Merkle branches** let us only reveal the actually executed part of
     the script to the blockchain, as opposed to all possible ways a
     script can be executed. Among the various known mechanisms for
     implementing this, one where the Merkle tree becomes part of the
     script's structure directly maximizes the space savings, so that
     approach is chosen.
--   **Taproot** on top of that lets us merge the traditionally separate
+  - **Taproot** on top of that lets us merge the traditionally separate
     pay-to-pubkey and pay-to-scripthash policies, making all outputs
     spendable by either a key or (optionally) a script, and
     indistinguishable from each other. As long as the key-based spending
     path is used for spending, it is not revealed whether a script path
     was permitted as well, resulting in space savings and an increase in
     scripting privacy at spending time.
--   Taproot's advantages become apparent under the assumption that most
+  - Taproot's advantages become apparent under the assumption that most
     applications involve outputs that could be spent by all parties
     agreeing. That's where **Schnorr** signatures come in, as they
     permit [key aggregation](https://eprint.iacr.org/2018/068): a public
@@ -111,40 +113,39 @@ As a result we choose this combination of technologies:
     efficient and private. This can be generalized to arbitrary M-of-N
     policies, as Schnorr signatures support threshold signing, at the
     cost of more complex setup protocols.
--   As Schnorr signatures also permit **batch validation**, allowing
+  - As Schnorr signatures also permit **batch validation**, allowing
     multiple signatures to be validated together more efficiently than
     validating each one independently, we make sure all parts of the
     design are compatible with this.
--   Where unused bits appear as a result of the above changes, they are
+  - Where unused bits appear as a result of the above changes, they are
     reserved for mechanisms for **future extensions**. As a result,
     every script in the Merkle tree has an associated version such that
     new script versions can be introduced with a soft fork while
     remaining compatible with BIP 341. Additionally, future soft forks
     can make use of the currently unused `annex` in the witness (see
     [BIP341](bip-0341.mediawiki#Rationale "wikilink")).
--   While the core semantics of the **signature hashing algorithm** are
+  - While the core semantics of the **signature hashing algorithm** are
     not changed, a number of improvements are included in this proposal.
     The new signature hashing algorithm fixes the verification
     capabilities of offline signing devices by including amount and
     scriptPubKey in the signature message, avoids unnecessary hashing,
     uses **tagged hashes** and defines a default sighash byte.
--   The **public key is directly included in the output** in contrast to
+  - The **public key is directly included in the output** in contrast to
     typical earlier constructions which store a hash of the public key
     or script in the output. This has the same cost for senders and is
     more space efficient overall if the key-based spending path is
-    taken. [2]
+    taken. \[2\]
 
 Informally, the resulting design is as follows: a new witness version is
 added (version 1), whose programs consist of 32-byte encodings of points
-*Q*. *Q* is computed as *P + hash(P\|\|m)G* for a public key *P*, and
-the root *m* of a Merkle tree whose leaves consist of a version number
-and a script. These outputs can be spent directly by providing a
-signature for *Q*, or indirectly by revealing *P*, the script and leaf
-version, inputs that satisfy the script, and a Merkle path that proves
-*Q* committed to that leaf. All hashes in this construction (the hash
-for computing *Q* from *P*, the hashes inside the Merkle tree's inner
-nodes, and the signature hashes used) are tagged to guarantee domain
-separation.
+*Q*. *Q* is computed as *P + hash(P||m)G* for a public key *P*, and the
+root *m* of a Merkle tree whose leaves consist of a version number and a
+script. These outputs can be spent directly by providing a signature for
+*Q*, or indirectly by revealing *P*, the script and leaf version, inputs
+that satisfy the script, and a Merkle path that proves *Q* committed to
+that leaf. All hashes in this construction (the hash for computing *Q*
+from *P*, the hashes inside the Merkle tree's inner nodes, and the
+signature hashes used) are tagged to guarantee domain separation.
 
 ## Specification
 
@@ -154,8 +155,8 @@ that marks it failed.
 
 The notation below follows that of
 [BIP340](bip-0340.mediawiki#design "wikilink"). This includes the
-*hash<sub>tag</sub>(x)* notation to refer to *SHA256(SHA256(tag) \|\|
-SHA256(tag) \|\| x)*. To the best of the authors' knowledge, no existing
+*hash<sub>tag</sub>(x)* notation to refer to *SHA256(SHA256(tag) ||
+SHA256(tag) || x)*. To the best of the authors' knowledge, no existing
 use of SHA256 in Bitcoin feeds it a message that starts with two single
 SHA256 outputs, making collisions between *hash<sub>tag</sub>* with
 other hashes extremely unlikely.
@@ -166,58 +167,58 @@ A Taproot output is a native SegWit output (see
 [BIP141](bip-0141.mediawiki "wikilink")) with version number 1, and a
 32-byte witness program. The following rules only apply when such an
 output is being spent. Any other outputs, including version 1 outputs
-with lengths other than 32 bytes, or P2SH-wrapped version 1 outputs[3],
-remain unencumbered.
+with lengths other than 32 bytes, or P2SH-wrapped version 1
+outputs\[3\], remain unencumbered.
 
--   Let *q* be the 32-byte array containing the witness program (the
+  - Let *q* be the 32-byte array containing the witness program (the
     second push in the scriptPubKey) which represents a public key
     according to [BIP340](bip-0340.mediawiki#design "wikilink").
--   Fail if the witness stack has 0 elements.
--   If there are at least two witness elements, and the first byte of
-    the last element is 0x50[4], this last element is called *annex*
-    *a*[5] and is removed from the witness stack. The annex (or the lack
-    of thereof) is always covered by the signature and contributes to
-    transaction weight, but is otherwise ignored during taproot
+  - Fail if the witness stack has 0 elements.
+  - If there are at least two witness elements, and the first byte of
+    the last element is 0x50\[4\], this last element is called *annex*
+    *a*\[5\] and is removed from the witness stack. The annex (or the
+    lack of thereof) is always covered by the signature and contributes
+    to transaction weight, but is otherwise ignored during taproot
     validation.
--   If there is exactly one element left in the witness stack, key path
+  - If there is exactly one element left in the witness stack, key path
     spending is used:
-    -   The single witness stack element is interpreted as the signature
+      - The single witness stack element is interpreted as the signature
         and must be valid (see the next section) for the public key *q*
         (see the next subsection).
--   If there are at least two witness elements left, script path
+  - If there are at least two witness elements left, script path
     spending is used:
-    -   Call the second-to-last stack element *s*, the script.
-    -   The last stack element is called the control block *c*, and must
+      - Call the second-to-last stack element *s*, the script.
+      - The last stack element is called the control block *c*, and must
         have length *33 + 32m*, for a value of *m* that is an integer
-        between 0 and 128[6], inclusive. Fail if it does not have such a
-        length.
-    -   Let *p = c\[1:33\]* and let *P = lift\_x(int(p))* where
+        between 0 and 128\[6\], inclusive. Fail if it does not have such
+        a length.
+      - Let *p = c\[1:33\]* and let *P = lift\_x(int(p))* where
         *lift\_x* and *\[:\]* are defined as in
         [BIP340](bip-0340.mediawiki#design "wikilink"). Fail if this
         point is not on the curve.
-    -   Let *v = c\[0\] & 0xfe* and call it the *leaf version*[7].
-    -   Let *k<sub>0</sub> = hash<sub>TapLeaf</sub>(v \|\|
-        compact\_size(size of s) \|\| s)*; also call it the *tapleaf
+      - Let *v = c\[0\] & 0xfe* and call it the *leaf version*\[7\].
+      - Let *k<sub>0</sub> = hash<sub>TapLeaf</sub>(v ||
+        compact\_size(size of s) || s)*; also call it the *tapleaf
         hash*.
-    -   For *j* in *\[0,1,...,m-1\]*:
-        -   Let *e<sub>j</sub> = c\[33+32j:65+32j\]*.
-        -   Let ''k<sub>j+1</sub> depend on whether *k<sub>j</sub> &lt;
-            e<sub>j</sub>* (lexicographically)[8]:
-            -   If *k<sub>j</sub> &lt; e<sub>j</sub>*: *k<sub>j+1</sub>
-                = hash<sub>TapBranch</sub>(k<sub>j</sub> \|\|
-                e<sub>j</sub>)*[9].
-            -   If *k<sub>j</sub> ≥ e<sub>j</sub>*: *k<sub>j+1</sub> =
-                hash<sub>TapBranch</sub>(e<sub>j</sub> \|\|
+      - For *j* in *\[0,1,...,m-1\]*:
+          - Let *e<sub>j</sub> = c\[33+32j:65+32j\]*.
+          - Let ''k<sub>j+1</sub> depend on whether *k<sub>j</sub> \<
+            e<sub>j</sub>* (lexicographically)\[8\]:
+              - If *k<sub>j</sub> \< e<sub>j</sub>*: *k<sub>j+1</sub> =
+                hash<sub>TapBranch</sub>(k<sub>j</sub> ||
+                e<sub>j</sub>)*\[9\].
+              - If *k<sub>j</sub> ≥ e<sub>j</sub>*: *k<sub>j+1</sub> =
+                hash<sub>TapBranch</sub>(e<sub>j</sub> ||
                 k<sub>j</sub>)*.
-    -   Let *t = hash<sub>TapTweak</sub>(p \|\| k<sub>m</sub>)*.
-    -   If *t ≥ 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B
+      - Let *t = hash<sub>TapTweak</sub>(p || k<sub>m</sub>)*.
+      - If *t ≥ 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B
         BFD25E8C D0364141* (order of secp256k1), fail.
-    -   Let *Q = P + int(t)G*.
-    -   If *q ≠ x(Q)* or *c\[0\] & 1 ≠ y(Q) mod 2*, fail[10].
-    -   Execute the script, according to the applicable script
-        rules[11], using the witness stack elements excluding the script
-        *s*, the control block *c*, and the annex *a* if present, as
-        initial stack.
+      - Let *Q = P + int(t)G*.
+      - If *q ≠ x(Q)* or *c\[0\] & 1 ≠ y(Q) mod 2*, fail\[10\].
+      - Execute the script, according to the applicable script
+        rules\[11\], using the witness stack elements excluding the
+        script *s*, the control block *c*, and the annex *a* if present,
+        as initial stack.
 
 *q* is referred to as *taproot output key* and *p* as *taproot internal
 key*.
@@ -243,82 +244,82 @@ results in signing over the whole transaction just as for `SIGHASH_ALL`.
 The following restrictions apply, which cause validation failure if
 violated:
 
--   Using any undefined *hash\_type* (not *0x00*, *0x01*, *0x02*,
-    *0x03*, *0x81*, *0x82*, or *0x83*[12]).
--   Using `SIGHASH_SINGLE` without a "corresponding output" (an output
+  - Using any undefined *hash\_type* (not *0x00*, *0x01*, *0x02*,
+    *0x03*, *0x81*, *0x82*, or *0x83*\[12\]).
+  - Using `SIGHASH_SINGLE` without a "corresponding output" (an output
     with the same index as the input being verified).
 
 The parameter *ext\_flag* is an integer in range 0-127, and is used for
 indicating (in the message) that extensions are added at the end of the
-message[13].
+message\[13\].
 
 If the parameters take acceptable values, the message is the
 concatenation of the following data, in order (with byte size of each
 item listed in parentheses). Numerical values in 2, 4, or 8-byte are
 encoded in little-endian.
 
--   Control:
-    -   *hash\_type* (1).
--   Transaction data:
-    -   *nVersion* (4): the *nVersion* of the transaction.
-    -   *nLockTime* (4): the *nLockTime* of the transaction.
-    -   If the *hash\_type & 0x80* does not equal
+  - Control:
+      - *hash\_type* (1).
+  - Transaction data:
+      - *nVersion* (4): the *nVersion* of the transaction.
+      - *nLockTime* (4): the *nLockTime* of the transaction.
+      - If the *hash\_type & 0x80* does not equal
         `SIGHASH_ANYONECANPAY`:
-        -   *sha\_prevouts* (32): the SHA256 of the serialization of all
+          - *sha\_prevouts* (32): the SHA256 of the serialization of all
             input outpoints.
-        -   *sha\_amounts* (32): the SHA256 of the serialization of all
+          - *sha\_amounts* (32): the SHA256 of the serialization of all
             spent output amounts.
-        -   *sha\_scriptpubkeys* (32): the SHA256 of the serialization
+          - *sha\_scriptpubkeys* (32): the SHA256 of the serialization
             of all spent output *scriptPubKey*s.
-        -   *sha\_sequences* (32): the SHA256 of the serialization of
+          - *sha\_sequences* (32): the SHA256 of the serialization of
             all input *nSequence*.
-    -   If *hash\_type & 3* does not equal `SIGHASH_NONE` or
+      - If *hash\_type & 3* does not equal `SIGHASH_NONE` or
         `SIGHASH_SINGLE`:
-        -   *sha\_outputs* (32): the SHA256 of the serialization of all
+          - *sha\_outputs* (32): the SHA256 of the serialization of all
             outputs in `CTxOut` format.
--   Data about this input:
-    -   *spend\_type* (1): equal to *(ext\_flag \* 2) + annex\_present*,
+  - Data about this input:
+      - *spend\_type* (1): equal to *(ext\_flag \* 2) + annex\_present*,
         where *annex\_present* is 0 if no annex is present, or 1
         otherwise (the original witness stack has two or more witness
         elements, and the first byte of the last element is *0x50*)
-    -   If *hash\_type & 0x80* equals `SIGHASH_ANYONECANPAY`:
-        -   *outpoint* (36): the `COutPoint` of this input (32-byte
-            hash + 4-byte little-endian).
-        -   *amount* (8): value of the previous output spent by this
+      - If *hash\_type & 0x80* equals `SIGHASH_ANYONECANPAY`:
+          - *outpoint* (36): the `COutPoint` of this input (32-byte hash
+            + 4-byte little-endian).
+          - *amount* (8): value of the previous output spent by this
             input.
-        -   *scriptPubKey* (35): *scriptPubKey* of the previous output
+          - *scriptPubKey* (35): *scriptPubKey* of the previous output
             spent by this input, serialized as script inside `CTxOut`.
             Its size is always 35 bytes.
-        -   *nSequence* (4): *nSequence* of this input.
-    -   If *hash\_type & 0x80* does not equal `SIGHASH_ANYONECANPAY`:
-        -   *input\_index* (4): index of this input in the transaction
+          - *nSequence* (4): *nSequence* of this input.
+      - If *hash\_type & 0x80* does not equal `SIGHASH_ANYONECANPAY`:
+          - *input\_index* (4): index of this input in the transaction
             input vector. Index of the first input is 0.
-    -   If an annex is present (the lowest bit of *spend\_type* is set):
-        -   *sha\_annex* (32): the SHA256 of *(compact\_size(size of
-            annex) \|\| annex)*, where *annex* includes the mandatory
+      - If an annex is present (the lowest bit of *spend\_type* is set):
+          - *sha\_annex* (32): the SHA256 of *(compact\_size(size of
+            annex) || annex)*, where *annex* includes the mandatory
             *0x50* prefix.
--   Data about this output:
-    -   If *hash\_type & 3* equals `SIGHASH_SINGLE`:
-        -   *sha\_single\_output* (32): the SHA256 of the corresponding
+  - Data about this output:
+      - If *hash\_type & 3* equals `SIGHASH_SINGLE`:
+          - *sha\_single\_output* (32): the SHA256 of the corresponding
             output in `CTxOut` format.
 
-The total length of *SigMsg()* is at most *206* bytes[14]. Note that
+The total length of *SigMsg()* is at most *206* bytes\[14\]. Note that
 this does not include the size of sub-hashes such as *sha\_prevouts*,
 which may be cached across signatures of the same transaction.
 
 In summary, the semantics of the [BIP143](bip-0143.mediawiki "wikilink")
 sighash types remain unchanged, except the following:
 
-1.  The way and order of serialization is changed.[15]
+1.  The way and order of serialization is changed.\[15\]
 2.  The signature message commits to the *scriptPubKey* of the spent
     output and if the `SIGHASH_ANYONECANPAY` flag is not set, the
     message commits to the *scriptPubKey*s of *all* outputs spent by the
-    transaction. [16].
+    transaction. \[16\].
 3.  If the `SIGHASH_ANYONECANPAY` flag is not set, the message commits
-    to the amounts of *all* transaction inputs.[17]
+    to the amounts of *all* transaction inputs.\[17\]
 4.  The signature message commits to all input *nSequence* if
     `SIGHASH_NONE` or `SIGHASH_SINGLE` are set (unless
-    `SIGHASH_ANYONECANPAY` is set as well).[18]
+    `SIGHASH_ANYONECANPAY` is set as well).\[18\]
 5.  The signature message includes commitments to the taproot-specific
     data *spend\_type* and *annex* (if present).
 
@@ -326,14 +327,14 @@ sighash types remain unchanged, except the following:
 
 To validate a signature *sig* with public key *q*:
 
--   If the *sig* is 64 bytes long, return *Verify(q,
-    hash<sub>TapSighash</sub>(0x00 \|\| SigMsg(0x00, 0)), sig)*[19],
+  - If the *sig* is 64 bytes long, return *Verify(q,
+    hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)*\[19\],
     where *Verify* is defined in
     [BIP340](bip-0340.mediawiki#design "wikilink").
--   If the *sig* is 65 bytes long, return *sig\[64\] ≠ 0x00[20] and
-    Verify(q, hash<sub>TapSighash</sub>(0x00 \|\| SigMsg(sig\[64\], 0)),
+  - If the *sig* is 65 bytes long, return *sig\[64\] ≠ 0x00\[20\] and
+    Verify(q, hash<sub>TapSighash</sub>(0x00 || SigMsg(sig\[64\], 0)),
     sig\[0:64\])*.
--   Otherwise, fail[21].
+  - Otherwise, fail\[21\].
 
 ## Constructing and spending Taproot outputs
 
@@ -350,15 +351,15 @@ these conditions is sufficient to spend the output.
 and the organization of the rest of the scripts should be. The specifics
 are likely application dependent, but here are some general guidelines:
 
--   When deciding between scripts with conditionals (`OP_IF` etc.) and
+  - When deciding between scripts with conditionals (`OP_IF` etc.) and
     splitting them up into multiple scripts (each corresponding to one
     execution path through the original script), it is generally
     preferable to pick the latter.
--   When a single condition requires signatures with multiple keys, key
+  - When a single condition requires signatures with multiple keys, key
     aggregation techniques like MuSig can be used to combine them into a
     single key. The details are out of scope for this document, but note
     that this may complicate the signing procedure.
--   If one or more of the spending conditions consist of just a single
+  - If one or more of the spending conditions consist of just a single
     key (after aggregation), the most likely one should be made the
     internal key. If no such condition exists, it may be worthwhile
     adding one that consists of an aggregation of all keys participating
@@ -377,7 +378,7 @@ are likely application dependent, but here are some general guidelines:
     not have a known discrete logarithm with respect to *G* by revealing
     *r* to a verifier who can then reconstruct how the internal key was
     created.
--   If the spending conditions do not require a script path, the output
+  - If the spending conditions do not require a script path, the output
     key should commit to an unspendable script path instead of having no
     script path. This can be achieved by computing the output key point
     as *Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G*. <ref>**Why
@@ -405,7 +406,7 @@ output key *Q = A + M = P + int(t)G*. Alice will not be able to notice
 the script path, but Mallory can unilaterally spend any coin with output
 key *Q*. </ref>
 
--   The remaining scripts should be organized into the leaves of a
+  - The remaining scripts should be organized into the leaves of a
     binary tree. This can be a balanced tree if each of the conditions
     these scripts correspond to are equally likely. If probabilities for
     each condition are known, consider constructing the tree as a
@@ -425,7 +426,8 @@ as the public key byte array. The parity bit will be required for
 spending the output with a script path. In order to allow spending with
 the key path, we define `taproot_tweak_seckey` to compute the secret key
 for a tweaked public key. For any byte string `h` it holds that
-`taproot_tweak_pubkey(pubkey_gen(seckey), h)[0] == pubkey_gen(taproot_tweak_seckey(seckey, h))`.
+`taproot_tweak_pubkey(pubkey_gen(seckey), h)[0] ==
+pubkey_gen(taproot_tweak_seckey(seckey, h))`.
 
 ``` python
 def taproot_tweak_pubkey(pubkey, h):
@@ -481,8 +483,8 @@ def taproot_output_script(internal_pubkey, script_tree):
 internal key *P* and a Merkle tree consisting of 5 script leaves. *A*,
 *B*, *C* and *E* are *TapLeaf* hashes similar to *D* and *AB* is a
 *TapBranch* hash. Note that when *CDE* is computed *E* is hashed first
-because *E* is less than
-*CD*.](bip-0341/tree.png "This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD.")
+because *E* is less than *CD*.](bip-0341/tree.png
+"This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD.")
 
 To spend this output using script *D*, the control block would contain
 the following data in this order:
@@ -611,180 +613,170 @@ in the tree, as well as all those who provided valuable feedback and
 reviews, including the participants of the [structured
 reviews](https://github.com/ajtowns/taproot-review).
 
-[1] **What does not adding security assumptions mean?** Unforgeability
-of signatures is a necessary requirement to prevent theft. At least when
-treating script execution as a digital signature scheme itself,
-unforgeability can be [proven](https://github.com/apoelstra/taproot) in
-the Random Oracle Model assuming the Discrete Logarithm problem is hard.
-A [proof](https://nbn-resolving.de/urn:nbn:de:hbz:294-60803) for
-unforgeability of ECDSA in the current script system needs non-standard
-assumptions on top of that. Note that it is hard in general to model
-exactly what security for script means, as it depends on the policies
-and protocols used by wallet software.
-
-[2] **Why is the public key directly included in the output?** While
-typical earlier constructions store a hash of a script or a public key
-in the output, this is rather wasteful when a public key is always
-involved. To guarantee batch verifiability, the public key must be known
-to every verifier, and thus only revealing its hash as an output would
-imply adding an additional 32 bytes to the witness. Furthermore, to
-maintain [128-bit collision
-security](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-January/012198.html)
-for outputs, a 256-bit hash would be required anyway, which is
-comparable in size (and thus in cost for senders) to revealing the
-public key directly. While the usage of public key hashes is often said
-to protect against ECDLP breaks or quantum computers, this protection is
-very weak at best: transactions are not protected while being confirmed,
-and a very [large
-portion](https://twitter.com/pwuille/status/1108097835365339136) of the
-currency's supply is not under such protection regardless. Actual
-resistance to such systems can be introduced by relying on different
-cryptographic assumptions, but this proposal focuses on improvements
-that do not change the security model.
-
-[3] **Why is P2SH-wrapping not supported?** Using P2SH-wrapped outputs
-only provides 80-bit collision security due to the use of a 160-bit
-hash. This is considered low, and becomes a security risk whenever the
-output includes data from more than a single party (public keys, hashes,
-...).
-
-[4] **Why is the first byte of the annex `0x50`?** The `0x50` is chosen
-as it could not be confused with a valid P2WPKH or P2WSH spending. As
-the control block's initial byte's lowest bit is used to indicate the
-parity of the public key's Y coordinate, each leaf version needs an even
-byte value and the immediately following odd byte value that are both
-not yet used in P2WPKH or P2WSH spending. To indicate the annex, only an
-"unpaired" available byte is necessary like `0x50`. This choice
-maximizes the available options for future script versions.
-
-[5] **What is the purpose of the annex?** The annex is a reserved space
-for future extensions, such as indicating the validation costs of
-computationally expensive new opcodes in a way that is recognizable
-without knowing the scriptPubKey of the output being spent. Until the
-meaning of this field is defined by another softfork, users SHOULD NOT
-include `annex` in transactions, or it may lead to PERMANENT FUND LOSS.
-
-[6] **Why is the Merkle path length limited to 128?** The optimally
-space-efficient Merkle tree can be constructed based on the
-probabilities of the scripts in the leaves, using the Huffman algorithm.
-This algorithm will construct branches with lengths approximately equal
-to *log<sub>2</sub>(1/probability)*, but to have branches longer than
-128 you would need to have scripts with an execution chance below 1 in
-*2<sup>128</sup>*. As that is our security bound, scripts that truly
-have such a low chance can probably be removed entirely.
-
-[7] **What constraints are there on the leaf version?** First, the leaf
-version cannot be odd as *c\[0\] & 0xfe* will always be even, and cannot
-be *0x50* as that would result in ambiguity with the annex. In addition,
-in order to support some forms of static analysis that rely on being
-able to identify script spends without access to the output being spent,
-it is recommended to avoid using any leaf versions that would conflict
-with a valid first byte of either a valid P2WPKH pubkey or a valid P2WSH
-script (that is, both *v* and *v \| 1* should be an undefined, invalid
-or disabled opcode or an opcode that is not valid as the first opcode).
-The values that comply to this rule are the 32 even values between
-*0xc0* and *0xfe* and also *0x66*, *0x7e*, *0x80*, *0x84*, *0x96*,
-*0x98*, *0xba*, *0xbc*, *0xbe*. Note also that this constraint implies
-that leaf versions should be shared amongst different witness versions,
-as knowing the witness version requires access to the output being
-spent.
-
-[8] **Why are child elements sorted before hashing in the Merkle tree?**
-By doing so, it is not necessary to reveal the left/right directions
-along with the hashes in revealed Merkle branches. This is possible
-because we do not actually care about the position of specific scripts
-in the tree; only that they are actually committed to.
-
-[9] **Why not use a more efficient hash construction for inner Merkle
-nodes?** The chosen construction does require two invocations of the
-SHA256 compression functions, one of which can be avoided in theory (see
-[BIP98](bip-0098.mediawiki "wikilink")). However, it seems preferable to
-stick to constructions that can be implemented using standard
-cryptographic primitives, both for implementation simplicity and
-analyzability. If necessary, a significant part of the second
-compression function can be optimized out by
-[specialization](https://github.com/bitcoin/bitcoin/pull/13191) for
-64-byte inputs.
-
-[10] **Why is it necessary to reveal a bit in a script path spend and
-check that it matches the parity of the Y coordinate of *Q*?** The
-parity of the Y coordinate is necessary to lift the X coordinate *q* to
-a unique point. While this is not strictly necessary for verifying the
-taproot commitment as described above, it is necessary to allow batch
-verification. Alternatively, *Q* could be forced to have an even Y
-coordinate, but that would require retrying with different internal
-public keys (or different messages) until *Q* has that property. There
-is no downside to adding the parity bit because otherwise the control
-block bit would be unused.
-
-[11] **What are the applicable script rules in script path spends?**
-[BIP342](bip-0342.mediawiki "wikilink") specifies validity rules that
-apply for leaf version 0xc0, but future proposals can introduce rules
-for other leaf versions.
-
-[12] **Why reject unknown *hash\_type* values?** By doing so, it is
-easier to reason about the worst case amount of signature hashing an
-implementation with adequate caching must perform.
-
-[13] **What extensions use the *ext\_flag* mechanism?**
-[BIP342](bip-0342.mediawiki "wikilink") reuses the same common signature
-message algorithm, but adds BIP342-specific data at the end, which is
-indicated using *ext\_flag = 1*.
-
-[14] **What is the output length of *SigMsg()*?** The total length of
-*SigMsg()* can be computed using the following formula: *174 -
-is\_anyonecanpay \* 49 - is\_none \* 32 + has\_annex \* 32*.
-
-[15] **Why is the serialization in the signature message changed?**
-Hashes that go into the signature message and the message itself are now
-computed with a single SHA256 invocation instead of double SHA256. There
-is no expected security improvement by doubling SHA256 because this only
-protects against length-extension attacks against SHA256 which are not a
-concern for signature messages because there is no secret data.
-Therefore doubling SHA256 is a waste of resources. The message
-computation now follows a logical order with transaction level data
-first, then input data and output data. This allows to efficiently cache
-the transaction part of the message across different inputs using the
-SHA256 midstate. Additionally, sub-hashes can be skipped when
-calculating the message (for example \`sha\_prevouts\` if
-`SIGHASH_ANYONECANPAY` is set) instead of setting them to zero and then
-hashing them as in BIP143. Despite that, collisions are made impossible
-by committing to the length of the data (implicit in *hash\_type* and
-*spend\_type*) before the variable length data.
-
-[16] **Why does the signature message commit to the *scriptPubKey*?**
-This prevents lying to offline signing devices about output being spent,
-even when the actually executed script (*scriptCode* in BIP143) is
-correct. This means it's possible to compactly prove to a hardware
-wallet what (unused) execution paths existed. Moreover, committing to
-all spent *scriptPubKey*s helps offline signing devices to determine the
-subset that belong to its own wallet. This is useful in [automated
-coinjoins](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-April/017801.html).
-
-[17] **Why does the signature message commit to the amounts of all
-transaction inputs?** This eliminates the possibility to lie to offline
-signing devices about the fee of a transaction.
-
-[18] **Why does the signature message commit to all input *nSequence* if
-`SIGHASH_SINGLE` or `SIGHASH_NONE` are set?** Because setting them
-already makes the message commit to the `prevouts` part of all
-transaction inputs, it is not useful to treat the *nSequence* any
-different. Moreover, this change makes *nSequence* consistent with the
-view that `SIGHASH_SINGLE` and `SIGHASH_NONE` only modify the signature
-message with respect to transaction outputs and not inputs.
-
-[19] **Why is the input to *hash<sub>TapSighash</sub>* prefixed with
-0x00?** This prefix is called the sighash epoch, and allows reusing the
-*hash<sub>TapSighash</sub>* tagged hash in future signature algorithms
-that make invasive changes to how hashing is performed (as opposed to
-the *ext\_flag* mechanism that is used for incremental extensions). An
-alternative is having them use a different tag, but supporting a growing
-number of tags may become undesirable.
-
-[20] **Why can the `hash_type` not be `0x00` in 65-byte signatures?**
-Permitting that would enable malleating (by third parties, including
-miners) 64-byte signatures into 65-byte ones, resulting in a different
-\`wtxid\` and a different fee rate than the creator intended
-
-[21] **Why permit two signature lengths?** By making the most common
-type of `hash_type` implicit, a byte can often be saved.
+1.  **What does not adding security assumptions mean?** Unforgeability
+    of signatures is a necessary requirement to prevent theft. At least
+    when treating script execution as a digital signature scheme itself,
+    unforgeability can be [proven](https://github.com/apoelstra/taproot)
+    in the Random Oracle Model assuming the Discrete Logarithm problem
+    is hard. A
+    [proof](https://nbn-resolving.de/urn:nbn:de:hbz:294-60803) for
+    unforgeability of ECDSA in the current script system needs
+    non-standard assumptions on top of that. Note that it is hard in
+    general to model exactly what security for script means, as it
+    depends on the policies and protocols used by wallet software.
+2.  **Why is the public key directly included in the output?** While
+    typical earlier constructions store a hash of a script or a public
+    key in the output, this is rather wasteful when a public key is
+    always involved. To guarantee batch verifiability, the public key
+    must be known to every verifier, and thus only revealing its hash as
+    an output would imply adding an additional 32 bytes to the witness.
+    Furthermore, to maintain [128-bit collision
+    security](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-January/012198.html)
+    for outputs, a 256-bit hash would be required anyway, which is
+    comparable in size (and thus in cost for senders) to revealing the
+    public key directly. While the usage of public key hashes is often
+    said to protect against ECDLP breaks or quantum computers, this
+    protection is very weak at best: transactions are not protected
+    while being confirmed, and a very [large
+    portion](https://twitter.com/pwuille/status/1108097835365339136) of
+    the currency's supply is not under such protection regardless.
+    Actual resistance to such systems can be introduced by relying on
+    different cryptographic assumptions, but this proposal focuses on
+    improvements that do not change the security model.
+3.  **Why is P2SH-wrapping not supported?** Using P2SH-wrapped outputs
+    only provides 80-bit collision security due to the use of a 160-bit
+    hash. This is considered low, and becomes a security risk whenever
+    the output includes data from more than a single party (public keys,
+    hashes, ...).
+4.  **Why is the first byte of the annex `0x50`?** The `0x50` is chosen
+    as it could not be confused with a valid P2WPKH or P2WSH spending.
+    As the control block's initial byte's lowest bit is used to indicate
+    the parity of the public key's Y coordinate, each leaf version needs
+    an even byte value and the immediately following odd byte value that
+    are both not yet used in P2WPKH or P2WSH spending. To indicate the
+    annex, only an "unpaired" available byte is necessary like `0x50`.
+    This choice maximizes the available options for future script
+    versions.
+5.  **What is the purpose of the annex?** The annex is a reserved space
+    for future extensions, such as indicating the validation costs of
+    computationally expensive new opcodes in a way that is recognizable
+    without knowing the scriptPubKey of the output being spent. Until
+    the meaning of this field is defined by another softfork, users
+    SHOULD NOT include `annex` in transactions, or it may lead to
+    PERMANENT FUND LOSS.
+6.  **Why is the Merkle path length limited to 128?** The optimally
+    space-efficient Merkle tree can be constructed based on the
+    probabilities of the scripts in the leaves, using the Huffman
+    algorithm. This algorithm will construct branches with lengths
+    approximately equal to *log<sub>2</sub>(1/probability)*, but to have
+    branches longer than 128 you would need to have scripts with an
+    execution chance below 1 in *2<sup>128</sup>*. As that is our
+    security bound, scripts that truly have such a low chance can
+    probably be removed entirely.
+7.  **What constraints are there on the leaf version?** First, the leaf
+    version cannot be odd as *c\[0\] & 0xfe* will always be even, and
+    cannot be *0x50* as that would result in ambiguity with the annex.
+    In addition, in order to support some forms of static analysis that
+    rely on being able to identify script spends without access to the
+    output being spent, it is recommended to avoid using any leaf
+    versions that would conflict with a valid first byte of either a
+    valid P2WPKH pubkey or a valid P2WSH script (that is, both *v* and
+    *v | 1* should be an undefined, invalid or disabled opcode or an
+    opcode that is not valid as the first opcode). The values that
+    comply to this rule are the 32 even values between *0xc0* and *0xfe*
+    and also *0x66*, *0x7e*, *0x80*, *0x84*, *0x96*, *0x98*, *0xba*,
+    *0xbc*, *0xbe*. Note also that this constraint implies that leaf
+    versions should be shared amongst different witness versions, as
+    knowing the witness version requires access to the output being
+    spent.
+8.  **Why are child elements sorted before hashing in the Merkle tree?**
+    By doing so, it is not necessary to reveal the left/right directions
+    along with the hashes in revealed Merkle branches. This is possible
+    because we do not actually care about the position of specific
+    scripts in the tree; only that they are actually committed to.
+9.  **Why not use a more efficient hash construction for inner Merkle
+    nodes?** The chosen construction does require two invocations of the
+    SHA256 compression functions, one of which can be avoided in theory
+    (see [BIP98](bip-0098.mediawiki "wikilink")). However, it seems
+    preferable to stick to constructions that can be implemented using
+    standard cryptographic primitives, both for implementation
+    simplicity and analyzability. If necessary, a significant part of
+    the second compression function can be optimized out by
+    [specialization](https://github.com/bitcoin/bitcoin/pull/13191) for
+    64-byte inputs.
+10. **Why is it necessary to reveal a bit in a script path spend and
+    check that it matches the parity of the Y coordinate of *Q*?** The
+    parity of the Y coordinate is necessary to lift the X coordinate *q*
+    to a unique point. While this is not strictly necessary for
+    verifying the taproot commitment as described above, it is necessary
+    to allow batch verification. Alternatively, *Q* could be forced to
+    have an even Y coordinate, but that would require retrying with
+    different internal public keys (or different messages) until *Q* has
+    that property. There is no downside to adding the parity bit because
+    otherwise the control block bit would be unused.
+11. **What are the applicable script rules in script path spends?**
+    [BIP342](bip-0342.mediawiki "wikilink") specifies validity rules
+    that apply for leaf version 0xc0, but future proposals can introduce
+    rules for other leaf versions.
+12. **Why reject unknown *hash\_type* values?** By doing so, it is
+    easier to reason about the worst case amount of signature hashing an
+    implementation with adequate caching must perform.
+13. **What extensions use the *ext\_flag* mechanism?**
+    [BIP342](bip-0342.mediawiki "wikilink") reuses the same common
+    signature message algorithm, but adds BIP342-specific data at the
+    end, which is indicated using *ext\_flag = 1*.
+14. **What is the output length of *SigMsg()*?** The total length of
+    *SigMsg()* can be computed using the following formula: *174 -
+    is\_anyonecanpay \* 49 - is\_none \* 32 + has\_annex \* 32*.
+15. **Why is the serialization in the signature message changed?**
+    Hashes that go into the signature message and the message itself are
+    now computed with a single SHA256 invocation instead of double
+    SHA256. There is no expected security improvement by doubling SHA256
+    because this only protects against length-extension attacks against
+    SHA256 which are not a concern for signature messages because there
+    is no secret data. Therefore doubling SHA256 is a waste of
+    resources. The message computation now follows a logical order with
+    transaction level data first, then input data and output data. This
+    allows to efficiently cache the transaction part of the message
+    across different inputs using the SHA256 midstate. Additionally,
+    sub-hashes can be skipped when calculating the message (for example
+    \`sha\_prevouts\` if `SIGHASH_ANYONECANPAY` is set) instead of
+    setting them to zero and then hashing them as in BIP143. Despite
+    that, collisions are made impossible by committing to the length of
+    the data (implicit in *hash\_type* and *spend\_type*) before the
+    variable length data.
+16. **Why does the signature message commit to the *scriptPubKey*?**
+    This prevents lying to offline signing devices about output being
+    spent, even when the actually executed script (*scriptCode* in
+    BIP143) is correct. This means it's possible to compactly prove to a
+    hardware wallet what (unused) execution paths existed. Moreover,
+    committing to all spent *scriptPubKey*s helps offline signing
+    devices to determine the subset that belong to its own wallet. This
+    is useful in [automated
+    coinjoins](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-April/017801.html).
+17. **Why does the signature message commit to the amounts of all
+    transaction inputs?** This eliminates the possibility to lie to
+    offline signing devices about the fee of a transaction.
+18. **Why does the signature message commit to all input *nSequence* if
+    `SIGHASH_SINGLE` or `SIGHASH_NONE` are set?** Because setting them
+    already makes the message commit to the `prevouts` part of all
+    transaction inputs, it is not useful to treat the *nSequence* any
+    different. Moreover, this change makes *nSequence* consistent with
+    the view that `SIGHASH_SINGLE` and `SIGHASH_NONE` only modify the
+    signature message with respect to transaction outputs and not
+    inputs.
+19. **Why is the input to *hash<sub>TapSighash</sub>* prefixed with
+    0x00?** This prefix is called the sighash epoch, and allows reusing
+    the *hash<sub>TapSighash</sub>* tagged hash in future signature
+    algorithms that make invasive changes to how hashing is performed
+    (as opposed to the *ext\_flag* mechanism that is used for
+    incremental extensions). An alternative is having them use a
+    different tag, but supporting a growing number of tags may become
+    undesirable.
+20. **Why can the `hash_type` not be `0x00` in 65-byte signatures?**
+    Permitting that would enable malleating (by third parties, including
+    miners) 64-byte signatures into 65-byte ones, resulting in a
+    different \`wtxid\` and a different fee rate than the creator
+    intended
+21. **Why permit two signature lengths?** By making the most common type
+    of `hash_type` implicit, a byte can often be saved.

@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 152
+<code><span style="color:#61676c;">  BIP: 152
   Layer: Peer Services
   Title: Compact Block Relay
   Author: Matt Corallo &lt;bip152@bluematt.me&gt;
@@ -57,7 +57,7 @@
   Type: Standards Track
   Created: 2016-04-27
   License: PD
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>Compact blocks on the wire as a way to save bandwidth for nodes on the
 P2P network.</p>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
@@ -393,19 +393,19 @@ selected based on their past performance in providing blocks quickly
 N blocks the quickest), allowing nodes to receive blocks which come
 from those peers in only 0.5*RTT.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes MUST NOT send such sendcmpct messages to more than three
 peers, as it encourages wasting outbound bandwidth across the
 network.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>All nodes SHOULD send a sendcmpct message to all appropriate peers.
 This will reduce their outbound bandwidth usage by allowing their
 peers to request compact blocks instead of full blocks.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes with limited inbound bandwidth SHOULD request blocks using
 MSG_CMPCT_BLOCK/getblocktxn requests, when possible. While this
@@ -413,27 +413,27 @@ increases worst-case message round-trips, it is expected to reduce
 overall transfer latency as TCP is more likely to exhibit poor
 throughput on low-bandwidth nodes.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes sending cmpctblock messages SHOULD limit prefilledtxn to 10KB
 of transactions. When in doubt, nodes SHOULD only include the
 coinbase transaction in prefilledtxn.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes MAY pick one nonce per block they wish to send, and only build
 a cmpctblock message once for all peers which they wish to send a
 given block to. Nodes SHOULD NOT use the same nonce across multiple
 different blocks.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes MAY impose additional requirements on when they announce new
 blocks by sending cmpctblock messages. For example, nodes with
 limited outbound bandwidth MAY choose to announce new blocks using
 inv/header messages (as per BIP130) to conserve outbound bandwidth.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Note that the MSG_CMPCT_BLOCK section does not require that nodes
 respond to MSG_CMPCT_BLOCK getdata requests for blocks which they
@@ -445,7 +445,7 @@ block message, allowing nodes to request all blocks using
 MSG_CMPCT_BLOCK getdatas and rely on their peer to pick an
 appropriate response.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>While the current version sends transactions with the same encodings
 as are used in tx messages and elsewhere in the protocol, the
@@ -455,7 +455,7 @@ decode PrefilledTransaction and BlockTransactions messages be
 prepared to take a different transaction encoding, if and when the
 version field in sendcmpct changes in a future BIP.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Any undefined behavior in this spec may cause failure to transfer
 block to, peer disconnection by, or self-destruction by the
@@ -474,7 +474,7 @@ or punish a peer for announcing compact blocks prior to full
 validation, and nodes SHOULD NOT announce a CMPCTBLOCK to a peer
 with a version number below 70015 before fully validating the block.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>SPV nodes which implement this spec must consider the implications
 of accepting blocks which were not validated by the node which
@@ -482,7 +482,7 @@ provided them. Especially SPV nodes which allow users to select a
 &quot;trusted full node&quot; to sync from may wish to avoid implementing this
 spec in high-bandwidth mode.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Note that this spec does not change the requirement that nodes only
 relay information about blocks which they have fully validated in
@@ -501,7 +501,7 @@ the block until validation has completed, stalling all message
 processing for the associated peer. REJECT messages are not
 considered &quot;responses&quot; for the purpose of this section.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>As a result of the above requirements, implementors may wish to
 consider the potential for the introduction of delays in responses

@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 70
+<code><span style="color:#61676c;">  BIP: 70
   Layer: Applications
   Title: Payment Protocol
   Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
@@ -57,7 +57,7 @@
   Status: Final
   Type: Standards Track
   Created: 2013-07-29
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP describes a protocol for communication between a merchant and
 their customer, enabling both a better customer experience and better
 security against man-in-the-middle attacks on the payment process.</p>
@@ -112,11 +112,11 @@ PaymentRequest message:</p>
 (or part of a payment) should be sent. They are also used in Payment
 messages to specify where a refund should be sent.</p>
 <pre style="background-color:#fafafa;">
-<code>    message Output {
+<code><span style="color:#61676c;">    message Output {
     optional uint64 amount = 1 [default = 0];
         optional bytes script = 2;
     }
-</code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>amount</td><td>Number of satoshis (0.00000001 BTC) to be paid</td></tr>
 <tr><td>script</td><td>a &quot;TxOut&quot; script where payment should be sent. This will normally be one of the standard Bitcoin transaction scripts (e.g. pubkey OP_CHECKSIG). This is optional to enable future extensions to this protocol that derive Outputs from a master public key and the PaymentRequest data itself.</td></tr>
 </tbody></table>
@@ -127,7 +127,7 @@ PaymentDetails message. It is wrapped inside a PaymentRequest message,
 which contains meta-information about the merchant and a digital
 signature.</p>
 <pre style="background-color:#fafafa;">
-<code>    message PaymentDetails {
+<code><span style="color:#61676c;">    message PaymentDetails {
         optional string network = 1 [default = &quot;main&quot;];
         repeated Output outputs = 2;
         required uint64 time = 3;
@@ -136,7 +136,7 @@ signature.</p>
         optional string payment_url = 6;
         optional bytes merchant_data = 7;
     }
-</code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>network</td><td>either &quot;main&quot; for payments on the production Bitcoin network, or &quot;test&quot; for payments on test network. If a client receives a PaymentRequest for a network it does not support it must reject the request.</td></tr>
 <tr><td>outputs</td><td>one or more outputs where Bitcoins are to be sent. If the sum of outputs.amount is zero, the customer will be asked how much to pay, and the bitcoin client may choose any or all of the Outputs (if there are more than one) for payment. If the sum of outputs.amount is non-zero, then the customer will be asked to pay the sum, and the payment shall be split among the Outputs with non-zero amounts (if there are more than one; Outputs with zero amounts shall be ignored).</td></tr>
 <tr><td>time</td><td>Unix timestamp (seconds since 1-Jan-1970 UTC) when the PaymentRequest was created.</td></tr>
@@ -155,14 +155,14 @@ the payment.</p>
 <p>A PaymentRequest is PaymentDetails optionally tied to a merchant's
 identity:</p>
 <pre style="background-color:#fafafa;">
-<code>    message PaymentRequest {
+<code><span style="color:#61676c;">    message PaymentRequest {
         optional uint32 payment_details_version = 1 [default = 1];
         optional string pki_type = 2 [default = &quot;none&quot;];
         optional bytes pki_data = 3;
         required bytes serialized_payment_details = 4;
         optional bytes signature = 5;
     }
-</code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>payment_details_version</td><td>See below for a discussion of versioning/upgrading.</td></tr>
 <tr><td>pki_type</td><td>public-key infrastructure (PKI) system being used to identify the merchant. All implementation should support &quot;none&quot;, &quot;x509+sha256&quot; and &quot;x509+sha1&quot;.</td></tr>
 <tr><td>pki_data</td><td>PKI-system data that identifies the merchant and can be used to create a digital signature. In the case of X.509 certificates, pki_data contains one or more X.509 certificates (see Certificates section below).</td></tr>
@@ -186,13 +186,13 @@ the wallet application, to mitigate denial-of-service attacks.</p>
 <h3 id="payment">Payment</h3>
 <p>Payment messages are sent after the customer has authorized payment:</p>
 <pre style="background-color:#fafafa;">
-<code>    message Payment {
+<code><span style="color:#61676c;">    message Payment {
         optional bytes merchant_data = 1;
         repeated bytes transactions = 2;
         repeated Output refund_to = 3;
         optional string memo = 4;
     }
-</code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>merchant_data</td><td>copied from PaymentDetails.merchant_data. Merchants may use invoice numbers or any other data they require to match Payments to PaymentRequests. Note that malicious clients may modify the merchant_data, so should be authenticated in some way (for example, signed with a merchant-only key).</td></tr>
 <tr><td>transactions</td><td>One or more valid, signed Bitcoin transactions that fully pay the PaymentRequest</td></tr>
 <tr><td>refund_to</td><td>One or more outputs where the merchant may return funds, if necessary. The merchant may return funds using these outputs for up to 2 months after the time of the payment request. After that time has expired, parties must negotiate if returning of funds becomes necessary.</td></tr>
@@ -239,11 +239,11 @@ merchant's server, to mitigate denial-of-service attacks.</p>
 the merchant's server to the bitcoin wallet in response to a Payment
 message:</p>
 <pre style="background-color:#fafafa;">
-<code>    message PaymentACK {
+<code><span style="color:#61676c;">    message PaymentACK {
         required Payment payment = 1;
         optional string memo = 2;
     }
-</code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>payment</td><td>Copy of the Payment message that triggered this PaymentACK. Clients may ignore this if they implement another way of associating Payments with PaymentACKs.</td></tr>
 <tr><td>memo</td><td>UTF-8 encoded note that should be displayed to the customer giving the status of the transaction (e.g. &quot;Payment of 1 BTC for eleven tribbles accepted for processing.&quot;)</td></tr>
 </tbody></table>
@@ -268,10 +268,10 @@ authenticate web servers). The format of pki_data when pki_type is
 &quot;x509+sha256&quot; or &quot;x509+sha1&quot; is a protocol-buffer-encoded certificate
 chain:</p>
 <pre style="background-color:#fafafa;">
-<code>    message X509Certificates {
+<code><span style="color:#61676c;">    message X509Certificates {
         repeated bytes certificate = 1;
     }
-</code></pre>
+</span></code></pre>
 <p>If pki_type is &quot;x509+sha256&quot;, then the PaymentRequest message is hashed
 using the SHA256 algorithm to produce the message digest that is signed.
 If pki_type is &quot;x509+sha1&quot;, then the SHA1 algorithm is used.</p>

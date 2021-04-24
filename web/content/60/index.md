@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0060.mediawiki"
 +++
 
-      BIP: 60
-      Layer: Peer Services
-      Title: Fixed Length "version" Message (Relay-Transactions Field)
-      Author: Amir Taaki <genjix@riseup.net>
-      Comments-Summary: Discouraged for implementation (one person)
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0060
-      Status: Draft
-      Type: Standards Track
-      Created: 2013-06-16
-      License: PD
+``` 
+  BIP: 60
+  Layer: Peer Services
+  Title: Fixed Length "version" Message (Relay-Transactions Field)
+  Author: Amir Taaki <genjix@riseup.net>
+  Comments-Summary: Discouraged for implementation (one person)
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0060
+  Status: Draft
+  Type: Standards Track
+  Created: 2013-06-16
+  License: PD
+```
 
 ## Abstract
 
@@ -71,25 +73,25 @@ version.
 
 Payload:
 
-| Field Size        | Description   | Data type | Comments                                                                                                                                      |
-|-------------------|---------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| 4                 | version       | int32\_t  | Identifies protocol version being used by the node                                                                                            |
-| 8                 | services      | uint64\_t | bitfield of features to be enabled for this connection                                                                                        |
-| 8                 | timestamp     | int64\_t  | standard UNIX timestamp in seconds                                                                                                            |
-| 26                | addr\_recv    | net\_addr | The network address of the node receiving this message                                                                                        |
-| version &gt;= 106 |               |           |                                                                                                                                               |
-| 26                | addr\_from    | net\_addr | The network address of the node emitting this message                                                                                         |
-| 8                 | nonce         | uint64\_t | Node random nonce, randomly generated every time a version packet is sent. This nonce is used to detect connections to self.                  |
-| ?                 | user\_agent   | var\_str  | [User Agent](bip-0014.mediawiki "wikilink") (0x00 if string is 0 bytes long)                                                                  |
-| 4                 | start\_height | int32\_t  | The last block received by the emitting node                                                                                                  |
-| 1                 | relay         | bool      | Whether the remote peer should announce relayed transactions or not, see [BIP 0037](bip-0037.mediawiki "wikilink"), since version &gt;= 70001 |
+| Field Size      | Description   | Data type | Comments                                                                                                                                    |
+| --------------- | ------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4               | version       | int32\_t  | Identifies protocol version being used by the node                                                                                          |
+| 8               | services      | uint64\_t | bitfield of features to be enabled for this connection                                                                                      |
+| 8               | timestamp     | int64\_t  | standard UNIX timestamp in seconds                                                                                                          |
+| 26              | addr\_recv    | net\_addr | The network address of the node receiving this message                                                                                      |
+| version \>= 106 |               |           |                                                                                                                                             |
+| 26              | addr\_from    | net\_addr | The network address of the node emitting this message                                                                                       |
+| 8               | nonce         | uint64\_t | Node random nonce, randomly generated every time a version packet is sent. This nonce is used to detect connections to self.                |
+| ?               | user\_agent   | var\_str  | [User Agent](bip-0014.mediawiki "wikilink") (0x00 if string is 0 bytes long)                                                                |
+| 4               | start\_height | int32\_t  | The last block received by the emitting node                                                                                                |
+| 1               | relay         | bool      | Whether the remote peer should announce relayed transactions or not, see [BIP 0037](bip-0037.mediawiki "wikilink"), since version \>= 70001 |
 
 A "verack" packet shall be sent if the version packet was accepted.
 
 The following services are currently assigned:
 
 | Value | Name          | Description                                                     |
-|-------|---------------|-----------------------------------------------------------------|
+| ----- | ------------- | --------------------------------------------------------------- |
 | 1     | NODE\_NETWORK | This node can be asked for full blocks instead of just headers. |
 
 ### Code Updates

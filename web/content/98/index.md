@@ -14,19 +14,21 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0098.mediawiki"
 +++
 
-      BIP: 98
-      Layer: Consensus (soft fork)
-      Title: Fast Merkle Trees
-      Author: Mark Friedenbach <mark@friedenbach.org>
-              Kalle Alm <kalle.alm@gmail.com>
-              BtcDrak <btcdrak@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0098
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-08-24
-      License: CC-BY-SA-4.0
-      License-Code: MIT
+``` 
+  BIP: 98
+  Layer: Consensus (soft fork)
+  Title: Fast Merkle Trees
+  Author: Mark Friedenbach <mark@friedenbach.org>
+          Kalle Alm <kalle.alm@gmail.com>
+          BtcDrak <btcdrak@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0098
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-08-24
+  License: CC-BY-SA-4.0
+  License-Code: MIT
+```
 
 ## Abstract
 
@@ -104,9 +106,11 @@ BIP, and inner nodes with labels constructed from the fast-SHA256 hash
 of its children's labels. The following image depicts an example
 unbalanced hash-tree:
 
-  
-  
-![](bip-0098/unbalanced-hash-tree.png "fig:bip-0098/unbalanced-hash-tree.png")
+  - 
+    
+      -   
+        ![bip-0098/unbalanced-hash-tree.png](bip-0098/unbalanced-hash-tree.png
+        "bip-0098/unbalanced-hash-tree.png")
 
 **A**, **B**, and **C** are leaf labels, 32-byte double-SHA256 hashes of
 the data associated with the leaf. **Node** and **Root** are inner
@@ -235,9 +239,11 @@ the order previously traversed.
 There are eight possible configurations of internal nodes, as given in
 the following diagram:
 
-  
-  
-![](bip-0098/node-variants.png "fig:bip-0098/node-variants.png")
+  - 
+    
+      -   
+        ![bip-0098/node-variants.png](bip-0098/node-variants.png
+        "bip-0098/node-variants.png")
 
 In this diagram, DESCEND means the branch links to another internal
 node, as indicated by its child graph elements labeled "..."; SKIP means
@@ -248,7 +254,7 @@ contains an externally provided hash that is needed as witness for the
 verification of the proof. In tabular form, these code values are:
 
 |      |         |         |
-|------|---------|---------|
+| ---- | ------- | ------- |
 | Code | Left    | Right   |
 | 000  | VERIFY  | SKIP    |
 | 001  | VERIFY  | VERIFY  |
@@ -282,9 +288,11 @@ number of SKIP hashes can be either 0 or 1.
 
 Consider the following Merkle tree structure:
 
-  
-  
-![](bip-0098/traversal-example.png "fig:bip-0098/traversal-example.png")
+  - 
+    
+      -   
+        ![bip-0098/traversal-example.png](bip-0098/traversal-example.png
+        "bip-0098/traversal-example.png")
 
 There are six (6) internal nodes. The depth-first, left-to-right,
 pre-order traversal of the tree visits these nodes in the following
@@ -294,7 +302,7 @@ remaining four (4) hashes are provided at runtime to be verified by the
 proof.
 
 |       |          |          |          |
-|-------|----------|----------|----------|
+| ----- | -------- | -------- | -------- |
 |       | Byte 1   | Byte 2   | Byte 3   |
 | Bits  | 76543210 | 76543210 | 76543210 |
 | Nodes | AAABBBDD | DFFFCCCE | EE------ |
@@ -316,9 +324,11 @@ configurations of the nodes where the left and right branches can each
 be one of {DESCEND, SKIP, VERIFY}. The excluded 9th possibility would
 have both branches as SKIP:
 
-  
-  
-![](bip-0098/skip-skip.png "fig:bip-0098/skip-skip.png")
+  - 
+    
+      -   
+        ![bip-0098/skip-skip.png](bip-0098/skip-skip.png
+        "bip-0098/skip-skip.png")
 
 This possibility is not allowed as for verification purposes it is
 entirely equivalent to the shorter proof where the branch to that node
@@ -376,7 +386,7 @@ vulnerability described in \[1\].
     double-SHA256 hash.
 3.  If the list is empty, return the zero hash.
 4.  While the list has 2 or more elements,
-    -   Pass through the list combining adjacent entries with the
+      - Pass through the list combining adjacent entries with the
         fast-SHA256 hash. If the list has an odd number of elements,
         leave the last element as-is (this fixes \[1\]). This step
         reduces a list of N elements to ceil(N/2) entries.
@@ -419,8 +429,8 @@ This BIP on its own does not cause any backwards incompatibility.
 \[1\] [National Vulnerability Database:
 CVE-2012-2459](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2459)
 
-\[2\] [github.com:sipa/bitcoin
-201709\_dsha256\_64](https://github.com/sipa/bitcoin/tree/201709_dsha256_64)
+\[2\]
+[github.com:sipa/bitcoin 201709\_dsha256\_64](https://github.com/sipa/bitcoin/tree/201709_dsha256_64)
 Pieter Wuille, September 2017, personal communication. By making use of
 knowledge that the inputs at each stage are fixed length, Mr. Wuille was
 able to achieve a 22.7% reduction in the time it takes to compute the

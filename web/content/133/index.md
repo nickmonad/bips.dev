@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0133.mediawiki"
 +++
 
-      BIP: 133
-      Layer: Peer Services
-      Title: feefilter message
-      Author: Alex Morcos <morcos@chaincode.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0133
-      Status: Draft
-      Type: Standards Track
-      Created: 2016-02-13
-      License: PD
+``` 
+  BIP: 133
+  Layer: Peer Services
+  Title: feefilter message
+  Author: Alex Morcos <morcos@chaincode.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0133
+  Status: Draft
+  Type: Standards Track
+  Created: 2016-02-13
+  License: PD
+```
 
 ## Abstract
 
@@ -68,8 +70,7 @@ inv for that transaction to that peer.
     filters.
 4.  Inv's generated from a mempool message are also subject to a fee
     filter if it exists.
-5.  Feature discovery is enabled by checking protocol version &gt;=
-    70013
+5.  Feature discovery is enabled by checking protocol version \>= 70013
 
 ## Considerations
 

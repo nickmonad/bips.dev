@@ -14,19 +14,21 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0135.mediawiki"
 +++
 
-      BIP: 135
-      Title: Generalized version bits voting
-      Author: Sancho Panza <sanch0panza@protonmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0135
-                    https://bitco.in/forum/threads/bip9-generalized-version-bits-voting-bip-genvbvoting.1968/
-      Status: Rejected
-      Type: Informational
-      Created: 2017-03-29
-      License: CC0-1.0
-               GNU-All-Permissive
-      Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-April/013969.html
-      Replaces: 9
+``` 
+  BIP: 135
+  Title: Generalized version bits voting
+  Author: Sancho Panza <sanch0panza@protonmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0135
+                https://bitco.in/forum/threads/bip9-generalized-version-bits-voting-bip-genvbvoting.1968/
+  Status: Rejected
+  Type: Informational
+  Created: 2017-03-29
+  License: CC0-1.0
+           GNU-All-Permissive
+  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-April/013969.html
+  Replaces: 9
+```
 
 ## Abstract
 
@@ -60,16 +62,16 @@ and remain competitive as an electronic payment system.
 While BIP9 has served the community well for previous deployments, there
 are some shortcomings in its approach:
 
--   it specifically applies only to backward-compatible changes
+  - it specifically applies only to backward-compatible changes
 
-<!-- -->
+<!-- end list -->
 
--   its fixed 95% threshold is not flexible enough to allow for a
+  - its fixed 95% threshold is not flexible enough to allow for a
     'spectrum of contentiousness' to be represented
 
-<!-- -->
+<!-- end list -->
 
--   small minorities can veto proposed changes, which can lead to
+  - small minorities can veto proposed changes, which can lead to
     undesirable stagnation
 
 A generalized revision of the BIP9 specification can address these
@@ -164,7 +166,7 @@ Each fork deployment is specified by the following per-chain parameters:
 3.  The **starttime** specifies a minimum median time past (MTP) of a
     block at which the bit gains its meaning.
 4.  The **timeout** specifies a time at which the deployment is
-    considered failed. If the MTP of a block &gt;= timeout and the fork
+    considered failed. If the MTP of a block \>= timeout and the fork
     has not yet locked in (including this block's bit state), the
     deployment is considered failed on all descendants of the block.
 5.  The **windowsize** specifies the number of past blocks (including
@@ -181,10 +183,10 @@ Each fork deployment is specified by the following per-chain parameters:
     before a fork can become active.
 8.  The **minlockedtime** specifies a minimum grace time, an earliest
     time after lock-in at which the fork can become active. If the MTP
-    of a block &gt;= (minlockedtime + median time of the block that
-    locked in the fork), then the fork becomes activated. Both
-    minlockedtime and minlockedblocks (see above) must be satisfied
-    before a fork can become active.
+    of a block \>= (minlockedtime + median time of the block that locked
+    in the fork), then the fork becomes activated. Both minlockedtime
+    and minlockedblocks (see above) must be satisfied before a fork can
+    become active.
 
 ### Tallying
 
@@ -221,10 +223,10 @@ received on that chain.
 A transition from the STARTED state to the LOCKED\_IN state SHALL only
 occur when all of these are true:
 
--   the height of the received block is an integer multiple of the
+  - the height of the received block is an integer multiple of the
     window size
--   the MTP is below the timeout time
--   at least threshold out of windowsize blocks have signaled support
+  - the MTP is below the timeout time
+  - at least threshold out of windowsize blocks have signaled support
 
 A similar height synchronization precondition SHALL exist for the
 transition from LOCKED\_IN to ACTIVE. These synchronization conditions
@@ -279,10 +281,10 @@ receive the signal correctly.
 For undefined signals, it is RECOMMENDED that implementation track these
 and alert their operators with supportive upgrade notifications, e.g.
 
--   "warning: signaling started on unknown feature on version bit X"
--   "warning: signaling on unknown feature reached X% (over last N
+  - "warning: signaling started on unknown feature on version bit X"
+  - "warning: signaling on unknown feature reached X% (over last N
     blocks)"
--   "info: signaling ceased on unknown feature (over last M blocks)"
+  - "info: signaling ceased on unknown feature (over last M blocks)"
 
 Since parameters of these deployments are unknown, it is RECOMMENDED
 that implementations allow the user to configure the emission of such
@@ -339,14 +341,14 @@ a fork:
     windowsize less than 100 blocks.
 6.  **threshold** SHOULD be set as high as possible to ensure a smooth
     activation based on the estimated support and the nature of the
-    proposed changes. It is strongly RECOMMENDED that threshold &gt;=
+    proposed changes. It is strongly RECOMMENDED that threshold \>=
     windowsize / 2 (rounded up) to ensure that a proposal is only
     activated by majority support.
-7.  **minlockedblocks** is RECOMMENDED to be set &gt;= windowsize, to
+7.  **minlockedblocks** is RECOMMENDED to be set \>= windowsize, to
     ensure that a full window passes in LOCKED\_IN state. Lower values
     will be ineffective as the transition from LOCKED\_IN to ACTIVE is
     guarded by a synchronization based on the window size.
-8.  **minlockedtime** SHOULD only be set &gt; 0 if a minimum LOCKED\_IN
+8.  **minlockedtime** SHOULD only be set \> 0 if a minimum LOCKED\_IN
     time period needs be strictly enforced. It is permissible to set
     minlockedblocks to 0 and only specify minlockedtime, however the
     synchronization condition means the grace period can only expire
@@ -367,11 +369,11 @@ in between to detect buggy software.
 An implementation SHOULD signal '0' on a bit if one of the following
 holds true:
 
--   the deployment parameters are not DEFINED (not configured or
+  - the deployment parameters are not DEFINED (not configured or
     explicitly undefined)
--   the deployment is DEFINED and has not yet reached the STARTED state
--   the deployment has succeeded (it has become ACTIVE)
--   the deployment has FAILED
+  - the deployment is DEFINED and has not yet reached the STARTED state
+  - the deployment has succeeded (it has become ACTIVE)
+  - the deployment has FAILED
 
 An implementation SHOULD enable the operator to choose (override)
 whether to signal '0' or '1' on a bit, once its deployment has at least
@@ -402,7 +404,7 @@ The following table describes mainnet compatibility options (95%, 2016
 blocks):
 
 |                 |
-|-----------------|
+| --------------- |
 | Parameter       |
 | name            |
 | bit             |
@@ -417,7 +419,7 @@ The following table describes testnet compatibility options (75%, 2016
 blocks):
 
 |                 |
-|-----------------|
+| --------------- |
 | Parameter       |
 | name            |
 | bit             |
@@ -445,11 +447,11 @@ deployments.
 A working reference implementation, including tests, can be found in
 these Pull Requests:
 
--   <https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/458>
+  - <https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/458>
 
-<!-- -->
+<!-- end list -->
 
--   <https://github.com/bitcoin/bitcoin/pull/10437>
+  - <https://github.com/bitcoin/bitcoin/pull/10437>
 
 Existing unit tests and regression tests have been left active to
 demonstrate backward compatibility of the default settings with BIP9.

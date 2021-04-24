@@ -14,17 +14,19 @@ status = ["Replaced"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0079.mediawiki"
 +++
 
-      BIP: 79
-      Layer: Applications
-      Title: Bustapay :: a practical coinjoin protocol
-      Author: Ryan Havar <rhavar@protonmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0079
-      Status: Replaced
-      Type: Informational
-      Created: 2018-10-05
-      License: CC0-1.0
-      Superseded-By: 78
+``` 
+  BIP: 79
+  Layer: Applications
+  Title: Bustapay :: a practical coinjoin protocol
+  Author: Ryan Havar <rhavar@protonmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0079
+  Status: Replaced
+  Type: Informational
+  Created: 2018-10-05
+  License: CC0-1.0
+  Superseded-By: 78
+```
 
 ## Abstract
 
@@ -194,11 +196,11 @@ HTTP header "Access-Control-Allow-Origin: \*"
 The sender \*must\* do important validation on the partial transaction.
 They \*must\* verify:
 
--   All template transaction inputs are in the partial transaction (but
+  - All template transaction inputs are in the partial transaction (but
     perhaps different order) and have the same sequence numbers.
--   The partial transaction contains at least one new (and signed)
+  - The partial transaction contains at least one new (and signed)
     segwit input (owned by the receiver)
--   All outputs from the template transaction exist in the partial
+  - All outputs from the template transaction exist in the partial
     transaction, except they are allowed to be reordered and have their
     amounts increased (but \*never\* decreased)
 
@@ -232,25 +234,25 @@ fees.
 For anyone wanting to implement bustapay payments, here are some notes
 for receivers:
 
--   A transaction can easily be checked if it's suitable for the mempool
+  - A transaction can easily be checked if it's suitable for the mempool
     with testmempoolaccept in bitcoin core 0.17+
--   Tracking transactions by txid is precarious. To keep your sanity
+  - Tracking transactions by txid is precarious. To keep your sanity
     make sure all inputs are segwit. But remember segwit does not
     prevent txid malleability unless you validate the transaction. So
     really make sure you're using testmempoolaccept at the very least
--   Bustapay could be abused by a malicious party to query if you own a
+  - Bustapay could be abused by a malicious party to query if you own a
     deposit address or not. So never accept a bustapay transaction that
     pays an already used deposit address
--   You will need to keep a mapping of which utxos people have showed
+  - You will need to keep a mapping of which utxos people have showed
     you and which you revealed. So if you see them again, you can reveal
     the same one of your own
--   Check if the transaction was already sorted according to BIP69, if
+  - Check if the transaction was already sorted according to BIP69, if
     so ensure the result stays that way. Otherwise probably just shuffle
     the inputs/outputs
--   A reference implementation is maintained at
+  - A reference implementation is maintained at
     <https://github.com/rhavar/bustapay> which functions as a wrapper
     around some RPC calls to bitcoin core's wallet.
--   The sender must be careful of an attack where the receiver tries to
+  - The sender must be careful of an attack where the receiver tries to
     add additional inputs that are controlled by the sender, with the
     hope that the sender blindly signs it.
 

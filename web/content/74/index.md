@@ -14,16 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0074.mediawiki"
 +++
 
-      BIP: 74
-      Layer: Applications
-      Title: Allow zero value OP_RETURN in Payment Protocol
-      Author: Toby Padilla <tobypadilla@gmail.com>
-      Comments-Summary: Unanimously Discourage for implementation
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0074
-      Status: Rejected
-      Type: Standards Track
-      Created: 2016-01-29
-      License: PD
+``` 
+  BIP: 74
+  Layer: Applications
+  Title: Allow zero value OP_RETURN in Payment Protocol
+  Author: Toby Padilla <tobypadilla@gmail.com>
+  Comments-Summary: Unanimously Discourage for implementation
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0074
+  Status: Rejected
+  Type: Standards Track
+  Created: 2016-01-29
+  License: PD
+```
 
 ## Abstract
 
@@ -93,7 +95,7 @@ a private key to sign transactions.
 The specification for this BIP is straightforward. BIP70 should be fully
 implemented with the following changes:
 
--   Outputs where the script is an OP\_RETURN and the value is zero
+  - Outputs where the script is an OP\_RETURN and the value is zero
     should be accepted by the wallet.
 
 BIP70 has special handling for the case with multiple zero value

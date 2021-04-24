@@ -14,26 +14,28 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki"
 +++
 
-      BIP: 157
-      Layer: Peer Services
-      Title: Client Side Block Filtering
-      Author: Olaoluwa Osuntokun <laolu32@gmail.com>
-              Alex Akselrod <alex@akselrod.org>
-              Jim Posen <jimpo@coinbase.com>
-      Comments-Summary: None yet
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0157
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-05-24
-      License: CC0-1.0
+``` 
+  BIP: 157
+  Layer: Peer Services
+  Title: Client Side Block Filtering
+  Author: Olaoluwa Osuntokun <laolu32@gmail.com>
+          Alex Akselrod <alex@akselrod.org>
+          Jim Posen <jimpo@coinbase.com>
+  Comments-Summary: None yet
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0157
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-05-24
+  License: CC0-1.0
+```
 
 ## Abstract
 
 This BIP describes a new light client protocol in Bitcoin that improves
 upon currently available options. The standard light client protocol in
-use today, defined in BIP 37[1], has known flaws that weaken the
+use today, defined in BIP 37\[1\], has known flaws that weaken the
 security and privacy of clients and allow denial-of-service attack
-vectors on full nodes[2]. The new protocol overcomes these issues by
+vectors on full nodes\[2\]. The new protocol overcomes these issues by
 allowing light clients to obtain compact probabilistic filters of block
 content from full nodes and download full blocks if the filter matches
 relevant data.
@@ -72,7 +74,7 @@ The Bloom filters match data such as client addresses and unspent
 outputs, and the filter size must be carefully tuned to balance the
 false positive rate with the amount of information leaked to peer. It
 has been shown, however, that most implementations available offer
-virtually *zero privacy* to wallets and other applications[3][4].
+virtually *zero privacy* to wallets and other applications\[3\]\[4\].
 Additionally, malicious full nodes serving light clients can omit
 critical data with little risk of detection, which is unacceptable for
 some applications (such as Lightning Network clients) that must respond
@@ -80,7 +82,7 @@ to certain on-chain events. Finally, honest nodes servicing BIP 37 light
 clients may incur significant I/O and CPU resource usage due to
 maliciously crafted Bloom filters, creating a denial-of-service (DoS)
 vector and disincentizing node operators from supporting the
-protocol[5].
+protocol\[5\].
 
 The alternative detailed in this document can be seen as the opposite of
 BIP 37: instead of the client sending a filter to a full node peer, full
@@ -98,7 +100,7 @@ improved because blocks can be downloaded from *any source*, so that no
 one peer gets complete information on the data required by a client.
 Extremely privacy conscious light clients may opt to anonymously fetch
 blocks using advanced techniques such a Private Information
-Retrieval[6].
+Retrieval\[6\].
 
 ## Definitions
 
@@ -135,7 +137,7 @@ one service bit is allocated to signal support for them.
 ### Filter Headers
 
 This proposal draws inspiration from the headers-first mechanism that
-Bitcoin nodes use to sync the block chain[7]. Similar to how block
+Bitcoin nodes use to sync the block chain\[7\]. Similar to how block
 headers have a Merkle commitment to all transaction data in the block,
 we define filter headers that have commitments to the block filters.
 Also like block headers, filter headers each have a commitment to the
@@ -162,7 +164,7 @@ type for a particular range of blocks. The message contains the
 following fields:
 
 | Field Name  | Data Type  | Byte Size | Description                                          |
-|-------------|------------|-----------|------------------------------------------------------|
+| ----------- | ---------- | --------- | ---------------------------------------------------- |
 | FilterType  | byte       | 1         | Filter type for which headers are requested          |
 | StartHeight | uint32     | 4         | The height of the first block in the requested range |
 | StopHash    | \[32\]byte | 32        | The hash of the last block in the requested range    |
@@ -176,8 +178,8 @@ following fields:
     node that receives `getcfilters` with an unknown StopHash SHOULD NOT
     respond.
 3.  The height of the block with hash StopHash MUST be greater than or
-    equal to StartHeight, and the difference MUST be strictly less
-    than 1000.
+    equal to StartHeight, and the difference MUST be strictly less than
+    1000.
 4.  The receiving node MUST respond to valid requests by sending one
     `cfilter` message for each block in the requested range,
     sequentially in order by block height.
@@ -188,7 +190,7 @@ following fields:
 the requested range. The message contains the following fields:
 
 | Field Name     | Data Type   | Byte Size      | Description                                                                          |
-|----------------|-------------|----------------|--------------------------------------------------------------------------------------|
+| -------------- | ----------- | -------------- | ------------------------------------------------------------------------------------ |
 | FilterType     | byte        | 1              | Byte identifying the type of filter being returned                                   |
 | BlockHash      | \[32\]byte  | 32             | Block hash of the Bitcoin block for which the filter is being returned               |
 | NumFilterBytes | CompactSize | 1-5            | A variable length integer representing the size of the filter in the following field |
@@ -204,7 +206,7 @@ the requested range. The message contains the following fields:
 of blocks. The message contains the following fields:
 
 | Field Name  | Data Type  | Byte Size | Description                                          |
-|-------------|------------|-----------|------------------------------------------------------|
+| ----------- | ---------- | --------- | ---------------------------------------------------- |
 | FilterType  | byte       | 1         | Filter type for which headers are requested          |
 | StartHeight | uint32     | 4         | The height of the first block in the requested range |
 | StopHash    | \[32\]byte | 32        | The hash of the last block in the requested range    |
@@ -230,7 +232,7 @@ This has the benefit that the client can verify the binding links
 between the headers. The message contains the following fields:
 
 | Field Name           | Data Type      | Byte Size                | Description                                                        |
-|----------------------|----------------|--------------------------|--------------------------------------------------------------------|
+| -------------------- | -------------- | ------------------------ | ------------------------------------------------------------------ |
 | FilterType           | byte           | 1                        | Filter type for which hashes are requested                         |
 | StopHash             | \[32\]byte     | 32                       | The hash of the last block in the requested range                  |
 | PreviousFilterHeader | \[32\]byte     | 32                       | The filter header preceding the first block in the requested range |
@@ -256,7 +258,7 @@ intervals over a range of blocks. Clients may use filter hashes from
 `getcfcheckpt` message contains the following fields:
 
 | Field Name | Data Type  | Byte Size | Description                                                            |
-|------------|------------|-----------|------------------------------------------------------------------------|
+| ---------- | ---------- | --------- | ---------------------------------------------------------------------- |
 | FilterType | byte       | 1         | Filter type for which headers are requested                            |
 | StopHash   | \[32\]byte | 32        | The hash of the last block in the chain that headers are requested for |
 
@@ -276,7 +278,7 @@ the height is a positive multiple of 1,000. The message contains the
 following fields:
 
 | Field Name          | Data Type      | Byte Size                 | Description                                                            |
-|---------------------|----------------|---------------------------|------------------------------------------------------------------------|
+| ------------------- | -------------- | ------------------------- | ---------------------------------------------------------------------- |
 | FilterType          | byte           | 1                         | Filter type for which headers are requested                            |
 | StopHash            | \[32\]byte     | 32                        | The hash of the last block in the chain that headers are requested for |
 | FilterHeadersLength | CompactSize    | 1-3                       | The length of the following vector of filter headers                   |
@@ -426,16 +428,10 @@ Golomb-Rice Coded sets:
 This document is licensed under the Creative Commons CC0 1.0 Universal
 license.
 
-[1] <https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki>
-
-[2] <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html>
-
-[3] <https://eprint.iacr.org/2014/763.pdf>
-
-[4] <https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/>
-
-[5] <https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki>
-
-[6] <https://en.wikipedia.org/wiki/Private_information_retrieval>
-
-[7] <https://bitcoin.org/en/developer-guide#headers-first>
+1.  <https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki>
+2.  <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html>
+3.  <https://eprint.iacr.org/2014/763.pdf>
+4.  <https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/>
+5.  <https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki>
+6.  <https://en.wikipedia.org/wiki/Private_information_retrieval>
+7.  <https://bitcoin.org/en/developer-guide#headers-first>

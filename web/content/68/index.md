@@ -14,18 +14,20 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki"
 +++
 
-      BIP: 68
-      Layer: Consensus (soft fork)
-      Title: Relative lock-time using consensus-enforced sequence numbers
-      Author: Mark Friedenbach <mark@friedenbach.org>
-              BtcDrak <btcdrak@gmail.com>
-              Nicolas Dorier <nicolas.dorier@gmail.com>
-              kinoshitajona <kinoshitajona@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0068
-      Status: Final
-      Type: Standards Track
-      Created: 2015-05-28
+``` 
+  BIP: 68
+  Layer: Consensus (soft fork)
+  Title: Relative lock-time using consensus-enforced sequence numbers
+  Author: Mark Friedenbach <mark@friedenbach.org>
+          BtcDrak <btcdrak@gmail.com>
+          Nicolas Dorier <nicolas.dorier@gmail.com>
+          kinoshitajona <kinoshitajona@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0068
+  Status: Final
+  Type: Standards Track
+  Created: 2015-05-28
+```
 
 ## Abstract
 
@@ -64,24 +66,24 @@ rest of this specification relies on.
 
 All references to median-time-past (MTP) are as defined by BIP113.
 
-If bit (1 &lt;&lt; 31) of the sequence number is set, then no consensus
+If bit (1 \<\< 31) of the sequence number is set, then no consensus
 meaning is applied to the sequence number and can be included in any
 block under all currently possible circumstances.
 
-If bit (1 &lt;&lt; 31) of the sequence number is not set, then the
-sequence number is interpreted as an encoded relative lock-time.
+If bit (1 \<\< 31) of the sequence number is not set, then the sequence
+number is interpreted as an encoded relative lock-time.
 
 The sequence number encoding is interpreted as follows:
 
-Bit (1 &lt;&lt; 22) determines if the relative lock-time is time-based
-or block based: If the bit is set, the relative lock-time specifies a
+Bit (1 \<\< 22) determines if the relative lock-time is time-based or
+block based: If the bit is set, the relative lock-time specifies a
 timespan in units of 512 seconds granularity. The timespan starts from
 the median-time-past of the output’s previous block, and ends at the MTP
 of the previous block. If the bit is not set, the relative lock-time
 specifies a number of blocks.
 
-The flag (1&lt;&lt;22) is the highest order bit in a 3-byte signed
-integer for use in bitcoin scripts as a 3-byte PUSHDATA with
+The flag (1\<\<22) is the highest order bit in a 3-byte signed integer
+for use in bitcoin scripts as a 3-byte PUSHDATA with
 OP\_CHECKSEQUENCEVERIFY (BIP 112).
 
 This specification only interprets 16 bits of the sequence number as
@@ -135,21 +137,21 @@ A reference implementation is provided by the following pull request
     /* Setting nSequence to this value for every input in a transaction
      * disables nLockTime. */
     static const uint32_t SEQUENCE_FINAL = 0xffffffff;
-
+    
     /* Below flags apply in the context of BIP 68*/
     /* If this flag set, CTxIn::nSequence is NOT interpreted as a
      * relative lock-time. */
     static const uint32_t SEQUENCE_LOCKTIME_DISABLE_FLAG = (1 << 31);
-
+    
     /* If CTxIn::nSequence encodes a relative lock-time and this flag
      * is set, the relative lock-time has units of 512 seconds,
      * otherwise it specifies blocks with a granularity of 1. */
     static const uint32_t SEQUENCE_LOCKTIME_TYPE_FLAG = (1 << 22);
-
+    
     /* If CTxIn::nSequence encodes a relative lock-time, this mask is
      * applied to extract that lock-time from the sequence field. */
     static const uint32_t SEQUENCE_LOCKTIME_MASK = 0x0000ffff;
-
+    
     /* In order to use the same number of bits to encode roughly the
      * same wall-clock duration, and because blocks are naturally
      * limited to occur every 600s on average, the minimum granularity
@@ -158,7 +160,7 @@ A reference implementation is provided by the following pull request
      * multiplying by 512 = 2^9, or equivalently shifting up by
      * 9 bits. */
     static const int SEQUENCE_LOCKTIME_GRANULARITY = 9;
-
+    
     /**
      * Calculates the block height and previous block's median time past at
      * which the transaction will be considered final in the context of BIP 68.
@@ -168,7 +170,7 @@ A reference implementation is provided by the following pull request
     static std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, int flags, std::vector<int>* prevHeights, const CBlockIndex& block)
     {
         assert(prevHeights->size() == tx.vin.size());
-
+    
         // Will be set to the equivalent height- and time-based nLockTime
         // values that would be necessary to satisfy all relative lock-
         // time constraints given our view of block chain history.
@@ -176,22 +178,22 @@ A reference implementation is provided by the following pull request
         // use -1 to have the effect of any height or time being valid.
         int nMinHeight = -1;
         int64_t nMinTime = -1;
-
+    
         // tx.nVersion is signed integer so requires cast to unsigned otherwise
         // we would be doing a signed comparison and half the range of nVersion
         // wouldn't support BIP 68.
         bool fEnforceBIP68 = static_cast<uint32_t>(tx.nVersion) >= 2
                           && flags & LOCKTIME_VERIFY_SEQUENCE;
-
+    
         // Do not enforce sequence numbers as a relative lock time
         // unless we have been instructed to
         if (!fEnforceBIP68) {
             return std::make_pair(nMinHeight, nMinTime);
         }
-
+    
         for (size_t txinIndex = 0; txinIndex < tx.vin.size(); txinIndex++) {
             const CTxIn& txin = tx.vin[txinIndex];
-
+    
             // Sequence numbers with the most significant bit set are not
             // treated as relative lock-times, nor are they given any
             // consensus-enforced meaning at this point.
@@ -200,9 +202,9 @@ A reference implementation is provided by the following pull request
                 (*prevHeights)[txinIndex] = 0;
                 continue;
             }
-
+    
             int nCoinHeight = (*prevHeights)[txinIndex];
-
+    
             if (txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG) {
                 int64_t nCoinTime = block.GetAncestor(std::max(nCoinHeight-1, 0))->GetMedianTimePast();
                 // NOTE: Subtract 1 to maintain nLockTime semantics
@@ -213,7 +215,7 @@ A reference implementation is provided by the following pull request
                 // semantics of nLockTime which is the last invalid block
                 // time or height.  Thus we subtract 1 from the calculated
                 // time or height.
-
+    
                 // Time-based relative lock-times are measured from the
                 // smallest allowed timestamp of the block containing the
                 // txout being spent, which is the median time past of the
@@ -223,30 +225,30 @@ A reference implementation is provided by the following pull request
                 nMinHeight = std::max(nMinHeight, nCoinHeight + (int)(txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_MASK) - 1);
             }
         }
-
+    
         return std::make_pair(nMinHeight, nMinTime);
     }
-
+    
     static bool EvaluateSequenceLocks(const CBlockIndex& block, std::pair<int, int64_t> lockPair)
     {
         assert(block.pprev);
         int64_t nBlockTime = block.pprev->GetMedianTimePast();
         if (lockPair.first >= block.nHeight || lockPair.second >= nBlockTime)
             return false;
-
+    
         return true;
     }
-
+    
     bool SequenceLocks(const CTransaction &tx, int flags, std::vector<int>* prevHeights, const CBlockIndex& block)
     {
         return EvaluateSequenceLocks(block, CalculateSequenceLocks(tx, flags, prevHeights, block));
     }
-
+    
     bool CheckSequenceLocks(const CTransaction &tx, int flags)
     {
         AssertLockHeld(cs_main);
         AssertLockHeld(mempool.cs);
-
+    
         CBlockIndex* tip = chainActive.Tip();
         CBlockIndex index;
         index.pprev = tip;
@@ -257,7 +259,7 @@ A reference implementation is provided by the following pull request
         // Thus if we want to know if a transaction can be part of the
         // *next* block, we need to use one more than chainActive.Height()
         index.nHeight = tip->nHeight + 1;
-
+    
         // pcoinsTip contains the UTXO set for chainActive.Tip()
         CCoinsViewMemPool viewMemPool(pcoinsTip, mempool);
         std::vector<int> prevheights;
@@ -275,7 +277,7 @@ A reference implementation is provided by the following pull request
                 prevheights[txinIndex] = coins.nHeight;
             }
         }
-
+    
         std::pair<int, int64_t> lockPair = CalculateSequenceLocks(tx, flags, &prevheights, index);
         return EvaluateSequenceLocks(index, lockPair);
     }
@@ -312,26 +314,28 @@ BIP.
 
 As can be seen from the specification section, a number of bits are
 undefined by this BIP to allow for other use cases by setting bit (1
-&lt;&lt; 31) as the remaining 31 bits have no meaning under this BIP.
-Additionally, bits (1 &lt;&lt; 23) through (1 &lt;&lt; 30) inclusive
-have no meaning at all when bit (1 &lt;&lt; 31) is unset.
+\<\< 31) as the remaining 31 bits have no meaning under this BIP.
+Additionally, bits (1 \<\< 23) through (1 \<\< 30) inclusive have no
+meaning at all when bit (1 \<\< 31) is unset.
 
 Additionally, this BIP specifies only 16 bits to actually encode
-relative lock-time meaning a further 6 are unused (1 &lt;&lt; 16 through
-1 &lt;&lt; 21 inclusive). This allows the possibility to increase
-granularity by soft-fork, or for increasing the maximum possible
-relative lock-time in the future.
+relative lock-time meaning a further 6 are unused (1 \<\< 16 through 1
+\<\< 21 inclusive). This allows the possibility to increase granularity
+by soft-fork, or for increasing the maximum possible relative lock-time
+in the future.
 
 The most efficient way to calculate sequence number from relative
 lock-time is with bit masks and shifts:
 
-        // 0 <= nHeight < 65,535 blocks (1.25 years)
-        nSequence = nHeight;
-        nHeight = nSequence & 0x0000ffff;
-        
-        // 0 <= nTime < 33,554,431 seconds (1.06 years)
-        nSequence = (1 << 22) | (nTime >> 9);
-        nTime = (nSequence & 0x0000ffff) << 9;
+``` 
+    // 0 <= nHeight < 65,535 blocks (1.25 years)
+    nSequence = nHeight;
+    nHeight = nSequence & 0x0000ffff;
+    
+    // 0 <= nTime < 33,554,431 seconds (1.06 years)
+    nSequence = (1 << 22) | (nTime >> 9);
+    nTime = (nSequence & 0x0000ffff) << 9;
+```
 
 ## References
 

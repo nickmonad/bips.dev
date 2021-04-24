@@ -14,17 +14,19 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0104.mediawiki"
 +++
 
-      BIP: 104
-      Layer: Consensus (hard fork)
-      Title: 'Block75' - Max block size like difficulty
-      Author: t.khan <teekhan42@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0104
-      Status: Rejected
-      Type: Standards Track
-      Created: 2017-01-13
-      License: BSD-2-Clause
-               GNU-All-Permissive
+``` 
+  BIP: 104
+  Layer: Consensus (hard fork)
+  Title: 'Block75' - Max block size like difficulty
+  Author: t.khan <teekhan42@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0104
+  Status: Rejected
+  Type: Standards Track
+  Created: 2017-01-13
+  License: BSD-2-Clause
+           GNU-All-Permissive
+```
 
 ## Abstract
 
@@ -64,11 +66,11 @@ difficulty, using Block75’s simple algorithm:
 
 `new max block size = x + (x * (AVERAGE_CAPACITY - TARGET_CAPACITY))`
 
--   TARGET\_CAPACITY = 0.75    //Block75's target of keeping blocks 75%
+  - TARGET\_CAPACITY = 0.75    //Block75's target of keeping blocks 75%
     full
--   AVERAGE\_CAPACITY = average percentage full of the last 2016 blocks,
+  - AVERAGE\_CAPACITY = average percentage full of the last 2016 blocks,
     as a decimal
--   x = current max block size
+  - x = current max block size
 
 All code which generates/validates blocks or uses/references the current
 hardcoded limits will need to be changed to support Block75.
@@ -77,22 +79,22 @@ hardcoded limits will need to be changed to support Block75.
 
 The 75% full block target was selected because:
 
--   it is the middle ground between blocks being too small (average 100%
+  - it is the middle ground between blocks being too small (average 100%
     full) and blocks being unnecessarily large (average 50% full)
--   it can handle short-term spikes in transaction volume of up to 33%
--   it limits the growth of max block size to less than 25% over the
+  - it can handle short-term spikes in transaction volume of up to 33%
+  - it limits the growth of max block size to less than 25% over the
     previous period
--   it will maintain average transaction fees at a stable level similar
+  - it will maintain average transaction fees at a stable level similar
     to that of May/June 2016
 
 The 2016 block (\~2 weeks) period was selected because:
 
--   it has been shown to be reasonably adaptive to changing network
+  - it has been shown to be reasonably adaptive to changing network
     resources (re: difficulty)
--   the frequent and gradual adjustments that result will be relatively
+  - the frequent and gradual adjustments that result will be relatively
     easy for miners and node operators to predict and adapt to, as any
     unforeseen consequences will be visible well in advance
--   it minimizes any effect a malicious party could have in an attempt
+  - it minimizes any effect a malicious party could have in an attempt
     to manipulate max block size
 
 The Block75 algorithm will adjust the max block size up and down in
@@ -106,18 +108,18 @@ certainty regarding future income/expenses.
 A hardcoded increase to max block size (2MB, 8MB, etc.), rejected
 because:
 
--   only a temporary solution, whatever limit was chosen would
+  - only a temporary solution, whatever limit was chosen would
     inevitably become a problem again
--   would cause transaction fees to vary wildly over time
+  - would cause transaction fees to vary wildly over time
 
 Allow miners to vote for max block size, rejected because:
 
--   overly complex and political
--   human involvement makes this slow to respond to changing transaction
+  - overly complex and political
+  - human involvement makes this slow to respond to changing transaction
     volumes
--   focuses power over max block size to a relatively small group of
+  - focuses power over max block size to a relatively small group of
     people
--   unpredictable transaction fees caused by this would create
+  - unpredictable transaction fees caused by this would create
     uncertainty in the ecosystem
 
 ## Backward Compatibility

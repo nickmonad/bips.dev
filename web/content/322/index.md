@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki"
 +++
 
-      BIP: 322
-      Layer: Applications
-      Title: Generic Signed Message Format
-      Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0322
-      Status: Draft
-      Type: Standards Track
-      Created: 2018-09-10
-      License: CC0-1.0
+``` 
+  BIP: 322
+  Layer: Applications
+  Title: Generic Signed Message Format
+  Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0322
+  Status: Draft
+  Type: Standards Track
+  Created: 2018-09-10
+  License: CC0-1.0
+```
 
 ## Abstract
 
@@ -75,11 +77,11 @@ vector of vectors of bytes, and base64-encoded. Validators should
 construct `to_spend` and `to_sign` as defined below, with default values
 for all fields except that
 
--   `message_hash` is a BIP340-tagged hash of the message, as specified
+  - `message_hash` is a BIP340-tagged hash of the message, as specified
     below
--   `message_challenge` in `to_spend` is set to the scriptPubKey being
+  - `message_challenge` in `to_spend` is set to the scriptPubKey being
     signed with
--   `message_signature` in `to_sign` is set to the provided simple
+  - `message_signature` in `to_sign` is set to the provided simple
     signature.
 
 and then proceed as they would for a full signature.
@@ -127,9 +129,9 @@ A signer may construct a proof of funds, demonstrating control of a set
 of UTXOs, by constructing a full signature as above, with the following
 modifications.
 
--   `message_challenge` is unused and shall be set to `OP_TRUE`
--   Similarly, `message_signature` is then empty.
--   All outputs that the signer wishes to demonstrate control of are
+  - `message_challenge` is unused and shall be set to `OP_TRUE`
+  - Similarly, `message_signature` is then empty.
+  - All outputs that the signer wishes to demonstrate control of are
     included as additional inputs of `to_sign`, and their witness and
     scriptSig data should be set as though these outputs were actually
     being spent.
@@ -151,10 +153,10 @@ A validator is given as input an address *A* (which may be omitted in a
 proof-of-funds), signature *s* and message *m*, and outputs one of three
 states
 
--   *valid at time T and age S* indicates that the signature has set
+  - *valid at time T and age S* indicates that the signature has set
     timelocks but is otherwise valid
--   *inconclusive* means the validator was unable to check the scripts
--   *invalid* means that some check failed
+  - *inconclusive* means the validator was unable to check the scripts
+  - *invalid* means that some check failed
 
 #### Verification Process
 
@@ -165,9 +167,9 @@ Validation consists of the following steps:
     2.  Decode *s* as the transaction `to_sign`
     3.  If *s* was a full transaction, confirm all fields are set as
         specified above; in particular that
-        -   `to_sign` has at least one input and its first input spends
+          - `to_sign` has at least one input and its first input spends
             the output of </code>to\_spend</code>
-        -   `to_sign` has exactly one output, as specified above
+          - `to_sign` has exactly one output, as specified above
     4.  Confirm that the two transactions together satisfy all consensus
         rules, except for `to_spend`'s missing input, and except that
         *nSequence* of `to_sign`'s first input and *nLockTime* of
@@ -215,10 +217,10 @@ follows:
 They then encode their signature, choosing either *simple* or *full* as
 follows:
 
--   If they added no inputs to `to_sign`, left nSequence and nLockTime
+  - If they added no inputs to `to_sign`, left nSequence and nLockTime
     at 0, and *A* is a Segwit address (either pure or P2SH-wrapped),
     then they may base64-encode `message_signature`
--   Otherwise they must base64-encode `to_sign`.
+  - Otherwise they must base64-encode `to_sign`.
 
 ## Compatibility
 

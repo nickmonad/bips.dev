@@ -14,16 +14,18 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0154.mediawiki"
 +++
 
-      BIP: 154
-      Layer: Peer Services
-      Title: Rate Limiting via peer specified challenges
-      Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0154
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2017-04-12
-      License: BSD-2-Clause
+``` 
+  BIP: 154
+  Layer: Peer Services
+  Title: Rate Limiting via peer specified challenges
+  Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0154
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2017-04-12
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -32,18 +34,18 @@ perform proof of work.
 
 ## Definitions
 
--   **POW** : a proof of work using some arbitrary algorithm, such as
+  - **POW** : a proof of work using some arbitrary algorithm, such as
     SHA256
--   **challenge** : a problem in the form of a POW specification and
+  - **challenge** : a problem in the form of a POW specification and
     other data
--   **solution** : a set of inputs which solve a given challenge
--   **free connection slot** : an inbound connection slot that does not
+  - **solution** : a set of inputs which solve a given challenge
+  - **free connection slot** : an inbound connection slot that does not
     require POW
--   **POW connection slot** : an inbound connection slot that requires
+  - **POW connection slot** : an inbound connection slot that requires
     POW
--   **SPH** : Special Purpose Hardware, such as an ASIC chip
--   **GPH** : General Purpose Hardware, such as a desktop computer
--   **Work** : A measurement of optimized average resources (clock
+  - **SPH** : Special Purpose Hardware, such as an ASIC chip
+  - **GPH** : General Purpose Hardware, such as a desktop computer
+  - **Work** : A measurement of optimized average resources (clock
     cycles, memory, ...) required to perform a single attempt at solving
     a given POW algorithm on GPH
 
@@ -78,9 +80,9 @@ in the future.
 
 A peer that supports Proof of Work Rate Limiting defines two maximums:
 
--   max connections, from which the maximum inbound connections is
+  - max connections, from which the maximum inbound connections is
     calculated as `nMaxConnections - (nMaxOutbound + nMaxFeeler)`
--   POW connection slots, which define how many of the above inbound
+  - POW connection slots, which define how many of the above inbound
     connections require a POW challenge
 
 The peer must interpret two new network peer message types, `challenge`
@@ -89,14 +91,14 @@ and `solution`.
 In addition, the network handshake sequence must be altered slightly to
 facilitate the exchange of challenges and/or solutions:
 
--   when a node connects, it may send a `solution` message prior to the
+  - when a node connects, it may send a `solution` message prior to the
     `version`
--   if it does, and
-    -   the solution satisfies the local node, it is given a connection,
+  - if it does, and
+      - the solution satisfies the local node, it is given a connection,
         but if
-    -   the solution does not satisfy the local node (unknown, wrong,
+      - the solution does not satisfy the local node (unknown, wrong,
         ...), a new `challenge` is sent and the connection is closed
--   if it does not, and it is marked as needing to do POW, a `challenge`
+  - if it does not, and it is marked as needing to do POW, a `challenge`
     is sent and the connection is closed
 
 This means nodes will be disconnected after receiving the challenge. It
@@ -112,23 +114,23 @@ identifier in the list. When an identifier is deprecated, its status
 should be changed to `Deprecated` but it should retain its place in the
 list indefinitely.
 
-| ID  | Algorithm Name | Work                           | Param size | Solution size   | Provably Secure | SPH Resistance | Status |
-|-----|----------------|--------------------------------|------------|-----------------|-----------------|----------------|--------|
-| 1   | sha256         | 11k cycles                     | 11+ bytes  | 0, 4 or 8 bytes | Yes             | Low            | Active |
-| 2   | cuckoo-cycle   | ss 28: 150G cycles / \~48M RAM | 6+ bytes   | 168 bytes       | No              | High           | Active |
+| ID | Algorithm Name | Work                           | Param size | Solution size   | Provably Secure | SPH Resistance | Status |
+| -- | -------------- | ------------------------------ | ---------- | --------------- | --------------- | -------------- | ------ |
+| 1  | sha256         | 11k cycles                     | 11+ bytes  | 0, 4 or 8 bytes | Yes             | Low            | Active |
+| 2  | cuckoo-cycle   | ss 28: 150G cycles / \~48M RAM | 6+ bytes   | 168 bytes       | No              | High           | Active |
 
 #### sha256
 
 Properties:
 
 | Property             | Value                          |
-|----------------------|--------------------------------|
+| -------------------- | ------------------------------ |
 | Solution probability | `sum((1/2)^i*(1-targetBE[i]))` |
 
 Challenge format:
 
 | Range | Field Name      | Data Type  | Description                                                              |
-|-------|-----------------|------------|--------------------------------------------------------------------------|
+| ----- | --------------- | ---------- | ------------------------------------------------------------------------ |
 | 0     | config\_length  | varint     | Length of configuration part; always 9                                   |
 | 1..4  | target          | uint32     | Difficulty target, in the form of a compact size (like nBits in blocks). |
 | 5     | nonce\_size     | uint8      | Size of nonce in bytes; must be 0 (no nonce), 4 (uint32) or 8 (uint64)   |
@@ -139,7 +141,7 @@ Challenge format:
 Solution format:
 
 | Range | Field Name | Data Type          | Description                                                                                                                                |
-|-------|------------|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| ----- | ---------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | 0..   | nonce      | uint32/64, or data | Nonce value that satisfies challenge; for zero-byte nonces, this is variable data that is appended to the challenge payload before hashing |
 
 Note: SHA256 works in two "modes".
@@ -157,7 +159,7 @@ Note: SHA256 works in two "modes".
 
 Additional notes:
 
--   The initial nonce value (when present) for finding a suitable digest
+  - The initial nonce value (when present) for finding a suitable digest
     should be randomized, or a challenger may deliberately pick a
     challenge with "poor" outcomes to fool a node into spending more
     than predicted time solving.
@@ -167,13 +169,13 @@ Additional notes:
 Properties:
 
 | Property             | Value                                              |
-|----------------------|----------------------------------------------------|
+| -------------------- | -------------------------------------------------- |
 | Solution probability | `~1.0` for sizeshift=28, proofsize-min:-max=12:228 |
 
 Challenge format:
 
 | Range | Field Name      | Data Type  | Description                                                                                                                                 |
-|-------|-----------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| ----- | --------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | 0     | config\_length  | varint     | Length of configuration part; always 5                                                                                                      |
 | 1     | sizeshift       | uint8      | Size shift; must be equal to 28, but may be variable in the future                                                                          |
 | 2..3  | proofsize-min   | uint16     | Minimum number of edges in cycle; must be even and greater than or equal to 12 (recommended: 12)                                            |
@@ -184,17 +186,17 @@ Challenge format:
 Solution format:
 
 | Range  | Field Name | Data Type    | Description                                                         |
-|--------|------------|--------------|---------------------------------------------------------------------|
+| ------ | ---------- | ------------ | ------------------------------------------------------------------- |
 | 0..3   | nonce      | uint32       | Nonce which is appended to challenge payload to form solution graph |
 | 4..171 | edges      | uint32 array | 42 values which identify each of the 42 edges in the cycle          |
 
 Additional notes:
 
--   The initial nonce value used for finding a graph with a suitable
+  - The initial nonce value used for finding a graph with a suitable
     solution should be randomized, or a challenger may deliberately pick
     a challenge with "poor" outcomes to fool a node into spending more
     than predicted time solving.
--   Further information on the recommended challenge parameters can be
+  - Further information on the recommended challenge parameters can be
     found here: <http://bc-2.jp/cuckoo-profile.pdf>
 
 ### Purpose Identifiers
@@ -206,9 +208,9 @@ with an increment of 1 to the last identifier in the list. When an
 identifier is deprecated, its status should be changed to `Deprecated`
 but it should retain its place in the list indefinitely.
 
-| ID  | Purpose Name | Description                       | Status |
-|-----|--------------|-----------------------------------|--------|
-| 1   | connect      | Establish peer to peer connection | Active |
+| ID | Purpose Name | Description                       | Status |
+| -- | ------------ | --------------------------------- | ------ |
+| 1  | connect      | Establish peer to peer connection | Active |
 
 ### Challenges
 
@@ -237,20 +239,20 @@ identifier, an expiration date, and a signature. The POW specification
 contains a list of tuples containing a POW identifier and corresponding
 POW parameters.
 
--   Each POW identifier specifies a POW algorithm (see POW Identifiers)
--   The POW parameters define the inputs and requirements of the POW
+  - Each POW identifier specifies a POW algorithm (see POW Identifiers)
+  - The POW parameters define the inputs and requirements of the POW
     algorithm
--   The purpose identifier specifies the purpose of the challenge (see
+  - The purpose identifier specifies the purpose of the challenge (see
     Purpose Identifiers)
--   The expiration date is a UNIX timestamp indicating when the
+  - The expiration date is a UNIX timestamp indicating when the
     challenge expires
--   The signed content should contain a signature of the hash
-    `SHA256(SHA256(pow-count || pow-id || pow-params || ... || purpose-id || expiration))`,
-    i.e. the hash of the entire challenge except for the signature
-    length and data.
+  - The signed content should contain a signature of the hash
+    `SHA256(SHA256(pow-count || pow-id || pow-params || ... ||
+    purpose-id || expiration))`, i.e. the hash of the entire challenge
+    except for the signature length and data.
 
 | Field Size | Description | Data type  | Description                                       |
-|------------|-------------|------------|---------------------------------------------------|
+| ---------- | ----------- | ---------- | ------------------------------------------------- |
 | 1 byte     | pow-count   | uint8      | Number of POW algorithms in the range \[1..255\]  |
 | 4 bytes    | pow-id      | uint32     | The POW algorithm to solve the problem with       |
 | ?          | pow-params  | ?          | The POW parameters and payload                    |
@@ -260,46 +262,46 @@ POW parameters.
 | ?          | sign-len    | varint     | The length of the signature                       |
 | ?          | sign        | byte array | The signature data                                |
 
-For POW specifications with a pow-count &gt; 1, the output of the
+For POW specifications with a pow-count \> 1, the output of the
 succeeding POW algorithm will be appended to the input of the
 predecessor for all POW algorithms except the last one. Normally
 mid-layer (all but the last) POW algorithms have a zero-length input.
 Example implementing sha256(cuckoo-cycle):
 
-| Range    | Field Name                   | Value         | Comment                                                    |
-|----------|------------------------------|---------------|------------------------------------------------------------|
-| 0        | pow-count                    | 2             | Two POW algorithms                                         |
-| 1..4     | pow-id                       | 1             | sha256                                                     |
-| 5        | pow-params (config\_length)  | 9             |                                                            |
-| 6..9     | pow-params (target)          | 0x207fffff    | Resulting hash must be &lt;= the compact hash 0x207fffff\* |
-| 10       | pow-params (nonce\_size)     | 0             | No nonce                                                   |
-| 11..14   | pow-params (nonce\_offset)   | 0             | --                                                         |
-| 15..18   | pow-params (payload\_length) | 0             | 0 byte input (turns into 32 byte input from successor)     |
-| 19..22   | pow-id                       | 2             | cuckoo-cycle                                               |
-| 23       | pow-params (config\_length)  | 8             |                                                            |
-| 24       | pow-params (sizeshift)       | 28            |                                                            |
-| 25..26   | pow-params (proofsize-min)   | 12            |                                                            |
-| 27..28   | pow-params (proofsize-max)   | 228           |                                                            |
-| 29       | pow-params (payload\_length) | 76            | 76 byte input                                              |
-| 30..105  | pow-params                   | (random data) | A randomized challenge of 76 bytes                         |
-| 106..109 | purpose-id                   | 1             | Purpose is a peer-to-peer connection                       |
-| 110..117 | expiration                   | 1491285696    | Expiration is April 4 2017, 15:01:36 (JST)                 |
-| 118      | sign-len                     | 71            | 71 byte signature                                          |
-| 119..189 | sign                         | (signature)   | Signature of above challenge                               |
+| Range    | Field Name                   | Value         | Comment                                                  |
+| -------- | ---------------------------- | ------------- | -------------------------------------------------------- |
+| 0        | pow-count                    | 2             | Two POW algorithms                                       |
+| 1..4     | pow-id                       | 1             | sha256                                                   |
+| 5        | pow-params (config\_length)  | 9             |                                                          |
+| 6..9     | pow-params (target)          | 0x207fffff    | Resulting hash must be \<= the compact hash 0x207fffff\* |
+| 10       | pow-params (nonce\_size)     | 0             | No nonce                                                 |
+| 11..14   | pow-params (nonce\_offset)   | 0             | \--                                                      |
+| 15..18   | pow-params (payload\_length) | 0             | 0 byte input (turns into 32 byte input from successor)   |
+| 19..22   | pow-id                       | 2             | cuckoo-cycle                                             |
+| 23       | pow-params (config\_length)  | 8             |                                                          |
+| 24       | pow-params (sizeshift)       | 28            |                                                          |
+| 25..26   | pow-params (proofsize-min)   | 12            |                                                          |
+| 27..28   | pow-params (proofsize-max)   | 228           |                                                          |
+| 29       | pow-params (payload\_length) | 76            | 76 byte input                                            |
+| 30..105  | pow-params                   | (random data) | A randomized challenge of 76 bytes                       |
+| 106..109 | purpose-id                   | 1             | Purpose is a peer-to-peer connection                     |
+| 110..117 | expiration                   | 1491285696    | Expiration is April 4 2017, 15:01:36 (JST)               |
+| 118      | sign-len                     | 71            | 71 byte signature                                        |
+| 119..189 | sign                         | (signature)   | Signature of above challenge                             |
 
 (\* Compact 0x207fffff =
 0x7fffff0000000000000000000000000000000000000000000000000000000000.)
 
-The above should be interpreted as SHA256(cuckoo-cycle(random data \|\|
-nonce)) &lt;
+The above should be interpreted as SHA256(cuckoo-cycle(random data ||
+nonce)) \<
 0x7fffff0000000000000000000000000000000000000000000000000000000000.
 
--   Run cuckoo-cycle on random data \|\| nonce; increment nonce until
+  - Run cuckoo-cycle on random data || nonce; increment nonce until
     solution is found, then
-    -   Run SHA256 on 32 byte digest from above; if less than
+      - Run SHA256 on 32 byte digest from above; if less than
         0x7fffff0000000000000000000000000000000000000000000000000000000000,
-        -   Mark solved.
--   Otherwise loop back and increase nonce and continue finding
+          - Mark solved.
+  - Otherwise loop back and increase nonce and continue finding
     solutions
 
 ### The `solution` message type
@@ -307,13 +309,13 @@ nonce)) &lt;
 A solution consists of two parts: the entire challenge, and solution
 parameters:
 
--   The challenge must match the given challenge up to and including the
+  - The challenge must match the given challenge up to and including the
     signature bytes
--   The solution parameters must form a valid solution to each POW step
+  - The solution parameters must form a valid solution to each POW step
     in the challenge
 
 | Field Size | Description | Data type  | Description                                         |
-|------------|-------------|------------|-----------------------------------------------------|
+| ---------- | ----------- | ---------- | --------------------------------------------------- |
 | 1 byte     | pow-count   | uint8      | Number of POW algorithms in the range \[1..255\]    |
 | 4 bytes    | pow-id      | uint32     | The POW algorithm used to solve the problem         |
 | ?          | pow-params  | ?          | The input to the POW solver for the above algorithm |
@@ -329,14 +331,13 @@ only. For each algorithm except the last one, the input is derived from
 the output of the successor. Example solution:
 
 | Range | Name    | Value   | Description                                         |
-|-------|---------|---------|-----------------------------------------------------|
+| ----- | ------- | ------- | --------------------------------------------------- |
 | 0     | length  | 4       | The input to the innermost POW is 4 bytes in length |
 | 1..4  | nonce32 | 0x12345 | The nonce used as input is 0x12345                  |
 
 The above example will provide a single nonce for the inner POW. For the
-SHA256(SHA256(challenge data \|\| nonce32)) case, the solution would
-claim that SHA256(SHA256(challenge data \|\| 0x00012345)) solves the
-challenge.
+SHA256(SHA256(challenge data || nonce32)) case, the solution would claim
+that SHA256(SHA256(challenge data || 0x00012345)) solves the challenge.
 
 ## Signing and Verifying Challenges
 
@@ -400,18 +401,20 @@ the challenge as follows:
 6.  If `date() + eta >= expiration`, discard challenge
 7.  If `eta > t`, discard challenge
 
-Example:
-`SHA256(cuckoo-cycle(...)) < 0x7fffff0000000000000000000000000000000000000000000000000000000000`
+Example: `SHA256(cuckoo-cycle(...))
+< 0x7fffff0000000000000000000000000000000000000000000000000000000000`
 
 1.  `p(cuckoo-cycle) = 1`, `p(sha256, 0x7fffff000...) ~= (1/2)^1 = 1/2`
 2.  `w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)`,
     `w(sha256, 0x7fffff000...) = (11e3 cycles)`
 3.  `Wc = 0, Wm = 1, Wi = 1`
-    1.  `p = p(cuckoo-cycle) = 1, w = w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)`
-    2.  `Wc = 0 + 1.5e11 = 1.5e11`, `Wi = 1 * 1 = 1`,
-        `Wm = 1 + 5e7 = 5e7`
+    1.  `p = p(cuckoo-cycle) = 1, w = w(cuckoo-cycle) = (1.5e11
+        cycles, 5e7 ram)`
+    2.  `Wc = 0 + 1.5e11 = 1.5e11`, `Wi = 1 * 1 = 1`, `Wm = 1 + 5e7
+        = 5e7`
     3.  `p = p(sha256) = 1/2, w = w(sha256) = (11e3 cycles)`
-    4.  `Wc = 1.5e11 + 11e3 ~= 1.5e11, Wi = 1 * 2 = 2, Wm = 5e7 + 0 = 5e7`
+    4.  `Wc = 1.5e11 + 11e3 ~= 1.5e11, Wi = 1 * 2 = 2, Wm = 5e7 + 0
+        = 5e7`
 4.  `eta = (1.5e11 * 2) / cycles_per_second` = `7.5e10 / 1.7e9` = 44.1
     seconds</code>
 
@@ -457,7 +460,7 @@ This would result in probability targets according to the table below,
 for varying pressures (where the pressure is in the range \[0..1\]):
 
 | pressure | prob\_target | solution time sha256(cc) |
-|----------|--------------|--------------------------|
+| -------- | ------------ | ------------------------ |
 | 0.0      | 1.00         | 00:45                    |
 | 0.1      | 0.87         | 00:51                    |
 | 0.2      | 0.63         | 01:11                    |
@@ -497,9 +500,9 @@ connection limit as normal.
 
 ## References
 
--   \[1\] Cuckoo Cycle
+  - \[1\] Cuckoo Cycle
     <https://github.com/tromp/cuckoo/blob/master/doc/cuckoo.pdf?raw=true>
--   \[2\] Cuckoo Cycle github <https://github.com/tromp/cuckoo>
+  - \[2\] Cuckoo Cycle github <https://github.com/tromp/cuckoo>
 
 ## Test vectors
 
@@ -552,7 +555,7 @@ Must be less than:
     8f6fa9d5bd7cd06f9ba89587a28e14cea14e7f8f8d5ab851541791
 
 | Hex                                  | Description                         |
-|--------------------------------------|-------------------------------------|
+| ------------------------------------ | ----------------------------------- |
 | `0x02`                               | Two proofs of work                  |
 | `0x01000000`                         | Proof of work ID = 1 (SHA256)       |
 | `0x09`                               | Config is 9 bytes                   |
@@ -593,7 +596,7 @@ Must be less than:
 Note that the first 187 bytes are identical to the challenge above.
 
 | Hex                                  | Description                 |
-|--------------------------------------|-----------------------------|
+| ------------------------------------ | --------------------------- |
 | `0x0201..1791`                       | Challenge                   |
 | `0x44`                               | Solution is 68 bytes long   |
 | `0x00000000`                         | The cuckoo cycle nonce is 0 |
@@ -653,7 +656,7 @@ Must be less than:
     d29c9e54a76f3457ff1a2ee19490ff027c528a896f4bf6aff577
 
 | Hex                                  | Description                         |
-|--------------------------------------|-------------------------------------|
+| ------------------------------------ | ----------------------------------- |
 | `0x02`                               | Two proofs of work                  |
 | `0x01000000`                         | Proof of work ID = 1 (SHA256)       |
 | `0x09`                               | Config is 9 bytes                   |
@@ -694,7 +697,7 @@ Must be less than:
 Note that the first 186 bytes are identical to the challenge above.
 
 | Hex                                  | Description                 |
-|--------------------------------------|-----------------------------|
+| ------------------------------------ | --------------------------- |
 | `0x0201..f577`                       | Challenge                   |
 | `0x5c`                               | Solution is 92 bytes long   |
 | `0x04000000`                         | The cuckoo cycle nonce is 4 |

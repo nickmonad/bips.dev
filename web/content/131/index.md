@@ -14,16 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0131.mediawiki"
 +++
 
-      BIP: 131
-      Layer: Consensus (hard fork)
-      Title: "Coalescing Transaction" Specification (wildcard inputs)
-      Author: Chris Priest <cp368202@ohiou.edu>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0131
-      Status: Rejected
-      Type: Standards Track
-      Created: 2015-11-30
-      License: PD
+``` 
+  BIP: 131
+  Layer: Consensus (hard fork)
+  Title: "Coalescing Transaction" Specification (wildcard inputs)
+  Author: Chris Priest <cp368202@ohiou.edu>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0131
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-11-30
+  License: PD
+```
 
 ## Abstract
 

@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0370.mediawiki"
 +++
 
-      BIP: 370
-      Layer: Applications
-      Title: PSBT Version 2
-      Author: Andrew Chow <achow101@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0370
-      Status: Draft
-      Type: Standards Track
-      Created: 2021-01-14
-      License: BSD-2-Clause
+``` 
+  BIP: 370
+  Layer: Applications
+  Title: PSBT Version 2
+  Author: Andrew Chow <achow101@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0370
+  Status: Draft
+  Type: Standards Track
+  Created: 2021-01-14
+  License: BSD-2-Clause
+```
 
 ## Introduction
 
@@ -59,12 +61,12 @@ inclusion/exclusion requirements.
 
 `PSBT_GLOBAL_UNSIGNED_TX` must be excluded in PSBTv2.
 `PSBT_GLOBAL_VERSION` must be included in PSBTv2 and set to version
-number 2[1].
+number 2\[1\].
 
 The new global types for PSBT Version 2 are as follows:
 
 | Name                         | <keytype>                              | <keydata> | <keydata> Description | <valuedata>         | <valuedata> Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion |
-|------------------------------|----------------------------------------|-----------|-----------------------|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|------------------------------|-----------------------------|
+| ---------------------------- | -------------------------------------- | --------- | --------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ---------------------------- | --------------------------- |
 | Transaction Version          | `PSBT_GLOBAL_TX_VERSION = 0x02`        | None      | No key data           | `<32-bit uint>`     | The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT\_GLOBAL\_VERSION field.                                                                                                                                                                                                                                                                                                                                            | 2                            | 0                            | 2                           |
 | Fallback Locktime            | `PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03` | None      | No key data           | `<32-bit uint>`     | The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.                                                                                                                                                                                                                                                                                                                                                                                                                             |                              | 0                            | 2                           |
 | Input Count                  | `PSBT_GLOBAL_INPUT_COUNT = 0x04`       | None      | No key data           | <compact size uint> | Compact size unsigned integer representing the number of inputs in this PSBT.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | 2                            | 0                            | 2                           |
@@ -74,7 +76,7 @@ The new global types for PSBT Version 2 are as follows:
 The new per-input types for PSBT Version 2 are defined as follows:
 
 | Name                           | <keytype>                                 | <keydata> | <keydata> Description | <valuedata>     | <valuedata> Description                                                                                                                                                             | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion |
-|--------------------------------|-------------------------------------------|-----------|-----------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|------------------------------|-----------------------------|
+| ------------------------------ | ----------------------------------------- | --------- | --------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------- | --------------------------- |
 | Previous TXID                  | `PSBT_IN_PREVIOUS_TXID = 0x0e`            | None      | No key data           | <txid>          | 32 byte txid of the previous transaction whose output at PSBT\_IN\_OUTPUT\_INDEX is being spent.                                                                                    | 2                            | 0                            | 2                           |
 | Spent Output Index             | `PSBT_IN_OUTPUT_INDEX = 0x0f`             | None      | No key data           | `<32-bit uint>` | 32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT\_IN\_PREVIOUS\_TXID.                                         | 2                            | 0                            | 2                           |
 | Sequence Number                | `PSBT_IN_SEQUENCE = 0x10`                 | None      | No key data           | `<32-bit uint>` | The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).           |                              | 0                            | 2                           |
@@ -164,7 +166,7 @@ PSBTv2 introduces new roles and modifies some existing roles.
 
 In PSBTv2, the Creator initializes the PSBT with 0 inputs and 0 outputs.
 The PSBT version number is set to 2. The transaction version number must
-be set to at least 2. [2] The Creator should also set
+be set to at least 2. \[2\] The Creator should also set
 PSBT\_GLOBAL\_PREFERRED\_LOCKTIME. If the Creator is not also a
 Constructor and will be giving the PSBT to others to add inputs and
 outputs, the PSBT\_GLOBAL\_TX\_MODIFIABLE field must be present and and
@@ -265,17 +267,16 @@ TBD
 The reference implementation of the PSBT format is available at
 <https://github.com/achow101/bitcoin/tree/psbt2>.
 
-[1] **What happened to version number 1?** Version number 1 is skipped
-because PSBT Version 0 has been colloquially referred to as version 1.
-Originally this BIP was to be version 1, but because it has been
-colloquially referred to as version 2 during its design phrase, it was
-decided to change the version number to 2 so that there would not be any
-confusion
-
-[2] **Why does the transaction version number need to be at least 2?**
-The transaction version number is part of the validation rules for some
-features such as OP\_CHECKSEQUENCEVERIFY. Since it is backwards
-compatible, and there are other ways to disable those features (e.g.
-through sequence numbers), it is easier to require transactions be able
-to support these features than to try to negotiate the transaction
-version number.
+1.  **What happened to version number 1?** Version number 1 is skipped
+    because PSBT Version 0 has been colloquially referred to as version
+    1. Originally this BIP was to be version 1, but because it has been
+    colloquially referred to as version 2 during its design phrase, it
+    was decided to change the version number to 2 so that there would
+    not be any confusion
+2.  **Why does the transaction version number need to be at least 2?**
+    The transaction version number is part of the validation rules for
+    some features such as OP\_CHECKSEQUENCEVERIFY. Since it is backwards
+    compatible, and there are other ways to disable those features (e.g.
+    through sequence numbers), it is easier to require transactions be
+    able to support these features than to try to negotiate the
+    transaction version number.

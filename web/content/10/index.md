@@ -14,15 +14,17 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0010.mediawiki"
 +++
 
-      BIP: 10
-      Layer: Applications
-      Title: Multi-Sig Transaction Distribution
-      Author: Alan Reiner <etotheipi@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0010
-      Status: Withdrawn
-      Type: Informational
-      Created: 2011-10-28
+``` 
+  BIP: 10
+  Layer: Applications
+  Title: Multi-Sig Transaction Distribution
+  Author: Alan Reiner <etotheipi@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0010
+  Status: Withdrawn
+  Type: Informational
+  Created: 2011-10-28
+```
 
 A multi-signature transaction is one where a certain number of Bitcoins
 are "encumbered" with more than one recipient address. The subsequent
@@ -98,22 +100,24 @@ implementations.
 Anyone adopting BIP 0010 for multi-sig transactions will use the
 following format (without indentation):
 
-     '-----BEGIN-TRANSACTION-TXDPID-------'
-     ("_TXDIST_") (magicBytes) (base58Txid) (varIntTxSize)
-        (serializedTxListInHex_Line1)
-        (serializedTxListInHex_Line2)
-        (serializedTxListInHex_Line3)
-        ...
-     ("_TXINPUT_") (00) (InputValue)
-        ("_SIG_") (AddrBase58) (SigBytes) (SigHexPart0)
-        (SigHexRemainingLines)
-        ("_SIG_") (AddrBase58) (SigBytes) (SigHexPart0)
-        (SigHexRemainingLines)
-     ("_TXINPUT_") (01) (InputValue)
-        ("_SIG_") (AddrBase58) (SigBytes) (SigHexPart0)
-        (SigHexRemainingLines)
-     ("_TXINPUT_") (02) (InputValue)
-     '-------END-TRANSACTION-TXDPID-------'
+``` 
+ '-----BEGIN-TRANSACTION-TXDPID-------'
+ ("_TXDIST_") (magicBytes) (base58Txid) (varIntTxSize)
+    (serializedTxListInHex_Line1)
+    (serializedTxListInHex_Line2)
+    (serializedTxListInHex_Line3)
+    ...
+ ("_TXINPUT_") (00) (InputValue)
+    ("_SIG_") (AddrBase58) (SigBytes) (SigHexPart0)
+    (SigHexRemainingLines)
+    ("_SIG_") (AddrBase58) (SigBytes) (SigHexPart0)
+    (SigHexRemainingLines)
+ ("_TXINPUT_") (01) (InputValue)
+    ("_SIG_") (AddrBase58) (SigBytes) (SigHexPart0)
+    (SigHexRemainingLines)
+ ("_TXINPUT_") (02) (InputValue)
+ '-------END-TRANSACTION-TXDPID-------'
+```
 
 The following is an example TxDP from Armory, produced while running on
 the test network. Its DPID is 3fX59xPj:

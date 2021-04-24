@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0338.mediawiki"
 +++
 
-      BIP: 338
-      Layer: Peer Services
-      Title: Disable transaction relay message
-      Author: Suhas Daftuar <sdaftuar@chaincode.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0338
-      Status: Draft
-      Type: Standards Track
-      Created: 2020-09-03
-      License: BSD-2-Clause
+``` 
+  BIP: 338
+  Layer: Peer Services
+  Title: Disable transaction relay message
+  Author: Suhas Daftuar <sdaftuar@chaincode.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0338
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-09-03
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -86,7 +88,7 @@ made on the network.
 3.  If a node sets the transaction relay field in the version message to
     a peer to false, then the disabletx message MAY also be sent in
     response to a version message from that peer if the peer's protocol
-    version is &gt;= 70017. If sent, the disabletx message MUST be sent
+    version is \>= 70017. If sent, the disabletx message MUST be sent
     prior to sending a verack.
 4.  A node that has sent or received a disabletx message to/from a peer
     MUST NOT send any of these messages to the peer:
@@ -108,8 +110,8 @@ made on the network.
 
 ## Compatibility
 
-Nodes with protocol version &gt;= 70017 that do not implement this BIP,
-and nodes with protocol version &lt; 70017, will continue to remain
+Nodes with protocol version \>= 70017 that do not implement this BIP,
+and nodes with protocol version \< 70017, will continue to remain
 compatible with implementing software: transactions would not be relayed
 to peers sending the disabletx message (provided that BIP 37 or BIP 60
 has been implemented), and while periodic address relay may still take

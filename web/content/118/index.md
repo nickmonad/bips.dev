@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0118.mediawiki"
 +++
 
-      BIP: 118
-      Layer: Consensus (soft fork)
-      Title: SIGHASH_NOINPUT
-      Author: Christian Decker <decker.christian@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0118
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-02-28
-      License: BSD-3-Clause
+``` 
+  BIP: 118
+  Layer: Consensus (soft fork)
+  Title: SIGHASH_NOINPUT
+  Author: Christian Decker <decker.christian@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0118
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-02-28
+  License: BSD-3-Clause
+```
 
 ## Abstract
 
@@ -83,26 +85,26 @@ The `value` of the previous output remains part of the transaction
 digest and is therefore also committed to in the signature.
 
 The `NOINPUT` flag MAY be combined with the `SINGLE` flag in which case
-the `hashOutputs` is modified as per BIP 143[1]: it only commits to the
-output with the matching index, if such output exists, and is a
+the `hashOutputs` is modified as per BIP 143\[1\]: it only commits to
+the output with the matching index, if such output exists, and is a
 `uint256` `0x0000......0000` otherwise.
 
 Being a change in the digest algorithm, the `NOINPUT` flag applies to
 all segwit signature verification opcodes, specifically it applies to:
 
--   `OP_CHECKSIG`
+  - `OP_CHECKSIG`
 
-<!-- -->
+<!-- end list -->
 
--   `OP_CHECKSIGVERIFY`
+  - `OP_CHECKSIGVERIFY`
 
-<!-- -->
+<!-- end list -->
 
--   `OP_CHECKMULTISIG`
+  - `OP_CHECKMULTISIG`
 
-<!-- -->
+<!-- end list -->
 
--   `OP_CHECKMULTISIGVERIFY`
+  - `OP_CHECKMULTISIGVERIFY`
 
 ## Binding through scripts
 
@@ -146,7 +148,7 @@ will see an anyone-can-spend script and will consider it valid.
 ## Acknowledgments
 
 The `NOINPUT` sighash flag was first proposed by Joseph Poon in February
-2016[2], after being mentioned in the original Lightning paper[3]. A
+2016\[2\], after being mentioned in the original Lightning paper\[3\]. A
 formal proposal was however deferred until after the activation of
 segwit. This proposal is a continuation of this discussion and attempts
 to formalize it in such a way that it can be included in the Bitcoin
@@ -162,8 +164,6 @@ off-chain protocols.
 
 This document is licensed under the BSD 3 Clause license.
 
-[1] <https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki>
-
-[2] <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-February/012460.html>
-
-[3] <http://lightning.network/lightning-network.pdf>
+1.  <https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki>
+2.  <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-February/012460.html>
+3.  <http://lightning.network/lightning-network.pdf>

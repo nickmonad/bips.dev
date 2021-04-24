@@ -14,18 +14,20 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki"
 +++
 
-      BIP: 9
-      Title: Version bits with timeout and delay
-      Author: Pieter Wuille <pieter.wuille@gmail.com>
-              Peter Todd <pete@petertodd.org>
-              Greg Maxwell <greg@xiph.org>
-              Rusty Russell <rusty@rustcorp.com.au>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0009
-      Status: Final
-      Type: Informational
-      Created: 2015-10-04
-      License: PD
+``` 
+  BIP: 9
+  Title: Version bits with timeout and delay
+  Author: Pieter Wuille <pieter.wuille@gmail.com>
+          Peter Todd <pete@petertodd.org>
+          Greg Maxwell <greg@xiph.org>
+          Rusty Russell <rusty@rustcorp.com.au>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0009
+  Status: Final
+  Type: Informational
+  Created: 2015-10-04
+  License: PD
+```
 
 ## Abstract
 
@@ -48,7 +50,7 @@ being rolled out at once, requiring coordination between proposals, and
 does not allow for permanent rejection: as long as one soft fork is not
 fully rolled out, no future one can be scheduled.
 
-In addition, BIP 34 made the integer comparison (nVersion &gt;= 2) a
+In addition, BIP 34 made the integer comparison (nVersion \>= 2) a
 consensus rule after its 95% threshold was reached, removing
 2<sup>31</sup>+2 values from the set of valid version numbers (all
 negative numbers, as nVersion is interpreted as a signed integer, as
@@ -74,7 +76,7 @@ parameters (further elaborated below):
 3.  The **starttime** specifies a minimum median time past of a block at
     which the bit gains its meaning.
 4.  The **timeout** specifies a time at which the deployment is
-    considered failed. If the median time past of a block &gt;= timeout
+    considered failed. If the median time past of a block \>= timeout
     and the soft fork has not yet locked in (including this block's bit
     state), the deployment is considered failed on all descendants of
     the block.
@@ -119,7 +121,7 @@ possible states are:
 
 The nVersion block header field is to be interpreted as a 32-bit
 little-endian integer (as present), and bits are selected within this
-integer as values (1 &lt;&lt; N) where N is the bit number.
+integer as values (1 \<\< N) where N is the bit number.
 
 Blocks in the STARTED state get an nVersion whose bit position bit is
 set to 1. The top 3 bits of such blocks must be 001, so the range of
@@ -242,7 +244,7 @@ multiple-of-2016 block, indexed by its parent.
 ### Warning mechanism
 
 To support upgrade warnings, an extra "unknown upgrade" is tracked,
-using the "implicit bit" mask = (block.nVersion & \~expectedVersion) !=
+using the "implicit bit" mask = (block.nVersion & \~expectedVersion) \!=
 0. Mask will be non-zero whenever an unexpected bit is set in nVersion.
 Whenever LOCKED\_IN for the unknown upgrade is detected, the software
 should warn loudly about the upcoming soft fork. It should warn even
@@ -254,14 +256,14 @@ in the ACTIVE state).
 The template request Object is extended to include a new item:
 
 | template request |
-|------------------|
+| ---------------- |
 | Key              |
 | rules            |
 
 The template Object is also extended:
 
 | template    |
-|-------------|
+| ----------- |
 | Key         |
 | rules       |
 | vbavailable |
@@ -276,8 +278,8 @@ among the template's "vbavailable" and (when clearing is desired) NOT
 included as a bit in "vbrequired".
 
 Softfork deployment names listed in "rules" or as keys in "vbavailable"
-may be prefixed by a '!' character. Without this prefix, GBT clients may
-assume the rule will not impact usage of the template as-is; typical
+may be prefixed by a '\!' character. Without this prefix, GBT clients
+may assume the rule will not impact usage of the template as-is; typical
 examples of this would be when previously valid transactions cease to be
 valid, such as BIPs [16](bip-0016.mediawiki "wikilink"),
 [65](bip-0065.mediawiki "wikilink"),
@@ -290,7 +292,7 @@ other hand, when this prefix is used, it indicates a more subtle change
 to the block structure or generation transaction; examples of this would
 be BIP 34 (because it modifies coinbase construction) and 141 (since it
 modifies the txid hashing and adds a commitment to the generation
-transaction). A client that does not understand a rule prefixed by '!'
+transaction). A client that does not understand a rule prefixed by '\!'
 must not attempt to process the template, and must not attempt to use it
 for mining even unmodified.
 

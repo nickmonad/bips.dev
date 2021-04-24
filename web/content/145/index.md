@@ -14,17 +14,19 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki"
 +++
 
-      BIP: 145
-      Layer: API/RPC
-      Title: getblocktemplate Updates for Segregated Witness
-      Author: Luke Dashjr <luke+bip22@dashjr.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0145
-      Status: Final
-      Type: Standards Track
-      Created: 2016-01-30
-      License: BSD-2-Clause
-               OPL
+``` 
+  BIP: 145
+  Layer: API/RPC
+  Title: getblocktemplate Updates for Segregated Witness
+  Author: Luke Dashjr <luke+bip22@dashjr.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0145
+  Status: Final
+  Type: Standards Track
+  Created: 2016-01-30
+  License: BSD-2-Clause
+           OPL
+```
 
 ## Abstract
 
@@ -39,17 +41,17 @@ as defined by [BIP 141](bip-0141.mediawiki "wikilink").
 The template Object is revised to include a new key:
 
 | template    |
-|-------------|
+| ----------- |
 | Key         |
 | weightlimit |
 
-The '!' rule prefix MUST be enabled on the "segwit" rule for templates
+The '\!' rule prefix MUST be enabled on the "segwit" rule for templates
 including transactions with witness data. In particular, note that even
 if the client's "rules" list lacks "segwit", server MAY support old
-miners by producing a witness-free template and omitting the '!' rule
+miners by producing a witness-free template and omitting the '\!' rule
 prefix for "segwit" in the template's "rules" list. If the GBT server
 does not support producing witness-free templates after its activation,
-it must also use the '!' rule prefix in the "vbavailable" list prior to
+it must also use the '\!' rule prefix in the "vbavailable" list prior to
 activation.
 
 #### Transactions Object Format
@@ -58,7 +60,7 @@ The Objects listed in the response's "transactions" key is revised to
 include these keys:
 
 | template "transactions" element |
-|---------------------------------|
+| ------------------------------- |
 | Key                             |
 | txid                            |
 | weight                          |
@@ -107,27 +109,27 @@ must be extended to convey this information correctly as well.
 
 Why doesn't "weightlimit" simply redefine the existing "sizelimit"?
 
--   "sizelimit" is already enforced by clients by counting the sum of
+  - "sizelimit" is already enforced by clients by counting the sum of
     bytes in transactions' "data" keys.
--   Servers may wish to limit the overall size of a block, independently
+  - Servers may wish to limit the overall size of a block, independently
     from the "weight" of the block.
 
 Why is "sigoplimit" redefined instead of a new "sigopweightlimit" being
 added?
 
--   The old limit was already arbitrarily defined, and could not be
+  - The old limit was already arbitrarily defined, and could not be
     counted by clients on their own anyway. The concept of "sigop
     weight" is merely a change in the arbitrary formula used.
 
 Why is "sigoplimit" divided by 4?
 
--   To resemble the previous values. (FIXME: is this a good reason?
+  - To resemble the previous values. (FIXME: is this a good reason?
     maybe we shouldn't divide it?)
 
 Why is the witness commitment required to be added to the end of the
 generation transaction rather than anywhere else?
 
--   Servers which do not allow modification of the generation outputs
+  - Servers which do not allow modification of the generation outputs
     ought to be checking this as part of the validity of submissions. By
     requiring a specific placement, they can simply strip the commitment
     and do a byte-for-byte comparison of the outputs. Placing it at the
@@ -137,31 +139,31 @@ generation transaction rather than anywhere else?
 Why shouldn't the server simply add the commitment upfront in the
 "coinbasetxn", and simply send the client stripped transaction data?
 
--   It would become impossible for servers to specify only
+  - It would become impossible for servers to specify only
     "coinbasevalue", since clients would no longer have the information
     required to construct the commitment.
--   getblocktemplate is intended to be a \*decentralised\* mining
+  - getblocktemplate is intended to be a \*decentralised\* mining
     protocol, and allowing clients to be blinded to the content of the
     block works contrary to that purpose.
--   BIP 23's "transactions" mutations allow the client to modify the
+  - BIP 23's "transactions" mutations allow the client to modify the
     transaction-set on their own, which is impossible without the
     complete transaction data.
 
 ## Reference Implementation
 
--   [libblkmaker](https://github.com/bitcoin/libblkmaker/tree/segwit)
--   [Eloipool](https://github.com/luke-jr/eloipool/tree/segwit)
--   [Bitcoin Core](https://github.com/bitcoin/bitcoin/pull/7404/files)
+  - [libblkmaker](https://github.com/bitcoin/libblkmaker/tree/segwit)
+  - [Eloipool](https://github.com/luke-jr/eloipool/tree/segwit)
+  - [Bitcoin Core](https://github.com/bitcoin/bitcoin/pull/7404/files)
 
 ## See Also
 
--   [BIP 9: Version bits with timeout and
+  - [BIP 9: Version bits with timeout and
     delay](bip-0009.mediawiki "wikilink")
--   [BIP 22: getblocktemplate -
+  - [BIP 22: getblocktemplate -
     Fundamentals](bip-0022.mediawiki "wikilink")
--   [BIP 23: getblocktemplate - Pooled
+  - [BIP 23: getblocktemplate - Pooled
     Mining](bip-0023.mediawiki "wikilink")
--   [BIP 141: Segregated Witness (Consensus
+  - [BIP 141: Segregated Witness (Consensus
     layer)](bip-0141.mediawiki "wikilink")
 
 ## Copyright

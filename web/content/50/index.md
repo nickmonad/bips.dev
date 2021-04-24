@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki"
 +++
 
-      BIP: 50
-      Title: March 2013 Chain Fork Post-Mortem
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0050
-      Status: Final
-      Type: Informational
-      Created: 2013-03-20
-      License: PD
+``` 
+  BIP: 50
+  Title: March 2013 Chain Fork Post-Mortem
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0050
+  Status: Final
+  Type: Informational
+  Created: 2013-03-20
+  License: PD
+```
 
 ## What went wrong
 
@@ -48,16 +50,16 @@ intended to be malicious.
 
 ## What went right
 
--   The split was detected very quickly.
--   The right people were online and available in IRC or could be
+  - The split was detected very quickly.
+  - The right people were online and available in IRC or could be
     contacted directly.
--   Marek Palatinus (Slush) and Michael Marsee (Eleuthria of BTCGuild)
+  - Marek Palatinus (Slush) and Michael Marsee (Eleuthria of BTCGuild)
     quickly downgraded their nodes to restore a pre-0.8 chain as
     canonical, despite the fact that this caused them to sacrifice
     significant amounts of money.
--   Deposits to the major exchanges and payments via BitPay were also
+  - Deposits to the major exchanges and payments via BitPay were also
     suspended (and then un-suspended) very quickly.
--   Fortunately, the only attack on a merchant was done by someone who
+  - Fortunately, the only attack on a merchant was done by someone who
     was not intending to actually steal money.
 
 ## Root cause
@@ -67,12 +69,12 @@ Berkeley DB locks to process large but otherwise valid blocks. Berkeley
 DB locks have to be manually configured by API users depending on
 anticipated load. The manual says this:
 
-  
-The recommended algorithm for selecting the maximum number of locks,
-lockers, and lock objects is to run the application under stressful
-conditions and then review the lock system's statistics to determine the
-maximum number of locks, lockers, and lock objects that were used. Then,
-double these values for safety.
+  -   
+    The recommended algorithm for selecting the maximum number of locks,
+    lockers, and lock objects is to run the application under stressful
+    conditions and then review the lock system's statistics to determine
+    the maximum number of locks, lockers, and lock objects that were
+    used. Then, double these values for safety.
 
 With the insufficiently high BDB lock configuration, it implicitly had
 become a network consensus rule determining block validity (albeit an

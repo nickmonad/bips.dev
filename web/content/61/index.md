@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0061.mediawiki"
 +++
 
-      BIP: 61
-      Layer: Peer Services
-      Title: Reject P2P message
-      Author: Gavin Andresen <gavinandresen@gmail.com>
-      Comments-Summary: Controversial; some recommendation, and some discouragement
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0061
-      Status: Final
-      Type: Standards Track
-      Created: 2014-06-18
+``` 
+  BIP: 61
+  Layer: Peer Services
+  Title: Reject P2P message
+  Author: Gavin Andresen <gavinandresen@gmail.com>
+  Comments-Summary: Controversial; some recommendation, and some discouragement
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0061
+  Status: Final
+  Type: Standards Track
+  Created: 2014-06-18
+```
 
 ## Abstract
 
@@ -66,7 +68,7 @@ Every reject message begins with the following fields. Some messages
 append extra, message-specific data.
 
 |            |                 |             |                                      |
-|------------|-----------------|-------------|--------------------------------------|
+| ---------- | --------------- | ----------- | ------------------------------------ |
 | Field Size | Name            | Data type   | Comments                             |
 | variable   | response-to-msg | var\_str    | Message that triggered the reject    |
 | 1          | reject-code     | uint8\_t    | 0x01 through 0x4f (see below)        |
@@ -82,7 +84,7 @@ below, "server" is the peer generating the reject message, "client" is
 the peer that will receive the message.
 
 |           |                          |
-|-----------|--------------------------|
+| --------- | ------------------------ |
 | Range     | Category                 |
 | 0x01-0x0f | Protocol syntax errors   |
 | 0x10-0x1f | Protocol semantic errors |
@@ -91,7 +93,7 @@ the peer that will receive the message.
 #### rejection codes common to all message types
 
 |      |                              |
-|------|------------------------------|
+| ---- | ---------------------------- |
 | Code | Description                  |
 | 0x01 | Message could not be decoded |
 
@@ -101,7 +103,7 @@ Codes generated during the initial connection process in response to a
 "version" message:
 
 |      |                                            |
-|------|--------------------------------------------|
+| ---- | ------------------------------------------ |
 | Code | Description                                |
 | 0x11 | Client is an obsolete, unsupported version |
 | 0x12 | Duplicate version message received         |
@@ -112,14 +114,14 @@ Transaction rejection messages extend the basic message with the
 transaction id hash:
 
 |            |      |            |                              |
-|------------|------|------------|------------------------------|
+| ---------- | ---- | ---------- | ---------------------------- |
 | Field Size | Name | Data type  | Comments                     |
 | 32         | hash | char\[32\] | transaction that is rejected |
 
 The following codes are used:
 
 |      |                                                                                                   |
-|------|---------------------------------------------------------------------------------------------------|
+| ---- | ------------------------------------------------------------------------------------------------- |
 | Code | Description                                                                                       |
 | 0x10 | Transaction is invalid for some reason (invalid signature, output value greater than input, etc.) |
 | 0x12 | An input is already spent                                                                         |
@@ -133,14 +135,14 @@ Block rejection messages extend the basic message with the block header
 hash:
 
 |            |      |            |                                               |
-|------------|------|------------|-----------------------------------------------|
+| ---------- | ---- | ---------- | --------------------------------------------- |
 | Field Size | Name | Data type  | Comments                                      |
 | 32         | hash | char\[32\] | block (hash of block header) that is rejected |
 
 Rejection codes:
 
 |      |                                                                                  |
-|------|----------------------------------------------------------------------------------|
+| ---- | -------------------------------------------------------------------------------- |
 | code | description                                                                      |
 | 0x10 | Block is invalid for some reason (invalid proof-of-work, invalid signature, etc) |
 | 0x11 | Block's version is no longer supported                                           |

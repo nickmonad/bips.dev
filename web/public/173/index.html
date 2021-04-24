@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 173
+<code><span style="color:#61676c;">  BIP: 173
   Layer: Applications
   Title: Base32 address format for native v0-16 witness outputs
   Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
@@ -59,7 +59,7 @@
   Created: 2017-03-20
   License: BSD-2-Clause
   Replaces: 142
-</code></pre><h2 id="introduction">Introduction</h2>
+</span></code></pre><h2 id="introduction">Introduction</h2>
 <h3 id="abstract">Abstract</h3>
 <p>This document proposes a checksummed base32 format, &quot;Bech32&quot;, and a
 standard for native segregated witness output addresses using it.</p>
@@ -167,7 +167,7 @@ must return true when its arguments are:</p>
 <li><code>data</code>: the data part as a list of integers representing the
 characters after conversion using the table above</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <pre style="background-color:#fafafa;">
 <code>def bech32_polymod(values):
   GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3]
@@ -229,8 +229,8 @@ mode</a></em>.</p>
 <h3 id="segwit-address-format">Segwit address format</h3>
 <p>A segwit address[4] is a Bech32 encoding of:</p>
 <ul>
-<li>The human-readable part &quot;bc&quot;[5] for mainnet, and &quot;tb&quot;<ref><strong>Why use
-'tb' as human-readable part for testnet?</strong> It was chosen to</li>
+<li>The human-readable part &quot;bc&quot;[5] for mainnet, and &quot;tb&quot;<ref><strong>Why
+use 'tb' as human-readable part for testnet?</strong> It was chosen to</li>
 </ul>
 <p>be of the same length as the mainnet counterpart (to simplify
 implementations' assumptions about lengths), but still be visually
@@ -308,7 +308,7 @@ Haskell</a></li>
 </ul>
 </li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li>Fancy decoder that localizes errors:
 <ul>
@@ -337,7 +337,7 @@ BIP-0173</a></p>
 set unmappable characters to a valid US-ASCII character, such as
 '?'. For example:</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <pre style="background-color:#fafafa;">
 <code>&gt;&gt;&gt; bech32_encode('\x80'.encode('ascii', 'replace').decode('ascii'), [])
 '?1ezyfcl'
@@ -460,29 +460,32 @@ proposal</a> by Rusty Russell, the
 <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2014-February/004402.html">base32</a>
 proposal by Mark Friedenbach, and had input from Luke Dashjr, Johnson
 Lau, Eric Lombrozo, Peter Todd, and various other reviewers.</p>
-<p>[1] <strong>Why use base32 at all?</strong> The lack of mixed case makes it more
-efficient to read out loud or to put into QR codes. It does come with a
-15% length increase, but that does not matter when copy-pasting
-addresses.</p>
-<p>[2] <strong>Why call it Bech32?</strong> &quot;Bech&quot; contains the characters BCH (the
-error detection algorithm used) and sounds a bit like &quot;base&quot;.</p>
-<p>[3] <strong>Why are the high bits of the human-readable part processed
+<ol>
+<li><strong>Why use base32 at all?</strong> The lack of mixed case makes it more
+efficient to read out loud or to put into QR codes. It does come
+with a 15% length increase, but that does not matter when
+copy-pasting addresses.</li>
+<li><strong>Why call it Bech32?</strong> &quot;Bech&quot; contains the characters BCH (the
+error detection algorithm used) and sounds a bit like &quot;base&quot;.</li>
+<li><strong>Why are the high bits of the human-readable part processed
 first?</strong> This results in the actually checksummed data being <em>[high
-hrp] 0 [low hrp] [data]</em>. This means that under the assumption that
-errors to the human readable part only change the low 5 bits (like
-changing an alphabetical character into another), errors are restricted
-to the <em>[low hrp] [data]</em> part, which is at most 89 characters, and
-thus all error detection properties (see appendix) remain applicable.</p>
-<p>[4] <strong>Why not make an address format that is generic for all
+hrp] 0 [low hrp] [data]</em>. This means that under the assumption
+that errors to the human readable part only change the low 5 bits
+(like changing an alphabetical character into another), errors are
+restricted to the <em>[low hrp] [data]</em> part, which is at most 89
+characters, and thus all error detection properties (see appendix)
+remain applicable.</li>
+<li><strong>Why not make an address format that is generic for all
 scriptPubKeys?</strong> That would lead to confusion about addresses for
-existing scriptPubKey types. Furthermore, if addresses that do not have
-a one-to-one mapping with scriptPubKeys (such as ECDH-based addresses)
-are ever introduced, having a fully generic old address type available
-would permit reinterpreting the resulting scriptPubKeys using the old
-address format, with lost funds as a result if bitcoins are sent to
-them.</p>
-<p>[5] <strong>Why use 'bc' as human-readable part and not 'btc'?</strong> 'bc' is
-shorter.</p>
+existing scriptPubKey types. Furthermore, if addresses that do not
+have a one-to-one mapping with scriptPubKeys (such as ECDH-based
+addresses) are ever introduced, having a fully generic old address
+type available would permit reinterpreting the resulting
+scriptPubKeys using the old address format, with lost funds as a
+result if bitcoins are sent to them.</li>
+<li><strong>Why use 'bc' as human-readable part and not 'btc'?</strong> 'bc' is
+shorter.</li>
+</ol>
 
     </div>
 

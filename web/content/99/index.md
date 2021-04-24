@@ -14,16 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0099.mediawiki"
 +++
 
-      BIP: 99
-      Title: Motivation and deployment of consensus rule changes ([soft/hard]forks)
-      Author: Jorge Timón <jtimon@jtimon.cc>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0099
-      Status: Rejected
-      Type: Informational
-      Created: 2015-06-20
-      License: PD
-      Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008936.html
+``` 
+  BIP: 99
+  Title: Motivation and deployment of consensus rule changes ([soft/hard]forks)
+  Author: Jorge Timón <jtimon@jtimon.cc>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0099
+  Status: Rejected
+  Type: Informational
+  Created: 2015-06-20
+  License: PD
+  Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008936.html
+```
 
 ## Abstract
 
@@ -41,53 +43,55 @@ delays the deployment of changes.
 
 ## Definitions
 
-Software fork  
-A copy of an existing project. In free software, this can be done
-without the permission of the original project's maintainers.
+  - Software fork  
+    A copy of an existing project. In free software, this can be done
+    without the permission of the original project's maintainers.
 
-<!-- -->
+<!-- end list -->
 
-Consensus fork  
-A divergence in the implementation of the verification consensus rules
-can impede the expected eventual convergence of the network in a single
-chain that has the most proof of work and also satisfies the rules. This
-can be intentional or be caused by a bug in consensus validation
-reimplementations.
+  - Consensus fork  
+    A divergence in the implementation of the verification consensus
+    rules can impede the expected eventual convergence of the network in
+    a single chain that has the most proof of work and also satisfies
+    the rules. This can be intentional or be caused by a bug in
+    consensus validation reimplementations.
 
-<!-- -->
+<!-- end list -->
 
-Softfork  
-A consensus fork wherein everything that was previously invalid remains
-invalid while blocks that would have previously considered valid become
-invalid. A hashrate majority of miners can impose the new rules. They
-have some deployment advantages like backward compatibility.
+  - Softfork  
+    A consensus fork wherein everything that was previously invalid
+    remains invalid while blocks that would have previously considered
+    valid become invalid. A hashrate majority of miners can impose the
+    new rules. They have some deployment advantages like backward
+    compatibility.
 
-<!-- -->
+<!-- end list -->
 
-Hardfork  
-A consensus fork that makes previously invalid blocks valid. Hardforks
-require all users to upgrade.
+  - Hardfork  
+    A consensus fork that makes previously invalid blocks valid.
+    Hardforks require all users to upgrade.
 
-<!-- -->
+<!-- end list -->
 
-Libconsensus  
-a theoretical piece of software that contains the specifications that
-define the validity of a block for a given state and chain parameters
-(ie it may act differently on, for example, regtest).
+  - Libconsensus  
+    a theoretical piece of software that contains the specifications
+    that define the validity of a block for a given state and chain
+    parameters (ie it may act differently on, for example, regtest).
 
-<!-- -->
+<!-- end list -->
 
-Libbitcoinconsensus  
-the existing implementation is a library that is compiled by default
-with Bitcoin Core master and exposes a single C function named
-bitcoinconsensus\_verify\_script(). Although it has a deterministic
-build and implements the most complex rules (most of the cryptography,
-which is itself heavily based on libsecp256k1 after
-\#REPLACE\_libsecp256k1\_PR), it is still not a complete specification
-of the consensus rules. Since libconsensus doesn't manage the current
-state but only the validation of the next block given that state, it is
-known that this long effort of encapsulation and decoupling will
-eventually finish, and that the person who moves the last line
+  - Libbitcoinconsensus  
+    the existing implementation is a library that is compiled by default
+    with Bitcoin Core master and exposes a single C function named
+    bitcoinconsensus\_verify\_script(). Although it has a deterministic
+    build and implements the most complex rules (most of the
+    cryptography, which is itself heavily based on libsecp256k1 after
+    \#REPLACE\_libsecp256k1\_PR), it is still not a complete
+    specification of the consensus rules. Since libconsensus doesn't
+    manage the current state but only the validation of the next block
+    given that state, it is known that this long effort of encapsulation
+    and decoupling will eventually finish, and that the person who moves
+    the last line
 
 ## Taxonomy of consensus forks
 

@@ -14,17 +14,19 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0113.mediawiki"
 +++
 
-      BIP: 113
-      Layer: Consensus (soft fork)
-      Title: Median time-past as endpoint for lock-time calculations
-      Author: Thomas Kerin <me@thomaskerin.io>
-              Mark Friedenbach <mark@friedenbach.org>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0113
-      Status: Final
-      Type: Standards Track
-      Created: 2015-08-10
-      License: PD
+``` 
+  BIP: 113
+  Layer: Consensus (soft fork)
+  Title: Median time-past as endpoint for lock-time calculations
+  Author: Thomas Kerin <me@thomaskerin.io>
+          Mark Friedenbach <mark@friedenbach.org>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0113
+  Status: Final
+  Type: Standards Track
+  Created: 2015-08-10
+  License: PD
+```
 
 ## Abstract
 

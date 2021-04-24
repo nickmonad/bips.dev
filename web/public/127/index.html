@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 127
+<code><span style="color:#61676c;">  BIP: 127
   Layer: Applications
   Title: Simple Proof-of-Reserves Transactions
   Author: Steven Roose &lt;steven@stevenroose.org&gt;
@@ -57,7 +57,7 @@
   Type: Standards Track
   Created: 2019-01-28
   License: CC0-1.0
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP describes a simple way to construct proof-of-reserves
 transactions. This proposal formalizes a standard format for
 constructing such proofs, easing their construction with existing wallet
@@ -146,33 +146,33 @@ ensures that this transaction is invalid and can never be confirmed.</p>
 minimum viable standard. However, there are a number of motivations to
 extend the standard with an extra layer of metadata:</p>
 <ol>
-<li>
-<p>constructing and combining multiple proofs</p>
-<p>Having thousands of UTXOs spread across different offline and online
-wallets could make it difficult to construct a single proof
-transaction with all UTXOs. Allowing multiple proof transactions
-with the same commitment message and block number gives extra
-flexibility to custodians with complex wallet infrastructure without
-making the combined proof less secure.</p>
-</li>
-<li>
-<p>metadata for verification</p>
-<p>Not all systems that will be used for verification have access to a
-full index of all transactions. However, proofs should be easily
-verifiable even after some of the UTXOs used in the proof are no
-longer unspent. Metadata present in the proof allows for relatively
-efficient verification of proofs even if no transaction index is
-available.</p>
-</li>
-<li>
-<p>potential future improvements</p>
-<p>The extensible metadata format allows for amending the standard in
-the future. One potential improvement would be having UTXO set
-commitments. These would allow the proofs-of-reserves to come with
-accompanying proofs-of-inclusion of all used UTXOs in the UTXO set
-at the block of proof construction (making validation even more
-efficient).</p>
-</li>
+<li><h2 id="constructing-and-combining-multiple-proofs">constructing and combining multiple proofs</h2>
+<pre style="background-color:#fafafa;">
+<code>Having thousands of UTXOs spread across different offline and
+online wallets could make it difficult to construct a single
+proof transaction with all UTXOs. Allowing multiple proof
+transactions with the same commitment message and block number
+gives extra flexibility to custodians with complex wallet
+infrastructure without making the combined proof less secure.
+</code></pre></li>
+<li><h2 id="metadata-for-verification">metadata for verification</h2>
+<pre style="background-color:#fafafa;">
+<code>Not all systems that will be used for verification have access
+to a full index of all transactions. However, proofs should be
+easily verifiable even after some of the UTXOs used in the proof
+are no longer unspent. Metadata present in the proof allows for
+relatively efficient verification of proofs even if no
+transaction index is available.
+</code></pre></li>
+<li><h2 id="potential-future-improvements">potential future improvements</h2>
+<pre style="background-color:#fafafa;">
+<code>The extensible metadata format allows for amending the standard
+in the future. One potential improvement would be having UTXO
+set commitments. These would allow the proofs-of-reserves to
+come with accompanying proofs-of-inclusion of all used UTXOs in
+the UTXO set at the block of proof construction (making
+validation even more efficient).
+</code></pre></li>
 </ol>
 <p>The proposed proof-file format provides a standard way of combining
 multiple proofs and associated metadata. The specification of the format
@@ -298,13 +298,15 @@ proofs in the described format can be found here:
 <a href="https://github.com/stevenroose/reserves">https://github.com/stevenroose/reserves</a></p>
 <h2 id="footnotes">Footnotes</h2>
 <references />
-<p>[1] Dagher, Gaby G., Benedikt Bünz, Joseph Bonneau, Jeremy Clark, and
+<ol>
+<li>Dagher, Gaby G., Benedikt Bünz, Joseph Bonneau, Jeremy Clark, and
 Dan Boneh. &quot;Provisions: Privacy-preserving proofs of solvency for
-Bitcoin exchanges.&quot; (2015).</p>
-<p>[2] If the message is &quot;Some Message&quot;, the txid part should be
-<code>SHA-256(&quot;Proof-of-Reserves: Some Message&quot;)</code> with the string encoded as
-UTF-8.</p>
-<p>[3] <a href="https://github.com/protocolbuffers/protobuf/">https://github.com/protocolbuffers/protobuf/</a></p>
+Bitcoin exchanges.&quot; (2015).</li>
+<li>If the message is &quot;Some Message&quot;, the txid part should be
+<code>SHA-256(&quot;Proof-of-Reserves: Some Message&quot;)</code> with the string encoded
+as UTF-8.</li>
+<li><a href="https://github.com/protocolbuffers/protobuf/">https://github.com/protocolbuffers/protobuf/</a></li>
+</ol>
 
     </div>
 

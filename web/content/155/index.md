@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki"
 +++
 
-      BIP: 155
-      Layer: Peer Services
-      Title: addrv2 message
-      Author: Wladimir J. van der Laan <laanwj@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0155
-      Status: Draft
-      Type: Standards Track
-      Created: 2019-02-27
-      License: BSD-2-Clause
+``` 
+  BIP: 155
+  Layer: Peer Services
+  Title: addrv2 message
+  Author: Wladimir J. van der Laan <laanwj@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0155
+  Status: Draft
+  Type: Standards Track
+  Created: 2019-02-27
+  License: BSD-2-Clause
+```
 
 ## Introduction
 
@@ -42,9 +44,10 @@ This BIP is licensed under the 2-clause BSD license.
 
 Tor v3 hidden services are part of the stable release of Tor since
 version 0.3.2.9. They have various advantages compared to the old hidden
-services, among which better encryption and privacy [1]. These services
-have 256 bit addresses and thus do not fit in the existing `addr`
-message, which encapsulates onion addresses in OnionCat IPv6 addresses.
+services, among which better encryption and privacy \[1\]. These
+services have 256 bit addresses and thus do not fit in the existing
+`addr` message, which encapsulates onion addresses in OnionCat IPv6
+addresses.
 
 Other transport-layer protocols such as I2P have always used longer
 addresses. This change would make it possible to gossip such addresses
@@ -54,21 +57,21 @@ over the P2P network, so that other peers can connect to them.
 
 > The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 > "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-> document are to be interpreted as described in RFC 2119[2].
+> document are to be interpreted as described in RFC 2119\[2\].
 
-The `addrv2` message is defined as a message where
-`pchCommand == "addrv2"`. It is serialized in the standard encoding for
-P2P messages. Its format is similar to the current `addr` message
-format, with the difference that the fixed 16-byte IP address is
-replaced by a network ID and a variable-length address, and the services
-format has been changed to
+The `addrv2` message is defined as a message where `pchCommand ==
+"addrv2"`. It is serialized in the standard encoding for P2P messages.
+Its format is similar to the current `addr` message format, with the
+difference that the fixed 16-byte IP address is replaced by a network ID
+and a variable-length address, and the services format has been changed
+to
 [CompactSize](https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer).
 
 This means that the message contains a serialized `std::vector` of the
 following structure:
 
 | Type                   | Name        | Description                                                                                                                                          |
-|------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `uint32_t`             | `time`      | Time that this node was last seen as connected to the network. A time in Unix epoch time format.                                                     |
 | `CompactSize`          | `services`  | Service bits. A bit field that is 64 bits wide, encoded in [CompactSize](https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer). |
 | `uint8_t`              | `networkID` | Network identifier. An 8-bit value that specifies which network is addressed.                                                                        |
@@ -85,7 +88,7 @@ irrespective of the network ID.
 The list of reserved network IDs is as follows:
 
 | Network ID | Enumeration | Address length (bytes) | Description                             |
-|------------|-------------|------------------------|-----------------------------------------|
+| ---------- | ----------- | ---------------------- | --------------------------------------- |
 | `0x01`     | `IPV4`      | 4                      | IPv4 address (globally routed internet) |
 | `0x02`     | `IPV6`      | 16                     | IPv6 address (globally routed internet) |
 | `0x03`     | `TORV2`     | 10                     | Tor v2 hidden service address           |
@@ -151,12 +154,12 @@ receive if they come with the `IPV6` network ID.
 
 ## Appendix B: Tor v3 address encoding
 
-According to the spec [3], next-gen `.onion` addresses are encoded as
+According to the spec \[3\], next-gen `.onion` addresses are encoded as
 follows:
 
     onion_address = base32(PUBKEY | CHECKSUM | VERSION) + ".onion"
      CHECKSUM = H(".onion checksum" | PUBKEY | VERSION)[:2]
-
+    
      where:
        - PUBKEY is the 32 bytes ed25519 master pubkey of the hidden service
        - VERSION is a one byte version field (default value '\x03')
@@ -171,7 +174,7 @@ onion address.
 
 ## Appendix C: I2P address encoding
 
-Like Tor, I2P naming uses a base32-encoded address format[4].
+Like Tor, I2P naming uses a base32-encoded address format\[4\].
 
 I2P uses 52 characters (256 bits) to represent the full SHA-256 hash,
 followed by `.b32.i2p`.
@@ -181,23 +184,19 @@ SHA-256 hash as address field.
 
 ## Appendix D: Cjdns address encoding
 
-Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range[5].
+Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range\[5\].
 They MUST be sent with the `CJDNS` network ID.
 
 ## References
 
 <references/>
 
-[1] [Tor Rendezvous Specification - Version
-3](https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt)
-
-[2] [RFC 2119](https://tools.ietf.org/html/rfc2119)
-
-[3] [Tor Rendezvous Specification - Version 3: Encoding onion
-addresses](https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt)
-
-[4] [I2P: Naming and address
-book](https://geti2p.net/en/docs/naming#base32)
-
-[5] [Cjdns whitepaper: Pulling It All
-Together](https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together)
+1.  [Tor Rendezvous Specification -
+    Version 3](https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt)
+2.  [RFC 2119](https://tools.ietf.org/html/rfc2119)
+3.  [Tor Rendezvous Specification - Version 3: Encoding onion
+    addresses](https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt)
+4.  [I2P: Naming and address
+    book](https://geti2p.net/en/docs/naming#base32)
+5.  [Cjdns whitepaper: Pulling It All
+    Together](https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together)

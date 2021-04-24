@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 158
+<code><span style="color:#61676c;">  BIP: 158
   Layer: Peer Services
   Title: Compact Block Filters for Light Clients
   Author: Olaoluwa Osuntokun &lt;laolu32@gmail.com&gt;
@@ -58,7 +58,7 @@
   Type: Standards Track
   Created: 2017-05-24
   License: CC0-1.0
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP describes a structure for compact filters on block data, for
 use in the BIP 157 light client protocol[1]. The filter construction
 proposed is an alternative to Bloom filters, as used in BIP 37, that
@@ -158,8 +158,8 @@ hashed_set_construct(raw_items: [][]byte, k: [16]byte, M: uint) -&gt; []uint64:
 greater compression is achieved by only writing the differences between
 successive items in sorted order. Since the items are distributed
 uniformly, it can be shown that the differences resemble a geometric
-distribution[4]. <em>Golomb-Rice</em> <em>coding</em>[5] is a technique that optimally
-compresses geometrically distributed values.</p>
+distribution[4]. <em>Golomb-Rice</em> <em>coding</em>[5] is a technique that
+optimally compresses geometrically distributed values.</p>
 <p>With Golomb-Rice, a value is split into a quotient and remainder modulo
 <code>2^P</code>, which are encoded separately. The quotient <code>q</code> is encoded as
 <em>unary</em>, with a string of <code>q</code> 1's followed by one 0. The remainder <code>r</code>
@@ -297,8 +297,8 @@ elements.</p>
 filters to easily be committed to in the future via a soft-fork. A
 likely area for future commitments is an additional <code>OP_RETURN</code> output
 in the coinbase transaction similar to the current witness commitment
-[6]. By excluding all <code>OP_RETURN</code> outputs we avoid a circular dependency
-between the commitment, and the item being committed to.</p>
+[6]. By excluding all <code>OP_RETURN</code> outputs we avoid a circular
+dependency between the commitment, and the item being committed to.</p>
 <h4 id="construction">Construction</h4>
 <p>The basic type is constructed as Golomb-coded sets with the following
 parameters.</p>
@@ -421,15 +421,17 @@ can be found <a href="bip-0158/gentestvectors.go" title="wikilink">here</a>.</p>
 <h2 id="copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
-<p>[1] bip-0157.mediawiki</p>
-<p>[2] <a href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></p>
-<p>[3] <a href="https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/">https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/</a></p>
-<p>[4] <a href="https://en.wikipedia.org/wiki/Geometric_distribution">https://en.wikipedia.org/wiki/Geometric_distribution</a></p>
-<p>[5] <a href="https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding">https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding</a></p>
-<p>[6] <a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki</a></p>
-<p>[7] <a href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></p>
-<p>[8] <a href="https://en.wikipedia.org/wiki/Accumulator_(cryptography)">https://en.wikipedia.org/wiki/Accumulator_(cryptography)</a></p>
-<p>[9] <a href="https://arxiv.org/pdf/0804.1845.pdf">https://arxiv.org/pdf/0804.1845.pdf</a></p>
+<ol>
+<li>bip-0157.mediawiki</li>
+<li><a href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></li>
+<li><a href="https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/">https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Geometric_distribution">https://en.wikipedia.org/wiki/Geometric_distribution</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding">https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding</a></li>
+<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki</a></li>
+<li><a href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Accumulator_(cryptography)">https://en.wikipedia.org/wiki/Accumulator_(cryptography)</a></li>
+<li><a href="https://arxiv.org/pdf/0804.1845.pdf">https://arxiv.org/pdf/0804.1845.pdf</a></li>
+</ol>
 
     </div>
 

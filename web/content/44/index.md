@@ -14,16 +14,18 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki"
 +++
 
-      BIP: 44
-      Layer: Applications
-      Title: Multi-Account Hierarchy for Deterministic Wallets
-      Author: Marek Palatinus <slush@satoshilabs.com>
-              Pavol Rusnak <stick@satoshilabs.com>
-      Comments-Summary: Mixed review (one person)
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0044
-      Status: Proposed
-      Type: Standards Track
-      Created: 2014-04-24
+``` 
+  BIP: 44
+  Layer: Applications
+  Title: Multi-Account Hierarchy for Deterministic Wallets
+  Author: Marek Palatinus <slush@satoshilabs.com>
+          Pavol Rusnak <stick@satoshilabs.com>
+  Comments-Summary: Mixed review (one person)
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0044
+  Status: Proposed
+  Type: Standards Track
+  Created: 2014-04-24
+```
 
 ## Abstract
 
@@ -154,7 +156,7 @@ BIP44 described in chapter "Coin type" above.
 All these constants are used as hardened derivation.
 
 | index | hexa       | coin            |
-|-------|------------|-----------------|
+| ----- | ---------- | --------------- |
 | 0     | 0x80000000 | Bitcoin         |
 | 1     | 0x80000001 | Bitcoin Testnet |
 
@@ -171,7 +173,7 @@ created.
 ## Examples
 
 | coin            | account | chain    | address | path                      |
-|-----------------|---------|----------|---------|---------------------------|
+| --------------- | ------- | -------- | ------- | ------------------------- |
 | Bitcoin         | first   | external | first   | m / 44' / 0' / 0' / 0 / 0 |
 | Bitcoin         | first   | external | second  | m / 44' / 0' / 0' / 0 / 1 |
 | Bitcoin         | first   | change   | first   | m / 44' / 0' / 0' / 1 / 0 |
@@ -191,7 +193,7 @@ created.
 
 ## Reference
 
--   [BIP32 - Hierarchical Deterministic
+  - [BIP32 - Hierarchical Deterministic
     Wallets](bip-0032.mediawiki "wikilink")
--   [BIP43 - Purpose Field for Deterministic
+  - [BIP43 - Purpose Field for Deterministic
     Wallets](bip-0043.mediawiki "wikilink")

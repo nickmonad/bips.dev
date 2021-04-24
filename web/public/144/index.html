@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 144
+<code><span style="color:#61676c;">  BIP: 144
   Layer: Peer Services
   Title: Segregated Witness (Peer Services)
   Author: Eric Lombrozo &lt;elombrozo@gmail.com&gt;
@@ -58,7 +58,7 @@
   Type: Standards Track
   Created: 2016-01-08
   License: PD
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP defines new messages and serialization formats for propagation
 of transactions and blocks committing to segregated witness structures.</p>
 <h2 id="motivation">Motivation</h2>
@@ -109,13 +109,13 @@ messages, and all RPC calls operating on raw transactions would need
 to be duplicated, or need inefficient or nondeterministic guesswork
 to know which type is to be used.</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><strong>Rationale for not using just a single 0x00 byte as marker</strong>: that
 would lead to empty transactions (no inputs, no outputs, which are
 used in some tests) to be interpreted as new serialized data.</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><strong>Rationale for the 0x01 flag byte in between</strong>: this will allow us
 to easily add more extra non-committed data to transactions (like
@@ -135,11 +135,11 @@ with an empty witness always use the old serialization, and therefore,
 they have witness hash equal to normal hash.)</p>
 <p><img src=bip-0144/witnesstx.png></img></p>
 <h3 id="relay">Relay</h3>
-<p>New inv types MSG_WITNESS_TX (0x40000001, or (1&lt;&lt;30)+MSG_TX)
-and MSG_WITNESS_BLOCK (0x40000002, or (1&lt;&lt;30)+MSG_BLOCK) are
-added, only for use in getdata. Inventory messages themselves still use
-just MSG_TX and MSG_BLOCK, similar to MSG_FILTERED_BLOCK. A further
-inv type MSG_FILTERED_WITNESS_BLOCK (0x40000003, or
+<p>New inv types MSG_WITNESS_TX (0x40000001, or (1&lt;&lt;30)+MSG_TX) and
+MSG_WITNESS_BLOCK (0x40000002, or (1&lt;&lt;30)+MSG_BLOCK) are added,
+only for use in getdata. Inventory messages themselves still use just
+MSG_TX and MSG_BLOCK, similar to MSG_FILTERED_BLOCK. A further inv
+type MSG_FILTERED_WITNESS_BLOCK (0x40000003, or
 (1&lt;&lt;30)+MSG_FILTERED_BLOCK) is reserved for future use.</p>
 <ul>
 <li><strong>Rationale for not advertizing witnessness in invs</strong>: we don't

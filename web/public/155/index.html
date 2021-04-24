@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 155
+<code><span style="color:#61676c;">  BIP: 155
   Layer: Peer Services
   Title: addrv2 message
   Author: Wladimir J. van der Laan &lt;laanwj@gmail.com&gt;
@@ -57,7 +57,7 @@
   Type: Standards Track
   Created: 2019-02-27
   License: BSD-2-Clause
-</code></pre><h2 id="introduction">Introduction</h2>
+</span></code></pre><h2 id="introduction">Introduction</h2>
 <h3 id="abstract">Abstract</h3>
 <p>This document proposes a new P2P message to gossip longer node addresses
 over the P2P network. This is required to support new-generation Onion
@@ -68,9 +68,10 @@ addresses than fit in the 128 bits of the current <code>addr</code> message.</p>
 <h3 id="motivation">Motivation</h3>
 <p>Tor v3 hidden services are part of the stable release of Tor since
 version 0.3.2.9. They have various advantages compared to the old hidden
-services, among which better encryption and privacy [1]. These services
-have 256 bit addresses and thus do not fit in the existing <code>addr</code>
-message, which encapsulates onion addresses in OnionCat IPv6 addresses.</p>
+services, among which better encryption and privacy [1]. These
+services have 256 bit addresses and thus do not fit in the existing
+<code>addr</code> message, which encapsulates onion addresses in OnionCat IPv6
+addresses.</p>
 <p>Other transport-layer protocols such as I2P have always used longer
 addresses. This change would make it possible to gossip such addresses
 over the P2P network, so that other peers can connect to them.</p>
@@ -80,12 +81,11 @@ over the P2P network, so that other peers can connect to them.</p>
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
 document are to be interpreted as described in RFC 2119[2].</p>
 </blockquote>
-<p>The <code>addrv2</code> message is defined as a message where
-<code>pchCommand == &quot;addrv2&quot;</code>. It is serialized in the standard encoding for
-P2P messages. Its format is similar to the current <code>addr</code> message
-format, with the difference that the fixed 16-byte IP address is
-replaced by a network ID and a variable-length address, and the services
-format has been changed to
+<p>The <code>addrv2</code> message is defined as a message where <code>pchCommand == &quot;addrv2&quot;</code>. It is serialized in the standard encoding for P2P messages.
+Its format is similar to the current <code>addr</code> message format, with the
+difference that the fixed 16-byte IP address is replaced by a network ID
+and a variable-length address, and the services format has been changed
+to
 <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">CompactSize</a>.</p>
 <p>This means that the message contains a serialized <code>std::vector</code> of the
 following structure:</p>
@@ -177,15 +177,17 @@ SHA-256 hash as address field.</p>
 They MUST be sent with the <code>CJDNS</code> network ID.</p>
 <h2 id="references">References</h2>
 <references/>
-<p>[1] <a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification - Version
-3</a></p>
-<p>[2] <a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a></p>
-<p>[3] <a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification - Version 3: Encoding onion
-addresses</a></p>
-<p>[4] <a href="https://geti2p.net/en/docs/naming#base32">I2P: Naming and address
-book</a></p>
-<p>[5] <a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together">Cjdns whitepaper: Pulling It All
-Together</a></p>
+<ol>
+<li><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification -
+Version 3</a></li>
+<li><a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a></li>
+<li><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification - Version 3: Encoding onion
+addresses</a></li>
+<li><a href="https://geti2p.net/en/docs/naming#base32">I2P: Naming and address
+book</a></li>
+<li><a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together">Cjdns whitepaper: Pulling It All
+Together</a></li>
+</ol>
 
     </div>
 

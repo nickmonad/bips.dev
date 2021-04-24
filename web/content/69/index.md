@@ -14,17 +14,19 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0069.mediawiki"
 +++
 
-      BIP: 69
-      Layer: Applications
-      Title: Lexicographical Indexing of Transaction Inputs and Outputs
-      Author: Kristov Atlas <kristov@openbitcoinprivacyproject.org>
-      Editor: Daniel Cousens <bips@dcousens.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0069
-      Status: Proposed
-      Type: Informational
-      Created: 2015-06-12
-      License: PD
+``` 
+  BIP: 69
+  Layer: Applications
+  Title: Lexicographical Indexing of Transaction Inputs and Outputs
+  Author: Kristov Atlas <kristov@openbitcoinprivacyproject.org>
+  Editor: Daniel Cousens <bips@dcousens.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0069
+  Status: Proposed
+  Type: Informational
+  Created: 2015-06-12
+  License: PD
+```
 
 ## Abstract
 
@@ -122,10 +124,10 @@ dictionary order.
 
 Common implementations include:
 
--   \`std::lexicographical\_compare\` in C++ \[5\]
--   \`cmp\` in Python 2.7
--   \`memcmp\` in C \[6\]
--   \`Buffer.compare\` in Node.js \[7\]
+  - \`std::lexicographical\_compare\` in C++ \[5\]
+  - \`cmp\` in Python 2.7
+  - \`memcmp\` in C \[6\]
+  - \`Buffer.compare\` in Node.js \[7\]
 
 For more information, see the wikipedia entry on Lexicographical order.
 \[8\]
@@ -219,48 +221,48 @@ Outputs:
 
 ## Discussion
 
--   [\[Bitcoin-development\] Lexicographical Indexing of Transaction
+  - [\[Bitcoin-development\] Lexicographical Indexing of Transaction
     Inputs and
     Outputs](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008484.html "wikilink")
--   [\[Bitcoin-development\] \[RFC\] Canonical input and output ordering
+  - [\[Bitcoin-development\] \[RFC\] Canonical input and output ordering
     in
     transactions](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008487.html "wikilink")
 
 ## References
 
--   [1: Bitstamp Info
+  - [1: Bitstamp Info
     Leak](https://bitcoinmagazine.com/20273/bitstamp-exchange-activity-trackable-due-multisig-wallet-implementation/ "wikilink")
--   [2: OBPP Random Indexing as
+  - [2: OBPP Random Indexing as
     Countermeasure](https://github.com/OpenBitcoinPrivacyProject/wallet-ratings/blob/master/2015-1/criteria.md "wikilink")
--   [3: Mastering
+  - [3: Mastering
     Bitcoin](https://github.com/aantonop/bitcoinbook/blob/develop/ch05.asciidoc "wikilink")
--   [4: Bitcoin Wiki on
+  - [4: Bitcoin Wiki on
     Script](https://en.bitcoin.it/wiki/Script "wikilink")
--   [5:
+  - [5:
     std::lexicographical\_compare](http://www.cplusplus.com/reference/algorithm/lexicographical_compare "wikilink")
--   [6:
+  - [6:
     memcmp](http://www.cplusplus.com/reference/cstring/memcmp "wikilink")
--   [7:
+  - [7:
     Buffer.compare](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_compare_buf1_buf2 "wikilink")
--   [8: Lexicographical
+  - [8: Lexicographical
     order](https://en.wikipedia.org/wiki/Lexicographical_order "wikilink")
 
 ## Implementations
 
--   [Electrum](https://github.com/spesmilo/electrum/blob/2af670ea2b92e835919b745d94afcb8b4ec32fda/lib/transaction.py#L648 "wikilink")
--   [BitcoinJS](https://github.com/bitcoinjs/bip69/blob/master/index.js "wikilink")
--   [BitcoinJS Test
+  - [Electrum](https://github.com/spesmilo/electrum/blob/2af670ea2b92e835919b745d94afcb8b4ec32fda/lib/transaction.py#L648 "wikilink")
+  - [BitcoinJS](https://github.com/bitcoinjs/bip69/blob/master/index.js "wikilink")
+  - [BitcoinJS Test
     Fixtures](https://github.com/bitcoinjs/bip69/blob/master/test/fixtures.json "wikilink")
--   [NodeJS](https://www.npmjs.com/package/bip69 "wikilink")
--   [Blockchain.info public
+  - [NodeJS](https://www.npmjs.com/package/bip69 "wikilink")
+  - [Blockchain.info public
     beta](https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/transaction.js#L120-L142 "wikilink")
--   [Btcsuite](https://github.com/btcsuite/btcutil/blob/master/txsort/txsort.go "wikilink")
+  - [Btcsuite](https://github.com/btcsuite/btcutil/blob/master/txsort/txsort.go "wikilink")
 
 ## Acknowledgements
 
-Danno Ferrin &lt;danno@numisight.com&gt;, Sergio Demian Lerner
-&lt;sergiolerner@certimix.com&gt;, Justus Ranvier
-&lt;justus@openbitcoinprivacyproject.org&gt;, and Peter Todd
-&lt;pete@petertodd.org&gt; contributed to the design and motivations for
+Danno Ferrin \<danno@numisight.com\>, Sergio Demian Lerner
+\<sergiolerner@certimix.com\>, Justus Ranvier
+\<justus@openbitcoinprivacyproject.org\>, and Peter Todd
+\<pete@petertodd.org\> contributed to the design and motivations for
 this BIP. A similar proposal was submitted to the Bitcoin-dev mailing
-list independently by Rusty Russell &lt;rusty@rustcorp.com.au&gt;
+list independently by Rusty Russell \<rusty@rustcorp.com.au\>

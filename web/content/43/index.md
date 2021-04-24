@@ -14,16 +14,18 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki"
 +++
 
-      BIP: 43
-      Layer: Applications
-      Title: Purpose Field for Deterministic Wallets
-      Author: Marek Palatinus <slush@satoshilabs.com>
-              Pavol Rusnak <stick@satoshilabs.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0043
-      Status: Final
-      Type: Informational
-      Created: 2014-04-24
+``` 
+  BIP: 43
+  Layer: Applications
+  Title: Purpose Field for Deterministic Wallets
+  Author: Marek Palatinus <slush@satoshilabs.com>
+          Pavol Rusnak <stick@satoshilabs.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0043
+  Status: Final
+  Type: Informational
+  Created: 2014-04-24
+```
 
 ## Abstract
 
@@ -78,5 +80,5 @@ to prefixes "xpub" and "xprv" respectively).
 
 ## Reference
 
--   [BIP32 - Hierarchical Deterministic
+  - [BIP32 - Hierarchical Deterministic
     Wallets](bip-0032.mediawiki "wikilink")

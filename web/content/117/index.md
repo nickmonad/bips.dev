@@ -14,19 +14,21 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0117.mediawiki"
 +++
 
-      BIP: 117
-      Layer: Consensus (soft fork)
-      Title: Tail Call Execution Semantics
-      Author: Mark Friedenbach <mark@friedenbach.org>
-              Kalle Alm <kalle.alm@gmail.com>
-              BtcDrak <btcdrak@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0117
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-08-25
-      License: CC-BY-SA-4.0
-      License-Code: MIT
+``` 
+  BIP: 117
+  Layer: Consensus (soft fork)
+  Title: Tail Call Execution Semantics
+  Author: Mark Friedenbach <mark@friedenbach.org>
+          Kalle Alm <kalle.alm@gmail.com>
+          BtcDrak <btcdrak@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0117
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-08-25
+  License: CC-BY-SA-4.0
+  License-Code: MIT
+```
 
 ## Abstract
 
@@ -55,13 +57,13 @@ license. All provided source code is licensed under the MIT license.
 
 If, at the end of script execution:
 
--   the execution state is non-clean, meaning
+  - the execution state is non-clean, meaning
     1.  the main stack has more than one item on it, or
     2.  the main stack has exactly one item and the alt-stack is not
         empty;
--   the top-most element of the main stack evaluates as true when
+  - the top-most element of the main stack evaluates as true when
     interpreted as a bool; and
--   the top-most element is not a single byte or is outside the
+  - the top-most element is not a single byte or is outside the
     inclusive range of `0x51` to `0x60`,
 
 then that top-most element of the main stack is popped and interpreted
@@ -70,10 +72,10 @@ both stacks remain in place as inputs.
 
 If the above conditions hold except for the last one, such that:
 
--   the top-most element *is* a single byte within the inclusive range
+  - the top-most element *is* a single byte within the inclusive range
     of `0x51` (`OP_1`, meaning N=2) to `0x60` (`OP_16`, meaning N=17);
     and
--   other than this top-most element there are at least N additional
+  - other than this top-most element there are at least N additional
     elements on the main stack and alt stack combined,
 
 then the top-most element of the main stack is dropped, and the N=2

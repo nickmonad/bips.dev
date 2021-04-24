@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 350
+<code><span style="color:#61676c;">  BIP: 350
   Layer: Applications
   Title: Bech32m format for v1+ witness addresses
   Author: Pieter Wuille &lt;pieter@wuille.net&gt;
@@ -59,7 +59,7 @@
   License: BSD-2-Clause
   Replaces: 173
   Post-History: 2021-01-05: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-January/018338.html [bitcoin-dev] Bech32m BIP: new checksum, and usage for segwit address
-</code></pre><h2 id="introduction">Introduction</h2>
+</span></code></pre><h2 id="introduction">Introduction</h2>
 <h3 id="abstract">Abstract</h3>
 <p>This document defines an improved variant of Bech32 called <strong>Bech32m</strong>,
 and amends BIP173 to use Bech32m for native segregated witness outputs
@@ -234,7 +234,7 @@ implementation</a></li>
 </ul>
 </li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li>Fancy decoder that localizes errors:
 <ul>
@@ -476,7 +476,8 @@ less in a window of 68 characters or less with a detection
 probability <em>≥ 2<sup>-20</sup></em>). This selection leaves us with
 12054 candidates.</li>
 <li>Reject all constants that do not exhibit the <sup>(c)</sup>
-properties in the table above[9]. This leaves us with 79 candidates.</li>
+properties in the table above[9]. This leaves us with 79
+candidates.</li>
 <li>Finally, select the candidate that minimizes the number of error
 classes matching <sup>(d)</sup> in the table above as a final
 tiebreaker. The result is the single constant <em>0x2bc830a3</em>.</li>
@@ -490,53 +491,59 @@ with writing and editing this document. Thanks to Rusty Russell and
 others on the bitcoin-dev list for the discussion around intentionally
 breaking compatibility with existing senders, which is used in this
 specification.</p>
-<p>[1] <strong>Why not permit both Bech32 and Bech32m for v0 addresses?</strong>
-Permitting both encodings reduces the error detection capabilities (it
-makes it equivalent to only have 29 bits of checksum).</p>
-<p>[2] <strong>Can a single string simultaneously be valid as Bech32 and
-Bech32m?</strong> No, a valid Bech32 and Bech32m string will always differ by
-at least 3 characters if they are the same length.</p>
-<p>[3] <strong>What about error correction?</strong> As explained in BIP173, introducing
+<ol>
+<li><strong>Why not permit both Bech32 and Bech32m for v0 addresses?</strong>
+Permitting both encodings reduces the error detection capabilities
+(it makes it equivalent to only have 29 bits of checksum).</li>
+<li><strong>Can a single string simultaneously be valid as Bech32 and
+Bech32m?</strong> No, a valid Bech32 and Bech32m string will always differ
+by at least 3 characters if they are the same length.</li>
+<li><strong>What about error correction?</strong> As explained in BIP173, introducing
 error correction reduces the ability to detect errors. While it is
 technically possible to correct a small number of errors due to
-Bech32(m)'s nature as a BCH code, implementations should refrain from
-using this for more than indicating where an error may be present.</p>
-<p>[4] <strong>What is an error pattern’s window size?</strong> The window size of an
+Bech32(m)'s nature as a BCH code, implementations should refrain
+from using this for more than indicating where an error may be
+present.</li>
+<li><strong>What is an error pattern’s window size?</strong> The window size of an
 error pattern is the length of the smallest consecutive range of
-characters that contains all modified characters (on input or output;
-whichever is larger). For example, an error pattern that turns &quot;abcdef&quot;
-into &quot;accdbef&quot; has a window size of 4, as it is replacing &quot;bcd&quot; with
-&quot;ccdb&quot;, a 4 character string. Window size is only meaningful when the
-pattern consists of two or more errors.</p>
-<p>[5] <strong>Why do we care about probability of accepting Bech32m strings in
-Bech32 verifiers?</strong> For applications where Bech32m replaces an existing
-use of Bech32 (such as segregated witness addresses), we want to make
-sure that a Bech32m string created by new software won’t be erroneously
-accepted by old software that assumes Bech32 - even when a small number
-of errors were introduced as well.</p>
-<p>[6] <strong>Should we also take into account failures that occur due to taking
+characters that contains all modified characters (on input or
+output; whichever is larger). For example, an error pattern that
+turns &quot;abcdef&quot; into &quot;accdbef&quot; has a window size of 4, as it is
+replacing &quot;bcd&quot; with &quot;ccdb&quot;, a 4 character string. Window size is
+only meaningful when the pattern consists of two or more errors.</li>
+<li><strong>Why do we care about probability of accepting Bech32m strings in
+Bech32 verifiers?</strong> For applications where Bech32m replaces an
+existing use of Bech32 (such as segregated witness addresses), we
+want to make sure that a Bech32m string created by new software
+won’t be erroneously accepted by old software that assumes Bech32
+<ul>
+<li>even when a small number of errors were introduced as well.</li>
+</ul>
+</li>
+<li><strong>Should we also take into account failures that occur due to taking
 a valid Bech32m string, and after errors it becoming acceptable to a
 Bech32 verifier?</strong> This situation may in theory occur for segregated
-witness addresses when errors occur that change the version number in a
-v1+ address to v0. Due to the specificity of this type of error, plus
-the additional constraints that apply for v0 addresses, this is both
-unlikely and hard to analyze.</p>
-<p>[7] <strong>What restrictions were taken into account for the &quot;bc1&quot;-specific
-analysis?</strong> The minimum length (due to witness programs being at least 2
-bytes), the maximum length (due to witness programs being at most 40
-bytes), and the fact that the witness programs are a multiple of 8 bits.
-The fact that the first data symbol cannot be over 16, or that the
-padding has to be 0, is not taken into account.</p>
-<p>[8] <strong>How were the properties to select for chosen?</strong> All these
+witness addresses when errors occur that change the version number
+in a v1+ address to v0. Due to the specificity of this type of
+error, plus the additional constraints that apply for v0 addresses,
+this is both unlikely and hard to analyze.</li>
+<li><strong>What restrictions were taken into account for the &quot;bc1&quot;-specific
+analysis?</strong> The minimum length (due to witness programs being at
+least 2 bytes), the maximum length (due to witness programs being at
+most 40 bytes), and the fact that the witness programs are a
+multiple of 8 bits. The fact that the first data symbol cannot be
+over 16, or that the padding has to be 0, is not taken into account.</li>
+<li><strong>How were the properties to select for chosen?</strong> All these
 properties are as strong as they can be without rejecting every
-constant: rejecting constants with lower probabilities, or more errors,
-or wider windows all result in nothing left.</p>
-<p>[9] <strong>Why optimize for segregated witness addresses (with HRP &quot;bc1&quot;)
-specifically?</strong> Our analysis for generic HRP has limitations (see the
-detailed description
+constant: rejecting constants with lower probabilities, or more
+errors, or wider windows all result in nothing left.</li>
+<li><strong>Why optimize for segregated witness addresses (with HRP &quot;bc1&quot;)
+specifically?</strong> Our analysis for generic HRP has limitations (see
+the detailed description
 <a href="https://gist.github.com/sipa/14c248c288c3880a3b191f978a34508e#file-bech32m_mail-txt">here</a>,
 under &quot;Technical details&quot;). We optimize for generic usage first, but
-optimize for segregated witness addresses as a tiebreaker.</p>
+optimize for segregated witness addresses as a tiebreaker.</li>
+</ol>
 
     </div>
 

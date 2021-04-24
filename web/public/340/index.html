@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 340
+<code><span style="color:#61676c;">  BIP: 340
   Title: Schnorr Signatures for secp256k1
   Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
           Jonas Nick &lt;jonasd.nick@gmail.com&gt;
@@ -59,7 +59,7 @@
   License: BSD-2-Clause
   Created: 2020-01-19
   Post-History: 2018-07-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-July/016203.html [bitcoin-dev] Schnorr signatures BIP
-</code></pre><h2 id="introduction">Introduction</h2>
+</span></code></pre><h2 id="introduction">Introduction</h2>
 <h3 id="abstract">Abstract</h3>
 <p>This document proposes a standard for 64-byte Schnorr signatures over
 the elliptic curve <em>secp256k1</em>.</p>
@@ -83,16 +83,16 @@ hardness of the elliptic curve discrete logarithm problem
 (ECDLP)</a>
 and <a href="http://www.neven.org/papers/schnorr.pdf">in the generic group model assuming variants of preimage and
 second preimage resistance of the used hash
-function</a>[2]. In contrast,
-the <a href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">best known results for the provable security of
+function</a>[2]. In
+contrast, the <a href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">best known results for the provable security of
 ECDSA</a> rely on
 stronger assumptions.</li>
 <li><strong>Non-malleability</strong>: The SUF-CMA security of Schnorr signatures
 implies that they are non-malleable. On the other hand, ECDSA
-signatures are inherently malleable[3]; a third party without access
-to the secret key can alter an existing valid signature for a given
-public key and message into another signature that is valid for the
-same key and message. This issue is discussed in
+signatures are inherently malleable[3]; a third party without
+access to the secret key can alter an existing valid signature for a
+given public key and message into another signature that is valid
+for the same key and message. This issue is discussed in
 <a href="https://bips.dev/340/bip-0062.mediawiki" title="wikilink">BIP62</a> and
 <a href="https://bips.dev/340/bip-0146.mediawiki" title="wikilink">BIP146</a>.</li>
 <li><strong>Linearity</strong>: Schnorr signatures provide a simple and efficient
@@ -150,12 +150,12 @@ message <em>m</em> and public key <em>P</em> generally involve a point <em>R</em
 <em>e = hash(R || m)</em> and <em>s⋅G = R + e⋅P</em>. Two formulations exist,
 depending on whether the signer reveals <em>e</em> or <em>R</em>:</p>
 <ol>
-<li>Signatures are pairs <em>(e, s)</em> that satisfy <em>e = hash(s⋅G - e⋅P
-|| m)</em>. This variant avoids minor complexity introduced by the
-encoding of the point <em>R</em> in the signature (see paragraphs &quot;Encoding
-R and public key point P&quot; and &quot;Implicit Y coordinates&quot; further below
-in this subsection). Moreover, revealing <em>e</em> instead of <em>R</em> allows
-for potentially shorter signatures: Whereas an encoding of <em>R</em>
+<li>Signatures are pairs <em>(e, s)</em> that satisfy <em>e = hash(s⋅G - e⋅P ||
+m)</em>. This variant avoids minor complexity introduced by the encoding
+of the point <em>R</em> in the signature (see paragraphs &quot;Encoding R and
+public key point P&quot; and &quot;Implicit Y coordinates&quot; further below in
+this subsection). Moreover, revealing <em>e</em> instead of <em>R</em> allows for
+potentially shorter signatures: Whereas an encoding of <em>R</em>
 inherently needs about 32 bytes, the hash <em>e</em> can be tuned to be
 shorter than 32 bytes, and <a href="http://www.neven.org/papers/schnorr.pdf">a short hash of only 16 bytes suffices
 to provide SUF-CMA security at the target security level of 128
@@ -192,12 +192,11 @@ Taproot.</p>
 <p>To protect against these attacks, we choose <em>key prefixed</em>[4] Schnorr
 signatures which means that the public key is prefixed to the message in
 the challenge hash input. This changes the equation to <em>s⋅G = R + hash(R
-|| P || m)⋅P</em>. <a href="https://eprint.iacr.org/2015/1135.pdf">It can be
-shown</a> that key prefixing
-protects against related-key attacks with additive tweaks. In general,
-key prefixing increases robustness in multi-user settings, e.g., it
-seems to be a requirement for proving the MuSig multisignature scheme
-secure (see Applications below).</p>
+|| P || m)⋅P</em>. <a href="https://eprint.iacr.org/2015/1135.pdf">It can be shown</a>
+that key prefixing protects against related-key attacks with additive
+tweaks. In general, key prefixing increases robustness in multi-user
+settings, e.g., it seems to be a requirement for proving the MuSig
+multisignature scheme secure (see Applications below).</p>
 <p>We note that key prefixing is not strictly necessary for transaction
 signatures as used in Bitcoin currently, because signed transactions
 indirectly commit to the public keys already, i.e., <em>m</em> contains a
@@ -323,7 +322,7 @@ encoding is <em>x</em>.</li>
 </ul>
 </li>
 </ul>
-<p><code>   Given a candidate X coordinate </code><em><code>x</code></em><code> in the range </code><em><code>0..p-1</code></em><code>, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then </code><em><code>x</code></em><code> is not a valid X coordinate either, i.e., no point </code><em><code>P</code></em><code> exists for which </code><em><code>x(P)`` ``=`` ``x</code></em><code>. The valid Y coordinates for a given candidate </code><em><code>x</code></em><code> are the square roots of </code><em><code>c`` ``=`` ``x</code><sup><code>3</code></sup><code> ``+`` ``7`` ``mod`` ``p</code></em><code> and they can be computed as </code><em><code>y`` ``=`` ``±c</code><sup><code>(p+1)/4</code></sup><code> ``mod`` ``p</code></em><code> (see </code><a href="https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus"><code>Quadratic`` ``residue</code></a><code>) if they exist, which can be checked by squaring and comparing with </code><em><code>c</code></em><code>.</code></ref><code> and </code><em><code>has_even_y(P)</code></em><code>, or fails if no such point exists. The function </code><em><code>lift_x(x)</code></em><code> is equivalent to the following pseudocode:</code></p>
+<p><code>   Given a candidate X coordinate </code><em><code>x</code></em><code> in the range </code><em><code>0..p-1</code></em><code>, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then </code><em><code>x</code></em><code> is not a valid X coordinate either, i.e., no point </code><em><code>P</code></em><code> exists for which </code><em><code>x(P)``  ``=``  ``x</code></em><code>. The valid Y coordinates for a given candidate </code><em><code>x</code></em><code> are the square roots of </code><em><code>c``  ``=``   ``x</code><sup><code>3</code></sup><code>   ``+``   ``7``   ``mod``  ``p</code></em><code> and they can be computed as </code><em><code>y``   ``=``  ``±c</code><sup><code>(p+1)/4</code></sup><code>   ``mod``   ``p</code></em><code> (see </code><a href="https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus"><code>Quadratic``  ``residue</code></a><code>) if they exist, which can be checked by squaring and comparing with </code><em><code>c</code></em><code>.</code></ref><code> and </code><em><code>has_even_y(P)</code></em><code>, or fails if no such point exists. The function </code><em><code>lift_x(x)</code></em><code> is equivalent to the following pseudocode:</code></p>
 <ul>
 <li>
 <ul>
@@ -383,8 +382,7 @@ remain usable.</p>
 <li>Let ''d = d' '' if <em>has_even_y(P)</em>, otherwise let ''d = n - d' ''.</li>
 <li>Let <em>t</em> be the byte-wise xor of <em>bytes(d)</em> and
 <em>hash<sub>BIP0340/aux</sub>(a)</em>[9].</li>
-<li>Let <em>rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P)
-|| m)</em>[10].</li>
+<li>Let <em>rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P) || m)</em>[10].</li>
 <li>Let <em>k' = int(rand) mod n</em>[11].</li>
 <li>Fail if <em>k' = 0</em>.</li>
 <li>Let <em>R = k'⋅G</em>.</li>
@@ -497,8 +495,8 @@ sig<sub>1..u</sub>)</em> is defined as:</p>
 <a href="https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">CSPRNG</a>
 seeded by a cryptographic hash of all inputs of the algorithm, i.e.
 <em>seed = seed_hash(pk<sub>1</sub>..pk<sub>u</sub> ||
-m<sub>1</sub>..m<sub>u</sub> || sig<sub>1</sub>..sig<sub>u</sub>
-)</em>. A safe choice is to instantiate <em>seed_hash</em> with SHA256 and use
+m<sub>1</sub>..m<sub>u</sub> || sig<sub>1</sub>..sig<sub>u</sub> )</em>.
+A safe choice is to instantiate <em>seed_hash</em> with SHA256 and use
 <a href="https://tools.ietf.org/html/rfc8439">ChaCha20</a> with key <em>seed</em> as a
 CSPRNG to generate 256-bit integers, skipping integers not in the
 range <em>1...n-1</em>.</li>
@@ -553,9 +551,9 @@ signatures, which ensure that any subset of size <em>k</em> of the set of <em>n<
 signers can sign but no subset of size less than <em>k</em> can produce a valid
 Schnorr signature. However, the practicality of the existing schemes is
 limited: most schemes in the literature have been proven secure only for
-the case <em>k-1 &lt; n/2</em>, are not secure when used concurrently in
-multiple sessions, or require a reliable broadcast mechanism to be
-secure. Further research is necessary to improve this situation.</p>
+the case <em>k-1 &lt; n/2</em>, are not secure when used concurrently in multiple
+sessions, or require a reliable broadcast mechanism to be secure.
+Further research is necessary to improve this situation.</p>
 <h3 id="adaptor-signatures">Adaptor Signatures</h3>
 <p><a href="https://download.wpsoftware.net/bitcoin/wizardry/mw-slides/2018-05-18-l2/slides.pdf">Adaptor
 signatures</a>
@@ -615,78 +613,84 @@ Andrew Poelstra, Rusty Russell, and Anthony Towns. The authors further
 wish to thank all those who provided valuable feedback and reviews,
 including the participants of the <a href="https://github.com/ajtowns/taproot-review">structured
 reviews</a>.</p>
-<p>[1] Informally, this means that without knowledge of the secret key but
-given valid signatures of arbitrary messages, it is not possible to come
-up with further valid signatures.</p>
-<p>[2] A detailed security proof in the random oracle model, which
+<ol>
+<li>Informally, this means that without knowledge of the secret key but
+given valid signatures of arbitrary messages, it is not possible to
+come up with further valid signatures.</li>
+<li>A detailed security proof in the random oracle model, which
 essentially restates <a href="https://www.di.ens.fr/%7Epointche/Documents/Papers/2000_joc.pdf">the original security proof by Pointcheval and
 Stern</a>
 more explicitly, can be found in <a href="https://eprint.iacr.org/2016/191">a paper by Kiltz, Masny and
-Pan</a>. All these security proofs assume
-a variant of Schnorr signatures that use <em>(e,s)</em> instead of <em>(R,s)</em> (see
-Design above). Since we use a unique encoding of <em>R</em>, there is an
-efficiently computable bijection that maps <em>(R,s)</em> to <em>(e,s)</em>, which
-allows to convert a successful SUF-CMA attacker for the <em>(e,s)</em> variant
-to a successful SUF-CMA attacker for the <em>(R,s)</em> variant (and
-vice-versa). Furthermore, the proofs consider a variant of Schnorr
-signatures without key prefixing (see Design above), but it can be
-verified that the proofs are also correct for the variant with key
-prefixing. As a result, all the aforementioned security proofs apply to
-the variant of Schnorr signatures proposed in this document.</p>
-<p>[3] If <em>(r,s)</em> is a valid ECDSA signature for a given message and key,
-then <em>(r,n-s)</em> is also valid for the same message and key. If ECDSA is
-restricted to only permit one of the two variants (as Bitcoin does
-through a policy rule on the network), it can be
+Pan</a>. All these security proofs
+assume a variant of Schnorr signatures that use <em>(e,s)</em> instead of
+<em>(R,s)</em> (see Design above). Since we use a unique encoding of <em>R</em>,
+there is an efficiently computable bijection that maps <em>(R,s)</em> to
+<em>(e,s)</em>, which allows to convert a successful SUF-CMA attacker for
+the <em>(e,s)</em> variant to a successful SUF-CMA attacker for the <em>(R,s)</em>
+variant (and vice-versa). Furthermore, the proofs consider a variant
+of Schnorr signatures without key prefixing (see Design above), but
+it can be verified that the proofs are also correct for the variant
+with key prefixing. As a result, all the aforementioned security
+proofs apply to the variant of Schnorr signatures proposed in this
+document.</li>
+<li>If <em>(r,s)</em> is a valid ECDSA signature for a given message and key,
+then <em>(r,n-s)</em> is also valid for the same message and key. If ECDSA
+is restricted to only permit one of the two variants (as Bitcoin
+does through a policy rule on the network), it can be
 <a href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">proven</a>
-non-malleable under stronger than usual assumptions.</p>
-<p>[4] A limitation of committing to the public key (rather than to a short
-hash of it, or not at all) is that it removes the ability for public key
-recovery or verifying signatures against a short public key hash. These
-constructions are generally incompatible with batch verification.</p>
-<p>[5] Since <em>p</em> is odd, negation modulo <em>p</em> will map even numbers to odd
+non-malleable under stronger than usual assumptions.</li>
+<li>A limitation of committing to the public key (rather than to a short
+hash of it, or not at all) is that it removes the ability for public
+key recovery or verifying signatures against a short public key
+hash. These constructions are generally incompatible with batch
+verification.</li>
+<li>Since <em>p</em> is odd, negation modulo <em>p</em> will map even numbers to odd
 numbers and the other way around. This means that for a valid X
-coordinate, one of the corresponding Y coordinates will be even, and the
-other will be odd.</p>
-<p>[6] An earlier version of this draft used the third option instead,
-based on a belief that this would in general trade signing efficiency
-for verification efficiency. When using Jacobian coordinates, a common
-optimization in ECC implementations, it is possible to determine if a Y
-coordinate is a quadratic residue by computing the Legendre symbol,
-without converting to affine coordinates first (which needs a modular
-inversion). As modular inverses and Legendre symbols have similar
+coordinate, one of the corresponding Y coordinates will be even, and
+the other will be odd.</li>
+<li>An earlier version of this draft used the third option instead,
+based on a belief that this would in general trade signing
+efficiency for verification efficiency. When using Jacobian
+coordinates, a common optimization in ECC implementations, it is
+possible to determine if a Y coordinate is a quadratic residue by
+computing the Legendre symbol, without converting to affine
+coordinates first (which needs a modular inversion). As modular
+inverses and Legendre symbols have similar
 <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-August/018081.html">performance</a>
-in practice, this trade-off is not worth it.</p>
-<p>[7] This can be formalized by a simple reduction that reduces an attack
+in practice, this trade-off is not worth it.</li>
+<li>This can be formalized by a simple reduction that reduces an attack
 on Schnorr signatures with implicit Y coordinates to an attack to
-Schnorr signatures with explicit Y coordinates. The reduction works by
-reencoding public keys and negating the result of the hash function,
-which is modeled as random oracle, whenever the challenge public key has
-an explicit Y coordinate that is odd. A proof sketch can be found
-<a href="https://medium.com/blockstream/reducing-bitcoin-transaction-sizes-with-x-only-pubkeys-f86476af05d7">here</a>.</p>
-<p>[8] Among other pitfalls, using the specification with a curve whose
+Schnorr signatures with explicit Y coordinates. The reduction works
+by reencoding public keys and negating the result of the hash
+function, which is modeled as random oracle, whenever the challenge
+public key has an explicit Y coordinate that is odd. A proof sketch
+can be found
+<a href="https://medium.com/blockstream/reducing-bitcoin-transaction-sizes-with-x-only-pubkeys-f86476af05d7">here</a>.</li>
+<li>Among other pitfalls, using the specification with a curve whose
 order is not close to the size of the range of the nonce derivation
-function is insecure.</p>
-<p>[9] The auxiliary random data is hashed (with a unique tag) as a
+function is insecure.</li>
+<li>The auxiliary random data is hashed (with a unique tag) as a
 precaution against situations where the randomness may be correlated
-with the private key itself. It is xored with the private key (rather
-than combined with it in a hash) to reduce the number of operations
-exposed to the actual secret key.</p>
-<p>[10] Including the <a href="https://moderncrypto.org/mail-archive/curves/2020/001012.html">public key as input to the nonce
+with the private key itself. It is xored with the private key
+(rather than combined with it in a hash) to reduce the number of
+operations exposed to the actual secret key.</li>
+<li>Including the <a href="https://moderncrypto.org/mail-archive/curves/2020/001012.html">public key as input to the nonce
 hash</a>
 helps ensure the robustness of the signing algorithm by preventing
-leakage of the secret key if the calculation of the public key <em>P</em> is
-performed incorrectly or maliciously, for example if it is left to the
-caller for performance reasons.</p>
-<p>[11] Note that in general, taking a uniformly random 256-bit integer
+leakage of the secret key if the calculation of the public key <em>P</em>
+is performed incorrectly or maliciously, for example if it is left
+to the caller for performance reasons.</li>
+<li>Note that in general, taking a uniformly random 256-bit integer
 modulo the curve order will produce an unacceptably biased result.
 However, for the secp256k1 curve, the order is sufficiently close to
 <em>2<sup>256</sup></em> that this bias is not observable (<em>1 - n /
-2<sup>256</sup></em> is around <em>1.27 * 2<sup>-128</sup></em>).</p>
-<p>[12] Verifying the signature before leaving the signer prevents random
-or attacker provoked computation errors. This prevents publishing
-invalid signatures which may leak information about the secret key. It
-is recommended, but can be omitted if the computation cost is
-prohibitive.</p>
+2<sup>256</sup></em> is around <em>1.27 * 2<sup>-128</sup></em>).</li>
+<li>Verifying the signature before leaving the signer prevents random or
+attacker provoked computation errors. This prevents publishing
+invalid signatures which may leak information about the secret key.
+It is recommended, but can be omitted if the computation cost is
+prohibitive.</li>
+</ol>
 
     </div>
 

@@ -14,3 +14,11 @@ serve: npm
 .PHONY: build
 build: npm
 	cd web && zola build && cd ..
+
+.PHONY: image
+image:
+	docker build -t ngmiller/bips-dev:latest .
+
+.PHONY: push
+push:
+	docker push ngmiller/bips-dev:latest

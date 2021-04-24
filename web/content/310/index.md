@@ -14,18 +14,20 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0310.mediawiki"
 +++
 
-      BIP: 310
-      Layer: Applications
-      Title: Stratum protocol extensions
-      Author: Pavel Moravec <pavel.moravec@braiins.cz>
-              Jan Čapek <jan.capek@braiins.cz>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0310
-      Status: Draft
-      Type: Informational
-      Created: 2018-03-10
-      License: BSD-3-Clause
-               CC0-1.0
+``` 
+  BIP: 310
+  Layer: Applications
+  Title: Stratum protocol extensions
+  Author: Pavel Moravec <pavel.moravec@braiins.cz>
+          Jan Čapek <jan.capek@braiins.cz>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0310
+  Status: Draft
+  Type: Informational
+  Created: 2018-03-10
+  License: BSD-3-Clause
+           CC0-1.0
+```
 
 ## Abstract
 
@@ -76,30 +78,30 @@ Each extension has its unique string name, so called **extension code**.
 
 Currently, the following extensions are defined:
 
--   **"version-rolling"**
--   **"minimum-difficulty"**
--   **"subscribe-extranonce"**
+  - **"version-rolling"**
+  - **"minimum-difficulty"**
+  - **"subscribe-extranonce"**
 
 ### Additional data types
 
 The following names are used as type aliases, making the message
 description easier.
 
--   **TMask** - case independent hexadecimal string of length 8,
+  - **TMask** - case independent hexadecimal string of length 8,
     encoding an unsigned 32-bit integer (\~`[0-9a-fA-F]{8}`)
 
-<!-- -->
+<!-- end list -->
 
--   **TExtensionCode** - non-empty string with a value equal to the name
+  - **TExtensionCode** - non-empty string with a value equal to the name
     of some protocol extension.
 
-<!-- -->
+<!-- end list -->
 
--   **TExtensionResult** - `true` / `false` / *String*.
-    -   `true` = The requested feature is supported and its
+  - **TExtensionResult** - `true` / `false` / *String*.
+      - `true` = The requested feature is supported and its
         configuration understood and applied.
-    -   `false` = The feature is not supported or unknown.
-    -   *String* = Error message containing information about what went
+      - `false` = The feature is not supported or unknown.
+      - *String* = Error message containing information about what went
         wrong.
 
 ### Request "mining.configure"
@@ -123,42 +125,55 @@ the return values, which are transferred in a result map too. E.g.
 
 **Parameters**:
 
--   **extensions** (REQUIRED, List of *TExtensionCode*)
+  - **extensions** (REQUIRED, List of *TExtensionCode*)
 
-  
-  
-\- Each string in the list MUST be a valid extension code. The meaning
-of each code is described independently as part of the extension
-definition. A miner SHOULD advertise all its available features.
+<!-- end list -->
 
--   **extension-parameters** (REQUIRED, *Map of (String -&gt; Any)*)
+  - 
+    
+      -   
+        \- Each string in the list MUST be a valid extension code. The
+        meaning of each code is described independently as part of the
+        extension definition. A miner SHOULD advertise all its available
+        features.
 
-  
-  
-\- Parameters of the requested/allowed extensions from the first
-parameter.
+<!-- end list -->
+
+  - **extension-parameters** (REQUIRED, *Map of (String -\> Any)*)
+
+<!-- end list -->
+
+  - 
+    
+      -   
+        \- Parameters of the requested/allowed extensions from the first
+        parameter.
 
 **Return value**:
 
--   *Map of (String -&gt; Any)*
+  - *Map of (String -\> Any)*
 
-  
-  
-\- Each code from the **extensions** list MUST have a defined return
-value (*TExtensionCode* -&gt; *TExtensionResult*). This way the miner
-knows if the extension is activated or not. E.g.
-`{"version-rolling":false}` for unsupported version rolling.
+<!-- end list -->
 
-\- Some extensions need additional information to be delivered to the
-miner. The return value map is used for this purpose.
+  - 
+    
+      -   
+        \- Each code from the **extensions** list MUST have a defined
+        return value (*TExtensionCode* -\> *TExtensionResult*). This way
+        the miner knows if the extension is activated or not. E.g.
+        `{"version-rolling":false}` for unsupported version rolling.
+        \- Some extensions need additional information to be delivered
+        to the miner. The return value map is used for this purpose.
 
 Example request (new-lines added):
 
-     {"method": "mining.configure",
-      "id": 1,
-      "params": [["minimum-difficulty", "version-rolling"],
-             {"minimum-difficulty.value": 2048,
-              "version-rolling.mask": "1fffe000", "version-rolling.min-bit-count": 2}]}
+``` 
+ {"method": "mining.configure",
+  "id": 1,
+  "params": [["minimum-difficulty", "version-rolling"],
+         {"minimum-difficulty.value": 2048,
+          "version-rolling.mask": "1fffe000", "version-rolling.min-bit-count": 2}]}
+```
 
 (The miner requests extensions `"version-rolling"` and
 `"minimum-difficulty"`. It sets the parameters according to the
@@ -166,11 +181,13 @@ extensions' definitions.)
 
 Example result (new-lines added):
 
-     {"error": null,
-      "id": 1,
-      "result": {"version-rolling": true,
-             "version-rolling.mask": "18000000",
-             "minimum-difficulty": true}}
+``` 
+ {"error": null,
+  "id": 1,
+  "result": {"version-rolling": true,
+         "version-rolling.mask": "18000000",
+         "minimum-difficulty": true}}
+```
 
 # Defined extensions
 
@@ -191,8 +208,8 @@ A server typically allows you to change only some of the version bits
 the block needs to be valid or some signaling is in place.
 
 The server responds to the configuration message by sending a mask with
-common bits intersection of the miner's mask and its a mask
-(`response = server_mask & miner_mask`)
+common bits intersection of the miner's mask and its a mask (`response =
+server_mask & miner_mask`)
 
 Example request (a miner capable of changing any 2 bits from a 16-bit
 mask):
@@ -209,50 +226,69 @@ Example result (unknown extension):
 
 **Extension parameters**:
 
--   **"version-rolling.mask"** (OPTIONAL, *TMask*, default value
+  - **"version-rolling.mask"** (OPTIONAL, *TMask*, default value
     `"ffffffff"`)
 
-  
-  
-\- Bits set to 1 can be changed by the miner. This value is expected
+<!-- end list -->
+
+  - 
+    
+      -   
+        \- Bits set to 1 can be changed by the miner. This value is
+        expected
 
 to be stable for the whole mining session. A miner doesn't have to send
 the mask, in this case a default full mask is used.
 
 **Extension return values**:
 
--   **"version-rolling"** (REQUIRED, *TExtensionResult*)
+  - **"version-rolling"** (REQUIRED, *TExtensionResult*)
 
-  
-  
-\- When responded with `true`, the server will accept new parameter of
-**"mining.submit"**, see later.
+<!-- end list -->
 
--   **"version-rolling.mask"** (REQUIRED, *TMask*)
+  - 
+    
+      -   
+        \- When responded with `true`, the server will accept new
+        parameter of **"mining.submit"**, see later.
 
-  
-  
-\- Bits set to 1 are allowed to be changed by the miner. If a miner
-changes bits with mask value 0, the server will reject the submit.
+<!-- end list -->
 
-\- The server SHOULD return the largest mask possible (as many bits set
-to 1 as possible). This can be useful in a mining proxy setup when a
-proxy needs to negotiate the best mask for its future clients. There is
-a \[Draft BIP\](https://github.com/bitcoin/bips/pull/661/files)
-describing available nVersion bits. The server SHOULD pick a mask that
-preferably covers all bits specified in the BIP.
+  - **"version-rolling.mask"** (REQUIRED, *TMask*)
 
--   **"version-rolling.min-bit-count"** (REQUIRED, *TMask*)
+<!-- end list -->
 
-  
-  
-\- The miner also provides a minimum number of bits that it needs for
-efficient version rolling in hardware. Note that this parameter provides
-important diagnostic information to the pool server. If the requested
-bit count exceeds the limit of the pool server, the miner always has the
-chance to operate in a degraded mode without using full hashing power.
-The pool server SHOULD NOT terminate miner connection if this rare
-mismatch case occurs.
+  - 
+    
+      -   
+        \- Bits set to 1 are allowed to be changed by the miner. If a
+        miner changes bits with mask value 0, the server will reject the
+        submit.
+        \- The server SHOULD return the largest mask possible (as many
+        bits set to 1 as possible). This can be useful in a mining proxy
+        setup when a proxy needs to negotiate the best mask for its
+        future clients. There is a \[Draft
+        BIP\](https://github.com/bitcoin/bips/pull/661/files) describing
+        available nVersion bits. The server SHOULD pick a mask that
+        preferably covers all bits specified in the BIP.
+
+<!-- end list -->
+
+  - **"version-rolling.min-bit-count"** (REQUIRED, *TMask*)
+
+<!-- end list -->
+
+  - 
+    
+      -   
+        \- The miner also provides a minimum number of bits that it
+        needs for efficient version rolling in hardware. Note that this
+        parameter provides important diagnostic information to the pool
+        server. If the requested bit count exceeds the limit of the pool
+        server, the miner always has the chance to operate in a degraded
+        mode without using full hashing power. The pool server SHOULD
+        NOT terminate miner connection if this rare mismatch case
+        occurs.
 
 ### Notification **"mining.set\_version\_mask"**
 
@@ -264,7 +300,7 @@ next job.
 
 **Parameters**:
 
--   *mask* (REQUIRED, *TMask*): The meaning is the same as the
+  - *mask* (REQUIRED, *TMask*): The meaning is the same as the
     **"version-rolling.mask"** return parameter.
 
 Example:
@@ -282,20 +318,24 @@ parameter, after *worker\_name*, *job\_id*, *extranonce2*, *ntime* and
 
 **Additional parameters**:
 
--   *version\_bits* (REQUIRED, *TMask*) - Version bits set by miner.
+  - *version\_bits* (REQUIRED, *TMask*) - Version bits set by miner.
 
-  
-  
-\- Miner can set only bits corresponding to the set bits in the last
-received mask from the server either as response to "mining.configure"
-or "mining.set\_version\_mask" notification (`last_mask`). This must
-hold:
+<!-- end list -->
+
+  - 
+    
+      -   
+        \- Miner can set only bits corresponding to the set bits in the
+        last received mask from the server either as response to
+        "mining.configure" or "mining.set\_version\_mask" notification
+        (`last_mask`). This must hold:
 
 `version_bits & ~last_mask ==  0`
 
-  
-  
-\- The server computes *nVersion* for the submit as follows:
+  - 
+    
+      -   
+        \- The server computes *nVersion* for the submit as follows:
 
 `nVersion = (job_version & ~last_mask) | (version_bits & last_mask)`
 
@@ -311,23 +351,29 @@ device.
 
 **Extension parameters**:
 
--   **"minimum-difficulty.value"** (REQUIRED, *Integer/Float*, &gt;= 0)
+  - **"minimum-difficulty.value"** (REQUIRED, *Integer/Float*, \>= 0)
 
-  
-  
-\- The minimum difficulty value acceptable for the miner/connection. The
-value can be 0 for essentially disabling the feature.
+<!-- end list -->
+
+  - 
+    
+      -   
+        \- The minimum difficulty value acceptable for the
+        miner/connection. The value can be 0 for essentially disabling
+        the feature.
 
 **Extension return values**:
 
--   **"minimum-difficulty"** (REQUIRED, *TExtensionResult*)
+  - **"minimum-difficulty"** (REQUIRED, *TExtensionResult*)
 
-  
-  
-\- Whether the minimum difficulty was accepted or not.
+<!-- end list -->
 
-\- This extension can be configured multiple times by calling
-"mining.configure" with "minimum-difficulty" code again.
+  - 
+    
+      -   
+        \- Whether the minimum difficulty was accepted or not.
+        \- This extension can be configured multiple times by calling
+        "mining.configure" with "minimum-difficulty" code again.
 
 ## Extension "subscribe-extranonce"
 
@@ -341,30 +387,48 @@ Miner provides additional text-based information.
 
 **Extension parameters**:
 
--   **"info.connection-url"** (OPTIONAL, *String*)
+  - **"info.connection-url"** (OPTIONAL, *String*)
 
-  
-  
-\- Exact URL used by the mining software to connect to the stratum
-server.
+<!-- end list -->
 
--   **"info.hw-version"** (OPTIONAL, *String*)
+  - 
+    
+      -   
+        \- Exact URL used by the mining software to connect to the
+        stratum server.
 
-  
-  
-\- Manufacturer specific hardware revision string.
+<!-- end list -->
 
--   **"info.sw-version"** (OPTIONAL, *String*)
+  - **"info.hw-version"** (OPTIONAL, *String*)
 
-  
-  
-\- Manufacturer specific software version
+<!-- end list -->
 
--   **"info.hw-id"** (OPTIONAL, *String*)
+  - 
+    
+      -   
+        \- Manufacturer specific hardware revision string.
 
-  
-  
-\- Unique identifier of the mining device
+<!-- end list -->
+
+  - **"info.sw-version"** (OPTIONAL, *String*)
+
+<!-- end list -->
+
+  - 
+    
+      -   
+        \- Manufacturer specific software version
+
+<!-- end list -->
+
+  - **"info.hw-id"** (OPTIONAL, *String*)
+
+<!-- end list -->
+
+  - 
+    
+      -   
+        \- Unique identifier of the mining device
 
 ## Compatibility
 

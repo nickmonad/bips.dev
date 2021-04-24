@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 141
+<code><span style="color:#61676c;">  BIP: 141
   Layer: Consensus (soft fork)
   Title: Segregated Witness (Consensus layer)
   Author: Eric Lombrozo &lt;elombrozo@gmail.com&gt;
@@ -59,7 +59,7 @@
   Type: Standards Track
   Created: 2015-12-21
   License: PD
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP defines a new structure called a &quot;witness&quot; that is committed to
 blocks separately from the transaction merkle tree. This structure
 contains data required to check transaction validity but not required to
@@ -214,7 +214,8 @@ stack.</li>
 bytes, the script must fail.[1]</p>
 <p>If the version byte is 1 to 16, no further interpretation of the witness
 program or witness stack happens, and there is no size restriction for
-the witness stack. These versions are reserved for future extensions.[2]</p>
+the witness stack. These versions are reserved for future
+extensions.[2]</p>
 <h3 id="other-consensus-critical-limits">Other consensus critical limits</h3>
 <h4 id="block-size">Block size</h4>
 <p>Blocks are currently limited to 1,000,000 bytes (1MB) total size. We
@@ -356,18 +357,14 @@ example.</p>
 smaller (with reduced security) while witness is the same. However, it
 also requires 35 bytes in scriptSig.</p>
 <h3 id="extensible-commitment-structure">Extensible commitment structure</h3>
-<p>The new commitment in coinbase transaction is a hash of the
-<code>witness root hash</code> and a <code>witness reserved value</code>. The
-<code>witness reserved value</code> currently has no consensus meaning, but in the
-future allows new commitment values for future softforks. For example,
-if a new consensus-critical commitment is required in the future, the
-commitment in coinbase becomes:</p>
+<p>The new commitment in coinbase transaction is a hash of the <code>witness root hash</code> and a <code>witness reserved value</code>. The <code>witness reserved value</code>
+currently has no consensus meaning, but in the future allows new
+commitment values for future softforks. For example, if a new
+consensus-critical commitment is required in the future, the commitment
+in coinbase becomes:</p>
 <p><code> Double-SHA256(Witness root hash|Hash(new commitment|witness reserved value))</code></p>
-<p>For backward compatibility, the
-<code>Hash(new commitment|witness reserved value)</code> will go to the coinbase
-witness, and the <code>witness reserved value</code> will be recorded in another
-location specified by the future softfork. Any number of new commitment
-could be added in this way.</p>
+<p>For backward compatibility, the <code>Hash(new commitment|witness reserved value)</code> will go to the coinbase witness, and the <code>witness reserved value</code> will be recorded in another location specified by the future
+softfork. Any number of new commitment could be added in this way.</p>
 <p>Any commitments that are not consensus-critical to Bitcoin, such as
 merge-mining, MUST NOT use the <code>witness reserved value</code> to preserve the
 ability to do upgrades of the Bitcoin consensus protocol.</p>
@@ -516,27 +513,30 @@ outputs</a></li>
 </ul>
 <h2 id="copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
-<p>[1] For example, a scriptPubKey with OP_0 followed by a 40-byte
-non-zero data push will fail due to incorrect program size. However, a
-scriptPubKey with OP_0 followed by a 41-byte non-zero data push will
-pass, since it is not considered to be a witness program</p>
-<p>[2] For backward compatibility, for any version byte from 0 to 16, the
+<ol>
+<li>For example, a scriptPubKey with OP_0 followed by a 40-byte
+non-zero data push will fail due to incorrect program size. However,
+a scriptPubKey with OP_0 followed by a 41-byte non-zero data push
+will pass, since it is not considered to be a witness program</li>
+<li>For backward compatibility, for any version byte from 0 to 16, the
 script must fail if the witness program has a <code>CastToBool</code> value of
-zero. However, having a hash like this is a successful preimage attack
-against the hash function, and the risk is negligible.</p>
-<p>[3] Rationale of using a single composite constraint, instead of two
-separate limits such as 1MB base data and 3MB witness data: Using two
-separate limits would make mining and fee estimation nearly impossible.
-Miners would need to solve a complex non-linear optimization problem to
-find the set of transactions that maximize fees given both constraints,
-and wallets would not be able to know what to pay as it depends on which
-of the two conditions is most constrained by the time miners try to
-produce blocks with their transactions in. Another problem with such an
-approach is freeloading. Once a set of transactions hit the base data
-1MB constraint, up to 3MB extra data could be added to the witness by
-just minimally increasing the fee. The marginal cost for extra witness
-space effectively becomes zero in that case.</p>
-<p>[4] <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html</a></p>
+zero. However, having a hash like this is a successful preimage
+attack against the hash function, and the risk is negligible.</li>
+<li>Rationale of using a single composite constraint, instead of two
+separate limits such as 1MB base data and 3MB witness data: Using
+two separate limits would make mining and fee estimation nearly
+impossible. Miners would need to solve a complex non-linear
+optimization problem to find the set of transactions that maximize
+fees given both constraints, and wallets would not be able to know
+what to pay as it depends on which of the two conditions is most
+constrained by the time miners try to produce blocks with their
+transactions in. Another problem with such an approach is
+freeloading. Once a set of transactions hit the base data 1MB
+constraint, up to 3MB extra data could be added to the witness by
+just minimally increasing the fee. The marginal cost for extra
+witness space effectively becomes zero in that case.</li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html</a></li>
+</ol>
 
     </div>
 

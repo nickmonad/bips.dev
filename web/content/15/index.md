@@ -14,15 +14,17 @@ status = ["Deferred"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0015.mediawiki"
 +++
 
-      BIP: 15
-      Layer: Applications
-      Title: Aliases
-      Author: Amir Taaki <genjix@riseup.net>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0015
-      Status: Deferred
-      Type: Standards Track
-      Created: 2011-12-10
+``` 
+  BIP: 15
+  Layer: Applications
+  Title: Aliases
+  Author: Amir Taaki <genjix@riseup.net>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0015
+  Status: Deferred
+  Type: Standards Track
+  Created: 2011-12-10
+```
 
 [BIP 0070](bip-0070.mediawiki "wikilink") (payment protocol) may be seen
 as the alternative to Aliases.
@@ -171,7 +173,7 @@ The request is broken into the handle (genjix) and domain (foo.org) at
 the last occurrence of the @. The client then constructs a request that
 will query for the address.
 
-` `[`https://foo.org/bitcoin-alias/?handle=genjix`](https://foo.org/bitcoin-alias/?handle=genjix)
+` `<https://foo.org/bitcoin-alias/?handle=genjix>
 
 bitcoin-alias has been chosen as the query suffix because it allows this
 system to co-exist easily within another web root without the fear of
@@ -206,35 +208,35 @@ A naive implementation is provided below as an example.
     // resolv.h
     #ifndef NOMRESOLV_H__
     #define NOMRESOLV_H__
-
+    
     #include <string>
     #include "curl/curl.h"
-
+    
     using std::string;
-
+    
     /*
-
+    
     This class resolves against a server to lookup addresses.
     To not conflict with the bitcoin addresses, we refer here to people's handles.
     A handle is of the form:
-
+    
        genjix@foo.org
-
+    
     Most characters are valid for the username + password (and handled accordingly), but the domain follows usual web standards. It is possible to affix a path if needed,
-
+    
        genjix@bar.com/path/to/
-
+    
     */
-
+    
     class NameResolutionService
     {
     public:
         NameResolutionService();
         ~NameResolutionService();
-
+    
         // Three main methods map to RPC actions.
         string FetchAddress(const string& strHandle, string& strAddy);
-
+    
     private:
         // A POST block
         class PostVariables
@@ -249,12 +251,12 @@ A naive implementation is provided below as an example.
             // CURL stores POST blocks as linked lists.
             curl_httppost *pBegin, *pEnd;
         };
-
+    
         // Explodes user@domain => user, domain
         static void ExplodeHandle(const string& strHandle, string& strNickname, string& strDomain);
         // Perform the HTTP request. Returns true on success.
         bool Perform();
-
+    
         // CURL error message
         char pErrorBuffer[CURL_ERROR_SIZE];
         // CURL response
@@ -262,16 +264,16 @@ A naive implementation is provided below as an example.
         // CURL handle
         CURL *curl;
     };
-
+    
     #endif
 
     // resolv.cpp
     #include "resolv.h"
-
+    
     #include <boost/lexical_cast.hpp>
-
+    
     #include "access.h"
-
+    
     // callback used to write response from the server
     static int writer(char *pData, size_t nSize, size_t nNmemb, std::string *pBuffer)
     {
@@ -284,7 +286,7 @@ A naive implementation is provided below as an example.
       }
       return nResult;
     }
-
+    
     NameResolutionService::NameResolutionService()
     {
         // Initialise CURL with our various options.
@@ -307,7 +309,7 @@ A naive implementation is provided below as an example.
     {
         curl_easy_cleanup(curl);
     }
-
+    
     void NameResolutionService::ExplodeHandle(const string& strHandle, string& strNickname, string& strDomain)
     {
         // split address at @ furthrest to the right
@@ -321,7 +323,7 @@ A naive implementation is provided below as an example.
         CURLcode result = curl_easy_perform(curl);
         return (result == CURLE_OK);
     }
-
+    
     string NameResolutionService::FetchAddress(const string& strHandle, string& strAddy)
     {
         // GET is defined for 'getting' data, so we use GET for the low risk fetching of people's addresses
@@ -345,7 +347,7 @@ A naive implementation is provided below as an example.
         strAddy = strBuffer;
         return "";  // no error
     }
-
+    
     NameResolutionService::PostVariables::PostVariables()
     {
         // pBegin/pEnd *must* be null before calling curl_formadd
@@ -361,17 +363,17 @@ A naive implementation is provided below as an example.
         // Copy strings to this block. Return true on success.
         return curl_formadd(&pBegin, &pEnd, CURLFORM_COPYNAME, strKey.c_str(), CURLFORM_COPYCONTENTS, strVal.c_str(), CURLFORM_END) == CURL_FORMADD_OK;
     }
-
+    
     curl_httppost* NameResolutionService::PostVariables::operator()() const
     {
         return pBegin;
     }
     </source>
-
+    
     <source lang="cpp">
     // rpc.cpp
     ...
-
+    
     const Object CheckMaybeThrow(const string& strJsonIn)
     {
         // Parse input JSON
@@ -387,13 +389,13 @@ A naive implementation is provided below as an example.
         // Return JSON object
         return request;
     }
-
+    
     const string CollectAddress(const string& strIn)
     {
         // If the handle does not have an @ in it, then it's a normal base58 bitcoin address
         if (strIn.find('@') == (size_t)-1)
             return strIn;
-
+    
         // Open the lookup service
         NameResolutionService ns;
         // We established that the input string is not a BTC address, so we use it as a handle now.
@@ -401,7 +403,7 @@ A naive implementation is provided below as an example.
         string strError = ns.FetchAddress(strHandle, strAddy);
         if (!strError.empty())
             throw JSONRPCError(-4, strError);
-
+    
         const Object& request(CheckMaybeThrow(strAddy));
         // Get the BTC address from the JSON
         const Value& address = find_value(request, "address");
@@ -409,7 +411,7 @@ A naive implementation is provided below as an example.
             throw JSONRPCError(-32600, "Server responded with malformed reply.");
         return address.get_str();
     }
-
+    
     // Named this way to prevent possible conflicts.
     Value rpc_send(const Array& params, bool fHelp)
     {
@@ -417,7 +419,7 @@ A naive implementation is provided below as an example.
             throw runtime_error(
                 "send <name@domain or address> <amount>\n"
                 "<amount> is a real and is rounded to the nearest 0.01");
-
+    
         // Intelligent function which looks up address given handle, or returns address
         string strAddy = CollectAddress(params[0].get_str());
         int64 nAmount = AmountFromValue(params[1]);
@@ -428,7 +430,7 @@ A naive implementation is provided below as an example.
             throw JSONRPCError(-4, strError);
         return wtx.GetHash().GetHex();
     }
-
+    
     ...
 
 ### IP Transactions
@@ -492,7 +494,7 @@ while the second shows several Bitcoin addresses in a structured format.
 
 **More possibilities :**
 
--   Allow to securely use **unsecured channels**
+  - Allow to securely use **unsecured channels**
 
 You can put an url and a bitcoin address that will be used to sign the
 result. It means that a query to this url will return a bitcoin address
@@ -504,12 +506,12 @@ one.
 `{`  
 `  "bitcoin" :`  
 `  {`  
-`    "url" : "`[`http://merchant.com/bitcoin/getnewaddres/`](http://merchant.com/bitcoin/getnewaddres/)`",`  
+`    "url" : "`<http://merchant.com/bitcoin/getnewaddres/>`",`  
 `    "signedWith" : "1KHAL8bUjnkMRMg9yd2dNrYnJgZGH8Nj6T"`  
 `  }`  
 `}`
 
--   Allow to get a different address each time, or per user, per order,
+  - Allow to get a different address each time, or per user, per order,
     etc
 
 `$ namecoind name_show id/khal`  
@@ -530,7 +532,7 @@ associated with that customer.
 Any text can be put into the brackets, allowing merchants to adapt it to
 all their needs.
 
--   Specification is extensible
+  - Specification is extensible
 
 New features can be added later to support uncovered cases.
 

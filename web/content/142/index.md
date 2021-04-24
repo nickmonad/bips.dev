@@ -14,16 +14,18 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0142.mediawiki"
 +++
 
-      BIP: 142
-      Layer: Applications
-      Title: Address Format for Segregated Witness
-      Author: Johnson Lau <jl2012@xbt.hk>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0142
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2015-12-24
-      License: PD
+``` 
+  BIP: 142
+  Layer: Applications
+  Title: Address Format for Segregated Witness
+  Author: Johnson Lau <jl2012@xbt.hk>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0142
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2015-12-24
+  License: PD
+```
 
 ## Abstract
 
@@ -78,38 +80,38 @@ with 36 digits for 20-byte and 53 digits for 32-byte. Different witness
 program versions will have a unique prefix, as shown in the following
 table:
 
-| rowspan=3 style=""\|Witness program version | colspan=4 style=""\|Hash size               |
-|---------------------------------------------|---------------------------------------------|
-| colspan=2 style=""\|20-byte (36 characters) | colspan=2 style=""\|32-byte (53 characters) |
-| Mainnet                                     | Testnet                                     |
-| 0                                           | p2                                          |
-| 1                                           | p4                                          |
-| 2                                           | p6                                          |
-| 3                                           | p7                                          |
-| 4                                           | pA                                          |
-| 5                                           | pB                                          |
-| 6                                           | pD                                          |
-| 7                                           | pF                                          |
-| 8                                           | pG                                          |
-| 9                                           | pJ                                          |
-| 10                                          | pL                                          |
-| 11                                          | pN                                          |
-| 12                                          | pQ                                          |
-| 13                                          | pS                                          |
-| 14                                          | pT                                          |
-| 15                                          | pV                                          |
-| 16                                          | pX                                          |
-|                                             |                                             |
+| rowspan=3 style=""|Witness program version | colspan=4 style=""|Hash size               |
+| ------------------------------------------ | ------------------------------------------ |
+| colspan=2 style=""|20-byte (36 characters) | colspan=2 style=""|32-byte (53 characters) |
+| Mainnet                                    | Testnet                                    |
+| 0                                          | p2                                         |
+| 1                                          | p4                                         |
+| 2                                          | p6                                         |
+| 3                                          | p7                                         |
+| 4                                          | pA                                         |
+| 5                                          | pB                                         |
+| 6                                          | pD                                         |
+| 7                                          | pF                                         |
+| 8                                          | pG                                         |
+| 9                                          | pJ                                         |
+| 10                                         | pL                                         |
+| 11                                         | pN                                         |
+| 12                                         | pQ                                         |
+| 13                                         | pS                                         |
+| 14                                         | pT                                         |
+| 15                                         | pV                                         |
+| 16                                         | pX                                         |
+|                                            |                                            |
 
 ## Rationale
 
 BIP141 defines 2 ways of encoding a "witness program", a data push of 2
 to 32 bytes:
 
--   A native witness program output is a scriptPubKey with a push of
+  - A native witness program output is a scriptPubKey with a push of
     version byte followed by a push of witness program, and nothing
     else;
--   Segwit-in-P2SH is a BIP16 P2SH redeemScript with a push of version
+  - Segwit-in-P2SH is a BIP16 P2SH redeemScript with a push of version
     byte followed by a push of witness program, while the scriptPubKey
     looks like a normal P2SH output.
 
@@ -124,9 +126,9 @@ The drawbacks of Bitcoin addresses have been extensively discussed in
 BIP13. Since then, better payment methods have been proposed or
 deployed, for example:
 
--   BIP47 Reusable Payment Codes for Hierarchical Deterministic Wallets
--   BIP63 Stealth Addresses
--   BIP70 Payment protocol
+  - BIP47 Reusable Payment Codes for Hierarchical Deterministic Wallets
+  - BIP63 Stealth Addresses
+  - BIP70 Payment protocol
 
 However, none of these are as widely adopted as the suboptimal base-58
 scriptPubKey template addresses, which is still a standard for the whole
@@ -178,11 +180,11 @@ version, and a 0x00 padding, the equivalent P2WPKH address is:
 
 ## References
 
--   [BIP 13: Address Format for
+  - [BIP 13: Address Format for
     pay-to-script-hash](bip-0013.mediawiki "wikilink")
--   [BIP 16: Pay to Script Hash](bip-0016.mediawiki "wikilink")
--   [BIP 70: Payment Protocol](bip-0070.mediawiki "wikilink")
--   [BIP 141: Segregated Witness](bip-0141.mediawiki "wikilink")
+  - [BIP 16: Pay to Script Hash](bip-0016.mediawiki "wikilink")
+  - [BIP 70: Payment Protocol](bip-0070.mediawiki "wikilink")
+  - [BIP 141: Segregated Witness](bip-0141.mediawiki "wikilink")
 
 ## Copyright
 

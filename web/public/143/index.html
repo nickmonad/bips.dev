@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 143
+<code><span style="color:#61676c;">  BIP: 143
   Layer: Consensus (soft fork)
   Title: Transaction Signature Verification for Version 0 Witness Program
   Author: Johnson Lau &lt;jl2012@xbt.hk&gt;
@@ -58,7 +58,7 @@
   Type: Standards Track
   Created: 2016-01-03
   License: PD
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This proposal defines a new transaction digest algorithm for signature
 verification in version 0 witness program, in order to minimize
 redundant data hashing in verification, and to cover the input value by
@@ -189,7 +189,7 @@ reduces from O(n<sup>2</sup>) to O(n).</p>
 <p>Refer to the reference implementation, reproduced below, for the precise
 algorithm:</p>
 <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  uint256 hashPrevouts</span><span style="color:#61676ccc;">;
+<code class="language-cpp" data-lang="cpp"><span style="color:#61676c;">  uint256 hashPrevouts</span><span style="color:#61676ccc;">;
 </span><span style="color:#61676c;">  uint256 hashSequence</span><span style="color:#61676ccc;">;
 </span><span style="color:#61676c;">  uint256 hashOutputs</span><span style="color:#61676ccc;">;
   
@@ -241,7 +241,7 @@ algorithm:</p>
   </span><span style="font-style:italic;color:#abb0b6;">// Sighash type
 </span><span style="color:#61676c;">  ss </span><span style="color:#ed9366;">&lt;&lt;</span><span style="color:#61676c;"> nHashType</span><span style="color:#61676ccc;">;
   
-</span><span style="color:#61676c;">  return ss</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">GetHash</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+  </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> ss</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">GetHash</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
 </span></code></pre><h2 id="restrictions-on-public-key-type">Restrictions on public key type</h2>
 <p>As a default policy, only compressed public keys are accepted in
 <code>P2WPKH</code> and <code>P2WSH</code>. Each public key passed to a sigop inside version 0
@@ -725,23 +725,41 @@ redefined sigops, as anyone-can-spend scripts.</p>
 <references />
 <h2 id="copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
-<p>[1] <a href="https://en.bitcoin.it/wiki/OP_CHECKSIG">1</a></p>
-<p>[2] <a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292">CVE-2013-2292</a></p>
-<p>[3] <a href="https://bitcointalk.org/?topic=140078">New Bitcoin vulnerability: A transaction that takes at least 3
+<ol>
+<li>
+<p><a href="https://en.bitcoin.it/wiki/OP_CHECKSIG">1</a></p>
+</li>
+<li>
+<p><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292">CVE-2013-2292</a></p>
+</li>
+<li>
+<p><a href="https://bitcointalk.org/?topic=140078">New Bitcoin vulnerability: A transaction that takes at least 3
 minutes to verify</a></p>
-<p>[4] <a href="http://rusty.ozlabs.org/?p=522">The Megatransaction: Why Does It Take 25
+</li>
+<li>
+<p><a href="http://rusty.ozlabs.org/?p=522">The Megatransaction: Why Does It Take 25
 Seconds?</a></p>
-<p>[5] <a href="https://bitcointalk.org/index.php?topic=181734.0">SIGHASH_WITHINPUTVALUE: Super-lightweight HW wallets and offline
+</li>
+<li>
+<p><a href="https://bitcointalk.org/index.php?topic=181734.0">SIGHASH_WITHINPUTVALUE: Super-lightweight HW wallets and offline
 data</a></p>
-<p>[6] <a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141: Segregated Witness (Consensus
+</li>
+<li>
+<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141: Segregated Witness (Consensus
 layer)</a></p>
-<p>[7] </p>
-<p>[8] In the original algorithm, a <code>uint256</code> of <code>0x0000......0001</code> is
-committed if the input index for a <code>SINGLE</code> signature is greater than or
-equal to the number of outputs. In this BIP a <code>0x0000......0000</code> is
-committed, without changing the semantics.</p>
-<p>[9] <a href="https://bips.dev/143/bip-0144.mediawiki" title="wikilink">BIP144: Segregated Witness (Peer
+</li>
+<li></li>
+<li>
+<p>In the original algorithm, a <code>uint256</code> of <code>0x0000......0001</code> is
+committed if the input index for a <code>SINGLE</code> signature is greater
+than or equal to the number of outputs. In this BIP a
+<code>0x0000......0000</code> is committed, without changing the semantics.</p>
+</li>
+<li>
+<p><a href="https://bips.dev/143/bip-0144.mediawiki" title="wikilink">BIP144: Segregated Witness (Peer
 Services)</a></p>
+</li>
+</ol>
 
     </div>
 

@@ -14,15 +14,17 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0033.mediawiki"
 +++
 
-      BIP: 33
-      Layer: Peer Services
-      Title: Stratized Nodes
-      Author: Amir Taaki <genjix@riseup.net>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0033
-      Status: Rejected
-      Type: Standards Track
-      Created: 2012-05-15
+``` 
+  BIP: 33
+  Layer: Peer Services
+  Title: Stratized Nodes
+  Author: Amir Taaki <genjix@riseup.net>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0033
+  Status: Rejected
+  Type: Standards Track
+  Created: 2012-05-15
+```
 
 ## Abstract
 
@@ -82,19 +84,19 @@ We propose two more values of NODE\_SERVICE (2) and NODE\_STRATIZED (4).
 
 ### NODE\_SERVICE
 
--   A blockchain service which supports the additional messages
+  - A blockchain service which supports the additional messages
     "getoutputs" and "getspends".
--   Does not respond to "getdata" messages by itself (unless
+  - Does not respond to "getdata" messages by itself (unless
     NODE\_NETWORK is specified)
--   If NODE\_NETWORK is specified, then "getdata" for transactions will
+  - If NODE\_NETWORK is specified, then "getdata" for transactions will
     retrieve them not only from the memory pool but also check the
     blockchain if necessary.
 
 ### NODE\_STRATIZED
 
--   A node which uses the stratized strategy specified in this document.
--   NODE\_STRATIZED will relay inventories for accepted transactions.
--   Does not support "getblocks" as stratized nodes do not contain the
+  - A node which uses the stratized strategy specified in this document.
+  - NODE\_STRATIZED will relay inventories for accepted transactions.
+  - Does not support "getblocks" as stratized nodes do not contain the
     entire blockchain.
 
 Apart from the differences noted above, the nodes are otherwise
@@ -114,7 +116,7 @@ pseudocode.
         uint8_t payment_type;
         uint8_t address_hash[16];
     };
-
+    
     struct get_outputs
     {
         decoded_address dest;
@@ -127,7 +129,7 @@ pseudocode.
         uint8_t hash[32];
         uint32_t index;
     };
-
+    
     struct outputs
     {
         decoded_address dest;

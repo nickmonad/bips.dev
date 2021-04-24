@@ -14,16 +14,18 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0151.mediawiki"
 +++
 
-      BIP: 151
-      Layer: Peer Services
-      Title: Peer-to-Peer Communication Encryption
-      Author: Jonas Schnelli <dev@jonasschnelli.ch>
-      Comments-Summary: Controversial; some recommendation, and some discouragement
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0151
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2016-03-23
-      License: PD
+``` 
+  BIP: 151
+  Layer: Peer Services
+  Title: Peer-to-Peer Communication Encryption
+  Author: Jonas Schnelli <dev@jonasschnelli.ch>
+  Comments-Summary: Controversial; some recommendation, and some discouragement
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0151
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2016-03-23
+  License: PD
+```
 
 ## Abstract
 
@@ -83,24 +85,24 @@ by sharing the pubkeys of an ephemeral key. Once the ECDH secret is
 calculated on each side, the symmetric encryption cipher keys must be
 derived with HKDF \[2\] after the following specification:
 
-1\. HKDF extraction
-`PRK = HKDF_EXTRACT(hash=SHA256, salt="bitcoinecdh", ikm=ecdh_secret|cipher-type)`.
+1\. HKDF extraction `PRK = HKDF_EXTRACT(hash=SHA256, salt="bitcoinecdh",
+ikm=ecdh_secret|cipher-type)`.
 
-2\. Derive Key1
-`K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256, info="BitcoinK1", L=32)`
+2\. Derive Key1 `K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256,
+info="BitcoinK1", L=32)`
 
-3\. Derive Key2
-`K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256, info="BitcoinK2", L=32)`
+3\. Derive Key2 `K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256,
+info="BitcoinK2", L=32)`
 
 It is important to include the cipher-type into the symmetric cipher key
 derivation to avoid weak-cipher-attacks.
 
 ### Session ID
 
-Both sides must also calculate the 256bit session-id using
-`SID = HKDF_EXPAND(prk=PRK, hash=SHA256, info="BitcoinSessionID", L=32)`.
-The session-id can be used for linking the encryption-session to an
-identity check.
+Both sides must also calculate the 256bit session-id using `SID =
+HKDF_EXPAND(prk=PRK, hash=SHA256, info="BitcoinSessionID", L=32)`. The
+session-id can be used for linking the encryption-session to an identity
+check.
 
 ### The `encinit` message type
 
@@ -111,14 +113,14 @@ must do the same `encinit`/`encack` interaction for the opposite
 communication direction.
 
 | Field Size | Description               | Data type    | Comments                                    |
-|------------|---------------------------|--------------|---------------------------------------------|
+| ---------- | ------------------------- | ------------ | ------------------------------------------- |
 | 33bytes    | ephemeral-pubkey          | comp.-pubkey | The session pubkey from the requesting peer |
 | 1bytes     | symmetric key cipher type | int8         | symmetric key cipher type to use            |
 
 Possible symmetric key ciphers types
 
 | Number | symmetric key ciphers type    |
-|--------|-------------------------------|
+| ------ | ----------------------------- |
 | 0      | chacha20-poly1305@openssh.com |
 
 ### ChaCha20-Poly1305 Cipher Suite
@@ -156,7 +158,7 @@ The responding peer accepts the encryption request by sending an
 `encack` message.
 
 | Field Size | Description      | Data type    | Comments                                    |
-|------------|------------------|--------------|---------------------------------------------|
+| ---------- | ---------------- | ------------ | ------------------------------------------- |
 | 33bytes    | ephemeral-pubkey | comp.-pubkey | The session pubkey from the responding peer |
 
 At this point, the shared secret key for the symmetric key cipher must
@@ -165,14 +167,14 @@ will never be transmitted. The shared secret can only be calculated if
 an attacker knows at least one private key and the remote peer's public
 key.
 
--   **The `encinit`/`encack` interaction must be done from both sides.**
--   Each communication direction uses its own secret key for the
+  - **The `encinit`/`encack` interaction must be done from both sides.**
+  - Each communication direction uses its own secret key for the
     symmetric cipher.
--   The second `encinit` request (from the responding peer) must use the
+  - The second `encinit` request (from the responding peer) must use the
     same symmetric cipher type.
--   All unencrypted messages before the second `encack` response (from
+  - All unencrypted messages before the second `encack` response (from
     the responding peer) must be ignored.
--   After a successful `encinit`/`encack` interaction, the "encrypted
+  - After a successful `encinit`/`encack` interaction, the "encrypted
     messages structure" must be used. Non-encrypted messages from the
     requesting peer must lead to a connection termination.
 
@@ -185,7 +187,7 @@ the unencrypted message structure).
 ### Encrypted Messages Structure
 
 | Field Size | Description        | Data type | Comments                                        |
-|------------|--------------------|-----------|-------------------------------------------------|
+| ---------- | ------------------ | --------- | ----------------------------------------------- |
 | 4          | length             | uint32\_t | Length of ciphertext payload in number of bytes |
 | ?          | ciphertext payload | ?         | One or many ciphertext command & message data   |
 | 16         | MAC tag            | ?         | 128bit MAC-tag                                  |
@@ -207,7 +209,7 @@ The encrypted payload will result decrypted in one or many unencrypted
 messages:
 
 | Field Size | Description | Data type | Comments                                                                                    |
-|------------|-------------|-----------|---------------------------------------------------------------------------------------------|
+| ---------- | ----------- | --------- | ------------------------------------------------------------------------------------------- |
 | ?          | command     | varlen    | ASCII string identifying the packet content, we are using varlen in the encrypted messages. |
 | 4          | length      | uint32\_t | Length of plaintext payload                                                                 |
 | ?          | payload     | ?         | The actual data                                                                             |
@@ -249,20 +251,20 @@ the `encinit` messages.
 
 ## References
 
--   \[1\]
+  - \[1\]
     <https://e-collection.library.ethz.ch/eserv/eth:48205/eth-48205-01.pdf>
--   \[2\] HKDF (RFC 5869) <https://tools.ietf.org/html/rfc5869>
--   \[3\] ChaCha20 <https://cr.yp.to/chacha/chacha-20080128.pdf>
--   \[4\] Poly1305 <https://cr.yp.to/mac/poly1305-20050329.pdf>
--   \[5\]
+  - \[2\] HKDF (RFC 5869) <https://tools.ietf.org/html/rfc5869>
+  - \[3\] ChaCha20 <https://cr.yp.to/chacha/chacha-20080128.pdf>
+  - \[4\] Poly1305 <https://cr.yp.to/mac/poly1305-20050329.pdf>
+  - \[5\]
     <https://github.com/openssh/openssh-portable/blob/05855bf2ce7d5cd0a6db18bc0b4214ed5ef7516d/PROTOCOL.chacha20poly1305>
--   \[6\] "ChaCha20 and Poly1305 based Cipher Suites for TLS", Adam
+  - \[6\] "ChaCha20 and Poly1305 based Cipher Suites for TLS", Adam
     Langley
     <https://tools.ietf.org/html/draft-agl-tls-chacha20poly1305-03>
 
 ## Acknowledgements
 
--   Pieter Wuille and Gregory Maxwell for most of the ideas in this BIP.
+  - Pieter Wuille and Gregory Maxwell for most of the ideas in this BIP.
 
 ## Copyright
 

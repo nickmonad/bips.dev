@@ -14,15 +14,17 @@ status = ["Obsolete"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki"
 +++
 
-      BIP: 64
-      Layer: Peer Services
-      Title: getutxo message
-      Author: Mike Hearn <hearn@vinumeris.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0064
-      Status: Obsolete
-      Type: Standards Track
-      Created: 2014-06-10
+``` 
+  BIP: 64
+  Layer: Peer Services
+  Title: getutxo message
+  Author: Mike Hearn <hearn@vinumeris.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0064
+  Status: Obsolete
+  Type: Standards Track
+  Created: 2014-06-10
+```
 
 ## Abstract
 
@@ -57,14 +59,14 @@ Two new messages are defined. The "getutxos" message has the following
 structure:
 
 | Field Size | Description   | Data type         | Comments                                                                                                                      |
-|------------|---------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| ---------- | ------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | 1          | check mempool | bool              | Whether to apply mempool transactions during the calculation, thus exposing their UTXOs and removing outputs that they spend. |
 | ?          | outpoints     | vector<COutPoint> | The list of outpoints to be queried. Each outpoint is serialized in the same way it is in a tx message.                       |
 
 The response message "utxos" has the following structure:
 
 | Field Size | Description    | Data type  | Comments                                                                                                                                        |
-|------------|----------------|------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------- | -------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | 4          | chain height   | uint32     | The height of the chain at the moment the result was calculated.                                                                                |
 | 32         | chain tip hash | uint256    | Block hash of the top of the chain at the moment the result was calculated.                                                                     |
 | ?          | hit bitmap     | byte\[\]   | An array of bytes encoding one bit for each outpoint queried. Each bit indicates whether the queried outpoint was found in the UTXO set or not. |
@@ -73,7 +75,7 @@ The response message "utxos" has the following structure:
 The result object is defined as:
 
 | Field Size | Description | Data type | Comments                                                                                                |
-|------------|-------------|-----------|---------------------------------------------------------------------------------------------------------|
+| ---------- | ----------- | --------- | ------------------------------------------------------------------------------------------------------- |
 | 4          | tx version  | uint32    | The version number of the transaction the UTXO was found in.                                            |
 | 4          | height      | uint32    | The height of the block containing the defining transaction, or 0x7FFFFFFF if the tx is in the mempool. |
 | ?          | output      | CTxOut    | The output itself, serialized in the same way as in a tx message.                                       |

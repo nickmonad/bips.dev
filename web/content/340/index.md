@@ -14,18 +14,20 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki"
 +++
 
-      BIP: 340
-      Title: Schnorr Signatures for secp256k1
-      Author: Pieter Wuille <pieter.wuille@gmail.com>
-              Jonas Nick <jonasd.nick@gmail.com>
-              Tim Ruffing <crypto@timruffing.de>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0340
-      Status: Draft
-      Type: Standards Track
-      License: BSD-2-Clause
-      Created: 2020-01-19
-      Post-History: 2018-07-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-July/016203.html [bitcoin-dev] Schnorr signatures BIP
+``` 
+  BIP: 340
+  Title: Schnorr Signatures for secp256k1
+  Author: Pieter Wuille <pieter.wuille@gmail.com>
+          Jonas Nick <jonasd.nick@gmail.com>
+          Tim Ruffing <crypto@timruffing.de>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0340
+  Status: Draft
+  Type: Standards Track
+  License: BSD-2-Clause
+  Created: 2020-01-19
+  Post-History: 2018-07-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-July/016203.html [bitcoin-dev] Schnorr signatures BIP
+```
 
 ## Introduction
 
@@ -50,26 +52,26 @@ downsides compared to [Schnorr
 signatures](http://publikationen.ub.uni-frankfurt.de/opus4/files/4280/schnorr.pdf)
 over the same curve:
 
--   **Provable security**: Schnorr signatures are provably secure. In
+  - **Provable security**: Schnorr signatures are provably secure. In
     more detail, they are *strongly unforgeable under chosen message
-    attack (SUF-CMA)*[1] [in the random oracle model assuming the
+    attack (SUF-CMA)*\[1\] [in the random oracle model assuming the
     hardness of the elliptic curve discrete logarithm problem
     (ECDLP)](https://www.di.ens.fr/~pointche/Documents/Papers/2000_joc.pdf)
     and [in the generic group model assuming variants of preimage and
     second preimage resistance of the used hash
-    function](http://www.neven.org/papers/schnorr.pdf)[2]. In contrast,
-    the [best known results for the provable security of
+    function](http://www.neven.org/papers/schnorr.pdf)\[2\]. In
+    contrast, the [best known results for the provable security of
     ECDSA](https://nbn-resolving.de/urn:nbn:de:hbz:294-60803) rely on
     stronger assumptions.
--   **Non-malleability**: The SUF-CMA security of Schnorr signatures
+  - **Non-malleability**: The SUF-CMA security of Schnorr signatures
     implies that they are non-malleable. On the other hand, ECDSA
-    signatures are inherently malleable[3]; a third party without access
-    to the secret key can alter an existing valid signature for a given
-    public key and message into another signature that is valid for the
-    same key and message. This issue is discussed in
+    signatures are inherently malleable\[3\]; a third party without
+    access to the secret key can alter an existing valid signature for a
+    given public key and message into another signature that is valid
+    for the same key and message. This issue is discussed in
     [BIP62](bip-0062.mediawiki "wikilink") and
     [BIP146](bip-0146.mediawiki "wikilink").
--   **Linearity**: Schnorr signatures provide a simple and efficient
+  - **Linearity**: Schnorr signatures provide a simple and efficient
     method that enables multiple collaborating parties to produce a
     signature that is valid for the sum of their public keys. This is
     the building block for various higher-level constructions that
@@ -81,19 +83,19 @@ from not being standardized. This document seeks to change that. As we
 propose a new standard, a number of improvements not specific to Schnorr
 signatures can be made:
 
--   **Signature encoding**: Instead of using
+  - **Signature encoding**: Instead of using
     [DER](https://en.wikipedia.org/wiki/X.690#DER_encoding)-encoding for
     signatures (which are variable size, and up to 72 bytes), we can use
     a simple fixed 64-byte format.
--   **Public key encoding**: Instead of using
+  - **Public key encoding**: Instead of using
     [*compressed*](https://www.secg.org/sec1-v2.pdf) 33-byte encodings
     of elliptic curve points which are common in Bitcoin today, public
     keys in this proposal are encoded as 32 bytes.
--   **Batch verification**: The specific formulation of ECDSA signatures
+  - **Batch verification**: The specific formulation of ECDSA signatures
     that is standardized cannot be verified more efficiently in batch
     compared to individually, unless additional witness data is added.
     Changing the signature scheme offers an opportunity to address this.
--   **Completely specified**: To be safe for usage in consensus systems,
+  - **Completely specified**: To be safe for usage in consensus systems,
     the verification algorithm must be completely specified at the byte
     level. This guarantees that nobody can construct a signature that is
     valid to some verifiers but not all. This is traditionally not a
@@ -125,15 +127,15 @@ encodings and operations.
 **Schnorr signature variant** Elliptic Curve Schnorr signatures for
 message *m* and public key *P* generally involve a point *R*, integers
 *e* and *s* picked by the signer, and the base point *G* which satisfy
-*e = hash(R \|\| m)* and *s⋅G = R + e⋅P*. Two formulations exist,
+*e = hash(R || m)* and *s⋅G = R + e⋅P*. Two formulations exist,
 depending on whether the signer reveals *e* or *R*:
 
-1.  Signatures are pairs *(e, s)* that satisfy *e = hash(s⋅G - e⋅P
-    \|\| m)*. This variant avoids minor complexity introduced by the
-    encoding of the point *R* in the signature (see paragraphs "Encoding
-    R and public key point P" and "Implicit Y coordinates" further below
-    in this subsection). Moreover, revealing *e* instead of *R* allows
-    for potentially shorter signatures: Whereas an encoding of *R*
+1.  Signatures are pairs *(e, s)* that satisfy *e = hash(s⋅G - e⋅P ||
+    m)*. This variant avoids minor complexity introduced by the encoding
+    of the point *R* in the signature (see paragraphs "Encoding R and
+    public key point P" and "Implicit Y coordinates" further below in
+    this subsection). Moreover, revealing *e* instead of *R* allows for
+    potentially shorter signatures: Whereas an encoding of *R*
     inherently needs about 32 bytes, the hash *e* can be tuned to be
     shorter than 32 bytes, and [a short hash of only 16 bytes suffices
     to provide SUF-CMA security at the target security level of 128
@@ -148,7 +150,7 @@ depending on whether the signer reveals *e* or *R*:
     is to find a collision in the hash function in order to obtain a
     valid signature on a message that an honest co-signer did not intend
     to sign.
-2.  Signatures are pairs *(R, s)* that satisfy *s⋅G = R + hash(R \|\|
+2.  Signatures are pairs *(R, s)* that satisfy *s⋅G = R + hash(R ||
     m)⋅P*. This supports batch verification, as there are no elliptic
     curve operations inside the hashes. Batch verification enables
     significant speedups.
@@ -157,7 +159,8 @@ depending on whether the signer reveals *e* or *R*:
 signatures individually and to verify a batch of *n* signatures. This
 ratio goes up logarithmically with the number of signatures, or in other
 words: the total time to verify *n* signatures grows with *O(n / log
-n)*.](bip-0340/speedup-batch.png "This graph shows the ratio between the time it takes to verify n signatures individually and to verify a batch of n signatures. This ratio goes up logarithmically with the number of signatures, or in other words: the total time to verify n signatures grows with O(n / log n).")
+n)*.](bip-0340/speedup-batch.png
+"This graph shows the ratio between the time it takes to verify n signatures individually and to verify a batch of n signatures. This ratio goes up logarithmically with the number of signatures, or in other words: the total time to verify n signatures grows with O(n / log n).")
 
 Since we would like to avoid the fragility that comes with short hashes,
 the *e* variant does not provide significant advantages. We choose the
@@ -166,7 +169,7 @@ the *e* variant does not provide significant advantages. We choose the
 **Key prefixing** Using the verification rule above directly makes
 Schnorr signatures vulnerable to "related-key attacks" in which a third
 party can convert a signature *(R, s)* for public key *P* into a
-signature *(R, s + a⋅hash(R \|\| m))* for public key *P + a⋅G* and the
+signature *(R, s + a⋅hash(R || m))* for public key *P + a⋅G* and the
 same message *m*, for any given additive tweak *a* to the signing key.
 This would render signatures insecure when keys are generated using
 [BIP32's unhardened
@@ -174,15 +177,14 @@ derivation](bip-0032.mediawiki#public-parent-key--public-child-key "wikilink")
 and other methods that rely on additive tweaks to existing keys such as
 Taproot.
 
-To protect against these attacks, we choose *key prefixed*[4] Schnorr
+To protect against these attacks, we choose *key prefixed*\[4\] Schnorr
 signatures which means that the public key is prefixed to the message in
 the challenge hash input. This changes the equation to *s⋅G = R + hash(R
-\|\| P \|\| m)⋅P*. [It can be
-shown](https://eprint.iacr.org/2015/1135.pdf) that key prefixing
-protects against related-key attacks with additive tweaks. In general,
-key prefixing increases robustness in multi-user settings, e.g., it
-seems to be a requirement for proving the MuSig multisignature scheme
-secure (see Applications below).
+|| P || m)⋅P*. [It can be shown](https://eprint.iacr.org/2015/1135.pdf)
+that key prefixing protects against related-key attacks with additive
+tweaks. In general, key prefixing increases robustness in multi-user
+settings, e.g., it seems to be a requirement for proving the MuSig
+multisignature scheme secure (see Applications below).
 
 We note that key prefixing is not strictly necessary for transaction
 signatures as used in Bitcoin currently, because signed transactions
@@ -215,7 +217,7 @@ ambiguous (every valid X coordinate has two possible Y coordinates). We
 have a choice between several options for symmetry breaking:
 
 1.  Implicitly choosing the Y coordinate that is in the lower half.
-2.  Implicitly choosing the Y coordinate that is even[5].
+2.  Implicitly choosing the Y coordinate that is even\[5\].
 3.  Implicitly choosing the Y coordinate that is a quadratic residue
     (i.e. has a square root modulo *p*).
 
@@ -225,7 +227,7 @@ format consists of a byte indicating the oddness of the Y coordinate,
 plus the full X coordinate. To avoid gratuitous incompatibilities, we
 pick that option for *P*, and thus our X-only public keys become
 equivalent to a compressed public key that is the X-only key prefixed by
-the byte 0x02. For consistency, the same is done for *R*[6].
+the byte 0x02. For consistency, the same is done for *R*\[6\].
 
 Despite halving the size of the set of valid public keys, implicit Y
 coordinates are not a reduction in security. Informally, if a fast
@@ -233,7 +235,7 @@ algorithm existed to compute the discrete logarithm of an X-only public
 key, then it could also be used to compute the discrete logarithm of a
 full public key: apply it to the X coordinate, and then optionally
 negate the result. This shows that breaking an X-only public key can be
-at most a small constant term faster than breaking a full one.[7].
+at most a small constant term faster than breaking a full one.\[7\].
 
 **Tagged Hashes** Cryptographic hash functions are used for multiple
 purposes in the specification below and in Bitcoin in general. To make
@@ -251,7 +253,7 @@ derivation function was copied or independently created, then the nonce
 could be accidentally reused in the other scheme leaking the secret key.
 
 This proposal suggests to include the tag by prefixing the hashed data
-with *SHA256(tag) \|\| SHA256(tag)*. Because this is a 64-byte long
+with *SHA256(tag) || SHA256(tag)*. Because this is a 64-byte long
 context-specific constant and the *SHA256* block size is also 64 bytes,
 optimized implementations are possible (identical to SHA256 itself, but
 with a modified initial state). Using SHA256 of the tag name itself is
@@ -262,77 +264,83 @@ use the optimization.
 *pk* which is the X coordinate of a point *P* on the curve whose Y
 coordinate is even and signatures *(r,s)* where *r* is the X coordinate
 of a point *R* whose Y coordinate is even. The signature satisfies *s⋅G
-= R + tagged\_hash(r \|\| pk \|\| m)⋅P*.
+= R + tagged\_hash(r || pk || m)⋅P*.
 
 ### Specification
 
 The following conventions are used, with constants as defined for
 [secp256k1](https://www.secg.org/sec2-v2.pdf). We note that adapting
 this specification to other elliptic curves is not straightforward and
-can result in an insecure scheme[8].
+can result in an insecure scheme\[8\].
 
--   Lowercase variables represent integers or byte arrays.
-    -   The constant *p* refers to the field size,
+  - Lowercase variables represent integers or byte arrays.
+      - The constant *p* refers to the field size,
         *0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F*.
-    -   The constant *n* refers to the curve order,
+      - The constant *n* refers to the curve order,
         *0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141*.
--   Uppercase variables refer to points on the curve with equation
+  - Uppercase variables refer to points on the curve with equation
     *y<sup>2</sup> = x<sup>3</sup> + 7* over the integers modulo *p*.
-    -   *is\_infinite(P)* returns whether or not *P* is the point at
+      - *is\_infinite(P)* returns whether or not *P* is the point at
         infinity.
-    -   *x(P)* and *y(P)* are integers in the range *0..p-1* and refer
+      - *x(P)* and *y(P)* are integers in the range *0..p-1* and refer
         to the X and Y coordinates of a point *P* (assuming it is not
         infinity).
-    -   The constant *G* refers to the base point, for which *x(G) =
+      - The constant *G* refers to the base point, for which *x(G) =
         0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798*
         and *y(G) =
         0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8*.
-    -   Addition of points refers to the usual [elliptic curve group
+      - Addition of points refers to the usual [elliptic curve group
         operation](https://en.wikipedia.org/wiki/Elliptic_curve#The_group_law).
-    -   [Multiplication (⋅) of an integer and a
+      - [Multiplication (⋅) of an integer and a
         point](https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication)
         refers to the repeated application of the group operation.
--   Functions and operations:
-    -   *\|\|* refers to byte array concatenation.
-    -   The function *x\[i:j\]*, where *x* is a byte array and *i, j ≥
+  - Functions and operations:
+      - *||* refers to byte array concatenation.
+      - The function *x\[i:j\]*, where *x* is a byte array and *i, j ≥
         0*, returns a *(j - i)*-byte array with a copy of the *i*-th
         byte (inclusive) to the *j*-th byte (exclusive) of *x*.
-    -   The function *bytes(x)*, where *x* is an integer, returns the
+      - The function *bytes(x)*, where *x* is an integer, returns the
         32-byte encoding of *x*, most significant byte first.
-    -   The function *bytes(P)*, where *P* is a point, returns
+      - The function *bytes(P)*, where *P* is a point, returns
         *bytes(x(P))*.
-    -   The function *int(x)*, where *x* is a 32-byte array, returns the
+      - The function *int(x)*, where *x* is a 32-byte array, returns the
         256-bit unsigned integer whose most significant byte first
         encoding is *x*.
-    -   The function *has\_even\_y(P)*, where *P* is a point for which
+      - The function *has\_even\_y(P)*, where *P* is a point for which
         *not is\_infinite(P)*, returns *y(P) mod 2 = 0*.
-    -   The function *lift\_x(x)*, where *x* is an integer in range
+      - The function *lift\_x(x)*, where *x* is an integer in range
         *0..p-1*, returns the point *P* for which *x(P) = x*<ref>
 
-`   Given a candidate X coordinate `*`x`*` in the range `*`0..p-1`*`, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then `*`x`*` is not a valid X coordinate either, i.e., no point `*`P`*` exists for which `*`x(P)`` ``=`` ``x`*`. The valid Y coordinates for a given candidate `*`x`*` are the square roots of `*`c`` ``=`` ``x`<sup>`3`</sup>` ``+`` ``7`` ``mod`` ``p`*` and they can be computed as `*`y`` ``=`` ``±c`<sup>`(p+1)/4`</sup>` ``mod`` ``p`*` (see `[`Quadratic`` ``residue`](https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus)`) if they exist, which can be checked by squaring and comparing with `*`c`*`.`</ref>` and `*`has_even_y(P)`*`, or fails if no such point exists. The function `*`lift_x(x)`*` is equivalent to the following pseudocode:`
+`   Given a candidate X coordinate `*`x`*` in the range `*`0..p-1`*`, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then `*`x`*` is not a valid X coordinate either, i.e., no point `*`P`*` exists for which `*`x(P)`` 
+ ``=`` 
+ ``x`*`. The valid Y coordinates for a given candidate `*`x`*` are the square roots of `*`c`` 
+ ``=``   ``x`<sup>`3`</sup>`   ``+``   ``7``   ``mod`` 
+ ``p`*` and they can be computed as `*`y``   ``=`` 
+ ``±c`<sup>`(p+1)/4`</sup>`   ``mod``   ``p`*` (see `[`Quadratic`` 
+ ``residue`](https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus)`) if they exist, which can be checked by squaring and comparing with `*`c`*`.`</ref>` and `*`has_even_y(P)`*`, or fails if no such point exists. The function `*`lift_x(x)`*` is equivalent to the following pseudocode:`
 
--   -   Let *c = x<sup>3</sup> + 7 mod p*.
-    -   Let *y = c<sup>(p+1)/4</sup> mod p*.
-    -   Fail if *c ≠ y<sup>2</sup> mod p*.
-    -   Return the unique point *P* such that *x(P) = x* and *y(P) = y*
+  -   - Let *c = x<sup>3</sup> + 7 mod p*.
+      - Let *y = c<sup>(p+1)/4</sup> mod p*.
+      - Fail if *c ≠ y<sup>2</sup> mod p*.
+      - Return the unique point *P* such that *x(P) = x* and *y(P) = y*
         if *y mod 2 = 0* or *y(P) = p-y* otherwise.
 
--   -   The function *hash<sub>tag</sub>(x)* where *tag* is a UTF-8
+  -   - The function *hash<sub>tag</sub>(x)* where *tag* is a UTF-8
         encoded tag name and *x* is a byte array returns the 32-byte
-        hash *SHA256(SHA256(tag) \|\| SHA256(tag) \|\| x)*.
+        hash *SHA256(SHA256(tag) || SHA256(tag) || x)*.
 
 #### Public Key Generation
 
 Input:
 
--   The secret key *sk*: a 32-byte array, freshly generated uniformly at
+  - The secret key *sk*: a 32-byte array, freshly generated uniformly at
     random
 
 The algorithm *PubKey(sk)* is defined as:
 
--   Let *d' = int(sk)*.
--   Fail if *d' = 0* or *d' ≥ n*.
--   Return *bytes(d'⋅G)*.
+  - Let *d' = int(sk)*.
+  - Fail if *d' = 0* or *d' ≥ n*.
+  - Return *bytes(d'⋅G)*.
 
 Note that we use a very different public key format (32 bytes) than the
 ones used by existing systems (which typically use elliptic curve points
@@ -355,30 +363,29 @@ remain usable.
 
 Input:
 
--   The secret key *sk*: a 32-byte array
--   The message *m*: a 32-byte array
--   Auxiliary random data *a*: a 32-byte array
+  - The secret key *sk*: a 32-byte array
+  - The message *m*: a 32-byte array
+  - Auxiliary random data *a*: a 32-byte array
 
 The algorithm *Sign(sk, m)* is defined as:
 
--   Let *d' = int(sk)*
--   Fail if *d' = 0* or *d' ≥ n*
--   Let *P = d'⋅G*
--   Let ''d = d' '' if *has\_even\_y(P)*, otherwise let ''d = n - d' ''.
--   Let *t* be the byte-wise xor of *bytes(d)* and
-    *hash<sub>BIP0340/aux</sub>(a)*[9].
--   Let *rand = hash<sub>BIP0340/nonce</sub>(t \|\| bytes(P)
-    \|\| m)*[10].
--   Let *k' = int(rand) mod n*[11].
--   Fail if *k' = 0*.
--   Let *R = k'⋅G*.
--   Let ''k = k' '' if *has\_even\_y(R)*, otherwise let ''k = n - k' ''.
--   Let *e = int(hash<sub>BIP0340/challenge</sub>(bytes(R) \|\| bytes(P)
-    \|\| m)) mod n*.
--   Let *sig = bytes(R) \|\| bytes((k + ed) mod n)*.
--   If *Verify(bytes(P), m, sig)* (see below) returns failure,
-    abort[12].
--   Return the signature *sig*.
+  - Let *d' = int(sk)*
+  - Fail if *d' = 0* or *d' ≥ n*
+  - Let *P = d'⋅G*
+  - Let ''d = d' '' if *has\_even\_y(P)*, otherwise let ''d = n - d' ''.
+  - Let *t* be the byte-wise xor of *bytes(d)* and
+    *hash<sub>BIP0340/aux</sub>(a)*\[9\].
+  - Let *rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P) || m)*\[10\].
+  - Let *k' = int(rand) mod n*\[11\].
+  - Fail if *k' = 0*.
+  - Let *R = k'⋅G*.
+  - Let ''k = k' '' if *has\_even\_y(R)*, otherwise let ''k = n - k' ''.
+  - Let *e = int(hash<sub>BIP0340/challenge</sub>(bytes(R) || bytes(P)
+    || m)) mod n*.
+  - Let *sig = bytes(R) || bytes((k + ed) mod n)*.
+  - If *Verify(bytes(P), m, sig)* (see below) returns failure,
+    abort\[12\].
+  - Return the signature *sig*.
 
 The auxiliary random data should be set to fresh randomness generated at
 signing time, resulting in what is called a *synthetic nonce*. Using 32
@@ -443,22 +450,22 @@ from untrusted sources.
 
 Input:
 
--   The public key *pk*: a 32-byte array
--   The message *m*: a 32-byte array
--   A signature *sig*: a 64-byte array
+  - The public key *pk*: a 32-byte array
+  - The message *m*: a 32-byte array
+  - A signature *sig*: a 64-byte array
 
 The algorithm *Verify(pk, m, sig)* is defined as:
 
--   Let *P = lift\_x(int(pk))*; fail if that fails.
--   Let *r = int(sig\[0:32\])*; fail if *r ≥ p*.
--   Let *s = int(sig\[32:64\])*; fail if *s ≥ n*.
--   Let *e = int(hash<sub>BIP0340/challenge</sub>(bytes(r) \|\| bytes(P)
-    \|\| m)) mod n*.
--   Let *R = s⋅G - e⋅P*.
--   Fail if *is\_infinite(R)*.
--   Fail if *not has\_even\_y(R)*.
--   Fail if *x(R) ≠ r*.
--   Return success iff no failure occurred before reaching this point.
+  - Let *P = lift\_x(int(pk))*; fail if that fails.
+  - Let *r = int(sig\[0:32\])*; fail if *r ≥ p*.
+  - Let *s = int(sig\[32:64\])*; fail if *s ≥ n*.
+  - Let *e = int(hash<sub>BIP0340/challenge</sub>(bytes(r) || bytes(P)
+    || m)) mod n*.
+  - Let *R = s⋅G - e⋅P*.
+  - Fail if *is\_infinite(R)*.
+  - Fail if *not has\_even\_y(R)*.
+  - Fail if *x(R) ≠ r*.
+  - Return success iff no failure occurred before reaching this point.
 
 For every valid secret key *sk* and message *m*,
 *Verify(PubKey(sk),m,Sign(sk,m))* will succeed.
@@ -478,43 +485,43 @@ the X coordinate as public key.
 
 Input:
 
--   The number *u* of signatures
--   The public keys *pk<sub>1..u</sub>*: *u* 32-byte arrays
--   The messages *m<sub>1..u</sub>*: *u* 32-byte arrays
--   The signatures *sig<sub>1..u</sub>*: *u* 64-byte arrays
+  - The number *u* of signatures
+  - The public keys *pk<sub>1..u</sub>*: *u* 32-byte arrays
+  - The messages *m<sub>1..u</sub>*: *u* 32-byte arrays
+  - The signatures *sig<sub>1..u</sub>*: *u* 64-byte arrays
 
 The algorithm *BatchVerify(pk<sub>1..u</sub>, m<sub>1..u</sub>,
 sig<sub>1..u</sub>)* is defined as:
 
--   Generate *u-1* random integers *a<sub>2...u</sub>* in the range
+  - Generate *u-1* random integers *a<sub>2...u</sub>* in the range
     *1...n-1*. They are generated deterministically using a
     [CSPRNG](https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator)
     seeded by a cryptographic hash of all inputs of the algorithm, i.e.
-    *seed = seed\_hash(pk<sub>1</sub>..pk<sub>u</sub> \|\|
-    m<sub>1</sub>..m<sub>u</sub> \|\| sig<sub>1</sub>..sig<sub>u</sub>
-    )*. A safe choice is to instantiate *seed\_hash* with SHA256 and use
+    *seed = seed\_hash(pk<sub>1</sub>..pk<sub>u</sub> ||
+    m<sub>1</sub>..m<sub>u</sub> || sig<sub>1</sub>..sig<sub>u</sub> )*.
+    A safe choice is to instantiate *seed\_hash* with SHA256 and use
     [ChaCha20](https://tools.ietf.org/html/rfc8439) with key *seed* as a
     CSPRNG to generate 256-bit integers, skipping integers not in the
     range *1...n-1*.
--   For *i = 1 .. u*:
-    -   Let *P<sub>i</sub> = lift\_x(int(pk<sub>i</sub>))*; fail if it
+  - For *i = 1 .. u*:
+      - Let *P<sub>i</sub> = lift\_x(int(pk<sub>i</sub>))*; fail if it
         fails.
-    -   Let *r<sub>i</sub> = int(sig<sub>i</sub>\[0:32\])*; fail if
+      - Let *r<sub>i</sub> = int(sig<sub>i</sub>\[0:32\])*; fail if
         *r<sub>i</sub> ≥ p*.
-    -   Let *s<sub>i</sub> = int(sig<sub>i</sub>\[32:64\])*; fail if
+      - Let *s<sub>i</sub> = int(sig<sub>i</sub>\[32:64\])*; fail if
         *s<sub>i</sub> ≥ n*.
-    -   Let *e<sub>i</sub> =
-        int(hash<sub>BIP0340/challenge</sub>(bytes(r<sub>i</sub>) \|\|
-        bytes(P<sub>i</sub>) \|\| m<sub>i</sub>)) mod n*.
-    -   Let *R<sub>i</sub> = lift\_x(r<sub>i</sub>)*; fail if
+      - Let *e<sub>i</sub> =
+        int(hash<sub>BIP0340/challenge</sub>(bytes(r<sub>i</sub>) ||
+        bytes(P<sub>i</sub>) || m<sub>i</sub>)) mod n*.
+      - Let *R<sub>i</sub> = lift\_x(r<sub>i</sub>)*; fail if
         *lift\_x(r<sub>i</sub>)* fails.
--   Fail if *(s<sub>1</sub> + a<sub>2</sub>s<sub>2</sub> + ... +
+  - Fail if *(s<sub>1</sub> + a<sub>2</sub>s<sub>2</sub> + ... +
     a<sub>u</sub>s<sub>u</sub>)⋅G ≠ R<sub>1</sub> +
     a<sub>2</sub>⋅R<sub>2</sub> + ... + a<sub>u</sub>⋅R<sub>u</sub> +
     e<sub>1</sub>⋅P<sub>1</sub> +
     (a<sub>2</sub>e<sub>2</sub>)⋅P<sub>2</sub> + ... +
     (a<sub>u</sub>e<sub>u</sub>)⋅P<sub>u</sub>*.
--   Return success iff no failure occurred before reaching this point.
+  - Return success iff no failure occurred before reaching this point.
 
 If all individual signatures are valid (i.e., *Verify* would return
 success for them), *BatchVerify* will always return success. If at least
@@ -549,9 +556,9 @@ signatures, which ensure that any subset of size *k* of the set of *n*
 signers can sign but no subset of size less than *k* can produce a valid
 Schnorr signature. However, the practicality of the existing schemes is
 limited: most schemes in the literature have been proven secure only for
-the case *k-1 &lt; n/2*, are not secure when used concurrently in
-multiple sessions, or require a reliable broadcast mechanism to be
-secure. Further research is necessary to improve this situation.
+the case *k-1 \< n/2*, are not secure when used concurrently in multiple
+sessions, or require a reliable broadcast mechanism to be secure.
+Further research is necessary to improve this situation.
 
 ### Adaptor Signatures
 
@@ -624,86 +631,79 @@ wish to thank all those who provided valuable feedback and reviews,
 including the participants of the [structured
 reviews](https://github.com/ajtowns/taproot-review).
 
-[1] Informally, this means that without knowledge of the secret key but
-given valid signatures of arbitrary messages, it is not possible to come
-up with further valid signatures.
-
-[2] A detailed security proof in the random oracle model, which
-essentially restates [the original security proof by Pointcheval and
-Stern](https://www.di.ens.fr/~pointche/Documents/Papers/2000_joc.pdf)
-more explicitly, can be found in [a paper by Kiltz, Masny and
-Pan](https://eprint.iacr.org/2016/191). All these security proofs assume
-a variant of Schnorr signatures that use *(e,s)* instead of *(R,s)* (see
-Design above). Since we use a unique encoding of *R*, there is an
-efficiently computable bijection that maps *(R,s)* to *(e,s)*, which
-allows to convert a successful SUF-CMA attacker for the *(e,s)* variant
-to a successful SUF-CMA attacker for the *(R,s)* variant (and
-vice-versa). Furthermore, the proofs consider a variant of Schnorr
-signatures without key prefixing (see Design above), but it can be
-verified that the proofs are also correct for the variant with key
-prefixing. As a result, all the aforementioned security proofs apply to
-the variant of Schnorr signatures proposed in this document.
-
-[3] If *(r,s)* is a valid ECDSA signature for a given message and key,
-then *(r,n-s)* is also valid for the same message and key. If ECDSA is
-restricted to only permit one of the two variants (as Bitcoin does
-through a policy rule on the network), it can be
-[proven](https://nbn-resolving.de/urn:nbn:de:hbz:294-60803)
-non-malleable under stronger than usual assumptions.
-
-[4] A limitation of committing to the public key (rather than to a short
-hash of it, or not at all) is that it removes the ability for public key
-recovery or verifying signatures against a short public key hash. These
-constructions are generally incompatible with batch verification.
-
-[5] Since *p* is odd, negation modulo *p* will map even numbers to odd
-numbers and the other way around. This means that for a valid X
-coordinate, one of the corresponding Y coordinates will be even, and the
-other will be odd.
-
-[6] An earlier version of this draft used the third option instead,
-based on a belief that this would in general trade signing efficiency
-for verification efficiency. When using Jacobian coordinates, a common
-optimization in ECC implementations, it is possible to determine if a Y
-coordinate is a quadratic residue by computing the Legendre symbol,
-without converting to affine coordinates first (which needs a modular
-inversion). As modular inverses and Legendre symbols have similar
-[performance](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-August/018081.html)
-in practice, this trade-off is not worth it.
-
-[7] This can be formalized by a simple reduction that reduces an attack
-on Schnorr signatures with implicit Y coordinates to an attack to
-Schnorr signatures with explicit Y coordinates. The reduction works by
-reencoding public keys and negating the result of the hash function,
-which is modeled as random oracle, whenever the challenge public key has
-an explicit Y coordinate that is odd. A proof sketch can be found
-[here](https://medium.com/blockstream/reducing-bitcoin-transaction-sizes-with-x-only-pubkeys-f86476af05d7).
-
-[8] Among other pitfalls, using the specification with a curve whose
-order is not close to the size of the range of the nonce derivation
-function is insecure.
-
-[9] The auxiliary random data is hashed (with a unique tag) as a
-precaution against situations where the randomness may be correlated
-with the private key itself. It is xored with the private key (rather
-than combined with it in a hash) to reduce the number of operations
-exposed to the actual secret key.
-
-[10] Including the [public key as input to the nonce
-hash](https://moderncrypto.org/mail-archive/curves/2020/001012.html)
-helps ensure the robustness of the signing algorithm by preventing
-leakage of the secret key if the calculation of the public key *P* is
-performed incorrectly or maliciously, for example if it is left to the
-caller for performance reasons.
-
-[11] Note that in general, taking a uniformly random 256-bit integer
-modulo the curve order will produce an unacceptably biased result.
-However, for the secp256k1 curve, the order is sufficiently close to
-*2<sup>256</sup>* that this bias is not observable (*1 - n /
-2<sup>256</sup>* is around *1.27 \* 2<sup>-128</sup>*).
-
-[12] Verifying the signature before leaving the signer prevents random
-or attacker provoked computation errors. This prevents publishing
-invalid signatures which may leak information about the secret key. It
-is recommended, but can be omitted if the computation cost is
-prohibitive.
+1.  Informally, this means that without knowledge of the secret key but
+    given valid signatures of arbitrary messages, it is not possible to
+    come up with further valid signatures.
+2.  A detailed security proof in the random oracle model, which
+    essentially restates [the original security proof by Pointcheval and
+    Stern](https://www.di.ens.fr/~pointche/Documents/Papers/2000_joc.pdf)
+    more explicitly, can be found in [a paper by Kiltz, Masny and
+    Pan](https://eprint.iacr.org/2016/191). All these security proofs
+    assume a variant of Schnorr signatures that use *(e,s)* instead of
+    *(R,s)* (see Design above). Since we use a unique encoding of *R*,
+    there is an efficiently computable bijection that maps *(R,s)* to
+    *(e,s)*, which allows to convert a successful SUF-CMA attacker for
+    the *(e,s)* variant to a successful SUF-CMA attacker for the *(R,s)*
+    variant (and vice-versa). Furthermore, the proofs consider a variant
+    of Schnorr signatures without key prefixing (see Design above), but
+    it can be verified that the proofs are also correct for the variant
+    with key prefixing. As a result, all the aforementioned security
+    proofs apply to the variant of Schnorr signatures proposed in this
+    document.
+3.  If *(r,s)* is a valid ECDSA signature for a given message and key,
+    then *(r,n-s)* is also valid for the same message and key. If ECDSA
+    is restricted to only permit one of the two variants (as Bitcoin
+    does through a policy rule on the network), it can be
+    [proven](https://nbn-resolving.de/urn:nbn:de:hbz:294-60803)
+    non-malleable under stronger than usual assumptions.
+4.  A limitation of committing to the public key (rather than to a short
+    hash of it, or not at all) is that it removes the ability for public
+    key recovery or verifying signatures against a short public key
+    hash. These constructions are generally incompatible with batch
+    verification.
+5.  Since *p* is odd, negation modulo *p* will map even numbers to odd
+    numbers and the other way around. This means that for a valid X
+    coordinate, one of the corresponding Y coordinates will be even, and
+    the other will be odd.
+6.  An earlier version of this draft used the third option instead,
+    based on a belief that this would in general trade signing
+    efficiency for verification efficiency. When using Jacobian
+    coordinates, a common optimization in ECC implementations, it is
+    possible to determine if a Y coordinate is a quadratic residue by
+    computing the Legendre symbol, without converting to affine
+    coordinates first (which needs a modular inversion). As modular
+    inverses and Legendre symbols have similar
+    [performance](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-August/018081.html)
+    in practice, this trade-off is not worth it.
+7.  This can be formalized by a simple reduction that reduces an attack
+    on Schnorr signatures with implicit Y coordinates to an attack to
+    Schnorr signatures with explicit Y coordinates. The reduction works
+    by reencoding public keys and negating the result of the hash
+    function, which is modeled as random oracle, whenever the challenge
+    public key has an explicit Y coordinate that is odd. A proof sketch
+    can be found
+    [here](https://medium.com/blockstream/reducing-bitcoin-transaction-sizes-with-x-only-pubkeys-f86476af05d7).
+8.  Among other pitfalls, using the specification with a curve whose
+    order is not close to the size of the range of the nonce derivation
+    function is insecure.
+9.  The auxiliary random data is hashed (with a unique tag) as a
+    precaution against situations where the randomness may be correlated
+    with the private key itself. It is xored with the private key
+    (rather than combined with it in a hash) to reduce the number of
+    operations exposed to the actual secret key.
+10. Including the [public key as input to the nonce
+    hash](https://moderncrypto.org/mail-archive/curves/2020/001012.html)
+    helps ensure the robustness of the signing algorithm by preventing
+    leakage of the secret key if the calculation of the public key *P*
+    is performed incorrectly or maliciously, for example if it is left
+    to the caller for performance reasons.
+11. Note that in general, taking a uniformly random 256-bit integer
+    modulo the curve order will produce an unacceptably biased result.
+    However, for the secp256k1 curve, the order is sufficiently close to
+    *2<sup>256</sup>* that this bias is not observable (*1 - n /
+    2<sup>256</sup>* is around *1.27 \* 2<sup>-128</sup>*).
+12. Verifying the signature before leaving the signer prevents random or
+    attacker provoked computation errors. This prevents publishing
+    invalid signatures which may leak information about the secret key.
+    It is recommended, but can be omitted if the computation cost is
+    prohibitive.

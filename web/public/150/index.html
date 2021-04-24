@@ -47,7 +47,7 @@
 
     <div class="content">
       <pre style="background-color:#fafafa;">
-<code>  BIP: 150
+<code><span style="color:#61676c;">  BIP: 150
   Layer: Peer Services
   Title: Peer Authentication
   Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
@@ -57,7 +57,7 @@
   Type: Standards Track
   Created: 2016-03-23
   License: PD
-</code></pre><h2 id="abstract">Abstract</h2>
+</span></code></pre><h2 id="abstract">Abstract</h2>
 <p>This BIP describes a way for peers to authenticate to other peers to
 guarantee node ownership and/or allow peers to access additional or
 limited node services, without the possibility of fingerprinting.</p>
@@ -173,8 +173,7 @@ contains 32 bytes of zeros.</p>
 responding peer), both clients must re-key the symmetric encryption
 according to BIP151 while using <strong>a slightly different re-key key
 derivation hash</strong>.</p>
-<p>Both peers re-key with
-<code>hash(encryption-session-ID || old_symmetric_cipher_key || requesting-peer-identity-public-key || responding-peer-identity-public-key)</code></p>
+<p>Both peers re-key with <code>hash(encryption-session-ID || old_symmetric_cipher_key || requesting-peer-identity-public-key || responding-peer-identity-public-key)</code></p>
 <h2 id="identity-addresses">Identity-Addresses</h2>
 <p>The peers should display/log the identity-public-key as an
 identity-address to the users, which is a base58-check encoded
@@ -210,9 +209,8 @@ known-peers database together with its IP and port (B)</li>
 <p><code> AUTHCHALLENGE:</code><br />
 <code>   [32 bytes, hash(encryption-session-ID || &quot;i&quot; || </code><remote-peers-expected-identity-public-key><code>)]</code></p>
 <ol>
-<li>Responding peer does create the same hash
-<code>(encryption-session-ID || &quot;i&quot; || </code><remote-peers-expected-identity-public-key><code>)</code>
-with its local identity-public-key</li>
+<li>Responding peer does create the same hash <code>(encryption-session-ID || &quot;i&quot; || </code><remote-peers-expected-identity-public-key><code>)</code> with its
+local identity-public-key</li>
 <li>If the hash does not match, response with an <code>AUTHREPLY</code> message
 containing 64bytes of zeros.</li>
 <li>In case of a match, response with an <code>AUTHREPLY</code> message</li>

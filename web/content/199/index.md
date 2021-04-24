@@ -14,18 +14,20 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0199.mediawiki"
 +++
 
-      BIP: 199
-      Layer: Applications
-      Title: Hashed Time-Locked Contract transactions
-      Author: Sean Bowe <sean@z.cash>
-              Daira Hopwood <daira@z.cash>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0199
-      Status: Draft
-      Type: Standards Track
-      Created: 2017-03-27
-      License: BSD-3-Clause
-               CC0-1.0
+``` 
+  BIP: 199
+  Layer: Applications
+  Title: Hashed Time-Locked Contract transactions
+  Author: Sean Bowe <sean@z.cash>
+          Daira Hopwood <daira@z.cash>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0199
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-03-27
+  License: BSD-3-Clause
+           CC0-1.0
+```
 
 ## Abstract
 
@@ -56,15 +58,15 @@ OP\_CHECKLOCKTIMEVERIFY.
 
 ### Interaction
 
--   Victor (the "buyer") and Peggy (the "seller") exchange public keys
+  - Victor (the "buyer") and Peggy (the "seller") exchange public keys
     and mutually agree upon a timeout threshold. Peggy provides a hash
     digest. Both parties can now construct the script and P2SH address
     for the HTLC.
--   Victor sends funds to the P2SH address.
--   Either:
-    -   Peggy spends the funds, and in doing so, reveals the preimage to
+  - Victor sends funds to the P2SH address.
+  - Either:
+      - Peggy spends the funds, and in doing so, reveals the preimage to
         Victor in the transaction; OR
-    -   Victor recovers the funds after the timeout threshold.
+      - Victor recovers the funds after the timeout threshold.
 
 Victor is interested in a lower timeout to reduce the amount of time
 that his funds are encumbered in the event that Peggy does not reveal

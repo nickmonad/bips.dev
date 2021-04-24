@@ -14,15 +14,17 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0121.mediawiki"
 +++
 
-      BIP: 121
-      Layer: Applications
-      Title: Proof of Payment URI scheme
-      Author: Kalle Rosenbaum <kalle@rosenbaum.se>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0121
-      Status: Withdrawn
-      Type: Standards Track
-      Created: 2015-07-27
+``` 
+  BIP: 121
+  Layer: Applications
+  Title: Proof of Payment URI scheme
+  Author: Kalle Rosenbaum <kalle@rosenbaum.se>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0121
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2015-07-27
+```
 
 ## Abstract
 
@@ -42,13 +44,13 @@ sent over NFC in order to transfer it to the wallet.
 The specification is the same as BIP0021, with the following
 differences:
 
--   The URI scheme is `btcpop` instead of `bitcoin`
--   The path component, i.e. the address part, is always empty.
--   A mandatory `p` parameter whose value contains the destination for
+  - The URI scheme is `btcpop` instead of `bitcoin`
+  - The path component, i.e. the address part, is always empty.
+  - A mandatory `p` parameter whose value contains the destination for
     the PoP. This could for example be a `https:` URL or a `mailto:`
     URI.
--   A mandatory `n` parameter representing the nonce, base58 encoded.
--   An optional `txid` parameter containing the Base58 encoded hash of
+  - A mandatory `n` parameter representing the nonce, base58 encoded.
+  - An optional `txid` parameter containing the Base58 encoded hash of
     the transaction to prove.
 
 Just as in BIP0021, elements of the query component may contain
@@ -84,7 +86,7 @@ parameters must, if present in the URI, exactly match the data
 associated with the original payment according to the following table:
 
 |                         |                          |                           |
-|-------------------------|--------------------------|---------------------------|
+| ----------------------- | ------------------------ | ------------------------- |
 | `btcpop:` URI parameter | `bitcoin:` URI parameter | BIP70 PaymentDetails data |
 | `label`                 | `label`                  | `memo`                    |
 | `amount`                | `amount`                 | `sum of outputs.amount`   |
@@ -127,21 +129,27 @@ Send PoP for a transaction with label "video 42923" to
 https://www.example.com/pop/352, using nonce
 `0x73 0xd5 0x1a 0xbb 0xd8 0x9c`:
 
-     btcpop:?p=https://www.example.com/pop/352&n=zgWTm8yH&label=video%2042923
+``` 
+ btcpop:?p=https://www.example.com/pop/352&n=zgWTm8yH&label=video%2042923
+```
 
 Send PoP through mail using mailto:pop@example.com?subject=pop444,
 amount is 13370000 satoshis, nonce is `0x6f 0xe 0xfb 0x68 0x92 0xf9`.
 Note that the `?` before `subject` is OK according to RFC3986, since the
 query part starts from the first `?`:
 
-     btcpop:?p=mailto:pop@example.com?subject%3Dpop444&n=xJdKmEbr&amount=0.1337
+``` 
+ btcpop:?p=mailto:pop@example.com?subject%3Dpop444&n=xJdKmEbr&amount=0.1337
+```
 
 Send PoP for transaction with id
 `cca7507897abc89628f450e8b1e0c6fca4ec3f7b34cccf55f3f531c659ff4d79` to
 pizza place at http://pizza.example.com/pop/laszlo111 using nonce
 `0xfc 0xcc 0x2c 0x35 0xf0 0xb8`
 
-     btcpop:?p=http://pizza.example.com/pop/laszlo111&n=3AtNpVrPh&txid=Emt9MPvt1joznqHy5eEHkNtcuQuYWXzYJBQZN6BJm6NL
+``` 
+ btcpop:?p=http://pizza.example.com/pop/laszlo111&n=3AtNpVrPh&txid=Emt9MPvt1joznqHy5eEHkNtcuQuYWXzYJBQZN6BJm6NL
+```
 
 ## Reference implementation
 
