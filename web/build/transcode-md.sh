@@ -1,5 +1,6 @@
 #!env bash
 set -e
+rustup default stable
 
 bip_number() {
     if [[ $1 =~ ^bip-([0-9]+).*$ ]]
