@@ -357,6 +357,9 @@ also some changes to the resource limitations:
 
 ## Examples
 
+The Taproot ([BIP341](bip-0341.mediawiki "wikilink")) test vectors also
+contain examples for Tapscript execution.
+
 ## Acknowledgements
 
 This document is the result of many discussions and contains

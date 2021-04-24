@@ -110,7 +110,7 @@ Using `NOINPUT` the input containing the signature no longer references
 a specific output. Any participant can take a transaction and rewrite it
 by changing the hash reference to the previous output, without
 invalidating the signatures. This allows transactions to be bound to any
-output that matches the value committed to in the `witness` and whose
+output that matches the value committed to in the signature and whose
 `witnessProgram`, combined with the spending transaction's `witness`
 returns `true`.
 

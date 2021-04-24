@@ -199,10 +199,6 @@ as possible.
 
 Pull request at <https://github.com/bitcoin/bitcoin/pull/18267>
 
-## Acknowledgements
-
-TODO
-
 ## References
 
 1.  Original mailing list thread:

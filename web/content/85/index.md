@@ -200,6 +200,12 @@ OUTPUT
 
 -   Coldcard Firmware: [4](https://github.com/Coldcard/firmware/pull/39)
 
+<!-- -->
+
+-   Ian Coleman's Mnemonic Code Converter:
+    [5](https://github.com/iancoleman/bip39) and
+    [6](https://iancoleman.io/bip39/)
+
 ## Applications
 
 The Application number defines how entropy will be used post processing.
