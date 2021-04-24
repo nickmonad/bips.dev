@@ -15,7 +15,6 @@ RUN curl -s -L https://github.com/getzola/zola/releases/download/v0.13.0/zola-v0
 # install rust
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-RUN rustup default stable
 
 # copy entrypoint for github action
 COPY action.sh /action.sh
