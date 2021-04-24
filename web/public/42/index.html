@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 42</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 42: A finite monetary supply for Bitcoin
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-04-01</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0042.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 42
+  Layer: Consensus (soft fork)
+  Title: A finite monetary supply for Bitcoin
+  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+  Comments-Summary: Unanimously Recommended for implementation
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0042
+  Status: Final
+  Type: Standards Track
+  Created: 2014-04-01
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>Although it is widely believed that Satoshi was an inflation-hating
+goldbug he never said this, and in fact programmed Bitcoin's money
+supply to grow indefinitely, forever. He modeled the monetary supply as
+4 gold mines being discovered per mibillenium (1024 years), with equal
+intervals between them, each one being depleted over the course of 140
+years.</p>
+<p>This poses obvious problems, however. Prominent among them is the
+discussion on what to call 1 billion Bitcoin, which symbol color to use
+for it, and when wallet clients should switch to it by default.</p>
+<p>To combat this, this document proposes a controversial change: making
+Bitcoin's monetary supply finite.</p>
+<h2 id="details">Details</h2>
+<p>As is well known, Satoshi was a master programmer whose knowledge of C++
+was surpassed only by his knowledge of Japanese culture. The code below:</p>
+<p><code>   int64_t nSubsidy = 50 * COIN;</code><br />
+<code>   // Subsidy is cut in half every 210,000 blocks</code><br />
+<code>   // which will occur approximately every 4 years.</code><br />
+<code>   nSubsidy &gt;&gt;= (nHeight / 210000);</code></p>
+<p>is carefully written to rely on undefined behaviour in the C++
+specification - perhaps so it can be hardware accelerated in future.</p>
+<p>The block number is divided by 210000 (the &quot;apparent&quot; subsidy halving
+interval in blocks), and the result is used as input for a binary shift,
+applied to the original payout (50 BTC), expressed in base units. Thanks
+to the new-goldmine interval being exactly 64 times the halving
+interval, and 64 being the size in bits of the currency datatype, the
+cycle repeats itself every 64 halvings on all currently supported
+platforms.</p>
+<p>Despite the nice showoff of underhanded programming skills - we want
+Bitcoin to be well-specified. Otherwise, we're clearly in for a bumpy
+ride:</p>
+<p><img src="bip-0042/inflation.png"></img></p>
+<p>Note that several other programming languages do not exhibit this
+behaviour, making new implementations likely to be slower and generally
+more bogus than Bitcoin Core. For example, Python unexpectedly returns 0
+when shifting an integer beyond its size.</p>
+<h2 id="other-solutions">Other solutions</h2>
+<h3 id="floating-point-approximation">Floating-point approximation</h3>
+<p>An obvious solution would be to reimplement the shape of the subsidy
+curve using floating-point approximations, such as simulated annealing
+or quantitative easing, which have already proven their worth in
+consensus systems. Unfortunately, since the financial crisis everyone
+considers numbers with decimal points in them fishy, and integers are
+not well supported by Javascript.</p>
+<h3 id="truncation">Truncation</h3>
+<p>An alternative solution would be to represent the total number of
+bitcoins as a string:</p>
+<p><code>   &quot;21000000000000000000000&quot;</code></p>
+<p>and then use string manipulation to remove the rightmost zero every 4
+years, give or take a leap-year:</p>
+<p><code>   strSubsidy = strSubsidy.substr(0, strSubsidy.size() - 2);</code></p>
+<p>This style relies less heavily on clever C++ and is more familiar to the
+Core Dev Team who are primarily PHP programmers.</p>
+<h2 id="proposal">Proposal</h2>
+<p>Instead, how about we stop thinking about long term issues when we'll
+all be dead (barring near lightspeed travel, cryogenic revival, or other
+technology— like cryptocurrency— which only exists in science fiction).</p>
+<p>A softfork (see BIP16, BIP34, BIP62) will take place on april 1st 2214,
+permanently setting the subsidy to zero. The result of this will be that
+the total currency supply will be limited to 42 halfmillion (including
+the genesis coinbase output, which is not actually spendable).</p>
+<h2 id="implementation">Implementation</h2>
+<p>An implementation for the reference client can be found on
+<a href="https://github.com/bitcoin/bitcoin/pull/3842">https://github.com/bitcoin/bitcoin/pull/3842</a> .</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>Given the moderate time frame over which this change is to be
+implemented, we expect all miners to choose to screw themselves and
+deploy this change before 2214.</p>
+<p>If they don't, and a minority remains on the old code base, a fork may
+occur. Essentially, they'll be mining fool's gold after that time.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Thanks to Gregory Maxwell for proposing this solution, and to Mike Hearn
+for insights into web development. Also thanks to &quot;ditto-b&quot; on github to
+implement a prototype ahead of time.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

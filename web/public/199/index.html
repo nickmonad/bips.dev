@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 199</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 199: Hashed Time-Locked Contract transactions
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-03-27</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0199.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 199
+  Layer: Applications
+  Title: Hashed Time-Locked Contract transactions
+  Author: Sean Bowe &lt;sean@z.cash&gt;
+          Daira Hopwood &lt;daira@z.cash&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0199
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-03-27
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes a script for generalized off-chain contract
+negotiation.</p>
+<h2 id="summary">Summary</h2>
+<p>A Hashed Time-Locked Contract (HTLC) is a script that permits a
+designated party (the &quot;seller&quot;) to spend funds by disclosing the
+preimage of a hash. It also permits a second party (the &quot;buyer&quot;) to
+spend the funds after a timeout is reached, in a refund situation.</p>
+<p>The script takes the following form:</p>
+<p><code>   OP_IF</code><br />
+<code>       [HASHOP] </code><digest><code> OP_EQUALVERIFY OP_DUP OP_HASH160 </code><seller pubkey hash><code>            </code><br />
+<code>   OP_ELSE</code><br />
+<code>       </code><num><code> [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 </code><buyer pubkey hash><br />
+<code>   OP_ENDIF</code><br />
+<code>   OP_EQUALVERIFY</code><br />
+<code>   OP_CHECKSIG</code></p>
+<p>[HASHOP] is either OP_SHA256 or OP_HASH160.</p>
+<p>[TIMEOUTOP] is either OP_CHECKSEQUENCEVERIFY or
+OP_CHECKLOCKTIMEVERIFY.</p>
+<h3 id="interaction">Interaction</h3>
+<ul>
+<li>Victor (the &quot;buyer&quot;) and Peggy (the &quot;seller&quot;) exchange public keys
+and mutually agree upon a timeout threshold. Peggy provides a hash
+digest. Both parties can now construct the script and P2SH address
+for the HTLC.</li>
+<li>Victor sends funds to the P2SH address.</li>
+<li>Either:
+<ul>
+<li>Peggy spends the funds, and in doing so, reveals the preimage to
+Victor in the transaction; OR</li>
+<li>Victor recovers the funds after the timeout threshold.</li>
+</ul>
+</li>
+</ul>
+<p>Victor is interested in a lower timeout to reduce the amount of time
+that his funds are encumbered in the event that Peggy does not reveal
+the preimage. Peggy is interested in a higher timeout to reduce the risk
+that she is unable to spend the funds before the threshold, or worse,
+that her transaction spending the funds does not enter the blockchain
+before Victor's but does reveal the preimage to Victor anyway.</p>
+<h2 id="motivation">Motivation</h2>
+<p>In many off-chain protocols, secret disclosure is used as part of a
+settlement mechanism. In some others, the secrets themselves are
+valuable. HTLC transactions are a safe and cheap method of exchanging
+secrets for money over the blockchain, due to the ability to recover
+funds from an uncooperative counterparty, and the opportunity that the
+possessor of a secret has to receive the funds before such a refund can
+occur.</p>
+<h3 id="lightning-network">Lightning network</h3>
+<p>In the lightning network, HTLC scripts are used to perform atomic swaps
+between payment channels.</p>
+<p>Alice constructs K and hashes it to produce L. She sends an HTLC payment
+to Bob for the preimage of L. Bob sends an HTLC payment to Carol for the
+same preimage and amount. Only when Alice releases the preimage K does
+any exchange of value occur, and because the secret is divulged for each
+hop, all parties are compensated. If at any point some parties become
+uncooperative, the process can be aborted via the refund conditions.</p>
+<h3 id="zero-knowledge-contingent-payments">Zero-knowledge contingent payments</h3>
+<p>Various practical zero-knowledge proving systems exist which can be used
+to guarantee that a hash preimage derives valuable information. As an
+example, a zero-knowledge proof can be used to prove that a hash
+preimage acts as a decryption key for an encrypted sudoku puzzle
+solution. (See <a href="https://github.com/zcash/pay-to-sudoku">pay-to-sudoku</a>
+for a concrete example of such a protocol.)</p>
+<p>HTLC transactions can be used to exchange such decryption keys for money
+without risk, and they do not require large or expensive-to-validate
+transactions.</p>
+<h2 id="implementation">Implementation</h2>
+<p><a href="https://github.com/bitcoin/bitcoin/pull/7601">https://github.com/bitcoin/bitcoin/pull/7601</a></p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0
+1.0 Universal.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

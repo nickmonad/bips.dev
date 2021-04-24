@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 67</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 67: Deterministic Pay-to-script-hash multi-signature addresses through public key sorting
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2015-02-08</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0067.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 67
+  Layer: Applications
+  Title: Deterministic Pay-to-script-hash multi-signature addresses through public key sorting
+  Author: Thomas Kerin &lt;me@thomaskerin.io&gt;
+          Jean-Pierre Rupp &lt;root@haskoin.com&gt;
+          Ruben de Vries &lt;ruben@rubensayshi.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0067
+  Status: Proposed
+  Type: Standards Track
+  Created: 2015-02-08
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes a method to deterministically generate
+multi-signature pay-to-script-hash transaction scripts. It focuses on
+defining how the public keys must be encoded and sorted so that the
+redeem script and corresponding P2SH address are always the same for a
+given set of keys and number of required signatures.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Pay-to-script-hash (BIP-0011[1]) is a transaction type that allows
+funding of arbitrary scripts, where the recipient carries the cost of
+fee's associated with using longer, more complex scripts.</p>
+<p>Multi-signature pay-to-script-hash transactions are defined in
+BIP-0016[2]. The redeem script does not require a particular ordering or
+encoding for public keys. This means that for a given set of keys and
+number of required signatures, there are as many as 2(n!) possible
+standard redeem scripts, each with its separate P2SH address. Adhering
+to an ordering and key encoding would ensure that a multi-signature
+“account” (set of public keys and required signature count) has a
+canonical P2SH address.</p>
+<p>By adopting a sorting and encoding standard, compliant wallets will
+always produce the same P2SH address for the same given set of keys and
+required signature count, making it easier to recognize transactions
+involving that multi-signature account. This is particularly attractive
+for multisignature hierarchical-deterministic wallets, as less state is
+required to setup multi-signature accounts: only the number of required
+signatures and master public keys of participants need to be shared, and
+all wallets will generate the same addresses.</p>
+<p>While most web wallets do not presently facilitate the setup of
+multisignature accounts with users of a different service, conventions
+which ensure cross-compatibility should make it easier to achieve this.</p>
+<p>Many wallet as a service providers use a 2of3 multi-signature schema
+where the user stores 1 of the keys (offline) as backup while using the
+other key for daily use and letting the service cosign his transactions.
+This standard will help in enabling a party other than the service
+provider to recover the wallet without any help from the service
+provider.</p>
+<h2 id="specification">Specification</h2>
+<p>For a set of public keys, ensure that they have been received in
+compressed form:</p>
+<p><code>   022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da</code><br />
+<code>   03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9 </code><br />
+<code>   021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18</code></p>
+<p>Sort them lexicographically according to their binary representation:</p>
+<p><code>   021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18</code><br />
+<code>   022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da</code><br />
+<code>   03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9</code></p>
+<p>..before using the resulting list of keys in a standard multisig redeem
+script:</p>
+<p><code>   OP_2 021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18 022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da 03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9 OP_3 OP_CHECKMULTISIG</code></p>
+<p>Hash the redeem script according to BIP-0016 to get the P2SH address.</p>
+<p><code>   3Q4sF6tv9wsdqu2NtARzNCpQgwifm2rAba</code><br />
+<code>   </code></p>
+<h2 id="compatibility">Compatibility</h2>
+<ul>
+<li>Uncompressed keys are incompatible with this specificiation. A
+compatible implementation should not automatically compress keys.
+Receiving an uncompressed key from a multisig participant should be
+interpreted as a sign that the user has an incompatible
+implementation.</li>
+<li>P2SH addressses do not reveal information about the script that is
+receiving the funds. For this reason it is not technically possible
+to enforce this BIP as a rule on the network. Also, it would cause a
+hard fork.</li>
+<li>Implementations that do not conform with this BIP will have
+compatibility issues with strictly-compliant wallets.</li>
+<li>Implementations which do adopt this standard will be
+cross-compatible when choosing multisig addressses.</li>
+<li>If a group of users were not entirely compliant, there is the
+possibility that a participant will derive an address that the
+others will not recognize as part of the common multisig account.</li>
+</ul>
+<h2 id="test-vectors">Test vectors</h2>
+<p>Two signatures are required in each of these test vectors.</p>
+<p>Vector 1</p>
+<ul>
+<li>List
+<ul>
+<li>02ff12471208c14bd580709cb2358d98975247d8765f92bc25eab3b2763ed605f8</li>
+<li>02fe6f0a5a297eb38c391581c4413e084773ea23954d93f7753db7dc0adc188b2f</li>
+</ul>
+</li>
+<li>Sorted
+<ul>
+<li>02fe6f0a5a297eb38c391581c4413e084773ea23954d93f7753db7dc0adc188b2f</li>
+<li>02ff12471208c14bd580709cb2358d98975247d8765f92bc25eab3b2763ed605f8</li>
+</ul>
+</li>
+<li>Script
+<ul>
+<li>522102fe6f0a5a297eb38c391581c4413e084773ea23954d93f7753db7dc0adc188b2f2102ff12471208c14bd580709cb2358d98975247d8765f92bc25eab3b2763ed605f852ae</li>
+</ul>
+</li>
+<li>Address
+<ul>
+<li>39bgKC7RFbpoCRbtD5KEdkYKtNyhpsNa3Z</li>
+</ul>
+</li>
+</ul>
+<p>Vector 2 (Already sorted, no action required)</p>
+<ul>
+<li>List:
+<ul>
+<li>02632b12f4ac5b1d1b72b2a3b508c19172de44f6f46bcee50ba33f3f9291e47ed0</li>
+<li>027735a29bae7780a9755fae7a1c4374c656ac6a69ea9f3697fda61bb99a4f3e77</li>
+<li>02e2cc6bd5f45edd43bebe7cb9b675f0ce9ed3efe613b177588290ad188d11b404</li>
+</ul>
+</li>
+<li>Sorted:
+<ul>
+<li>02632b12f4ac5b1d1b72b2a3b508c19172de44f6f46bcee50ba33f3f9291e47ed0</li>
+<li>027735a29bae7780a9755fae7a1c4374c656ac6a69ea9f3697fda61bb99a4f3e77</li>
+<li>02e2cc6bd5f45edd43bebe7cb9b675f0ce9ed3efe613b177588290ad188d11b404</li>
+</ul>
+</li>
+<li>Script
+<ul>
+<li>522102632b12f4ac5b1d1b72b2a3b508c19172de44f6f46bcee50ba33f3f9291e47ed021027735a29bae7780a9755fae7a1c4374c656ac6a69ea9f3697fda61bb99a4f3e772102e2cc6bd5f45edd43bebe7cb9b675f0ce9ed3efe613b177588290ad188d11b40453ae</li>
+</ul>
+</li>
+<li>Address
+<ul>
+<li>3CKHTjBKxCARLzwABMu9yD85kvtm7WnMfH</li>
+</ul>
+</li>
+</ul>
+<p>Vector 3:</p>
+<ul>
+<li>List:
+<ul>
+<li>030000000000000000000000000000000000004141414141414141414141414141</li>
+<li>020000000000000000000000000000000000004141414141414141414141414141</li>
+<li>020000000000000000000000000000000000004141414141414141414141414140</li>
+<li>030000000000000000000000000000000000004141414141414141414141414140</li>
+</ul>
+</li>
+<li>Sorted:
+<ul>
+<li>020000000000000000000000000000000000004141414141414141414141414140</li>
+<li>020000000000000000000000000000000000004141414141414141414141414141</li>
+<li>030000000000000000000000000000000000004141414141414141414141414140</li>
+<li>030000000000000000000000000000000000004141414141414141414141414141</li>
+</ul>
+</li>
+<li>Script
+<ul>
+<li>522102000000000000000000000000000000000000414141414141414141414141414021020000000000000000000000000000000000004141414141414141414141414141210300000000000000000000000000000000000041414141414141414141414141402103000000000000000000000000000000000000414141414141414141414141414154ae</li>
+</ul>
+</li>
+<li>Address
+<ul>
+<li>32V85igBri9zcfBRVupVvwK18NFtS37FuD</li>
+</ul>
+</li>
+</ul>
+<p>Vector 4: (from bitcore)</p>
+<ul>
+<li>List:
+<ul>
+<li>022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da</li>
+<li>03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9</li>
+<li>021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18</li>
+</ul>
+</li>
+<li>Sorted:
+<ul>
+<li>021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18</li>
+<li>022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da</li>
+<li>03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9</li>
+</ul>
+</li>
+<li>Script
+<ul>
+<li>5221021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc1821022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da2103e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e953ae</li>
+</ul>
+</li>
+<li>Address
+<ul>
+<li>3Q4sF6tv9wsdqu2NtARzNCpQgwifm2rAba</li>
+</ul>
+</li>
+</ul>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>The authors wish to thank BtcDrak and Luke-Jr for their involvement &amp;
+contributions in the early discussions of this BIP.</p>
+<h2 id="usage-implementations">Usage &amp; Implementations</h2>
+<ul>
+<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0045.mediawiki#address-generation-procedure" title="wikilink">BIP-0045</a> -
+Structure for Deterministic P2SH Multisignature Wallets</li>
+<li><a href="https://github.com/bitpay/bitcore/blob/50a868cb8cdf2be04bb1c5bf4bcc064cc06f5888/lib/script/script.js#L541" title="wikilink">Bitcore</a></li>
+<li><a href="https://github.com/haskoin/haskoin/blob/master/Network/Haskoin/Script/Parser.hs#L112-122" title="wikilink">Haskoin</a>
+Bitcoin implementation in haskell</li>
+<li><a href="https://github.com/etotheipi/BitcoinArmory/blob/268db0f3fa20c989057bd43343a43b2edbe89aeb/armoryengine/ArmoryUtils.py#L1441" title="wikilink">Armory</a></li>
+<li><a href="https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/script/ScriptBuilder.java#L331" title="wikilink">BitcoinJ</a></li>
+</ul>
+<h2 id="references">References</h2>
+<references>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+<p>[1] <a href="https://github.com/bitcoin/bips/blob/master/bip-0011.mediawiki">BIP-0011</a></p>
+<p>[2] <a href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki">BIP-0016</a></p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

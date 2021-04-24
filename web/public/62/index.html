@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 62</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 62: Dealing with malleability
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-03-12</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0062.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <p><strong>NOTICE: This document is a work in progress and is not complete,
+implemented, or otherwise suitable for deployment.</strong></p>
+<pre style="background-color:#fafafa;">
+<code>  BIP: 62
+  Layer: Consensus (soft fork)
+  Title: Dealing with malleability
+  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0062
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2014-03-12
+  License: BSD-2-Clause
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This document specifies proposed changes to the Bitcoin transaction
+validity rules in order to make malleability of transactions impossible
+(at least when the sender doesn't choose to avoid it).</p>
+<h2 id="copyright">Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+<h2 id="motivation">Motivation</h2>
+<p>As of february 2014, Bitcoin transactions are malleable in multiple
+ways. This means a (valid) transaction can be modified in-flight,
+without invalidating it, but without access to the relevant private
+keys.</p>
+<p>This is a problem for multiple reasons:</p>
+<ul>
+<li>The sender may not recognize his own transaction after being
+modified.</li>
+<li>The sender may create transactions that spend change created by the
+original transaction. In case the modified transaction gets mined,
+this becomes invalid.</li>
+<li>Modified transactions are effectively double-spends which can be
+created without malicious intent (of the sender), but can be used to
+make other attacks easier.</li>
+</ul>
+<p>Several sources of malleability are known:</p>
+<ol>
+<li><strong>Non-DER encoded ECDSA signatures</strong> Right now, the Bitcoin
+reference client uses OpenSSL to validate signatures. As OpenSSL
+accepts more than serializations that strictly adhere to the DER
+standard, this is a source of malleability. Since v0.8.0, non-DER
+signatures are no longer relayed already.</li>
+<li><strong>Non-push operations in scriptSig</strong> Any sequence of script
+operations in scriptSig that results in the intended data pushes,
+but is not just a push of that data, results in an alternative
+transaction with the same validity.</li>
+<li><strong>Push operations in scriptSig of non-standard size type</strong> The
+Bitcoin scripting language has several push operators (OP_0,
+single-byte pushes, data pushes of up to 75 bytes, OP_PUSHDATA1,
+OP_PUSHDATA2, OP_PUSHDATA4). As the later ones have the same
+result as the former ones, they result in additional possibilities.</li>
+<li><strong>Zero-padded number pushes</strong> In cases where scriptPubKey opcodes
+use inputs that are interpreted as numbers, they can be zero padded.</li>
+<li><strong>Inherent ECDSA signature malleability</strong> ECDSA signatures
+themselves are already malleable: taking the negative of the number
+S inside (modulo the curve order) does not invalidate it.</li>
+<li><strong>Superfluous scriptSig operations</strong> Adding extra data pushes at the
+start of scripts, which are not consumed by the corresponding
+scriptPubKey, is also a source of malleability.</li>
+<li><strong>Inputs ignored by scripts</strong> If a scriptPubKey starts with an
+OP_DROP, for example, the last data push of the corresponding
+scriptSig will always be ignored.</li>
+<li><strong>Sighash flags based masking</strong> Sighash flags can be used to ignore
+certain parts of a script when signing.</li>
+<li><strong>New signatures by the sender</strong> The sender (or anyone with access
+to the relevant private keys) is always able to create new
+signatures that spend the same inputs to the same outputs.</li>
+</ol>
+<p>The first six and part of the seventh can be fixed by extra consensus
+rules, but the last two can't. Not being able to fix #7 means that even
+with these new consensus rules, it will always be possible to create
+outputs whose spending transactions will all be malleable. However, when
+restricted to using a safe set of output scripts, extra consensus rules
+can make spending transactions optionally non-malleable (if the spender
+chooses to; as he can always bypass #8 and #9 himself).</p>
+<h2 id="specification">Specification</h2>
+<h3 id="new-rules">New rules</h3>
+<p>Seven extra rules are introduced, to combat exactly the seven first
+sources of malleability listed above:</p>
+<ol>
+<li><strong>Canonically encoded ECDSA signatures</strong> An ECDSA signature passed
+to OP_CHECKSIG, OP_CHECKSIGVERIFY, OP_CHECKMULTISIG or
+OP_CHECKMULTISIGVERIFY must be encoded using strict DER encoding.
+To provide a compact way to deliberately create an invalid signature
+for OP_CHECKSIG and OP_CHECKMULTISIG, an empty byte array (i.e.,
+the result of OP_0) is also allowed. Doing a verification with a
+non-DER signature makes the entire script evaluate to False (not
+just the signature verification). See reference: <a href="https://bips.dev/62/#der-encoding" title="wikilink">DER
+encoding</a>.</li>
+<li><strong>Non-push operations in scriptSig</strong> Only data pushes are allowed in
+scriptSig. Evaluating any other operation makes the script evaluate
+to false. See reference: <a href="https://bips.dev/62/#push-operators" title="wikilink">Push
+operators</a>.</li>
+<li><strong>Push operations in scriptSig of non-standard size type</strong> The
+smallest possible push operation must be used when possible. Pushing
+data using an operation that could be encoded in a shorter way makes
+the script evaluate to false. See reference: <a href="https://bips.dev/62/#push-operators" title="wikilink">Push
+operators</a>.</li>
+<li><strong>Zero-padded number pushes</strong> Any time a script opcode consumes a
+stack value that is interpreted as a number, it must be encoded in
+its shortest possible form. 'Negative zero' is not allowed. See
+reference: <a href="https://bips.dev/62/#numbers" title="wikilink">Numbers</a>.</li>
+<li><strong>Inherent ECDSA signature malleability</strong> We require that the S
+value inside ECDSA signatures is at most the curve order divided by
+2 (essentially restricting this value to its lower half range). See
+reference: <a href="https://bips.dev/62/#low-s-values-in-signatures" title="wikilink">Low S values in
+signatures</a>.</li>
+<li><strong>Superfluous scriptSig operations</strong> scriptPubKey evaluation will be
+required to result in a single non-zero value. If any extra data
+elements remain on the stack, the script evaluates to false.</li>
+<li><strong>Inputs ignored by scripts</strong> The (unnecessary) extra stack element
+consumed by OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY must be
+the empty byte array (the result of OP_0). Anything else makes the
+script evaluate to false.</li>
+</ol>
+<h3 id="block-validity">Block validity</h3>
+<p>To introduce these new rules in the network, we add both v3 blocks and
+v3 transactions. v2 is skipped for transactions to keep the version
+numbers between transaction and block rules in sync. v2 transactions are
+treated identically to v1 transactions. The same mechanism as in BIP
+0034 is used to introduce v3 blocks. When 75% of the past 1000 blocks
+are v3, a new consensus rule is activated:</p>
+<ul>
+<li>All transactions in v3 blocks are required to follow rules #1-#2.</li>
+<li>v3 (and higher) transactions in v3 blocks are required to follow
+rules #3-#7 as well.</li>
+</ul>
+<p>When 95% of the past 1000 blocks are v3 or higher, v2 blocks become
+invalid entirely. Note however that v1 (and v2) transactions remain
+valid forever.</p>
+<h3 id="references">References</h3>
+<p>Below is a summary of the effects on signatures, their encoding and data
+pushes.</p>
+<h4 id="low-s-values-in-signatures">Low S values in signatures</h4>
+<p>The value S in signatures must be between 0x1 and 0x7FFFFFFF FFFFFFFF
+FFFFFFFF FFFFFFFF 5D576E73 57A4501D DFE92F46 681B20A0 (inclusive). If S
+is too high, simply replace it by S' = 0xFFFFFFFF FFFFFFFF FFFFFFFF
+FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 - S.</p>
+<p>Signatures produced by the OpenSSL library are not guaranteed to be
+consistent with this constraint. Version 0.9.3 of the reference client
+provides <a href="https://github.com/bitcoin/bitcoin/blob/v0.9.3/src/key.cpp#L202-L227">an
+example</a>
+for detection and correction.</p>
+<p>The constraints on the value R are unchanged w.r.t. ECDSA, and values
+can be between 0x1 and 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6
+AF48A03B BFD25E8C D0364140 (inclusive).</p>
+<h4 id="der-encoding">DER encoding</h4>
+<p>For reference, here is how to encode signatures correctly in DER format.</p>
+<p>0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
+[sighash-type]</p>
+<ul>
+<li>total-length: 1-byte length descriptor of everything that follows,
+excluding the sighash byte.</li>
+<li>R-length: 1-byte length descriptor of the R value that follows.</li>
+<li>R: arbitrary-length big-endian encoded R value. It cannot start with
+any 0x00 bytes, unless the first byte that follows is 0x80 or
+higher, in which case a single 0x00 is required.</li>
+<li>S-length: 1-byte length descriptor of the S value that follows.</li>
+<li>S: arbitrary-length big-endian encoded S value. The same rules apply
+as for R.</li>
+<li>sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81,
+0x82 and 0x83 are allowed).</li>
+</ul>
+<p>This is already enforced by the reference client as of version 0.8.0
+(only as relay policy, not as a consensus rule).</p>
+<p>This rule, combined with the low S requirement above, results in
+S-length being at most 32 (and R-length at most 33), and the total
+signature size being at most 72 bytes (and on average 71.494 bytes).</p>
+<h4 id="push-operators">Push operators</h4>
+<ul>
+<li>Pushing an empty byte sequence must use OP_0.</li>
+<li>Pushing a 1-byte sequence of byte 0x01 through 0x10 must use OP_n.</li>
+<li>Pushing the byte 0x81 must use OP_1NEGATE.</li>
+<li>Pushing any other byte sequence up to 75 bytes must use the normal
+data push (opcode byte n, with n the number of bytes, followed n
+bytes of data being pushed).</li>
+<li>Pushing 76 to 255 bytes must use OP_PUSHDATA1.</li>
+<li>Pushing 256 to 520 bytes must use OP_PUSHDATA2.</li>
+<li>OP_PUSHDATA4 can never be used, as pushes over 520 bytes are not
+allowed, and those below can be done using other operators.</li>
+<li>Any other operation is not considered to be a push.</li>
+</ul>
+<h4 id="numbers">Numbers</h4>
+<p>The native data type of stack elements is byte arrays, but some
+operations interpret arguments as integers. The used encoding is little
+endian with an explicit sign bit (the highest bit of the last byte). The
+shortest encodings for numbers are (with the range boundaries encodings
+given in hex between ()).</p>
+<ul>
+<li>0: OP_0; (00)</li>
+<li>1..16: OP_1..OP_16; (51)..(60)</li>
+<li>-1: OP_1NEGATE; (79)</li>
+<li>-127..-2 and 17..127: normal 1-byte data push; (01 FF)..(01 82) and
+(01 11)..(01 7F)</li>
+<li>-32767..-128 and 128..32767: normal 2-byte data push; (02 FF
+FF)..(02 80 80) and (02 80 00)..(02 FF 7F)</li>
+<li>-8388607..-32768 and 32768..8388607: normal 3-byte data push; (03 FF
+FF FF)..(03 00 80 80) and (03 00 80 00)..(03 FF FF 7F)</li>
+<li>-2147483647..-8388608 and 8388608..2147483647: normal 4-byte data
+push; (04 FF FF FF FF)..(04 00 00 80 80) and (04 00 00 80 00)..(04
+FF FF FF 7F)</li>
+<li>Any other numbers cannot be encoded.</li>
+</ul>
+<p>In particular, note that zero could be encoded as (01 80) (negative
+zero) if using the non-shortest form is allowed.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p><strong>Relay of transactions</strong> A new node software version is released which
+makes v3 transactions standard, and relays them when their scriptSigs
+satisfy the above rules. Relaying of v1 transactions is unaffected. A v1
+transaction spending an output created by a v3 transaction is also
+unaffected.</p>
+<p><strong>Wallet updates</strong> As v3 transactions are non-standard currently, it is
+not possible to start creating them immediately. Software can be checked
+to confirm to the new rules of course, but using v3 should only start
+when a significant part of the network's nodes has upgraded to
+compatible code. Its intended meaning is &quot;I want this transaction
+protected from malleability&quot;, and remains a choice of the wallet
+software.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

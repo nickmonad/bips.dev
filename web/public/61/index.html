@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 61</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 61: Reject P2P message
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-06-18</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0061.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 61
+  Layer: Peer Services
+  Title: Reject P2P message
+  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Comments-Summary: Controversial; some recommendation, and some discouragement
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0061
+  Status: Final
+  Type: Standards Track
+  Created: 2014-06-18
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes a new message type for the Bitcoin peer-to-peer
+network.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Giving peers feedback about why their blocks or transactions are
+rejected, or why they are being banned for not following the protocol
+helps interoperability between different implementations.</p>
+<p>It also gives SPV (simplified payment verification) clients a hint that
+something may be wrong when their transactions are rejected due to
+insufficient priority or fees.</p>
+<h2 id="specification">Specification</h2>
+<p>Data types in this specification are as described at
+<a href="https://en.bitcoin.it/wiki/Protocol_specification">https://en.bitcoin.it/wiki/Protocol_specification</a></p>
+<h3 id="reject">reject</h3>
+<p>One new message type &quot;reject&quot; is introduced. It is sent directly to a
+peer in response to a &quot;version&quot;, &quot;tx&quot; or &quot;block&quot; message.</p>
+<p>For example, the message flow between two peers for a relayed
+transaction that is rejected for some reason would be:</p>
+<p><code>--&gt; inv</code><br />
+<code>&lt;-- getdata</code><br />
+<code>--&gt; tx</code><br />
+<code>&lt;-- reject</code></p>
+<p>All implementations of the P2P protocol version 70,002 and later should
+support the reject message.</p>
+<h4 id="common-payload">common payload</h4>
+<p>Every reject message begins with the following fields. Some messages
+append extra, message-specific data.</p>
+<table><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>Field Size</td><td>Name</td><td>Data type</td><td>Comments</td></tr>
+<tr><td>variable</td><td>response-to-msg</td><td>var_str</td><td>Message that triggered the reject</td></tr>
+<tr><td>1</td><td>reject-code</td><td>uint8_t</td><td>0x01 through 0x4f (see below)</td></tr>
+<tr><td>variable</td><td>reason</td><td>var_string</td><td>Human-readable message for debugging</td></tr>
+</tbody></table>
+<p>The human-readable string is intended only for debugging purposes; in
+particular, different implementations may use different strings. The
+string should not be shown to users or used for anthing besides
+diagnosing interoperability problems.</p>
+<p>The following reject code categories are used; in the descriptions
+below, &quot;server&quot; is the peer generating the reject message, &quot;client&quot; is
+the peer that will receive the message.</p>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
+<tr><td>Range</td><td>Category</td></tr>
+<tr><td>0x01-0x0f</td><td>Protocol syntax errors</td></tr>
+<tr><td>0x10-0x1f</td><td>Protocol semantic errors</td></tr>
+<tr><td>0x40-0x4f</td><td>Server policy rule</td></tr>
+</tbody></table>
+<h4 id="rejection-codes-common-to-all-message-types">rejection codes common to all message types</h4>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
+<tr><td>Code</td><td>Description</td></tr>
+<tr><td>0x01</td><td>Message could not be decoded</td></tr>
+</tbody></table>
+<h4 id="reject-version-codes">reject version codes</h4>
+<p>Codes generated during the initial connection process in response to a
+&quot;version&quot; message:</p>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
+<tr><td>Code</td><td>Description</td></tr>
+<tr><td>0x11</td><td>Client is an obsolete, unsupported version</td></tr>
+<tr><td>0x12</td><td>Duplicate version message received</td></tr>
+</tbody></table>
+<h4 id="reject-tx-payload-codes">reject tx payload, codes</h4>
+<p>Transaction rejection messages extend the basic message with the
+transaction id hash:</p>
+<table><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>Field Size</td><td>Name</td><td>Data type</td><td>Comments</td></tr>
+<tr><td>32</td><td>hash</td><td>char[32]</td><td>transaction that is rejected</td></tr>
+</tbody></table>
+<p>The following codes are used:</p>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
+<tr><td>Code</td><td>Description</td></tr>
+<tr><td>0x10</td><td>Transaction is invalid for some reason (invalid signature, output value greater than input, etc.)</td></tr>
+<tr><td>0x12</td><td>An input is already spent</td></tr>
+<tr><td>0x40</td><td>Not mined/relayed because it is &quot;non-standard&quot; (type or version unknown by the server)</td></tr>
+<tr><td>0x41</td><td>One or more output amounts are below the 'dust' threshold</td></tr>
+<tr><td>0x42</td><td>Transaction does not have enough fee/priority to be relayed or mined</td></tr>
+</tbody></table>
+<h4 id="payload-reject-block">payload, reject block</h4>
+<p>Block rejection messages extend the basic message with the block header
+hash:</p>
+<table><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td>Field Size</td><td>Name</td><td>Data type</td><td>Comments</td></tr>
+<tr><td>32</td><td>hash</td><td>char[32]</td><td>block (hash of block header) that is rejected</td></tr>
+</tbody></table>
+<p>Rejection codes:</p>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
+<tr><td>code</td><td>description</td></tr>
+<tr><td>0x10</td><td>Block is invalid for some reason (invalid proof-of-work, invalid signature, etc)</td></tr>
+<tr><td>0x11</td><td>Block's version is no longer supported</td></tr>
+<tr><td>0x43</td><td>Inconsistent with a compiled-in checkpoint</td></tr>
+</tbody></table>
+<p>Note: blocks that are not part of the server's idea of the current best
+chain, but are otherwise valid, should not trigger reject messages.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>The reject message is backwards-compatible; older peers that do not
+recognize the reject message will ignore it.</p>
+<h2 id="implementation-notes">Implementation notes</h2>
+<p>Implementors must consider what happens if an attacker either sends them
+reject messages for valid transactions/blocks or sends them random
+reject messages, and should beware of possible denial-of-service
+attacks. For example, notifying the user of every reject message
+received would make it trivial for an attacker to mount an
+annoy-the-user attack. Even merely writing every reject message to a
+debugging log could make an implementation vulnerable to a
+fill-up-the-users-disk attack.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

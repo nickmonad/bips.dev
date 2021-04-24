@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 111</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 111: NODE_BLOOM service bit
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2015-08-20</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0111.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 111
+  Layer: Peer Services
+  Title: NODE_BLOOM service bit
+  Author: Matt Corallo &lt;bip111@bluematt.me&gt;
+          Peter Todd &lt;pete@petertodd.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0111
+  Status: Proposed
+  Type: Standards Track
+  Created: 2015-08-20
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP extends BIP 37, Connection Bloom filtering, by defining a
+service bit to allow peers to advertise that they support bloom filters
+explicitly. It also bumps the protocol version to allow peers to
+identify old nodes which allow bloom filtering of the connection despite
+lacking the new service bit.</p>
+<h2 id="motivation">Motivation</h2>
+<p>BIP 37 did not specify a service bit for the bloom filter service, thus
+implicitly assuming that all nodes that serve peers data support it.
+However, the connection filtering algorithm proposed in BIP 37, and
+implemented in several clients today, has been shown to provide little
+to no privacy[1], as well as being a large DoS risk on some nodes[2].
+Thus, allowing node operators to disable connection bloom filtering is a
+much-needed feature.</p>
+<h2 id="specification">Specification</h2>
+<p>The following protocol bit is added:</p>
+<pre style="background-color:#fafafa;">
+<code>    NODE_BLOOM = (1 &lt;&lt; 2)
+</code></pre>
+<p>Nodes which support bloom filters should set that protocol bit.
+Otherwise it should remain unset. In addition the protocol version is
+increased from 70002 to 70011 in the reference implementation. It is
+often the case that nodes which have a protocol version smaller than
+70011, but larger than 70000 support bloom filtered connections without
+the NODE_BLOOM bit set, however clients which require bloom filtered
+connections should avoid making this assumption.</p>
+<p>NODE_BLOOM is distinct from NODE_NETWORK, and it is legal to advertise
+NODE_BLOOM but not NODE_NETWORK (though there is little reason to do
+so now, some proposals may make this more useful in the future)</p>
+<p>If a node does not support bloom filters but receives a &quot;filterload&quot;,
+&quot;filteradd&quot;, or &quot;filterclear&quot; message from a peer the node should
+disconnect that peer immediately. For backwards compatibility, in
+initial implementations, nodes may choose to only disconnect nodes which
+have the new protocol version set and attempt to send a filter command.</p>
+<p>While outside the scope of this BIP it is suggested that DNS seeds and
+other peer discovery mechanisms support the ability to specify the
+services required; current implementations simply check only that
+NODE_NETWORK is set.</p>
+<h2 id="design-rational">Design rational</h2>
+<p>A service bit was chosen as applying a bloom filter is a service.</p>
+<p>The increase in protocol version is for backwards compatibility. In
+initial implementations, old nodes which are not yet aware of
+NODE_BLOOM and use a protocol version &lt; 70011 may still send filter
+messages to a node without NODE_BLOOM. This feature may be removed
+after there are sufficient NODE_BLOOM nodes available and SPV clients
+have upgraded, allowing node operators to fully close the bloom-related
+DoS vectors.</p>
+<h2 id="reference-implementation">Reference Implementation</h2>
+<p><a href="https://github.com/bitcoin/bitcoin/pull/6579">https://github.com/bitcoin/bitcoin/pull/6579</a></p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+<h2 id="references">References</h2>
+<references>
+<p>[1] <a href="http://eprint.iacr.org/2014/763">http://eprint.iacr.org/2014/763</a></p>
+<p>[2] <a href="http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-July/003044.html">1</a>
+is one example where the issues were found, though others independently
+discovered issues as well. Sample DoS exploit code available at
+<a href="https://github.com/petertodd/bloom-io-attack">https://github.com/petertodd/bloom-io-attack</a>.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

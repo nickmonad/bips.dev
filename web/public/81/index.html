@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 81</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 81: Hierarchy for Colored Voting Pool Deterministic Multisig Wallets
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-08-11</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0081.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 81
+  Title: Hierarchy for Colored Voting Pool Deterministic Multisig Wallets
+  Author: Justus Ranvier &lt;justus@opentransactions.org&gt;
+          Jimmy Song &lt;jimmy@monetas.net&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0081
+  Status: Deferred
+  Type: Informational
+  Created: 2014-08-11
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP defines a logical hierarchy for colored coin voting pool
+deterministic multisig wallets based on an algorithm described in
+BIP-0032 (BIP32 from now on) and purpose scheme described in BIP-0043
+(BIP43 from now on).</p>
+<p>This BIP is a particular application of BIP43 and is based on BIP44.</p>
+<h2 id="motivation">Motivation</h2>
+<p>The hierarchy proposed in this paper allows the handling of multiple
+color definitions from a single seed.</p>
+<h2 id="path-levels">Path levels</h2>
+<p>We define the following 8 levels in BIP32 path:</p>
+<pre style="background-color:#fafafa;">
+<code>m / purpose' / series' / (5 color definition levels) / address_index
+</code></pre>
+<p>Apostrophe in the path indicates that BIP32 hardened derivation is used.</p>
+<p>Each level has a special meaning, described in the chapters below.</p>
+<h3 id="purpose">Purpose</h3>
+<p>Purpose is a constant set following the BIP43 recommendation to: the
+ASCII value of &quot;81&quot; with the most signifigant bit set to indicate
+hardened derivation (0x80000051). It indicates that the subtree of this
+node is used according to this specification.</p>
+<p>Hardened derivation is used at this level.</p>
+<h3 id="color-definition">Color Definition</h3>
+<p>Index values which can be applied to a BIP32 node are limited to 4 bytes
+(32 bits).</p>
+<p>Since this is not sufficient to identify color definitions without a
+risk of collision, multiple levels are used.</p>
+<p>Color definitions are first shortened to 20 bytes using the Bitcoin
+hash160 function.</p>
+<p>The resulting 20 bytes are split into five groups in little endian
+format, and where each group is used as the seed for the five levels of
+color definition levels</p>
+<p>Public derivation is used at these levels, even when the index exceeds
+2^31.</p>
+<h3 id="index">Index</h3>
+<p>Public/private keypairs are numbered from index 0 in sequentially
+increasing manner. This number is used as child index in BIP32
+derivation.</p>
+<p>Public keys obtained at this level of the hierarchy are used to
+construct multisig deposit scripts, using a schema that is shared
+between the members as an out-of-band contract.</p>
+<p>Public derivation is used at this level.</p>
+<h2 id="compatible-wallets">Compatible wallets</h2>
+<ul>
+<li><a href="https://github.com/btcsuite/btcwallet" title="wikilink">btcwallet</a> is the
+reference Bitcoin wallet for voting pools.</li>
+</ul>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://bips.dev/81/bip-0032.mediawiki" title="wikilink">BIP32 - Hierarchical Deterministic
+Wallets</a></li>
+<li><a href="https://bips.dev/81/bip-0043.mediawiki" title="wikilink">BIP43 - Purpose Field for Deterministic
+Wallets</a></li>
+<li><a href="https://bips.dev/81/bip-0044.mediawiki" title="wikilink">BIP44 - Multi-Account Hierarchy for Deterministic
+Wallets</a></li>
+<li><a href="https://bips.dev/81/bip-0080.mediawiki" title="wikilink">BIP80 - Hierarchy for Non-Colored Voting Pool Deterministic
+Multisig Wallets</a></li>
+</ul>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

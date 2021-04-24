@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 65</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 65: OP_CHECKLOCKTIMEVERIFY
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-10-01</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0065.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 65
+  Layer: Consensus (soft fork)
+  Title: OP_CHECKLOCKTIMEVERIFY
+  Author: Peter Todd &lt;pete@petertodd.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0065
+  Status: Final
+  Type: Standards Track
+  Created: 2014-10-01
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes a new opcode (OP_CHECKLOCKTIMEVERIFY) for the
+Bitcoin scripting system that allows a transaction output to be made
+unspendable until some point in the future.</p>
+<h2 id="summary">Summary</h2>
+<p>CHECKLOCKTIMEVERIFY redefines the existing NOP2 opcode. When executed,
+if any of the following conditions are true, the script interpreter will
+terminate with an error:</p>
+<ul>
+<li>the stack is empty; or</li>
+<li>the top item on the stack is less than 0; or</li>
+<li>the lock-time type (height vs. timestamp) of the top stack item and
+the nLockTime field are not the same; or</li>
+<li>the top stack item is greater than the transaction's nLockTime
+field; or</li>
+<li>the nSequence field of the txin is 0xffffffff;</li>
+</ul>
+<p>Otherwise, script execution will continue as if a NOP had been executed.</p>
+<p>The nLockTime field in a transaction prevents the transaction from being
+mined until either a certain block height, or block time, has been
+reached. By comparing the argument to CHECKLOCKTIMEVERIFY against the
+nLockTime field, we indirectly verify that the desired block height or
+block time has been reached; until that block height or block time has
+been reached the transaction output remains unspendable.</p>
+<h2 id="motivation">Motivation</h2>
+<p>The nLockTime field in transactions can be used to prove that it is
+<em>possible</em> to spend a transaction output in the future, by constructing
+a valid transaction spending that output with the nLockTime field set.</p>
+<p>However, the nLockTime field can't prove that it is <em>impossible</em> to
+spend a transaction output until some time in the future, as there is no
+way to know if a valid signature for a different transaction spending
+that output has been created.</p>
+<h3 id="escrow">Escrow</h3>
+<p>If Alice and Bob jointly operate a business they may want to ensure that
+all funds are kept in 2-of-2 multisig transaction outputs that require
+the co-operation of both parties to spend. However, they recognise that
+in exceptional circumstances such as either party getting &quot;hit by a bus&quot;
+they need a backup plan to retrieve the funds. So they appoint their
+lawyer, Lenny, to act as a third-party.</p>
+<p>With a standard 2-of-3 CHECKMULTISIG at any time Lenny could conspire
+with either Alice or Bob to steal the funds illegitimately. Equally
+Lenny may prefer not to have immediate access to the funds to discourage
+bad actors from attempting to get the secret keys from him by force.</p>
+<p>However, with CHECKLOCKTIMEVERIFY the funds can be stored in
+scriptPubKeys of the form:</p>
+<p><code>   IF</code><br />
+<code>       &lt;now + 3 months&gt; CHECKLOCKTIMEVERIFY DROP</code><br />
+<code>       &lt;Lenny's pubkey&gt; CHECKSIGVERIFY</code><br />
+<code>       1</code><br />
+<code>   ELSE</code><br />
+<code>       2</code><br />
+<code>   ENDIF</code><br />
+<code>   &lt;Alice's pubkey&gt; &lt;Bob's pubkey&gt; 2 CHECKMULTISIG</code></p>
+<p>At any time the funds can be spent with the following scriptSig:</p>
+<p><code>   0 &lt;Alice's signature&gt; &lt;Bob's signature&gt; 0</code></p>
+<p>After 3 months have passed Lenny and one of either Alice or Bob can
+spend the funds with the following scriptSig:</p>
+<p><code>   0 &lt;Alice/Bob's signature&gt; &lt;Lenny's signature&gt; 1</code></p>
+<h3 id="non-interactive-time-locked-refunds">Non-interactive time-locked refunds</h3>
+<p>There exist a number of protocols where a transaction output is created
+that requires the co-operation of both parties to spend the output. To
+ensure the failure of one party does not result in the funds becoming
+lost, refund transactions are setup in advance using nLockTime. These
+refund transactions need to be created interactively, and additionally,
+are currently vulnerable to transaction malleability.
+CHECKLOCKTIMEVERIFY can be used in these protocols, replacing the
+interactive setup with a non-interactive setup, and additionally, making
+transaction malleability a non-issue.</p>
+<h4 id="two-factor-wallets">Two-factor wallets</h4>
+<p>Services like GreenAddress store bitcoins with 2-of-2 multisig
+scriptPubKey's such that one keypair is controlled by the user, and the
+other keypair is controlled by the service. To spend funds the user uses
+locally installed wallet software that generates one of the required
+signatures, and then uses a 2nd-factor authentication method to
+authorize the service to create the second SIGHASH_NONE signature that
+is locked until some time in the future and sends the user that
+signature for storage. If the user needs to spend their funds and the
+service is not available, they wait until the nLockTime expires.</p>
+<p>The problem is there exist numerous occasions the user will not have a
+valid signature for some or all of their transaction outputs. With
+CHECKLOCKTIMEVERIFY rather than creating refund signatures on demand
+scriptPubKeys of the following form are used instead:</p>
+<p><code>   IF</code><br />
+<code>       </code><service pubkey><code> CHECKSIGVERIFY</code><br />
+<code>   ELSE</code><br />
+<code>       </code><expiry time><code> CHECKLOCKTIMEVERIFY DROP</code><br />
+<code>   ENDIF</code><br />
+<code>   </code><user pubkey><code> CHECKSIG</code></p>
+<p>Now the user is always able to spend their funds without the
+co-operation of the service by waiting for the expiry time to be
+reached.</p>
+<h4 id="payment-channels">Payment Channels</h4>
+<p>Jeremy Spilman style payment channels first setup a deposit controlled
+by 2-of-2 multisig, tx1, and then adjust a second transaction, tx2, that
+spends the output of tx1 to payor and payee. Prior to publishing tx1 a
+refund transaction is created, tx3, to ensure that should the payee
+vanish the payor can get their deposit back. The process by which the
+refund transaction is created is currently vulnerable to transaction
+malleability attacks, and additionally, requires the payor to store the
+refund. Using the same scriptPubKey form as in the Two-factor wallets
+example solves both these issues.</p>
+<h3 id="trustless-payments-for-publishing-data">Trustless Payments for Publishing Data</h3>
+<p>The PayPub protocol makes it possible to pay for information in a
+trustless way by first proving that an encrypted file contains the
+desired data, and secondly crafting scriptPubKeys used for payment such
+that spending them reveals the encryption keys to the data. However the
+existing implementation has a significant flaw: the publisher can delay
+the release of the keys indefinitely.</p>
+<p>This problem can be solved interactively with the refund transaction
+technique; with CHECKLOCKTIMEVERIFY the problem can be non-interactively
+solved using scriptPubKeys of the following form:</p>
+<p><code>   IF</code><br />
+<code>       HASH160 &lt;Hash160(encryption key)&gt; EQUALVERIFY</code><br />
+<code>       </code><publisher pubkey><code> CHECKSIG</code><br />
+<code>   ELSE</code><br />
+<code>       </code><expiry time><code> CHECKLOCKTIMEVERIFY DROP</code><br />
+<code>       </code><buyer pubkey><code> CHECKSIG</code><br />
+<code>   ENDIF</code></p>
+<p>The buyer of the data is now making a secure offer with an expiry time.
+If the publisher fails to accept the offer before the expiry time is
+reached the buyer can cancel the offer by spending the output.</p>
+<h3 id="proving-sacrifice-to-miners-fees">Proving sacrifice to miners' fees</h3>
+<p>Proving the sacrifice of some limited resource is a common technique in
+a variety of cryptographic protocols. Proving sacrifices of coins to
+mining fees has been proposed as a <em>universal public good</em> to which the
+sacrifice could be directed, rather than simply destroying the coins.
+However doing so is non-trivial, and even the best existing technqiue -
+announce-commit sacrifices - could encourage mining centralization.
+CHECKLOCKTIMEVERIFY can be used to create outputs that are provably
+spendable by anyone (thus to mining fees assuming miners behave
+optimally and rationally) but only at a time sufficiently far into the
+future that large miners can't profitably sell the sacrifices at a
+discount.</p>
+<h3 id="freezing-funds">Freezing Funds</h3>
+<p>In addition to using cold storage, hardware wallets, and P2SH multisig
+outputs to control funds, now funds can be frozen in UTXOs directly on
+the blockchain. With the following scriptPubKey, nobody will be able to
+spend the encumbered output until the provided expiry time. This ability
+to freeze funds reliably may be useful in scenarios where reducing
+duress or confiscation risk is desired.</p>
+<p><code>   </code><expiry time><code> CHECKLOCKTIMEVERIFY DROP DUP HASH160 </code><pubKeyHash><code> EQUALVERIFY CHECKSIG</code></p>
+<h3 id="replacing-the-nlocktime-field-entirely">Replacing the nLockTime field entirely</h3>
+<p>As an aside, note how if the SignatureHash() algorithm could optionally
+cover part of the scriptSig the signature could require that the
+scriptSig contain CHECKLOCKTIMEVERIFY opcodes, and additionally, require
+that they be executed. (the CODESEPARATOR opcode came very close to
+making this possible in v0.1 of Bitcoin) This per-signature capability
+could replace the per-transaction nLockTime field entirely as a valid
+signature would now be the proof that a transaction output <em>can</em> be
+spent.</p>
+<h2 id="detailed-specification">Detailed Specification</h2>
+<p>Refer to the reference implementation, reproduced below, for the precise
+semantics and detailed rationale for those semantics.</p>
+<p><code>   case OP_NOP2:</code><br />
+<code>   {</code><br />
+<code>       // CHECKLOCKTIMEVERIFY</code><br />
+<code>       //</code><br />
+<code>       // (nLockTime -- nLockTime )</code><br />
+<code>   </code><br />
+<code>       if (!(flags &amp; SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY))</code><br />
+<code>           break; // not enabled; treat as a NOP</code><br />
+<code>   </code><br />
+<code>       if (stack.size() &lt; 1)</code><br />
+<code>           return false;</code><br />
+<code>   </code><br />
+<code>       // Note that elsewhere numeric opcodes are limited to</code><br />
+<code>       // operands in the range -2**31+1 to 2**31-1, however it is</code><br />
+<code>       // legal for opcodes to produce results exceeding that</code><br />
+<code>       // range. This limitation is implemented by CScriptNum's</code><br />
+<code>       // default 4-byte limit.</code><br />
+<code>       //</code><br />
+<code>       // If we kept to that limit we'd have a year 2038 problem,</code><br />
+<code>       // even though the nLockTime field in transactions</code><br />
+<code>       // themselves is uint32 which only becomes meaningless</code><br />
+<code>       // after the year 2106.</code><br />
+<code>       //</code><br />
+<code>       // Thus as a special case we tell CScriptNum to accept up</code><br />
+<code>       // to 5-byte bignums, which are good until 2**32-1, the</code><br />
+<code>       // same limit as the nLockTime field itself.</code><br />
+<code>       const CScriptNum nLockTime(stacktop(-1), 5);</code><br />
+<code>   </code><br />
+<code>       // In the rare event that the argument may be &lt; 0 due to</code><br />
+<code>       // some arithmetic being done first, you can always use</code><br />
+<code>       // 0 MAX CHECKLOCKTIMEVERIFY.</code><br />
+<code>       if (nLockTime &lt; 0)</code><br />
+<code>           return false;</code><br />
+<code>   </code><br />
+<code>       // There are two types of nLockTime: lock-by-blockheight</code><br />
+<code>       // and lock-by-blocktime, distinguished by whether</code><br />
+<code>       // nLockTime &lt; LOCKTIME_THRESHOLD.</code><br />
+<code>       //</code><br />
+<code>       // We want to compare apples to apples, so fail the script</code><br />
+<code>       // unless the type of nLockTime being tested is the same as</code><br />
+<code>       // the nLockTime in the transaction.</code><br />
+<code>       if (!(</code><br />
+<code>             (txTo.nLockTime &lt;  LOCKTIME_THRESHOLD &amp;&amp; nLockTime &lt;  LOCKTIME_THRESHOLD) ||</code><br />
+<code>             (txTo.nLockTime &gt;= LOCKTIME_THRESHOLD &amp;&amp; nLockTime &gt;= LOCKTIME_THRESHOLD)</code><br />
+<code>            ))</code><br />
+<code>           return false;</code><br />
+<code>   </code><br />
+<code>       // Now that we know we're comparing apples-to-apples, the</code><br />
+<code>       // comparison is a simple numeric one.</code><br />
+<code>       if (nLockTime &gt; (int64_t)txTo.nLockTime)</code><br />
+<code>           return false;</code><br />
+<code>   </code><br />
+<code>       // Finally the nLockTime feature can be disabled and thus</code><br />
+<code>       // CHECKLOCKTIMEVERIFY bypassed if every txin has been</code><br />
+<code>       // finalized by setting nSequence to maxint. The</code><br />
+<code>       // transaction would be allowed into the blockchain, making</code><br />
+<code>       // the opcode ineffective.</code><br />
+<code>       //</code><br />
+<code>       // Testing if this vin is not final is sufficient to</code><br />
+<code>       // prevent this condition. Alternatively we could test all</code><br />
+<code>       // inputs, but testing just this input minimizes the data</code><br />
+<code>       // required to prove correct CHECKLOCKTIMEVERIFY execution.</code><br />
+<code>       if (txTo.vin[nIn].IsFinal())</code><br />
+<code>           return false;</code><br />
+<code>   </code><br />
+<code>       break;</code><br />
+<code>   </code><br />
+<code>   }</code></p>
+<p><a href="https://github.com/petertodd/bitcoin/commit/ab0f54f38e08ee1e50ff72f801680ee84d0f1bf4">https://github.com/petertodd/bitcoin/commit/ab0f54f38e08ee1e50ff72f801680ee84d0f1bf4</a></p>
+<h2 id="deployment">Deployment</h2>
+<p>We reuse the double-threshold IsSuperMajority() switchover mechanism
+used in BIP66 with the same thresholds, but for nVersion = 4. The new
+rules are in effect for every block (at height H) with nVersion = 4 and
+at least 750 out of 1000 blocks preceding it (with heights H-1000..H-1)
+also have nVersion &gt;= 4. Furthermore, when 950 out of the 1000 blocks
+preceding a block do have nVersion &gt;= 4, nVersion &lt; 4 blocks
+become invalid, and all further blocks enforce the new rules.</p>
+<p>It should be noted that BIP9 involves permanently setting a high-order
+bit to 1 which results in nVersion &gt;= all prior IsSuperMajority()
+soft-forks and thus no bits in nVersion are permanently lost.</p>
+<h3 id="spv-clients">SPV Clients</h3>
+<p>While SPV clients are (currently) unable to validate blocks in general,
+trusting miners to do validation for them, they are able to validate
+block headers and thus can validate a subset of the deployment rules.
+SPV clients should reject nVersion &lt; 4 blocks if 950 out of 1000
+preceding blocks have nVersion &gt;= 4 to prevent false confirmations
+from the remaining 5% of non-upgraded miners when the 95% threshold has
+been reached.</p>
+<h2 id="credits">Credits</h2>
+<p>Thanks goes to Gregory Maxwell for suggesting that the argument be
+compared against the per-transaction nLockTime, rather than the current
+block height and time.</p>
+<h2 id="references">References</h2>
+<p>PayPub</p>
+<ul>
+<li><a href="https://github.com/unsystem/paypub">https://github.com/unsystem/paypub</a></li>
+</ul>
+<p>Jeremy Spilman Payment Channels</p>
+<ul>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html</a></li>
+</ul>
+<h2 id="implementations">Implementations</h2>
+<p>Python / python-bitcoinlib</p>
+<ul>
+<li><a href="https://github.com/petertodd/checklocktimeverify-demos">https://github.com/petertodd/checklocktimeverify-demos</a></li>
+</ul>
+<p>JavaScript / Node.js / bitcore</p>
+<ul>
+<li><a href="https://github.com/mruddy/bip65-demos">https://github.com/mruddy/bip65-demos</a></li>
+</ul>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

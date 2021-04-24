@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 300</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 300: Hashrate Escrows (Consensus layer)
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-08-14</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0300.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 300
+  Layer: Consensus (soft fork)
+  Title: Hashrate Escrows (Consensus layer)
+  Author: Paul Sztorc &lt;truthcoin@gmail.com&gt;
+          CryptAxe &lt;cryptaxe@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0300
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-08-14
+  License: BSD-2-Clause
+  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-May/014364.html
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>A &quot;Hashrate Escrow&quot; is a clearer term for the concept of &quot;locked to an
+SPV Proof&quot;, which is itself a restatement of the phrase &quot;within a
+sidechain&quot; as described in <a href="https://blockstream.com/sidechains.pdf">the 2014 Blockstream
+whitepaper</a>.</p>
+<p>A Hashrate Escrow resembles a 2-of-3 multisig escrow, where the 3rd
+party (who will arbitrate any disputes) is a decentralized group of
+people: the dynamic-membership set of Bitcoin Miners. However, the 3rd
+party does not sign escrow-withdrawal transactions with a private key.
+Instead, these are &quot;signed&quot; by the accumulation of hashpower over time.</p>
+<p>This project has <a href="http://www.drivechain.info/">a website</a> which includes
+<a href="http://www.drivechain.info/faq/index.html">an FAQ</a>.</p>
+<h2 id="motivation">Motivation</h2>
+<p>In practice these escrows are likely to be &quot;asymmetric sidechains&quot; of
+Bitcoin (such as <a href="http://www.rsk.co/">Rootstock</a>) or &quot;virtual chains&quot;
+within Bitcoin (such as <a href="https://github.com/blockstack/virtualchain">proposed by
+Blockstack</a> in mid-2016).</p>
+<p>Sidechains have many potential benefits, including:</p>
+<ol>
+<li>Protect Bitcoin from competition from altcoins and spinoffs.</li>
+<li>Protect Bitcoin from hard fork campaigns. (Such campaigns represent
+an existential threat to Bitcoin, as well as an avenue for developer
+corruption.)</li>
+<li>Help with review, by making it much easier for reviewers to ignore
+bad ideas.</li>
+<li>Provide an avenue for good-but-confusing ideas to prove their value
+safely.</li>
+</ol>
+<h2 id="specification">Specification</h2>
+<h4 id="components">Components</h4>
+<p>Hashrate Escrows are built of two types of component: [1] new
+databases, and [2] new message-interpretations.</p>
+<h5 id="1-new-databases">1. New Databases</h5>
+<ul>
+<li>D1. &quot;Escrow_DB&quot; -- a database of &quot;accounts&quot; and their attributes.</li>
+<li>D2. &quot;Withdrawal_DB&quot; -- a database of pending withdrawals from these
+accounts, and their statuses.</li>
+</ul>
+<p>Please note that these structures (D1 and D2) will not literally exist
+anywhere in the blockchain. Instead they are constructed from
+messages...these messages, in contrast, *will* exist in the blockchain
+(with the exception of M4).</p>
+<h5 id="2-new-messages">2. New Messages</h5>
+<ul>
+<li>M1. &quot;Propose New Escrow&quot;</li>
+<li>M2. &quot;ACK Escrow Proposal&quot;</li>
+<li>M3. &quot;Propose Withdrawal&quot;</li>
+<li>M4. (implied) &quot;ACK Withdrawal&quot;</li>
+<li>M5. &quot;Execute Deposit&quot; -- a transfer of BTC from-main-to-side</li>
+<li>M6. &quot;Execute Withdrawal&quot; -- a transfer of BTC from-side-to-main</li>
+</ul>
+<h3 id="adding-sidechains-d1-m1-m2">Adding Sidechains (D1, M1, M2)</h3>
+<h4 id="d1-escrow-db">D1 -- &quot;Escrow_DB&quot;</h4>
+<p>The table below enumerates the new database fields, their size in bytes,
+and their purpose. In general, an escrow designer (for example, a
+sidechain-designer), is free to choose any value for these.</p>
+<table><thead><tr><th>Field No.</th><th>Label</th><th>Type</th><th>Description / Purpose</th></tr></thead><tbody>
+<tr><td>1</td><td>Escrow Number</td><td>uint8_t</td><td>A number assigned to the entire escrow. Used to make it easy to refer to each escrow.</td></tr>
+<tr><td>2</td><td>Sidechain Deposit Script Hex</td><td>string</td><td>The script that will be deposited to, and update the CTIP of the sidechain.</td></tr>
+<tr><td>3</td><td>Sidechain Private Key</td><td>string</td><td>The private key of the sidechain deposit script.</td></tr>
+<tr><td>4</td><td>Escrow Name</td><td>string</td><td>A human-readable name of the sidechain.</td></tr>
+<tr><td>5</td><td>Escrow Description</td><td>string</td><td>A human-readable name description of the sidechain. More than enough space to hold a 32 byte hash.</td></tr>
+<tr><td>6</td><td>Hash ID 1</td><td>uint256</td><td>A field of 32 bytes, which could be any bytes such as a sha256 hash.</td></tr>
+<tr><td>7</td><td>Hash ID 2</td><td>uint256</td><td>A field of 32 bytes, which could be any bytes such as a sha256 hash.</td></tr>
+<tr><td>8</td><td>&quot;CTIP&quot; -- Part 1 &quot;TxID&quot;</td><td>uint256</td><td>The CTIP, or &quot;Critical (TxID, Index) Pair&quot; is a variable for keeping track of where the escrow's money is (ie, which member of the UTXO set).</td></tr>
+<tr><td>9</td><td>&quot;CTIP&quot; -- Part 2 &quot;Index&quot;</td><td>int32_t</td><td>Of the CTIP, this is second element of the pair: the Index. See #9 above.</td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<p>D1 is updated via M1 and M2.</p>
+<p>( The following messages were modeled on SegWit -- see
+<a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#commitment-structure">here</a>
+and
+<a href="https://github.com/DriveNetTESTDRIVE/DriveNet/blob/564516653c1d876429382971a011f5f6119f7eb4/src/validation.cpp#L3348-L3375">here</a>.
+)</p>
+<h4 id="m1-propose-new-sidechain">M1 -- &quot;Propose New Sidechain&quot;</h4>
+<p><code>   1-byte - OP_RETURN (0x6a)</code><br />
+<code>   4-byte - Commitment header (0xD5E0C4AF)</code><br />
+<code>   N-byte - The serialization of the sidechain.</code></p>
+<h4 id="m2-ack-sidechain-proposal">M2 -- &quot;ACK Sidechain Proposal&quot;</h4>
+<p><code>   1-byte - OP_RETURN (0x6a)</code><br />
+<code>   4-byte - Commitment header (0xD6E1C5BF)</code><br />
+<code>   32-byte - Commitment hash: sha256D hash of sidechain's serialization</code></p>
+<h4 id="new-block-validation-rules">New Block Validation Rules</h4>
+<ol>
+<li>Escrows are added in a procedure that resembles BIP 9 soft fork
+activation: the network must see a properly-formatted M1, followed
+by &quot;acknowledgment&quot; of the sidechain in 95% of the following 2016
+blocks.</li>
+<li>It is possible to &quot;overwrite&quot; an escrow. This requires 6 months
+(26298 blocks) of M2s, instead of 2 weeks (XXXX). This possibility
+does not change the security assumptions (because we already assume
+that users perform extra-protocolic validation at a rate of 1 bit
+per 26298 blocks).</li>
+</ol>
+<h3 id="withdrawing-from-escrows-d2-m3-m4">Withdrawing from Escrows (D2, M3, M4)</h3>
+<h4 id="d2-withdrawal-db">D2 -- &quot;Withdrawal_DB&quot;</h4>
+<p>D2 changes deterministically with respect to M3, M4, M5, and M6.</p>
+<table><thead><tr><th>Field No.</th><th>Label</th><th>Type</th><th>Description / Purpose</th></tr></thead><tbody>
+<tr><td>1</td><td>Escrow Number</td><td>uint8_t</td><td>Links the withdrawal-request to a specific escrow.</td></tr>
+<tr><td>2</td><td>WT^ Hash</td><td>uint256</td><td>This is a &quot;blinded transaction id&quot; (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a withdrawal-attempt.</td></tr>
+<tr><td>3</td><td>ACKs (Work Score)</td><td>uint16_t</td><td>The current total number of ACKs (PoW)</td></tr>
+<tr><td>4</td><td>Blocks Remaining (Age)</td><td>uint16_t</td><td>The number of blocks which this WT^ has remaining to accumulate ACKs</td></tr>
+</tbody></table>
+<h4 id="new-block-validation-rules-for-d2">New Block Validation Rules for D2</h4>
+<ol>
+<li>A hash commitment to D2 exists in each block (even if D2 is blank).</li>
+<li>Withdrawals in D2 are sorted first by field #1 (Escrow Number) and
+second by field #4 (Age). This imposes a unique sort.</li>
+<li>From one block to the next, &quot;Age&quot; fields must increase by exactly 1.</li>
+<li>Withdrawals are stored in D2 until they fail (&quot;Age&quot; = &quot;MaxAge&quot;), or
+they succeed (the blockchain contains a txn whose blinded txID
+matches &quot;WT^&quot;).</li>
+</ol>
+<p>In addition, there are special rules for the &quot;ACKs&quot; field (see M4
+below).</p>
+<h4 id="m3-propose-withdrawal">M3 -- &quot;Propose Withdrawal&quot;</h4>
+<p><code>   1-byte - OP_RETURN (0x6a)</code><br />
+<code>   1-byte - Push the following 36 bytes (0x24)</code><br />
+<code>   4-byte - Commitment header (0xD45AA943)</code><br />
+<code>   32-byte - The WT^ hash to populate a new D2 entry</code></p>
+<h4 id="new-block-validation-rules-for-m3">New Block Validation Rules for M3</h4>
+<ol>
+<li>If the network detects a properly-formatted M3, it must add an entry
+to D2 in the very next block. The starting values of fields #3 and
+#4 are zero, and #5 is pulled over by extracting the relevant
+value from D1.</li>
+<li>Each block can only contain one M3 per sidechain.</li>
+</ol>
+<h4 id="m4-ack-withdrawal">M4 -- &quot;ACK Withdrawal&quot;</h4>
+<p>M4 is a way of describing changes to the &quot;ACKs&quot; column of D2.</p>
+<p>From one block to the next, &quot;ACKs&quot; can only change as follows:</p>
+<ul>
+<li>The ACK-counter of any withdrawal can only change by (-1,0,+1).</li>
+<li>Within a sidechain-group, upvoting one withdrawal (&quot;+1&quot;) requires
+you to downvote all other withdrawals in that group. However, the
+minimum ACK-value is zero (and, therefore, downvotes cannot reduce
+it below zero).</li>
+<li>While only one withdrawal can be upvoted at once, they can all be
+unchanged at once (&quot;abstain&quot;) and they can all be downvoted at once
+(&quot;alarm&quot;).</li>
+</ul>
+<p>One option for explicit transmission of M4 is:</p>
+<p><code>   4-byte - Message identifier (0x????????)</code><br />
+<code>   1-byte - Version of this message</code><br />
+<code>   1-byte - Length (in bytes) of this message; total number of withdrawal attempts; y = ceiling( sum_i(m_i +2)/8 ). Nodes should already know what length to expect, because they know the sequence of M3s and therefore the vector of WT^s.</code><br />
+<code>   N-byte - stream of bits (not bytes), with a 1 indicating the position of the chosen action [downvote all, abstain, upvote1, upvote2, ...]</code></p>
+<p>But sometimes M4 does not need to be transmitted at all! If there are n
+Escrows and m Withdrawals-per-escrow, then there are (m+2)^n total
+candidates for the next D2. So, when m and n are low, all of the
+possible D2s can be trivially computed in advance.</p>
+<p>Miners can impose a &quot;soft limit&quot; on m, blocking new withdrawal-attempts
+until previous ones expire. For a worst-case scenario of n=200 and
+m=1,000, honest nodes can communicate M4 with ~25 KB per block
+[4+1+1+(200\*(1000+1+1)/8)].</p>
+<h3 id="depositing-and-withdrawing-m5-m6">Depositing and Withdrawing (M5, M6)</h3>
+<p>Both M5 and M6 are regular Bitcoin txns. They are identified by meeting
+an important criteria: they select a one of the Critical TxID-index
+Pairs (a &quot;CTIP&quot;) as one of their inputs.</p>
+<p>Just as these txns must select a CTIP input, they must create a new CTIP
+output. D1 is then updated to match only the latest CTIP output. The
+purpose of this is to have all of the escrow's money (ie all of the
+sidechain's money) in one TxID, so that depositors immediately undo any
+UTXO bloat they may cause.</p>
+<p>Deposits (&quot;M5&quot;) are distinguished from withdrawals (&quot;M6&quot;) by simply
+checking to see if money is &quot;going in&quot;, or &quot;out&quot;.</p>
+<p><a href="https://github.com/DriveNetTESTDRIVE/DriveNet/blob/564516653c1d876429382971a011f5f6119f7eb4/src/validation.cpp#L647-L742">https://github.com/DriveNetTESTDRIVE/DriveNet/blob/564516653c1d876429382971a011f5f6119f7eb4/src/validation.cpp#L647-L742</a></p>
+<h4 id="m5-make-a-deposit-a-transfer-of-btc-from-main-to-side">M5. &quot;Make a Deposit&quot; -- a transfer of BTC from-main-to-side</h4>
+<p>As far as mainchain consensus is concerned, deposits to the escrow are
+always valid.</p>
+<p>However, in practice there will be additional requirements. The escrow
+account (ie the &quot;sidechain&quot;) needs to know how to credit depositors. One
+well-known method, is for mainchain depositors to append a zero-value OP
+Return to a Deposit txn, so that the sidechain knows how to credit
+funds. Mainchain users must upgrade their wallet software, of course,
+(on an individual basis) in order to become aware of and take advantage
+of new deposit-methods.</p>
+<h4 id="m6-execute-withdrawal-a-transfer-of-btc-from-side-to-main">M6. &quot;Execute Withdrawal&quot; -- a transfer of BTC from-side-to-main</h4>
+<p>We come, finally, to the critical matter: where users can take their
+money *out* of the escrow account, and return it to the &quot;regular&quot; UTXO
+set. As previously mentioned, this txn is one which (a) spends from a
+CTIP and (b) reduces the quantity of BTC in an account's CTIP. Most of
+the work has already been done by D1, M3, M4, and D2. Furthermore,
+existing Bitcoin tx-rules prevent the sidechain from ever withdrawing
+more money than has been placed into it.</p>
+<p>In each block, a withdrawal in D2 is considered &quot;approved&quot; if its &quot;ACKs&quot;
+value meets the threshold (13,150).</p>
+<p>Approved withdrawals give the green light to their respective &quot;WT^&quot;. A
+&quot;WT^&quot; is 32-bytes which aspire to represent the withdrawing transaction
+(the txn that actually withdraws funds from the escrow). The two cannot
+match exactly, because &quot;WT^&quot; is defined at onset, and the withdrawing
+TxID depends on the its CTIP input (which is constantly changing).</p>
+<p>To solve this, we define a &quot;blinded TxID&quot; as a way of hashing a txn, in
+which some bytes are first overwritten with zeros. Specifically, these
+bytes are the first input and the first output.</p>
+<p>So, withdrawals must meet the following three criteria:</p>
+<ol>
+<li>&quot;Be ACKed&quot; -- The &quot;blinded TxID&quot; of this txn must be member of the
+&quot;approved candidate&quot; set in the D2 of this block.</li>
+<li>&quot;Return Change to Account&quot; -- TxOut0 must pay to the &quot;critical
+account&quot; (see D1) that corresponds to the CTIP that was selected as
+a TxIn.</li>
+<li>&quot;Return *all* Change to Account&quot; -- Sum of inputs must equal the
+sum of outputs. No traditional tx fee is possible.</li>
+</ol>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<p>As a soft fork, older software will continue to operate without
+modification. Non-upgraded nodes will see a number of phenomena that
+they don't understand -- coinbase txns with non-txn data, value
+accumulating in anyone-can-spend UTXOs for months at a time, and then
+random amounts leaving the UTXO in single, infrequent bursts. However,
+these phenomena don't affect them, or the validity of the money that
+they receive.</p>
+<p>( As a nice bonus, note that the sidechains themselves inherit a
+resistance to hard forks. The only way to guarantee that the WT^s
+reported by different clients will continue to match identically, is to
+upgrade sidechains via soft forks of themselves. )</p>
+<h2 id="deployment">Deployment</h2>
+<p>This BIP will be deployed by &quot;version bits&quot; BIP9 with the name
+&quot;hrescrow&quot; and using bit 4.</p>
+<pre style="background-color:#fafafa;">
+<code>// Deployment of Drivechains (BIPX, BIPY)
+consensus.vDeployments[Consensus::DEPLOYMENT_DRIVECHAINS].bit = 4;
+consensus.vDeployments[Consensus::DEPLOYMENT_DRIVECHAINS].nStartTime = 1579072881; // January 15th, 2020.
+consensus.vDeployments[Consensus::DEPLOYMENT_DRIVECHAINS].nTimeout = 1610695281; // January 15th, 2021.
+</code></pre><h2 id="reference-implementation">Reference Implementation</h2>
+<p>See: <a href="https://github.com/DriveNetTESTDRIVE/DriveNet">https://github.com/DriveNetTESTDRIVE/DriveNet</a></p>
+<p>Also, for interest, see an example sidechain here:
+<a href="https://github.com/drivechain-project/bitcoin/tree/sidechainBMM">https://github.com/drivechain-project/bitcoin/tree/sidechainBMM</a></p>
+<h2 id="references">References</h2>
+<p>See <a href="http://www.drivechain.info/literature/index.html">http://www.drivechain.info/literature/index.html</a></p>
+<h2 id="credits">Credits</h2>
+<p>Thanks to everyone who contributed to the discussion, especially:
+ZmnSCPxj, Adam Back, Peter Todd, Dan Anderson, Sergio Demian Lerner,
+Chris Stewart, Matt Corallo, Sjors Provoost, Tier Nolan, Erik Aronesty,
+Jason Dreyzehner, Joe Miyamoto, Ben Goldhaber.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

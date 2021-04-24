@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 130</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 130: sendheaders message
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2015-05-08</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0130.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 130
+  Layer: Peer Services
+  Title: sendheaders message
+  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0130
+  Status: Proposed
+  Type: Standards Track
+  Created: 2015-05-08
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>Add a new message, &quot;sendheaders&quot;, which indicates that a node prefers to
+receive new block announcements via a &quot;headers&quot; message rather than an
+&quot;inv&quot;.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Since the introduction of &quot;headers-first&quot; downloading of blocks in 0.10,
+blocks will not be processed unless they are able to connect to a
+(valid) headers chain. Consequently, block relay generally works as
+follows:</p>
+<ol>
+<li>A node (N) announces the new tip with an &quot;inv&quot; message, containing
+the block hash</li>
+<li>A peer (P) responds to the &quot;inv&quot; with a &quot;getheaders&quot; message (to
+request headers up to the new tip) and a &quot;getdata&quot; message for the
+new tip itself</li>
+<li>N responds with a &quot;headers&quot; message (with the header for the new
+block along with any preceding headers unknown to P) and a &quot;block&quot;
+message containing the new block</li>
+</ol>
+<p>However, in the case where a new block is being announced that builds on
+the tip, it would be generally more efficient if the node N just
+announced the block header for the new block, rather than just the block
+hash, and saved the peer from generating and transmitting the getheaders
+message (and the required block locator).</p>
+<p>In the case of a reorg, where 1 or more blocks are disconnected, nodes
+currently just send an &quot;inv&quot; for the new tip. Peers currently are able
+to request the new tip immediately, but wait until the headers for the
+intermediate blocks are delivered before requesting those blocks. By
+announcing headers from the last fork point leading up to the new tip in
+the block announcement, peers are able to request all the intermediate
+blocks immediately.</p>
+<h2 id="specification">Specification</h2>
+<ol>
+<li>The sendheaders message is defined as an empty message where
+pchCommand == &quot;sendheaders&quot;</li>
+<li>Upon receipt of a &quot;sendheaders&quot; message, the node will be permitted,
+but not required, to announce new blocks by sending the header of
+the new block (along with any other blocks that a node believes a
+peer might need in order for the block to connect).</li>
+<li>Feature discovery is enabled by checking protocol version &gt;=
+70012</li>
+</ol>
+<h2 id="additional-constraints">Additional constraints</h2>
+<p>As support for sendheaders is optional, software that implements this
+may also optionally impose additional constraints, such as only honoring
+sendheaders messages shortly after a connection is established.</p>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<p>Older clients remain fully compatible and interoperable after this
+change.</p>
+<h2 id="implementation">Implementation</h2>
+<p><a href="https://github.com/bitcoin/bitcoin/pull/6494">https://github.com/bitcoin/bitcoin/pull/6494</a></p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

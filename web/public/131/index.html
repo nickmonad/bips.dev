@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 131</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 131: Coalescing Transaction Specification (wildcard inputs)
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2015-11-30</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0131.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 131
+  Layer: Consensus (hard fork)
+  Title: &quot;Coalescing Transaction&quot; Specification (wildcard inputs)
+  Author: Chris Priest &lt;cp368202@ohiou.edu&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0131
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-11-30
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This specification defines a new type of transaction that supplements
+(not replaces) normal &quot;non coalescing&quot; bitcoin transactions.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Normal &quot;non-coalescing&quot; Bitcoin Transactions have one large
+inefficiency: When you want to spend from multiple inputs with the exact
+same scriptPubKey, you have to list each input separately, along with
+the same signature multiple times, even though the signature expresses
+the same information. This bloats the transaction size and makes it
+expensive to spend from small value inputs.</p>
+<p>Because small value inputs are expensive to send, they remain in the
+UTXO pool which full nodes have to keep around. It is believed that long
+term increase of the UTXO set can have negative scaling consequences on
+the network.</p>
+<p>If maximum blocksize is made to increase *slower* than the actual
+number of transactions bitcoin users are sending to the network, this
+problem is projected to get worse. In other words, as transaction fees
+increase, the minimum economical value of a spending a UTXO will
+increase.</p>
+<h2 id="specification">Specification</h2>
+<h3 id="redefinition-of-transaction-version">Redefinition of Transaction version</h3>
+<p>First, this BIP redefines the version field on transactions. The first
+four bytes are defined as the version number, while the last four bytes
+are defined as the transaction type. Type &quot;0000&quot; denotes normal
+transactions, and &quot;0001&quot; defines coalescing transaction.</p>
+<p>Examples:</p>
+<p>version 1 transaction with normal inputs:</p>
+<p><code>   version: 10000000</code></p>
+<p>version 2 transaction with normal inputs:</p>
+<p><code>   version: 20000000</code></p>
+<p>version 2 transaction with coalescing inputs:</p>
+<p><code>   version: 20000001</code></p>
+<p>Essentially the last bit in the version field is set to 1 to enable
+wildcard inputs for all inputs present in the transaction.</p>
+<h3 id="wildcard-inputs">Wildcard inputs</h3>
+<p>A coalescing transaction is formulated the exact same way as a version 1
+transaction with one exception: each input is treated as a &quot;wildcard
+input&quot;.</p>
+<p>A wildcard input beings the value of all inputs with the exact same
+scriptPubKey in a block lower or equal to the block the wildcard input
+is confirmed into.</p>
+<h2 id="changes-needed-to-implement">Changes needed to implement</h2>
+<p>The bitcoin code needs to be modified in three places in order to handle
+Coalescing Transactions.</p>
+<p>1. <b>Full Node Coalescing validation</b> - When a full node receives a
+coalescing transaction, it has to aggregate the value of all the UTXOs
+in the blockchain older than the input with the same scriptPubKey. If
+this value is greater than or equal to the amount of all outputs, then
+that coalescing transaction is valid and can be propagated.</p>
+<p>2. <b>Full Node Non-Coalescing validation</b> - When a non-coalescing
+transaction comes in, the code needs to be modified to check if each
+input has not been spent by a coalescing transaction. If there exist any
+coalescing transaction in the blockchain with the same scriptPubKey
+found in a block *after* that input, then the UTXO has been spent and
+the transaction is invalid.</p>
+<p>3. <b>Wallet</b> - The user facing wallet portion of the reference
+client should notify the user when their wallet contains many UTXOs that
+qualify it to benefit from a coalescing transaction. Wallets should not
+simply replace non-coalescing transactions with coalescing transactions
+in all instances.</p>
+<h2 id="isn-t-this-bip-bad-because-it-encourage-address-re-use">Isn't this BIP bad because it encourage address re-use?</h2>
+<p>Address re-use comes in two forms: re-use by the <em>sender</em>, and re-use by
+the <em>receiver</em>.</p>
+<p>Re-use by the sender is basically using the same address for the change
+output. This is generally considered bad since people looking through
+your transaction history can determine who you do business with. When
+you generate a new address for every change, your privacy is conserved
+as it is impossible to know which output is a recipient, and which
+output is the change output. This BIP has <strong>no effect</strong> on re-use by the
+sender.</p>
+<p>On the other hand, address re-use by the <em>receiver</em> occurs under
+completely different circumstances. When you publish an address and have
+multiple people send to that address, you are engaging in address re-use
+from the receiver. This activity has historically been considered bad
+because it leads to re-using a private key. When you re-use a private
+key too many times, you run the risk of an attacker performing
+statistical analysis on the multiple signatures, which can lead to an
+attacker finding out your private key.</p>
+<p>This BIP introduces a way to spend multiple inputs <em>without</em> re-using
+the private key. In a sense, this BIP fixes the problem that makes
+address re-use bad for the receiver. After this BIP becomes implemented
+and deployed, address re-use by the receiver will no longer be
+considered bad form.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

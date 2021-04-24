@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 35</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 35: mempool message
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2012-08-16</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0035.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 35
+  Layer: Peer Services
+  Title: mempool message
+  Author: Jeff Garzik &lt;jgarzik@exmulti.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0035
+  Status: Final
+  Type: Standards Track
+  Created: 2012-08-16
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>Make a network node's transaction memory pool accessible via a new
+&quot;mempool&quot; message. Extend the existing &quot;getdata&quot; message behavior to
+permit accessing the transaction memory pool.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Several use cases make it desireable to expose a network node's
+transaction memory pool:</p>
+<ol>
+<li>SPV clients, wishing to obtain zero-confirmation transactions sent
+or received.</li>
+<li>Miners, to avoid missing lucrative fees, downloading existing
+network transactions after a restart.</li>
+<li>Remote network diagnostics.</li>
+</ol>
+<h2 id="specification">Specification</h2>
+<ol>
+<li>The mempool message is defined as an empty message where pchCommand
+== &quot;mempool&quot;</li>
+<li>Upon receipt of a &quot;mempool&quot; message, the node will respond with an
+&quot;inv&quot; message containing MSG_TX hashes of all the transactions in
+the node's transaction memory pool, if any.</li>
+<li>The typical node behavior in response to an &quot;inv&quot; is &quot;getdata&quot;.
+However, the reference Satoshi implementation ignores requests for
+transaction hashes outside that which is recently relayed. To
+support &quot;mempool&quot;, an implementation must extend its &quot;getdata&quot;
+message support to querying the memory pool.</li>
+<li>Feature discovery is enabled by checking two &quot;version&quot; message
+attributes:
+<ol>
+<li>Protocol version &gt;= 60002</li>
+<li>NODE_NETWORK bit set in nServices</li>
+</ol>
+</li>
+</ol>
+<p>Note that existing implementations drop &quot;inv&quot; messages with a vector
+size &gt; 50000.</p>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<p>Older clients remain 100% compatible and interoperable after this
+change.</p>
+<h2 id="implementation">Implementation</h2>
+<p><a href="https://github.com/bitcoin/bitcoin/pull/1641">https://github.com/bitcoin/bitcoin/pull/1641</a></p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

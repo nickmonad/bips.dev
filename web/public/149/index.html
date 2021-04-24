@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 149</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 149: Segregated Witness (second deployment)
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-04-14</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0149.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 149
+  Layer: Consensus (soft fork)
+  Title: Segregated Witness (second deployment)
+  Author: Shaolin Fry &lt;shaolinfry@protonmail.ch&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0149
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2017-04-14
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This document specifies a user activated soft fork for
+<a href="https://bips.dev/149/bip-0141.mediawiki" title="wikilink">BIP141</a>,
+<a href="https://bips.dev/149/bip-0143.mediawiki" title="wikilink">BIP143</a> and
+<a href="https://bips.dev/149/bip-0147.mediawiki" title="wikilink">BIP147</a> using versionbits with
+guaranteed lock-in.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Miners have been reluctant to signal the BIP9 segwit deployment despite
+a large portion of the Bitcoin ecosystem who want the soft fork
+activated. This BIP specifies a user activated soft fork (UASF) that
+deploys segwit again using versionbits with guaranteed lock-in on
+timeout if the BIP is not already locked-in or activated by the timeout.
+This ensures users have sufficient time to prepare and no longer require
+a miner supermajority, while still allowing for an earlier miner
+activated soft fork (MASF).</p>
+<h2 id="reference-implementation">Reference implementation</h2>
+<p>The reference implementation will refuse to run on Bitcoin mainnet
+before 7 November 2017, and can only be run on testnet and regtest until
+then.</p>
+<p><a href="https://github.com/bitcoin/bitcoin/compare/master">https://github.com/bitcoin/bitcoin/compare/master</a>...shaolinfry:uasegwit-flagday</p>
+<h2 id="specification">Specification</h2>
+<p>This deployment will set service bit (1&lt;&lt;5) as NODE_UAWITNESS.</p>
+<h2 id="deployment">Deployment</h2>
+<p>This BIP should only be deployed if BIP9-segwit fails to lock-in or
+activate before timeout on 15 November 2017. This BIP cannot be deployed
+before 15 November 2017.</p>
+<p>This BIP will be deployed by BIP8 with the name &quot;segwit&quot; and using bit
+1.</p>
+<p>For Bitcoin mainnet, the BIP8 starttime will be midnight 16 November
+2017 UTC (Epoch timestamp 1510790400) and BIP8 timeout will be 4 July
+2018 UTC (Epoch timestamp 1530662400).</p>
+<p>For Bitcoin testnet, segwit is already activated so no deployment is
+specified.</p>
+<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<p>This deployment reuses the GBT deployment name &quot;segwit&quot; to maintain
+compatibility with existing mining software.</p>
+<p>This deployment is incompatible with the BIP9-segwit deployment and
+should not be run concurrently with it.</p>
+<h2 id="rationale">Rationale</h2>
+<p>The <strong>starttime</strong> of this BIP is after the BIP9-segwit timeout to remove
+compatibility issues with old nodes.</p>
+<h2 id="references">References</h2>
+<p><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-April/014234.html">Mailing list
+discussion</a></p>
+<p><a href="https://bips.dev/149/bip-0008.mediawiki" title="wikilink">BIP8</a></p>
+<p><a href="https://bips.dev/149/bip-0009.mediawiki" title="wikilink">BIP9</a></p>
+<p><a href="https://bips.dev/149/bip-0141.mediawiki" title="wikilink">BIP141</a></p>
+<p><a href="https://bips.dev/149/bip-0143.mediawiki" title="wikilink">BIP143</a></p>
+<p><a href="https://bips.dev/149/bip-0147.mediawiki" title="wikilink">BIP147</a></p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0
+1.0 Universal.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

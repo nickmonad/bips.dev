@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 14</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 14: Protocol Version and User Agent
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2011-11-10</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0014.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 14
+  Layer: Peer Services
+  Title: Protocol Version and User Agent
+  Author: Amir Taaki &lt;genjix@riseup.net&gt;
+          Patrick Strateman &lt;bitcoin-bips@covertinferno.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0014
+  Status: Final
+  Type: Standards Track
+  Created: 2011-11-10
+  Post-History: 2011-11-02
+</code></pre>
+<p>In this document, bitcoin will be used to refer to the protocol while
+Satoshi will refer to the current client in order to prevent confusion.</p>
+<h2 id="past-situation">Past Situation</h2>
+<p>Bitcoin as a protocol began life with the Satoshi client. Now that the
+community is diversifying, a number of alternative clients with their
+own codebases written in a variety of languages (Java, Python,
+Javascript, C++) are rapidly developing their own feature-sets.</p>
+<p>Embedded in the protocol is a version number. Primarily this version
+number is in the &quot;version&quot; and &quot;getblocks&quot; messages, but is also in the
+&quot;block&quot; message to indicate the software version that created that
+block. Currently this version number is the same version number as that
+of the client. This document is a proposal to separate the protocol
+version from the client version, together with a proposed method to do
+so.</p>
+<h2 id="rationale">Rationale</h2>
+<p>With non-separated version numbers, every release of the Satoshi client
+will increase its internal version number. Primarily this holds every
+other client hostage to a game of catch-up with Satoshi version number
+schemes. This plays against the decentralised nature of bitcoin, by
+forcing every software release to remain in step with the release
+schedule of one group of bitcoin developers.</p>
+<p>Version bumping can also introduce incompatibilities and fracture the
+network. In order that the health of the network is maintained, the
+development of the protocol as a shared common collaborative process
+requires being split off from the implementation of that protocol.
+Neutral third entities to guide the protocol with representatives from
+all groups, present the chance for bitcoin to grow in a positive manner
+with minimal risks.</p>
+<p>By using a protocol version, we set all implementations on the network
+to a common standard. Everybody is able to agree within their confines
+what is protocol and what is implementation-dependent. A user agent
+string is offered as a 'vanity-plate' for clients to distinguish
+themselves in the network.</p>
+<p>Separation of the network protocol from the implemention, and forming
+development of said protocol by means of a mutual consensus among
+participants, has the democratic disadvantage when agreement is hard to
+reach on contentious issues. To mitigate this issue, strong
+communication channels and fast release schedules are needed, and are
+outside the scope of this document (concerning a process-BIP type).</p>
+<p>User agents provide extra tracking information that is useful for
+keeping tabs on network data such as client implementations used or
+common architectures/operating-systems. In the rare case they may even
+provide an emergency method of shunning faulty clients that threaten
+network health- although this is strongly unrecommended and extremely
+bad form. The user agent does not provide a method for clients to work
+around and behave differently to different implementations, as this will
+lead to protocol fracturing.</p>
+<p>In short:</p>
+<ul>
+<li>Protocol version: way to distinguish between nodes and behave
+different accordingly.</li>
+<li>User agent: simple informational tool. Protocol should not be
+modified depending on user agent.</li>
+</ul>
+<h2 id="browser-user-agents">Browser User-Agents</h2>
+<p><a href="http://tools.ietf.org/html/rfc1945">RFC 1945</a> vaguely specifies a user
+agent to be a string of the product with optional comments.</p>
+<p><code> Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.6) Gecko/20100127 Gentoo Shiretoko/3.5.6</code></p>
+<p>User agents are most often parsed by computers more than humans. The
+space delimited format, does not provide an easy, fast or efficient way
+for parsing. The data contains no structure indicating hierarchy in this
+placement.</p>
+<p>The most immediate pieces of information there are the browser product,
+rendering engine and the build (Gentoo Shiretoko) together with version
+number. Various other pieces of information as included as comments such
+as desktop environment, platform, language and revision number of the
+build.</p>
+<h2 id="proposal">Proposal</h2>
+<p>The version field in &quot;version&quot; and &quot;getblocks&quot; packets will become the
+protocol version number. The version number in the &quot;blocks&quot; reflects the
+protocol version from when that block was created.</p>
+<p>The currently unused sub_version_num field in &quot;version&quot; packets will
+become the new user-agent string.</p>
+<p>Bitcoin user agents are a modified browser user agent with more
+structure to aid parsers and provide some coherence. In bitcoin, the
+software usually works like a stack starting from the core code-base up
+to the end graphical interface. Therefore the user agent strings codify
+this relationship.</p>
+<p>Basic format:</p>
+<p><code> /Name:Version/Name:Version/.../</code></p>
+<p>Example:</p>
+<p><code> /Satoshi:5.64/bitcoin-qt:0.4/</code><br />
+<code> /Satoshi:5.12/Spesmilo:0.8/</code></p>
+<p>Here bitcoin-qt and Spesmilo may use protocol version 5.0, however the
+internal codebase they use are different versions of the same software.
+The version numbers are not defined to any strict format, although this
+guide recommends:</p>
+<ul>
+<li>Version numbers in the form of Major.Minor.Revision (2.6.41)</li>
+<li>Repository builds using a date in the format of YYYYMMDD (20110128)</li>
+</ul>
+<p>For git repository builds, implementations are free to use the git
+commitish. However the issue lies in that it is not immediately obvious
+without the repository which version precedes another. For this reason,
+we lightly recommend dates in the format specified above, although this
+is by no means a requirement.</p>
+<p>Optional -r1, -r2, ... can be appended to user agent version numbers.
+This is another light recommendation, but not a requirement.
+Implementations are free to specify version numbers in whatever format
+needed insofar as it does not include (, ), : or / to interfere with the
+user agent syntax.</p>
+<p>An optional comments field after the version number is also allowed.
+Comments should be delimited by brackets (...). The contents of comments
+is entirely implementation defined although this BIP recommends the use
+of semi-colons ; as a delimiter between pieces of information.</p>
+<p>Example:</p>
+<p><code> /BitcoinJ:0.2(iPad; U; CPU OS 3_2_1)/AndroidBuild:0.8/</code></p>
+<p>Reserved symbols are therefore: / : ( )</p>
+<p>They should not be misused beyond what is specified in this section.</p>
+<ul>
+<li>/ separates the code-stack</li>
+<li>: specifies the implementation version of the particular stack</li>
+<li>( and ) delimits a comment which optionally separates data using ;</li>
+</ul>
+<h2 id="timeline">Timeline</h2>
+<p>When this document was published, the bitcoin protocol and Satoshi
+client versions were currently at 0.5 and undergoing changes. In order
+to minimise disruption and allow the undergoing changes to be completed,
+the next protocol version at 0.6 became peeled from the client version
+(also at 0.6). As of that time (January 2012), protocol and
+implementation version numbers are distinct from each other.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

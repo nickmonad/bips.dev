@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 322</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 322: Generic Signed Message Format
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2018-09-10</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0322.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 322
+  Layer: Applications
+  Title: Generic Signed Message Format
+  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0322
+  Status: Draft
+  Type: Standards Track
+  Created: 2018-09-10
+  License: CC0-1.0
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>A standard for interoperable signed messages based on the Bitcoin Script
+format, either for proving fund availability, or committing to a message
+as the intended recipient of funds sent to the invoice address.</p>
+<h2 id="motivation">Motivation</h2>
+<p>The current message signing standard only works for P2PKH (1...) invoice
+addresses. We propose to extend and generalize the standard by using a
+Bitcoin Script based approach. This ensures that any coins, no matter
+what script they are controlled by, can in-principle be signed for. For
+easy interoperability with existing signing hardware, we also define a
+signature message format which resembles a Bitcoin transaction (except
+that it contains an invalid input, so it cannot be spent on any real
+network).</p>
+<p>Additionally, the current message signature format uses ECDSA signatures
+which do not commit to the public key, meaning that they do not actually
+prove knowledge of any secret keys. (Indeed, valid signatures can be
+tweaked by 3rd parties to become valid signatures on certain related
+keys.)</p>
+<p>Ultimately no message signing protocol can actually prove control of
+funds, both because a signature is obsolete as soon as it is created,
+and because the possessor of a secret key may be willing to sign
+messages on others' behalf even if it would not sign actual
+transactions. No signmessage protocol can fix these limitations.</p>
+<h2 id="types-of-signatures">Types of Signatures</h2>
+<p>This BIP specifies three formats for signing messages: <em>legacy</em>,
+<em>simple</em> and <em>full</em>. Additionally, a variant of the <em>full</em> format can be
+used to demonstrate control over a set of UTXOs.</p>
+<h3 id="legacy">Legacy</h3>
+<p>New proofs should use the new format for all invoice address formats,
+including P2PKH.</p>
+<p>The legacy format MAY be used, but must be restricted to the legacy
+P2PKH invoice address format.</p>
+<h3 id="simple">Simple</h3>
+<p>A <em>simple</em> signature consists of a witness stack, consensus encoded as a
+vector of vectors of bytes, and base64-encoded. Validators should
+construct <code>to_spend</code> and <code>to_sign</code> as defined below, with default values
+for all fields except that</p>
+<ul>
+<li><code>message_hash</code> is a BIP340-tagged hash of the message, as specified
+below</li>
+<li><code>message_challenge</code> in <code>to_spend</code> is set to the scriptPubKey being
+signed with</li>
+<li><code>message_signature</code> in <code>to_sign</code> is set to the provided simple
+signature.</li>
+</ul>
+<p>and then proceed as they would for a full signature.</p>
+<h3 id="full">Full</h3>
+<p>Full signatures follow an analogous specification to the BIP-325
+challenges and solutions used by Signet.</p>
+<p>Let there be two virtual transactions <code>to_spend</code> and <code>to_sign</code>.</p>
+<p>The <code>to_spend</code> transaction is:</p>
+<p><code>   nVersion = 0</code><br />
+<code>   nLockTime = 0</code><br />
+<code>   vin[0].prevout.hash = 0000...000</code><br />
+<code>   vin[0].prevout.n = 0xFFFFFFFF</code><br />
+<code>   vin[0].nSequence = 0</code><br />
+<code>   vin[0].scriptSig = OP_0 PUSH32[ message_hash ]</code><br />
+<code>   vin[0].scriptWitness = []</code><br />
+<code>   vout[0].nValue = 0</code><br />
+<code>   vout[0].scriptPubKey = message_challenge</code></p>
+<p>where <code>message_hash</code> is a BIP340-tagged hash of the message, i.e.
+sha256_tag(m), where tag = <code>BIP0322-signed-message</code>, and
+<code>message_challenge</code> is the to be proven (public) key script.</p>
+<p>The <code>to_sign</code> transaction is:</p>
+<p><code>   nVersion = 0 or as appropriate (e.g. 2, for time locks)</code><br />
+<code>   nLockTime = 0 or as appropriate (for time locks)</code><br />
+<code>   vin[0].prevout.hash = to_spend.txid</code><br />
+<code>   vin[0].prevout.n = 0</code><br />
+<code>   vin[0].nSequence = 0 or as appropriate (for time locks)</code><br />
+<code>   vin[0].scriptWitness = message_signature</code><br />
+<code>   vout[0].nValue = 0</code><br />
+<code>   vout[0].scriptPubKey = OP_RETURN</code></p>
+<p>A full signature consists of the base64-encoding of the <code>to_sign</code>
+transaction in standard network serialisation.</p>
+<h3 id="full-proof-of-funds">Full (Proof of Funds)</h3>
+<p>A signer may construct a proof of funds, demonstrating control of a set
+of UTXOs, by constructing a full signature as above, with the following
+modifications.</p>
+<ul>
+<li><code>message_challenge</code> is unused and shall be set to <code>OP_TRUE</code></li>
+<li>Similarly, <code>message_signature</code> is then empty.</li>
+<li>All outputs that the signer wishes to demonstrate control of are
+included as additional inputs of <code>to_sign</code>, and their witness and
+scriptSig data should be set as though these outputs were actually
+being spent.</li>
+</ul>
+<p>Unlike an ordinary signature, validators of a proof of funds need access
+to the current UTXO set, to learn that the claimed inputs exist on the
+blockchain, and to learn their scriptPubKeys.</p>
+<h2 id="detailed-specification">Detailed Specification</h2>
+<p>For all signature types, except legacy, the <code>to_spend</code> and <code>to_sign</code>
+transactions must be valid transactions which pass all consensus checks,
+except of course that the output with prevout <code>000...000:FFFFFFFF</code> does
+not exist.</p>
+<h3 id="verification">Verification</h3>
+<p>A validator is given as input an address <em>A</em> (which may be omitted in a
+proof-of-funds), signature <em>s</em> and message <em>m</em>, and outputs one of three
+states</p>
+<ul>
+<li><em>valid at time T and age S</em> indicates that the signature has set
+timelocks but is otherwise valid</li>
+<li><em>inconclusive</em> means the validator was unable to check the scripts</li>
+<li><em>invalid</em> means that some check failed</li>
+</ul>
+<h4 id="verification-process">Verification Process</h4>
+<p>Validation consists of the following steps:</p>
+<ol>
+<li>Basic validation
+<ol>
+<li>Compute the transaction <code>to_spend</code> from <em>m</em> and <em>A</em></li>
+<li>Decode <em>s</em> as the transaction <code>to_sign</code></li>
+<li>If <em>s</em> was a full transaction, confirm all fields are set as
+specified above; in particular that
+<ul>
+<li><code>to_sign</code> has at least one input and its first input spends
+the output of </code>to_spend</code></li>
+<li><code>to_sign</code> has exactly one output, as specified above</li>
+</ul>
+</li>
+<li>Confirm that the two transactions together satisfy all consensus
+rules, except for <code>to_spend</code>'s missing input, and except that
+<em>nSequence</em> of <code>to_sign</code>'s first input and <em>nLockTime</em> of
+<code>to_sign</code> are not checked.</li>
+</ol>
+</li>
+<li>(Optional) If the validator does not have a full script interpreter,
+it should check that it understands all scripts being satisfied. If
+not, it should stop here and output <em>inconclusive</em>.</li>
+<li>Check the **required rules**:
+<ol>
+<li>All signatures must use the SIGHASH_ALL flag.</li>
+<li>The use of <code>CODESEPARATOR</code> or <code>FindAndDelete</code> is forbidden.</li>
+<li><code>LOW_S</code>, <code>STRICTENC</code> and <code>NULLFAIL</code>: valid ECDSA signatures must
+be strictly DER-encoded and have a low-S value; invalid ECDSA
+signature must be the empty push</li>
+<li><code>MINIMALDATA</code>: all pushes must be minimally encoded</li>
+<li><code>CLEANSTACK</code>: require that only a single stack element remains
+after evaluation</li>
+<li><code>MINIMALIF</code>: the argument of <code>IF</code>/<code>NOTIF</code> must be exactly 0x01
+or empty push</li>
+<li>If any of the above steps failed, the validator should stop and
+output the <em>invalid</em> state.</li>
+</ol>
+</li>
+<li>Check the **upgradeable rules**
+<ol>
+<li>The version of <code>to_sign</code> must be 0 or 2.</li>
+<li>The use of NOPs reserved for upgrades is forbidden.</li>
+<li>The use of segwit versions greater than 0 are forbidden.</li>
+<li>If any of the above steps failed, the validator should stop and
+output the <em>inconclusive</em> state.</li>
+</ol>
+</li>
+<li>Let <em>T</em> by the nLockTime of <code>to_sign</code> and <em>S</em> be the nSequence of
+the first input of <code>to_sign</code>. Output the state <em>valid at time T and
+age S</em>.</li>
+</ol>
+<h3 id="signing">Signing</h3>
+<p>Signers who control an address <em>A</em> who wish to sign a message <em>m</em> act as
+follows:</p>
+<ol>
+<li>They construct <code>to_spend</code> and <code>to_sign</code> as specified above, using
+the scriptPubKey of <em>A</em> for <code>message_challenge</code> and tagged hash of
+<em>m</em> as <code>message_hash</code>.</li>
+<li>Optionally, they may set nLockTime of <code>to_sign</code> or nSequence of its
+first input.</li>
+<li>Optionally, they may add any additional outputs to <code>to_sign</code> that
+they wish to prove control of.</li>
+<li>They satisfy <code>to_sign</code> as they would any other transaction.</li>
+</ol>
+<p>They then encode their signature, choosing either <em>simple</em> or <em>full</em> as
+follows:</p>
+<ul>
+<li>If they added no inputs to <code>to_sign</code>, left nSequence and nLockTime
+at 0, and <em>A</em> is a Segwit address (either pure or P2SH-wrapped),
+then they may base64-encode <code>message_signature</code></li>
+<li>Otherwise they must base64-encode <code>to_sign</code>.</li>
+</ul>
+<h2 id="compatibility">Compatibility</h2>
+<p>This specification is backwards compatible with the legacy
+signmessage/verifymessage specification through the special case as
+described above.</p>
+<h2 id="reference-implementation">Reference implementation</h2>
+<p>TODO</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Thanks to David Harding, Jim Posen, Kalle Rosenbaum, Pieter Wuille,
+Andrew Poelstra, and many others for their feedback on the
+specification.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>Original mailing list thread:
+<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015818.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015818.html</a></li>
+</ol>
+<h2 id="copyright">Copyright</h2>
+<p>This document is licensed under the Creative Commons CC0 1.0 Universal
+license.</p>
+<h2 id="test-vectors">Test vectors</h2>
+<p>TODO</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

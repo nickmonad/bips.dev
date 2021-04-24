@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 150</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 150: Peer Authentication
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2016-03-23</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0150.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 150
+  Layer: Peer Services
+  Title: Peer Authentication
+  Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
+  Comments-Summary: Discouraged for implementation (one person)
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0150
+  Status: Draft
+  Type: Standards Track
+  Created: 2016-03-23
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes a way for peers to authenticate to other peers to
+guarantee node ownership and/or allow peers to access additional or
+limited node services, without the possibility of fingerprinting.</p>
+<h2 id="motivation">Motivation</h2>
+<p>We assume peer operators want to limit the access of different node
+services or increase datastream priorities to a selective subset of
+peers. Also we assume that peers want to connect to specific peers to
+broadcast or filter transactions (or similar actions that reveal
+sensitive information) and therefore operators want to authenticate the
+remote peer and ensure that they have not connected to a MITM
+(man-in-the-middle) attacker.</p>
+<p>Benefits of peer authentication:</p>
+<ul>
+<li>Peers can detect MITM attacks when connecting to known peers</li>
+<li>Peers can allow resource hungry transaction filtering only to
+specific peers</li>
+<li>Peers can allow access to sensitive information that can lead to
+node fingerprinting (fee estimation)</li>
+<li>Peers can allow custom message types (private extensions) to
+authenticated peers</li>
+</ul>
+<p>A simple authentication scheme based on elliptic cryptography will allow
+peers to identify each other and selectively allow access to restricted
+services or reject the connection if the peer identity cannot be
+verified.</p>
+<h2 id="specification">Specification</h2>
+<p>The authentication scheme proposed in this BIP uses ECDSA, <strong>secrets
+will never be transmitted</strong>.</p>
+<p><strong>Authentication initialization must only happen if encrypted channels
+have been established (according to BIP-151 [1]).</strong></p>
+<p>The <strong>encryption-session-ID</strong> is available once channels are encrypted
+(according to BIP-151 [1]).</p>
+<p>The identity-public-keys used for the authentication must be pre-shared
+over a different channel (mail/PGP, physical paper exchange, etc.). This
+BIP does not cover a &quot;trust on first use&quot; (TOFU) concept.</p>
+<p>The authentication state must be kept until the encryption/connection
+terminates.</p>
+<p>Only one authentication process is allowed per connection.
+Re-authentication require re-establishing the connection.</p>
+<h3 id="known-peers-and-authorized-peers-database">Known-peers and authorized-peers database</h3>
+<p>Each peer that supports p2p authentication must provide two
+user-editable &quot;databases&quot;.</p>
+<ol>
+<li><strong>known-peers</strong> contains known identity-public-keys together with a
+network identifier (IP &amp; port), similar to the &quot;known-host&quot; file
+supported by openssh.</li>
+<li><strong>authorized-peers</strong> contains authorized identity-public-keys</li>
+</ol>
+<h3 id="local-identity-key-management">Local identity key management</h3>
+<p>Each peer can configure multiple identity-keys (ECC, 32 bytes). Peers
+should make sure that each network interface (IPv4, IPv6, tor) has its
+own identity-key (otherwise it would be possible to link a tor address
+to a IPvX address). The identity-public-key(s) can be shared over a
+different channel with other node-operators (or non-validating clients)
+to grant authorized access.</p>
+<h3 id="authentication-procedure">Authentication procedure</h3>
+<p>Authentication based on this BIP will require both sides to
+authenticate. Signatures/public-keys will only be revealed if the remote
+peer can prove that they already know the remote identity-public-key.</p>
+<ol>
+<li>-&gt; Requesting peer sends <code>AUTHCHALLENGE</code> (hash)</li>
+<li>&lt;- Responding peer sends <code>AUTHREPLY</code> (signature)</li>
+<li>-&gt; Requesting peer sends <code>AUTHPROPOSE</code> (hash)</li>
+<li>&lt;- Responding peer sends <code>AUTHCHALLENGE</code> (hash)</li>
+<li>-&gt; Requesting peer sends <code>AUTHREPLY</code> (signature)</li>
+</ol>
+<p>For privacy reasons, dropping the connection or aborting during the
+authentication process must not be allowed.</p>
+<h3 id="authchallenge-message"><code>AUTHCHALLENGE</code> message</h3>
+<p>A peer can send an authentication challenge to see if the responding
+peer can produce a valid signature with the expected responding peer's
+identity-public-key by sending an <code>AUTHCHALLENGE</code>-message to the remote
+peer.</p>
+<p>The responding peer needs to check if the hash matches the hash
+calculated with his own local identity-public-key. Fingerprinting the
+requesting peer is not possible.</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>32bytes</td><td>challenge-hash</td><td>hash</td><td><code>hash(encryption-session-ID</td></tr>
+</tbody></table>
+<p><code>challenge_type</code> is a single character. <code>i</code> if the
+<code>AUTHCHALLENGE</code>-message is the first, requesting challenge or <code>r</code> if
+it's the second, remote peers challenge message.</p>
+<h3 id="authreply-message"><code>AUTHREPLY</code> message</h3>
+<p>A peer must reply an <code>AUTHCHALLENGE</code>-message with an
+<code>AUTHREPLY</code>-message.</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>64bytes</td><td>signature</td><td>normalized comp.-signature</td><td>A signature of the encryption-session-ID done with the identity-key</td></tr>
+</tbody></table>
+<p>If the challenge-hash from the <code>AUTHCHALLENGE</code>-message did not match the
+local authentication public-key, the signature must contain 64 bytes of
+zeros.</p>
+<p>The requesting peer can check the responding peer's identity by checking
+the validity of the sent signature against with the pre-shared remote
+peers identity-public-key.</p>
+<p>If the signature was invalid, the requesting peer must still proceed
+with the authentication by sending an <code>AUTHPROPOSE</code>-message with 32
+random bytes.</p>
+<h3 id="authpropose-message"><code>AUTHPROPOSE</code> message</h3>
+<p>A peer can propose authentication of the channel by sending an
+<code>AUTHPROPOSE</code>-message to the remote peer.</p>
+<p>If the signature sent in <code>AUTHREPLY</code> was invalid, the peer must still
+send an <code>AUTHPROPOSE</code>-message containing 32 random bytes.</p>
+<p>The <code>AUTHPROPOSE</code> message must be answered with an
+<code>AUTHCHALLENGE</code>-message - even if the proposed requesting-peers
+identity-public-key has not been found in the authorized-peers database.
+In case of no match, the responding <code>AUTHCHALLENGE</code>-message must
+contains 32 bytes of zeros.</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>32bytes</td><td>auth-propose-hash</td><td>hash</td><td><code>hash(encryption-session-ID</td></tr>
+</tbody></table>
+<h2 id="post-authentication-re-keying">Post-Authentication Re-Keying</h2>
+<p>After the second <code>AUTHREPLY</code> message (requesting peer's signature -&gt;
+responding peer), both clients must re-key the symmetric encryption
+according to BIP151 while using <strong>a slightly different re-key key
+derivation hash</strong>.</p>
+<p>Both peers re-key with
+<code>hash(encryption-session-ID || old_symmetric_cipher_key || requesting-peer-identity-public-key || responding-peer-identity-public-key)</code></p>
+<h2 id="identity-addresses">Identity-Addresses</h2>
+<p>The peers should display/log the identity-public-key as an
+identity-address to the users, which is a base58-check encoded
+ripemd160(sha256) hash. The purpose of this is for better visual
+comparison (logs, accept-dialogs). The base58check identity byte is
+<code>0x0F</code> followed by an identity-address version number (=<code>0xFF01</code>).</p>
+<p>An identity address would look like
+<code>TfG4ScDgysrSpodWD4Re5UtXmcLbY5CiUHA</code> and can be interpreted as a remote
+peer's fingerprint.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>This proposal is backward compatible. Non-supporting peers will ignore
+the new <code>AUTH*</code> messages.</p>
+<h2 id="example-of-an-auth-interaction">Example of an auth interaction</h2>
+<p>Before authentication (once during peer setup or upgrade)</p>
+<ol>
+<li>Requesting peer and responding peer create each an identity-keypair
+(standard ECC priv/pubkey)</li>
+<li>Requesting and responding peer share the identity-public-key over a
+different channel (mail/PGP, physical paper exchange, etc.)</li>
+<li>Responding peer stores requesting peers identity-public-key in its
+authorized-peers database (A)</li>
+<li>Requesting peer stores responding peers identity-public-key in its
+known-peers database together with its IP and port (B)</li>
+</ol>
+<p>Encryption</p>
+<ol>
+<li>Encrypted channels must be established (according to BIP-151 [1])</li>
+</ol>
+<p>Authentication</p>
+<ol>
+<li>Requesting peer sends an <code>AUTHCHALLENGE</code> message</li>
+</ol>
+<p><code> AUTHCHALLENGE:</code><br />
+<code>   [32 bytes, hash(encryption-session-ID || &quot;i&quot; || </code><remote-peers-expected-identity-public-key><code>)]</code></p>
+<ol>
+<li>Responding peer does create the same hash
+<code>(encryption-session-ID || &quot;i&quot; || </code><remote-peers-expected-identity-public-key><code>)</code>
+with its local identity-public-key</li>
+<li>If the hash does not match, response with an <code>AUTHREPLY</code> message
+containing 64bytes of zeros.</li>
+<li>In case of a match, response with an <code>AUTHREPLY</code> message</li>
+</ol>
+<p><code> AUTHREPLY:</code><br />
+<code>   [64 bytes normalized compact ECDSA signature (H)] (sig of the encryption-session-ID done with the identity-key)</code></p>
+<ol>
+<li>Requesting peer does verify the signature with the
+<code>remote-peers-identity-public-key</code></li>
+<li>If the signature is invalid, requesting peer answers with an
+<code>AUTHREPLY</code> message containing 32 random bytes</li>
+<li>In case of a valid signature, requesting peer sends an <code>AUTHPROPOSE</code>
+message</li>
+</ol>
+<p><code> AUTHPROPOSE:</code><br />
+<code>   [32 bytes, hash(encryption-session-ID || &quot;p&quot; || </code><client-identity-public-key><code>)]</code></p>
+<ol>
+<li>Responding peer iterates over authorized-peers database (A), hashes
+the identical data and looks for a match.</li>
+<li>If the hash does not match, responding peer answer with an
+<code>AUTHCHALLENGE</code> message containing 32 bytes of zeros.</li>
+<li>In case of a match, responding peer sends an <code>AUTHCHALLENGE</code> message
+with the hashed client public-key</li>
+</ol>
+<p><code> AUTHCHALLENGE:</code><br />
+<code>   [32 bytes, hash(encryption-session-ID || &quot;r&quot; || </code><client-identity-public-key><code>)]</code></p>
+<ol>
+<li>Requesting peer sends an <code>AUTHREPLY</code> message containing 64 bytes of
+zeros if server failed to authenticate</li>
+<li>Otherwise, response with signature in the <code>AUTHREPLY</code> message</li>
+</ol>
+<p><code> AUTHREPLY:</code><br />
+<code>   [64 bytes normalized compact ECDSA signature (H)] (sig of the encryption-session-ID done with the identity-key)</code></p>
+<ol>
+<li>Responding peer must verify the signature and can grant access to
+restricted services.</li>
+<li>Both peers re-key the encryption after BIP151 including the
+requesting-peer-identity-public-key and
+responding-peer-identity-public-key</li>
+</ol>
+<h2 id="disadvantages">Disadvantages</h2>
+<p>The protocol may be slow if a peer has a large authorized-peers database
+due to the requirement of iterating and hashing over all available
+authorized peer identity-public-keys.</p>
+<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="references">References</h2>
+<ul>
+<li>[1] <a href="https://bips.dev/150/bip-0151.mediawiki" title="wikilink">BIP 151: Peer-to-Peer Communication
+Encryption</a></li>
+</ul>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<ul>
+<li>Gregory Maxwell and Pieter Wuille for most of the ideas in this BIP.</li>
+<li>Bryan Bishop for editing.</li>
+</ul>
+<h2 id="copyright">Copyright</h2>
+<p>This work is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

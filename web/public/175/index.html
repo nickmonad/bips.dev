@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 175</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 175: Pay to Contract Protocol
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-07-17</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0175.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 175
+  Layer: Applications
+  Title: Pay to Contract Protocol
+  Author: Omar Shibli &lt;omar@commerceblock.com&gt;
+          Nicholas Gregory &lt;nicholas@commerceblock.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0175
+  Status: Rejected
+  Type: Informational
+  Created: 2017-07-17
+  License: BSD-2-Clause
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>Utilizing hierarchical deterministic wallets as described in BIP-0032
+and the &quot;Purpose Field&quot; in BIP-0043, this document specifies the
+multiparty pay-to-contract key derivation scheme outlined by Ilja
+Gerhardt and Timo Hanke.[0]</p>
+<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
+&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
+document are to be interpreted as described in RFC 2119.</p>
+<h2 id="motivation">Motivation</h2>
+<p>A Bitcoin transaction represents a &quot;real world&quot; contract between two
+parties transferring value. Counterparties in a business interaction
+traditionally keep track of a payment with bills (invoices) and
+receipts. Delivery of a good is made by the payee once the payer has
+signed the receipt, agreeing to pay for the items on the invoice.
+Gerhardt and Hanke [0] formulate this interaction within the confines
+of the Bitcoin protocol using homomorphic payment addresses and the
+multiparty pay-to-contract protocol.</p>
+<p>The protocol is constructed in such a way that all parties have
+cryptographic proof of both who is being paid and for what. Using the
+technique described in this BIP, an address can be provably derived from
+the terms of a contract and the payee's public key. This derivation
+scheme does not bloat the UTXO and is completely hidden to network
+participants; the derived address looks like any other P2(W)PKH or
+P2(W)SH address. Redemption of the funds requires knowledge of the
+contract and the payee's private key.</p>
+<p>This scheme utilizes the foundations of BIP-0032, providing a consistent
+way for preexisting wallet developers to implement the specification.</p>
+<h2 id="specification">Specification</h2>
+<p>This key derivation scheme requires two parties: a payer (customer) and
+a payee (merchant). The customer submits to the merchant a purchase
+request, specifying what goods/services they would like to buy. From the
+purchase request the merchant constructs an invoice (contract),
+specifying the billable items and total amount to be paid. The merchant
+must give this contract alongside a “payment base” extended public key
+to the customer. Given this information, the customer will be able to
+fulfill the contract by generating the public key of the payment address
+associated with the contract and the payment base, then sending the
+funds there.</p>
+<p>We define the following levels in BIP32 path:</p>
+<p><code>m / purpose' / coin_type' / contract_hash</code></p>
+<p><code>contract_hash</code> consists of multiple levels.</p>
+<p>Apostrophe in the path indicates that BIP32 hardened derivation is used.</p>
+<p>We define the following extended public keys:</p>
+<p>Payment base denoted as <code>payment_base</code>:</p>
+<p><code>   m / purpose' / coin_type'</code></p>
+<p>Payment address denoted as <code>payment_address</code>:</p>
+<p><code>   m / purpose' / coin_type' / contract_hash</code><br />
+<code>   or</code><br />
+<code>   m / payment_base / contract_hash</code></p>
+<p>Each level has special meaning described in the chapters below.</p>
+<h3 id="purpose">Purpose</h3>
+<p>Purpose is a constant set to <code>175'</code> (or <code>0x800000AF</code>) following the
+BIP-0043 recommendation. It indicates that the subtree of this node is
+used according to this specification.</p>
+<p><code>m / 175' / *</code></p>
+<p>Hardened derivation is used at this level.</p>
+<h3 id="coin-type">Coin type</h3>
+<p>The coin type field is identical to the same field in BIP-0044.</p>
+<p>Hardened derivation is used at this level.</p>
+<h3 id="payment-address-generation">Payment address generation</h3>
+<p>For a given contract documents denoted by
+c<sub>1</sub>,...,c<sub>n</sub>, payment base extended public key
+denoted by <code>payment_base</code>, and cryptographic hash function denoted by
+<code>h</code>.</p>
+<p>1. Compute cryptographic hashes for all contract documents, by applying
+the hash function.</p>
+<p><code> h(c1),...,h(cn)</code></p>
+<p>2. Sort all hashes lexicographically.</p>
+<p><code> hash_1,...,hash_n</code></p>
+<p>3. Prepend payment_base and concatenate the sorted hashes and apply
+the hash function.</p>
+<p><code> h(payment_base+hash_1+...+hash_n)</code></p>
+<p>4. Compute a partial BIP32 derivation path from the combined hash as
+defined in Hash to Partial Derivation Path Mapping procedure below.</p>
+<p><code> contract_hash</code></p>
+<p>5. Prepend <code>payment_base</code> to contract_hash derivation path.</p>
+<p><code> payment_base / contract_hash</code></p>
+<p>6. Compute public extended key from the derivation path in step 5.</p>
+<p>7. Compute address of the public extended key (P2PKH) from step 6.</p>
+<h3 id="payment-address-verification">Payment address verification</h3>
+<p>For a given Bitcoin address, <code>payment_base</code> extended public key,
+contract documents denoted by c<sub>1</sub>,...,c<sub>n</sub>, and
+cryptographic hash function denoted by <code>h</code>, we can verify the integrity
+of the address by the following steps:</p>
+<p>1. Compute contract address from the given inputs as described in
+Contract Address Generation section.</p>
+<p>2. Compare the computed address from step 1 with the given Bitcoin
+address as an input.</p>
+<h3 id="redemption">Redemption</h3>
+<p>The merchant is able to construct the private key offline using the
+method described in the Payment Address Generation section. The merchant
+should actively monitor the blockchain for the payment to the payment
+address. Because the address is generated from the payment base and the
+contract, the merchant must implicitly agree to those terms in order to
+spend the funds. The act of making the payment to that address thus
+serves as a receipt for the customer.</p>
+<h3 id="hash-to-partial-derivation-path-mapping">Hash to partial derivation path mapping</h3>
+<p>At this section, we define hash to partial BIP32 derivation path mapping
+procedure that maps between an arbitrary hex number to a partial BIP32
+derivation path.</p>
+<p>For a given hex number, do the following:</p>
+<p>1. Partition hex number into parts, each part length is 4 chars.</p>
+<p>2. Convert each part to integer in decimal format.</p>
+<p>3. Concatenate all numbers with slash <code>/</code>.</p>
+<h2 id="examples">Examples</h2>
+<p>For the following given inputs:</p>
+<p><code> master private extended key:</code><br />
+<code> xprv9s21ZrQH143K2JF8RafpqtKiTbsbaxEeUaMnNHsm5o6wCW3z8ySyH4UxFVSfZ8n7ESu7fgir8imbZKLYVBxFPND1pniTZ81vKfd45EHKX73</code><br />
+<code> coin type:</code><br />
+<code> 0</code></p>
+<p>we can compute payment base as follows:</p>
+<p><code> payment base derivation path:</code><br />
+<code> m/175'/0'</code><br />
+<code> contract base public extended key:</code><br />
+<code> xpub6B3JSEWjqm5GgfzcjPwBixxLPzi15pFM3jq4E4yCzXXUFS5MFdXiSdw7b5dbdPGHuc7c1V4zXbbFRtc9G1njMUt9ZvMdGVGYQSQsurD6HAW</code></p>
+<p>In the below examples, we are going to use SHA256 as a cryptographic
+hash function, and the above contract base public key.</p>
+<h4 id="payment-address-generation-1">Payment address generation</h4>
+<p>As an input, we have a contract that consists of two documents, below
+are contents:</p>
+<p>document 1:</p>
+<p><code> bar</code></p>
+<p>document 2:</p>
+<p><code> foo</code></p>
+<p>1. Apply the hash function:</p>
+<p><code> document 1:</code><br />
+<code> fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9</code><br />
+<code> document 2:</code><br />
+<code> 2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae</code></p>
+<p>2. Sort all hashes lexicographically:</p>
+<p><code> 2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae</code><br />
+<code> fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9</code></p>
+<p>3. Concatenate hashes and apply the hash function.</p>
+<p><code> concatenated hash: payment_base</code><br />
+<code> xpub6B3JSEWjqm5GgfzcjPwBixxLPzi15pFM3jq4E4yCzXXUFS5MFdXiSdw7b5dbdPGHuc7c1V4zXbbFRtc9G1njMUt9ZvMdGVGYQSQsurD6HAW2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7aefcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9</code><br />
+<code> combined hash:</code><br />
+<code> 310057788c6073640dc222466d003411cd5c1cc0bf2803fc6ebbfae03ceb4451</code></p>
+<p>4. Compute the partial BIP32 derivation path of the combined hash.</p>
+<p><code> 12544/22392/35936/29540/3522/8774/27904/13329/52572/7360/48936/1020/28347/64224/15595/17489</code></p>
+<p>5. Prepend <code>payment_base</code> to <code>contract_hash</code> derivation path.</p>
+<p><code> contract_base_pub/12544/22392/35936/29540/3522/8774/27904/13329/52572/7360/48936/1020/28347/64224/15595/17489</code><br />
+<code> or</code><br />
+<code> m/175'/0'/12544/22392/35936/29540/3522/8774/27904/13329/52572/7360/48936/1020/28347/64224/15595/17489</code></p>
+<p>6. Compute public extended key.</p>
+<p><code> xpub6hefaATTG5LbcwyPDvmNfnkyzefoM2TJDoo5astH7Gvs1g8vZURviBWvAvBnWc2CNb8ybJ6mDpnQYVsvNSZ3oUmbssX3rUVG97TFYa6AXVk</code></p>
+<p>7. Compute address of the public extended key (P2PKH).</p>
+<p><code> 1C7f322izqMqLzZzfzkPAjxBzprxDi47Yf</code></p>
+<h4 id="verification-example-negative-test">Verification example (negative test)</h4>
+<p>Similar to the input above, except this time we have a contract that
+consists of one document, below is the content:</p>
+<p>document 1:</p>
+<p><code> baz</code></p>
+<p>1. Apply the hash function.</p>
+<p><code> baa5a0964d3320fbc0c6a922140453c8513ea24ab8fd0577034804a967248096</code></p>
+<p>2. Prepend payment_base</p>
+<p><code> xpub6B3JSEWjqm5GgfzcjPwBixxLPzi15pFM3jq4E4yCzXXUFS5MFdXiSdw7b5dbdPGHuc7c1V4zXbbFRtc9G1njMUt9ZvMdGVGYQSQsurD6HAWbaa5a0964d3320fbc0c6a922140453c8513ea24ab8fd0577034804a967248096</code></p>
+<p>2. Apply hash function</p>
+<p><code> 3a08605829413ce0bf551b08d21e4a28dbda6e407f90eff1c448e839050c73a1</code></p>
+<p>3. Compute the partial derivation path.</p>
+<p><code> 5338/54412/19213/962/30664/62597/11873/59874/56779/24089/54550/19585/28087/36422/18666/17562</code></p>
+<p>4. Prepend contract_base<sub>pub</sub> to contract_hash derivation
+path.</p>
+<p><code> contract_base_pub/5338/54412/19213/962/30664/62597/11873/59874/56779/24089/54550/19585/28087/36422/18666/17562</code><br />
+<code> or</code><br />
+<code> m/175'/0'/5338/54412/19213/962/30664/62597/11873/59874/56779/24089/54550/19585/28087/36422/18666/17562</code></p>
+<p>5. Compute public extended key.</p>
+<p><code> xpub6h9k2KqsMpwghxt7naj1puhGV1ZDC88sxvpYN1HibCf8yQZdPsuhYmmvdK32Kf2Lb3rS1sV8UcZ1f84DJEiXuVfLCAj4bC85aEUCxh38m8i</code></p>
+<p>7. Compute address of the public extended key (P2PKH).</p>
+<p><code> 1QGe5LaDMAmHeibJbZBmZqhQDZSp7QCqSs</code></p>
+<p>8. As expected the address doesn't match the Bitcoin address from the
+last example <code>1C7f322izqMqLzZzfzkPAjxBzprxDi47Yf</code>.</p>
+<p>Verification operation will succeed only if we use identical documents
+to ones that have been used in the contract address generation.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>This specification is not backward compatible with BIP32 specification,
+the proposed derivation scheme in this BIP is a BIP32 compliant.
+Communication between payer and payee as well as hashing the contract
+and generating the path requires significant modification to the wallet.</p>
+<h2 id="reference-implementations">Reference implementations</h2>
+<ul>
+<li>Reference wallet implementation, based on Copay project :
+<a href="https://github.com/commerceblock/copay">https://github.com/commerceblock/copay</a>
+(<a href="https://github.com/commerceblock/copay/pull/1" title="wikilink">pull_request</a>)</li>
+<li>Reference implementation to Hash to Partial Derivation Path Mapping
+in javascript
+(<a href="https://github.com/commerceblock/pay-to-contract-lib/blob/master/lib/contract.js" title="wikilink"><a href="https://github.com/commerceblock/pay-to-contract-lib">https://github.com/commerceblock/pay-to-contract-lib</a></a>)</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://bips.dev/175/bip-0032.mediawiki" title="wikilink">BIP32 - Hierarchical Deterministic
+Wallets</a></li>
+<li><a href="https://bips.dev/175/bip-0043.mediawiki" title="wikilink">BIP43 - Purpose Field for Deterministic
+Wallets</a></li>
+<li><a href="https://bips.dev/175/bip-0044.mediawiki" title="wikilink">BIP44 - Multi-Account Hierarchy for Deterministic
+Wallets</a></li>
+<li><a href="https://arxiv.org/abs/1212.3257" title="wikilink">Homomorphic Payment Addresses and the Pay-to-Contract
+Protocol</a></li>
+</ul>
+<h2 id="copyright">Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

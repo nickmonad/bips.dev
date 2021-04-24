@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 148</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 148: Mandatory activation of segwit deployment
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-03-12</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0148.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 148
+  Layer: Consensus (soft fork)
+  Title: Mandatory activation of segwit deployment
+  Author: Shaolin Fry &lt;shaolinfry@protonmail.ch&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0148
+  Status: Final
+  Type: Standards Track
+  Created: 2017-03-12
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This document specifies a BIP16 like soft fork flag day activation of
+the segregated witness BIP9 deployment known as &quot;segwit&quot;.</p>
+<h2 id="definitions">Definitions</h2>
+<p>&quot;existing segwit deployment&quot; refer to the BIP9 &quot;segwit&quot; deployment using
+bit 1, between November 15th 2016 and November 15th 2017 to activate
+BIP141, BIP143 and BIP147.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Segwit increases the blocksize, fixes transaction malleability, and
+makes scripting easier to upgrade as well as bringing many other
+<a href="https://bitcoincore.org/en/2016/01/26/segwit-benefits/">benefits</a>.</p>
+<p>It is hoped that miners will respond to this BIP by activating segwit
+early, before this BIP takes effect. Otherwise this BIP will cause the
+mandatory activation of the existing segwit deployment before the end of
+midnight November 15th 2017.</p>
+<h2 id="specification">Specification</h2>
+<p>All times are specified according to median past time.</p>
+<p>This BIP will be active between midnight August 1st 2017 (epoch time
+1501545600) and midnight November 15th 2017 (epoch time 1510704000) if
+the existing segwit deployment is not locked-in or activated before
+epoch time 1501545600. This BIP will cease to be active when segwit is
+locked-in.</p>
+<p>While this BIP is active, all blocks must set the nVersion header top 3
+bits to 001 together with bit field (1&lt;&lt;1) (according to the
+existing segwit deployment). Blocks that do not signal as required will
+be rejected.</p>
+<h3 id="reference-implementation">Reference implementation</h3>
+<pre style="background-color:#fafafa;">
+<code>// Check if Segregated Witness is Locked In
+bool IsWitnessLockedIn(const CBlockIndex* pindexPrev, const Consensus::Params&amp; params)
+{
+    LOCK(cs_main);
+    return (VersionBitsState(pindexPrev, params, Consensus::DEPLOYMENT_SEGWIT, versionbitscache) == THRESHOLD_LOCKED_IN);
+}
+
+// BIP148 mandatory segwit signalling.
+int64_t nMedianTimePast = pindex-&gt;GetMedianTimePast();
+if ( (nMedianTimePast &gt;= 1501545600) &amp;&amp;  // Tue 01 Aug 2017 00:00:00 UTC
+     (nMedianTimePast &lt;= 1510704000) &amp;&amp;  // Wed 15 Nov 2017 00:00:00 UTC
+     (!IsWitnessLockedIn(pindex-&gt;pprev, chainparams.GetConsensus()) &amp;&amp;  // Segwit is not locked in
+      !IsWitnessEnabled(pindex-&gt;pprev, chainparams.GetConsensus())) )   // and is not active.
+{
+    bool fVersionBits = (pindex-&gt;nVersion &amp; VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS;
+    bool fSegbit = (pindex-&gt;nVersion &amp; VersionBitsMask(chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGWIT)) != 0;
+    if (!(fVersionBits &amp;&amp; fSegbit)) {
+        return state.DoS(0, error(&quot;ConnectBlock(): relayed block must signal for segwit, please upgrade&quot;), REJECT_INVALID, &quot;bad-no-segwit&quot;);
+    }
+}
+</code></pre>
+<p><a href="https://github.com/bitcoin/bitcoin/compare/master">https://github.com/bitcoin/bitcoin/compare/master</a>...shaolinfry:bip-segwit-flagday</p>
+<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<p>This deployment is compatible with the existing &quot;segwit&quot; bit 1
+deployment scheduled between midnight November 15th, 2016 and midnight
+November 15th, 2017.</p>
+<h2 id="rationale">Rationale</h2>
+<p>Historically, the P2SH soft fork (BIP16) was activated using a
+predetermined flag day where nodes began enforcing the new rules. P2SH
+was successfully activated with relatively few issues</p>
+<p>By orphaning non-signalling blocks during the last month of the BIP9 bit
+1 &quot;segwit&quot; deployment, this BIP can cause the existing &quot;segwit&quot;
+deployment to activate without needing to release a new deployment.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-March/013714.html">Mailing list
+discussion</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/blob/v0.6.0/src/main.cpp#L1281-L1283">P2SH flag day
+activation</a></li>
+<li><a href="https://bips.dev/148/bip-0009.mediawiki" title="wikilink">BIP9 Version bits with timeout and
+delay</a></li>
+<li><a href="https://bips.dev/148/bip-0016.mediawiki" title="wikilink">BIP16 Pay to Script Hash</a></li>
+<li><a href="https://bips.dev/148/bip-0141.mediawiki" title="wikilink">BIP141 Segregated Witness (Consensus
+layer)</a></li>
+<li><a href="https://bips.dev/148/bip-0143.mediawiki" title="wikilink">BIP143 Transaction Signature Verification for Version 0 Witness
+Program</a></li>
+<li><a href="https://bips.dev/148/bip-0147.mediawiki" title="wikilink">BIP147 Dealing with dummy stack element
+malleability</a></li>
+<li><a href="https://bitcoincore.org/en/2016/01/26/segwit-benefits/">Segwit
+benefits</a></li>
+</ul>
+<h2 id="copyright">Copyright</h2>
+<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0
+1.0 Universal.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

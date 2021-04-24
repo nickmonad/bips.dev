@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 64</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 64: getutxo message
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-06-10</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0064.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 64
+  Layer: Peer Services
+  Title: getutxo message
+  Author: Mike Hearn &lt;hearn@vinumeris.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0064
+  Status: Obsolete
+  Type: Standards Track
+  Created: 2014-06-10
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This document describes a small P2P protocol extension that performs
+UTXO lookups given a set of outpoints.</p>
+<h2 id="motivation">Motivation</h2>
+<p>All full Bitcoin nodes maintain a database called the unspent
+transaction output set. This set is how double spending is checked for:
+to be valid a transaction must identify unspent outputs in this set
+using an identifier called an &quot;outpoint&quot;, which is merely the hash of
+the output's containing transaction plus an index.</p>
+<p>The ability to query this can sometimes be useful for a lightweight/SPV
+client which does not have the full UTXO set at hand. For example, it
+can be useful in applications implementing assurance contracts to do a
+quick check when a new pledge becomes visible to test whether that
+pledge was already revoked via a double spend. Although this message is
+not strictly necessary because e.g. such an app could be implemented by
+fully downloading and storing the block chain, it is useful for
+obtaining acceptable performance and resolving various UI cases.</p>
+<p>Another example of when this data can be useful is for performing
+floating fee calculations in an SPV wallet. This use case requires some
+other changes to the Bitcoin protocol however, so we will not dwell on
+it here.</p>
+<h2 id="specification">Specification</h2>
+<p>Two new messages are defined. The &quot;getutxos&quot; message has the following
+structure:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>1</td><td>check mempool</td><td>bool</td><td>Whether to apply mempool transactions during the calculation, thus exposing their UTXOs and removing outputs that they spend.</td></tr>
+<tr><td>?</td><td>outpoints</td><td>vector<COutPoint></td><td>The list of outpoints to be queried. Each outpoint is serialized in the same way it is in a tx message.</td></tr>
+</tbody></table>
+<p>The response message &quot;utxos&quot; has the following structure:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>4</td><td>chain height</td><td>uint32</td><td>The height of the chain at the moment the result was calculated.</td></tr>
+<tr><td>32</td><td>chain tip hash</td><td>uint256</td><td>Block hash of the top of the chain at the moment the result was calculated.</td></tr>
+<tr><td>?</td><td>hit bitmap</td><td>byte[]</td><td>An array of bytes encoding one bit for each outpoint queried. Each bit indicates whether the queried outpoint was found in the UTXO set or not.</td></tr>
+<tr><td>?</td><td>result utxos</td><td>result[]</td><td>A list of result objects (defined below), one for each outpoint that is unspent (i.e. has a bit set in the bitmap).</td></tr>
+</tbody></table>
+<p>The result object is defined as:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>4</td><td>tx version</td><td>uint32</td><td>The version number of the transaction the UTXO was found in.</td></tr>
+<tr><td>4</td><td>height</td><td>uint32</td><td>The height of the block containing the defining transaction, or 0x7FFFFFFF if the tx is in the mempool.</td></tr>
+<tr><td>?</td><td>output</td><td>CTxOut</td><td>The output itself, serialized in the same way as in a tx message.</td></tr>
+</tbody></table>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<p>Nodes indicate support by advertising a protocol version above 70003 and
+by setting a new NODE_GETUTXO flag in their nServices field, which has
+a value of 2 (the second bit of the field).</p>
+<h2 id="authentication">Authentication</h2>
+<p>The UTXO set is not currently authenticated by anything. There are
+proposals to resolve this by introducing a new consensus rule that
+commits to a root hash of the UTXO set in blocks, however this feature
+is not presently available in the Bitcoin protocol. Once it is, the
+utxos message could be upgraded to include Merkle branches showing
+inclusion of the UTXOs in the committed sets.</p>
+<p>If the requesting client is looking up outputs for a signed transaction
+that they have locally, the client can partly verify the returned output
+by running the input scripts with it. Currently this verifies only that
+the script is correct. A future version of the Bitcoin protocol is
+likely to also allow the value to be checked in this way. It does not
+show that the output is really unspent or was ever actually created in
+the block chain however. Additionally, the form of the provided
+scriptPubKey should be checked before execution to ensure the remote
+peer doesn't just set the script to OP_TRUE.</p>
+<p>If the requesting client has a mapping of chain heights to block hashes
+in the best chain e.g. obtained via getheaders, then they can obtain a
+proof that the output did at one point exist by requesting the block and
+searching for the output within it. When combined with Bloom filtering
+this can be reasonably efficient.</p>
+<p>Note that even when the outputs are being checked against something this
+protocol has the same security model as Bloom filtering: a remote node
+can lie through omission by claiming the requested UTXO does not exist /
+was already spent (they are the same, from the perspective of a full
+node). Querying multiple nodes and combining their answers can be a
+partial solution to this, although as nothing authenticates the Bitcoin
+P2P network a man in the middle could still yield incorrect results.</p>
+<h2 id="implementation">Implementation</h2>
+<p><a href="https://github.com/bitcoin/bitcoin/pull/4351/files">https://github.com/bitcoin/bitcoin/pull/4351/files</a></p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

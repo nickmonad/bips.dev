@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 13</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 13: Address Format for pay-to-script-hash
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2011-10-18</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0013.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 13
+  Layer: Applications
+  Title: Address Format for pay-to-script-hash
+  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0013
+  Status: Final
+  Type: Standards Track
+  Created: 2011-10-18
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes a new type of Bitcoin address to support arbitrarily
+complex transactions. Complexity in this context is defined as what
+information is needed by the recipient to respend the received coins, in
+contrast to needing a single ECDSA private key as in current
+implementations of Bitcoin.</p>
+<p>In essence, an address encoded under this proposal represents the
+encoded hash of a <a href="https://en.bitcoin.it/wiki/Script">script</a>, rather
+than the encoded hash of an ECDSA public key.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Enable &quot;end-to-end&quot; secure wallets and payments to fund escrow
+transactions or other complex transactions. Enable third-party wallet
+security services.</p>
+<h2 id="specification">Specification</h2>
+<p>The new bitcoin address type is constructed in the same manner as
+existing bitcoin addresses (see <a href="https://en.bitcoin.it/Base58Check_encoding">Base58Check
+encoding</a>):</p>
+<p><code>   base58-encode: [one-byte version][20-byte hash][4-byte checksum]</code></p>
+<p>Version byte is 5 for a main-network address, 196 for a testnet address.
+The 20-byte hash is the hash of the script that will be used to redeem
+the coins. And the 4-byte checksum is the first four bytes of the double
+SHA256 hash of the version and hash.</p>
+<h2 id="rationale">Rationale</h2>
+<p>One criticism is that bitcoin addresses should be deprecated in favor of
+a more user-friendly mechanism for payments, and that this will just
+encourage continued use of a poorly designed mechanism.</p>
+<p>Another criticism is that bitcoin addresses are inherently insecure
+because there is no identity information tied to them; if you only have
+a bitcoin address, how can you be certain that you're paying who or what
+you think you're paying?</p>
+<p>Furthermore, truncating SHA256 is not an optimal checksum; there are
+much better error-detecting algorithms. If we are introducing a new form
+of Bitcoin address, then perhaps a better algorithm should be used.</p>
+<p>This is one piece of the simplest path to a more secure bitcoin
+infrastructure. It is not intended to solve all of bitcoin's usability
+or security issues, but to be an incremental improvement over what
+exists today. A future BIP or BIPs should propose more user-friendly
+mechanisms for making payments, or for verifying that you're sending a
+payment to the Free Software Foundation and not Joe Random Hacker.</p>
+<p>Assuming that typing in bitcoin addresses manually will become
+increasingly rare in the future, and given that the existing checksum
+method for bitcoin addresses seems to work &quot;well enough&quot; in practice and
+has already been implemented multiple times, the Author believes no
+change to the checksum algorithm is necessary.</p>
+<p>The leading version bytes are chosen so that, after base58 encoding, the
+leading character is consistent: for the main network, byte 5 becomes
+the character '3'. For the testnet, byte 196 is encoded into '2'.</p>
+<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<p>This proposal is not backwards compatible, but it fails gracefully-- if
+an older implementation is given one of these new bitcoin addresses, it
+will report the address as invalid and will refuse to create a
+transaction.</p>
+<h2 id="reference-implementation">Reference Implementation</h2>
+<p>See base58.cpp/base58.h at
+<a href="https://github.com/bitcoin/bitcoin/tree/master/src">https://github.com/bitcoin/bitcoin/tree/master/src</a></p>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="https://bips.dev/13/bip-0012.mediawiki" title="wikilink">BIP 12: OP_EVAL, the original P2SH
+design</a></li>
+<li><a href="https://bips.dev/13/bip-0016.mediawiki" title="wikilink">BIP 16: Pay to Script Hash (aka
+&quot;/P2SH/&quot;)</a></li>
+<li><a href="https://bips.dev/13/bip-0017.mediawiki" title="wikilink">BIP 17: OP_CHECKHASHVERIFY, another P2SH
+design</a></li>
+</ul>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

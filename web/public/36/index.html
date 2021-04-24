@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 36</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 36: Custom Services
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2012-08-03</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0036.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 36
+  Layer: Peer Services
+  Title: Custom Services
+  Author: Stefan Thomas &lt;justmoon@members.fsf.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0036
+  Status: Rejected
+  Type: Standards Track
+  Created: 2012-08-03
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP adds new fields to the <code>version</code> message which clients can use
+to announce custom services without polluting the limited 64-bit
+<code>services</code> field. It also makes some non-binding recommendations
+regarding the implementation of custom services.</p>
+<h2 id="motivation">Motivation</h2>
+<p>We would like to encourage experimentation with custom services that
+extend the Bitcoin protocol with useful functionality. Examples include
+Distributed Hash Tables (DHT), distributed pools, lightweight client
+support protocols, directed message routing and support for custom
+transports. However, without a general framework for protocol
+extensions, these custom services are likely to collide in various ways.
+This BIP provides such a framework.</p>
+<h2 id="specification">Specification</h2>
+<p>Two new fields are added to the <code>version</code> command, after <code>extra_height</code>:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>1+</td><td>service_count</td><td><a href="https://bips.dev/36/Protocol_specification#Variable_length_integer" title="wikilink">var_int</a></td><td>Number of extra services</td></tr>
+<tr><td>?</td><td>service_list</td><td>service[]</td><td>List of service definitions</td></tr>
+</tbody></table>
+<p>The service definitions <code>service[]</code> are given in the following format:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>?</td><td>service_name</td><td><a href="https://bips.dev/36/#Variable_length_string" title="wikilink">var_str</a></td><td>Unique service identifier</td></tr>
+<tr><td>4</td><td>service_version</td><td>uint32_t</td><td>Identifies service version being used by the node</td></tr>
+<tr><td>?</td><td>service_data</td><td><a href="https://bips.dev/36/#Variable_length_string" title="wikilink">var_str</a></td><td>Additional service-specific data</td></tr>
+</tbody></table>
+<p>A node MUST NOT announce two services with the same <code>service_name</code>. If a
+remote node sends such a <code>version</code> message the client MAY disconnect.</p>
+<p>The <code>service_version</code> is service-specific and can be any integer. Higher
+versions SHOULD be higher integers. When a service is standardized, it
+is assigned a <code>NODE_*</code> constant for use with the <code>services</code> field and
+future iterations of the protocol depend on the Bitcoin protocol
+version. Both the <code>NODE_*</code> flag and the custom service entry MAY be
+provided for the duration of a transitional period.</p>
+<p>Services SHOULD pass an empty string (0x00) as <code>service_data</code> and use a
+custom handshake to initialize their protocol, exchange information
+about capabilities etc. Note that to become a standardized service, a
+service MUST NOT rely on <code>service_data</code> since there is no corresponding
+mechanism for the standard services defined in the <code>services</code> field.</p>
+<p>However, services MAY use <code>service_data</code> if they do not intend to become
+standard services and need a simple way to transmit a small amount of
+initialization data. For example, a node offering a custom transport
+like UDP or WebSocket, may choose to announce this as a service and
+include the port number in <code>service_data</code>. The format for <code>service_data</code>
+is service-specific and may be any binary or ASCII data. For ease of
+debugging, a human-readable (ASCII) format is generally recommended.</p>
+<h3 id="service-identifier">Service identifier</h3>
+<p>Each service SHOULD choose a new identifier that is not used by any
+other service. To register a new identifier, add it to the <a href="https://bips.dev/36/Service_identifiers" title="wikilink">Service
+identifiers</a> wiki page along with the
+name of the maintainer and a way to contact them. Please do not register
+identifiers unless you are actually using them.</p>
+<p>Service identifiers that are reserved or used by an accepted BIP MUST
+NOT be used except in the way specified by that BIP.</p>
+<p>Service identifiers MUST be between five (5) and eleven (11) characters
+long. Service identifiers MUST use only ASCII characters, excluding: /
+* _ :</p>
+<p>Valid examples:</p>
+<ul>
+<li><code>MySampleSvc</code></li>
+<li><code>smartserv</code></li>
+<li><code>P-Pool</code></li>
+</ul>
+<p>Valid, but discouraged examples:</p>
+<ul>
+<li><code>MySVC 1.0</code> (use <code>service_version</code> to differentiate versions)</li>
+<li><code>@@---.</code> (identifiers should be pronounceable)</li>
+<li><code>lightweight</code> (avoid too generic names)</li>
+</ul>
+<p>Invalid examples:</p>
+<ul>
+<li><code>Pppc</code> (too short)</li>
+<li><code>SuperService</code> (too long)</li>
+<li><code>Cool_Svc</code> (invalid character)</li>
+</ul>
+<h3 id="optional-custom-commands">Optional: Custom commands</h3>
+<p>Bitcoin command names are limited to 12 characters. That doesn't leave a
+lot of space for both the service identifier and the service command.
+Therefore we recommend that all service commands SHOULD be represented
+by a single &quot;command&quot; on the Bitcoin network. This command SHOULD
+consist of the exact service identifier to avoid collisions with other
+services, prefixed by an underscore to avoid collisions with current or
+future Bitcoin protocol messages. For example: <code>_MySampleSvc</code></p>
+<p>The service-specific command name SHOULD then be specified in an extra
+header in the payload:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>12</td><td>subcommand</td><td>char[12]</td><td>ASCII string identifying the service command, NULL padded (non-NULL padding results in packet rejected)</td></tr>
+<tr><td>?</td><td>subpayload</td><td>uchar[]</td><td>The actual data</td></tr>
+</tbody></table>
+<p>The length of <code>subpayload</code> is derived from the length of the total
+payload minus twelve (12) bytes for the <code>subcommand</code>. Implementations
+MUST NOT rely on this format to be used by unknown services. Clients
+SHOULD ignore any services or subcommands they don't explicitly
+understand.</p>
+<p>The recommended way to refer to messages following this format in
+documentation is by the service identifier, followed by a colon,
+followed by the subcommand. For example, the subcommand <code>search</code> for the
+<code>MySampleSvc</code> service would be referred to as: <code>MySampleSvc:search</code></p>
+<p>Full hexdump of an example <code>MySampleSvc:search</code> message:</p>
+<pre style="background-color:#fafafa;">
+<code>0000   F9 BE B4 D9 5F 4D 79 53  61 6D 70 6C 65 53 76 63   ...._MySampleSvc
+0010   14 00 00 00 73 D5 56 77  73 65 61 72 63 68 00 00   ....s.Vwsearch..
+0020   00 00 00 00 12 34 56 78  9A BC DE F0               .....4Vx....
+
+Message header:
+ F9 BE B4 D9                                                                   - Main network magic bytes
+ 5F 4D 79 53 61 6D 70 6C 65 53 76 63                                           - &quot;_MySampleSvc&quot; command
+ 14 00 00 00                                                                   - Payload is 20 bytes long
+                                                                                 (includes 12 bytes for subcommand)
+ 73 D5 56 77                                                                   - Checksum
+
+Service header:
+ 73 65 61 72 63 68 00 00 00 00 00 00                                           - &quot;search&quot; subcommand
+
+Search message:
+ 12 34 56 78 9A BC DE F0                                                       - Payload
+</code></pre><h2 id="standardization">Standardization</h2>
+<p>Custom services may become standard parts of the protocol. Services
+which wish to become part of the Bitcoin protocol MUST fulfill the
+following criteria:</p>
+<ul>
+<li>MUST NOT use <code>service_data</code>; Standard services have no corresponding
+field</li>
+<li>MUST use a peer discovery mechanism which specifies one bit per
+node, same as the <code>services</code> field in <code>addr</code> messages</li>
+<li>MUST NOT use any subcommands that conflict with current or planned
+Bitcoin protocol commands</li>
+</ul>
+<p>The standardization process will usually take place as follows:</p>
+<ol>
+<li>The service is implemented and tested.</li>
+<li>Once the API is known to be relatively stable it is formalized and
+submitted as a BIP.</li>
+<li>Once the BIP is accepted, the service is assigned a <code>NODE_*</code>
+constant and the transitional period starts:
+<ul>
+<li>Clients MUST understand both the announcement of the service via
+the <code>services</code> field and via <code>service_list</code> and include both
+methods in their own <code>version</code> message.</li>
+<li>Clients MUST accept both the wrapped form messages like
+<code>MySampleSvc:search</code> as well as the corresponding non-namespaced
+messages like <code>search</code>. Clients MUST only send wrapped messages.</li>
+<li>During the transitional period the API of the service MUST NOT
+change.</li>
+</ul>
+</li>
+<li>After the transitional period:
+<ul>
+<li>Clients MUST only announce the service via the <code>services</code> field.</li>
+<li>Clients MUST only send unwrapped messages.</li>
+</ul>
+</li>
+<li>Future changes to the service API now require a BIP and an increase
+in the Bitcoin protocol version.</li>
+</ol>
+<p>This process of adding a service to the Bitcoin protocol should only be
+undertaken for services where there is a strong rationale for doing so.
+Services MAY also be standardized as custom services via a BIP while
+maintaining the custom service format.</p>
+<h2 id="rationale">Rationale</h2>
+<p>This BIP aims to fulfill the following goals:</p>
+<ul>
+<li>Minimize the risk of namespace collisions, ambiguities or other
+issues arising from conflicting custom services</li>
+<li>Provide an easy upgrade path for custom services to become
+standardized services with their own <code>NODE_*</code> flag</li>
+<li>Place minimum restrictions on custom service authors</li>
+<li>Allow custom services to be created with minimum effort</li>
+<li>Allow clients to support multiple/many custom services at once</li>
+</ul>
+<p>To achieve these goals this BIP adds two new fields to the <code>version</code>
+message. It would have been possible to avoid changes to <code>version</code> by
+adding a new message instead. However, it makes sense to keep both types
+of service announcements in the same message so that the life cycle of
+standardized services and custom services remains exactly the same. This
+also simplifies detecting a service which is in the transition from a
+custom to a standardized service (and being announced using both
+methods.)</p>
+<p>Finally, this BIP defines both explicitly and implicitly some useful
+common nomenclature that can be used when discussing custom services,
+e.g. &quot;subcommand&quot;, &quot;subpayload&quot;, &quot;service identifier&quot; and the colon
+format for referring to subcommands.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

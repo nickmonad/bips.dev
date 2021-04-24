@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 100</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 100: Dynamic maximum block size by miner vote
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2015-06-11</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0100.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 100
+  Layer: Consensus (hard fork)
+  Title: Dynamic maximum block size by miner vote
+  Author: Jeff Garzik &lt;jgarzik@gmail.com&gt;
+          Tom Harding &lt;tomh@thinlink.com&gt;
+          Dagur Valberg Johannsson &lt;dagurval@pvv.ntnu.no&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0100
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-06-11
+  License: BSD-2-Clause
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>Replace the static 1M block size hard limit with a hard limit set by
+coinbase vote, conducted on the same schedule as difficulty retargeting.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Miners directly feel the effects, both positive and negative, of any
+maximum block size change imposed by their peers. Larger blocks allow
+more growth in the on-chain ecosystem, while smaller blocks reduce
+resource requirements network-wide. Miners also act as an efficient
+proxy for the rest of the ecosystem, since they are paid in the tokens
+collected for the blocks they create.</p>
+<p>A simple deterministic system is specified, whereby a 75% mining
+supermajority may activate a change to the maximum block size each 2016
+blocks. Each change is limited to a 5% increase from the previous block
+size hard limit, or a decrease of similar magnitude. Among adopting
+nodes, there will be no disagreement on the evolution of the maximum
+block size.</p>
+<p>The system is compatible with emergent consensus, but whereas under that
+system a miner may choose to accept any size block, a miner following
+BIP100 observes the 75% supermajority rule, and the 5% change limit
+rule. Excessive-block values signaled by emergent consensus blocks are
+considered in the calculation of the BIP100 block size hard limit, and
+the BIP100 calculated maximum block size is signaled as an
+excessive-block value for the benefit of all observers.</p>
+<h2 id="specification">Specification</h2>
+<h3 id="dynamic-maximum-block-size">Dynamic Maximum Block Size</h3>
+<ol>
+<li>
+<p>Initial value of <code>hardLimit</code> is 1000000 bytes, preserving current
+system.</p>
+</li>
+<li>
+<p>Changing <code>hardLimit</code> is accomplished by encoding a proposed value, a
+vote, within a block's coinbase scriptSig, and by processing the
+votes contained in the previous retargeting period.</p>
+<p># Vote encoding</p>
+<ol>
+<li>
+<ol>
+<li>
+<p>A vote is represented as a megabyte value using the BIP100
+pattern</p>
+<p><code>/BIP100/B[0-9]+/</code></p>
+<p>Example: <code>/BIP100/B8/</code> is a vote for a 8000000-byte
+<code>hardLimit</code>.</p>
+</li>
+<li>
+<p>If the block height is encoded at the start of the coinbase
+scriptSig, as per BIP34, it is ignored.</p>
+</li>
+<li>
+<p>Only the first BIP100 pattern match is processed in &quot;Maximum
+block size recalculation&quot; below.</p>
+</li>
+<li>
+<p>A megabyte value is represented by consecutive base-ten
+digits.</p>
+</li>
+<li>
+<p>If no BIP100 pattern is matched, the first matching emergent
+consensus pattern <code>/EB[0-9]+/</code>, if any, is accepted as the
+megabyte vote.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Maximum block size recalculation</p>
+<ol>
+<li>
+<p>A <code>new hardLimit</code> is calculated after each difficulty
+adjustment period of 2016 blocks, and applies to the next
+2016 blocks.</p>
+</li>
+<li>
+<p>Absent/zero-valued votes are counted as votes for the
+<code>current hardLimit</code>.</p>
+</li>
+<li>
+<p>The votes of the previous 2016 blocks are sorted by megabyte
+vote.</p>
+</li>
+<li>
+<p>Raising <code>hardLimit</code></p>
+<p># The <code>raise value</code> is defined as the vote of the 1512th
+highest block, converted to bytes.</p>
+<ol>
+<li>If the resultant <code>raise value</code> is greater than
+(<code>current hardLimit</code> * 1.05) rounded down, it is set to
+that value.</li>
+<li>If the resultant <code>raise value</code> is greater than
+<code>current hardLimit</code>, the <code>raise value</code> becomes the
+<code>new hardLimit</code> and the recalculation is complete.</li>
+</ol>
+</li>
+<li>
+<p>Lowering <code>hardLimit</code></p>
+<p># The <code>lower value</code> is defined as the vote of the 1512th
+lowest block, converted to bytes.</p>
+<ol>
+<li>If the resultant <code>lower value</code> is less than
+(<code>current hardLimit</code> / 1.05) rounded down, it is set to
+that value.</li>
+<li>If the resultant <code>lower value</code> is less than
+<code>current hardLimit</code>, the <code>lower value</code> becomes the
+<code>new hardLimit</code> and the recalculation is complete.</li>
+</ol>
+</li>
+<li>
+<p>Otherwise, <code>new hardLimit</code> remains the same as
+<code>current hardLimit</code>.</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="signature-hashing-operations-limits">Signature Hashing Operations Limits</h3>
+<ol>
+<li>The per-block signature hashing operations limit is scaled to
+(actual block size, fractional megabyte rounded to next higher
+megabyte) / 50.</li>
+<li>A maximum serialized transaction size of 1000000 bytes is imposed.</li>
+</ol>
+<h2 id="recommendations">Recommendations</h2>
+<h3 id="publication-of-hardlimit">Publication of <code>hardLimit</code></h3>
+<ol>
+<li>
+<p>For the benefit of all observers, it is recommended that <code>hardLimit</code>
+be published. Example: a complete coinbase string might read</p>
+<p><code>/BIP100/B8/EB2.123456/</code></p>
+<p>which indicates a vote for 8M maximum block size, and an enforced
+<code>hardLimit</code> of 2.123456 megabytes for the block containing the
+coinbase string.</p>
+</li>
+</ol>
+<h2 id="deployment">Deployment</h2>
+<p>This BIP is presumed deployed and activated as of block height 449568 by
+implementing nodes on the bitcoin mainnet. It has no effect until a
+raise value different from 1M is observed, which requires at least 1512
+of 2016 blocks to vote differently from 1M.</p>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<p>The first block larger than 1M will create a network partition, as nodes
+with a fixed 1M hard limit reject that block.</p>
+<h2 id="implementations">Implementations</h2>
+<p><a href="https://github.com/bitcoinxt/bitcoinxt/pull/188">https://github.com/bitcoinxt/bitcoinxt/pull/188</a></br>
+<a href="https://github.com/bitcoinxt/bitcoin/pull/1">https://github.com/bitcoinxt/bitcoin/pull/1</a></br>
+<a href="https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398">https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398</a></br></p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is licensed under the BSD 2-clause license.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

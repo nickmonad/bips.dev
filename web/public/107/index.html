@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 107</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 107: Dynamic limit on the block size
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2015-09-11</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0107.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 107
+  Layer: Consensus (hard fork)
+  Title: Dynamic limit on the block size
+  Author: Washington Y. Sanchez &lt;washington.sanchez@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0107
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-09-11
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP proposes a dynamic limit to the block size based on transaction
+volume.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Over the next few years, large infrastructure investments will be made
+into:</p>
+<ol>
+<li>Improving global network connectivity</li>
+<li>Improving block propagation across the Bitcoin network</li>
+<li>Layer 2 services and networks for off-chain transactions</li>
+<li>General efficiency improvements to transactions and the blockchain</li>
+</ol>
+<ul>
+<li>While there is a consensus between Bitcoin developers, miners,
+businesses and users that the block size needs to be increased,
+there is a lingering concern over the potential unintended
+consequences that may augment the trend towards network and mining
+centralization (largely driven by mining hardware such as ASICs) and
+thereby threaten the security of the network.</li>
+<li>In contrast, failing to respond to elevated on-chain transaction
+volume may lead to a consumer-failure of Bitcoin, where ordinary
+users - having enjoyed over 6 years of submitting transactions
+on-chain at relatively low cost - will be priced out of blockchain
+with the emergence of a prohibitive 'fee market'.</li>
+<li>These two concerns must be delicately balanced so that all users can
+benefit from a robust, scalable, and neutral network.</li>
+</ul>
+<h2 id="specification">Specification</h2>
+<ul>
+<li>Increases in the block size will occur in 2 phases</li>
+<li><strong>Phase 1</strong>
+<ul>
+<li>The block size will be increased similar to <a href="https://twitter.com/adam3us/status/636410827969421312" title="wikilink">Adam Back's
+proposal</a>,
+as a safe runway prior to switching to Phase 2, while network
+and protocol infrastructure is improved</li>
+<li>The schedule:
+<ul>
+<li><em>2016-2017:</em> 2 MB</li>
+<li><em>2018-2019:</em> 4 MB</li>
+<li><em>2020:</em> 6 MB</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Phase 2</strong>
+<ul>
+<li>In 2020, the maximum block size will be increased dynamically
+according to sustained increases in transaction volume</li>
+<li>Every 4032 blocks (~4 weeks), a CHECK will be performed to
+determine if a raise in the maximum block size should occur
+<ul>
+<li>This calculates to a theoretical maximum of 13 increases per
+year</li>
+</ul>
+</li>
+<li>IF of the last &gt;= 3025 blocks were &gt;=60% full, the maximum
+block size will be increased by 10%</li>
+<li>The maximum block size can only ever be increased, not decreased</li>
+</ul>
+</li>
+<li>The default <code>limitfreerelay</code> will also be raised in proportion to
+maximum block size increases
+<ul>
+<li>Transactions without fees can continue to be submitted and
+relayed on the network as per normal</li>
+<li><code>limitfreerelay</code> also helps counter attempts to trigger a block
+size increase by 'penny-flooding'</li>
+</ul>
+</li>
+</ul>
+<p>For example:</p>
+<ul>
+<li>When the dynamic rules for increasing the block size go live on
+January 1st 2020, the starting maximum block size will be 6 MB</li>
+<li>IF &gt;=3025 blocks are &gt;= 3.6 MB, the new maximum block size
+become 6.6 MB.</li>
+<li>The theoretical maximum block size at the end of 2020 would be
+~20.7 MB, assuming all 13 increases are triggered every 4 weeks by
+the end of the year.</li>
+</ul>
+<h2 id="rationale">Rationale</h2>
+<ul>
+<li><strong>Phase 1</strong>
+<ul>
+<li>This runway has a schedule for conservative increases to the
+block size in order to relieve transaction volume pressure while
+allowing network and protocol infrastructure improvements to be
+made, as well as layer 2 services to emerge</li>
+</ul>
+</li>
+<li><strong>Phase 2</strong>
+<ul>
+<li>Why 60% full blocks?
+<ul>
+<li>IF blocks are 60% full, they count as a <em>vote</em> towards
+increasing the block size</li>
+<li>If this parameter is too low, the trigger sensitivity may be
+too high and vulnerable to spam attacks or miner collusion</li>
+<li>Setting the parameter too high may set the trigger
+sensitivity too low, causing transaction delays that are
+trying to be avoided in the first place</li>
+<li>Between September 2013-2015, the standard deviation measured
+from average block size (n=730 data points from
+blockchain.info) was ~ 0.13 MB or 13% of the maximum block
+size
+<ul>
+<li>If blocks needed to be 90% full before an increase were
+triggered, normal variance in the average block size
+would mean some blocks would be full before an increase
+could be triggered</li>
+</ul>
+</li>
+<li>Therefore, we need a <em>safe distance</em> away from the maximum
+block size to avoid normal block size variance hitting the
+limit. The 60% level represents a 3 standard deviation
+distance from the limit.</li>
+</ul>
+</li>
+<li>Why 3025 blocks?
+<ul>
+<li>The assessment period is 4032 blocks or ~ 4 weeks, with the
+threshold set as 4032 blocks/0.75 + 1</li>
+<li>Increases in the maximum block size should only occur after
+a sustained trend can be observed in order to:
+<ol>
+<li>Demonstrate a market-driven secular elevation in the
+transaction volume</li>
+<li>Increase the cost to trigger an increase by spam attacks
+or miner collusion with zero fee transactions</li>
+</ol>
+</li>
+<li>In other words, increases to the maximum block size must be
+conservative but meaningful to relieve transaction volume
+pressure in response to true market demand</li>
+</ul>
+</li>
+<li>Why 10% increase in the block size?
+<ul>
+<li>Increases in the block size are designed to be conservative
+and in balance with the number of theoretical opportunities
+to increase the block size per year</li>
+<li>Makes any resources spent for spam attacks or miner
+collusion relatively expensive to achieve a minor increase
+in the block size. A sustained attack would need to be
+launched that may be too costly, and ideally detectable by
+the community</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="deployment">Deployment</h2>
+<p>Similar deployment model to BIP101:</p>
+<blockquote>
+<p>Activation is achieved when 750 of 1,000 consecutive blocks in the
+best chain have a version number with the first, second, third, and
+thirtieth bits set (0x20000007 in hex). The activation time will be
+the timestamp of the 750'th block plus a two week (1,209,600 second)
+grace period to give any remaining miners or services time to upgrade
+to support larger blocks.</p>
+</blockquote>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Thanks to Austin Williams, Brian Hoffman, Angel Leon, Bulukani Mlalazi,
+Chris Pacia, and Ryan Shea for their comments.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This work is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

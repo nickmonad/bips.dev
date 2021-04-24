@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 154</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 154: Rate Limiting via peer specified challenges
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-04-12</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0154.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 154
+  Layer: Peer Services
+  Title: Rate Limiting via peer specified challenges
+  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0154
+  Status: Withdrawn
+  Type: Standards Track
+  Created: 2017-04-12
+  License: BSD-2-Clause
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>An anti-DoS system which provides additional service for peers which
+perform proof of work.</p>
+<h2 id="definitions">Definitions</h2>
+<ul>
+<li><strong>POW</strong> : a proof of work using some arbitrary algorithm, such as
+SHA256</li>
+<li><strong>challenge</strong> : a problem in the form of a POW specification and
+other data</li>
+<li><strong>solution</strong> : a set of inputs which solve a given challenge</li>
+<li><strong>free connection slot</strong> : an inbound connection slot that does not
+require POW</li>
+<li><strong>POW connection slot</strong> : an inbound connection slot that requires
+POW</li>
+<li><strong>SPH</strong> : Special Purpose Hardware, such as an ASIC chip</li>
+<li><strong>GPH</strong> : General Purpose Hardware, such as a desktop computer</li>
+<li><strong>Work</strong> : A measurement of optimized average resources (clock
+cycles, memory, ...) required to perform a single attempt at solving
+a given POW algorithm on GPH</li>
+</ul>
+<h2 id="motivation">Motivation</h2>
+<p>The Bitcoin network has a maximum number of inbound and outbound
+connections (125). It is trivial and relatively cheap to flood the
+network with connections via dummy nodes. Such an attack would result in
+(1) nodes evicting some other nodes in order to facilitate the new
+connection, and (2) nodes' ability to connect to each other being
+severely hampered. In this state, the network is vulnerable to e.g. a
+Sybil attack.</p>
+<p>While the network is under pressure as in the above case, nodes could
+allow incoming connections anyway by requiring that the incoming peer
+performs some form of proof of work, to prove that they are not simply
+spamming the network. This would severely ramp up the costs of a Sybil
+attack, as the attacker would now have to perform proof of work for each
+node, beyond the free slots.</p>
+<p>However, using the &quot;standard&quot; double-SHA256 POW algorithm in use by
+Bitcoin nodes to generate blocks means attackers can use special-purpose
+hardware to greatly accelerate the POW solving process. To counter this,
+the proof weight would have to be raised, but this would mean standard
+nodes would need to solve unacceptably costly challenges for simple
+operation. Therefore, a different proof of work which is arguably less
+sensitive to special-purpose hardware implementations is introduced. As
+this is not consensus sensitive, additional POW algorithms may be added
+in the future.</p>
+<h2 id="specification">Specification</h2>
+<p>A peer that supports Proof of Work Rate Limiting defines two maximums:</p>
+<ul>
+<li>max connections, from which the maximum inbound connections is
+calculated as <code>nMaxConnections - (nMaxOutbound + nMaxFeeler)</code></li>
+<li>POW connection slots, which define how many of the above inbound
+connections require a POW challenge</li>
+</ul>
+<p>The peer must interpret two new network peer message types, <code>challenge</code>
+and <code>solution</code>.</p>
+<p>In addition, the network handshake sequence must be altered slightly to
+facilitate the exchange of challenges and/or solutions:</p>
+<ul>
+<li>when a node connects, it may send a <code>solution</code> message prior to the
+<code>version</code></li>
+<li>if it does, and
+<ul>
+<li>the solution satisfies the local node, it is given a connection,
+but if</li>
+<li>the solution does not satisfy the local node (unknown, wrong,
+...), a new <code>challenge</code> is sent and the connection is closed</li>
+</ul>
+</li>
+<li>if it does not, and it is marked as needing to do POW, a <code>challenge</code>
+is sent and the connection is closed</li>
+</ul>
+<p>This means nodes will be disconnected after receiving the challenge. It
+is then up to the individual nodes whether they solve the challenge and
+reconnect, or discard it and find a different peer (or wait for the peer
+to have an open free slot).</p>
+<h3 id="pow-identifiers">POW Identifiers</h3>
+<p>There are two POW identifiers currently. When a new identifier is
+introduced, it should be added with an increment of 1 to the last
+identifier in the list. When an identifier is deprecated, its status
+should be changed to <code>Deprecated</code> but it should retain its place in the
+list indefinitely.</p>
+<table><thead><tr><th>ID</th><th>Algorithm Name</th><th>Work</th><th>Param size</th><th>Solution size</th><th>Provably Secure</th><th>SPH Resistance</th><th>Status</th></tr></thead><tbody>
+<tr><td>1</td><td>sha256</td><td>11k cycles</td><td>11+ bytes</td><td>0, 4 or 8 bytes</td><td>Yes</td><td>Low</td><td>Active</td></tr>
+<tr><td>2</td><td>cuckoo-cycle</td><td>ss 28: 150G cycles / ~48M RAM</td><td>6+ bytes</td><td>168 bytes</td><td>No</td><td>High</td><td>Active</td></tr>
+</tbody></table>
+<h4 id="sha256">sha256</h4>
+<p>Properties:</p>
+<table><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>
+<tr><td>Solution probability</td><td><code>sum((1/2)^i*(1-targetBE[i]))</code></td></tr>
+</tbody></table>
+<p>Challenge format:</p>
+<table><thead><tr><th>Range</th><th>Field Name</th><th>Data Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>0</td><td>config_length</td><td>varint</td><td>Length of configuration part; always 9</td></tr>
+<tr><td>1..4</td><td>target</td><td>uint32</td><td>Difficulty target, in the form of a compact size (like nBits in blocks).</td></tr>
+<tr><td>5</td><td>nonce_size</td><td>uint8</td><td>Size of nonce in bytes; must be 0 (no nonce), 4 (uint32) or 8 (uint64)</td></tr>
+<tr><td>6..9</td><td>nonce_offset</td><td>uint32</td><td>Location of nonce value in target</td></tr>
+<tr><td>10..</td><td>payload_length</td><td>varint</td><td>Length of the input data</td></tr>
+<tr><td>..</td><td>payload</td><td>byte array</td><td>Input data</td></tr>
+</tbody></table>
+<p>Solution format:</p>
+<table><thead><tr><th>Range</th><th>Field Name</th><th>Data Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>0..</td><td>nonce</td><td>uint32/64, or data</td><td>Nonce value that satisfies challenge; for zero-byte nonces, this is variable data that is appended to the challenge payload before hashing</td></tr>
+</tbody></table>
+<p>Note: SHA256 works in two &quot;modes&quot;.</p>
+<ol>
+<li>One is where the task is to insert a nonce into an existing data
+block so that the hash of the data block matches a given target;
+this is the conventional block proof of work behavior.</li>
+<li>The other is where the whole or parts of the data chunk are given as
+input (a &quot;big nonce&quot;). In this case, the internal nonce size is zero
+bytes, and the task is simply to check whether the hash of the data
+matches the target. If it does not, there is no way to find a
+solution except by getting different input from the generator (a
+successor algorithm). This mode is used when SHA256 is a predecessor
+to another algorithm.</li>
+</ol>
+<p>Additional notes:</p>
+<ul>
+<li>The initial nonce value (when present) for finding a suitable digest
+should be randomized, or a challenger may deliberately pick a
+challenge with &quot;poor&quot; outcomes to fool a node into spending more
+than predicted time solving.</li>
+</ul>
+<h4 id="cuckoo-cycle">cuckoo-cycle</h4>
+<p>Properties:</p>
+<table><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>
+<tr><td>Solution probability</td><td><code>~1.0</code> for sizeshift=28, proofsize-min:-max=12:228</td></tr>
+</tbody></table>
+<p>Challenge format:</p>
+<table><thead><tr><th>Range</th><th>Field Name</th><th>Data Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>0</td><td>config_length</td><td>varint</td><td>Length of configuration part; always 5</td></tr>
+<tr><td>1</td><td>sizeshift</td><td>uint8</td><td>Size shift; must be equal to 28, but may be variable in the future</td></tr>
+<tr><td>2..3</td><td>proofsize-min</td><td>uint16</td><td>Minimum number of edges in cycle; must be even and greater than or equal to 12 (recommended: 12)</td></tr>
+<tr><td>4..5</td><td>proofsize-max</td><td>uint16</td><td>Maximum number of edges in cycle; must be even, greater than or equal to proofsize-min, and smaller than or equal to 254 (recommended: 228)</td></tr>
+<tr><td>6</td><td>payload_length</td><td>varint</td><td>Length of the input data; must be 76, but may be variable in the future</td></tr>
+<tr><td>7..</td><td>payload</td><td>byte array</td><td>Input data</td></tr>
+</tbody></table>
+<p>Solution format:</p>
+<table><thead><tr><th>Range</th><th>Field Name</th><th>Data Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>0..3</td><td>nonce</td><td>uint32</td><td>Nonce which is appended to challenge payload to form solution graph</td></tr>
+<tr><td>4..171</td><td>edges</td><td>uint32 array</td><td>42 values which identify each of the 42 edges in the cycle</td></tr>
+</tbody></table>
+<p>Additional notes:</p>
+<ul>
+<li>The initial nonce value used for finding a graph with a suitable
+solution should be randomized, or a challenger may deliberately pick
+a challenge with &quot;poor&quot; outcomes to fool a node into spending more
+than predicted time solving.</li>
+<li>Further information on the recommended challenge parameters can be
+found here: <a href="http://bc-2.jp/cuckoo-profile.pdf">http://bc-2.jp/cuckoo-profile.pdf</a></li>
+</ul>
+<h3 id="purpose-identifiers">Purpose Identifiers</h3>
+<p>There is only one Purpose Identifier currently. In the future, more
+Purpose Identifiers could be added for at-DoS-risk operations, such as
+bloom filters. When a new identifier is introduced, it should be added
+with an increment of 1 to the last identifier in the list. When an
+identifier is deprecated, its status should be changed to <code>Deprecated</code>
+but it should retain its place in the list indefinitely.</p>
+<table><thead><tr><th>ID</th><th>Purpose Name</th><th>Description</th><th>Status</th></tr></thead><tbody>
+<tr><td>1</td><td>connect</td><td>Establish peer to peer connection</td><td>Active</td></tr>
+</tbody></table>
+<h3 id="challenges">Challenges</h3>
+<p>Challenges consist of one or several chained POW identifiers with
+accompanying parameters, as well as indicators for the purpose of the
+challenge, and a signature that lets the node verify the challenge
+authenticity.</p>
+<p>After creating a challenge, the node signs it, delivers it to the peer,
+then discards it. When a node provides a solution to a challenge, the
+node verifies the signature and adds the challenge hash to a list of
+solved challenges along with its expiration time. This list is pruned on
+each insertion, removing any expired challenges.</p>
+<p>If nodes needed to keep track of unsolved challenges, an attacker could
+hypothetically swarm a node, causing a DoS by having it generate so many
+challenges that it runs out of memory and crashes. By signing and
+discarding challenges, a node only has to retain challenges that were
+solved, and which have not yet expired, effectively DoS- protecting the
+node via the challenges themselves.</p>
+<h3 id="the-challenge-message-type">The <code>challenge</code> message type</h3>
+<p>A challenge consists of four parts: the POW specification, a purpose
+identifier, an expiration date, and a signature. The POW specification
+contains a list of tuples containing a POW identifier and corresponding
+POW parameters.</p>
+<ul>
+<li>Each POW identifier specifies a POW algorithm (see POW Identifiers)</li>
+<li>The POW parameters define the inputs and requirements of the POW
+algorithm</li>
+<li>The purpose identifier specifies the purpose of the challenge (see
+Purpose Identifiers)</li>
+<li>The expiration date is a UNIX timestamp indicating when the
+challenge expires</li>
+<li>The signed content should contain a signature of the hash
+<code>SHA256(SHA256(pow-count || pow-id || pow-params || ... || purpose-id || expiration))</code>,
+i.e. the hash of the entire challenge except for the signature
+length and data.</li>
+</ul>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Description</th></tr></thead><tbody>
+<tr><td>1 byte</td><td>pow-count</td><td>uint8</td><td>Number of POW algorithms in the range [1..255]</td></tr>
+<tr><td>4 bytes</td><td>pow-id</td><td>uint32</td><td>The POW algorithm to solve the problem with</td></tr>
+<tr><td>?</td><td>pow-params</td><td>?</td><td>The POW parameters and payload</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>pow-id and pow-params for algorithms 2 and beyond</td></tr>
+<tr><td>4 bytes</td><td>purpose-id</td><td>uint32</td><td>The purpose of the challenge</td></tr>
+<tr><td>8 bytes</td><td>expiration</td><td>int64</td><td>Expiration UNIX timestamp</td></tr>
+<tr><td>?</td><td>sign-len</td><td>varint</td><td>The length of the signature</td></tr>
+<tr><td>?</td><td>sign</td><td>byte array</td><td>The signature data</td></tr>
+</tbody></table>
+<p>For POW specifications with a pow-count &gt; 1, the output of the
+succeeding POW algorithm will be appended to the input of the
+predecessor for all POW algorithms except the last one. Normally
+mid-layer (all but the last) POW algorithms have a zero-length input.
+Example implementing sha256(cuckoo-cycle):</p>
+<table><thead><tr><th>Range</th><th>Field Name</th><th>Value</th><th>Comment</th></tr></thead><tbody>
+<tr><td>0</td><td>pow-count</td><td>2</td><td>Two POW algorithms</td></tr>
+<tr><td>1..4</td><td>pow-id</td><td>1</td><td>sha256</td></tr>
+<tr><td>5</td><td>pow-params (config_length)</td><td>9</td><td></td></tr>
+<tr><td>6..9</td><td>pow-params (target)</td><td>0x207fffff</td><td>Resulting hash must be &lt;= the compact hash 0x207fffff*</td></tr>
+<tr><td>10</td><td>pow-params (nonce_size)</td><td>0</td><td>No nonce</td></tr>
+<tr><td>11..14</td><td>pow-params (nonce_offset)</td><td>0</td><td>--</td></tr>
+<tr><td>15..18</td><td>pow-params (payload_length)</td><td>0</td><td>0 byte input (turns into 32 byte input from successor)</td></tr>
+<tr><td>19..22</td><td>pow-id</td><td>2</td><td>cuckoo-cycle</td></tr>
+<tr><td>23</td><td>pow-params (config_length)</td><td>8</td><td></td></tr>
+<tr><td>24</td><td>pow-params (sizeshift)</td><td>28</td><td></td></tr>
+<tr><td>25..26</td><td>pow-params (proofsize-min)</td><td>12</td><td></td></tr>
+<tr><td>27..28</td><td>pow-params (proofsize-max)</td><td>228</td><td></td></tr>
+<tr><td>29</td><td>pow-params (payload_length)</td><td>76</td><td>76 byte input</td></tr>
+<tr><td>30..105</td><td>pow-params</td><td>(random data)</td><td>A randomized challenge of 76 bytes</td></tr>
+<tr><td>106..109</td><td>purpose-id</td><td>1</td><td>Purpose is a peer-to-peer connection</td></tr>
+<tr><td>110..117</td><td>expiration</td><td>1491285696</td><td>Expiration is April 4 2017, 15:01:36 (JST)</td></tr>
+<tr><td>118</td><td>sign-len</td><td>71</td><td>71 byte signature</td></tr>
+<tr><td>119..189</td><td>sign</td><td>(signature)</td><td>Signature of above challenge</td></tr>
+</tbody></table>
+<p>(* Compact 0x207fffff =
+0x7fffff0000000000000000000000000000000000000000000000000000000000.)</p>
+<p>The above should be interpreted as SHA256(cuckoo-cycle(random data ||
+nonce)) &lt;
+0x7fffff0000000000000000000000000000000000000000000000000000000000.</p>
+<ul>
+<li>Run cuckoo-cycle on random data || nonce; increment nonce until
+solution is found, then
+<ul>
+<li>Run SHA256 on 32 byte digest from above; if less than
+0x7fffff0000000000000000000000000000000000000000000000000000000000,
+<ul>
+<li>Mark solved.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Otherwise loop back and increase nonce and continue finding
+solutions</li>
+</ul>
+<h3 id="the-solution-message-type">The <code>solution</code> message type</h3>
+<p>A solution consists of two parts: the entire challenge, and solution
+parameters:</p>
+<ul>
+<li>The challenge must match the given challenge up to and including the
+signature bytes</li>
+<li>The solution parameters must form a valid solution to each POW step
+in the challenge</li>
+</ul>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Description</th></tr></thead><tbody>
+<tr><td>1 byte</td><td>pow-count</td><td>uint8</td><td>Number of POW algorithms in the range [1..255]</td></tr>
+<tr><td>4 bytes</td><td>pow-id</td><td>uint32</td><td>The POW algorithm used to solve the problem</td></tr>
+<tr><td>?</td><td>pow-params</td><td>?</td><td>The input to the POW solver for the above algorithm</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>pow-id and pow-params for algorithms 2 and beyond</td></tr>
+<tr><td>4 bytes</td><td>purpose-id</td><td>uint32</td><td>The purpose of the challenge</td></tr>
+<tr><td>8 bytes</td><td>expiration</td><td>int64</td><td>Expiration UNIX timestamp</td></tr>
+<tr><td>?</td><td>sign-len</td><td>varint</td><td>The length of the signature</td></tr>
+<tr><td>?</td><td>sign</td><td>byte array</td><td>The signature data</td></tr>
+<tr><td>?</td><td>solution</td><td>?</td><td>The solution to the challenge</td></tr>
+</tbody></table>
+<p>Note that the solution contains the parameters for the last algorithm
+only. For each algorithm except the last one, the input is derived from
+the output of the successor. Example solution:</p>
+<table><thead><tr><th>Range</th><th>Name</th><th>Value</th><th>Description</th></tr></thead><tbody>
+<tr><td>0</td><td>length</td><td>4</td><td>The input to the innermost POW is 4 bytes in length</td></tr>
+<tr><td>1..4</td><td>nonce32</td><td>0x12345</td><td>The nonce used as input is 0x12345</td></tr>
+</tbody></table>
+<p>The above example will provide a single nonce for the inner POW. For the
+SHA256(SHA256(challenge data || nonce32)) case, the solution would
+claim that SHA256(SHA256(challenge data || 0x00012345)) solves the
+challenge.</p>
+<h2 id="signing-and-verifying-challenges">Signing and Verifying Challenges</h2>
+<p>Below is a suggestion for how to sign a challenge. The implementation
+generates a new, random key-pair at launch and uses that to sign all
+challenges until the node is shutdown.</p>
+<h3 id="signing-a-challenge">Signing a Challenge</h3>
+<ol>
+<li>(first time) Create a new random key-pair <code>key</code> and <code>pubkey</code> and
+keep these around until shutdown</li>
+<li>(second+ time) Fetch <code>key</code> created above</li>
+<li>Create a double-SHA256 <code>sighash</code> of the challenge in serialized form
+up until and including the expiration bytes</li>
+<li>Create a signature <code>sign</code> of <code>sighash</code> using <code>key</code></li>
+<li>Append <code>varint(len(sign))</code> and <code>sign</code> to challenge</li>
+</ol>
+<h3 id="verifying-a-challenge">Verifying a Challenge</h3>
+<ol>
+<li>Fetch <code>pubkey</code> and declare failure if not defined (that means we
+never issued a challenge)</li>
+<li>Create a double-SHA256 <code>sighash</code> of the challenge provided with the
+solution up until and including the expiration bytes</li>
+<li>Verify <code>sighash</code> is not known, and add it to known hashes along with
+its expiration date for pruning purposes</li>
+<li>Set <code>sign</code> to the signature included in the challenge</li>
+<li>Verify the signature <code>sign</code> using <code>pubkey</code> and <code>sighash</code></li>
+<li>Check that the solution solves the challenge</li>
+</ol>
+<p>Note that a list of known hashes should be kept and pruned of expired
+challenges on verification. Otherwise nodes may reuse the same solution
+repeatedly up until its expiration.</p>
+<h2 id="difficulty-and-cost">Difficulty and Cost</h2>
+<h3 id="estimating-challenge-cost">Estimating Challenge Cost</h3>
+<p>Nodes need to be able to make a judgement call on whether solving a
+given challenge is worth their efforts. If a challenge is expected to
+take so much time that it would expire before being solved (on average),
+it should be immediately discarded. Beyond this, a threshold should be
+established for nodes based on their &quot;value&quot; to the node, which is
+inversely proportional to the current number of connections as a
+function of uptime, with arbitrary modifiers (a whitelisted node or a
+node added via -addnode has a much higher threshold).</p>
+<p>It is hard to obtain an accurate value for <code>cycles_per_second</code>, and as
+such a fixed value of 1700000000=1.7e9 may be used.</p>
+<p>Given a threshold <code>t</code>, calculate the estimated work required to solve
+the challenge as follows:</p>
+<ol>
+<li>Define <code>p(alg)</code> as the probability that an attempt at finding a
+solution given the algorithm <code>alg</code> succeeds</li>
+<li>Define <code>w(alg)</code> as the work parameter of the algorithm <code>alg</code>.</li>
+<li>Let <code>Wc ← 0, Wm ← 1, Wi ← 1</code></li>
+<li>For each proof of work <code>pow</code> in the POW specification:
+<ol>
+<li>Let <code>p ← p(pow)</code>, <code>w ← w(pow)</code></li>
+<li>Update <code>Wc ← Wc + w_cycles</code>, <code>Wi ← Wi * 1/p</code>, <code>Wm ← Wm + w_ram</code></li>
+</ol>
+</li>
+<li>Let <code>eta ← (Wc * Wi) / cycles_per_second</code></li>
+<li>If <code>date() + eta &gt;= expiration</code>, discard challenge</li>
+<li>If <code>eta &gt; t</code>, discard challenge</li>
+</ol>
+<p>Example:
+<code>SHA256(cuckoo-cycle(...)) &lt; 0x7fffff0000000000000000000000000000000000000000000000000000000000</code></p>
+<ol>
+<li><code>p(cuckoo-cycle) = 1</code>, <code>p(sha256, 0x7fffff000...) ~= (1/2)^1 = 1/2</code></li>
+<li><code>w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)</code>,
+<code>w(sha256, 0x7fffff000...) = (11e3 cycles)</code></li>
+<li><code>Wc = 0, Wm = 1, Wi = 1</code>
+<ol>
+<li><code>p = p(cuckoo-cycle) = 1, w = w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)</code></li>
+<li><code>Wc = 0 + 1.5e11 = 1.5e11</code>, <code>Wi = 1 * 1 = 1</code>,
+<code>Wm = 1 + 5e7 = 5e7</code></li>
+<li><code>p = p(sha256) = 1/2, w = w(sha256) = (11e3 cycles)</code></li>
+<li><code>Wc = 1.5e11 + 11e3 ~= 1.5e11, Wi = 1 * 2 = 2, Wm = 5e7 + 0 = 5e7</code></li>
+</ol>
+</li>
+<li><code>eta = (1.5e11 * 2) / cycles_per_second</code> = <code>7.5e10 / 1.7e9</code> = 44.1
+seconds</code></li>
+</ol>
+<p>TODO: Determine how memory impacts threshold.</p>
+<p>To avoid other nodes dropping our challenges due to early expiration, we
+use a fairly generous expiration based on the pressure value</p>
+<pre style="background-color:#fafafa;">
+<code>expiration = date() + 600 * (1 + pressure)
+</code></pre>
+<p>which means the expiration is 10 minutes for the weakest challenge, and
+gradually rises to 20 minutes for the hardest one.</p>
+<h3 id="establishing-difficulty-parameters">Establishing Difficulty Parameters</h3>
+<p>The difficulty setting for the network should change based on connection
+slot availability. The amount of pressure on the network in the sense of
+connection slot availability is proportional to the number of
+established connections over the number of total available connections.
+This can be locally approximated by a node to the number of local
+connections compared to the local connection maximum.</p>
+<p>In other words, the network pressure can be approximated by any node as
+<code>connections / max</code> and the difficulty can be based on e.g.
+<code>(connections - free) / pow_slots</code>.</p>
+<p>The challenge difficulty parameters can be set based on this, where 0.0
+means &quot;low pressure&quot; and 1.0 means &quot;maximum pressure&quot;. The <code>GetPressure</code>
+method below gives 0.0 at 67 connections (for a 50 POW slot set up), and
+hits the 1.0 mark at <code>(nMaxConnections - nMaxOutbound - nMaxFeeler)</code>,
+incrementing by 0.02 for each new connection:</p>
+<pre style="background-color:#fafafa;">
+<code>int nMaxInbound = nMaxConnections - (nMaxOutbound + nMaxFeeler + nPOWConnectionSlots);
+return ((double)GetNodeCount(CONNECTIONS_ALL) - nMaxInbound) / nPOWConnectionSlots;
+</code></pre>
+<p>An example of difficulty for a SHA256(Cuckoo-Cycle) specification would
+be based on a desired probability of a random SHA256 digest matching a
+given target:</p>
+<pre style="background-color:#fafafa;">
+<code>prob_target = 1 / (1 + pressure^2 * 15)
+</code></pre>
+<p>This would result in probability targets according to the table below,
+for varying pressures (where the pressure is in the range [0..1]):</p>
+<table><thead><tr><th>pressure</th><th>prob_target</th><th>solution time sha256(cc)</th></tr></thead><tbody>
+<tr><td>0.0</td><td>1.00</td><td>00:45</td></tr>
+<tr><td>0.1</td><td>0.87</td><td>00:51</td></tr>
+<tr><td>0.2</td><td>0.63</td><td>01:11</td></tr>
+<tr><td>0.3</td><td>0.43</td><td>01:45</td></tr>
+<tr><td>0.4</td><td>0.29</td><td>02:32</td></tr>
+<tr><td>0.5</td><td>0.21</td><td>03:32</td></tr>
+<tr><td>0.6</td><td>0.16</td><td>04:46</td></tr>
+<tr><td>0.7</td><td>0.12</td><td>06:13</td></tr>
+<tr><td>0.8</td><td>0.09</td><td>07:54</td></tr>
+<tr><td>0.9</td><td>0.08</td><td>09:48</td></tr>
+<tr><td>1.0</td><td>0.06</td><td>11:55</td></tr>
+<tr><td></td><td></td><td></td></tr>
+</tbody></table>
+<h2 id="cuckoo-cycle-1">Cuckoo Cycle</h2>
+<p>Cuckoo Cycle[1] is a &quot;graph-theoretic proof-of-work system, based on
+finding small cycles or other structures in large random graphs.&quot;</p>
+<p>It is memory hard, which greatly increases the complexity and cost of
+producing dedicated (special purpose) hardware, an ideal property for an
+anti-DoS system.</p>
+<p>The implementation specifics of the algorithm are beyond the scope of
+this BIP, but the github repository[2] has several reference
+implementations in various languages.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>This proposal is backward compatible. Non-supporting peers will ignore
+the <code>challenge</code> message and be disconnected, as if they hit the peer
+connection limit as normal.</p>
+<h2 id="reference-implementation">Reference implementation</h2>
+<p><a href="https://github.com/kallewoof/bitcoin/pull/2">https://github.com/kallewoof/bitcoin/pull/2</a>
+(https://github.com/kallewoof/bitcoin/tree/pow-connection-slots)</p>
+<h2 id="references">References</h2>
+<ul>
+<li>[1] Cuckoo Cycle
+<a href="https://github.com/tromp/cuckoo/blob/master/doc/cuckoo.pdf?raw=true">https://github.com/tromp/cuckoo/blob/master/doc/cuckoo.pdf?raw=true</a></li>
+<li>[2] Cuckoo Cycle github <a href="https://github.com/tromp/cuckoo">https://github.com/tromp/cuckoo</a></li>
+</ul>
+<h2 id="test-vectors">Test vectors</h2>
+<h3 id="cuckoo-cycle-2">Cuckoo-Cycle</h3>
+<p>Cuckoo Cycle header (76 bytes):</p>
+<pre style="background-color:#fafafa;">
+<code>00..1f   68a639cb 3deab5b6 23054d60 e7856037 8afa0f31 4f08dec1 6cc4ec4f d9bef1ff
+20..3f   468af883 c6c9c3d5 4260087a 046d12a0 7cc3988f 9ff2957a 384de8ed db75b037
+40..4b   798d1073 214b7ea6 954f1b3a
+</code></pre>
+<p>Example solution nonce: 0 (<code>00000000</code>)</p>
+<p>Solution edges (16 number of 32-bit unsigned integers, read horizontally
+from top left):</p>
+<pre style="background-color:#fafafa;">
+<code>550b1100 0fc89a00 45034401 ddfce701 08da0e02 6ccc5703 06fe8404 1d3f8504
+559e3e05 d41a9905 17075206 97cfa006 59e50d07 7bd71f07 13fe2607 14493007
+</code></pre><h3 id="sha256-cuckoo-cycle">SHA256(Cuckoo-Cycle)</h3>
+<p>SHA256 target: <code>0x205fffff</code></p>
+<p>Cuckoo Cycle header (76 bytes, same as above):</p>
+<pre style="background-color:#fafafa;">
+<code>00..1f   68a639cb 3deab5b6 23054d60 e7856037 8afa0f31 4f08dec1 6cc4ec4f d9bef1ff
+20..3f   468af883 c6c9c3d5 4260087a 046d12a0 7cc3988f 9ff2957a 384de8ed db75b037
+40..4b   798d1073 214b7ea6 954f1b3a
+</code></pre>
+<p>Example solution nonce: 0 (<code>00000000</code>)</p>
+<p>SHA256 input (cuckoo-cycle nonce + solution):</p>
+<pre style="background-color:#fafafa;">
+<code>00000000
+550b1100 0fc89a00 45034401 ddfce701 08da0e02 6ccc5703 06fe8404 1d3f8504
+559e3e05 d41a9905 17075206 97cfa006 59e50d07 7bd71f07 13fe2607 14493007
+</code></pre>
+<p>SHA256 hash:
+<code>262c8558c7c589b19b3d513abf5fcb15162745473e603f0146889ceff750bcc3</code></p>
+<p>Must be less than:
+<code>5fffff0000000000000000000000000000000000000000000000000000000000</code></p>
+<h3 id="serialized-challenge-example">Serialized challenge example</h3>
+<pre style="background-color:#fafafa;">
+<code>020100000009ffff5f2000000000000002000000051c0c00e4004c68a639cb3deab5b623054d60e7
+8560378afa0f314f08dec16cc4ec4fd9bef1ff468af883c6c9c3d54260087a046d12a07cc3988f9f
+f2957a384de8eddb75b037798d1073214b7ea6954f1b3a01000000a49d0659000000004730450221
+0095fc5fafe2032097c4d12a8901401cda297aad614e16f23ec42d4b78955856c002206ab7ada4ac
+8f6fa9d5bd7cd06f9ba89587a28e14cea14e7f8f8d5ab851541791
+</code></pre><table><thead><tr><th>Hex</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>0x02</code></td><td>Two proofs of work</td></tr>
+<tr><td><code>0x01000000</code></td><td>Proof of work ID = 1 (SHA256)</td></tr>
+<tr><td><code>0x09</code></td><td>Config is 9 bytes</td></tr>
+<tr><td><code>0xffff5f20</code></td><td>SHA256: Compact target = 0x205fffff</td></tr>
+<tr><td><code>0x00</code></td><td>SHA256: Nonce size is 0 bytes</td></tr>
+<tr><td><code>0x00000000</code></td><td>SHA256: Nonce offset is 0</td></tr>
+<tr><td><code>0x00</code></td><td>Payload is 0 bytes</td></tr>
+<tr><td><code>0x02000000</code></td><td>Proof of work ID = 2 (cuckoo-cycle)</td></tr>
+<tr><td><code>0x05</code></td><td>Config is 5 bytes</td></tr>
+<tr><td><code>0x1c</code></td><td>Size shift is 28</td></tr>
+<tr><td><code>0x0c00</code></td><td>Proof size min is 12</td></tr>
+<tr><td><code>0xe400</code></td><td>Proof size max is 228</td></tr>
+<tr><td><code>0x4c</code></td><td>Payload is 76 bytes</td></tr>
+<tr><td><code>0x68a639cb3deab5b623054d60e7856037</code></td><td>Payload</td></tr>
+<tr><td><code>0x8afa0f314f08dec16cc4ec4fd9bef1ff</code></td><td></td></tr>
+<tr><td><code>0x468af883c6c9c3d54260087a046d12a0</code></td><td></td></tr>
+<tr><td><code>0x7cc3988f9ff2957a384de8eddb75b037</code></td><td></td></tr>
+<tr><td><code>0x798d1073214b7ea6954f1b3a</code></td><td></td></tr>
+<tr><td><code>0x01000000</code></td><td>Purpose ID = 1 (PURPOSE_CONNECT)</td></tr>
+<tr><td><code>0xa49d065900000000</code></td><td>UNIX timestamp 1493605796</td></tr>
+<tr><td><code>0x47</code></td><td>71 byte signature</td></tr>
+<tr><td><code>0x304502210095fc5fafe2032097c4d12a</code></td><td>Signature data</td></tr>
+<tr><td><code>0x8901401cda297aad614e16f23ec42d4b</code></td><td></td></tr>
+<tr><td><code>0x78955856c002206ab7ada4ac8f6fa9d5</code></td><td></td></tr>
+<tr><td><code>0xbd7cd06f9ba89587a28e14cea14e7f8f</code></td><td></td></tr>
+<tr><td><code>0x8d5ab851541791</code></td><td></td></tr>
+</tbody></table>
+<h3 id="serialized-solution-example">Serialized solution example</h3>
+<pre style="background-color:#fafafa;">
+<code>020100000009ffff5f2000000000000002000000051c0c00e4004c68a639cb3deab5b623054d60e7
+8560378afa0f314f08dec16cc4ec4fd9bef1ff468af883c6c9c3d54260087a046d12a07cc3988f9f
+f2957a384de8eddb75b037798d1073214b7ea6954f1b3a01000000a49d0659000000004730450221
+0095fc5fafe2032097c4d12a8901401cda297aad614e16f23ec42d4b78955856c002206ab7ada4ac
+8f6fa9d5bd7cd06f9ba89587a28e14cea14e7f8f8d5ab8515417914400000000550b11000fc89a00
+45034401ddfce70108da0e026ccc570306fe84041d3f8504559e3e05d41a99051707520697cfa006
+59e50d077bd71f0713fe260714493007
+</code></pre>
+<p>Note that the first 187 bytes are identical to the challenge above.</p>
+<table><thead><tr><th>Hex</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>0x0201..1791</code></td><td>Challenge</td></tr>
+<tr><td><code>0x44</code></td><td>Solution is 68 bytes long</td></tr>
+<tr><td><code>0x00000000</code></td><td>The cuckoo cycle nonce is 0</td></tr>
+<tr><td><code>0x550b11000fc89a0045034401ddfce701</code></td><td>Cycle edges 0..3</td></tr>
+<tr><td><code>0x08da0e026ccc570306fe84041d3f8504</code></td><td>Cycle edges 4..7</td></tr>
+<tr><td><code>0x559e3e05d41a99051707520697cfa006</code></td><td>Cycle edges 8..11</td></tr>
+<tr><td><code>0x59e50d077bd71f0713fe260714493007</code></td><td>Cycle edges 12..15</td></tr>
+</tbody></table>
+<h3 id="cuckoo-cycle-example-2">Cuckoo-Cycle Example 2</h3>
+<p>Cuckoo Cycle header (76 bytes):</p>
+<pre style="background-color:#fafafa;">
+<code>00..1f   3c1e3ee5 c799b7e9 92bcccbb 8985979d cb8dd229 b8d0db06 e677d00b b3a43c88
+20..3f   ef8596a7 7cbd1dda 23b0a0b8 4bdf6084 d7aa28dd bd5e91b5 11b3578c baf92707
+40..4b   c940b051 a0759b3f 80c5fb65
+</code></pre>
+<p>Example solution nonce: 4 (<code>04000000</code>)</p>
+<p>Solution edges (22 number of 32-bit unsigned integers, read horizontally
+from top left):</p>
+<pre style="background-color:#fafafa;">
+<code>5a013700 7074ce00 e3dbeb00 e88f7901 06d71d02 984d3d02 091b5002 378a8e02
+90a6d202 b3c67003 757cb703 44d9cf03 297f2004 8e76a604 67e44a05 7b077405
+634f8405 23e88c05 0d887606 109d3e07 c4bdcd07 3db2d407
+</code></pre><h3 id="sha256-cuckoo-cycle-1">SHA256(Cuckoo-Cycle)</h3>
+<p>SHA256 target: <code>0x2021642c</code></p>
+<p>Cuckoo Cycle header (76 bytes, same as above):</p>
+<pre style="background-color:#fafafa;">
+<code>00..1f   3c1e3ee5 c799b7e9 92bcccbb 8985979d cb8dd229 b8d0db06 e677d00b b3a43c88
+20..3f   ef8596a7 7cbd1dda 23b0a0b8 4bdf6084 d7aa28dd bd5e91b5 11b3578c baf92707
+40..4b   c940b051 a0759b3f 80c5fb65
+</code></pre>
+<p>Example solution nonce: 4 (<code>04000000</code>)</p>
+<p>SHA256 input (cuckoo-cycle nonce + solution):</p>
+<pre style="background-color:#fafafa;">
+<code>04000000
+5a013700 7074ce00 e3dbeb00 e88f7901 06d71d02 984d3d02 091b5002 378a8e02
+90a6d202 b3c67003 757cb703 44d9cf03 297f2004 8e76a604 67e44a05 7b077405
+634f8405 23e88c05 0d887606 109d3e07 c4bdcd07 3db2d407
+</code></pre>
+<p>SHA256 hash:
+<code>08210561257e26776135ec1cb92cfe17f46803613c0bdc02043e5545b18556ce</code></p>
+<p>Must be less than:
+<code>21642c0000000000000000000000000000000000000000000000000000000000</code></p>
+<h3 id="serialized-challenge-example-1">Serialized challenge example</h3>
+<pre style="background-color:#fafafa;">
+<code>0201000000092c64212000000000000002000000051c0c00e4004c3c1e3ee5c799b7e992bcccbb89
+85979dcb8dd229b8d0db06e677d00bb3a43c88ef8596a77cbd1dda23b0a0b84bdf6084d7aa28ddbd
+5e91b511b3578cbaf92707c940b051a0759b3f80c5fb650100000024aa0659000000004630440220
+0edfb5c4812a31d84cbbd4b24e631795435a0d16b57d37ef773735b8a87caa8a0220631d0b78b7f1
+d29c9e54a76f3457ff1a2ee19490ff027c528a896f4bf6aff577
+</code></pre><table><thead><tr><th>Hex</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>0x02</code></td><td>Two proofs of work</td></tr>
+<tr><td><code>0x01000000</code></td><td>Proof of work ID = 1 (SHA256)</td></tr>
+<tr><td><code>0x09</code></td><td>Config is 9 bytes</td></tr>
+<tr><td><code>0x2c642120</code></td><td>SHA256: Compact target = 0x2021642c</td></tr>
+<tr><td><code>0x00</code></td><td>SHA256: Nonce size is 0 bytes</td></tr>
+<tr><td><code>0x00000000</code></td><td>SHA256: Nonce offset is 0</td></tr>
+<tr><td><code>0x00</code></td><td>Payload is 0 bytes</td></tr>
+<tr><td><code>0x02000000</code></td><td>Proof of work ID = 2 (cuckoo-cycle)</td></tr>
+<tr><td><code>0x05</code></td><td>Config is 5 bytes</td></tr>
+<tr><td><code>0x1c</code></td><td>Size shift is 28</td></tr>
+<tr><td><code>0x0c00</code></td><td>Proof size min is 12</td></tr>
+<tr><td><code>0xe400</code></td><td>Proof size max is 228</td></tr>
+<tr><td><code>0x4c</code></td><td>Payload is 76 bytes</td></tr>
+<tr><td><code>0x3c1e3ee5c799b7e992bcccbb8985979d</code></td><td>Payload</td></tr>
+<tr><td><code>0xcb8dd229b8d0db06e677d00bb3a43c88</code></td><td></td></tr>
+<tr><td><code>0xef8596a77cbd1dda23b0a0b84bdf6084</code></td><td></td></tr>
+<tr><td><code>0xd7aa28ddbd5e91b511b3578cbaf92707</code></td><td></td></tr>
+<tr><td><code>0xc940b051a0759b3f80c5fb65</code></td><td></td></tr>
+<tr><td><code>0x01000000</code></td><td>Purpose ID = 1 (PURPOSE_CONNECT)</td></tr>
+<tr><td><code>0x24aa065900000000</code></td><td>UNIX timestamp 1493608996</td></tr>
+<tr><td><code>0x46</code></td><td>70 byte signature</td></tr>
+<tr><td><code>0x304402200edfb5c4812a31d84cbbd4b2</code></td><td>Signature data</td></tr>
+<tr><td><code>0x4e631795435a0d16b57d37ef773735b8</code></td><td></td></tr>
+<tr><td><code>0xa87caa8a0220631d0b78b7f1d29c9e54</code></td><td></td></tr>
+<tr><td><code>0xa76f3457ff1a2ee19490ff027c528a89</code></td><td></td></tr>
+<tr><td><code>0x6f4bf6aff577</code></td><td></td></tr>
+</tbody></table>
+<h3 id="serialized-solution-example-1">Serialized solution example</h3>
+<pre style="background-color:#fafafa;">
+<code>0201000000092c64212000000000000002000000051c0c00e4004c3c1e3ee5c799b7e992bcccbb89
+85979dcb8dd229b8d0db06e677d00bb3a43c88ef8596a77cbd1dda23b0a0b84bdf6084d7aa28ddbd
+5e91b511b3578cbaf92707c940b051a0759b3f80c5fb650100000024aa0659000000004630440220
+0edfb5c4812a31d84cbbd4b24e631795435a0d16b57d37ef773735b8a87caa8a0220631d0b78b7f1
+d29c9e54a76f3457ff1a2ee19490ff027c528a896f4bf6aff5775c040000005a0137007074ce00e3
+dbeb00e88f790106d71d02984d3d02091b5002378a8e0290a6d202b3c67003757cb70344d9cf0329
+7f20048e76a60467e44a057b077405634f840523e88c050d887606109d3e07c4bdcd073db2d407
+</code></pre>
+<p>Note that the first 186 bytes are identical to the challenge above.</p>
+<table><thead><tr><th>Hex</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>0x0201..f577</code></td><td>Challenge</td></tr>
+<tr><td><code>0x5c</code></td><td>Solution is 92 bytes long</td></tr>
+<tr><td><code>0x04000000</code></td><td>The cuckoo cycle nonce is 4</td></tr>
+<tr><td><code>0x5a0137007074ce00e3dbeb00e88f7901</code></td><td>Cycle edges 0..3</td></tr>
+<tr><td><code>0x06d71d02984d3d02091b5002378a8e02</code></td><td>Cycle edges 4..7</td></tr>
+<tr><td><code>0x90a6d202b3c67003757cb70344d9cf03</code></td><td>Cycle edges 8..11</td></tr>
+<tr><td><code>0x297f20048e76a60467e44a057b077405</code></td><td>Cycle edges 12..15</td></tr>
+<tr><td><code>0x634f840523e88c050d887606109d3e07</code></td><td>Cycle edges 16..19</td></tr>
+<tr><td><code>0xc4bdcd073db2d407</code></td><td>Cycle edges 20..21</td></tr>
+</tbody></table>
+<h2 id="copyright">Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

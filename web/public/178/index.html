@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 178</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 178: Version Extended WIF
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2018-04-04</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0178.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 178
+  Layer: Applications
+  Title: Version Extended WIF
+  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
+  Comments-Summary: Discouraged for implementation (one person)
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0178
+  Status: Draft
+  Type: Standards Track
+  Created: 2018-04-04
+  License: CC0-1.0
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>An extension to the Wallet Import Format (WIF) to specify what kind of
+bitcoin address the private key corresponds to.</p>
+<h2 id="motivation">Motivation</h2>
+<p>There are several types of bitcoin addresses which can all be associated
+with a given private key: P2PKH (legacy <code>1...</code> format), P2SH-P2WPKH
+(SegWit public key inside P2SH), P2WPKH (bech32), etc.</p>
+<p>While private keys have a 1-byte suffix indicating whether the
+corresponding public key is compressed (<code>0x01</code>) or not (through suffix
+absence), there is no way of knowing what kind of bitcoin address were
+associated with the private key. As a result, when importing a private
+key, the wallet has to assume all kinds, and keep track of each possible
+alternative.</p>
+<p>By extending the suffix, we can specify what kind of bitcoin address was
+associated with a given private key.</p>
+<h2 id="specification">Specification</h2>
+<p>Currently, private keys are stored as a uint256 (private key data)
+followed by an optional uint8 (compressed flag). The latter is extended
+to specify the address types:</p>
+<table><thead><tr><th>Value</th><th>Type</th><th>Compr</th><th>Clarification</th></tr></thead><tbody>
+<tr><td>No suffix</td><td>P2PKH_UNCOMPRESSED</td><td>No</td><td>Uncompressed legacy public key. Unknown public key format</td></tr>
+<tr><td><code>0x01</code></td><td>P2PKH_COMPRESSED</td><td>Yes</td><td>Compressed legacy public key. Unknown public key format</td></tr>
+<tr><td><code>0x10</code></td><td>P2PKH</td><td>Yes</td><td>Compressed legacy public key. Legacy public key format (<code>1...</code>)</td></tr>
+<tr><td><code>0x11</code></td><td>P2WPKH</td><td>Yes</td><td>Bech32 format (native Segwit)</td></tr>
+<tr><td><code>0x12</code></td><td>P2WPKH_P2SH</td><td>Yes</td><td>Segwit nested in BIP16 P2SH (<code>3...</code>)</td></tr>
+</tbody></table>
+<p>When a wallet imports a private key, it will have two outcomes:</p>
+<ul>
+<li>the key is using one of the legacy types, in which case all types
+must be accounted for</li>
+<li>the key is using one of the extended types, in which case the wallet
+need only track the specific corresponding address</li>
+</ul>
+<p>Note: the difference between `0x01` and `0x10` is that the former
+can correspond to any of the types above, whereas the latter *only*
+corresponds to a P2PKH (legacy non-segwit).</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>This proposal is not backwards compatible, in that software that does
+not recognize the new types will not understand the compressed flag. It
+would be trivial to change this, by keeping the 'uncompressed' state as
+it is (no suffix) and changing 'compressed' to be 'anything not 0', as
+opposed to 'the value 1'.</p>
+<p>The proposal <em>is</em> backwards compatible in that new wallet software will
+always understand the old WIF format, however. It will, as it does
+today, assume that any kind of bitcoin address is possible, and will
+have to track all of them, as it has to today.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>This BIP is based on the initial proposal by Thomas Voegtlin (thomasv at
+electrum dot org) on the Bitcoin Dev mailing list[1] and the Electrum
+3.0 implementation[2]</p>
+<h2 id="reference-implementation">Reference implementation</h2>
+<p>There is a partial implementation which adds, but does not use, the
+types described in this BIP here:
+<a href="https://github.com/bitcoin/bitcoin/pull/12869">https://github.com/bitcoin/bitcoin/pull/12869</a></p>
+<h2 id="references">References</h2>
+<references/>
+<h2 id="copyright">Copyright</h2>
+<p>This document is licensed under the Creative Commons CC0 1.0 Universal
+license.</p>
+<p>[1] <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html</a></p>
+<p>[2] <a href="https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108">https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108</a></p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

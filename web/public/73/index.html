@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 73</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 73: Use Accept header for response type negotiation with Payment Request URLs
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2013-08-27</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0073.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 73
+  Layer: Applications
+  Title: Use &quot;Accept&quot; header for response type negotiation with Payment Request URLs
+  Author: Stephen Pair &lt;stephen@bitpay.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0073
+  Status: Final
+  Type: Standards Track
+  Created: 2013-08-27
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes an enhancement to the payment protocol (<a href="https://bips.dev/73/bip-0070.mediawiki" title="wikilink">BIP
+70</a>) that addresses the need for short
+URLs when scanning from QR codes. It generalizes the specification for
+the behavior of a payment request URL in a way that allows the client
+and server to negotiate the content of the response using the HTTP
+Accept: header field. Specifically, the client can indicate to the
+server whether it prefers to receive a bitcoin URI or a payment request.</p>
+<p>Implementation of this BIP does not require full payment request (<a href="https://bips.dev/73/bip-0070.mediawiki" title="wikilink">BIP
+70</a>) support.</p>
+<h2 id="motivation">Motivation</h2>
+<p>The payment protocol augments the bitcoin: uri scheme with an additional
+&quot;payment&quot; parameter that specifies a URL where a payment request can be
+downloaded. This creates long URIs that, when rendered as a QR code,
+have a high information density. Dense QR codes can be difficult to scan
+resulting in a more frustrating user experience. The goal is to create a
+standard that would allow QR scanning wallets to use less dense QR
+codes. It also makes general purpose QR code scanners more usable with
+bitcoin accepting websites.</p>
+<h2 id="specification">Specification</h2>
+<p>QR scanning wallets will consider a non bitcoin URI scanned from a QR
+code to be an end point where either a bitcoin URI or a payment request
+can be obtained.</p>
+<p>A wallet client uses the Accept: HTTP header to specify whether it can
+accept a payment request, a URI, or both. A media type of text/uri-list
+specifies that the client accepts a bitcoin URI. A media type of
+application/bitcoin-paymentrequest specifies that the client can process
+a payment request. In the absence of an Accept: header, the server is
+expected to respond with text/html suitable for rendering in a browser.
+An HTML response will ensure that QR codes scanned by non Bitcoin wallet
+QR scanners are useful (they could render an HTML page with a payment
+link that when clicked would open a wallet on the device).</p>
+<p>It is not required that the client and server support the full semantics
+of an HTTP Accept header. If application/bitcoin-paymentrequest is
+specified in the header, the server should send a payment request
+regardless of anything else specified in the Accept header. If
+text/uri-list is specified (but not application/bitcoin-paymentrequest),
+a valid Bitcoin URI should be returned. If neither is specified, the
+server can return an HTML page. When a uri-list is returned only the
+first item in the list is used (and expected to be a bitcoin URI), any
+additional URIs should be ignored.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>Only QR scanning wallets that implement this BIP will be able to process
+QR codes containing payment request URLs. There are two possible
+workarounds for QR scanning wallets that do not implement this BIP: 1)
+the server gives the user an option to change the QR code to a bitcoin:
+URI or 2) the user scans the code with a generic QR code scanner.</p>
+<p>In the second scenario, if the server responds with a webpage containing
+a link to a bitcoin URI, the user can complete the payment by clicking
+that link provided the user has a wallet installed on their device and
+it supports bitcoin URIs. If the wallet/device does not have support for
+bitcoin URIs, the user can fall back on address copy/paste.</p>
+<p>This BIP should be fully compatible with BIP 70 assuming it is required
+that wallets implementing BIP 70 make use of the Accept: HTTP header
+when retrieving a payment request.</p>
+<h2 id="examples">Examples</h2>
+<p>The first image below is of a bitcoin URI with an amount and payment
+request specified (note, this is a fairly minimal URI as it does not
+contain a label and the request URL is of moderate size). The second
+image is a QR code with only the payment request url specified.</p>
+<p><img src=bip-0073/a.png></img><img src=bip-0073/b.png></img></p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

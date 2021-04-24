@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 144</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 144: Segregated Witness (Peer Services)
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2016-01-08</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0144.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 144
+  Layer: Peer Services
+  Title: Segregated Witness (Peer Services)
+  Author: Eric Lombrozo &lt;elombrozo@gmail.com&gt;
+          Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0144
+  Status: Final
+  Type: Standards Track
+  Created: 2016-01-08
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP defines new messages and serialization formats for propagation
+of transactions and blocks committing to segregated witness structures.</p>
+<h2 id="motivation">Motivation</h2>
+<p>In addition to defining witness structures and requiring commitments in
+future blocks
+(<a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a></p>
+<ul>
+<li>Consensus segwit BIP), new mechanisms must be defined to allow peers
+to advertise support for segregated witness and to relay the witness
+structures and request them from other peers without breaking
+compatibility with older nodes.</li>
+</ul>
+<h2 id="specification">Specification</h2>
+<h3 id="serialization">Serialization</h3>
+<p>A new serialization format for tx messages is added to the peer-to-peer
+protocol.</p>
+<p>The serialization has the following structure:</p>
+<table><thead><tr><th>Field Size</th><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>4</td><td>version</td><td>int32_t</td><td>Transaction data format version</td></tr>
+<tr><td>1</td><td>marker</td><td>char</td><td>Must be zero</td></tr>
+<tr><td>1</td><td>flag</td><td>char</td><td>Must be nonzero</td></tr>
+<tr><td>1+</td><td>txin_count</td><td>var_int</td><td>Number of transaction inputs</td></tr>
+<tr><td>41+</td><td>txins</td><td>txin[]</td><td>A list of one or more transaction inputs</td></tr>
+<tr><td>1+</td><td>txout_count</td><td>var_int</td><td>Number of transaction outputs</td></tr>
+<tr><td>9+</td><td>txouts</td><td>txouts[]</td><td>A list of one or more transaction outputs</td></tr>
+<tr><td>1+</td><td>script_witnesses</td><td>script_witnesses[]</td><td>The witness structure as a serialized byte array</td></tr>
+<tr><td>4</td><td>lock_time</td><td>uint32_t</td><td>The block number or timestamp until which the transaction is locked</td></tr>
+</tbody></table>
+<p>Parsers supporting this BIP will be able to distinguish between the old
+serialization format (without the witness) and this one. The marker byte
+is set to zero so that this structure will never parse as a valid
+transaction in a parser that does not support this BIP. If parsing were
+to succeed, such a transaction would contain no inputs and a single
+output.</p>
+<p>If the witness is empty, the old serialization format must be used.</p>
+<p>Currently, the only witness objects type supported are script witnesses
+which consist of a stack of byte arrays. It is encoded as a var_int
+item count followed by each item encoded as a var_int length followed
+by a string of bytes. Each txin has its own script witness. The number
+of script witnesses is not explicitly encoded as it is implied by
+txin_count. Empty script witnesses are encoded as a zero byte. The
+order of the script witnesses follows the same order as the associated
+txins.</p>
+<ul>
+<li><strong>Rationale for not having an independent message type with its own
+serialization</strong>: this would require separate &quot;tx&quot; and &quot;block&quot;
+messages, and all RPC calls operating on raw transactions would need
+to be duplicated, or need inefficient or nondeterministic guesswork
+to know which type is to be used.</li>
+</ul>
+<!-- -->
+<ul>
+<li><strong>Rationale for not using just a single 0x00 byte as marker</strong>: that
+would lead to empty transactions (no inputs, no outputs, which are
+used in some tests) to be interpreted as new serialized data.</li>
+</ul>
+<!-- -->
+<ul>
+<li><strong>Rationale for the 0x01 flag byte in between</strong>: this will allow us
+to easily add more extra non-committed data to transactions (like
+txouts being spent, ...). It can be interpreted as a bitvector.</li>
+</ul>
+<h3 id="handshake">Handshake</h3>
+<p>A node will signal that it can provide witnesses using the following
+service bit</p>
+<p><code>   NODE_WITNESS = (1 &lt;&lt; 3)</code><br />
+<code>   </code></p>
+<h3 id="hashes">Hashes</h3>
+<p>Transaction hashes used in the transaction merkle tree and txin
+outpoints are always computed using the old non-witness serialization.</p>
+<p>Support for a new hash including the witness data is added that is
+computed from the new witness serialization. (Note that transactions
+with an empty witness always use the old serialization, and therefore,
+they have witness hash equal to normal hash.)</p>
+<p><img src=bip-0144/witnesstx.png></img></p>
+<h3 id="relay">Relay</h3>
+<p>New inv types MSG_WITNESS_TX (0x40000001, or (1&lt;&lt;30)+MSG_TX)
+and MSG_WITNESS_BLOCK (0x40000002, or (1&lt;&lt;30)+MSG_BLOCK) are
+added, only for use in getdata. Inventory messages themselves still use
+just MSG_TX and MSG_BLOCK, similar to MSG_FILTERED_BLOCK. A further
+inv type MSG_FILTERED_WITNESS_BLOCK (0x40000003, or
+(1&lt;&lt;30)+MSG_FILTERED_BLOCK) is reserved for future use.</p>
+<ul>
+<li><strong>Rationale for not advertizing witnessness in invs</strong>: we don't
+always use invs anymore (with 'sendheaders' BIP 130), plus it's not
+useful: implicitly, every transaction and block have a witness, old
+ones just have empty ones.</li>
+</ul>
+<p>MSG_WITNESS_TX getdata requests should use the non-witness serialized
+hash. The peer shall respond with a tx message, and if the witness
+structure is nonempty, the witness serialization shall be used.</p>
+<p>MSG_WITNESS_BLOCK requests will return a block message with
+transactions that have a witness using witness serialization.</p>
+<h2 id="credits">Credits</h2>
+<p>Special thanks to Gregory Maxwell for originating many of the ideas in
+this BIP and Luke-Jr for figuring out how to deploy this as a soft fork.</p>
+<h2 id="reference-implementation">Reference Implementation</h2>
+<p><a href="https://github.com/bitcoin/bitcoin/pull/8149">https://github.com/bitcoin/bitcoin/pull/8149</a></p>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

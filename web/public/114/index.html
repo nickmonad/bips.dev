@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 114</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 114: Merkelized Abstract Syntax Tree
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2016-04-02</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0114.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 114
+  Layer: Consensus (soft fork)
+  Title: Merkelized Abstract Syntax Tree
+  Author: Johnson Lau &lt;jl2012@xbt.hk&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0114
+  Status: Rejected
+  Type: Standards Track
+  Created: 2016-04-02
+  License: PD
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP defines a new witness program type that uses a Merkle tree to
+encode mutually exclusive branches in a script. This enables complicated
+redemption conditions that are currently not possible, improves privacy
+by hiding unexecuted scripts, and allows inclusion of non-consensus
+enforced data with very low or no additional cost.</p>
+<h2 id="motivation">Motivation</h2>
+<h3 id="evolution-of-bitcoin-script-system">Evolution of Bitcoin script system</h3>
+<p>Bitcoin uses a script system to specify the conditions for redemption of
+transaction outputs. In its original design, the conditions for
+redemption are directly recorded in the scriptPubKey by the sender of
+the funds. This model has several drawbacks, particularly for
+complicated scripts:</p>
+<ol>
+<li>It could be difficult for the receiver to specify the conditions;</li>
+<li>Large scripts take up more UTXO space;</li>
+<li>The sender will pay for the additional block space;</li>
+<li>To prevent DoS attack, scripts are limited to 10,000 bytes and 201
+op codes;</li>
+<li>Any unexecuted branches and non-consensus enforced data in the
+script are visible to the public, consuming block space while
+damaging privacy.</li>
+</ol>
+<p>The <a href="https://bips.dev/114/bip-0016.mediawiki" title="wikilink">BIP16</a> (Pay-to-script-hash, &quot;P2SH&quot;)
+fixes the first 3 problems by using a fixed-length 20-byte script hash
+in the scriptPubKey, and moving the responsibility for supplying the
+script to the redeemer. However, due to the data push size limit in
+script, a P2SH script may not be bigger than 520 bytes. Also, P2SH still
+requires the redeemer to publish all unexecuted branches of the script.</p>
+<p>The <a href="https://bips.dev/114/bip-0141.mediawiki" title="wikilink">BIP141</a> defines 2 new types of
+scripts that support segregated witness. The pay-to-witness-script-hash
+(P2WSH) is similar to P2SH is many ways. By supplying the script in
+witness, P2WSH restores the original 10,000 byte script limit. However,
+it still requires publishing of unexecuted branches.</p>
+<h3 id="merkelized-abstract-syntax-tree">Merkelized Abstract Syntax Tree</h3>
+<p>The idea of Merkelized Abstract Syntax Tree (MAST) is to use a Merkle
+tree to encode branches in a script. When spending, users may provide
+only the branches they are executing, and hashes that connect the
+branches to the fixed size Merkel root. This reduces the size of
+redemption stack from O(n) to O(log n) (n as the number of branches).
+This enables complicated redemption conditions that is currently not
+possible due to the script size and opcode limit, improves privacy by
+hiding unexecuted branches, and allows inclusion of non-consensus
+enforced data with very low or no additional cost.</p>
+<h2 id="specification">Specification</h2>
+<p>In <a href="https://bips.dev/114/bip-0141.mediawiki" title="wikilink">BIP141</a>, witness programs with a
+version byte of 1 or larger are considered to be anyone-can-spend
+scripts. The following new validation rules are applied if the witness
+program version byte is 1 and the program size is 32 bytes.[1] The
+witness program is the <code>MAST Root</code>.</p>
+<p>To redeem an output of this kind, the witness must consist of the
+following items:</p>
+<p><code> Script_stack_1</code><br />
+<code> Script_stack_2</code><br />
+<code> .</code><br />
+<code> .</code><br />
+<code> Script_stack_X (X ≥ 0)</code><br />
+<code> Subscript_1</code><br />
+<code> Subscript_2</code><br />
+<code> .</code><br />
+<code> .</code><br />
+<code> Subscript_Y (1 ≤ Y ≤ 255)</code><br />
+<code> Position</code><br />
+<code> Path</code><br />
+<code> Metadata (Y|MAST Version)</code></p>
+<p><code>Metadata</code> is the last witness item. It is a vector of 1 to 5 bytes. The
+first byte is an unsigned integer between 1 to 255 denoting the number
+of <code>Subscript</code> (defined hereinafter). The following 0 to 4 byte(s) is an
+unsigned little-endian integer denoting the <code>MAST version</code>.
+<code>MAST Version</code> must be minimally encoded (the most significant byte must
+not be 0).</p>
+<p><code>Path</code> is the second last witness item. It is a serialized Merkle path
+of the <code>Script Hash</code> (defined hereinafter). Size of <code>Path</code> must be a
+multiple of 32 bytes, and not more than 1024 bytes. Each 32 byte word is
+a double-SHA256 merkle node in the merkle branch connecting to the
+<code>Script Root</code> (defined hereinafter). <code>Depth</code> of the tree (0 to 32) is
+the size of <code>Path</code> divided by 32.</p>
+<p><code>Position</code> is the third last witness item. It indicates the location of
+the <code>Script Hash</code> in the Merkle tree, with zero indicating the leftmost
+position. It is an unsigned little-endian integer with not more than 4
+bytes. It must be minimally encoded: the value must not be larger than
+the maximum number of items allowed by the <code>Depth</code> of the tree, and the
+most significant byte must not be 0. For example, if <code>Depth</code> is 4, the
+valid range of <code>Position</code> is 0 to 15 (2<sup>4</sup>-1).</p>
+<p>Depends on the first byte of <code>Metadata</code>, there should be 1 to 255
+<code>Subscript</code> witness item(s) before <code>Position</code>.</p>
+<p><code>Script Hash</code> is defined as:</p>
+<p><code> Script Hash = H(Y|H(Subscript_1)|H(Subscript_2)|...|H(Subscript_Y))</code><br />
+<code> H() = SHA256(SHA256())</code></p>
+<p>where <code>Y</code> is a 1-byte value denoting number of <code>Subscript</code>, followed by
+the hash of each <code>Subscript</code></p>
+<p><code>Script Root</code> is the Merkle root calculated by the
+<code>ComputeMerkleRootFromBranch</code> function, using <code>Script Hash</code>, <code>Path</code> and
+<code>Position</code>.</p>
+<p><code>MAST Root</code> is <code>H(MAST Version|Script Root)</code>. The pre-image has a fixed
+size of 36 bytes: 4 bytes for <code>MAST Version</code> (unsigned little-endian
+integer) and 32 bytes for <code>Script Root</code>.</p>
+<p>The script evaluation fails if <code>MAST Root</code> does not match the witness
+program.</p>
+<p>If the <code>MAST Root</code> matches the witness program and <code>MAST Version</code> is
+greater than 0, the script returns a success without further evaluation.
+<code>SigOpsCost</code> is counted as 0. This is reserved for future script
+upgrades.</p>
+<p>If the <code>MAST Version</code> is 0, the <code>Subscript</code>(s) are serialized to form
+the final <code>MAST Script</code>, beginning with </code>Subscript_1</code>. The
+unused witness item(s) before the </code>Subscript_1</code> are used as
+<code>Input Stack</code> to feed to the <code>MASTScript</code>. (Similar to P2WSH in BIP141)</p>
+<p>The script fails with one of the following conditions:</p>
+<ul>
+<li><code>MAST Script</code> is malformed (i.e. not enough data provided for the
+last push operation). Individual <code>Subscript</code> might be malformed, as
+long as they are serialized into a valid <code>MAST Script</code></li>
+<li>Size of <code>MAST Script</code> is larger than 10,000 bytes</li>
+<li>Size of any one of the <code>Input Stack</code> item is larger than 520 bytes</li>
+<li>Number of non-push operations (<code>nOpCount</code>) is more than 201.
+<code>nOpCount</code> is the sum of the number of non-push operations in
+<code>MAST Script</code> (counted in the same way as P2WSH <code>witnessScript</code>),
+number of <code>Subscript</code> (Y), and <code>Depth</code> of the Merkle tree.</li>
+</ul>
+<p>The <code>MAST Script</code> is then evaluated with the <code>Input Stack</code> (with some
+new or redefined opcodes described in BIPXXX). The evaluation must not
+fail, and result in an exactly empty stack.</p>
+<p>Counting of <code>SigOpsCost</code> is based on the <code>MAST Script</code>, described in
+BIPYYY.</p>
+<h2 id="rationale">Rationale</h2>
+<h3 id="mast-structure">MAST Structure</h3>
+<p>This proposal is a restricted case of more general MAST. In a general
+MAST design, users may freely assign one or more script branches for
+execution. In this proposal, only one branch is allowed for execution,
+and users are required to transform a complicated condition into several
+mutually exclusive branches. For example, if the desired redeem
+condition is:</p>
+<p><code> (A or B) and (C or D or E) and (F or G)</code></p>
+<p>In a general MAST design, the 7 branches (A to G) will form a 3-level
+Merkle tree, plus an &quot;overall condition&quot; describing the relationship of
+different branches. In redemption, the &quot;overall condition&quot;, executed
+branches (e.g. B, D, F), and Merkle path data will be provided for
+validation.</p>
+<p>In the current proposal, the user has to transform the redeem condition
+into 12 mutually exclusive branches and form a 4-level Merkle tree, and
+present only one branch in redemption:</p>
+<p><code> A and C and F</code><br />
+<code> B and C and F</code><br />
+<code> A and D and F</code><br />
+<code> .</code><br />
+<code> .</code><br />
+<code> B and E and G</code></p>
+<p>One way to implement the general MAST design is using a combination of
+<code>OP_EVAL</code>, <code>OP_CAT</code>, and <code>OP_HASH256</code>. However, that will suffer from
+the problems of <code>OP_EVAL</code>, including risks of indefinite program loop
+and inability to do static program analysis. A complicated
+implementation is required to fix these problems and is difficult to
+review.</p>
+<p>The advantages of the current proposal are:</p>
+<ul>
+<li><code>Subscript</code> are located at a fixed position in the witness stack.
+This allows static program analysis, such as static <code>SigOpsCost</code>
+counting and early termination of scripts with disabled opcodes.</li>
+<li>If different parties in a contract do not want to expose their
+scripts to each other, they may provide only <code>H(Subscript)</code> and keep
+the <code>Subscript</code> private until redemption.</li>
+<li>If they are willing to share the actual scripts, they may combine
+them into one <code>Subscript</code> for each branch, saving some <code>nOpCount</code>
+and a few bytes of witness space.</li>
+</ul>
+<p>The are some disadvantages, but only when the redemption condition is
+very complicated:</p>
+<ul>
+<li>It may require more branches than a general MAST design (as shown in
+the previous example) and take more witness space in redemption</li>
+<li>Creation and storage of the MAST structure may take more time and
+space. However, such additional costs affect only the related
+parties in the contract but not any other Bitcoin users.</li>
+</ul>
+<h3 id="mast-version">MAST Version</h3>
+<p>This proposal allows users to indicate the version of scripting language
+in the witness, which is cheaper than doing that in <code>scriptPubKey</code> or
+<code>scriptSig</code>. Undefined versions remain anyone-can-spend and are reserved
+for future expansions. A new version could be used for relaxing
+constraints (e.g. the 10,000 bytes size limit of <code>MAST Script</code>), adding
+or redefining opcodes, or even introducing a completely novel scripting
+system.</p>
+<h3 id="nopcount-limit">nOpCount limit</h3>
+<p>In version 0 MAST, the extra hashing operations in calculating the
+<code>MAST Root</code> are counted towards the 201 <code>nOpCount</code> limit to prevent
+abusive use. This limitation is not applied to undefined <code>MAST Version</code>
+for flexibility, but it is constrained by the 255 <code>Subscript</code> and 32
+<code>Depth</code> limits.</p>
+<h3 id="script-evaluation">Script evaluation</h3>
+<p>This proposal requires script evaluation resulting in an empty stack,
+instead of a single <code>TRUE</code> value as in P2WSH. This allows each party in
+a contract to provide its own <code>Subscript</code>, and demonstrate the required
+<code>Input Stack</code> to clean up its own <code>Subscript</code>. In this case, order of
+the <code>Subscript</code> is not important since the overall objective is to clean
+up the stack after evaluation.</p>
+<h2 id="examples">Examples</h2>
+<h3 id="calculation-of-mast-root">Calculation of MAST Root</h3>
+<p><img src=bip-0114/mastexample.png></img></p>
+<p><code> Subscript:</code><br />
+<code>   SA = 1 EQUALVERIFY (0x5188)</code><br />
+<code>   SB = 2 EQUALVERIFY (0x5288)</code><br />
+<code>   SC = 3 EQUALVERIFY (0x5388)</code><br />
+<code>   SD = 4 EQUALVERIFY (0x5488)</code><br />
+<code>   SE = 5 EQUALVERIFY (0x5588)</code><br />
+<code>   SF = 6 EQUALVERIFY (0x5688)</code><br />
+<code>   SG = 7 EQUALVERIFY (0x5788)</code><br />
+<code>   SH = 8 EQUALVERIFY (0x5888)</code><br />
+<code>   M = RETURN &quot;Hello&quot; (0x6a0548656c6c6f)</code><br />
+<code> Hash:</code><br />
+<code>   HA = H(0x01|H(SA)) = H(0x015acb54166e0db370cd1b05a29120373568dacea2abc3748459ec3da2106e4b4e) = 0xd385d7268ad7e1ec51660f833d54787d2d8d79b6b1809d9c1d06c9e71f7be204</code><br />
+<code>   HB = H(0x02|H(SB)|H(SC)) = 0x7cbfa08e44ea9f4f996873be95d9bffd97d4b91a5af32cc5f64efb8461727cdd</code><br />
+<code>   HF = H(0x03|H(SD)|H(SE)|H(SF)) = 0x4611414355945a7c2fcc62a53a0004821b87e68f93048ffba7a55a3cb1e9783b</code><br />
+<code>   HG = H(0x01|H(SG)) = 0xaa5fbdf58264650eadec33691ba1e7606d0a62f570eea348a465c55bc86ffc10</code><br />
+<code>   HC = H(0x01|H(M)) = 0x70426d480d5b28d93c5be54803681f99abf4e8df4eab4dc87aaa543f0d138159</code><br />
+<code>   HD = H(0x0x|H(SH)) = 0x8482f6c9c3fe90dd4d533b4efedb6a241b95ec9267d1bd5aaaee36d2ce2dd6da</code><br />
+<code>   HE = H(HA|HB) = 0x049b9f2f94f0a9bdea624e39cd7d6b27a365c6a0545bf0e9d88d86eff4894210</code><br />
+<code>   HH = H(HC|HD) = 0xc709fdc632f370f3367da45378d1cf430c5fda6805e731ad5761c213cf2d276e</code><br />
+<code>   HI = H(HE|HF) = 0xead5e1a1e7e41b77b794f091df9be3f0e9f41d47304eb43dece90688f69843b7</code><br />
+<code>   HJ = H(HG|HH) = 0xd00fc690c4700d0f983f9700740066531ea826b21a4cbc62f80317261723d477</code><br />
+<code>   Script Root = H(HI|HJ) = 0x26d5235d20daf1440a15a248f5b5b4f201392128072c55afa64a26ccc6f56bd9</code><br />
+<code>   MAST Root = H(MAST Version|Script Root) = H(0x0000000026d5235d20daf1440a15a248f5b5b4f201392128072c55afa64a26ccc6f56bd9) = 0xb4b706e0c02eab9aba58419eb7ea2a286fb1c01d7406105fc12742bf8a3f97c9</code></p>
+<p>The scriptPubKey with native witness program is:</p>
+<p><code> 1 &lt;0xb4b706e0c02eab9aba58419eb7ea2a286fb1c01d7406105fc12742bf8a3f97c9&gt;</code><br />
+<code> (0x5120b4b706e0c02eab9aba58419eb7ea2a286fb1c01d7406105fc12742bf8a3f97c9)</code></p>
+<p>To redeem with the <code>SD|SE|SF</code> branch, the witness is</p>
+<p><code> Script_stack_1: 0x06</code><br />
+<code> Script_stack_2: 0x05</code><br />
+<code> Script_stack_3: 0x04</code><br />
+<code> Subscript_1:    0x5488</code><br />
+<code> Subscript_2:    0x5588</code><br />
+<code> Subscript_3:    0x5688</code><br />
+<code> Position:       0x01 (HF is the second hash in its level)</code><br />
+<code> Path (HE|HJ):   0x049b9f2f94f0a9bdea624e39cd7d6b27a365c6a0545bf0e9d88d86eff4894210d00fc690c4700d0f983f9700740066531ea826b21a4cbc62f80317261723d477</code><br />
+<code> Metadata:       0x03 (3 Subscript)</code></p>
+<h3 id="imbalance-mast">Imbalance MAST</h3>
+<p>When constructing a MAST, if the user believes that some of the branches
+are more likely to be executed, they may put them closer to the
+<code>Script Root</code>. It will save some witness space when the preferred
+branches are actually executed.</p>
+<h3 id="escrow-with-timeout">Escrow with Timeout</h3>
+<p>The following is the &quot;Escrow with Timeout&quot; example in
+<a href="https://bips.dev/114/bip-0112.mediawiki" title="wikilink">BIP112</a>:</p>
+<p><code>   IF</code><br />
+<code>       2 &lt;Alice's pubkey&gt; &lt;Bob's pubkey&gt; &lt;Escrow's pubkey&gt; 3 CHECKMULTISIG</code><br />
+<code>   ELSE</code><br />
+<code>       &quot;30d&quot; CHECKSEQUENCEVERIFY DROP</code><br />
+<code>       &lt;Alice's pubkey&gt; CHECKSIG</code><br />
+<code>   ENDIF</code></p>
+<p>Using compressed public key, the size of this script is 150 bytes.</p>
+<p>With MAST, this script could be broken down into 2 mutually exclusive
+branches:[2]</p>
+<p><code>   2 &lt;Alice's pubkey&gt; &lt;Bob's pubkey&gt; &lt;Escrow's pubkey&gt; 3 CHECKMULTISIGVERIFY (105 bytes)</code><br />
+<code>   &quot;30d&quot; CHECKSEQUENCEVERIFY &lt;Alice's pubkey&gt; CHECKSIGVERIFY (42 bytes)</code></p>
+<p>Since only one branch will be published, it is more difficult for a
+blockchain analyst to determine the details of the escrow.</p>
+<h3 id="hashed-time-lock-contract">Hashed Time-Lock Contract</h3>
+<p>The following is the &quot;Hashed TIme-Lock Contract&quot; example in
+<a href="https://bips.dev/114/bip-0112.mediawiki" title="wikilink">BIP112</a>:</p>
+<p><code>   HASH160 DUP </code><R-HASH><code> EQUAL</code><br />
+<code>   IF</code><br />
+<code>       &quot;24h&quot; CHECKSEQUENCEVERIFY</code><br />
+<code>       2DROP</code><br />
+<code>       &lt;Alice's pubkey&gt;</code><br />
+<code>   ELSE</code><br />
+<code>       </code><Commit-Revocation-Hash><code> EQUAL</code><br />
+<code>       NOTIF</code><br />
+<code>           &quot;Timestamp&quot; CHECKLOCKTIMEVERIFY DROP</code><br />
+<code>       ENDIF</code><br />
+<code>       &lt;Bob's pubkey&gt;</code><br />
+<code>   ENDIF</code><br />
+<code>   CHECKSIG</code></p>
+<p>To create a MAST Root, it is flattened to 3 mutually exclusive branches:</p>
+<p><code>   HASH160 </code><R-HASH><code> EQUALVERIFY &quot;24h&quot; CHECKSEQUENCEVERIFY &lt;Alice's pubkey&gt; CHECKSIGVERIFY</code><br />
+<code>   HASH160 </code><Commit-Revocation-Hash><code> EQUALVERIFY &lt;Bob's pubkey&gt; CHECKSIGVERIFY</code><br />
+<code>   &quot;Timestamp&quot; CHECKLOCKTIMEVERIFY &lt;Bob's pubkey&gt; CHECKSIGVERIFY</code></p>
+<p>which significantly improves readability and reduces the witness size
+when it is redeemed.</p>
+<h3 id="large-multi-signature-constructs">Large multi-signature constructs</h3>
+<p>The current CHECKMULTISIG supports up to 20 public keys. Although it is
+possible to extend it beyond 20 keys by using multiple CHECKSIGs and
+IF/ELSE conditions, the construction could be very complicated and soon
+use up the 10,000 bytes and 201 <code>nOpCount</code> limit.</p>
+<p>With MAST, large and complex multi-signature constructs could be
+flattened to many simple CHECKMULTISIGVERIFY conditions. For example, a
+3-of-2000 multi-signature scheme could be expressed as 1,331,334,000
+3-of-3 CHECKMULTISIGVERIFY, which forms a 31-level MAST. The
+scriptPubKey still maintains a fixed size of 34 bytes, and the
+redemption witness will be very compact, with less than 1,500 bytes.</p>
+<h3 id="commitment-of-non-consensus-enforced-data">Commitment of non-consensus enforced data</h3>
+<p>Currently, committing non-consensus enforced data in the scriptPubKey
+requires the use of OP_RETURN which occupies additional block space.
+With MAST, users may commit such data as a branch. Depends on the number
+of executable branches, inclusion of such a commitment may incur no
+extra witness space, or 32 bytes at most.</p>
+<p>An useful case would be specifying &quot;message-signing keys&quot;, which are not
+valid for spending, but allow users to sign any message without touching
+the cold storage &quot;funding key&quot;.</p>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<p>As a soft fork, older software will continue to operate without
+modification. Non-upgraded nodes, however, will consider MAST programs
+as anyone-can-spend scripts. Wallets should always be wary of
+anyone-can-spend scripts and treat them with suspicion.</p>
+<h2 id="deployment">Deployment</h2>
+<p>This BIP depends on <a href="https://bips.dev/114/bip-0141.mediawiki" title="wikilink">BIP141</a> and will be
+deployed by version-bits <a href="https://bips.dev/114/bip-0009.mediawiki" title="wikilink">BIP9</a> after
+BIP141 is enforced. Exact details TBD.</p>
+<h2 id="credits">Credits</h2>
+<p>The idea of MAST originates from Russell O’Connor, Pieter Wuille, and
+<a href="https://bitcointalk.org/index.php?topic=255145.msg2757327#msg2757327">Peter
+Todd</a>.</p>
+<h2 id="reference-implementation">Reference Implementation</h2>
+<p><a href="https://github.com/jl2012/bitcoin/tree/bip114v2">https://github.com/jl2012/bitcoin/tree/bip114v2</a> (WIP)</p>
+<pre style="background-color:#fafafa;">
+<code><span style="font-style:italic;color:#abb0b6;">//New rules apply if version byte is 1 and witness program size is 32 bytes
+</span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(witversion </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">&amp;&amp;</span><span style="color:#61676c;"> program</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">32 </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#61676c;">(flags </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;"> SCRIPT_VERIFY_MAST)) {
+    CHashWriter sRoot(SER_GETHASH</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">    CHashWriter sScriptHash(SER_GETHASH</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+    </span><span style="font-style:italic;color:#55b4d4;">uint32_t</span><span style="color:#61676c;"> nMASTVersion </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676ccc;">;
+    </span><span style="font-style:italic;color:#55b4d4;">size_t</span><span style="color:#61676c;"> stacksize </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(stacksize </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">4</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">    std</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">vector&lt;</span><span style="color:#fa6e32;">unsigned char</span><span style="color:#61676c;">&gt; metadata </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">back</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">; </span><span style="font-style:italic;color:#abb0b6;">// The last witness stack item is metadata
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(metadata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">||</span><span style="color:#61676c;"> metadata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&gt; </span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+
+    </span><span style="font-style:italic;color:#abb0b6;">// The first byte of metadata is the number of subscripts (1 to 255)
+    </span><span style="font-style:italic;color:#55b4d4;">uint32_t</span><span style="color:#61676c;"> nSubscript </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">static_cast</span><span style="color:#61676c;">&lt;</span><span style="font-style:italic;color:#55b4d4;">uint32_t</span><span style="color:#61676c;">&gt;(metadata[</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">])</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(nSubscript </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0 </span><span style="color:#ed9366;">||</span><span style="color:#61676c;"> stacksize </span><span style="color:#ed9366;">&lt;</span><span style="color:#61676c;"> nSubscript </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">int</span><span style="color:#61676c;"> nOpCount </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> nSubscript</span><span style="color:#61676ccc;">; </span><span style="font-style:italic;color:#abb0b6;">// Each condition consumes a nOpCount
+    </span><span style="color:#61676c;">sScriptHash </span><span style="color:#ed9366;">&lt;&lt;</span><span style="color:#61676c;"> metadata[</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">]</span><span style="color:#61676ccc;">;
+
+    </span><span style="font-style:italic;color:#abb0b6;">// The rest of metadata is MAST version in minimally-coded unsigned little endian int
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(metadata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">back</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(metadata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&gt; </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) {
+        </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">size_t</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">1</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">!=</span><span style="color:#61676c;"> metadata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">; </span><span style="color:#ed9366;">++</span><span style="color:#61676c;">i)
+            nMASTVersion </span><span style="color:#ed9366;">|= </span><span style="color:#fa6e32;">static_cast</span><span style="color:#61676c;">&lt;</span><span style="font-style:italic;color:#55b4d4;">uint32_t</span><span style="color:#61676c;">&gt;(metadata[i]) </span><span style="color:#ed9366;">&lt;&lt; </span><span style="color:#ff8f40;">8 </span><span style="color:#ed9366;">* </span><span style="color:#61676c;">(i </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+
+    </span><span style="font-style:italic;color:#abb0b6;">// Unknown MAST version is non-standard
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(nMASTVersion </span><span style="color:#ed9366;">&gt; </span><span style="color:#ff8f40;">0 </span><span style="color:#ed9366;">&amp;&amp;</span><span style="color:#61676c;"> flags </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;"> SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_WITNESS_PROGRAM)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_DISCOURAGE_UPGRADABLE_WITNESS_PROGRAM)</span><span style="color:#61676ccc;">;
+
+    </span><span style="color:#61676c;">sRoot </span><span style="color:#ed9366;">&lt;&lt;</span><span style="color:#61676c;"> nMASTVersion</span><span style="color:#61676ccc;">;
+
+    </span><span style="font-style:italic;color:#abb0b6;">// The second last witness stack item is the pathdata
+    // Size of pathdata must be divisible by 32 (0 is allowed)
+    // Depth of the Merkle tree is implied by the size of pathdata, and must not be greater than 32
+</span><span style="color:#61676c;">    std</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">vector&lt;</span><span style="color:#fa6e32;">unsigned char</span><span style="color:#61676c;">&gt; pathdata </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">at</span><span style="color:#61676c;">(stacksize </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(pathdata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">0x1F</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">unsigned int</span><span style="color:#61676c;"> depth </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> pathdata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&gt;&gt; </span><span style="color:#ff8f40;">5</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(depth </span><span style="color:#ed9366;">&gt; </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+
+    </span><span style="font-style:italic;color:#abb0b6;">// Each level of Merkle tree consumes a nOpCount
+    // Evaluation of version 0 MAST terminates early if there are too many nOpCount
+    // Not enforced in unknown MAST version for upgrade flexibility
+</span><span style="color:#61676c;">    nOpCount </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> nOpCount </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> depth</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(nMASTVersion </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0 </span><span style="color:#ed9366;">&amp;&amp;</span><span style="color:#61676c;"> nOpCount </span><span style="color:#ed9366;">&gt;</span><span style="color:#61676c;"> MAX_OPS_PER_SCRIPT)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_OP_COUNT)</span><span style="color:#61676ccc;">;
+
+    </span><span style="font-style:italic;color:#abb0b6;">// path is a vector of 32-byte hashes
+</span><span style="color:#61676c;">    std</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">vector &lt;uint256&gt; path</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">    path</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">resize</span><span style="color:#61676c;">(depth)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">unsigned int</span><span style="color:#61676c;"> j </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> j </span><span style="color:#ed9366;">&lt;</span><span style="color:#61676c;"> depth</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> j</span><span style="color:#ed9366;">++</span><span style="color:#61676c;">)
+        </span><span style="color:#f07171;">memcpy</span><span style="color:#61676c;">(path[j]</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">begin</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">pathdata[</span><span style="color:#ff8f40;">32 </span><span style="color:#ed9366;">*</span><span style="color:#61676c;"> j]</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+
+    </span><span style="font-style:italic;color:#abb0b6;">// The third last witness stack item is the positiondata
+    // Position is in minimally-coded unsigned little endian int
+</span><span style="color:#61676c;">    std</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">vector&lt;</span><span style="color:#fa6e32;">unsigned char</span><span style="color:#61676c;">&gt; positiondata </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">at</span><span style="color:#61676c;">(stacksize </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(positiondata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&gt; </span><span style="color:#ff8f40;">4</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+    </span><span style="font-style:italic;color:#55b4d4;">uint32_t</span><span style="color:#61676c;"> position </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(positiondata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&gt; </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) {
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(positiondata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">back</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+            </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">size_t</span><span style="color:#61676c;"> k </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> k </span><span style="color:#ed9366;">!=</span><span style="color:#61676c;"> positiondata</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">; </span><span style="color:#ed9366;">++</span><span style="color:#61676c;">k)
+            position </span><span style="color:#ed9366;">|= </span><span style="color:#fa6e32;">static_cast</span><span style="color:#61676c;">&lt;</span><span style="font-style:italic;color:#55b4d4;">uint32_t</span><span style="color:#61676c;">&gt;(positiondata[k]) </span><span style="color:#ed9366;">&lt;&lt; </span><span style="color:#ff8f40;">8 </span><span style="color:#ed9366;">*</span><span style="color:#61676c;"> k</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+
+    </span><span style="font-style:italic;color:#abb0b6;">// Position value must not exceed the number of leaves at the depth
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(depth </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">) {
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(position </span><span style="color:#ed9366;">&gt;= </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">1</span><span style="color:#fa6e32;">U </span><span style="color:#ed9366;">&lt;&lt;</span><span style="color:#61676c;"> depth))
+            </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_INVALID_MAST_STACK)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+
+    </span><span style="font-style:italic;color:#abb0b6;">// Sub-scripts are located before positiondata
+    </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">size_t</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> stacksize </span><span style="color:#ed9366;">-</span><span style="color:#61676c;"> nSubscript </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">3</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">&lt;=</span><span style="color:#61676c;"> stacksize </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">4</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> i</span><span style="color:#ed9366;">++</span><span style="color:#61676c;">) {
+        CScript </span><span style="color:#f29718;">subscript</span><span style="color:#61676c;">(witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">at</span><span style="color:#61676c;">(i)</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">begin</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">at</span><span style="color:#61676c;">(i)</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">end</span><span style="color:#61676c;">())</span><span style="color:#61676ccc;">;
+
+        </span><span style="font-style:italic;color:#abb0b6;">// Evaluation of version 0 MAST terminates early if script is oversize
+        // Not enforced in unknown MAST version for upgrade flexibility
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(nMASTVersion </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0 </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#61676c;">(scriptPubKey</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> subscript</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">()) </span><span style="color:#ed9366;">&gt;</span><span style="color:#61676c;"> MAX_SCRIPT_SIZE)
+            </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_SCRIPT_SIZE)</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">        uint256 hashSubScript</span><span style="color:#61676ccc;">;
+        </span><span style="color:#f29718;">CHash256</span><span style="color:#61676c;">()</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">Write</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">subscript[</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">]</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> subscript</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">())</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">Finalize</span><span style="color:#61676c;">(hashSubScript</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">begin</span><span style="color:#61676c;">())</span><span style="color:#61676ccc;">;
+        </span><span style="color:#61676c;">sScriptHash </span><span style="color:#ed9366;">&lt;&lt;</span><span style="color:#61676c;"> hashSubScript</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">        scriptPubKey </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> scriptPubKey </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> subscript</span><span style="color:#61676ccc;">; </span><span style="font-style:italic;color:#abb0b6;">// Final scriptPubKey is a serialization of subscripts
+    </span><span style="color:#61676c;">}
+    uint256 hashScript </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">sScriptHash</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">GetHash</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+
+    </span><span style="font-style:italic;color:#abb0b6;">// Calculate MAST Root and compare against witness program
+</span><span style="color:#61676c;">    uint256 rootScript </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">ComputeMerkleRootFromBranch</span><span style="color:#61676c;">(hashScript</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> path</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> position)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">sRoot </span><span style="color:#ed9366;">&lt;&lt;</span><span style="color:#61676c;"> rootScript</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">    uint256 rootMAST </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">sRoot</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">GetHash</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#f07171;">memcmp</span><span style="color:#61676c;">(rootMAST</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">begin</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">program[</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">]</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">))
+        </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_WITNESS_PROGRAM_MISMATCH)</span><span style="color:#61676ccc;">;
+
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(nMASTVersion </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) {
+        stack </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">std</span><span style="color:#ed9366;">::</span><span style="color:#f29718;">vector</span><span style="color:#61676c;">&lt;std</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">vector&lt;</span><span style="color:#fa6e32;">unsigned char</span><span style="color:#61676c;">&gt; &gt;(witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">begin</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> witness</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">end</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">3 </span><span style="color:#ed9366;">-</span><span style="color:#61676c;"> nSubscript)</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">unsigned int</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">&lt;</span><span style="color:#61676c;"> stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> i</span><span style="color:#ed9366;">++</span><span style="color:#61676c;">) {
+            </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">at</span><span style="color:#61676c;">(i)</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">&gt;</span><span style="color:#61676c;"> MAX_SCRIPT_ELEMENT_SIZE)
+                </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_PUSH_SIZE)</span><span style="color:#61676ccc;">;
+        </span><span style="color:#61676c;">}
+
+        </span><span style="font-style:italic;color:#abb0b6;">// Script evaluation must not fail, and return an empty stack
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">!</span><span style="color:#f29718;">EvalScript</span><span style="color:#61676c;">(stack</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> scriptPubKey</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> flags</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> checker</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SIGVERSION_WITNESS_V1</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> nOpCount</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> serror))
+            </span><span style="color:#fa6e32;">return </span><span style="color:#ff8f40;">false</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(stack</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">size</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+            </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_error</span><span style="color:#61676c;">(serror</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> SCRIPT_ERR_EVAL_FALSE)</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+
+    </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">set_success</span><span style="color:#61676c;">(serror)</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">}
+</span></code></pre>
+<p>Copying from <code>src/consensus/merkle.cpp</code>:</p>
+<pre style="background-color:#fafafa;">
+<code><span style="color:#61676c;">uint256 </span><span style="color:#f29718;">ComputeMerkleRootFromBranch</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">const</span><span style="color:#61676c;"> uint256</span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">leaf</span><span style="color:#61676ccc;">, </span><span style="color:#fa6e32;">const</span><span style="color:#61676c;"> std</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">vector&lt;uint256&gt;</span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">vMerkleBranch</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">uint32_t </span><span style="color:#ff8f40;">nIndex</span><span style="color:#61676c;">) {
+    uint256 hash </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> leaf</span><span style="color:#61676ccc;">;
+    </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">(std</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">vector&lt;uint256&gt;</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">const_iterator it </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> vMerkleBranch</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">begin</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> it </span><span style="color:#ed9366;">!=</span><span style="color:#61676c;"> vMerkleBranch</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">end</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">; </span><span style="color:#ed9366;">++</span><span style="color:#61676c;">it) {
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(nIndex </span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) {
+            hash </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Hash</span><span style="color:#61676c;">(</span><span style="color:#f29718;">BEGIN</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">*</span><span style="color:#61676c;">it)</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">END</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">*</span><span style="color:#61676c;">it)</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">BEGIN</span><span style="color:#61676c;">(hash)</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">END</span><span style="color:#61676c;">(hash))</span><span style="color:#61676ccc;">;
+        </span><span style="color:#61676c;">} </span><span style="color:#fa6e32;">else </span><span style="color:#61676c;">{
+            hash </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Hash</span><span style="color:#61676c;">(</span><span style="color:#f29718;">BEGIN</span><span style="color:#61676c;">(hash)</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">END</span><span style="color:#61676c;">(hash)</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">BEGIN</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">*</span><span style="color:#61676c;">it)</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">END</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">*</span><span style="color:#61676c;">it))</span><span style="color:#61676ccc;">;
+        </span><span style="color:#61676c;">}
+        nIndex </span><span style="color:#ed9366;">&gt;&gt;= </span><span style="color:#ff8f40;">1</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+    </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> hash</span><span style="color:#61676ccc;">;
+</span><span style="color:#61676c;">}
+</span></code></pre><h2 id="references">References</h2>
+<ul>
+<li><a href="https://bips.dev/114/bip-0141.mediawiki" title="wikilink">BIP141 Segregated Witness (Consensus
+layer)</a></li>
+</ul>
+<h2 id="copyright">Copyright</h2>
+<p>This document is placed in the public domain.</p>
+<p>[1] If the version byte is 1, but the witness program is not 32 bytes,
+no further interpretation of the witness program or witness stack
+happens. This is reserved for future extensions.</p>
+<p>[2] In BIPXXX, it is proposed that CHECKLOCKTIMEVERIFY and
+CHECKSEQUENCEVERIFY will pop the top stack item</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 22</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 22: getblocktemplate - Fundamentals
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2012-02-28</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0022.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 22
+  Layer: API/RPC
+  Title: getblocktemplate - Fundamentals
+  Author: Luke Dashjr &lt;luke+bip22@dashjr.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0022
+  Status: Final
+  Type: Standards Track
+  Created: 2012-02-28
+  License: BSD-2-Clause
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes a new JSON-RPC method for &quot;smart&quot; Bitcoin miners and
+proxies. Instead of sending a simple block header for hashing, the
+entire block structure is sent, and left to the miner to (optionally)
+customize and assemble.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+<h2 id="specification">Specification</h2>
+<h3 id="block-template-request">Block Template Request</h3>
+<p>A JSON-RPC method is defined, called &quot;getblocktemplate&quot;. It accepts
+exactly one argument, which MUST be an Object of request parameters. If
+the request parameters include a &quot;mode&quot; key, that is used to explicitly
+select between the default &quot;template&quot; request or a
+<a href="https://bips.dev/22/bip-0023.mediawiki#Block_Proposal" title="wikilink">&quot;proposal&quot;</a>.</p>
+<p>Block template creation can be influenced by various parameters:</p>
+<table><thead><tr><th>template request</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>capabilities</td></tr>
+<tr><td>mode</td></tr>
+</tbody></table>
+<p>getblocktemplate MUST return a JSON Object containing the following
+keys:</p>
+<table><thead><tr><th>template</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>bits</td></tr>
+<tr><td>curtime</td></tr>
+<tr><td>height</td></tr>
+<tr><td>previousblockhash</td></tr>
+<tr><td>sigoplimit</td></tr>
+<tr><td>sizelimit</td></tr>
+<tr><td>transactions</td></tr>
+<tr><td>version</td></tr>
+<tr><td>coinbaseaux</td></tr>
+<tr><td>coinbasetxn</td></tr>
+<tr><td>coinbasevalue</td></tr>
+<tr><td>workid</td></tr>
+</tbody></table>
+<h4 id="transactions-object-format">Transactions Object Format</h4>
+<p>The Objects listed in the response's &quot;transactions&quot; key contains these
+keys:</p>
+<table><thead><tr><th>template &quot;transactions&quot; element</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>data</td></tr>
+<tr><td>depends</td></tr>
+<tr><td>fee</td></tr>
+<tr><td>hash</td></tr>
+<tr><td>required</td></tr>
+<tr><td>sigops</td></tr>
+</tbody></table>
+<p>Only the &quot;data&quot; key is required, but servers should provide the others
+if they are known.</p>
+<h3 id="block-submission">Block Submission</h3>
+<p>A JSON-RPC method is defined, called &quot;submitblock&quot;, to submit potential
+blocks (or shares). It accepts two arguments: the first is always a
+String of the hex-encoded block data to submit; the second is an Object
+of parameters, and is optional if parameters are not needed.</p>
+<table><thead><tr><th>submitblock parameters (2nd argument)</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>workid</td></tr>
+</tbody></table>
+<p>This method MUST return either null (when a share is accepted), a String
+describing briefly the reason the share was rejected, or an Object of
+these with a key for each merged-mining chain the share was submitted
+to.</p>
+<h3 id="optional-long-polling">Optional: Long Polling</h3>
+<table><thead><tr><th>template request</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>capabilities</td></tr>
+<tr><td>longpollid</td></tr>
+</tbody></table>
+<table><thead><tr><th>template</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>longpollid</td></tr>
+<tr><td>longpolluri</td></tr>
+<tr><td>submitold</td></tr>
+</tbody></table>
+<p>If the server supports long polling, it MUST include a &quot;longpollid&quot; key
+in block templates, and it MUST be unique for each event: any given
+&quot;longpollid&quot; should check for only one condition and not be reused. For
+example, a server which has a long poll wakeup only for new blocks might
+use the previous block hash. However, clients should not assume the
+&quot;longpollid&quot; has any specific meaning. It MAY supply the &quot;longpolluri&quot;
+key with a relative or absolute URI, which MAY specify a completely
+different resource than the original connection, including port number.
+If &quot;longpolluri&quot; is provided by the server, clients MUST only attempt to
+use that URI for longpoll requests.</p>
+<p>Clients MAY start a longpoll request with a standard JSON-RPC request
+(in the case of HTTP transport, POST with data) and same authorization,
+setting the &quot;longpollid&quot; parameter in the request to the value provided
+by the server.</p>
+<p>This request SHOULD NOT be processed nor answered by the server until it
+wishes to replace the current block data as identified by the
+&quot;longpollid&quot;. Clients SHOULD make this request with a very long request
+timeout and MUST accept servers sending a partial response in advance
+(such as HTTP headers with &quot;chunked&quot; Transfer-Encoding), and only
+delaying the completion of the final JSON response until processing.</p>
+<p>Upon receiving a completed response:</p>
+<ul>
+<li>Only if &quot;submitold&quot; is provided and false, the client MAY discard
+the results of past operations and MUST begin working on the new
+work immediately.</li>
+<li>The client SHOULD begin working on the new work received as soon as
+possible, if not immediately.</li>
+<li>The client SHOULD make a new request to the same long polling URI.</li>
+</ul>
+<p>If a client receives an incomplete or invalid response, it SHOULD retry
+the request with an exponential backoff. Clients MAY implement this
+backoff with limitations (such as maximum backoff time) or any algorithm
+as deemed suitable. It is, however, forbidden to simply retry
+immediately with no delay after more than one failure. In the case of a
+&quot;Forbidden&quot; response (for example, HTTP 403), a client SHOULD NOT
+attempt to retry without user intervention.</p>
+<h3 id="optional-template-tweaking">Optional: Template Tweaking</h3>
+<table><thead><tr><th>template request</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>sigoplimit</td></tr>
+<tr><td>sizelimit</td></tr>
+<tr><td>maxversion</td></tr>
+</tbody></table>
+<p>For &quot;sigoplimit&quot; and &quot;sizelimit&quot;, negative values and zero are offset
+from the server-determined block maximum. If a Boolean is provided and
+true, the default limit is used; if false, the server is instructed not
+to use any limits on returned template. Servers SHOULD respect these
+desired maximums, but are NOT required to: clients SHOULD check that the
+returned template satisfies their requirements appropriately.</p>
+<h3 id="appendix-example-rejection-reasons">Appendix: Example Rejection Reasons</h3>
+<p>Possible reasons a share may be rejected include, but are not limited
+to:</p>
+<table><thead><tr><th>share rejection reasons</th></tr></thead><tbody>
+<tr><td>Reason</td></tr>
+<tr><td>bad-cb-flag</td></tr>
+<tr><td>bad-cb-length</td></tr>
+<tr><td>bad-cb-prefix</td></tr>
+<tr><td>bad-diffbits</td></tr>
+<tr><td>bad-prevblk</td></tr>
+<tr><td>bad-txnmrklroot</td></tr>
+<tr><td>bad-txns</td></tr>
+<tr><td>bad-version</td></tr>
+<tr><td>duplicate</td></tr>
+<tr><td>high-hash</td></tr>
+<tr><td>rejected</td></tr>
+<tr><td>stale-prevblk</td></tr>
+<tr><td>stale-work</td></tr>
+<tr><td>time-invalid</td></tr>
+<tr><td>time-too-new</td></tr>
+<tr><td>time-too-old</td></tr>
+<tr><td>unknown-user</td></tr>
+<tr><td>unknown-work</td></tr>
+</tbody></table>
+<h2 id="motivation">Motivation</h2>
+<p>bitcoind's JSON-RPC server can no longer support the load of generating
+the work required to productively mine Bitcoin, and external software
+specializing in work generation has become necessary. At the same time,
+new independent node implementations are maturing to the point where
+they will also be able to support miners.</p>
+<p>A common standard for communicating block construction details is
+necessary to ensure compatibility between the full nodes and work
+generation software.</p>
+<h2 id="rationale">Rationale</h2>
+<p>Why not just deal with transactions as hashes (txids)?</p>
+<ul>
+<li>Servers might not have access to the transaction database, or miners
+may wish to include transactions not broadcast to the network as a
+whole.</li>
+<li>Miners may opt not to do full transaction verification, and may not
+have access to the transaction database on their end.</li>
+</ul>
+<p>What is the purpose of &quot;workid&quot;?</p>
+<ul>
+<li>If servers allow all mutations, it may be hard to identify which job
+it is based on. While it may be possible to verify the submission by
+its content, it is much easier to compare it to the job issued. It
+is very easy for the miner to keep track of this. Therefore, using a
+&quot;workid&quot; is a very cheap solution to enable more mutations.</li>
+</ul>
+<p>Why should &quot;sigops&quot; be provided for transactions?</p>
+<ul>
+<li>Due to the <a href="https://bips.dev/22/bip-0016.mediawiki" title="wikilink">BIP 0016</a> changes
+regarding rules on block sigops, it is impossible to count sigops
+from the transactions themselves (the sigops in the scriptCheck must
+also be included in the count).</li>
+</ul>
+<h2 id="reference-implementation">Reference Implementation</h2>
+<ul>
+<li><a href="https://gitorious.org/bitcoin/eloipool">Eloipool (server)</a></li>
+<li><a href="http://gitorious.org/bitcoin/libblkmaker">libblkmaker (client)</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/pull/936/files">bitcoind (minimal
+server)</a></li>
+</ul>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="https://bips.dev/22/bip-0023.mediawiki" title="wikilink">BIP 23: getblocktemplate - Pooled
+Mining</a></li>
+</ul>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 44</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 44: Multi-Account Hierarchy for Deterministic Wallets
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-04-24</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0044.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 44
+  Layer: Applications
+  Title: Multi-Account Hierarchy for Deterministic Wallets
+  Author: Marek Palatinus &lt;slush@satoshilabs.com&gt;
+          Pavol Rusnak &lt;stick@satoshilabs.com&gt;
+  Comments-Summary: Mixed review (one person)
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0044
+  Status: Proposed
+  Type: Standards Track
+  Created: 2014-04-24
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP defines a logical hierarchy for deterministic wallets based on
+an algorithm described in BIP-0032 (BIP32 from now on) and purpose
+scheme described in BIP-0043 (BIP43 from now on).</p>
+<p>This BIP is a particular application of BIP43.</p>
+<h2 id="motivation">Motivation</h2>
+<p>The hierarchy proposed in this paper is quite comprehensive. It allows
+the handling of multiple coins, multiple accounts, external and internal
+chains per account and millions of addresses per chain.</p>
+<h2 id="path-levels">Path levels</h2>
+<p>We define the following 5 levels in BIP32 path:</p>
+<pre style="background-color:#fafafa;">
+<code>m / purpose' / coin_type' / account' / change / address_index
+</code></pre>
+<p>Apostrophe in the path indicates that BIP32 hardened derivation is used.</p>
+<p>Each level has a special meaning, described in the chapters below.</p>
+<h3 id="purpose">Purpose</h3>
+<p>Purpose is a constant set to 44' (or 0x8000002C) following the BIP43
+recommendation. It indicates that the subtree of this node is used
+according to this specification.</p>
+<p>Hardened derivation is used at this level.</p>
+<h3 id="coin-type">Coin type</h3>
+<p>One master node (seed) can be used for unlimited number of independent
+cryptocoins such as Bitcoin, Litecoin or Namecoin. However, sharing the
+same space for various cryptocoins has some disadvantages.</p>
+<p>This level creates a separate subtree for every cryptocoin, avoiding
+reusing addresses across cryptocoins and improving privacy issues.</p>
+<p>Coin type is a constant, set for each cryptocoin. Cryptocoin developers
+may ask for registering unused number for their project.</p>
+<p>The list of already allocated coin types is in the chapter &quot;Registered
+coin types&quot; below.</p>
+<p>Hardened derivation is used at this level.</p>
+<h3 id="account">Account</h3>
+<p>This level splits the key space into independent user identities, so the
+wallet never mixes the coins across different accounts.</p>
+<p>Users can use these accounts to organize the funds in the same fashion
+as bank accounts; for donation purposes (where all addresses are
+considered public), for saving purposes, for common expenses etc.</p>
+<p>Accounts are numbered from index 0 in sequentially increasing manner.
+This number is used as child index in BIP32 derivation.</p>
+<p>Hardened derivation is used at this level.</p>
+<p>Software should prevent a creation of an account if a previous account
+does not have a transaction history (meaning none of its addresses have
+been used before).</p>
+<p>Software needs to discover all used accounts after importing the seed
+from an external source. Such an algorithm is described in &quot;Account
+discovery&quot; chapter.</p>
+<h3 id="change">Change</h3>
+<p>Constant 0 is used for external chain and constant 1 for internal chain
+(also known as change addresses). External chain is used for addresses
+that are meant to be visible outside of the wallet (e.g. for receiving
+payments). Internal chain is used for addresses which are not meant to
+be visible outside of the wallet and is used for return transaction
+change.</p>
+<p>Public derivation is used at this level.</p>
+<h3 id="index">Index</h3>
+<p>Addresses are numbered from index 0 in sequentially increasing manner.
+This number is used as child index in BIP32 derivation.</p>
+<p>Public derivation is used at this level.</p>
+<h2 id="account-discovery">Account discovery</h2>
+<p>When the master seed is imported from an external source the software
+should start to discover the accounts in the following manner:</p>
+<ol>
+<li>derive the first account's node (index = 0)</li>
+<li>derive the external chain node of this account</li>
+<li>scan addresses of the external chain; respect the gap limit
+described below</li>
+<li>if no transactions are found on the external chain, stop discovery</li>
+<li>if there are some transactions, increase the account index and go to
+step 1</li>
+</ol>
+<p>This algorithm is successful because software should disallow creation
+of new accounts if previous one has no transaction history, as described
+in chapter &quot;Account&quot; above.</p>
+<p>Please note that the algorithm works with the transaction history, not
+account balances, so you can have an account with 0 total coins and the
+algorithm will still continue with discovery.</p>
+<h3 id="address-gap-limit">Address gap limit</h3>
+<p>Address gap limit is currently set to 20. If the software hits 20 unused
+addresses in a row, it expects there are no used addresses beyond this
+point and stops searching the address chain. We scan just the external
+chains, because internal chains receive only coins that come from the
+associated external chains.</p>
+<p>Wallet software should warn when the user is trying to exceed the gap
+limit on an external chain by generating a new address.</p>
+<h2 id="registered-coin-types">Registered coin types</h2>
+<p>These are the default registered coin types for usage in level 2 of
+BIP44 described in chapter &quot;Coin type&quot; above.</p>
+<p>All these constants are used as hardened derivation.</p>
+<table><thead><tr><th>index</th><th>hexa</th><th>coin</th></tr></thead><tbody>
+<tr><td>0</td><td>0x80000000</td><td>Bitcoin</td></tr>
+<tr><td>1</td><td>0x80000001</td><td>Bitcoin Testnet</td></tr>
+</tbody></table>
+<p>This BIP is not a central directory for the registered coin types,
+please visit SatoshiLabs that maintains the full list:</p>
+<p><a href="https://github.com/satoshilabs/slips/blob/master/slip-0044.md" title="wikilink">SLIP-0044 : Registered coin types for
+BIP-0044</a></p>
+<p>To register a new coin type, an existing wallet that implements the
+standard is required and a pull request to the above file should be
+created.</p>
+<h2 id="examples">Examples</h2>
+<table><thead><tr><th>coin</th><th>account</th><th>chain</th><th>address</th><th>path</th></tr></thead><tbody>
+<tr><td>Bitcoin</td><td>first</td><td>external</td><td>first</td><td>m / 44' / 0' / 0' / 0 / 0</td></tr>
+<tr><td>Bitcoin</td><td>first</td><td>external</td><td>second</td><td>m / 44' / 0' / 0' / 0 / 1</td></tr>
+<tr><td>Bitcoin</td><td>first</td><td>change</td><td>first</td><td>m / 44' / 0' / 0' / 1 / 0</td></tr>
+<tr><td>Bitcoin</td><td>first</td><td>change</td><td>second</td><td>m / 44' / 0' / 0' / 1 / 1</td></tr>
+<tr><td>Bitcoin</td><td>second</td><td>external</td><td>first</td><td>m / 44' / 0' / 1' / 0 / 0</td></tr>
+<tr><td>Bitcoin</td><td>second</td><td>external</td><td>second</td><td>m / 44' / 0' / 1' / 0 / 1</td></tr>
+<tr><td>Bitcoin</td><td>second</td><td>change</td><td>first</td><td>m / 44' / 0' / 1' / 1 / 0</td></tr>
+<tr><td>Bitcoin</td><td>second</td><td>change</td><td>second</td><td>m / 44' / 0' / 1' / 1 / 1</td></tr>
+<tr><td>Bitcoin Testnet</td><td>first</td><td>external</td><td>first</td><td>m / 44' / 1' / 0' / 0 / 0</td></tr>
+<tr><td>Bitcoin Testnet</td><td>first</td><td>external</td><td>second</td><td>m / 44' / 1' / 0' / 0 / 1</td></tr>
+<tr><td>Bitcoin Testnet</td><td>first</td><td>change</td><td>first</td><td>m / 44' / 1' / 0' / 1 / 0</td></tr>
+<tr><td>Bitcoin Testnet</td><td>first</td><td>change</td><td>second</td><td>m / 44' / 1' / 0' / 1 / 1</td></tr>
+<tr><td>Bitcoin Testnet</td><td>second</td><td>external</td><td>first</td><td>m / 44' / 1' / 1' / 0 / 0</td></tr>
+<tr><td>Bitcoin Testnet</td><td>second</td><td>external</td><td>second</td><td>m / 44' / 1' / 1' / 0 / 1</td></tr>
+<tr><td>Bitcoin Testnet</td><td>second</td><td>change</td><td>first</td><td>m / 44' / 1' / 1' / 1 / 0</td></tr>
+<tr><td>Bitcoin Testnet</td><td>second</td><td>change</td><td>second</td><td>m / 44' / 1' / 1' / 1 / 1</td></tr>
+</tbody></table>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://bips.dev/44/bip-0032.mediawiki" title="wikilink">BIP32 - Hierarchical Deterministic
+Wallets</a></li>
+<li><a href="https://bips.dev/44/bip-0043.mediawiki" title="wikilink">BIP43 - Purpose Field for Deterministic
+Wallets</a></li>
+</ul>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

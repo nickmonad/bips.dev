@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 72</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 72: bitcoin: uri extensions for Payment Protocol
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2013-07-29</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0072.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 72
+  Layer: Applications
+  Title: bitcoin: uri extensions for Payment Protocol
+  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0072
+  Status: Final
+  Type: Standards Track
+  Created: 2013-07-29
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes an extension to the bitcoin: URI scheme (BIP 21) to
+support the payment protocol (BIP 70).</p>
+<h2 id="motivation">Motivation</h2>
+<p>Allow users to click on a link in a web page or email to initiate the
+payment protocol, while being backwards-compatible with existing bitcoin
+wallets.</p>
+<h2 id="specification">Specification</h2>
+<p>The bitcoin: URI scheme is extended with an additional, optional &quot;r&quot;
+parameter, whose value is a URL from which a PaymentRequest message
+should be fetched (characters not allowed within the scope of a query
+parameter must be percent-encoded as described in RFC 3986 and
+bip-0021).</p>
+<p>If the &quot;r&quot; parameter is provided and backwards compatibility is not
+required, then the bitcoin address portion of the URI may be omitted
+(the URI will be of the form: <a href="bitcoin:?r=">bitcoin:?r=</a>... ).</p>
+<p>When Bitcoin wallet software that supports this BIP receives a bitcoin:
+URI with a request parameter, it should ignore the bitcoin
+address/amount/label/message in the URI and instead fetch a
+PaymentRequest message and then follow the payment protocol, as
+described in BIP 70.</p>
+<p>Bitcoin wallets must support fetching PaymentRequests via http and https
+protocols; they may support other protocols. Wallets must include an
+&quot;Accept&quot; HTTP header in HTTP(s) requests (as defined in RFC 2616):</p>
+<pre style="background-color:#fafafa;">
+<code>Accept: application/bitcoin-paymentrequest
+</code></pre>
+<p>If a PaymentRequest cannot be obtained (perhaps the server is
+unavailable), then the customer should be informed that the merchant's
+payment processing system is unavailable. In the case of an HTTP
+request, status codes which are neither success nor error (such as
+redirect) should be handled as outlined in RFC 2616.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>Wallet software that does not support this BIP will simply ignore the r
+parameter and will initiate a payment to bitcoin address.</p>
+<h2 id="examples">Examples</h2>
+<p>A backwards-compatible request:</p>
+<pre style="background-color:#fafafa;">
+<code>bitcoin:mq7se9wy2egettFxPbmn99cK8v5AFq55Lx?amount=0.11&amp;r=https://merchant.com/pay.php?h%3D2a8628fc2fbe
+</code></pre>
+<p>Non-backwards-compatible equivalent:</p>
+<pre style="background-color:#fafafa;">
+<code>bitcoin:?r=https://merchant.com/pay.php?h%3D2a8628fc2fbe
+</code></pre><h2 id="references">References</h2>
+<p><a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html" title="wikilink">RFC 2616</a>
+: Hypertext Transfer Protocol -- HTTP/1.1</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

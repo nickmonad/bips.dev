@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 23</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 23: getblocktemplate - Pooled Mining
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2012-02-28</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0023.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 23
+  Layer: API/RPC
+  Title: getblocktemplate - Pooled Mining
+  Author: Luke Dashjr &lt;luke+bip22@dashjr.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0023
+  Status: Final
+  Type: Standards Track
+  Created: 2012-02-28
+  License: BSD-2-Clause
+</code></pre><h2 id="abstract">Abstract</h2>
+<p>This BIP describes extensions to the getblocktemplate JSON-RPC call to
+enhance pooled mining.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+<h2 id="specification">Specification</h2>
+<p>Note that all sections of this specification are optional extensions on
+top of <a href="https://bips.dev/23/bip-0022.mediawiki" title="wikilink">BIP 22</a>.</p>
+<h3 id="summary-support-levels">Summary Support Levels</h3>
+<p>Something can be said to have BIP 23 Level 1 support if it implements at
+least:</p>
+<ul>
+<li><a href="http://www.ietf.org/rfc/rfc1945.txt">RFC 1945</a></li>
+<li><a href="http://json-rpc.org/wiki/specification">JSON-RPC 1.0</a></li>
+<li><a href="https://bips.dev/23/bip-0022.mediawiki" title="wikilink">BIP 22 (non-optional sections)</a></li>
+<li><a href="https://bips.dev/23/bip-0022.mediawiki#Optional:_Long_Polling" title="wikilink">BIP 22 Long
+Polling</a></li>
+<li><a href="https://bips.dev/23/#Basic_Pool_Extensions" title="wikilink">BIP 23 Basic Pool Extensions</a></li>
+<li><a href="https://bips.dev/23/#Mutations" title="wikilink">BIP 23 Mutation &quot;coinbase/append&quot;</a></li>
+<li><a href="https://bips.dev/23/#Submission_Abbreviation" title="wikilink">BIP 23 Submission Abbreviation
+&quot;submit/coinbase&quot;</a></li>
+<li><a href="https://bips.dev/23/#Mutations" title="wikilink">BIP 23 Mutation &quot;time/increment&quot;</a> (only
+required for servers)</li>
+</ul>
+<p>It can be said to have BIP 23 Level 2 support if it also implements:</p>
+<ul>
+<li><a href="https://bips.dev/23/#Mutations" title="wikilink">BIP 23 Mutation &quot;transactions/add&quot;</a></li>
+<li><a href="https://bips.dev/23/#Block_Proposals" title="wikilink">BIP 23 Block Proposals</a></li>
+</ul>
+<h3 id="basic-pool-extensions">Basic Pool Extensions</h3>
+<table><thead><tr><th>template request</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>target</td></tr>
+</tbody></table>
+<table><thead><tr><th>template</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>expires</td></tr>
+<tr><td>target</td></tr>
+</tbody></table>
+<h3 id="block-proposal">Block Proposal</h3>
+<p>Servers may indicate support for proposing blocks by including a
+capability string in their original template:</p>
+<table><thead><tr><th>template</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>capabilities</td></tr>
+<tr><td>reject-reason</td></tr>
+</tbody></table>
+<p>If supported, a miner MAY propose a block to the server for general
+validation at any point before the job expires. This is accomplished by
+calling getblocktemplate with two keys:</p>
+<table><thead><tr><th>getblocktemplate parameters</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>data</td></tr>
+<tr><td>mode</td></tr>
+<tr><td>workid</td></tr>
+</tbody></table>
+<p>The block data MUST be validated and checked against the server's usual
+acceptance rules (excluding the check for a valid proof-of-work). If it
+is found to be in violation of any of these rules, the server MUST
+return one of the following:</p>
+<ul>
+<li>Null if it is acceptable as-is, with the same workid (if any) as
+provided. Note that this SHOULD NOT invalidate the old template's
+claim to the same workid.</li>
+<li>A String giving the reason for the rejection (see <a href="https://bips.dev/23/bip-0022.mediawiki#appendix-example-rejection-reasons" title="wikilink">example rejection
+reasons</a>).</li>
+<li>A &quot;delta&quot; block template (with changes needed); in this case, any
+missing keys are assumed to default to those in the proposed block
+or, if not applicable, the original block template it was based on.
+This template MAY also include a &quot;reject-reason&quot; key with a String
+of the reason for rejection.</li>
+</ul>
+<p>It is RECOMMENDED that servers which merely need to track the proposed
+block for later share/* submissions, return a simple Object of the
+form:</p>
+<p><code>{&quot;workid&quot;:&quot;new workid&quot;}</code></p>
+<p>Clients SHOULD assume their proposed block will remain valid if the only
+changes they make are to the portion of the coinbase scriptSig they
+themselves provided (if any) and the time header. Servers SHOULD NOT
+break this assumption without good cause.</p>
+<h3 id="mutations">Mutations</h3>
+<table><thead><tr><th>template request</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>nonces</td></tr>
+</tbody></table>
+<table><thead><tr><th>template</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>maxtime</td></tr>
+<tr><td>maxtimeoff</td></tr>
+<tr><td>mintime</td></tr>
+<tr><td>mintimeoff</td></tr>
+<tr><td>mutable</td></tr>
+<tr><td>noncerange</td></tr>
+</tbody></table>
+<p>If the block template contains a &quot;mutable&quot; key, it is a list of these to
+signify modifications the miner is allowed to make:</p>
+<table><thead><tr><th>mutations</th></tr></thead><tbody>
+<tr><td>Value</td></tr>
+<tr><td>coinbase/append</td></tr>
+<tr><td>coinbase</td></tr>
+<tr><td>generation</td></tr>
+<tr><td>time/increment</td></tr>
+<tr><td>time/decrement</td></tr>
+<tr><td>time</td></tr>
+<tr><td>transactions/add (or &quot;transactions&quot;)</td></tr>
+<tr><td>prevblock</td></tr>
+<tr><td>version/force</td></tr>
+<tr><td>version/reduce</td></tr>
+</tbody></table>
+<h3 id="submission-abbreviation">Submission Abbreviation</h3>
+<table><thead><tr><th>template</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>fulltarget</td></tr>
+<tr><td>mutable</td></tr>
+</tbody></table>
+<p>If the block template contains a &quot;mutable&quot; key, it is a list of these to
+signify modifications the miner is allowed to make:</p>
+<table><thead><tr><th>abbreviation mutations</th></tr></thead><tbody>
+<tr><td>Value</td></tr>
+<tr><td>submit/hash</td></tr>
+<tr><td>submit/coinbase</td></tr>
+<tr><td>submit/truncate</td></tr>
+<tr><td>share/coinbase</td></tr>
+<tr><td>share/merkle</td></tr>
+<tr><td>share/truncate</td></tr>
+</tbody></table>
+<h4 id="format-of-data-for-merkle-only-shares">Format of Data for Merkle-Only Shares</h4>
+<p>The format used for submitting shares with the &quot;share/merkle&quot; mutation
+shall be the 80-byte block header, the total number of transactions
+encoded in Bitcoin variable length number format, the coinbase
+transaction, and then finally the little-endian SHA256 hashes of each
+link in the merkle chain connecting it to the merkle root.</p>
+<h3 id="logical-services">Logical Services</h3>
+<table><thead><tr><th>template request</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>capabilities</td></tr>
+</tbody></table>
+<table><thead><tr><th>template</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>serverlist</td></tr>
+</tbody></table>
+<p>If the &quot;serverlist&quot; parameter is provided, clients MAY choose to
+intelligently treat the server as part of a larger single logical
+service.</p>
+<p>Each host Object in the Array is comprised of the following fields:</p>
+<table><thead><tr><th>serverlist element</th></tr></thead><tbody>
+<tr><td>Key</td></tr>
+<tr><td>uri</td></tr>
+<tr><td>avoid</td></tr>
+<tr><td>priority</td></tr>
+<tr><td>sticky</td></tr>
+<tr><td>update</td></tr>
+<tr><td>weight</td></tr>
+</tbody></table>
+<p>When choosing which actual server to get the next job from, URIs MUST be
+tried in order of their &quot;priority&quot; key, lowest Number first. Where the
+priority of URIs is the same, they should be chosen from in random
+order, weighed by their &quot;weight&quot; key. Work proposals and submissions
+MUST be made to the same server that issued the job. Clients MAY attempt
+to submit to other servers if, and only if, the original server cannot
+be reached. If cross-server share submissions are desired, services
+SHOULD instead use the equivalent domain name system (DNS) features
+(RFCs <a href="http://tools.ietf.org/html/rfc1794">1794</a> and
+<a href="http://tools.ietf.org/html/rfc2782">2782</a>).</p>
+<p>Updates to the Logical Service server list may only be made by the
+original server, or servers listed with the &quot;update&quot; key missing or
+true. Clients MAY choose to advertise serverlist capability to servers
+with a false &quot;update&quot; key, but if so, MUST treat the server list
+provided as a subset of the current one, only considered in the context
+of this server. At least one server with &quot;update&quot; privilege MUST be
+attempted at least once daily.</p>
+<p>If the &quot;sticky&quot; key is provided, then when that server is used, it
+should be used consistently for at least that many seconds, if possible.</p>
+<p>A permanent change in server URI MAY be indicated with a simple
+&quot;serverlist&quot; parameter:</p>
+<p><code>&quot;serverlist&quot;:[{&quot;uri&quot;: &quot;</code><a href="http://newserver"><code>http://newserver</code></a><code>&quot;}]</code></p>
+<p>A temporary delegation to another server for 5 minutes MAY be indicated
+likewise:</p>
+<p><code>&quot;serverlist&quot;:[{&quot;uri&quot;: &quot;&quot;, avoid: 300}, {&quot;uri&quot;: &quot;</code><a href="http://newserver"><code>http://newserver</code></a><code>&quot;, &quot;update&quot;: false}]</code></p>
+<h2 id="motivation">Motivation</h2>
+<p>There is reasonable concerns about mining currently being too
+centralized on pools, and the amount of control these pools hold. By
+exposing the details of the block proposals to the miners, they are
+enabled to audit and possibly modify the block before hashing it.</p>
+<p>To encourage widespread adoption, this BIP should be a complete superset
+of the existing centralized getwork protocol, so pools are not required
+to make substantial changes to adopt it.</p>
+<h2 id="rationale">Rationale</h2>
+<p>Why allow servers to restrict the complete coinbase and nonce range?</p>
+<ul>
+<li>This is necessary to provide a complete superset of JSON-RPC getwork
+functionality, so that pools may opt to enable auditing without
+significantly changing or increasing the complexity of their share
+validation or mining policies.</li>
+<li>Since noncerange is optional (both for getwork and this BIP),
+neither clients nor servers are required to support it.</li>
+</ul>
+<p>Why specify &quot;time/*&quot; mutations at all?</p>
+<ul>
+<li>In most cases, these are implied by the
+mintime/mintimecur/maxtime/maxtimecur keys, but there may be cases
+that there are no applicable minimums/maximums.</li>
+</ul>
+<p>What is the purpose of the &quot;prevblock&quot; mutation?</p>
+<ul>
+<li>There are often cases where a miner has processed a new block before
+the server. If the server allows &quot;prevblock&quot; mutation, the miner may
+begin mining on the new block immediately, without waiting for a new
+template.</li>
+</ul>
+<p>Why must both &quot;mintime&quot;/&quot;maxtime&quot; and &quot;mintimeoff&quot;/&quot;maxtimeoff&quot; keys be
+defined?</p>
+<ul>
+<li>In some cases, the limits may be unrelated to the current time (such
+as the Bitcoin network itself; the minimum is always a fixed median
+time)</li>
+<li>In other cases, the limits may be bounded by other rules (many pools
+limit the time header to within 5 minutes of when the share is
+submitted to them).</li>
+</ul>
+<p>Is &quot;target&quot; really needed?</p>
+<ul>
+<li>Some pools work with lower targets, and should not be expected to
+waste bandwidth ignoring shares that don't meet it.</li>
+<li>Required to be a proper superset of getwork.</li>
+<li>As mining hashrates grow, some miners may need the ability to
+request a lower target from their pools to be able to manage their
+bandwidth use.</li>
+</ul>
+<p>What is the purpose of the &quot;hash&quot; transaction list format?</p>
+<ul>
+<li>Non-mining tools may wish to simply get a list of memory pool
+transactions.</li>
+<li>Humans may wish to view their current memory pool.</li>
+</ul>
+<h2 id="reference-implementation">Reference Implementation</h2>
+<ul>
+<li><a href="http://gitorious.org/bitcoin/libblkmaker">libblkmaker</a></li>
+<li><a href="https://gitorious.org/bitcoin/eloipool">Eloipool</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/pull/936/files">bitcoind</a></li>
+</ul>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="https://bips.dev/23/bip-0022.mediawiki" title="wikilink">BIP 22: getblocktemplate -
+Fundamentals</a></li>
+</ul>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

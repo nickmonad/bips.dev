@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 340</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 340: Schnorr Signatures for secp256k1
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2020-01-19</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0340.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code>  BIP: 340
+  Title: Schnorr Signatures for secp256k1
+  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+          Jonas Nick &lt;jonasd.nick@gmail.com&gt;
+          Tim Ruffing &lt;crypto@timruffing.de&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0340
+  Status: Draft
+  Type: Standards Track
+  License: BSD-2-Clause
+  Created: 2020-01-19
+  Post-History: 2018-07-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-July/016203.html [bitcoin-dev] Schnorr signatures BIP
+</code></pre><h2 id="introduction">Introduction</h2>
+<h3 id="abstract">Abstract</h3>
+<p>This document proposes a standard for 64-byte Schnorr signatures over
+the elliptic curve <em>secp256k1</em>.</p>
+<h3 id="copyright">Copyright</h3>
+<p>This document is licensed under the 2-clause BSD license.</p>
+<h3 id="motivation">Motivation</h3>
+<p>Bitcoin has traditionally used
+<a href="https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm">ECDSA</a>
+signatures over the <a href="https://www.secg.org/sec2-v2.pdf">secp256k1 curve</a>
+with <a href="https://en.wikipedia.org/wiki/SHA-2">SHA256</a> hashes for
+authenticating transactions. These are
+<a href="https://www.secg.org/sec1-v2.pdf">standardized</a>, but have a number of
+downsides compared to <a href="http://publikationen.ub.uni-frankfurt.de/opus4/files/4280/schnorr.pdf">Schnorr
+signatures</a>
+over the same curve:</p>
+<ul>
+<li><strong>Provable security</strong>: Schnorr signatures are provably secure. In
+more detail, they are <em>strongly unforgeable under chosen message
+attack (SUF-CMA)</em>[1] <a href="https://www.di.ens.fr/%7Epointche/Documents/Papers/2000_joc.pdf">in the random oracle model assuming the
+hardness of the elliptic curve discrete logarithm problem
+(ECDLP)</a>
+and <a href="http://www.neven.org/papers/schnorr.pdf">in the generic group model assuming variants of preimage and
+second preimage resistance of the used hash
+function</a>[2]. In contrast,
+the <a href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">best known results for the provable security of
+ECDSA</a> rely on
+stronger assumptions.</li>
+<li><strong>Non-malleability</strong>: The SUF-CMA security of Schnorr signatures
+implies that they are non-malleable. On the other hand, ECDSA
+signatures are inherently malleable[3]; a third party without access
+to the secret key can alter an existing valid signature for a given
+public key and message into another signature that is valid for the
+same key and message. This issue is discussed in
+<a href="https://bips.dev/340/bip-0062.mediawiki" title="wikilink">BIP62</a> and
+<a href="https://bips.dev/340/bip-0146.mediawiki" title="wikilink">BIP146</a>.</li>
+<li><strong>Linearity</strong>: Schnorr signatures provide a simple and efficient
+method that enables multiple collaborating parties to produce a
+signature that is valid for the sum of their public keys. This is
+the building block for various higher-level constructions that
+improve efficiency and privacy, such as multisignatures and others
+(see Applications below).</li>
+</ul>
+<p>For all these advantages, there are virtually no disadvantages, apart
+from not being standardized. This document seeks to change that. As we
+propose a new standard, a number of improvements not specific to Schnorr
+signatures can be made:</p>
+<ul>
+<li><strong>Signature encoding</strong>: Instead of using
+<a href="https://en.wikipedia.org/wiki/X.690#DER_encoding">DER</a>-encoding for
+signatures (which are variable size, and up to 72 bytes), we can use
+a simple fixed 64-byte format.</li>
+<li><strong>Public key encoding</strong>: Instead of using
+<a href="https://www.secg.org/sec1-v2.pdf"><em>compressed</em></a> 33-byte encodings
+of elliptic curve points which are common in Bitcoin today, public
+keys in this proposal are encoded as 32 bytes.</li>
+<li><strong>Batch verification</strong>: The specific formulation of ECDSA signatures
+that is standardized cannot be verified more efficiently in batch
+compared to individually, unless additional witness data is added.
+Changing the signature scheme offers an opportunity to address this.</li>
+<li><strong>Completely specified</strong>: To be safe for usage in consensus systems,
+the verification algorithm must be completely specified at the byte
+level. This guarantees that nobody can construct a signature that is
+valid to some verifiers but not all. This is traditionally not a
+requirement for digital signature schemes, and the lack of exact
+specification for the DER parsing of ECDSA signatures has caused
+problems for Bitcoin <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-July/009697.html">in the
+past</a>,
+needing <a href="https://bips.dev/340/bip-0066.mediawiki" title="wikilink">BIP66</a> to address it. In
+this document we aim to meet this property by design. For batch
+verification, which is inherently non-deterministic as the verifier
+can choose their batches, this property implies that the outcome of
+verification may only differ from individual verifications with
+negligible probability, even to an attacker who intentionally tries
+to make batch- and non-batch verification differ.</li>
+</ul>
+<p>By reusing the same curve and hash function as Bitcoin uses for ECDSA,
+we are able to retain existing mechanisms for choosing secret and public
+keys, and we avoid introducing new assumptions about the security of
+elliptic curves and hash functions.</p>
+<h2 id="description">Description</h2>
+<p>We first build up the algebraic formulation of the signature scheme by
+going through the design choices. Afterwards, we specify the exact
+encodings and operations.</p>
+<h3 id="design">Design</h3>
+<p><strong>Schnorr signature variant</strong> Elliptic Curve Schnorr signatures for
+message <em>m</em> and public key <em>P</em> generally involve a point <em>R</em>, integers
+<em>e</em> and <em>s</em> picked by the signer, and the base point <em>G</em> which satisfy
+<em>e = hash(R || m)</em> and <em>s⋅G = R + e⋅P</em>. Two formulations exist,
+depending on whether the signer reveals <em>e</em> or <em>R</em>:</p>
+<ol>
+<li>Signatures are pairs <em>(e, s)</em> that satisfy <em>e = hash(s⋅G - e⋅P
+|| m)</em>. This variant avoids minor complexity introduced by the
+encoding of the point <em>R</em> in the signature (see paragraphs &quot;Encoding
+R and public key point P&quot; and &quot;Implicit Y coordinates&quot; further below
+in this subsection). Moreover, revealing <em>e</em> instead of <em>R</em> allows
+for potentially shorter signatures: Whereas an encoding of <em>R</em>
+inherently needs about 32 bytes, the hash <em>e</em> can be tuned to be
+shorter than 32 bytes, and <a href="http://www.neven.org/papers/schnorr.pdf">a short hash of only 16 bytes suffices
+to provide SUF-CMA security at the target security level of 128
+bits</a>. However, a major
+drawback of this optimization is that finding collisions in a short
+hash function is easy. This complicates the implementation of secure
+signing protocols in scenarios in which a group of mutually
+distrusting signers work together to produce a single joint
+signature (see Applications below). In these scenarios, which are
+not captured by the SUF-CMA model due its assumption of a single
+honest signer, a promising attack strategy for malicious co-signers
+is to find a collision in the hash function in order to obtain a
+valid signature on a message that an honest co-signer did not intend
+to sign.</li>
+<li>Signatures are pairs <em>(R, s)</em> that satisfy <em>s⋅G = R + hash(R ||
+m)⋅P</em>. This supports batch verification, as there are no elliptic
+curve operations inside the hashes. Batch verification enables
+significant speedups.</li>
+</ol>
+<p><img src="bip-0340/speedup-batch.png" alt="This graph shows the ratio between the time it takes to verify n signatures individually and to verify a batch of n signatures. This ratio goes up logarithmically with the number of signatures, or in other words: the total time to verify n signatures grows with O(n / log n)." title="This graph shows the ratio between the time it takes to verify n signatures individually and to verify a batch of n signatures. This ratio goes up logarithmically with the number of signatures, or in other words: the total time to verify n signatures grows with O(n / log n)." /></p>
+<p>Since we would like to avoid the fragility that comes with short hashes,
+the <em>e</em> variant does not provide significant advantages. We choose the
+<em>R</em>-option, which supports batch verification.</p>
+<p><strong>Key prefixing</strong> Using the verification rule above directly makes
+Schnorr signatures vulnerable to &quot;related-key attacks&quot; in which a third
+party can convert a signature <em>(R, s)</em> for public key <em>P</em> into a
+signature <em>(R, s + a⋅hash(R || m))</em> for public key <em>P + a⋅G</em> and the
+same message <em>m</em>, for any given additive tweak <em>a</em> to the signing key.
+This would render signatures insecure when keys are generated using
+<a href="https://bips.dev/340/bip-0032.mediawiki#public-parent-key--public-child-key" title="wikilink">BIP32's unhardened
+derivation</a>
+and other methods that rely on additive tweaks to existing keys such as
+Taproot.</p>
+<p>To protect against these attacks, we choose <em>key prefixed</em>[4] Schnorr
+signatures which means that the public key is prefixed to the message in
+the challenge hash input. This changes the equation to <em>s⋅G = R + hash(R
+|| P || m)⋅P</em>. <a href="https://eprint.iacr.org/2015/1135.pdf">It can be
+shown</a> that key prefixing
+protects against related-key attacks with additive tweaks. In general,
+key prefixing increases robustness in multi-user settings, e.g., it
+seems to be a requirement for proving the MuSig multisignature scheme
+secure (see Applications below).</p>
+<p>We note that key prefixing is not strictly necessary for transaction
+signatures as used in Bitcoin currently, because signed transactions
+indirectly commit to the public keys already, i.e., <em>m</em> contains a
+commitment to <em>pk</em>. However, this indirect commitment should not be
+relied upon because it may change with proposals such as
+SIGHASH_NOINPUT (<a href="https://bips.dev/340/bip-0118.mediawiki" title="wikilink">BIP118</a>), and would
+render the signature scheme unsuitable for other purposes than signing
+transactions, e.g., <a href="https://bitcoin.org/en/developer-reference#signmessage">signing ordinary
+messages</a>.</p>
+<p><strong>Encoding R and public key point P</strong> There exist several possibilities
+for encoding elliptic curve points:</p>
+<ol>
+<li>Encoding the full X and Y coordinates of <em>P</em> and <em>R</em>, resulting in a
+64-byte public key and a 96-byte signature.</li>
+<li>Encoding the full X coordinate and one bit of the Y coordinate to
+determine one of the two possible Y coordinates. This would result
+in 33-byte public keys and 65-byte signatures.</li>
+<li>Encoding only the X coordinate, resulting in 32-byte public keys and
+64-byte signatures.</li>
+</ol>
+<p>Using the first option would be slightly more efficient for verification
+(around 10%), but we prioritize compactness, and therefore choose option
+3.</p>
+<p><strong>Implicit Y coordinates</strong> In order to support efficient verification
+and batch verification, the Y coordinate of <em>P</em> and of <em>R</em> cannot be
+ambiguous (every valid X coordinate has two possible Y coordinates). We
+have a choice between several options for symmetry breaking:</p>
+<ol>
+<li>Implicitly choosing the Y coordinate that is in the lower half.</li>
+<li>Implicitly choosing the Y coordinate that is even[5].</li>
+<li>Implicitly choosing the Y coordinate that is a quadratic residue
+(i.e. has a square root modulo <em>p</em>).</li>
+</ol>
+<p>The second option offers the greatest compatibility with existing key
+generation systems, where the standard 33-byte compressed public key
+format consists of a byte indicating the oddness of the Y coordinate,
+plus the full X coordinate. To avoid gratuitous incompatibilities, we
+pick that option for <em>P</em>, and thus our X-only public keys become
+equivalent to a compressed public key that is the X-only key prefixed by
+the byte 0x02. For consistency, the same is done for <em>R</em>[6].</p>
+<p>Despite halving the size of the set of valid public keys, implicit Y
+coordinates are not a reduction in security. Informally, if a fast
+algorithm existed to compute the discrete logarithm of an X-only public
+key, then it could also be used to compute the discrete logarithm of a
+full public key: apply it to the X coordinate, and then optionally
+negate the result. This shows that breaking an X-only public key can be
+at most a small constant term faster than breaking a full one.[7].</p>
+<p><strong>Tagged Hashes</strong> Cryptographic hash functions are used for multiple
+purposes in the specification below and in Bitcoin in general. To make
+sure hashes used in one context can't be reinterpreted in another one,
+hash functions can be tweaked with a context-dependent tag name, in such
+a way that collisions across contexts can be assumed to be infeasible.
+Such collisions obviously can not be ruled out completely, but only for
+schemes using tagging with a unique name. As for other schemes
+collisions are at least less likely with tagging than without.</p>
+<p>For example, without tagged hashing a BIP340 signature could also be
+valid for a signature scheme where the only difference is that the
+arguments to the hash function are reordered. Worse, if the BIP340 nonce
+derivation function was copied or independently created, then the nonce
+could be accidentally reused in the other scheme leaking the secret key.</p>
+<p>This proposal suggests to include the tag by prefixing the hashed data
+with <em>SHA256(tag) || SHA256(tag)</em>. Because this is a 64-byte long
+context-specific constant and the <em>SHA256</em> block size is also 64 bytes,
+optimized implementations are possible (identical to SHA256 itself, but
+with a modified initial state). Using SHA256 of the tag name itself is
+reasonably simple and efficient for implementations that don't choose to
+use the optimization.</p>
+<p><strong>Final scheme</strong> As a result, our final scheme ends up using public key
+<em>pk</em> which is the X coordinate of a point <em>P</em> on the curve whose Y
+coordinate is even and signatures <em>(r,s)</em> where <em>r</em> is the X coordinate
+of a point <em>R</em> whose Y coordinate is even. The signature satisfies <em>s⋅G
+= R + tagged_hash(r || pk || m)⋅P</em>.</p>
+<h3 id="specification">Specification</h3>
+<p>The following conventions are used, with constants as defined for
+<a href="https://www.secg.org/sec2-v2.pdf">secp256k1</a>. We note that adapting
+this specification to other elliptic curves is not straightforward and
+can result in an insecure scheme[8].</p>
+<ul>
+<li>Lowercase variables represent integers or byte arrays.
+<ul>
+<li>The constant <em>p</em> refers to the field size,
+<em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F</em>.</li>
+<li>The constant <em>n</em> refers to the curve order,
+<em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141</em>.</li>
+</ul>
+</li>
+<li>Uppercase variables refer to points on the curve with equation
+<em>y<sup>2</sup> = x<sup>3</sup> + 7</em> over the integers modulo <em>p</em>.
+<ul>
+<li><em>is_infinite(P)</em> returns whether or not <em>P</em> is the point at
+infinity.</li>
+<li><em>x(P)</em> and <em>y(P)</em> are integers in the range <em>0..p-1</em> and refer
+to the X and Y coordinates of a point <em>P</em> (assuming it is not
+infinity).</li>
+<li>The constant <em>G</em> refers to the base point, for which <em>x(G) =
+0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</em>
+and <em>y(G) =
+0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8</em>.</li>
+<li>Addition of points refers to the usual <a href="https://en.wikipedia.org/wiki/Elliptic_curve#The_group_law">elliptic curve group
+operation</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication">Multiplication (⋅) of an integer and a
+point</a>
+refers to the repeated application of the group operation.</li>
+</ul>
+</li>
+<li>Functions and operations:
+<ul>
+<li><em>||</em> refers to byte array concatenation.</li>
+<li>The function <em>x[i:j]</em>, where <em>x</em> is a byte array and <em>i, j ≥
+0</em>, returns a <em>(j - i)</em>-byte array with a copy of the <em>i</em>-th
+byte (inclusive) to the <em>j</em>-th byte (exclusive) of <em>x</em>.</li>
+<li>The function <em>bytes(x)</em>, where <em>x</em> is an integer, returns the
+32-byte encoding of <em>x</em>, most significant byte first.</li>
+<li>The function <em>bytes(P)</em>, where <em>P</em> is a point, returns
+<em>bytes(x(P))</em>.</li>
+<li>The function <em>int(x)</em>, where <em>x</em> is a 32-byte array, returns the
+256-bit unsigned integer whose most significant byte first
+encoding is <em>x</em>.</li>
+<li>The function <em>has_even_y(P)</em>, where <em>P</em> is a point for which
+<em>not is_infinite(P)</em>, returns <em>y(P) mod 2 = 0</em>.</li>
+<li>The function <em>lift_x(x)</em>, where <em>x</em> is an integer in range
+<em>0..p-1</em>, returns the point <em>P</em> for which <em>x(P) = x</em><ref></li>
+</ul>
+</li>
+</ul>
+<p><code>   Given a candidate X coordinate </code><em><code>x</code></em><code> in the range </code><em><code>0..p-1</code></em><code>, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then </code><em><code>x</code></em><code> is not a valid X coordinate either, i.e., no point </code><em><code>P</code></em><code> exists for which </code><em><code>x(P)`` ``=`` ``x</code></em><code>. The valid Y coordinates for a given candidate </code><em><code>x</code></em><code> are the square roots of </code><em><code>c`` ``=`` ``x</code><sup><code>3</code></sup><code> ``+`` ``7`` ``mod`` ``p</code></em><code> and they can be computed as </code><em><code>y`` ``=`` ``±c</code><sup><code>(p+1)/4</code></sup><code> ``mod`` ``p</code></em><code> (see </code><a href="https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus"><code>Quadratic`` ``residue</code></a><code>) if they exist, which can be checked by squaring and comparing with </code><em><code>c</code></em><code>.</code></ref><code> and </code><em><code>has_even_y(P)</code></em><code>, or fails if no such point exists. The function </code><em><code>lift_x(x)</code></em><code> is equivalent to the following pseudocode:</code></p>
+<ul>
+<li>
+<ul>
+<li>Let <em>c = x<sup>3</sup> + 7 mod p</em>.</li>
+<li>Let <em>y = c<sup>(p+1)/4</sup> mod p</em>.</li>
+<li>Fail if <em>c ≠ y<sup>2</sup> mod p</em>.</li>
+<li>Return the unique point <em>P</em> such that <em>x(P) = x</em> and <em>y(P) = y</em>
+if <em>y mod 2 = 0</em> or <em>y(P) = p-y</em> otherwise.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>The function <em>hash<sub>tag</sub>(x)</em> where <em>tag</em> is a UTF-8
+encoded tag name and <em>x</em> is a byte array returns the 32-byte
+hash <em>SHA256(SHA256(tag) || SHA256(tag) || x)</em>.</li>
+</ul>
+</li>
+</ul>
+<h4 id="public-key-generation">Public Key Generation</h4>
+<p>Input:</p>
+<ul>
+<li>The secret key <em>sk</em>: a 32-byte array, freshly generated uniformly at
+random</li>
+</ul>
+<p>The algorithm <em>PubKey(sk)</em> is defined as:</p>
+<ul>
+<li>Let <em>d' = int(sk)</em>.</li>
+<li>Fail if <em>d' = 0</em> or <em>d' ≥ n</em>.</li>
+<li>Return <em>bytes(d'⋅G)</em>.</li>
+</ul>
+<p>Note that we use a very different public key format (32 bytes) than the
+ones used by existing systems (which typically use elliptic curve points
+as public keys, or 33-byte or 65-byte encodings of them). A side effect
+is that <em>PubKey(sk) = PubKey(bytes(n - int(sk))</em>, so every public key
+has two corresponding secret keys.</p>
+<h4 id="public-key-conversion">Public Key Conversion</h4>
+<p>As an alternative to generating keys randomly, it is also possible and
+safe to repurpose existing key generation algorithms for ECDSA in a
+compatible way. The secret keys constructed by such an algorithm can be
+used as <em>sk</em> directly. The public keys constructed by such an algorithm
+(assuming they use the 33-byte compressed encoding) need to be converted
+by dropping the first byte. Specifically,
+<a href="https://bips.dev/340/bip-0032.mediawiki" title="wikilink">BIP32</a> and schemes built on top of it
+remain usable.</p>
+<h4 id="default-signing">Default Signing</h4>
+<p>Input:</p>
+<ul>
+<li>The secret key <em>sk</em>: a 32-byte array</li>
+<li>The message <em>m</em>: a 32-byte array</li>
+<li>Auxiliary random data <em>a</em>: a 32-byte array</li>
+</ul>
+<p>The algorithm <em>Sign(sk, m)</em> is defined as:</p>
+<ul>
+<li>Let <em>d' = int(sk)</em></li>
+<li>Fail if <em>d' = 0</em> or <em>d' ≥ n</em></li>
+<li>Let <em>P = d'⋅G</em></li>
+<li>Let ''d = d' '' if <em>has_even_y(P)</em>, otherwise let ''d = n - d' ''.</li>
+<li>Let <em>t</em> be the byte-wise xor of <em>bytes(d)</em> and
+<em>hash<sub>BIP0340/aux</sub>(a)</em>[9].</li>
+<li>Let <em>rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P)
+|| m)</em>[10].</li>
+<li>Let <em>k' = int(rand) mod n</em>[11].</li>
+<li>Fail if <em>k' = 0</em>.</li>
+<li>Let <em>R = k'⋅G</em>.</li>
+<li>Let ''k = k' '' if <em>has_even_y(R)</em>, otherwise let ''k = n - k' ''.</li>
+<li>Let <em>e = int(hash<sub>BIP0340/challenge</sub>(bytes(R) || bytes(P)
+|| m)) mod n</em>.</li>
+<li>Let <em>sig = bytes(R) || bytes((k + ed) mod n)</em>.</li>
+<li>If <em>Verify(bytes(P), m, sig)</em> (see below) returns failure,
+abort[12].</li>
+<li>Return the signature <em>sig</em>.</li>
+</ul>
+<p>The auxiliary random data should be set to fresh randomness generated at
+signing time, resulting in what is called a <em>synthetic nonce</em>. Using 32
+bytes of randomness is optimal. If obtaining randomness is expensive, 16
+random bytes can be padded with 16 null bytes to obtain a 32-byte array.
+If randomness is not available at all at signing time, a simple counter
+wide enough to not repeat in practice (e.g., 64 bits or wider) and
+padded with null bytes to a 32 byte-array can be used, or even the
+constant array with 32 null bytes. Using any non-repeating value
+increases protection against <a href="https://moderncrypto.org/mail-archive/curves/2017/000925.html">fault injection
+attacks</a>.
+Using unpredictable randomness additionally increases protection against
+other side-channel attacks, and is <strong>recommended whenever available</strong>.
+Note that while this means the resulting nonce is not deterministic, the
+randomness is only supplemental to security. The normal security
+properties (excluding side-channel attacks) do not depend on the quality
+of the signing-time RNG.</p>
+<h4 id="alternative-signing">Alternative Signing</h4>
+<p>It should be noted that various alternative signing algorithms can be
+used to produce equally valid signatures. The 32-byte <em>rand</em> value may
+be generated in other ways, producing a different but still valid
+signature (in other words, this is not a <em>unique</em> signature scheme).
+<strong>No matter which method is used to generate the <em>rand</em> value, the value
+must be a fresh uniformly random 32-byte string which is not even
+partially predictable for the attacker.</strong> For nonces without randomness
+this implies that the same inputs must not be presented in another
+context. This can be most reliably accomplished by not reusing the same
+private key across different signing schemes. For example, if the <em>rand</em>
+value was computed as per RFC6979 and the same secret key is used in
+deterministic ECDSA with RFC6979, the signatures can leak the secret key
+through nonce reuse.</p>
+<p><strong>Nonce exfiltration protection</strong> It is possible to strengthen the nonce
+generation algorithm using a second device. In this case, the second
+device contributes randomness which the actual signer provably
+incorporates into its nonce. This prevents certain attacks where the
+signer device is compromised and intentionally tries to leak the secret
+key through its nonce selection.</p>
+<p><strong>Multisignatures</strong> This signature scheme is compatible with various
+types of multisignature and threshold schemes such as
+<a href="https://eprint.iacr.org/2018/068">MuSig</a>, where a single public key
+requires holders of multiple secret keys to participate in signing (see
+Applications below). <strong>It is important to note that multisignature
+signing schemes in general are insecure with the <em>rand</em> generation from
+the default signing algorithm above (or any other deterministic
+method).</strong></p>
+<p><strong>Precomputed public key data</strong> For many uses the compressed 33-byte
+encoding of the public key corresponding to the secret key may already
+be known, making it easy to evaluate <em>has_even_y(P)</em> and <em>bytes(P)</em>.
+As such, having signers supply this directly may be more efficient than
+recalculating the public key from the secret key. However, if this
+optimization is used and additionally the signature verification at the
+end of the signing algorithm is dropped for increased efficiency,
+signers must ensure the public key is correctly calculated and not taken
+from untrusted sources.</p>
+<h4 id="verification">Verification</h4>
+<p>Input:</p>
+<ul>
+<li>The public key <em>pk</em>: a 32-byte array</li>
+<li>The message <em>m</em>: a 32-byte array</li>
+<li>A signature <em>sig</em>: a 64-byte array</li>
+</ul>
+<p>The algorithm <em>Verify(pk, m, sig)</em> is defined as:</p>
+<ul>
+<li>Let <em>P = lift_x(int(pk))</em>; fail if that fails.</li>
+<li>Let <em>r = int(sig[0:32])</em>; fail if <em>r ≥ p</em>.</li>
+<li>Let <em>s = int(sig[32:64])</em>; fail if <em>s ≥ n</em>.</li>
+<li>Let <em>e = int(hash<sub>BIP0340/challenge</sub>(bytes(r) || bytes(P)
+|| m)) mod n</em>.</li>
+<li>Let <em>R = s⋅G - e⋅P</em>.</li>
+<li>Fail if <em>is_infinite(R)</em>.</li>
+<li>Fail if <em>not has_even_y(R)</em>.</li>
+<li>Fail if <em>x(R) ≠ r</em>.</li>
+<li>Return success iff no failure occurred before reaching this point.</li>
+</ul>
+<p>For every valid secret key <em>sk</em> and message <em>m</em>,
+<em>Verify(PubKey(sk),m,Sign(sk,m))</em> will succeed.</p>
+<p>Note that the correctness of verification relies on the fact that
+<em>lift_x</em> always returns a point with an even Y coordinate. A
+hypothetical verification algorithm that treats points as public keys,
+and takes the point <em>P</em> directly as input would fail any time a point
+with odd Y is used. While it is possible to correct for this by negating
+points with odd Y coordinate before further processing, this would
+result in a scheme where every (message, signature) pair is valid for
+two public keys (a type of malleability that exists for ECDSA as well,
+but we don't wish to retain). We avoid these problems by treating just
+the X coordinate as public key.</p>
+<h4 id="batch-verification">Batch Verification</h4>
+<p>Input:</p>
+<ul>
+<li>The number <em>u</em> of signatures</li>
+<li>The public keys <em>pk<sub>1..u</sub></em>: <em>u</em> 32-byte arrays</li>
+<li>The messages <em>m<sub>1..u</sub></em>: <em>u</em> 32-byte arrays</li>
+<li>The signatures <em>sig<sub>1..u</sub></em>: <em>u</em> 64-byte arrays</li>
+</ul>
+<p>The algorithm <em>BatchVerify(pk<sub>1..u</sub>, m<sub>1..u</sub>,
+sig<sub>1..u</sub>)</em> is defined as:</p>
+<ul>
+<li>Generate <em>u-1</em> random integers <em>a<sub>2...u</sub></em> in the range
+<em>1...n-1</em>. They are generated deterministically using a
+<a href="https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">CSPRNG</a>
+seeded by a cryptographic hash of all inputs of the algorithm, i.e.
+<em>seed = seed_hash(pk<sub>1</sub>..pk<sub>u</sub> ||
+m<sub>1</sub>..m<sub>u</sub> || sig<sub>1</sub>..sig<sub>u</sub>
+)</em>. A safe choice is to instantiate <em>seed_hash</em> with SHA256 and use
+<a href="https://tools.ietf.org/html/rfc8439">ChaCha20</a> with key <em>seed</em> as a
+CSPRNG to generate 256-bit integers, skipping integers not in the
+range <em>1...n-1</em>.</li>
+<li>For <em>i = 1 .. u</em>:
+<ul>
+<li>Let <em>P<sub>i</sub> = lift_x(int(pk<sub>i</sub>))</em>; fail if it
+fails.</li>
+<li>Let <em>r<sub>i</sub> = int(sig<sub>i</sub>[0:32])</em>; fail if
+<em>r<sub>i</sub> ≥ p</em>.</li>
+<li>Let <em>s<sub>i</sub> = int(sig<sub>i</sub>[32:64])</em>; fail if
+<em>s<sub>i</sub> ≥ n</em>.</li>
+<li>Let <em>e<sub>i</sub> =
+int(hash<sub>BIP0340/challenge</sub>(bytes(r<sub>i</sub>) ||
+bytes(P<sub>i</sub>) || m<sub>i</sub>)) mod n</em>.</li>
+<li>Let <em>R<sub>i</sub> = lift_x(r<sub>i</sub>)</em>; fail if
+<em>lift_x(r<sub>i</sub>)</em> fails.</li>
+</ul>
+</li>
+<li>Fail if <em>(s<sub>1</sub> + a<sub>2</sub>s<sub>2</sub> + ... +
+a<sub>u</sub>s<sub>u</sub>)⋅G ≠ R<sub>1</sub> +
+a<sub>2</sub>⋅R<sub>2</sub> + ... + a<sub>u</sub>⋅R<sub>u</sub> +
+e<sub>1</sub>⋅P<sub>1</sub> +
+(a<sub>2</sub>e<sub>2</sub>)⋅P<sub>2</sub> + ... +
+(a<sub>u</sub>e<sub>u</sub>)⋅P<sub>u</sub></em>.</li>
+<li>Return success iff no failure occurred before reaching this point.</li>
+</ul>
+<p>If all individual signatures are valid (i.e., <em>Verify</em> would return
+success for them), <em>BatchVerify</em> will always return success. If at least
+one signature is invalid, <em>BatchVerify</em> will return success with at most
+a negligible probability.</p>
+<h2 id="applications">Applications</h2>
+<p>There are several interesting applications beyond simple signatures.
+While recent academic papers claim that they are also possible with
+ECDSA, consensus support for Schnorr signature verification would
+significantly simplify the constructions.</p>
+<h3 id="multisignatures-and-threshold-signatures">Multisignatures and Threshold Signatures</h3>
+<p>By means of an interactive scheme such as
+<a href="https://eprint.iacr.org/2018/068">MuSig</a>, participants can aggregate
+their public keys into a single public key which they can jointly sign
+for. This allows <em>n</em>-of-<em>n</em> multisignatures which, from a verifier's
+perspective, are no different from ordinary signatures, giving improved
+privacy and efficiency versus <em>CHECKMULTISIG</em> or other means.</p>
+<p>Moreover, Schnorr signatures are compatible with <a href="https://web.archive.org/web/20031003232851/http://www.research.ibm.com/security/dkg.ps">distributed key
+generation</a>,
+which enables interactive threshold signatures schemes, e.g., the
+schemes described by <a href="http://cacr.uwaterloo.ca/techreports/2001/corr2001-13.ps">Stinson and Strobl
+(2001)</a> or
+<a href="https://web.archive.org/web/20060911151529/http://theory.lcs.mit.edu/%7Estasio/Papers/gjkr03.pdf">Gennaro, Jarecki and Krawczyk
+(2003)</a>.
+These protocols make it possible to realize <em>k</em>-of-<em>n</em> threshold
+signatures, which ensure that any subset of size <em>k</em> of the set of <em>n</em>
+signers can sign but no subset of size less than <em>k</em> can produce a valid
+Schnorr signature. However, the practicality of the existing schemes is
+limited: most schemes in the literature have been proven secure only for
+the case <em>k-1 &lt; n/2</em>, are not secure when used concurrently in
+multiple sessions, or require a reliable broadcast mechanism to be
+secure. Further research is necessary to improve this situation.</p>
+<h3 id="adaptor-signatures">Adaptor Signatures</h3>
+<p><a href="https://download.wpsoftware.net/bitcoin/wizardry/mw-slides/2018-05-18-l2/slides.pdf">Adaptor
+signatures</a>
+can be produced by a signer by offsetting his public nonce <em>R</em> with a
+known point <em>T = t⋅G</em>, but not offsetting the signature's <em>s</em> value. A
+correct signature (or partial signature, as individual signers'
+contributions to a multisignature are called) on the same message with
+same nonce will then be equal to the adaptor signature offset by <em>t</em>,
+meaning that learning <em>t</em> is equivalent to learning a correct signature.
+This can be used to enable atomic swaps or even <a href="https://eprint.iacr.org/2018/472">general payment
+channels</a> in which the atomicity of
+disjoint transactions is ensured using the signatures themselves, rather
+than Bitcoin script support. The resulting transactions will appear to
+verifiers to be no different from ordinary single-signer transactions,
+except perhaps for the inclusion of locktime refund logic.</p>
+<p>Adaptor signatures, beyond the efficiency and privacy benefits of
+encoding script semantics into constant-sized signatures, have
+additional benefits over traditional hash-based payment channels.
+Specifically, the secret values <em>t</em> may be reblinded between hops,
+allowing long chains of transactions to be made atomic while even the
+participants cannot identify which transactions are part of the chain.
+Also, because the secret values are chosen at signing time, rather than
+key generation time, existing outputs may be repurposed for different
+applications without recourse to the blockchain, even multiple times.</p>
+<h3 id="blind-signatures">Blind Signatures</h3>
+<p>A blind signature protocol is an interactive protocol that enables a
+signer to sign a message at the behest of another party without learning
+any information about the signed message or the signature. Schnorr
+signatures admit a very <a href="https://www.math.uni-frankfurt.de/%7Edmst/research/papers/schnorr.blind_sigs_attack.2001.pdf">simple blind signature
+scheme</a>
+which is however insecure because it's vulnerable to <a href="https://www.iacr.org/archive/crypto2002/24420288/24420288.pdf">Wagner's
+attack</a>.
+A known mitigation is to let the signer abort a signing session with a
+certain probability, and the resulting scheme can be <a href="https://eprint.iacr.org/2019/877">proven secure
+under non-standard cryptographic
+assumptions</a>.</p>
+<p>Blind Schnorr signatures could for example be used in <a href="https://github.com/ElementsProject/scriptless-scripts/blob/master/md/partially-blind-swap.md">Partially Blind
+Atomic
+Swaps</a>,
+a construction to enable transferring of coins, mediated by an untrusted
+escrow agent, without connecting the transactors in the public
+blockchain transaction graph.</p>
+<h2 id="test-vectors-and-reference-code">Test Vectors and Reference Code</h2>
+<p>For development and testing purposes, we provide a <a href="bip-0340/test-vectors.csv" title="wikilink">collection of test
+vectors in CSV format</a> and a
+naive, highly inefficient, and non-constant time <a href="bip-0340/reference.py" title="wikilink">pure Python 3.7
+reference implementation of the signing and verification
+algorithm</a>. The reference
+implementation is for demonstration purposes only and not to be used in
+production environments.</p>
+<h2 id="footnotes">Footnotes</h2>
+<references />
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>This document is the result of many discussions around Schnorr based
+signatures over the years, and had input from Johnson Lau, Greg Maxwell,
+Andrew Poelstra, Rusty Russell, and Anthony Towns. The authors further
+wish to thank all those who provided valuable feedback and reviews,
+including the participants of the <a href="https://github.com/ajtowns/taproot-review">structured
+reviews</a>.</p>
+<p>[1] Informally, this means that without knowledge of the secret key but
+given valid signatures of arbitrary messages, it is not possible to come
+up with further valid signatures.</p>
+<p>[2] A detailed security proof in the random oracle model, which
+essentially restates <a href="https://www.di.ens.fr/%7Epointche/Documents/Papers/2000_joc.pdf">the original security proof by Pointcheval and
+Stern</a>
+more explicitly, can be found in <a href="https://eprint.iacr.org/2016/191">a paper by Kiltz, Masny and
+Pan</a>. All these security proofs assume
+a variant of Schnorr signatures that use <em>(e,s)</em> instead of <em>(R,s)</em> (see
+Design above). Since we use a unique encoding of <em>R</em>, there is an
+efficiently computable bijection that maps <em>(R,s)</em> to <em>(e,s)</em>, which
+allows to convert a successful SUF-CMA attacker for the <em>(e,s)</em> variant
+to a successful SUF-CMA attacker for the <em>(R,s)</em> variant (and
+vice-versa). Furthermore, the proofs consider a variant of Schnorr
+signatures without key prefixing (see Design above), but it can be
+verified that the proofs are also correct for the variant with key
+prefixing. As a result, all the aforementioned security proofs apply to
+the variant of Schnorr signatures proposed in this document.</p>
+<p>[3] If <em>(r,s)</em> is a valid ECDSA signature for a given message and key,
+then <em>(r,n-s)</em> is also valid for the same message and key. If ECDSA is
+restricted to only permit one of the two variants (as Bitcoin does
+through a policy rule on the network), it can be
+<a href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">proven</a>
+non-malleable under stronger than usual assumptions.</p>
+<p>[4] A limitation of committing to the public key (rather than to a short
+hash of it, or not at all) is that it removes the ability for public key
+recovery or verifying signatures against a short public key hash. These
+constructions are generally incompatible with batch verification.</p>
+<p>[5] Since <em>p</em> is odd, negation modulo <em>p</em> will map even numbers to odd
+numbers and the other way around. This means that for a valid X
+coordinate, one of the corresponding Y coordinates will be even, and the
+other will be odd.</p>
+<p>[6] An earlier version of this draft used the third option instead,
+based on a belief that this would in general trade signing efficiency
+for verification efficiency. When using Jacobian coordinates, a common
+optimization in ECC implementations, it is possible to determine if a Y
+coordinate is a quadratic residue by computing the Legendre symbol,
+without converting to affine coordinates first (which needs a modular
+inversion). As modular inverses and Legendre symbols have similar
+<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-August/018081.html">performance</a>
+in practice, this trade-off is not worth it.</p>
+<p>[7] This can be formalized by a simple reduction that reduces an attack
+on Schnorr signatures with implicit Y coordinates to an attack to
+Schnorr signatures with explicit Y coordinates. The reduction works by
+reencoding public keys and negating the result of the hash function,
+which is modeled as random oracle, whenever the challenge public key has
+an explicit Y coordinate that is odd. A proof sketch can be found
+<a href="https://medium.com/blockstream/reducing-bitcoin-transaction-sizes-with-x-only-pubkeys-f86476af05d7">here</a>.</p>
+<p>[8] Among other pitfalls, using the specification with a curve whose
+order is not close to the size of the range of the nonce derivation
+function is insecure.</p>
+<p>[9] The auxiliary random data is hashed (with a unique tag) as a
+precaution against situations where the randomness may be correlated
+with the private key itself. It is xored with the private key (rather
+than combined with it in a hash) to reduce the number of operations
+exposed to the actual secret key.</p>
+<p>[10] Including the <a href="https://moderncrypto.org/mail-archive/curves/2020/001012.html">public key as input to the nonce
+hash</a>
+helps ensure the robustness of the signing algorithm by preventing
+leakage of the secret key if the calculation of the public key <em>P</em> is
+performed incorrectly or maliciously, for example if it is left to the
+caller for performance reasons.</p>
+<p>[11] Note that in general, taking a uniformly random 256-bit integer
+modulo the curve order will produce an unacceptably biased result.
+However, for the secp256k1 curve, the order is sufficiently close to
+<em>2<sup>256</sup></em> that this bias is not observable (<em>1 - n /
+2<sup>256</sup></em> is around <em>1.27 * 2<sup>-128</sup></em>).</p>
+<p>[12] Verifying the signature before leaving the signer prevents random
+or attacker provoked computation errors. This prevents publishing
+invalid signatures which may leak information about the secret key. It
+is recommended, but can be omitted if the computation cost is
+prohibitive.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-04-24</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>
