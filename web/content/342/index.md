@@ -362,6 +362,11 @@ also some changes to the resource limitations:
 
 <references />
 
+## Deployment
+
+This proposal is deployed identically to Taproot
+([BIP341](bip-0341.mediawiki "wikilink")).
+
 ## Examples
 
 The Taproot ([BIP341](bip-0341.mediawiki "wikilink")) test vectors also

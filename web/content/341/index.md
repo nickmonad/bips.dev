@@ -583,7 +583,56 @@ can be found
 
 ## Deployment
 
-TODO
+This BIP is deployed concurrently with
+[BIP342](bip-0342.mediawiki "wikilink").
+
+For Bitcoin signet, these BIPs are always active.
+
+For Bitcoin mainnet and testnet3, these BIPs will be deployed by
+"version bits" with the name "taproot" and bit 2, using
+[BIP9](bip-0009.mediawiki "wikilink") modified to use a lower threshold,
+with an additional *min\_activation\_height* parameter and replacing the
+state transition logic for the DEFINED, STARTED and LOCKED\_IN states as
+follows:
+
+`   case DEFINED:`  
+`       if (GetMedianTimePast(block.parent) >= starttime) {`  
+`           return STARTED;`  
+`       }`  
+`       return DEFINED;`
+
+`   case STARTED:`  
+`       int count = 0;`  
+`       walk = block;`  
+`       for (i = 0; i < 2016; i++) {`  
+`           walk = walk.parent;`  
+`           if ((walk.nVersion & 0xE0000000) == 0x20000000 && ((walk.nVersion >> bit) & 1) == 1) {`  
+`               count++;`  
+`           }`  
+`       }`  
+`       if (count >= threshold) {`  
+`           return LOCKED_IN;`  
+`       } else if (GetMedianTimePast(block.parent) >= timeout) {`  
+`           return FAILED;`  
+`       }`  
+`       return STARTED;`
+
+`   case LOCKED_IN:`  
+`       if (block.nHeight < min_activation_height) {`  
+`           return LOCKED_IN;`  
+`       }`  
+`       return ACTIVE;`
+
+For Bitcoin mainnet, the starttime is epoch timestamp 1619222400
+(midnight 24 April 2021 UTC), timeout is epoch timestamp 1628640000
+(midnight 11 August 2021 UTC), the threshold is 1815 blocks (90%)
+instead of 1916 blocks (95%), and the min\_activation\_height is block
+709632 (expected approximately 12 November 2021).
+
+For Bitcoin testnet3, the starttime is epoch timestamp 1619222400
+(midnight 24 April 2021 UTC), timeout is epoch timestamp 1628640000
+(midnight 11 August 2021 UTC), the threshold is 1512 blocks (75%), and
+the min\_activation\_height is block 0.
 
 ## Backwards compatibility
 
