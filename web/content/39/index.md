@@ -232,3 +232,7 @@ C++:
 C (with Python/Java/Javascript bindings):
 
   - <https://github.com/ElementsProject/libwally-core>
+
+Python:
+
+  - <https://github.com/scgbckbone/btc-hd-wallet>

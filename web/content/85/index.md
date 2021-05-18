@@ -208,6 +208,8 @@ OUTPUT
     [5](https://github.com/iancoleman/bip39) and
     [6](https://iancoleman.io/bip39/)
 
+btc\_hd\_wallet: [7](https://github.com/scgbckbone/btc-hd-wallet)
+
 ## Applications
 
 The Application number defines how entropy will be used post processing.
