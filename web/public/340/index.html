@@ -173,9 +173,8 @@ to sign.</li>
 <li>Signatures are pairs <em>(R, s)</em> that satisfy <em>s⋅G = R + hash(R ||
 m)⋅P</em>. This supports batch verification, as there are no elliptic
 curve operations inside the hashes. Batch verification enables
-significant speedups.</li>
+significant speedups.[4]</li>
 </ol>
-<p><img src="bip-0340/speedup-batch.png" alt="This graph shows the ratio between the time it takes to verify n signatures individually and to verify a batch of n signatures. This ratio goes up logarithmically with the number of signatures, or in other words: the total time to verify n signatures grows with O(n / log n)." title="This graph shows the ratio between the time it takes to verify n signatures individually and to verify a batch of n signatures. This ratio goes up logarithmically with the number of signatures, or in other words: the total time to verify n signatures grows with O(n / log n)." /></p>
 <p>Since we would like to avoid the fragility that comes with short hashes,
 the <em>e</em> variant does not provide significant advantages. We choose the
 <em>R</em>-option, which supports batch verification.</p>
@@ -189,7 +188,7 @@ This would render signatures insecure when keys are generated using
 derivation</a>
 and other methods that rely on additive tweaks to existing keys such as
 Taproot.</p>
-<p>To protect against these attacks, we choose <em>key prefixed</em>[4] Schnorr
+<p>To protect against these attacks, we choose <em>key prefixed</em>[5] Schnorr
 signatures which means that the public key is prefixed to the message in
 the challenge hash input. This changes the equation to <em>s⋅G = R + hash(R
 || P || m)⋅P</em>. <a href="https://eprint.iacr.org/2015/1135.pdf">It can be shown</a>
@@ -226,7 +225,7 @@ ambiguous (every valid X coordinate has two possible Y coordinates). We
 have a choice between several options for symmetry breaking:</p>
 <ol>
 <li>Implicitly choosing the Y coordinate that is in the lower half.</li>
-<li>Implicitly choosing the Y coordinate that is even[5].</li>
+<li>Implicitly choosing the Y coordinate that is even[6].</li>
 <li>Implicitly choosing the Y coordinate that is a quadratic residue
 (i.e. has a square root modulo <em>p</em>).</li>
 </ol>
@@ -236,14 +235,14 @@ format consists of a byte indicating the oddness of the Y coordinate,
 plus the full X coordinate. To avoid gratuitous incompatibilities, we
 pick that option for <em>P</em>, and thus our X-only public keys become
 equivalent to a compressed public key that is the X-only key prefixed by
-the byte 0x02. For consistency, the same is done for <em>R</em>[6].</p>
+the byte 0x02. For consistency, the same is done for <em>R</em>[7].</p>
 <p>Despite halving the size of the set of valid public keys, implicit Y
 coordinates are not a reduction in security. Informally, if a fast
 algorithm existed to compute the discrete logarithm of an X-only public
 key, then it could also be used to compute the discrete logarithm of a
 full public key: apply it to the X coordinate, and then optionally
 negate the result. This shows that breaking an X-only public key can be
-at most a small constant term faster than breaking a full one.[7].</p>
+at most a small constant term faster than breaking a full one.[8].</p>
 <p><strong>Tagged Hashes</strong> Cryptographic hash functions are used for multiple
 purposes in the specification below and in Bitcoin in general. To make
 sure hashes used in one context can't be reinterpreted in another one,
@@ -273,7 +272,7 @@ of a point <em>R</em> whose Y coordinate is even. The signature satisfies <em>s�
 <p>The following conventions are used, with constants as defined for
 <a href="https://www.secg.org/sec2-v2.pdf">secp256k1</a>. We note that adapting
 this specification to other elliptic curves is not straightforward and
-can result in an insecure scheme[8].</p>
+can result in an insecure scheme[9].</p>
 <ul>
 <li>Lowercase variables represent integers or byte arrays.
 <ul>
@@ -381,9 +380,9 @@ remain usable.</p>
 <li>Let <em>P = d'⋅G</em></li>
 <li>Let ''d = d' '' if <em>has_even_y(P)</em>, otherwise let ''d = n - d' ''.</li>
 <li>Let <em>t</em> be the byte-wise xor of <em>bytes(d)</em> and
-<em>hash<sub>BIP0340/aux</sub>(a)</em>[9].</li>
-<li>Let <em>rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P) || m)</em>[10].</li>
-<li>Let <em>k' = int(rand) mod n</em>[11].</li>
+<em>hash<sub>BIP0340/aux</sub>(a)</em>[10].</li>
+<li>Let <em>rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P) || m)</em>[11].</li>
+<li>Let <em>k' = int(rand) mod n</em>[12].</li>
 <li>Fail if <em>k' = 0</em>.</li>
 <li>Let <em>R = k'⋅G</em>.</li>
 <li>Let ''k = k' '' if <em>has_even_y(R)</em>, otherwise let ''k = n - k' ''.</li>
@@ -391,7 +390,7 @@ remain usable.</p>
 || m)) mod n</em>.</li>
 <li>Let <em>sig = bytes(R) || bytes((k + ed) mod n)</em>.</li>
 <li>If <em>Verify(bytes(P), m, sig)</em> (see below) returns failure,
-abort[12].</li>
+abort[13].</li>
 <li>Return the signature <em>sig</em>.</li>
 </ul>
 <p>The auxiliary random data should be set to fresh randomness generated at
@@ -639,6 +638,9 @@ is restricted to only permit one of the two variants (as Bitcoin
 does through a policy rule on the network), it can be
 <a href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">proven</a>
 non-malleable under stronger than usual assumptions.</li>
+<li>The speedup that results from batch verification can be demonstrated
+with the cryptography library
+<a href="https://github.com/jonasnick/secp256k1/blob/schnorrsig-batch-verify/doc/speedup-batch.md">libsecp256k1</a>.</li>
 <li>A limitation of committing to the public key (rather than to a short
 hash of it, or not at all) is that it removes the ability for public
 key recovery or verifying signatures against a short public key

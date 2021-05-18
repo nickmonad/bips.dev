@@ -153,14 +153,7 @@ depending on whether the signer reveals *e* or *R*:
 2.  Signatures are pairs *(R, s)* that satisfy *s⋅G = R + hash(R ||
     m)⋅P*. This supports batch verification, as there are no elliptic
     curve operations inside the hashes. Batch verification enables
-    significant speedups.
-
-![This graph shows the ratio between the time it takes to verify *n*
-signatures individually and to verify a batch of *n* signatures. This
-ratio goes up logarithmically with the number of signatures, or in other
-words: the total time to verify *n* signatures grows with *O(n / log
-n)*.](bip-0340/speedup-batch.png
-"This graph shows the ratio between the time it takes to verify n signatures individually and to verify a batch of n signatures. This ratio goes up logarithmically with the number of signatures, or in other words: the total time to verify n signatures grows with O(n / log n).")
+    significant speedups.\[4\]
 
 Since we would like to avoid the fragility that comes with short hashes,
 the *e* variant does not provide significant advantages. We choose the
@@ -177,7 +170,7 @@ derivation](bip-0032.mediawiki#public-parent-key--public-child-key "wikilink")
 and other methods that rely on additive tweaks to existing keys such as
 Taproot.
 
-To protect against these attacks, we choose *key prefixed*\[4\] Schnorr
+To protect against these attacks, we choose *key prefixed*\[5\] Schnorr
 signatures which means that the public key is prefixed to the message in
 the challenge hash input. This changes the equation to *s⋅G = R + hash(R
 || P || m)⋅P*. [It can be shown](https://eprint.iacr.org/2015/1135.pdf)
@@ -217,7 +210,7 @@ ambiguous (every valid X coordinate has two possible Y coordinates). We
 have a choice between several options for symmetry breaking:
 
 1.  Implicitly choosing the Y coordinate that is in the lower half.
-2.  Implicitly choosing the Y coordinate that is even\[5\].
+2.  Implicitly choosing the Y coordinate that is even\[6\].
 3.  Implicitly choosing the Y coordinate that is a quadratic residue
     (i.e. has a square root modulo *p*).
 
@@ -227,7 +220,7 @@ format consists of a byte indicating the oddness of the Y coordinate,
 plus the full X coordinate. To avoid gratuitous incompatibilities, we
 pick that option for *P*, and thus our X-only public keys become
 equivalent to a compressed public key that is the X-only key prefixed by
-the byte 0x02. For consistency, the same is done for *R*\[6\].
+the byte 0x02. For consistency, the same is done for *R*\[7\].
 
 Despite halving the size of the set of valid public keys, implicit Y
 coordinates are not a reduction in security. Informally, if a fast
@@ -235,7 +228,7 @@ algorithm existed to compute the discrete logarithm of an X-only public
 key, then it could also be used to compute the discrete logarithm of a
 full public key: apply it to the X coordinate, and then optionally
 negate the result. This shows that breaking an X-only public key can be
-at most a small constant term faster than breaking a full one.\[7\].
+at most a small constant term faster than breaking a full one.\[8\].
 
 **Tagged Hashes** Cryptographic hash functions are used for multiple
 purposes in the specification below and in Bitcoin in general. To make
@@ -271,7 +264,7 @@ of a point *R* whose Y coordinate is even. The signature satisfies *s⋅G
 The following conventions are used, with constants as defined for
 [secp256k1](https://www.secg.org/sec2-v2.pdf). We note that adapting
 this specification to other elliptic curves is not straightforward and
-can result in an insecure scheme\[8\].
+can result in an insecure scheme\[9\].
 
   - Lowercase variables represent integers or byte arrays.
       - The constant *p* refers to the field size,
@@ -374,9 +367,9 @@ The algorithm *Sign(sk, m)* is defined as:
   - Let *P = d'⋅G*
   - Let ''d = d' '' if *has\_even\_y(P)*, otherwise let ''d = n - d' ''.
   - Let *t* be the byte-wise xor of *bytes(d)* and
-    *hash<sub>BIP0340/aux</sub>(a)*\[9\].
-  - Let *rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P) || m)*\[10\].
-  - Let *k' = int(rand) mod n*\[11\].
+    *hash<sub>BIP0340/aux</sub>(a)*\[10\].
+  - Let *rand = hash<sub>BIP0340/nonce</sub>(t || bytes(P) || m)*\[11\].
+  - Let *k' = int(rand) mod n*\[12\].
   - Fail if *k' = 0*.
   - Let *R = k'⋅G*.
   - Let ''k = k' '' if *has\_even\_y(R)*, otherwise let ''k = n - k' ''.
@@ -384,7 +377,7 @@ The algorithm *Sign(sk, m)* is defined as:
     || m)) mod n*.
   - Let *sig = bytes(R) || bytes((k + ed) mod n)*.
   - If *Verify(bytes(P), m, sig)* (see below) returns failure,
-    abort\[12\].
+    abort\[13\].
   - Return the signature *sig*.
 
 The auxiliary random data should be set to fresh randomness generated at
@@ -656,16 +649,19 @@ reviews](https://github.com/ajtowns/taproot-review).
     does through a policy rule on the network), it can be
     [proven](https://nbn-resolving.de/urn:nbn:de:hbz:294-60803)
     non-malleable under stronger than usual assumptions.
-4.  A limitation of committing to the public key (rather than to a short
+4.  The speedup that results from batch verification can be demonstrated
+    with the cryptography library
+    [libsecp256k1](https://github.com/jonasnick/secp256k1/blob/schnorrsig-batch-verify/doc/speedup-batch.md).
+5.  A limitation of committing to the public key (rather than to a short
     hash of it, or not at all) is that it removes the ability for public
     key recovery or verifying signatures against a short public key
     hash. These constructions are generally incompatible with batch
     verification.
-5.  Since *p* is odd, negation modulo *p* will map even numbers to odd
+6.  Since *p* is odd, negation modulo *p* will map even numbers to odd
     numbers and the other way around. This means that for a valid X
     coordinate, one of the corresponding Y coordinates will be even, and
     the other will be odd.
-6.  An earlier version of this draft used the third option instead,
+7.  An earlier version of this draft used the third option instead,
     based on a belief that this would in general trade signing
     efficiency for verification efficiency. When using Jacobian
     coordinates, a common optimization in ECC implementations, it is
@@ -675,7 +671,7 @@ reviews](https://github.com/ajtowns/taproot-review).
     inverses and Legendre symbols have similar
     [performance](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-August/018081.html)
     in practice, this trade-off is not worth it.
-7.  This can be formalized by a simple reduction that reduces an attack
+8.  This can be formalized by a simple reduction that reduces an attack
     on Schnorr signatures with implicit Y coordinates to an attack to
     Schnorr signatures with explicit Y coordinates. The reduction works
     by reencoding public keys and negating the result of the hash
@@ -683,26 +679,26 @@ reviews](https://github.com/ajtowns/taproot-review).
     public key has an explicit Y coordinate that is odd. A proof sketch
     can be found
     [here](https://medium.com/blockstream/reducing-bitcoin-transaction-sizes-with-x-only-pubkeys-f86476af05d7).
-8.  Among other pitfalls, using the specification with a curve whose
+9.  Among other pitfalls, using the specification with a curve whose
     order is not close to the size of the range of the nonce derivation
     function is insecure.
-9.  The auxiliary random data is hashed (with a unique tag) as a
+10. The auxiliary random data is hashed (with a unique tag) as a
     precaution against situations where the randomness may be correlated
     with the private key itself. It is xored with the private key
     (rather than combined with it in a hash) to reduce the number of
     operations exposed to the actual secret key.
-10. Including the [public key as input to the nonce
+11. Including the [public key as input to the nonce
     hash](https://moderncrypto.org/mail-archive/curves/2020/001012.html)
     helps ensure the robustness of the signing algorithm by preventing
     leakage of the secret key if the calculation of the public key *P*
     is performed incorrectly or maliciously, for example if it is left
     to the caller for performance reasons.
-11. Note that in general, taking a uniformly random 256-bit integer
+12. Note that in general, taking a uniformly random 256-bit integer
     modulo the curve order will produce an unacceptably biased result.
     However, for the secp256k1 curve, the order is sufficiently close to
     *2<sup>256</sup>* that this bias is not observable (*1 - n /
     2<sup>256</sup>* is around *1.27 \* 2<sup>-128</sup>*).
-12. Verifying the signature before leaving the signer prevents random or
+13. Verifying the signature before leaving the signer prevents random or
     attacker provoked computation errors. This prevents publishing
     invalid signatures which may leak information about the secret key.
     It is recommended, but can be omitted if the computation cost is
