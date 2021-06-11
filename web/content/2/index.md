@@ -92,7 +92,7 @@ about the proposal. Following a discussion, the proposal should be
 submitted to the [BIPs git repository](https://github.com/bitcoin/bips)
 as a pull request. This draft must be written in BIP style as described
 below, and named with an alias such as "bip-johndoe-infinitebitcoins"
-until the editor has assigned it a BIP number (authors MUST NOT
+until an editor has assigned it a BIP number (authors MUST NOT
 self-assign BIP numbers).
 
 BIP authors are responsible for collecting community feedback on both
@@ -108,9 +108,9 @@ It is highly recommended that a single BIP contain a single key proposal
 or new idea. The more focused the BIP, the more successful it tends to
 be. If in doubt, split your BIP into several well-focused ones.
 
-When the BIP draft is complete, the BIP editor will assign the BIP a
+When the BIP draft is complete, a BIP editor will assign the BIP a
 number, label it as Standards Track, Informational, or Process, and
-merge the pull request to the BIPs git repository. The BIP editor will
+merge the pull request to the BIPs git repository. The BIP editors will
 not unreasonably reject a BIP. Reasons for rejecting BIPs include
 duplication of effort, disregard for formatting rules, being too
 unfocused or too broad, being technically unsound, not providing proper
@@ -140,20 +140,24 @@ you can always submit a competing BIP.
 
 If you are interested in assuming ownership of a BIP, send a message
 asking to take over, addressed to both the original author and the BIP
-editor. If the original author doesn't respond to email in a timely
-manner, the BIP editor will make a unilateral decision (it's not like
+editors. If the original author doesn't respond to email in a timely
+manner, the BIP editors will make a unilateral decision (it's not like
 such decisions can't be reversed :).
 
 ### BIP Editors
 
-The current BIP editor is Luke Dashjr who can be contacted at
-[luke\_bipeditor@dashjr.org](mailto:luke_bipeditor@dashjr.org "wikilink").
+The current BIP editors are:
+
+  - Luke Dashjr
+    ([luke\_bipeditor@dashjr.org](mailto:luke_bipeditor@dashjr.org "wikilink"))
+  - Kalle Alm
+    ([karljohan-alm@garage.co.jp](mailto:karljohan-alm@garage.co.jp "wikilink"))
 
 ### BIP Editor Responsibilities & Workflow
 
-The BIP editor subscribes to the Bitcoin development mailing list.
-Off-list BIP-related correspondence should be sent (or CC'd) to
-luke\_bipeditor@dashjr.org.
+The BIP editors subscribe to the Bitcoin development mailing list.
+Off-list BIP-related correspondence should be sent (or CC'd) to the BIP
+editors.
 
 For each new BIP that comes in an editor does the following:
 
@@ -360,7 +364,7 @@ The typical paths of the status of BIPs are as follows:
 <img src="bip-0002/process.png"></img>
 
 Champions of a BIP may decide on their own to change the status between
-Draft, Deferred, or Withdrawn. The BIP editor may also change the status
+Draft, Deferred, or Withdrawn. A BIP editor may also change the status
 to Deferred when no progress is being made on the BIP.
 
 A BIP may only change status from Draft (or Rejected) to Proposed, when
