@@ -98,11 +98,9 @@ parameter keys.
   - address: bitcoin address
   - message: message that describes the transaction to the user ([see
     examples below](#Examples "wikilink"))
-  - size: amount of base bitcoin units ([see
-    below](#Transfer_amount/size "wikilink"))
   - (others): optional, for future extensions
 
-#### Transfer amount/size
+#### Transfer amount
 
 If an amount is provided, it MUST be specified in decimal BTC. All
 amounts MUST contain no commas and use a period (.) as the separating
