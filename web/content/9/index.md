@@ -290,7 +290,8 @@ valid, such as BIPs [16](bip-0016.mediawiki "wikilink"),
 rule without the prefix, it may use it unmodified for mining. On the
 other hand, when this prefix is used, it indicates a more subtle change
 to the block structure or generation transaction; examples of this would
-be BIP 34 (because it modifies coinbase construction) and 141 (since it
+be [BIP 34](bip-0034.mediawiki "wikilink") (because it modifies coinbase
+construction) and [141](bip-0141.mediawiki "wikilink") (since it
 modifies the txid hashing and adds a commitment to the generation
 transaction). A client that does not understand a rule prefixed by '\!'
 must not attempt to process the template, and must not attempt to use it
@@ -302,8 +303,8 @@ The mechanism described above is very generic, and variations are
 possible for future soft forks. Here are some ideas that can be taken
 into account.
 
-**Modified thresholds** The 1916 threshold (based on in BIP 34's 95%)
-does not have to be maintained for eternity, but changes should take the
+**Modified thresholds** The 1916 threshold (based on BIP 34's 95%) does
+not have to be maintained for eternity, but changes should take the
 effect on the warning system into account. In particular, having a
 lock-in threshold that is incompatible with the one used for the warning
 system may have long-term effects, as the warning system cannot rely on
