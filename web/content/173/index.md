@@ -231,7 +231,7 @@ implementations' assumptions about lengths), but still be visually
 distinct.</ref> for testnet.
 
   - The data-part values:
-      - 1 byte: the witness version
+      - 1 character (representing 5 bits of data): the witness version
       - A conversion of the 2-to-40-byte witness program (as defined by
         [BIP141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki))
         to base32:

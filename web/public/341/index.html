@@ -477,7 +477,7 @@ as the public key byte array. The parity bit will be required for
 spending the output with a script path. In order to allow spending with
 the key path, we define <code>taproot_tweak_seckey</code> to compute the secret key
 for a tweaked public key. For any byte string <code>h</code> it holds that
-<code>taproot_tweak_pubkey(pubkey_gen(seckey), h)[0] == pubkey_gen(taproot_tweak_seckey(seckey, h))</code>.</p>
+<code>taproot_tweak_pubkey(pubkey_gen(seckey), h)[1] == pubkey_gen(taproot_tweak_seckey(seckey, h))</code>.</p>
 <pre style="background-color:#fafafa;">
 <code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">h</span><span style="color:#61676c;">):
     t </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(</span><span style="color:#f29718;">tagged_hash</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;TapTweak&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">pubkey </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">h))
@@ -522,7 +522,7 @@ CompactSize-encoded length.</p>
         h </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">()
     </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;">:
         </span><span style="font-style:italic;color:#55b4d4;">_</span><span style="color:#61676c;">, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(script_tree)
-    output_pubkey, </span><span style="font-style:italic;color:#55b4d4;">_ </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span style="color:#61676c;">(internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">h)
+    </span><span style="font-style:italic;color:#55b4d4;">_</span><span style="color:#61676c;">, output_pubkey </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span style="color:#61676c;">(internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">h)
     </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">([</span><span style="color:#ff8f40;">0x51</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">0x20</span><span style="color:#61676c;">]) </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">output_pubkey
 </span></code></pre>
 <p><img src="bip-0341/tree.png" alt="This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD." title="This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD." /></p>
@@ -847,7 +847,7 @@ of <code>hash_type</code> implicit, a byte can often be saved.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-06-12</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-06-13</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

@@ -82,7 +82,8 @@ Where:
     A compact size unsigned integer representing the type. This compact
     size unsigned integer must be minimally encoded, i.e. if the value
     can be represented using one byte, it must be represented as one
-    byte. This must be unique within a specific <map>.
+    byte. There can be multiple entries with the same <keytype> within a
+    specific <map>, but the <key> must be unique.
   - <keylen>  
     The compact size unsigned integer containing the combined length of
     <keytype> and <keydata>
@@ -257,7 +258,7 @@ software may choose whichever value it wishes.\[5\]
 
 ### Proprietary Use Type
 
-For all global, per-input, and per-output maps, the types `0xFC` is
+For all global, per-input, and per-output maps, the type `0xFC` is
 reserved for proprietary use. The proprietary use type requires keys
 that follow the type with a compact size unsigned integer representing
 the length of the string identifer, followed by the string identifier,
@@ -273,7 +274,7 @@ whatever they want it to mean. The subtype must also be a compact size
 unsigned integer in the same form as the normal types. The key data and
 value data are defined by the proprietary type user.
 
-The proprietary use types is for private use by individuals and
+The proprietary use type is for private use by individuals and
 organizations who wish to use PSBT in their processes. It is useful when
 there are additional data that they need attached to a PSBT but such
 data are not useful or available for the general public. The proprietary
@@ -519,7 +520,7 @@ specified.
 ### Procedure For New Fields
 
 New fields should first be proposed on the bitcoin-dev mailing list. If
-a field requires significatn description as to its usage, it should be
+a field requires significant description as to its usage, it should be
 accompanied by a separate BIP. The field must be added to the field
 listing tables in the Specification section.
 

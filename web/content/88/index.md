@@ -345,8 +345,14 @@ Its representation after parsing can be:
 `   [[(0, 2), (33, 33), (123, 123)], [(0, 2147483647)]]`
 
 `*h/0` specifies a partial template that matches any hardened index
-followed by any non-hardened index
+followed by non-hardened index 0
 
 Its representation after parsing can be:
 
 `   [[(2147483648, 4294967295)], [(0, 0)]]`
+
+## Acknowledgements
+
+Special thanks to Peter D. Gray, Dr. Maxim Orlovsky, Robert Spigler and
+others for their feedback on the specification, and to Janine
+(github:@Enegnei) for the help in preparing the draft.

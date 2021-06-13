@@ -426,7 +426,7 @@ as the public key byte array. The parity bit will be required for
 spending the output with a script path. In order to allow spending with
 the key path, we define `taproot_tweak_seckey` to compute the secret key
 for a tweaked public key. For any byte string `h` it holds that
-`taproot_tweak_pubkey(pubkey_gen(seckey), h)[0] ==
+`taproot_tweak_pubkey(pubkey_gen(seckey), h)[1] ==
 pubkey_gen(taproot_tweak_seckey(seckey, h))`.
 
 ``` python
@@ -475,7 +475,7 @@ def taproot_output_script(internal_pubkey, script_tree):
         h = bytes()
     else:
         _, h = taproot_tree_helper(script_tree)
-    output_pubkey, _ = taproot_tweak_pubkey(internal_pubkey, h)
+    _, output_pubkey = taproot_tweak_pubkey(internal_pubkey, h)
     return bytes([0x51, 0x20]) + output_pubkey
 ```
 
