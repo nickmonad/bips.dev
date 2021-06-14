@@ -208,7 +208,12 @@ OUTPUT
     [5](https://github.com/iancoleman/bip39) and
     [6](https://iancoleman.io/bip39/)
 
-btc\_hd\_wallet: [7](https://github.com/scgbckbone/btc-hd-wallet)
+<!-- end list -->
+
+  - AirGap Vault:
+    [7](https://github.com/airgap-it/airgap-vault/commit/d64332fc2f332be622a1229acb27f621e23774d6)
+
+btc\_hd\_wallet: [8](https://github.com/scgbckbone/btc-hd-wallet)
 
 ## Applications
 
