@@ -311,8 +311,8 @@ If the sender's fee rate is always round, then a blockchain analyst can
 easily spot the transactions of the sender involving payjoin by checking
 if, when removing a single input to the suspected payjoin transaction,
 the resulting fee rate is round. To prevent this, the sender can agree
-to pay more more fee so the receiver make sure that the payjoin
-transaction fee is also round.
+to pay more fee so the receiver make sure that the payjoin transaction
+fee is also round.
 
   - The sender's transaction is time sensitive.
 
@@ -398,8 +398,8 @@ prevent a malicious receiver from stealing money.
           - Make sure the actual contribution is only paying for fee
             incurred by additional inputs: `actual contribution` is less
             than or equals to `originalPSBTFeeRate *
-            vsize(sender_input_type) * (count(original_psbt_inputs) -
-            count(payjoin_proposal_inputs))`. (see [Fee
+            vsize(sender_input_type) * (count(payjoin_proposal_inputs) -
+            count(original_psbt_inputs))`. (see [Fee
             output](#fee-output "wikilink") section)
       - If the output is the payment output and payment output
         substitution is allowed.
@@ -720,7 +720,7 @@ vectors](#test-vectors "wikilink").
                 if (proposedPSBTInput.NonWitnessUtxo != null || proposedPSBTInput.WitnessUtxo != null)
                     throw new PayjoinSenderException("The receiver added non_witness_utxo or witness_utxo to one of our inputs");
                 sequences.Add(proposedTxIn.Sequence);
-                
+    
                 // Fill up the info from the original PSBT input so we can sign and get fees.
                 proposedPSBTInput.NonWitnessUtxo = input.SignedPSBTInput.NonWitnessUtxo;
                 proposedPSBTInput.WitnessUtxo = input.SignedPSBTInput.WitnessUtxo;
@@ -884,7 +884,7 @@ A successful exchange with:
     merged sender's support.
   - [Join
     Market](https://github.com/JoinMarket-Org/joinmarket-clientserver "wikilink")
-    is in the process of implementing the protocol.
+    has implemented sender and receiver side of this protocol.
   - [JavaScript sender
     implementation](https://github.com/bitcoinjs/payjoin-client "wikilink").
 
