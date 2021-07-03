@@ -251,7 +251,7 @@ them. The chain codes of the leaf nodes are ignored, and only their
 embedded private or public key is relevant. Because of this
 construction, knowing an extended private key allows reconstruction of
 all descendant private keys and public keys, and knowing an extended
-public keys allows reconstruction of all descendant non-hardened public
+public key allows reconstruction of all descendant non-hardened public
 keys.
 
 ### Key identifiers

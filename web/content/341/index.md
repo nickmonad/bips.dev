@@ -646,7 +646,7 @@ Non-upgraded wallets can receive and send bitcoin from non-upgraded and
 upgraded wallets using SegWit version 0 programs, traditional
 pay-to-pubkey-hash, etc. Depending on the implementation non-upgraded
 wallets may be able to send to Segwit version 1 programs if they support
-sending to [BIP173](bip-0173.mediawiki "wikilink") Bech32 addresses.
+sending to [BIP350](bip-0350.mediawiki "wikilink") Bech32m addresses.
 
 ## Acknowledgements
 

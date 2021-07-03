@@ -113,7 +113,7 @@ The new per-output types for PSBT Version 2 are defined as follows:
 </tr>
 <tr class="even">
 <td><p>Output Script</p></td>
-<td><p><code>PSBT_OUT_SCRIPT = 0x03</code></p></td>
+<td><p><code>PSBT_OUT_SCRIPT = 0x04</code></p></td>
 <td><p>None</p></td>
 <td><p>No key data</p></td>
 <td><p><tt></p>

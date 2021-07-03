@@ -208,7 +208,7 @@ The currently defined per-output \[4\] types are defined as follows:
 </tr>
 <tr class="odd">
 <td><p>Output Script</p></td>
-<td><p><code>PSBT_OUT_SCRIPT = 0x03</code></p></td>
+<td><p><code>PSBT_OUT_SCRIPT = 0x04</code></p></td>
 <td><p>None</p></td>
 <td><p>No key data</p></td>
 <td><p><tt></p>

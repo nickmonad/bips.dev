@@ -118,7 +118,9 @@ networks.
 
 Introduce a new message type `sendaddrv2`. Sending such a message
 indicates that a node can understand and prefers to receive `addrv2`
-messages instead of `addr` messages. I.e. "Send me addrv2".
+messages instead of `addr` messages. I.e. "Send me addrv2". Sending or
+not sending this message does not imply any preference with respect to
+receiving unrequested address messages.
 
 The `sendaddrv2` message MUST only be sent in response to the `version`
 message from a peer and prior to sending the `verack` message.

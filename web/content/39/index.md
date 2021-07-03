@@ -200,7 +200,7 @@ Haskell:
 
 JavaScript:
 
-  - <https://github.com/bitpay/bitcore-mnemonic>
+  - <https://github.com/bitpay/bitcore/tree/master/packages/bitcore-mnemonic>
   - <https://github.com/bitcoinjs/bip39> (used by
     [blockchain.info](https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/hd-wallet.js#L121-L146 "wikilink"))
 
