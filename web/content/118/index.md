@@ -216,11 +216,11 @@ To verify a signature *sig* for a BIP 118 public key *p*:
 
   - If the *sig* is 64 bytes long, return *Verify(p,
     hash<sub>TapSigHash</sub>(0x00 || SigMsg118(0x00, 1) ||
-    SigExt118(0x00, 0x02), sig)*, where *Verify* is defined in [BIP
+    SigExt118(0x00, 0x01), sig)*, where *Verify* is defined in [BIP
     340](bip-0340.mediawiki "wikilink").
   - If the *sig* is 65 bytes long, return *sig\[64\] ≠ 0x00 and
     Verify(p, hash<sub>TapSighash</sub>(0x00 || SigMsg118(sig\[64\], 1)
-    || SigExt118(sig\[64\], 0x02), sig\[0:64\])*.
+    || SigExt118(sig\[64\], 0x01), sig\[0:64\])*.
   - Otherwise, fail.
 
 The key differences from [BIP 342](bip-0342.mediawiki "wikilink")
