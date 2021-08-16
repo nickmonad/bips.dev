@@ -125,12 +125,12 @@ in most significant byte order.</p>
 <table><thead><tr><th>Name</th><th><keytype></th><th><keydata></th><th><keydata> Description</th><th><valuedata></th><th><valuedata> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th><th>Parent BIP</th></tr></thead><tbody>
 <tr><td>Unsigned Transaction</td><td><code>PSBT_GLOBAL_UNSIGNED_TX = 0x00</code></td><td>None</td><td>No key data</td><td><transaction></td><td>The transaction in network serialization. The scriptSigs and witnesses for each input must be empty. The transaction must be in the old serialization format (without witnesses).</td><td>0</td><td></td><td>0</td><td>174</td></tr>
 <tr><td>Extended Public Key</td><td><code>PSBT_GLOBAL_XPUB = 0x01</code></td><td><xpub></td><td>The 78 byte serialized extended public key as defined by BIP 32. Extended public keys are those that can be used to derive public keys used in the inputs and outputs of this transaction. It should be the public key at the highest hardened derivation index so that the unhardened child keys used in the transaction can be derived.</td><td><code>&lt;32-bit uint&gt; &lt;32-bit uint&gt;*</code></td><td>The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. The number of 32 bit unsigned integer indexes must match the depth provided in the extended public key.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
-<tr><td>Transaction Version</td><td><code>PSBT_GLOBAL_TX_VERSION = 0x02</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-psb2.mediawiki" title="wikilink">psbt2</a></td></tr>
-<tr><td>Fallback Locktime</td><td><code>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-psb2.mediawiki" title="wikilink">psbt2</a></td></tr>
-<tr><td>Input Count</td><td><code>PSBT_GLOBAL_INPUT_COUNT = 0x04</code></td><td>None</td><td>No key data</td><td><compact size uint></td><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-psb2.mediawiki" title="wikilink">psbt2</a></td></tr>
-<tr><td>Output Count</td><td><code>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</code></td><td>None</td><td>No key data</td><td><compact size uint></td><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-psb2.mediawiki" title="wikilink">psbt2</a></td></tr>
-<tr><td>Transaction Modifiable Flags</td><td><code>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</code></td><td>None</td><td>No key data</td><td><single byte boolean><code>   </code><single byte boolean><code>   </code><bitvector></td><td>A single byte boolean (0 for False, 1 for True) representing whether inputs can be modified, followed by a single byte boolean representing whether outputs can be modified.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-psb2.mediawiki" title="wikilink">psbt2</a></td></tr>
-<tr><td>SIGHASH_SINGLE Inputs</td><td><code>PSBT_GLOBAL_SIGHASH_SINGLE_INPUTS = 0x07</code></td><td>None</td><td>No key data</td><td><bit vector></td><td>A bit vector representing which input indexes use SIGHASH_SINGLE. If the bit for an index is set to 1, then the input and output pair at that index are tied together with SIGHASH_SINGLE and must be moved together.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-psb2.mediawiki" title="wikilink">psbt2</a></td></tr>
+<tr><td>Transaction Version</td><td><code>PSBT_GLOBAL_TX_VERSION = 0x02</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
+<tr><td>Fallback Locktime</td><td><code>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
+<tr><td>Input Count</td><td><code>PSBT_GLOBAL_INPUT_COUNT = 0x04</code></td><td>None</td><td>No key data</td><td><compact size uint></td><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
+<tr><td>Output Count</td><td><code>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</code></td><td>None</td><td>No key data</td><td><compact size uint></td><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
+<tr><td>Transaction Modifiable Flags</td><td><code>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</code></td><td>None</td><td>No key data</td><td><single byte boolean><code>   </code><single byte boolean><code>   </code><bitvector></td><td>A single byte boolean (0 for False, 1 for True) representing whether inputs can be modified, followed by a single byte boolean representing whether outputs can be modified.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
+<tr><td>SIGHASH_SINGLE Inputs</td><td><code>PSBT_GLOBAL_SIGHASH_SINGLE_INPUTS = 0x07</code></td><td>None</td><td>No key data</td><td><bit vector></td><td>A bit vector representing which input indexes use SIGHASH_SINGLE. If the bit for an index is set to 1, then the input and output pair at that index are tied together with SIGHASH_SINGLE and must be moved together.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
 <tr><td>PSBT Version Number</td><td><code>PSBT_GLOBAL_VERSION = 0xFB</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian unsigned integer representing the version number of this PSBT. If omitted, the version number is 0.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Proprietary Use Type</td><td><code>PSBT_GLOBAL_PROPRIETARY = 0xFC</code></td><td><identifierlen><code>   </code><identifier><code>   </code><subtype><code>   </code><subkeydata></td><td>Compact size unsigned integer <identifierlen>, followed by identifier prefix of that length <identifer>, followed by a subtype <subtype>, followed by the key data itself <subkeydata>.</td><td><data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 </tbody></table>
@@ -329,7 +329,7 @@ in most significant byte order.</p>
 <td><p>2</p></td>
 <td><p>0</p></td>
 <td><p>2</p></td>
-<td><p><a href="bip-psb2.mediawiki" title="wikilink">psbt2</a></p></td>
+<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
 </tr>
 <tr class="even">
 <td><p>Spent Output Index</p></td>
@@ -341,7 +341,7 @@ in most significant byte order.</p>
 <td><p>2</p></td>
 <td><p>0</p></td>
 <td><p>2</p></td>
-<td><p><a href="bip-psb2.mediawiki" title="wikilink">psbt2</a></p></td>
+<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
 </tr>
 <tr class="odd">
 <td><p>Sequence Number</p></td>
@@ -353,7 +353,7 @@ in most significant byte order.</p>
 <td></td>
 <td><p>0</p></td>
 <td><p>2</p></td>
-<td><p><a href="bip-psb2.mediawiki" title="wikilink">psbt2</a></p></td>
+<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
 </tr>
 <tr class="even">
 <td><p>Required Time-based Locktime</p></td>
@@ -365,7 +365,7 @@ in most significant byte order.</p>
 <td></td>
 <td><p>0</p></td>
 <td><p>2</p></td>
-<td><p><a href="bip-psb2.mediawiki" title="wikilink">psbt2</a></p></td>
+<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
 </tr>
 <tr class="odd">
 <td><p>Required Height-based Locktime</p></td>
@@ -377,7 +377,7 @@ in most significant byte order.</p>
 <td></td>
 <td><p>0</p></td>
 <td><p>2</p></td>
-<td><p><a href="bip-psb2.mediawiki" title="wikilink">psbt2</a></p></td>
+<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
 </tr>
 <tr class="even">
 <td><p>Taproot Key Spend Signature</p></td>
@@ -530,7 +530,7 @@ in most significant byte order.</p>
 <td><p>2</p></td>
 <td><p>0</p></td>
 <td><p>2</p></td>
-<td><p><a href="bip-psb2.mediawiki" title="wikilink">psbt2</a></p></td>
+<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
 </tr>
 <tr class="odd">
 <td><p>Output Script</p></td>
@@ -544,7 +544,7 @@ in most significant byte order.</p>
 <td><p>2</p></td>
 <td><p>0</p></td>
 <td><p>2</p></td>
-<td><p><a href="bip-psb2.mediawiki" title="wikilink">psbt2</a></p></td>
+<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
 </tr>
 <tr class="even">
 <td><p>Taproot Internal Key</p></td>
@@ -1478,7 +1478,7 @@ tampered with.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-08-15</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-08-16</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>
