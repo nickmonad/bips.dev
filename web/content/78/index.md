@@ -329,6 +329,7 @@ Our recommendation for `maxadditionalfeecontribution=` is
 | P2WPKH              | 68                         |
 | P2PKH               | 148                        |
 | P2SH-P2WPKH         | 91                         |
+| P2TR                | 58                         |
 
 ### Receiver's original PSBT checklist
 

@@ -56,6 +56,9 @@ We encourage different schemes to apply for assigning a separate BIP
 number and use the same number for purpose field, so addresses won't be
 generated from overlapping BIP32 spaces.
 
+Purpose codes from 10001 to 19999 are reserved for
+[SLIPs](https://github.com/satoshilabs/slips "wikilink").
+
 Example: Scheme described in BIP44 should use 44' (or 0x8000002C) as
 purpose.
 

@@ -61,7 +61,7 @@ This paper was inspired from BIP44.
 Currently a number of wallets utilize the ‎`m/48'` derivation scheme for
 HD multi-sig accounts. This BIP is intended to maintain the \*existing\*
 real world use of the ‎`m/48'` derivation. No breaking changes are made
-so as to avoid "loss of funds" to existing users. Wallet's which
+so as to avoid "loss of funds" to existing users. Wallets which
 currently support the ‎`m/48'` derivation will not need to make any
 changes to comply with this BIP.
 
