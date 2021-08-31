@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 380</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 380: Output Script Descriptors General Operation
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2021-06-27</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0380.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;">
+<code><span style="color:#61676c;">  BIP: 380
+  Layer: Applications
+  Title: Output Script Descriptors General Operation
+  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
+          Andrew Chow &lt;andrew@achow101.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0380
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+</span></code></pre><h2 id="abstract">Abstract</h2>
+<p>Output Script Descriptors are a simple language which can be used to
+describe collections of output scripts. There can be many different
+descriptor fragments and functions. This document describes the general
+syntax for descriptors, descriptor checksums, and common expressions.</p>
+<h2 id="copyright">Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+<h2 id="motivation">Motivation</h2>
+<p>Bitcoin wallets traditionally have stored a set of keys which are later
+serialized and mutated to produce the output scripts that the wallet
+watches and the addresses it provides to users. Typically backups have
+consisted of solely the private keys, nowadays primarily in the form of
+BIP 39 mnemonics. However this backup solution is insuffient, especially
+since the introduction of Segregated Witness which added new output
+types. Given just the private keys, it is not possible for restored
+wallets to know which kinds of output scripts and addresses to produce.
+This has lead to incompatibilities between wallets when restoring a
+backup or exporting data for a watch only wallet.</p>
+<p>Further complicating matters are BIP 32 derivation paths. Although BIPs
+44, 49, and 84 have specified standard BIP 32 derivation paths for
+different output scripts and addresses, not all wallets support them nor
+use those derivation paths. The lack of derivation path information in
+these backups and exports leads to further incompatibilities between
+wallets.</p>
+<p>Current solutions to these issues have not been generic and can be
+viewed as being layer violations. Solutions such as introducing
+different version bytes for extended key serialization both are a layer
+violation (key derivation should be separate from script type meaning)
+and specific only to a particular derivation path and script type.</p>
+<p>Output Script Descriptors introduces a generic solution to these issues.
+Script types are specified explicitly through the use of Script
+Expressions. Key derivation paths are specified explicitly in Key
+Expressions. These allow for creating wallet backups and exports which
+specify the exact scripts, subscripts (redeemScript, witnessScript,
+etc.), and keys to produce. With the general structure specified in this
+BIP, new Script Expressions can be introduced as new script types are
+added. Lastly, the use of common terminology and existing standards
+allow for Output Script Descriptors to be engineer readable so that the
+results can be understood at a glance.</p>
+<h2 id="specification">Specification</h2>
+<p>Descriptors consist of several types of expressions. The top level
+expression is a <code>SCRIPT</code>. This expression may be followed by
+<code>#CHECKSUM</code>, where <code>CHECKSUM</code> is an 8 character alphanumeric descriptor
+checksum.</p>
+<h3 id="script-expressions">Script Expressions</h3>
+<p>Script Expressions (denoted <code>SCRIPT</code>) are expressions which correspond
+directly with a Bitcoin script. These expressions are written as
+functions and take arguments. Such expressions have a script template
+which is filled with the arguments correspondingly. Expressions are
+written with a human readable identifier string with the arguments
+enclosed with parentheses. The identifier string should be alphanumeric
+and may include underscores.</p>
+<p>The arguments to a script expression are defined by that expression
+itself. They could be a script expression, a key expression, or some
+other expression entirely.</p>
+<h3 id="key-expressions">Key Expressions</h3>
+<p>A common expression used as an argument to script expressions are key
+expressions (denoted <code>KEY</code>). These represent a public or private key
+and, optionally, information about the origin of that key. Key
+expressions can only be used as arguments to script expressions.</p>
+<p>Key expressions consist of:</p>
+<ul>
+<li>Optionally, key origin information, consisting of:
+<ul>
+<li>An open bracket <code>[</code></li>
+<li>Exactly 8 hex characters for the fingerprint of the key where
+the derivation starts (see BIP 32 for details)</li>
+<li>Followed by zero or more <code>/NUM</code> or <code>/NUMh</code> path elements to
+indicate the unhardened or hardened derivation steps between the
+fingerprint and the key that follows.</li>
+<li>A closing bracket <code>]</code></li>
+</ul>
+</li>
+<li>Followed by the actual key, which is either:
+<ul>
+<li>A hex encoded public key, which depending the script expression,
+may be either:
+<ul>
+<li>66 hex character string beginning with <code>02</code> or <code>03</code>
+representing a compressed public key</li>
+<li>130 hex character string beginning with <code>04</code> representing an
+uncompressed public key</li>
+</ul>
+</li>
+<li>A
+<a href="https://en.bitcoin.it/wiki/Wallet_import_format" title="wikilink">WIF</a>
+encoded private key</li>
+<li><code>xpub</code> encoded extended public key or <code>xprv</code> encoded extended
+private key (as defined in BIP 32)
+<ul>
+<li>Followed by zero or more <code>/NUM</code> or <code>/NUMh</code> path elements
+indicating BIP 32 derivation steps to be taken after the
+given extended key.</li>
+<li>Optionally followed by a single <code>/*</code> or <code>/*h</code> final step to
+denote all direct unhardened or hardened children.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>If the <code>KEY</code> is a BIP 32 extended key, before output scripts can be
+created, child keys must be derived using the derivation information
+that follows the extended key. When the final step is <code>/*</code> or <code>/*'</code>, an
+output script will be produced for every child key index. The derived
+key must be not be serialized as an uncompressed public key. Script
+Expressions may have further requirements on how derived public keys are
+serialized for script creation.</p>
+<p>In the above specification, the hardened indicator <code>h</code> may be replaced
+with alternative hardened indicators of <code>H</code> or <code>'</code>.</p>
+<h4 id="normalization-of-key-expressions-with-hardened-derivation">Normalization of Key Expressions with Hardened Derivation</h4>
+<p>When a descriptor is exported without private keys, it is necessary to
+do additional derivation to remove any intermediate hardened derivation
+steps for the exported descriptor to be useful. The exporter should
+derive the extended public key at the last hardened derivation step and
+use that extended public key as the key in the descriptor. The
+derivation steps that were taken to get to that key must be added to the
+previous key origin information. If there is no key origin information,
+then one must be added for the newly derived extended public key. If the
+final derivation is hardened, then it is not necessary to do additional
+derivation.</p>
+<h3 id="character-set">Character Set</h3>
+<p>The expressions used in descriptors must only contain characters within
+this character set so that the descriptor checksum will work.</p>
+<p>The allowed characters are:</p>
+<pre style="background-color:#fafafa;">
+<code>0123456789()[],'/*abcdefgh@:$%{}
+IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~
+ijklmnopqrstuvwxyzABCDEFGH`#&quot;\&lt;space&gt;
+</code></pre>
+<p>Note that <space> on the last line is a space character.</p>
+<p>This character set is written as 3 groups of 32 characters in this
+specific order so that the checksum below can identify more errors. The
+first group are the most common &quot;unprotected&quot; characters (i.e. things
+such as hex and keypaths that do not already have their own checksums).
+Case errors cause an offset that is a multiple of 32 while as many
+alphabetic characters are in the same group while following the previous
+restrictions.</p>
+<h3 id="checksum">Checksum</h3>
+<p>Following the top level script expression is a single octothorpe (<code>#</code>)
+followed by the 8 character checksum. The checksum is an error
+correcting checksum similar to bech32.</p>
+<p>The checksum has the following properties:</p>
+<ul>
+<li>Mistakes in a descriptor string are measured in &quot;symbol errors&quot;. The
+higher the number of symbol errors, the harder it is to detect:
+<ul>
+<li>An error substituting a character from
+<code>0123456789()[],'/*abcdefgh@:$%{}</code> for another in that set
+always counts as 1 symbol error.
+<ul>
+<li>Note that hex encoded keys are covered by these characters.
+Extended keys (<code>xpub</code> and <code>xprv</code>) use other characters too,
+but also have their own checksum mechanism.</li>
+<li><code>SCRIPT</code> expression function names use other characters, but
+mistakes in these would generally result in an unparsable
+descriptor.</li>
+</ul>
+</li>
+<li>A case error always counts as 1 symbol error.</li>
+<li>Any other 1 character substitution error counts as 1 or 2 symbol
+errors.</li>
+</ul>
+</li>
+<li>Any 1 symbol error is always detected.</li>
+<li>Any 2 or 3 symbol error in a descriptor of up to 49154 characters is
+always detected.</li>
+<li>Any 4 symbol error in a descriptor of up to 507 characters is always
+detected.</li>
+<li>Any 5 symbol error in a descriptor of up to 77 characters is always
+detected.</li>
+<li>Is optimized to minimize the chance of a 5 symbol error in a
+descriptor up to 387 characters is undetected</li>
+<li>Random errors have a chance of 1 in 2<super>40</super> of being
+undetected.</li>
+</ul>
+<p>The checksum itself uses the same character set as bech32:
+<code>qpzry9x8gf2tvdw0s3jn54khce6mua7l</code></p>
+<p>Valid descriptor strings with a checksum must pass the criteria for
+validity specified by the Python3 code snippet below. The function
+<code>descsum_check</code> must return true when its argument <code>s</code> is a descriptor
+consisting in the form <code>SCRIPT#CHECKSUM</code>.</p>
+<pre style="background-color:#fafafa;">
+<code>INPUT_CHARSET = &quot;0123456789()[],'/*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\&quot;\\ &quot;
+CHECKSUM_CHARSET = &quot;qpzry9x8gf2tvdw0s3jn54khce6mua7l&quot;
+GENERATOR = [0xf5dee51989, 0xa9fdca3312, 0x1bab10e32d, 0x3706b1677a, 0x644d626ffd]
+
+def descsum_polymod(symbols):
+    &quot;&quot;&quot;Internal function that computes the descriptor checksum.&quot;&quot;&quot;
+    chk = 1
+    for value in symbols:
+        top = chk &gt;&gt; 35
+        chk = (chk &amp; 0x7ffffffff) &lt;&lt; 5 ^ value
+        for i in range(5):
+            chk ^= GENERATOR[i] if ((top &gt;&gt; i) &amp; 1) else 0
+    return chk
+
+def descsum_expand(s):
+    &quot;&quot;&quot;Internal function that does the character to symbol expansion&quot;&quot;&quot;
+    groups = []
+    symbols = []
+    for c in s:
+        if not c in INPUT_CHARSET:
+            return None
+        v = INPUT_CHARSET.find(c)
+        symbols.append(v &amp; 31)
+        groups.append(v &gt;&gt; 5)
+        if len(groups) == 3:
+            symbols.append(groups[0] * 9 + groups[1] * 3 + groups[2])
+            groups = []
+    if len(groups) == 1:
+        symbols.append(groups[0])
+    elif len(groups) == 2:
+        symbols.append(groups[0] * 3 + groups[1])
+    return symbols
+
+def descsum_check(s):
+    &quot;&quot;&quot;Verify that the checksum is correct in a descriptor&quot;&quot;&quot;
+    if s[-9] != '#':
+        return False
+    if not all(x in CHECKSUM_CHARSET for x in s[-8:]):
+        return False
+    symbols = descsum_expand(s[:-9]) + [CHECKSUM_CHARSET.find(x) for x in s[-8:]]
+    return descsum_polymod(symbols) == 1
+</code></pre>
+<p>This implements a BCH code that has the properties described above. The
+entire descriptor string is first processed into an array of symbols.
+The symbol for each character is its position within its group. After
+every 3rd symbol, a 4th symbol is inserted which represents the group
+numbers combined together. This means that a change that only affects
+the position within a group, or only a group number change, will only
+affect a single symbol.</p>
+<p>To construct a valid checksum given a script expression, the code below
+can be used:</p>
+<pre style="background-color:#fafafa;">
+<code>def descsum_create(s):
+    &quot;&quot;&quot;Add a checksum to a descriptor without&quot;&quot;&quot;
+    symbols = descsum_expand(s) + [0, 0, 0, 0, 0, 0, 0, 0]
+    checksum = descsum_polymod(symbols) ^ 1
+    return s + '#' + ''.join(CHECKSUM_CHARSET[(checksum &gt;&gt; (5 * (7 - i))) &amp; 31] for i in range(8))
+</code></pre><h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<p>Output script descriptors are an entirely new language which is not
+compatible with any existing software. However many components of the
+expressions reuse encodings and serializations defined by previous BIPs.</p>
+<p>Output script descriptors are designed for future extension with further
+fragment types and new script expressions. These will be specified in
+additional BIPs.</p>
+<h2 id="reference-implemntation">Reference Implemntation</h2>
+<p>Descriptors have been implemented in Bitcoin Core since version 0.17.</p>
+<h2 id="appendix-a-index-of-expressions">Appendix A: Index of Expressions</h2>
+<p>Future BIPs may specify additional types of expressions. All available
+expression types are listed in this table.</p>
+<table><thead><tr><th>Name</th><th>Denoted As</th><th>BIP</th></tr></thead><tbody>
+<tr><td>Script</td><td><code>SCRIPT</code></td><td>380</td></tr>
+<tr><td>Key</td><td><code>KEY</code></td><td>380</td></tr>
+<tr><td>Tree</td><td><code>TREE</code></td><td><a href="https://bips.dev/380/bip-0386.mediawiki" title="wikilink">386</a></td></tr>
+</tbody></table>
+<h2 id="appendix-b-index-of-script-expressions">Appendix B: Index of Script Expressions</h2>
+<p>Script expressions will be specified in additional BIPs. This Table
+lists all available Script expressions and the BIPs specifying them.</p>
+<table><thead><tr><th>Expression</th><th>BIP</th></tr></thead><tbody>
+<tr><td><code>pk(KEY)</code></td><td><a href="https://bips.dev/380/bip-0381.mediawiki" title="wikilink">381</a></td></tr>
+<tr><td><code>pkh(KEY)</code></td><td><a href="https://bips.dev/380/bip-0381.mediawiki" title="wikilink">381</a></td></tr>
+<tr><td><code>sh(SCRIPT)</code></td><td><a href="https://bips.dev/380/bip-0381.mediawiki" title="wikilink">381</a></td></tr>
+<tr><td><code>wpkh(KEY)</code></td><td><a href="https://bips.dev/380/bip-0382.mediawiki" title="wikilink">382</a></td></tr>
+<tr><td><code>wsh(SCRIPT)</code></td><td><a href="https://bips.dev/380/bip-0382.mediawiki" title="wikilink">382</a></td></tr>
+<tr><td><code>multi(NUM, KEY, ..., KEY)</code></td><td><a href="https://bips.dev/380/bip-0383.mediawiki" title="wikilink">383</a></td></tr>
+<tr><td><code>sortedmulti(NUM, KEY, ..., KEY)</code></td><td><a href="https://bips.dev/380/bip-0383.mediawiki" title="wikilink">383</a></td></tr>
+<tr><td><code>combo(KEY)</code></td><td><a href="https://bips.dev/380/bip-0384.mediawiki" title="wikilink">384</a></td></tr>
+<tr><td><code>raw(HEX)</code></td><td><a href="https://bips.dev/380/bip-0385.mediawiki" title="wikilink">385</a></td></tr>
+<tr><td><code>addr(ADDR)</code></td><td><a href="https://bips.dev/380/bip-0385.mediawiki" title="wikilink">385</a></td></tr>
+<tr><td><code>tr(KEY)</code>, <code>tr(KEY, TREE)</code></td><td><a href="https://bips.dev/380/bip-0386.mediawiki" title="wikilink">386</a></td></tr>
+</tbody></table>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-08-30</span></p>
+            <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. &#x20bf;</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

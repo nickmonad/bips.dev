@@ -69,13 +69,13 @@ upgrade.</p>
 <ul>
 <li>There is at least one element on the stack, fail otherwise</li>
 <li>The element on the stack is 32 bytes long, NOP otherwise</li>
-<li>The StandardTemplateHash of the transaction at the current input
-index is equal to the element on the stack, fail otherwise</li>
+<li>The DefaultCheckTemplateVerifyHash of the transaction at the current
+input index is equal to the element on the stack, fail otherwise</li>
 </ul>
-<p>The StandardTemplateHash commits to the serialized version, locktime,
-scriptSigs hash (if any non-null scriptSigs), number of inputs,
-sequences hash, number of outputs, outputs hash, and currently executing
-input index.</p>
+<p>The DefaultCheckTemplateVerifyHash commits to the serialized version,
+locktime, scriptSigs hash (if any non-null scriptSigs), number of
+inputs, sequences hash, number of outputs, outputs hash, and currently
+executing input index.</p>
 <p>The recommended standardness rules additionally:</p>
 <ul>
 <li>Reject non-32 byte as SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS.</li>
@@ -173,13 +173,13 @@ OP_CHECKTEMPLATEVERIFY.</p>
 <p><code>   case OP_CHECKTEMPLATEVERIFY:</code><br />
 <code>   {</code><br />
 <code>       // if flags not enabled; treat as a NOP4</code><br />
-<code>       if (!(flags &amp; SCRIPT_VERIFY_STANDARD_TEMPLATE)) break;</code><br />
+<code>       if (!(flags &amp; SCRIPT_VERIFY_DEFAULT_CHECK_TEMPLATE_VERIFY_HASH)) break;</code><br />
 <code>       if (stack.size() &lt; 1)</code><br />
 <code>           return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);</code><br />
 <code>       // If the argument was not 32 bytes, treat as OP_NOP4:</code><br />
 <code>       switch (stack.back().size()) {</code><br />
 <code>           case 32:</code><br />
-<code>               if (!checker.CheckStandardTemplateHash(stack.back())) {</code><br />
+<code>               if (!checker.CheckDefaultCheckTemplateVerifyHash(stack.back())) {</code><br />
 <code>                   return set_error(serror, SCRIPT_ERR_TEMPLATE_MISMATCH);</code><br />
 <code>               }</code><br />
 <code>               break;</code><br />
@@ -193,17 +193,17 @@ OP_CHECKTEMPLATEVERIFY.</p>
 <code>   }</code><br />
 <code>   break;</code></p>
 <p>The hash is computed as follows:</p>
-<p><code>   uint256 GetStandardTemplateHash(const CTransaction&amp; tx, uint32_t input_index) {</code><br />
-<code>       return GetStandardTemplateHash(tx, GetOutputsSHA256(tx), GetSequenceSHA256(tx), input_index);</code><br />
+<p><code>   uint256 GetDefaultCheckTemplateVerifyHash(const CTransaction&amp; tx, uint32_t input_index) {</code><br />
+<code>       return GetDefaultCheckTemplateVerifyHash(tx, GetOutputsSHA256(tx), GetSequenceSHA256(tx), input_index);</code><br />
 <code>   }</code><br />
-<code>   uint256 GetStandardTemplateHash(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
+<code>   uint256 GetDefaultCheckTemplateVerifyHash(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
 <code>                                   const uint32_t input_index) {</code><br />
 <code>       bool skip_scriptSigs = std::find_if(tx.vin.begin(), tx.vin.end(),</code><br />
 <code>               [](const CTxIn&amp; c) { return c.scriptSig != CScript(); }) == tx.vin.end();</code><br />
-<code>       return skip_scriptSigs ? GetStandardTemplateHashEmptyScript(tx, outputs_hash, sequences_hash, input_index) :</code><br />
-<code>           GetStandardTemplateHashWithScript(tx, outputs_hash, sequences_hash, GetScriptSigsSHA256(tx), input_index);</code><br />
+<code>       return skip_scriptSigs ? GetDefaultCheckTemplateVerifyHashEmptyScript(tx, outputs_hash, sequences_hash, input_index) :</code><br />
+<code>           GetDefaultCheckTemplateVerifyHashWithScript(tx, outputs_hash, sequences_hash, GetScriptSigsSHA256(tx), input_index);</code><br />
 <code>   }</code><br />
-<code>   uint256 GetStandardTemplateHashWithScript(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
+<code>   uint256 GetDefaultCheckTemplateVerifyHashWithScript(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
 <code>                                   const uint256&amp; scriptSig_hash, const uint32_t input_index) {</code><br />
 <code>       auto h =  CHashWriter(SER_GETHASH, 0)</code><br />
 <code>           &lt;&lt; tx.nVersion</code><br />
@@ -216,7 +216,7 @@ OP_CHECKTEMPLATEVERIFY.</p>
 <code>           &lt;&lt; input_index;</code><br />
 <code>       return h.GetSHA256();</code><br />
 <code>   }</code><br />
-<code>   uint256 GetStandardTemplateHashEmptyScript(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
+<code>   uint256 GetDefaultCheckTemplateVerifyHashEmptyScript(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
 <code>                                   const uint32_t input_index) {</code><br />
 <code>       auto h =  CHashWriter(SER_GETHASH, 0)</code><br />
 <code>           &lt;&lt; tx.nVersion</code><br />
@@ -228,8 +228,9 @@ OP_CHECKTEMPLATEVERIFY.</p>
 <code>           &lt;&lt; input_index;</code><br />
 <code>       return h.GetSHA256();</code><br />
 <code>   }</code></p>
-<p>A PayToBasicStandardTemplate output matches the following template:</p>
-<p><code>   bool CScript::IsPayToBasicStandardTemplate() const</code><br />
+<p>A PayToBareDefaultCheckTemplateVerifyHash output matches the following
+template:</p>
+<p><code>   bool CScript::IsPayToBareDefaultCheckTemplateVerifyHash() const</code><br />
 <code>   {</code><br />
 <code>    // Extra-fast test for pay-to-basic-standard-template CScripts:</code><br />
 <code>    return (this-&gt;size() == 34 &amp;&amp;</code><br />
@@ -246,9 +247,9 @@ draft.</p>
 <code>   consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].nStartTime = 1583020800; // March 1, 2020</code><br />
 <code>   consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].nTimeout = 1614556800; //  March 1, 2021</code></p>
 <p>In order to facilitate using CHECKTEMPLATEVERIFY, the common case of a
-PayToBasicStandardTemplate with no scriptSig data shall be made standard
-to permit relaying. Future template types may be standardized later as
-policy changes.</p>
+PayToBareDefaultCheckTemplateVerifyHash with no scriptSig data shall be
+made standard to permit relaying. Future template types may be
+standardized later as policy changes.</p>
 <h2 id="reference-implementation">Reference Implementation</h2>
 <p>A reference implementation and tests are available here:
 <a href="https://github.com/JeremyRubin/bitcoin/tree/checktemplateverify">https://github.com/JeremyRubin/bitcoin/tree/checktemplateverify</a>.</p>
@@ -257,7 +258,7 @@ policy changes.</p>
 codebase -- in the future, as we become aware of more complex but shown
 to be safe use cases new template types can be added.</p>
 <p>Below we'll discuss the rules one-by-one:</p>
-<h4 id="the-standardtemplatehash-of-the-transaction-at-the-current-input-index-matches-the-top-of-the-stack">The StandardTemplateHash of the transaction at the current input index matches the top of the stack</h4>
+<h4 id="the-defaultchecktemplateverifyhash-of-the-transaction-at-the-current-input-index-matches-the-top-of-the-stack">The DefaultCheckTemplateVerifyHash of the transaction at the current input index matches the top of the stack</h4>
 <p>The set of data committed to is a superset of data which can impact the
 TXID of the transaction, other than the inputs. This ensures that for a
 given known input, the TXIDs can also be known ahead of time. Otherwise,
@@ -283,15 +284,15 @@ CHECKTEMPLATEVERIFY with a legacy pre-signed spend, as long as the exact
 scriptsig for the legacy output is committed. This is more robust than
 simply disallowing any scriptSig to be set with CHECKTEMPLATEVERIFY.</p>
 <p>If no scriptSigs are set in the transaction, there is no purpose in
-hashing the data or including it in the StandardTemplateHash, so we
-elide it. It is expected to be common that no scriptSigs will be set as
-segwit mandates that the scriptSig must be empty (to avoid
+hashing the data or including it in the DefaultCheckTemplateVerifyHash,
+so we elide it. It is expected to be common that no scriptSigs will be
+set as segwit mandates that the scriptSig must be empty (to avoid
 malleability).</p>
 <p>We commit to the hash rather than the values themselves as this is
 already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.</p>
 <p>Committing to the hash additionally makes it simpler to construct
-StandardTemplateHashes safely and unambiguously from script.</p>
+DefaultCheckTemplateVerifyHash safely and unambiguously from script.</p>
 <h5 id="committing-to-the-number-of-inputs">Committing to the number of inputs</h5>
 <p>If we allow more than one input to be spent in the transaction then it
 would be possible for two outputs to request payment to the same set of
@@ -319,7 +320,7 @@ should not be used except in specific applications.</p>
 <p>In principal, committing to the Sequences Hash (below) implicitly
 commits to the number of inputs, making this field strictly redundant.
 However, separately committing to this number makes it easier to
-construct StandardTemplateHashes from script.</p>
+construct DefaultCheckTemplateVerifyHash from script.</p>
 <p>We treat the number of inputs as a `uint32_t` because signature
 checking code expects nIn to be an `unsigned int`, even though in
 principal a transaction can encode more than a `uint32_t`'s worth of
@@ -334,12 +335,12 @@ literal value.</p>
 already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.</p>
 <p>Committing to the hash additionally makes it simpler to construct
-StandardTemplateHashes safely and unambiguously from script.</p>
+DefaultCheckTemplateVerifyHash safely and unambiguously from script.</p>
 <h5 id="committing-to-the-number-of-outputs">Committing to the Number of Outputs</h5>
 <p>In principal, committing to the Outputs Hash (below) implicitly commits
 to the number of outputs, making this field strictly redundant. However,
 separately committing to this number makes it easier to construct
-StandardTemplateHashes from script.</p>
+DefaultCheckTemplateVerifyHash from script.</p>
 <p>We treat the number of outputs as a `uint32_t` because a
 `COutpoint` index is a `uint32_t`, even though in principal a
 transaction could encode more outputs.</p>
@@ -350,7 +351,7 @@ outputs requested.</p>
 already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.</p>
 <p>Committing to the hash additionally makes it simpler to construct
-StandardTemplateHashes safely and unambiguously from script.</p>
+DefaultCheckTemplateVerifyHash safely and unambiguously from script.</p>
 <h5 id="committing-to-the-current-input-s-index">Committing to the current input's index</h5>
 <p>Committing to the currently executing input's index is not strictly
 needed for anti-malleability, however it does restrict the input
@@ -369,9 +370,9 @@ OP_SHA256STREAM are added to Bitcoin, the index may simply be passed in
 by the witness before hashing.</p>
 <h5 id="committing-to-values-by-hash">Committing to Values by Hash</h5>
 <p>Committing to values by hash makes it easier and more efficient to
-construct a StandardTemplateHash from script. Fields which are not
-intended to be set may be committed to by hash without incurring O(n)
-overhead to re-hash.</p>
+construct a DefaultCheckTemplateVerifyHash from script. Fields which are
+not intended to be set may be committed to by hash without incurring
+O(n) overhead to re-hash.</p>
 <p>Furthermore, if OP_SHA256STREAM is added in the future, it may be
 possible to write a script which allows adding a single output to a list
 of outputs without incurring O(n) overhead by committing to a hash
@@ -523,9 +524,9 @@ BIP-0065 and BIP-0112) have similarly changed OP_NOP semantics without
 introducing compatibility issues.</p>
 <p>Older wallet software will be able to accept spends from
 OP_CHECKTEMPLATEVERIFY outputs, but will require an upgrade in order to
-treat PayToBasicStandardTemplate chains with a confirmed ancestor as
-being &quot;trusted&quot; (i.e., eligible for spending before the transaction is
-confirmed).</p>
+treat PayToBareDefaultCheckTemplateVerifyHash chains with a confirmed
+ancestor as being &quot;trusted&quot; (i.e., eligible for spending before the
+transaction is confirmed).</p>
 <p>Backports of OP_CHECKTEMPLATEVERIFY can be trivially prepared (see the
 reference implementation) for older node versions that can be patched
 but not upgraded to a newer major release.</p>
