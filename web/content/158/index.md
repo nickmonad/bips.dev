@@ -308,9 +308,9 @@ to `784931`. Analysis has shown that if one is able to select `P` and
 `M` independently, then setting `M=1.497137 * 2^P` is close to optimal
 \[7\].
 
-Empirical analysis also shows that was chosen as these parameters
-minimize the bandwidth utilized, considering both the expected number of
-blocks downloaded due to false positives and the size of the filters
+Empirical analysis also shows that these parameters minimize the
+bandwidth utilized, considering both the expected number of blocks
+downloaded due to false positives and the size of the filters
 themselves.
 
 The parameter `k` MUST be set to the first 16 bytes of the hash (in

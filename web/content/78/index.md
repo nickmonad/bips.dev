@@ -861,7 +861,7 @@ A successful exchange with:
 
 | InputScriptType | Orginal PSBT Fee rate | maxadditionalfeecontribution | additionalfeeoutputindex |
 | --------------- | --------------------- | ---------------------------- | ------------------------ |
-| P2SH-P2WSH      | 2 sat/vbyte           | 0.00000182                   | 0                        |
+| P2SH-P2WPKH     | 2 sat/vbyte           | 0.00000182                   | 0                        |
 
 `Unfinalized signed PSBT`
 
