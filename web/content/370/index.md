@@ -130,13 +130,13 @@ The new per-output types for PSBT Version 2 are defined as follows:
 ### Determining Lock Time
 
 The nLockTime field of a transaction is determined by inspecting the
-PSBT\_GLOBAL\_PREFERRED\_LOCKTIME and each input's
+PSBT\_GLOBAL\_FALLBACK\_LOCKTIME and each input's
 PSBT\_IN\_REQUIRED\_TIME\_LOCKTIME and
 PSBT\_IN\_REQUIRED\_HEIGHT\_LOCKTIME fields. If none of the inputs have
 a PSBT\_IN\_REQUIRED\_TIME\_LOCKTIME and
 PSBT\_IN\_REQUIRED\_HEIGHT\_LOCKTIME, then
-PSBT\_GLOBAL\_PREFERRED\_LOCKTIME must be used. If
-PSBT\_GLOBAL\_PREFERRED\_LOCKTIME is not provided, then it is assumed to
+PSBT\_GLOBAL\_FALLBACK\_LOCKTIME must be used. If
+PSBT\_GLOBAL\_FALLBACK\_LOCKTIME is not provided, then it is assumed to
 be 0.
 
 If one or more inuts have a PSBT\_IN\_REQUIRED\_TIME\_LOCKTIME or
@@ -167,7 +167,7 @@ PSBTv2 introduces new roles and modifies some existing roles.
 In PSBTv2, the Creator initializes the PSBT with 0 inputs and 0 outputs.
 The PSBT version number is set to 2. The transaction version number must
 be set to at least 2. \[2\] The Creator should also set
-PSBT\_GLOBAL\_PREFERRED\_LOCKTIME. If the Creator is not also a
+PSBT\_GLOBAL\_FALLBACK\_LOCKTIME. If the Creator is not also a
 Constructor and will be giving the PSBT to others to add inputs and
 outputs, the PSBT\_GLOBAL\_TX\_MODIFIABLE field must be present and and
 the Inputs Modifiable and Outputs Modifiable flags set appropriately. If
