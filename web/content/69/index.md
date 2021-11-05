@@ -233,7 +233,7 @@ Outputs:
   - [1: Bitstamp Info
     Leak](https://bitcoinmagazine.com/20273/bitstamp-exchange-activity-trackable-due-multisig-wallet-implementation/ "wikilink")
   - [2: OBPP Random Indexing as
-    Countermeasure](https://github.com/OpenBitcoinPrivacyProject/wallet-ratings/blob/master/2015-1/criteria.md "wikilink")
+    Countermeasure](https://github.com/OpenBitcoinPrivacyProject/wallet-ratings/blob/5a7e2e1555e91bb48edeca3aa710272777d98c2a/2015-1/criteria.md "wikilink")
   - [3: Mastering
     Bitcoin](https://github.com/aantonop/bitcoinbook/blob/develop/ch05.asciidoc "wikilink")
   - [4: Bitcoin Wiki on

@@ -387,9 +387,9 @@ P2P layer.
 
 The constant interval of 1,000 blocks between checkpoints was chosen so
 that, given the current chain height and rate of growth, the size of a
-`cfcheckpt` message is not drastically from a `cfheaders` between two
-checkpoints. Also, 1,000 is a nice round number, at least to those of us
-who think in decimal.
+`cfcheckpt` message is not drastically different from a `cfheaders`
+message between two checkpoints. Also, 1,000 is a nice round number, at
+least to those of us who think in decimal.
 
 ## Compatibility
 

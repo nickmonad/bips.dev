@@ -817,9 +817,12 @@ Combine(fA(psbt), fB(psbt)) == fA(fB(psbt)) == fB(fA(psbt))
 The Input Finalizer must only accept a PSBT. For each input, the Input
 Finalizer determines if the input has enough data to pass validation. If
 it does, it must construct the `0x07` Finalized scriptSig and `0x08`
-Finalized scriptWitness and place them into the input key-value map. All
-other data except the UTXO and unknown fields in the input key-value map
-should be cleared from the PSBT. The UTXO should be kept to allow
+Finalized scriptWitness and place them into the input key-value map. If
+scriptSig is empty for an input, `0x07` should remain unset rather than
+assigned an empty array. Likewise, if no scriptWitness exists for an
+input, `0x08` should remain unset rather than assigned an empty array.
+All other data except the UTXO and unknown fields in the input key-value
+map should be cleared from the PSBT. The UTXO should be kept to allow
 Transaction Extractors to verify the final network serialized
 transaction.
 
