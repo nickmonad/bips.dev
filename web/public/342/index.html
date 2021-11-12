@@ -339,26 +339,28 @@ is pushed onto the stack.</li>
 </ul>
 </li>
 </ul>
-<h3 id="signature-validation">Signature validation</h3>
-<p>To validate a signature <em>sig</em> with public key <em>p</em>:</p>
-<ul>
-<li>Compute the tapscript message extension <em>ext</em>, consisting of the
-concatenation of:
+<h3 id="common-signature-message-extension">Common Signature Message Extension</h3>
+<p>We define the tapscript message extension <em>ext</em> to <a href="https://bips.dev/342/bip-0341.mediawiki#common-signature-message" title="wikilink">BIP341 Common
+Signature
+Message</a>,
+indicated by <em>ext_flag = 1</em>:</p>
 <ul>
 <li><em>tapleaf_hash</em> (32): the tapleaf hash as defined in
 <a href="https://bips.dev/342/bip-0341.mediawiki#design" title="wikilink">BIP341</a></li>
-<li><em>key_version</em> (1): a constant value <em>0x00</em> representing the
-current version of public keys in the tapscript signature opcode
-execution.</li>
+<li><em>key_version</em> (1): a constant value <em>0x00</em> representing the current
+version of public keys in the tapscript signature opcode execution.</li>
 <li><em>codesep_pos</em> (4): the opcode position of the last executed
-<code>OP_CODESEPARATOR</code> before the currently executed signature
-opcode, with the value in little endian (or <em>0xffffffff</em> if none
-executed). The first opcode in a script has a position of 0. A
-multi-byte push opcode is counted as one opcode, regardless of
-the size of data being pushed. Opcodes in parsed but unexecuted
-branches count towards this value as well.</li>
+<code>OP_CODESEPARATOR</code> before the currently executed signature opcode,
+with the value in little endian (or <em>0xffffffff</em> if none executed).
+The first opcode in a script has a position of 0. A multi-byte push
+opcode is counted as one opcode, regardless of the size of data
+being pushed. Opcodes in parsed but unexecuted branches count
+towards this value as well.</li>
 </ul>
-</li>
+<h3 id="signature-validation">Signature validation</h3>
+<p>To validate a signature <em>sig</em> with public key <em>p</em>:</p>
+<ul>
+<li>Compute the tapscript message extension <em>ext</em> described above.</li>
 <li>If the <em>sig</em> is 64 bytes long, return <em>Verify(p,
 hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 1) || ext), sig)</em>,
 where <em>Verify</em> is defined in

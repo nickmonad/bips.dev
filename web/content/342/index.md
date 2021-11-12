@@ -292,24 +292,30 @@ The following rules apply to `OP_CHECKSIG`, `OP_CHECKSIGVERIFY`, and
           - For `OP_CHECKSIGADD`, a `CScriptNum` with value of `n + 1`
             is pushed onto the stack.
 
+### Common Signature Message Extension
+
+We define the tapscript message extension *ext* to [BIP341 Common
+Signature
+Message](bip-0341.mediawiki#common-signature-message "wikilink"),
+indicated by *ext\_flag = 1*:
+
+  - *tapleaf\_hash* (32): the tapleaf hash as defined in
+    [BIP341](bip-0341.mediawiki#design "wikilink")
+  - *key\_version* (1): a constant value *0x00* representing the current
+    version of public keys in the tapscript signature opcode execution.
+  - *codesep\_pos* (4): the opcode position of the last executed
+    `OP_CODESEPARATOR` before the currently executed signature opcode,
+    with the value in little endian (or *0xffffffff* if none executed).
+    The first opcode in a script has a position of 0. A multi-byte push
+    opcode is counted as one opcode, regardless of the size of data
+    being pushed. Opcodes in parsed but unexecuted branches count
+    towards this value as well.
+
 ### Signature validation
 
 To validate a signature *sig* with public key *p*:
 
-  - Compute the tapscript message extension *ext*, consisting of the
-    concatenation of:
-      - *tapleaf\_hash* (32): the tapleaf hash as defined in
-        [BIP341](bip-0341.mediawiki#design "wikilink")
-      - *key\_version* (1): a constant value *0x00* representing the
-        current version of public keys in the tapscript signature opcode
-        execution.
-      - *codesep\_pos* (4): the opcode position of the last executed
-        `OP_CODESEPARATOR` before the currently executed signature
-        opcode, with the value in little endian (or *0xffffffff* if none
-        executed). The first opcode in a script has a position of 0. A
-        multi-byte push opcode is counted as one opcode, regardless of
-        the size of data being pushed. Opcodes in parsed but unexecuted
-        branches count towards this value as well.
+  - Compute the tapscript message extension *ext* described above.
   - If the *sig* is 64 bytes long, return *Verify(p,
     hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 1) || ext), sig)*,
     where *Verify* is defined in

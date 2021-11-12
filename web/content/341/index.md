@@ -231,18 +231,18 @@ key path spending.
 
 #### Common signature message
 
-The function *SigMsg(hash\_type, ext\_flag)* computes the message being
-signed as a byte array. It is implicitly also a function of the spending
-transaction and the outputs it spends, but these are not listed to keep
-notation simple.
+The function *SigMsg(hash\_type, ext\_flag)* computes the common portion
+of the message being signed as a byte array. It is implicitly also a
+function of the spending transaction and the outputs it spends, but
+these are not listed to keep notation simple.
 
 The parameter *hash\_type* is an 8-bit unsigned value. The `SIGHASH`
 encodings from the legacy script system are reused, including
 `SIGHASH_ALL`, `SIGHASH_NONE`, `SIGHASH_SINGLE`, and
-`SIGHASH_ANYONECANPAY`, plus the default *hash\_type* value *0x00* which
-results in signing over the whole transaction just as for `SIGHASH_ALL`.
-The following restrictions apply, which cause validation failure if
-violated:
+`SIGHASH_ANYONECANPAY`. We define a new *hashtype* `SIGHASH_DEFAULT`
+(value *0x00*) which results in signing over the whole transaction just
+as for `SIGHASH_ALL`. The following restrictions apply, which cause
+validation failure if violated:
 
   - Using any undefined *hash\_type* (not *0x00*, *0x01*, *0x02*,
     *0x03*, *0x81*, *0x82*, or *0x83*\[12\]).
@@ -250,8 +250,8 @@ violated:
     with the same index as the input being verified).
 
 The parameter *ext\_flag* is an integer in range 0-127, and is used for
-indicating (in the message) that extensions are added at the end of the
-message\[13\].
+indicating (in the message) that extensions are appended to the output
+of *SigMsg()*\[13\].
 
 If the parameters take acceptable values, the message is the
 concatenation of the following data, in order (with byte size of each
@@ -269,8 +269,8 @@ encoded in little-endian.
             input outpoints.
           - *sha\_amounts* (32): the SHA256 of the serialization of all
             spent output amounts.
-          - *sha\_scriptpubkeys* (32): the SHA256 of the serialization
-            of all spent output *scriptPubKey*s.
+          - *sha\_scriptpubkeys* (32): the SHA256 of all spent outputs'
+            *scriptPubKeys*, serialized as script inside `CTxOut`.
           - *sha\_sequences* (32): the SHA256 of the serialization of
             all input *nSequence*.
       - If *hash\_type & 3* does not equal `SIGHASH_NONE` or
@@ -416,8 +416,9 @@ key *Q*. </ref>
 into an internal key `internal_pubkey` and a binary tree whose leaves
 are (leaf\_version, script) tuples, the output script can be computed
 using the Python3 algorithms below. These algorithms take advantage of
-helper functions from the \[bip-0340/referency.py BIP340 reference
-code\] for integer conversion, point multiplication, and tagged hashes.
+helper functions from the [BIP340 reference
+code](bip-0340/reference.py "wikilink") for integer conversion, point
+multiplication, and tagged hashes.
 
 First, we define `taproot_tweak_pubkey` for 32-byte
 [BIP340](bip-0340.mediawiki "wikilink") public key arrays. The function
@@ -428,6 +429,10 @@ the key path, we define `taproot_tweak_seckey` to compute the secret key
 for a tweaked public key. For any byte string `h` it holds that
 `taproot_tweak_pubkey(pubkey_gen(seckey), h)[1] ==
 pubkey_gen(taproot_tweak_seckey(seckey, h))`.
+
+Note that because tweaks are applied to 32-byte public keys,
+\`taproot\_tweak\_seckey\` may need to negate the secret key before
+applying the tweak.
 
 ``` python
 def taproot_tweak_pubkey(pubkey, h):
@@ -771,9 +776,10 @@ reviews](https://github.com/ajtowns/taproot-review).
     easier to reason about the worst case amount of signature hashing an
     implementation with adequate caching must perform.
 13. **What extensions use the *ext\_flag* mechanism?**
-    [BIP342](bip-0342.mediawiki "wikilink") reuses the same common
-    signature message algorithm, but adds BIP342-specific data at the
-    end, which is indicated using *ext\_flag = 1*.
+    [BIP342](bip-0342.mediawiki#common-signature-message-extension "wikilink")
+    reuses the same common signature message algorithm, but adds
+    BIP342-specific data at the end, which is indicated using *ext\_flag
+    = 1*.
 14. **What is the output length of *SigMsg()*?** The total length of
     *SigMsg()* can be computed using the following formula: *174 -
     is\_anyonecanpay \* 49 - is\_none \* 32 + has\_annex \* 32*.

@@ -254,17 +254,17 @@ key</em>.</p>
 function, followed by the actual signature validation as it's used in
 key path spending.</p>
 <h4 id="common-signature-message">Common signature message</h4>
-<p>The function <em>SigMsg(hash_type, ext_flag)</em> computes the message being
-signed as a byte array. It is implicitly also a function of the spending
-transaction and the outputs it spends, but these are not listed to keep
-notation simple.</p>
+<p>The function <em>SigMsg(hash_type, ext_flag)</em> computes the common portion
+of the message being signed as a byte array. It is implicitly also a
+function of the spending transaction and the outputs it spends, but
+these are not listed to keep notation simple.</p>
 <p>The parameter <em>hash_type</em> is an 8-bit unsigned value. The <code>SIGHASH</code>
 encodings from the legacy script system are reused, including
 <code>SIGHASH_ALL</code>, <code>SIGHASH_NONE</code>, <code>SIGHASH_SINGLE</code>, and
-<code>SIGHASH_ANYONECANPAY</code>, plus the default <em>hash_type</em> value <em>0x00</em> which
-results in signing over the whole transaction just as for <code>SIGHASH_ALL</code>.
-The following restrictions apply, which cause validation failure if
-violated:</p>
+<code>SIGHASH_ANYONECANPAY</code>. We define a new <em>hashtype</em> <code>SIGHASH_DEFAULT</code>
+(value <em>0x00</em>) which results in signing over the whole transaction just
+as for <code>SIGHASH_ALL</code>. The following restrictions apply, which cause
+validation failure if violated:</p>
 <ul>
 <li>Using any undefined <em>hash_type</em> (not <em>0x00</em>, <em>0x01</em>, <em>0x02</em>,
 <em>0x03</em>, <em>0x81</em>, <em>0x82</em>, or <em>0x83</em>[12]).</li>
@@ -272,8 +272,8 @@ violated:</p>
 with the same index as the input being verified).</li>
 </ul>
 <p>The parameter <em>ext_flag</em> is an integer in range 0-127, and is used for
-indicating (in the message) that extensions are added at the end of the
-message[13].</p>
+indicating (in the message) that extensions are appended to the output
+of <em>SigMsg()</em>[13].</p>
 <p>If the parameters take acceptable values, the message is the
 concatenation of the following data, in order (with byte size of each
 item listed in parentheses). Numerical values in 2, 4, or 8-byte are
@@ -295,8 +295,8 @@ encoded in little-endian.</p>
 input outpoints.</li>
 <li><em>sha_amounts</em> (32): the SHA256 of the serialization of all
 spent output amounts.</li>
-<li><em>sha_scriptpubkeys</em> (32): the SHA256 of the serialization
-of all spent output <em>scriptPubKey</em>s.</li>
+<li><em>sha_scriptpubkeys</em> (32): the SHA256 of all spent outputs'
+<em>scriptPubKeys</em>, serialized as script inside <code>CTxOut</code>.</li>
 <li><em>sha_sequences</em> (32): the SHA256 of the serialization of
 all input <em>nSequence</em>.</li>
 </ul>
@@ -468,8 +468,9 @@ Huffman tree.</li>
 into an internal key <code>internal_pubkey</code> and a binary tree whose leaves
 are (leaf_version, script) tuples, the output script can be computed
 using the Python3 algorithms below. These algorithms take advantage of
-helper functions from the [bip-0340/referency.py BIP340 reference
-code] for integer conversion, point multiplication, and tagged hashes.</p>
+helper functions from the <a href="bip-0340/reference.py" title="wikilink">BIP340 reference
+code</a> for integer conversion, point
+multiplication, and tagged hashes.</p>
 <p>First, we define <code>taproot_tweak_pubkey</code> for 32-byte
 <a href="https://bips.dev/341/bip-0340.mediawiki" title="wikilink">BIP340</a> public key arrays. The function
 returns a bit indicating the tweaked public key's Y coordinate as well
@@ -478,6 +479,9 @@ spending the output with a script path. In order to allow spending with
 the key path, we define <code>taproot_tweak_seckey</code> to compute the secret key
 for a tweaked public key. For any byte string <code>h</code> it holds that
 <code>taproot_tweak_pubkey(pubkey_gen(seckey), h)[1] == pubkey_gen(taproot_tweak_seckey(seckey, h))</code>.</p>
+<p>Note that because tweaks are applied to 32-byte public keys,
+`taproot_tweak_seckey` may need to negate the secret key before
+applying the tweak.</p>
 <pre style="background-color:#fafafa;">
 <code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">h</span><span style="color:#61676c;">):
     t </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(</span><span style="color:#f29718;">tagged_hash</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;TapTweak&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">pubkey </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">h))
@@ -781,9 +785,10 @@ rules for other leaf versions.</li>
 easier to reason about the worst case amount of signature hashing an
 implementation with adequate caching must perform.</li>
 <li><strong>What extensions use the <em>ext_flag</em> mechanism?</strong>
-<a href="https://bips.dev/341/bip-0342.mediawiki" title="wikilink">BIP342</a> reuses the same common
-signature message algorithm, but adds BIP342-specific data at the
-end, which is indicated using <em>ext_flag = 1</em>.</li>
+<a href="https://bips.dev/341/bip-0342.mediawiki#common-signature-message-extension" title="wikilink">BIP342</a>
+reuses the same common signature message algorithm, but adds
+BIP342-specific data at the end, which is indicated using <em>ext_flag
+= 1</em>.</li>
 <li><strong>What is the output length of <em>SigMsg()</em>?</strong> The total length of
 <em>SigMsg()</em> can be computed using the following formula: <em>174 -
 is_anyonecanpay * 49 - is_none * 32 + has_annex * 32</em>.</li>
