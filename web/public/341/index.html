@@ -603,7 +603,31 @@ distinct from every other leaf. The reason for this is to increase leaf
 entropy and prevent an observer from learning an undisclosed script
 using brute-force search.</p>
 <h2 id="test-vectors">Test vectors</h2>
-<p>The test vectors used in the <a href="https://github.com/bitcoin/bitcoin/blob/3820090bd619ac85ab35eff376c03136fe4a9f04/src/test/script_tests.cpp#L1718">Bitcoin Core unit test
+<p>Test vectors for wallet operation (scriptPubKey computation, key path
+spending, control block construction) can be found
+<a href="bip-0341/wallet-test-vectors.json" title="wikilink">here</a>. It consists of two
+sets of vectors.</p>
+<ul>
+<li>The first &quot;scriptPubKey&quot; tests concern computing the scriptPubKey
+and (mainnet) BIP350 address given an internal public key, and a
+script tree. The script tree is encoded as <code>null</code> to represent no
+scripts, a JSON object to represent a leaf node, or a 2-element
+array to represent an inner node. The control blocks needed for
+script path spending are also provided for each of the script
+leaves.</li>
+<li>The second &quot;keyPathSpending&quot; tests consists of a list of test cases,
+each of which provides an unsigned transaction and the UTXOs it
+spends. For each of its BIP341 inputs, the internal private key and
+the Merkle root it was derived from is given, as well as the
+expected witness to spend it. All signatures are created with an
+all-zero (0x0000...0000) BIP340 auxiliary randomness array.</li>
+<li>In all cases, hexadecimal values represent byte arrays, not numbers.
+In particular, that means that provided hash values have the hex
+digits corresponding to the first bytes first. This differs from the
+convention used for txids and block hashes, where the hex strings
+represent numbers, resulting in a reversed order.</li>
+</ul>
+<p>Validation test vectors used in the <a href="https://github.com/bitcoin/bitcoin/blob/3820090bd619ac85ab35eff376c03136fe4a9f04/src/test/script_tests.cpp#L1718">Bitcoin Core unit test
 framework</a>
 can be found
 <a href="https://github.com/bitcoin-core/qa-assets/blob/main/unit_test_data/script_assets_test.json?raw=true">here</a>.</p>
@@ -852,7 +876,7 @@ of <code>hash_type</code> implicit, a byte can often be saved.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-11-12</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2021-11-13</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>
