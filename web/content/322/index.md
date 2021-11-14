@@ -121,7 +121,7 @@ The `to_sign` transaction is:
 `   vout[0].scriptPubKey = OP_RETURN`
 
 A full signature consists of the base64-encoding of the `to_sign`
-transaction in standard network serialisation.
+transaction in standard network serialisation once it has been signed.
 
 ### Full (Proof of Funds)
 
