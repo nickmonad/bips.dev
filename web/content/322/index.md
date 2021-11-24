@@ -193,7 +193,7 @@ Validation consists of the following steps:
 4.  Check the \*\*upgradeable rules\*\*
     1.  The version of `to_sign` must be 0 or 2.
     2.  The use of NOPs reserved for upgrades is forbidden.
-    3.  The use of segwit versions greater than 0 are forbidden.
+    3.  The use of segwit versions greater than 1 are forbidden.
     4.  If any of the above steps failed, the validator should stop and
         output the *inconclusive* state.
 5.  Let *T* by the nLockTime of `to_sign` and *S* be the nSequence of
