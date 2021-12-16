@@ -73,7 +73,7 @@ new descriptor, it is not compatible with any implementation. The reuse
 of existing Bitcoin addresses allows for this to be more easily
 implemented.
 
-## Reference Implemntation
+## Reference Implementation
 
-`raw()` and `addr` descriptors have been implemented in Bitcoin Core
+`raw()` and `addr()` descriptors have been implemented in Bitcoin Core
 since version 0.17.

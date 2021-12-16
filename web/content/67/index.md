@@ -190,8 +190,8 @@ contributions in the early discussions of this BIP.
   - [BIP-0045](https://github.com/bitcoin/bips/blob/master/bip-0045.mediawiki#address-generation-procedure "wikilink")
     - Structure for Deterministic P2SH Multisignature Wallets
   - [Bitcore](https://github.com/bitpay/bitcore/blob/50a868cb8cdf2be04bb1c5bf4bcc064cc06f5888/lib/script/script.js#L541 "wikilink")
-  - [Haskoin](https://github.com/haskoin/haskoin/blob/master/Network/Haskoin/Script/Parser.hs#L112-122 "wikilink")
-    Bitcoin implementation in haskell
+  - [Haskoin](https://github.com/haskoin/haskoin-core/blob/b41b1deb0989334a7ead6fc993fb8b02f0c00810/haskoin-core/Network/Haskoin/Script/Parser.hs#L112-L122 "wikilink")
+    - Bitcoin implementation in Haskell
   - [Armory](https://github.com/etotheipi/BitcoinArmory/blob/268db0f3fa20c989057bd43343a43b2edbe89aeb/armoryengine/ArmoryUtils.py#L1441 "wikilink")
   - [BitcoinJ](https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/script/ScriptBuilder.java#L331 "wikilink")
 

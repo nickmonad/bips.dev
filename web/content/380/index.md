@@ -288,7 +288,7 @@ Output script descriptors are designed for future extension with further
 fragment types and new script expressions. These will be specified in
 additional BIPs.
 
-## Reference Implemntation
+## Reference Implementation
 
 Descriptors have been implemented in Bitcoin Core since version 0.17.
 

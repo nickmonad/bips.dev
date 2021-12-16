@@ -102,7 +102,7 @@ are a wholly new descriptors, they are not compatible with any
 implementation. However the scripts produced are standard scripts so
 existing software are likely to be familiar with them.
 
-## Reference Implemntation
+## Reference Implementation
 
-`multi()`, and `multi()` descriptors have been implemented in Bitcoin
-Core since version 0.17.
+`multi()`, and `sortedmulti()` descriptors have been implemented in
+Bitcoin Core since version 0.17.

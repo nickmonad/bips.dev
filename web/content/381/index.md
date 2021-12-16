@@ -100,7 +100,7 @@ are a wholly new descriptors, they are not compatible with any
 implementation. However the scripts produced are standard scripts so
 existing software are likely to be familiar with them.
 
-## Reference Implemntation
+## Reference Implementation
 
 `pk()`, `pkh()`, and `sh()` descriptors have been implemented in Bitcoin
 Core since version 0.17.

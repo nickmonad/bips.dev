@@ -200,6 +200,12 @@ OP\_CHECKTEMPLATEVERIFY.
 `   }`  
 `   break;`
 
+Where
+
+`   bool CheckDefaultCheckTemplateVerifyHash(const std::vector`<unsigned char>`& hash) {`  
+`       return GetDefaultCheckTemplateVerifyHash(current_tx, current_input_index) == uint256(hash);`  
+`   }`
+
 The hash is computed as follows:
 
 `   uint256 GetDefaultCheckTemplateVerifyHash(const CTransaction& tx, uint32_t input_index) {`  

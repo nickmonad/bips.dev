@@ -224,4 +224,4 @@ redeem: 3 bytes + 15 pubkeys \* 34 bytes/pubkey = 513 bytes.
 
 1.  [Remove -bip16 and -paytoscripthashtime command-line
     arguments](https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff)
-2.  [Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192](http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192)
+2.  [Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192](https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192)

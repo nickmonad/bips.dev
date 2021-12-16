@@ -68,7 +68,7 @@ descriptor, it is not compatible with any implementation. However the
 scripts produced are standard scripts so existing software are likely to
 be familiar with them.
 
-## Reference Implemntation
+## Reference Implementation
 
-`combo` descriptors have been implemented in Bitcoin Core since version
-0.17.
+`combo()` descriptors have been implemented in Bitcoin Core since
+version 0.17.

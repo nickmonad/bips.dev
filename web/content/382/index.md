@@ -86,7 +86,7 @@ new descriptors, they are not compatible with any implementation.
 However the scripts produced are standard scripts so existing software
 are likely to be familiar with them.
 
-## Reference Implemntation
+## Reference Implementation
 
 `wpkh()`, and `wsh()` descriptors have been implemented in Bitcoin Core
 since version 0.17.
