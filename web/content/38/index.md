@@ -201,8 +201,10 @@ a 32-bit hash of the resulting Bitcoin address as salt.
             non-EC-multiplied keys, the bits are 11. For EC-multiplied
             keys, the bits are 00.
           - the bit with value 0x20 when set indicates the key should be
-            converted to a bitcoin address using the compressed public
-            key format.
+            converted to a base58check encoded P2PKH bitcoin address
+            using the DER compressed public key format. When not set, it
+            should be a base58check encoded P2PKH bitcoin address using
+            the DER uncompressed public key format.
           - the bits with values 0x10 and 0x08 are reserved for a future
             specification that contemplates using multisig as a way to
             combine the factors such that parties in possession of the
