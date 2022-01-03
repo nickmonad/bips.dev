@@ -430,7 +430,7 @@ the intended security properties of this standard are:
     cannot be done more efficiently than a 2<sup>256</sup> brute force
     of HMAC-SHA512.
 
-Note however that the following properties does not exist:
+Note however that the following properties do not exist:
 
   - Given a parent extended public key (K<sub>par</sub>,c<sub>par</sub>)
     and a child public key (K<sub>i</sub>), it is hard to find i.
