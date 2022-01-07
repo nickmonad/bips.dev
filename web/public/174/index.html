@@ -130,7 +130,6 @@ in most significant byte order.</p>
 <tr><td>Input Count</td><td><code>PSBT_GLOBAL_INPUT_COUNT = 0x04</code></td><td>None</td><td>No key data</td><td><compact size uint></td><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
 <tr><td>Output Count</td><td><code>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</code></td><td>None</td><td>No key data</td><td><compact size uint></td><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
 <tr><td>Transaction Modifiable Flags</td><td><code>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</code></td><td>None</td><td>No key data</td><td><code>&lt;8-bit uint&gt;</code></td><td>An 8 bit little endian unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag and indicates whether inputs can be modified. Bit 1 is the Outputs Modifiable Flag and indicates whether outputs can be modified. Bit 2 is the Has SIGHASH_SINGLE flag and indicates whether the transaction has a SIGHASH_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add an input.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>SIGHASH_SINGLE Inputs</td><td><code>PSBT_GLOBAL_SIGHASH_SINGLE_INPUTS = 0x07</code></td><td>None</td><td>No key data</td><td><bit vector></td><td>A bit vector representing which input indexes use SIGHASH_SINGLE. If the bit for an index is set to 1, then the input and output pair at that index are tied together with SIGHASH_SINGLE and must be moved together.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
 <tr><td>PSBT Version Number</td><td><code>PSBT_GLOBAL_VERSION = 0xFB</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian unsigned integer representing the version number of this PSBT. If omitted, the version number is 0.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Proprietary Use Type</td><td><code>PSBT_GLOBAL_PROPRIETARY = 0xFC</code></td><td><identifierlen><code>   </code><identifier><code>   </code><subtype><code>   </code><subkeydata></td><td>Compact size unsigned integer <identifierlen>, followed by identifier prefix of that length <identifer>, followed by a subtype <subtype>, followed by the key data itself <subkeydata>.</td><td><data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 </tbody></table>
@@ -573,20 +572,6 @@ in most significant byte order.</p>
 <td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
 </tr>
 <tr class="even">
-<td><p>Taproot Leaf Script</p></td>
-<td><p><code>PSBT_OUT_TAP_LEAF_SCRIPT = 0x06</code></p></td>
-<td><p><control block></p></td>
-<td><p>The control block for this leaf as specified in BIP 341. The control block contains the merkle tree path to this leaf.</p></td>
-<td><p><tt></p>
-<script>
-<p></tt></p></td>
-<td><p>The script for this leaf as would be provided in the witness stack.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="odd">
 <td><p>Taproot Key BIP 32 Derivation Path</p></td>
 <td><p><code>PSBT_OUT_TAP_BIP32_DERIVATION = 0x07</code></p></td>
 <td><p><xonlypubkey></p></td>
@@ -598,7 +583,7 @@ in most significant byte order.</p>
 <td><p>0, 2</p></td>
 <td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><p>Proprietary Use Type</p></td>
 <td><p><code>PSBT_OUT_PROPRIETARY = 0xFC</code></p></td>
 <td><p><identifierlen><code> </code><identifier><code> </code><subtype><code> </code><subkeydata></p></td>
@@ -1481,7 +1466,7 @@ tampered with.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2022-01-06</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2022-01-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

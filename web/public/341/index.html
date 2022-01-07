@@ -243,7 +243,8 @@ BFD25E8C D0364141</em> (order of secp256k1), fail.</li>
 <li>Execute the script, according to the applicable script
 rules[11], using the witness stack elements excluding the
 script <em>s</em>, the control block <em>c</em>, and the annex <em>a</em> if present,
-as initial stack.</li>
+as initial stack. This implies that for the future leaf versions
+(non-<em>0xC0</em>) the execution must succeed.[12].</li>
 </ul>
 </li>
 </ul>
@@ -267,13 +268,13 @@ as for <code>SIGHASH_ALL</code>. The following restrictions apply, which cause
 validation failure if violated:</p>
 <ul>
 <li>Using any undefined <em>hash_type</em> (not <em>0x00</em>, <em>0x01</em>, <em>0x02</em>,
-<em>0x03</em>, <em>0x81</em>, <em>0x82</em>, or <em>0x83</em>[12]).</li>
+<em>0x03</em>, <em>0x81</em>, <em>0x82</em>, or <em>0x83</em>[13]).</li>
 <li>Using <code>SIGHASH_SINGLE</code> without a &quot;corresponding output&quot; (an output
 with the same index as the input being verified).</li>
 </ul>
 <p>The parameter <em>ext_flag</em> is an integer in range 0-127, and is used for
 indicating (in the message) that extensions are appended to the output
-of <em>SigMsg()</em>[13].</p>
+of <em>SigMsg()</em>[14].</p>
 <p>If the parameters take acceptable values, the message is the
 concatenation of the following data, in order (with byte size of each
 item listed in parentheses). Numerical values in 2, 4, or 8-byte are
@@ -357,22 +358,22 @@ output in <code>CTxOut</code> format.</li>
 </ul>
 </li>
 </ul>
-<p>The total length of <em>SigMsg()</em> is at most <em>206</em> bytes[14]. Note that
+<p>The total length of <em>SigMsg()</em> is at most <em>206</em> bytes[15]. Note that
 this does not include the size of sub-hashes such as <em>sha_prevouts</em>,
 which may be cached across signatures of the same transaction.</p>
 <p>In summary, the semantics of the <a href="https://bips.dev/341/bip-0143.mediawiki" title="wikilink">BIP143</a>
 sighash types remain unchanged, except the following:</p>
 <ol>
-<li>The way and order of serialization is changed.[15]</li>
+<li>The way and order of serialization is changed.[16]</li>
 <li>The signature message commits to the <em>scriptPubKey</em> of the spent
 output and if the <code>SIGHASH_ANYONECANPAY</code> flag is not set, the
 message commits to the <em>scriptPubKey</em>s of <em>all</em> outputs spent by the
-transaction. [16].</li>
+transaction. [17].</li>
 <li>If the <code>SIGHASH_ANYONECANPAY</code> flag is not set, the message commits
-to the amounts of <em>all</em> transaction inputs.[17]</li>
+to the amounts of <em>all</em> transaction inputs.[18]</li>
 <li>The signature message commits to all input <em>nSequence</em> if
 <code>SIGHASH_NONE</code> or <code>SIGHASH_SINGLE</code> are set (unless
-<code>SIGHASH_ANYONECANPAY</code> is set as well).[18]</li>
+<code>SIGHASH_ANYONECANPAY</code> is set as well).[19]</li>
 <li>The signature message includes commitments to the taproot-specific
 data <em>spend_type</em> and <em>annex</em> (if present).</li>
 </ol>
@@ -380,13 +381,13 @@ data <em>spend_type</em> and <em>annex</em> (if present).</li>
 <p>To validate a signature <em>sig</em> with public key <em>q</em>:</p>
 <ul>
 <li>If the <em>sig</em> is 64 bytes long, return <em>Verify(q,
-hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)</em>[19],
+hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)</em>[20],
 where <em>Verify</em> is defined in
 <a href="https://bips.dev/341/bip-0340.mediawiki#design" title="wikilink">BIP340</a>.</li>
-<li>If the <em>sig</em> is 65 bytes long, return <em>sig[64] ≠ 0x00[20] and
+<li>If the <em>sig</em> is 65 bytes long, return <em>sig[64] ≠ 0x00[21] and
 Verify(q, hash<sub>TapSighash</sub>(0x00 || SigMsg(sig[64], 0)),
 sig[0:64])</em>.</li>
-<li>Otherwise, fail[21].</li>
+<li>Otherwise, fail[22].</li>
 </ul>
 <h2 id="constructing-and-spending-taproot-outputs">Constructing and spending Taproot outputs</h2>
 <p>This section discusses how to construct and spend Taproot outputs. It
@@ -808,6 +809,8 @@ otherwise the control block bit would be unused.</li>
 <a href="https://bips.dev/341/bip-0342.mediawiki" title="wikilink">BIP342</a> specifies validity rules
 that apply for leaf version 0xc0, but future proposals can introduce
 rules for other leaf versions.</li>
+<li><strong>Why we need to success on future leaf version validation</strong> This is
+required to enable future leaf versions as soft forks</li>
 <li><strong>Why reject unknown <em>hash_type</em> values?</strong> By doing so, it is
 easier to reason about the worst case amount of signature hashing an
 implementation with adequate caching must perform.</li>
@@ -879,7 +882,7 @@ of <code>hash_type</code> implicit, a byte can often be saved.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2022-01-06</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2022-01-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

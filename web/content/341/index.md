@@ -218,7 +218,8 @@ outputs\[3\], remain unencumbered.
       - Execute the script, according to the applicable script
         rules\[11\], using the witness stack elements excluding the
         script *s*, the control block *c*, and the annex *a* if present,
-        as initial stack.
+        as initial stack. This implies that for the future leaf versions
+        (non-*0xC0*) the execution must succeed.\[12\].
 
 *q* is referred to as *taproot output key* and *p* as *taproot internal
 key*.
@@ -245,13 +246,13 @@ as for `SIGHASH_ALL`. The following restrictions apply, which cause
 validation failure if violated:
 
   - Using any undefined *hash\_type* (not *0x00*, *0x01*, *0x02*,
-    *0x03*, *0x81*, *0x82*, or *0x83*\[12\]).
+    *0x03*, *0x81*, *0x82*, or *0x83*\[13\]).
   - Using `SIGHASH_SINGLE` without a "corresponding output" (an output
     with the same index as the input being verified).
 
 The parameter *ext\_flag* is an integer in range 0-127, and is used for
 indicating (in the message) that extensions are appended to the output
-of *SigMsg()*\[13\].
+of *SigMsg()*\[14\].
 
 If the parameters take acceptable values, the message is the
 concatenation of the following data, in order (with byte size of each
@@ -303,23 +304,23 @@ encoded in little-endian.
           - *sha\_single\_output* (32): the SHA256 of the corresponding
             output in `CTxOut` format.
 
-The total length of *SigMsg()* is at most *206* bytes\[14\]. Note that
+The total length of *SigMsg()* is at most *206* bytes\[15\]. Note that
 this does not include the size of sub-hashes such as *sha\_prevouts*,
 which may be cached across signatures of the same transaction.
 
 In summary, the semantics of the [BIP143](bip-0143.mediawiki "wikilink")
 sighash types remain unchanged, except the following:
 
-1.  The way and order of serialization is changed.\[15\]
+1.  The way and order of serialization is changed.\[16\]
 2.  The signature message commits to the *scriptPubKey* of the spent
     output and if the `SIGHASH_ANYONECANPAY` flag is not set, the
     message commits to the *scriptPubKey*s of *all* outputs spent by the
-    transaction. \[16\].
+    transaction. \[17\].
 3.  If the `SIGHASH_ANYONECANPAY` flag is not set, the message commits
-    to the amounts of *all* transaction inputs.\[17\]
+    to the amounts of *all* transaction inputs.\[18\]
 4.  The signature message commits to all input *nSequence* if
     `SIGHASH_NONE` or `SIGHASH_SINGLE` are set (unless
-    `SIGHASH_ANYONECANPAY` is set as well).\[18\]
+    `SIGHASH_ANYONECANPAY` is set as well).\[19\]
 5.  The signature message includes commitments to the taproot-specific
     data *spend\_type* and *annex* (if present).
 
@@ -328,13 +329,13 @@ sighash types remain unchanged, except the following:
 To validate a signature *sig* with public key *q*:
 
   - If the *sig* is 64 bytes long, return *Verify(q,
-    hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)*\[19\],
+    hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)*\[20\],
     where *Verify* is defined in
     [BIP340](bip-0340.mediawiki#design "wikilink").
-  - If the *sig* is 65 bytes long, return *sig\[64\] ≠ 0x00\[20\] and
+  - If the *sig* is 65 bytes long, return *sig\[64\] ≠ 0x00\[21\] and
     Verify(q, hash<sub>TapSighash</sub>(0x00 || SigMsg(sig\[64\], 0)),
     sig\[0:64\])*.
-  - Otherwise, fail\[21\].
+  - Otherwise, fail\[22\].
 
 ## Constructing and spending Taproot outputs
 
@@ -797,18 +798,20 @@ reviews](https://github.com/ajtowns/taproot-review).
     [BIP342](bip-0342.mediawiki "wikilink") specifies validity rules
     that apply for leaf version 0xc0, but future proposals can introduce
     rules for other leaf versions.
-12. **Why reject unknown *hash\_type* values?** By doing so, it is
+12. **Why we need to success on future leaf version validation** This is
+    required to enable future leaf versions as soft forks
+13. **Why reject unknown *hash\_type* values?** By doing so, it is
     easier to reason about the worst case amount of signature hashing an
     implementation with adequate caching must perform.
-13. **What extensions use the *ext\_flag* mechanism?**
+14. **What extensions use the *ext\_flag* mechanism?**
     [BIP342](bip-0342.mediawiki#common-signature-message-extension "wikilink")
     reuses the same common signature message algorithm, but adds
     BIP342-specific data at the end, which is indicated using *ext\_flag
     = 1*.
-14. **What is the output length of *SigMsg()*?** The total length of
+15. **What is the output length of *SigMsg()*?** The total length of
     *SigMsg()* can be computed using the following formula: *174 -
     is\_anyonecanpay \* 49 - is\_none \* 32 + has\_annex \* 32*.
-15. **Why is the serialization in the signature message changed?**
+16. **Why is the serialization in the signature message changed?**
     Hashes that go into the signature message and the message itself are
     now computed with a single SHA256 invocation instead of double
     SHA256. There is no expected security improvement by doubling SHA256
@@ -825,7 +828,7 @@ reviews](https://github.com/ajtowns/taproot-review).
     that, collisions are made impossible by committing to the length of
     the data (implicit in *hash\_type* and *spend\_type*) before the
     variable length data.
-16. **Why does the signature message commit to the *scriptPubKey*?**
+17. **Why does the signature message commit to the *scriptPubKey*?**
     This prevents lying to offline signing devices about output being
     spent, even when the actually executed script (*scriptCode* in
     BIP143) is correct. This means it's possible to compactly prove to a
@@ -834,10 +837,10 @@ reviews](https://github.com/ajtowns/taproot-review).
     devices to determine the subset that belong to its own wallet. This
     is useful in [automated
     coinjoins](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-April/017801.html).
-17. **Why does the signature message commit to the amounts of all
+18. **Why does the signature message commit to the amounts of all
     transaction inputs?** This eliminates the possibility to lie to
     offline signing devices about the fee of a transaction.
-18. **Why does the signature message commit to all input *nSequence* if
+19. **Why does the signature message commit to all input *nSequence* if
     `SIGHASH_SINGLE` or `SIGHASH_NONE` are set?** Because setting them
     already makes the message commit to the `prevouts` part of all
     transaction inputs, it is not useful to treat the *nSequence* any
@@ -845,7 +848,7 @@ reviews](https://github.com/ajtowns/taproot-review).
     the view that `SIGHASH_SINGLE` and `SIGHASH_NONE` only modify the
     signature message with respect to transaction outputs and not
     inputs.
-19. **Why is the input to *hash<sub>TapSighash</sub>* prefixed with
+20. **Why is the input to *hash<sub>TapSighash</sub>* prefixed with
     0x00?** This prefix is called the sighash epoch, and allows reusing
     the *hash<sub>TapSighash</sub>* tagged hash in future signature
     algorithms that make invasive changes to how hashing is performed
@@ -853,10 +856,10 @@ reviews](https://github.com/ajtowns/taproot-review).
     incremental extensions). An alternative is having them use a
     different tag, but supporting a growing number of tags may become
     undesirable.
-20. **Why can the `hash_type` not be `0x00` in 65-byte signatures?**
+21. **Why can the `hash_type` not be `0x00` in 65-byte signatures?**
     Permitting that would enable malleating (by third parties, including
     miners) 64-byte signatures into 65-byte ones, resulting in a
     different \`wtxid\` and a different fee rate than the creator
     intended
-21. **Why permit two signature lengths?** By making the most common type
+22. **Why permit two signature lengths?** By making the most common type
     of `hash_type` implicit, a byte can often be saved.
