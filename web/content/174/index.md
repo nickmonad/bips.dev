@@ -79,10 +79,12 @@ terminated by a `0x00` byte \[1\].
 Where:
 
   - <keytype>  
-    A compact size unsigned integer representing the type. This compact
-    size unsigned integer must be minimally encoded, i.e. if the value
-    can be represented using one byte, it must be represented as one
-    byte. There can be multiple entries with the same <keytype> within a
+    A [compact
+    size](https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer)
+    unsigned integer representing the type. This compact size unsigned
+    integer must be minimally encoded, i.e. if the value can be
+    represented using one byte, it must be represented as one byte.
+    There can be multiple entries with the same <keytype> within a
     specific <map>, but the <key> must be unique.
   - <keylen>  
     The compact size unsigned integer containing the combined length of
@@ -872,7 +874,10 @@ specified.
 New fields should first be proposed on the bitcoin-dev mailing list. If
 a field requires significant description as to its usage, it should be
 accompanied by a separate BIP. The field must be added to the field
-listing tables in the Specification section.
+listing tables in the Specification section. Although some PSBT version
+0 implementations encode types as uint8\_t rather than compact size, it
+is still safe to add \>0xFD fields to PSBT 0, because these old parsers
+ignore unknown fields, and <keytype> is prefixed by its length.
 
 ### Procedure For New Versions
 

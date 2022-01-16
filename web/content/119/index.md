@@ -97,12 +97,12 @@ for the simulation is provided in this BIP's subdirectory.
 
 There are numerous payment channel related uses.
 
-#### Channel Factories
+#### Batched Channel Creation
 
-Using CHECKTEMPLATEVERIFY for Channel Factories is similar to the use
-for Congestion Control, except the leaf node transactions are channels
-instead of plain payments. The channel can be between the sender and
-recipient or a target of recipient's choice. Using an
+Using CHECKTEMPLATEVERIFY for Batched Channel Creation is similar to the
+use for Congestion Control, except the leaf node transactions are
+channels instead of plain payments. The channel can be between the
+sender and recipient or a target of recipient's choice. Using an
 CHECKTEMPLATEVERIFY, the recipient may give the sender an address which
 makes a tree of channels unbeknownst to them. These channels are time
 insensitive for setup, as all punishments are relative timelocked to the
@@ -140,30 +140,52 @@ protocol on contested channel close.
 
 ### Wallet Vaults
 
-When greater security is required for cold storage solutions, there can
-be default script paths that move funds from one target to another
-target. For example, a cold wallet can be set up where one customer
-support desk can, without further authorization, move a portion of the
-funds (using multiple pre-set amounts) into a lukewarm wallet operated
-by an isolated support desk. The support desk can then issue some funds
-to a hot wallet, and send the remainder back to cold storage with a
-similar withdrawal mechanism in place. This is all possible without
+This section will detail two variants of wallet vault that can be built
+using CTV. Wallet vaults are a useful tool when greater security is
+required for cold storage solutions, providing default transactional
+paths that move funds from one's cold storage to a hot wallet.
+
+One type of cold wallet can be set up such that a customer support desk
+can, without further authorization, move a portion of the funds (using
+multiple pre-set amounts) into a lukewarm wallet operated by an isolated
+support desk. The support desk can then issue some funds to a hot
+wallet, and send the remainder back to cold storage with a similar
+withdrawal mechanism in place. This is all possible without
 CHECKTEMPLATEVERIFY, but CHECKTEMPLATEVERIFY eliminates the need for
 coordination and online signers, as well as reducing the ability for a
 support desk to improperly move funds. Furthermore, all such designs can
 be combined with relative time locks to give time for compliance and
-risk desks to intervene.
+risk desks to intervene. This is a 'Coins at Rest' or 'Optically
+Isolated' vault, and is shown below.
 
 <img src="bip-0119/vaults.svg" align="middle"></img>
 
-### CoinJoin
+An alternative design for vaults is also highly effective and simpler to
+implement in Sapio, a smart contract programming language. In this
+design, the user commits to a single UTXO that contains a program for an
+annuity of withdrawals from cold storage to a hot wallet. At any time,
+the remaining balance for the annuity can be cancelled and funds locked
+entirely in cold storage. The withdrawals to the hot wallet can be
+'cancelled' before a maturity date to ensure the action was authorized.
+These sort of vaults strongly benefit from non-interactivity because the
+withdrawal program can be set up with cold keys that are permanently
+offline, except in case of emergency. The image below shows an instance
+of this type of wallet vault created with Sapio in Sapio Studio. These
+types of wallet vault can also be chained together by taking advantage
+of CTV's scriptSig commitment. This type of vault is a 'Coins in Motion'
+variant where the coins move along the control path.
+
+<img src="bip-0119/vaultanim.gif" align="middle"></img>
+
+### CoinJoin / Payment Pools / Join Pools
 
 CHECKTEMPLATEVERIFY makes it much easier to set up trustless CoinJoins
 than previously because participants agree on a single output which pays
 all participants, which will be lower fee than before. Further Each
 participant doesn't need to know the totality of the outputs committed
 to by that output, they only have to verify their own sub-tree will pay
-them.
+them. These trees can then, using a top-level Schnorr key, be
+interactively updated on a rolling basis forming a "Payment Pool".
 
 ## Detailed Specification
 
@@ -203,14 +225,20 @@ OP\_CHECKTEMPLATEVERIFY.
 Where
 
 `   bool CheckDefaultCheckTemplateVerifyHash(const std::vector`<unsigned char>`& hash) {`  
+`       // note: for anti-DoS, a real implementation *must* cache parts of this computation`  
+`       // to avoid quadratic hashing DoS all variable length computations must be precomputed`  
+`       // including hashes of the scriptsigs, sequences, and outputs. See the section`  
+`       // "Denial of Service and Validation Costs" below.`  
 `       return GetDefaultCheckTemplateVerifyHash(current_tx, current_input_index) == uint256(hash);`  
 `   }`
 
 The hash is computed as follows:
 
+`   // not DoS safe, for reference/testing!`  
 `   uint256 GetDefaultCheckTemplateVerifyHash(const CTransaction& tx, uint32_t input_index) {`  
 `       return GetDefaultCheckTemplateVerifyHash(tx, GetOutputsSHA256(tx), GetSequenceSHA256(tx), input_index);`  
 `   }`  
+`   // not DoS safe for reference/testing!`  
 `   uint256 GetDefaultCheckTemplateVerifyHash(const CTransaction& tx, const uint256& outputs_hash, const uint256& sequences_hash,`  
 `                                   const uint32_t input_index) {`  
 `       bool skip_scriptSigs = std::find_if(tx.vin.begin(), tx.vin.end(),`  
@@ -218,6 +246,7 @@ The hash is computed as follows:
 `       return skip_scriptSigs ? GetDefaultCheckTemplateVerifyHashEmptyScript(tx, outputs_hash, sequences_hash, input_index) :`  
 `           GetDefaultCheckTemplateVerifyHashWithScript(tx, outputs_hash, sequences_hash, GetScriptSigsSHA256(tx), input_index);`  
 `   }`  
+`   // DoS safe, fixed length hash!`  
 `   uint256 GetDefaultCheckTemplateVerifyHashWithScript(const CTransaction& tx, const uint256& outputs_hash, const uint256& sequences_hash,`  
 `                                   const uint256& scriptSig_hash, const uint32_t input_index) {`  
 `       auto h =  CHashWriter(SER_GETHASH, 0)`  
@@ -231,6 +260,7 @@ The hash is computed as follows:
 `           << input_index;`  
 `       return h.GetSHA256();`  
 `   }`  
+`   // DoS safe, fixed length hash!`  
 `   uint256 GetDefaultCheckTemplateVerifyHashEmptyScript(const CTransaction& tx, const uint256& outputs_hash, const uint256& sequences_hash,`  
 `                                   const uint32_t input_index) {`  
 `       auto h =  CHashWriter(SER_GETHASH, 0)`  
@@ -257,8 +287,12 @@ template:
 
 ## Deployment
 
-Deployment should be done via BIP 9 VersionBits deployed through Speedy
-Trial.
+Deployment could be done via BIP 9 VersionBits deployed through Speedy
+Trial. The Bitcoin Core reference implementation includes the below
+parameters, configured to match Speedy Trial, as that is the current
+activation mechanism implemented in Bitcoin Core. Should another method
+become favored by the wider Bitcoin comminity, that might be used
+instead.
 
 The start time and bit in the implementation are currently set to bit 5
 and NEVER\_ACTIVE/NO\_TIMEOUT, but this is subject to change while the
@@ -285,8 +319,20 @@ standardized later as policy changes.
 
 ## Reference Implementation
 
-A reference implementation and tests are available here:
-<https://github.com/JeremyRubin/bitcoin/tree/checktemplateverify>.
+A reference implementation and tests are available here in the PR to
+Bitcoin Core <https://github.com/bitcoin/bitcoin/pull/21702>.
+
+It is not ideal to link to a PR, as it may be rebased and changed, but
+it is the best place to find the current implementation and review
+comments of others. A recent commit hash in that PR including tests and
+vectors can be found here
+<https://github.com/jeremyrubin/bitcoin/commit/3109df5616796282786706738994a5b97b8a5a38>.
+Once the PR is merged, this BIP should be updated to point to the
+specific code released.
+
+Test vectors are available in \[/bip-0119/vectors the bip-0119/vectors
+directory\] for checking compatibility with the refrence implementation
+and BIP.
 
 ## Rationale
 
@@ -301,9 +347,13 @@ Below we'll discuss the rules one-by-one:
 The set of data committed to is a superset of data which can impact the
 TXID of the transaction, other than the inputs. This ensures that for a
 given known input, the TXIDs can also be known ahead of time. Otherwise,
-CHECKTEMPLATEVERIFY would not be usable for Channel Factory type
+CHECKTEMPLATEVERIFY would not be usable for Batched Channel Creation
 constructions as the redemption TXID could be malleated and pre-signed
-transactions invalidated.
+transactions invalidated, unless the channels are built using an
+Eltoo-like protocol. Note that there may be other types of pre-signed
+contracts that may or may not be able to use Eltoo-like constructs,
+therefore making TXIDs predictable makes CTV more composable with
+arbitrary sub-protocols.
 
 ##### Committing to the version and locktime
 
@@ -375,15 +425,19 @@ inputs being spent. In general, using CHECKTEMPLATEVERIFY with more than
 one input is difficult and exposes subtle issues, so multiple inputs
 should not be used except in specific applications.
 
-In principal, committing to the Sequences Hash (below) implicitly
+In principle, committing to the Sequences Hash (below) implicitly
 commits to the number of inputs, making this field strictly redundant.
 However, separately committing to this number makes it easier to
 construct DefaultCheckTemplateVerifyHash from script.
 
-We treat the number of inputs as a \`uint32\_t\` because signature
-checking code expects nIn to be an \`unsigned int\`, even though in
-principal a transaction can encode more than a \`uint32\_t\`'s worth of
-inputs.
+We treat the number of inputs as a \`uint32\_t\` because Bitcoin's
+consensus decoding logic limits vectors to \`MAX\_SIZE=33554432\` and
+that is larger than \`uint16\_t\` and smaller than \`uint32\_t\`. 32
+bits is also friendly for manipulation using Bitcoin's current math
+opcodes, should \`OP\_CAT\` be added. Note that the max inputs in a
+block is further restricted by the block size to around 25,000, which
+would fit into a \`uint16\_t\`, but that is an uneccessary abstraction
+leak.
 
 ##### Committing to the Sequences Hash
 
@@ -402,14 +456,17 @@ DefaultCheckTemplateVerifyHash safely and unambiguously from script.
 
 ##### Committing to the Number of Outputs
 
-In principal, committing to the Outputs Hash (below) implicitly commits
+In principle, committing to the Outputs Hash (below) implicitly commits
 to the number of outputs, making this field strictly redundant. However,
 separately committing to this number makes it easier to construct
 DefaultCheckTemplateVerifyHash from script.
 
 We treat the number of outputs as a \`uint32\_t\` because a
-\`COutpoint\` index is a \`uint32\_t\`, even though in principal a
-transaction could encode more outputs.
+\`COutpoint\` index is a \`uint32\_t\`. Further, Bitcoin's consensus
+decoding logic limits vectors to \`MAX\_SIZE=33554432\` and that is
+larger than \`uint16\_t\` and smaller than \`uint32\_t\`. 32 bits is
+also friendly for manipulation using Bitcoin's current math opcodes,
+should \`OP\_CAT\` be added.
 
 ##### Committing to the outputs hash
 
@@ -548,6 +605,47 @@ of inputs only, preventing unintentional introduction of the 'half
 spend' problem.
 
 Templates, as restricted as they are, bear some risks.
+
+#### Denial of Service and Validation Costs
+
+CTV is designed to be able to be validated very cheaply without
+introducing DoS, either by checking a precomputed hash or computing a
+hash of fixed length arguments (some of which may be cached from more
+expensive computations).
+
+In particular, CTV requires that clients cache the computation of a hash
+over all the scriptSigs, sequences, and outputs. Before CTV, the hash of
+the scriptSigs was not required. CTV also requires that the presence of
+any non-empty scriptSig be hashed, but this can be handled as a part of
+the scriptSigs hash.
+
+As such, evaluating a CTV hash during consensus is always O(1)
+computation when the caches are available. These caches usually must be
+available due to similar issues in CHECKSIG behavior. Computing the
+caches is O(T) (the size of the transaction).
+
+An example of a script that could experience an DoS issue without
+caching is:
+
+\`\`\` <H> CTV CTV CTV... CTV \`\`\`
+
+Such a script would cause the intepreter to compute hashes (supposing N
+CTV's) over O(N\*T) data. If the scriptSigs non-nullity is not cached,
+then the O(T) transaction could be scanned over O(N) times as well
+(although cheaper than hashing, still a DoS). As such, CTV caches hashes
+and computations over all variable length fields in a transaction.
+
+For CTV, the Denial-of-Service exposure and validation costs are
+relatively clear. Implementors must be careful to correctly code CTV to
+make use of existing caches and cache the (new for CTV) computations
+over scriptSigs. Other more flexible covenant proposals may have a more
+difficult time solving DoS issues as more complex computations may be
+less cacheable and expose issues around quadratic hashing, it is a
+tradeoff CTV makes in favor of cheap and secure validation at the
+expense of flexibility. For example, if CTV allowed the hashing only
+select outputs by a bitmask, caching of all combinations of outputs
+would not be possible and would cause a quadratic hashing DoS
+vulnerability.
 
 #### Permanently Unspendable Outputs
 
@@ -747,6 +845,10 @@ but not upgraded to a newer major release.
 ## References
 
   - [utxos.org informational site](https://utxos.org)
+  - [Sapio Bitcoin smart contract
+    language](https://learn.sapio-lang.org)
+  - [27 Blog Posts on building smart contracts with Sapio and CTV,
+    including examples described here.](https://rubin.io/advent21)
   - [Scaling Bitcoin
     Presentation](https://www.youtube.com/watch?v=YxsjdIl0034&t=2451)
   - [Optech Newsletter Covering

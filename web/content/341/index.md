@@ -860,6 +860,6 @@ reviews](https://github.com/ajtowns/taproot-review).
     Permitting that would enable malleating (by third parties, including
     miners) 64-byte signatures into 65-byte ones, resulting in a
     different \`wtxid\` and a different fee rate than the creator
-    intended
+    intended.
 22. **Why permit two signature lengths?** By making the most common type
     of `hash_type` implicit, a byte can often be saved.
