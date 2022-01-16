@@ -164,7 +164,7 @@ The currently defined per-input types are defined as follows:
 <td><p><pubkey></p></td>
 <td><p>The public key which corresponds to this signature.</p></td>
 <td><p><signature></p></td>
-<td><p>The signature as would be pushed to the stack from a scriptSig or witness.</p></td>
+<td><p>The signature as would be pushed to the stack from a scriptSig or witness. The signature should be a valid ECDSA signature corresponding to the pubkey that would return true when verified and not a value that would return false or be invalid otherwise (such as a NULLDUMMY).</p></td>
 <td></td>
 <td></td>
 <td><p>0, 2</p></td>
