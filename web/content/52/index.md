@@ -131,7 +131,7 @@ massive reliance on energy.
 
 <img src="bip-0052/emusk_tweet.png"></img>
 
-Whether on not the Bitcoin community accepts this common criticism as
+Whether or not the Bitcoin community accepts this common criticism as
 entirely valid, it has real-world effects which will only get worse over
 time. Eliminating the exponentially growing energy use currently built
 into Bitcoin without eliminating the security of PoW would be ideal and
@@ -244,7 +244,7 @@ The HeavyHash is performed in three stages:
 2.  Matrix-vector multiplication
 3.  Keccak of the result xorred with the hashed input
 
-Note that the most efficiently matrix-vector multiplication is performed
+Note that the most efficient matrix-vector multiplication is performed
 on a photonic miner. However, this linear algebra operation can be
 performed on any conventional computing hardware (CPU, GPU, etc.),
 therefore making the HeavyHash hardware-compatible with any digital
