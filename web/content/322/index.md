@@ -106,16 +106,17 @@ The `to_spend` transaction is:
 `   vout[0].scriptPubKey = message_challenge`
 
 where `message_hash` is a BIP340-tagged hash of the message, i.e.
-sha256\_tag(m), where tag = `BIP0322-signed-message`, and
+sha256\_tag(m), where tag = `BIP0322-signed-message` and `m` is the
+message as is without length prefix or null terminator, and
 `message_challenge` is the to be proven (public) key script.
 
 The `to_sign` transaction is:
 
-`   nVersion = 0 or as appropriate (e.g. 2, for time locks)`  
-`   nLockTime = 0 or as appropriate (for time locks)`  
+`   nVersion = 0 or (FULL format only) as appropriate (e.g. 2, for time locks)`  
+`   nLockTime = 0 or (FULL format only) as appropriate (for time locks)`  
 `   vin[0].prevout.hash = to_spend.txid`  
 `   vin[0].prevout.n = 0`  
-`   vin[0].nSequence = 0 or as appropriate (for time locks)`  
+`   vin[0].nSequence = 0 or (FULL format only) as appropriate (for time locks)`  
 `   vin[0].scriptWitness = message_signature`  
 `   vout[0].nValue = 0`  
 `   vout[0].scriptPubKey = OP_RETURN`
@@ -230,7 +231,8 @@ described above.
 
 ## Reference implementation
 
-TODO
+  - Bitcoin Core pull request (basic support) at:
+    <https://github.com/bitcoin/bitcoin/pull/24058>
 
 ## Acknowledgements
 
@@ -250,4 +252,27 @@ license.
 
 ## Test vectors
 
-TODO
+### Message hashing
+
+Message hashes are BIP340-tagged hashes of a message, i.e.
+sha256\_tag(m), where tag = `BIP0322-signed-message`, and m is the
+message as is without length prefix or null terminator:
+
+  - Message = "" (empty string):
+    `c90c269c4f8fcbe6880f72a721ddfbf1914268a794cbb21cfafee13770ae19f1`
+  - Message = "Hello World":
+    `f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a`
+
+### Message signing
+
+Given below parameters:
+
+  - private key `L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k`
+  - corresponding address `bc1q9vza2e8x573nczrlzms0wvx3gsqjx7vavgkx0l`
+
+Produce signatures:
+
+  - Message = "" (empty string):
+    `AkcwRAIgFuS8y5m0ym9Gj2odoVB5NIL+cPYkeEj8LL1N/6P58X8CIA6jJ9QH2iYKRXVfmhsDzHq1bMS4Adj0nb8DDSdN/SpBASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
+  - Message = "Hello World":
+    `AkcwRAIgG3PASL/vRTgAqogWT6S8rUOQXNnfRzX6JncmbFlHc1ACIGQdsW+rnVmsQzyAYRQisHKFMigDmKiL7LUw4x17Fw5tASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`

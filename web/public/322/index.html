@@ -118,14 +118,15 @@ challenges and solutions used by Signet.</p>
 <code>   vout[0].nValue = 0</code><br />
 <code>   vout[0].scriptPubKey = message_challenge</code></p>
 <p>where <code>message_hash</code> is a BIP340-tagged hash of the message, i.e.
-sha256_tag(m), where tag = <code>BIP0322-signed-message</code>, and
+sha256_tag(m), where tag = <code>BIP0322-signed-message</code> and <code>m</code> is the
+message as is without length prefix or null terminator, and
 <code>message_challenge</code> is the to be proven (public) key script.</p>
 <p>The <code>to_sign</code> transaction is:</p>
-<p><code>   nVersion = 0 or as appropriate (e.g. 2, for time locks)</code><br />
-<code>   nLockTime = 0 or as appropriate (for time locks)</code><br />
+<p><code>   nVersion = 0 or (FULL format only) as appropriate (e.g. 2, for time locks)</code><br />
+<code>   nLockTime = 0 or (FULL format only) as appropriate (for time locks)</code><br />
 <code>   vin[0].prevout.hash = to_spend.txid</code><br />
 <code>   vin[0].prevout.n = 0</code><br />
-<code>   vin[0].nSequence = 0 or as appropriate (for time locks)</code><br />
+<code>   vin[0].nSequence = 0 or (FULL format only) as appropriate (for time locks)</code><br />
 <code>   vin[0].scriptWitness = message_signature</code><br />
 <code>   vout[0].nValue = 0</code><br />
 <code>   vout[0].scriptPubKey = OP_RETURN</code></p>
@@ -240,7 +241,10 @@ then they may base64-encode <code>message_signature</code></li>
 signmessage/verifymessage specification through the special case as
 described above.</p>
 <h2 id="reference-implementation">Reference implementation</h2>
-<p>TODO</p>
+<ul>
+<li>Bitcoin Core pull request (basic support) at:
+<a href="https://github.com/bitcoin/bitcoin/pull/24058">https://github.com/bitcoin/bitcoin/pull/24058</a></li>
+</ul>
 <h2 id="acknowledgements">Acknowledgements</h2>
 <p>Thanks to David Harding, Jim Posen, Kalle Rosenbaum, Pieter Wuille,
 Andrew Poelstra, and many others for their feedback on the
@@ -254,7 +258,29 @@ specification.</p>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
 <h2 id="test-vectors">Test vectors</h2>
-<p>TODO</p>
+<h3 id="message-hashing">Message hashing</h3>
+<p>Message hashes are BIP340-tagged hashes of a message, i.e.
+sha256_tag(m), where tag = <code>BIP0322-signed-message</code>, and m is the
+message as is without length prefix or null terminator:</p>
+<ul>
+<li>Message = &quot;&quot; (empty string):
+<code>c90c269c4f8fcbe6880f72a721ddfbf1914268a794cbb21cfafee13770ae19f1</code></li>
+<li>Message = &quot;Hello World&quot;:
+<code>f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a</code></li>
+</ul>
+<h3 id="message-signing">Message signing</h3>
+<p>Given below parameters:</p>
+<ul>
+<li>private key <code>L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k</code></li>
+<li>corresponding address <code>bc1q9vza2e8x573nczrlzms0wvx3gsqjx7vavgkx0l</code></li>
+</ul>
+<p>Produce signatures:</p>
+<ul>
+<li>Message = &quot;&quot; (empty string):
+<code>AkcwRAIgFuS8y5m0ym9Gj2odoVB5NIL+cPYkeEj8LL1N/6P58X8CIA6jJ9QH2iYKRXVfmhsDzHq1bMS4Adj0nb8DDSdN/SpBASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=</code></li>
+<li>Message = &quot;Hello World&quot;:
+<code>AkcwRAIgG3PASL/vRTgAqogWT6S8rUOQXNnfRzX6JncmbFlHc1ACIGQdsW+rnVmsQzyAYRQisHKFMigDmKiL7LUw4x17Fw5tASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=</code></li>
+</ul>
 
     </div>
 
@@ -262,7 +288,7 @@ license.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2022-02-06</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2022-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>
