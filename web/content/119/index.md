@@ -59,7 +59,10 @@ The recommended standardness rules additionally:
 ## Motivation
 
 Covenants are restrictions on how a coin may be spent beyond key
-ownership. Covenants can be useful to construct smart contracts. As
+ownership. This is a general definition based on the legal definition
+which even simple scripts using CSV would satisfy. Covenants in Bitcoin
+transactions usually refer to restrictions on where coins can be
+transferred. Covenants can be useful to construct smart contracts. As
 covenants are complex to implement and risk of introducing fungibility
 discriminants they have not been seriously considered for inclusion in
 Bitcoin.
@@ -307,15 +310,17 @@ For the avoidance of unclarity, the parameters to be determined are:
 `   consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].min_activation_height = 0;`
 
 Until BIP-119 reaches ACTIVE state and the
-SCRIPT\_VERIFY\_DEFAULT\_CHECK\_TEMPLATE\_VERIFY\_HASH flag is set, the
-network should execute a NOP4 as
-SCRIPT\_ERR\_DISCOURAGE\_UPGRADABLE\_NOPS for policy and a NOP for
-consensus.
+SCRIPT\_VERIFY\_DEFAULT\_CHECK\_TEMPLATE\_VERIFY\_HASH flag is enforced,
+node implementations should (are recommended to) execute a NOP4 as
+SCRIPT\_ERR\_DISCOURAGE\_UPGRADABLE\_NOPS (to deny entry to the mempool)
+for policy and must evaluate as a NOP for consensus (during block
+validation).
 
 In order to facilitate using CHECKTEMPLATEVERIFY, the common case of a
-PayToBareDefaultCheckTemplateVerifyHash with no scriptSig data shall be
-made standard to permit relaying. Future template types may be
-standardized later as policy changes.
+PayToBareDefaultCheckTemplateVerifyHash with no scriptSig data may (is
+recommended to) be made standard to permit relaying. Future template
+types may be standardized later as policy changes at the preference of
+the implementor.
 
 ## Reference Implementation
 
@@ -691,13 +696,15 @@ Because CHECKTEMPLATEVERIFY commits to the input index currently being
 spent, reused-keys are guaranteed to execute in separate transactions
 which reduces the risk of "half-spend" type issues.
 
-#### NOP-Default and Standardness Rules
+#### NOP-Default and Recommended Standardness Rules
 
 If the argument length is not exactly 32, CHECKTEMPLATEVERIFY treats it
-as a NOP. Many OP\_NOP upgrades prefer to fail in such circumstances. In
-particular, for CHECKTEMPLATEVERIFY, making an invalid argument a NOP
-permits future soft-forks to upgrade the semantics or loosed
-restrictions around the value being previously pushed only.
+as a NOP during consensus validation. Implementations are recommended to
+fail in such circumstances during non-consensus relaying and mempool
+validation. In particular, making an invalid-length argument a failure
+aids future soft-forks upgrades to be able to rely on the tighter
+standard restrictions to safely loosen the restrictions for standardness
+while tightening them for consensus with the upgrade's rules.
 
 The standardness rules may lead an unscrupulous script developer to
 accidentally rely on the stricter standardness rules to be enforced
@@ -829,8 +836,11 @@ forks for OP\_CHECKSEQUENCEVERIFY and OP\_CHECKLOCKTIMEVERIFY (see
 BIP-0065 and BIP-0112) have similarly changed OP\_NOP semantics without
 introducing compatibility issues.
 
-In contrast to previous forks, OP\_CHECKTEMPLATEVERIFY will not make
-scripts valid for policy until the new rule is active.
+In contrast to previous forks, OP\_CHECKTEMPLATEVERIFY's reference
+implementation does not allow transactions with spending scripts using
+it to be accepted to the mempool or relayed under standard policy until
+the new rule is active. Other implementations are recommended to follow
+this rule as well, but not required.
 
 Older wallet software will be able to accept spends from
 OP\_CHECKTEMPLATEVERIFY outputs, but will require an upgrade in order to
