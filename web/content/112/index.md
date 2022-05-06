@@ -439,7 +439,8 @@ Day](http://diyhpl.us/diyhpluswiki/transcripts/sf-bitcoin-meetup/2015-02-23-scal
 [Softfork deployment
 considerations](http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010396.html)
 
-[Version bits](https://gist.github.com/sipa/bf69659f43e763540550)
+[Version
+bits](https://web.archive.org/web/20210925124425/https://gist.github.com/sipa/bf69659f43e763540550)
 
 [Jeremy Spilman Micropayment
 Channels](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html)

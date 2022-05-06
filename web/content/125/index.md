@@ -184,15 +184,15 @@ confirmed, and so some users advocated that replacement should be
 disallowed.
 
 To address those concerns, a variation on RBF was created that required
-that the replacement transaction pay all of same outputs as the original
-transaction in equal or greater amount. This was called RBF First Seen
-Safe (RBF-FSS), and the original RBF became known as full-RBF. Although
-agreeable to recipients who relied on the first-seen version of a
-transaction, each use of RBF-FSS required adding an extra input to a
-transaction, resulting in wallets being unable to use it if they had no
-spare inputs, a loss of privacy when inputs from different origins get
-used in the same transaction, and a wasteful increase in transaction
-byte size.
+that the replacement transaction pay all of the same outputs as the
+original transaction in equal or greater amount. This was called RBF
+First Seen Safe (RBF-FSS), and the original RBF became known as
+full-RBF. Although agreeable to recipients who relied on the first-seen
+version of a transaction, each use of RBF-FSS required adding an extra
+input to a transaction, resulting in wallets being unable to use it if
+they had no spare inputs, a loss of privacy when inputs from different
+origins get used in the same transaction, and a wasteful increase in
+transaction byte size.
 
 Opt-in full-RBF uses Nakamoto's original semantics (with a slight tweak
 to allow locktime users to opt-out) to signal that replacement is

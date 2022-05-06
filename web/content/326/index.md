@@ -1,5 +1,5 @@
 +++
-title = "Anti-fee-sniping protection with nSequence in taproot transactions to improve privacy for off-chain protocols"
+title = "Anti-fee-sniping in taproot transactions"
 date = 2021-06-10
 weight = 326
 in_search_index = true
@@ -17,8 +17,8 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0326.mediawiki"
 ``` 
   BIP: 326
   Layer: Applications
-  Title: Anti-fee-sniping protection with nSequence in taproot transactions to improve privacy for off-chain protocols
-  Author: Chris Belcher <belcher at riseup dot net>
+  Title: Anti-fee-sniping in taproot transactions
+  Author: Chris Belcher <belcher@riseup.net>
   Status: Draft
   Type: Informational
   Comments-Summary: No comments yet.
