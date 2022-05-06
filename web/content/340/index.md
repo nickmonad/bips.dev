@@ -586,7 +586,7 @@ A blind signature protocol is an interactive protocol that enables a
 signer to sign a message at the behest of another party without learning
 any information about the signed message or the signature. Schnorr
 signatures admit a very [simple blind signature
-scheme](https://www.math.uni-frankfurt.de/~dmst/research/papers/schnorr.blind_sigs_attack.2001.pdf)
+scheme](http://publikationen.ub.uni-frankfurt.de/files/4292/schnorr.blind_sigs_attack.2001.pdf)
 which is however insecure because it's vulnerable to [Wagner's
 attack](https://www.iacr.org/archive/crypto2002/24420288/24420288.pdf).
 A known mitigation is to let the signer abort a signing session with a

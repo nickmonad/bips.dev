@@ -125,7 +125,7 @@ followed by a separator of <code>0xFF</code>[2]. This integer must be serialized
 in most significant byte order.</p>
 <p>The currently defined global types are as follows:</p>
 <table><thead><tr><th>Name</th><th><keytype></th><th><keydata></th><th><keydata> Description</th><th><valuedata></th><th><valuedata> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th><th>Parent BIP</th></tr></thead><tbody>
-<tr><td>Unsigned Transaction</td><td><code>PSBT_GLOBAL_UNSIGNED_TX = 0x00</code></td><td>None</td><td>No key data</td><td><transaction></td><td>The transaction in network serialization. The scriptSigs and witnesses for each input must be empty. The transaction must be in the old serialization format (without witnesses).</td><td>0</td><td></td><td>0</td><td>174</td></tr>
+<tr><td>Unsigned Transaction</td><td><code>PSBT_GLOBAL_UNSIGNED_TX = 0x00</code></td><td>None</td><td>No key data</td><td><transaction></td><td>The transaction in network serialization. The scriptSigs and witnesses for each input must be empty. The transaction must be in the old serialization format (without witnesses).</td><td>0</td><td>2</td><td>0</td><td>174</td></tr>
 <tr><td>Extended Public Key</td><td><code>PSBT_GLOBAL_XPUB = 0x01</code></td><td><xpub></td><td>The 78 byte serialized extended public key as defined by BIP 32. Extended public keys are those that can be used to derive public keys used in the inputs and outputs of this transaction. It should be the public key at the highest hardened derivation index so that the unhardened child keys used in the transaction can be derived.</td><td><code>&lt;32-bit uint&gt; &lt;32-bit uint&gt;*</code></td><td>The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. The number of 32 bit unsigned integer indexes must match the depth provided in the extended public key.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Transaction Version</td><td><code>PSBT_GLOBAL_TX_VERSION = 0x02</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
 <tr><td>Fallback Locktime</td><td><code>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint&gt;</code></td><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
@@ -412,7 +412,7 @@ in most significant byte order.</p>
 <td><p><tt></p>
 <script>
 <p>&lt;8-bit uint&gt;</tt></p></td>
-<td><p>The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
+<td><p>The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
 <td></td>
 <td></td>
 <td><p>0, 2</p></td>
@@ -435,7 +435,7 @@ in most significant byte order.</p>
 <td><p><code>PSBT_IN_TAP_INTERNAL_KEY = 0x17</code></p></td>
 <td><p>None</p></td>
 <td><p>No key data</p></td>
-<td><p><pubkey></p></td>
+<td><p><xonlypubkey></p></td>
 <td><p>The X-only pubkey used as the internal key in this output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
 <td></td>
 <td></td>
@@ -447,7 +447,7 @@ in most significant byte order.</p>
 <td><p><code>PSBT_IN_TAP_MERKLE_ROOT = 0x18</code></p></td>
 <td><p>None</p></td>
 <td><p>No key data</p></td>
-<td><p><pubkey></p></td>
+<td><p><code>&lt;32-byte hash&gt;</code></p></td>
 <td><p>The 32 byte Merkle root hash. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
 <td></td>
 <td></td>
@@ -552,7 +552,7 @@ in most significant byte order.</p>
 <td><p><code>PSBT_OUT_TAP_INTERNAL_KEY = 0x05</code></p></td>
 <td><p>None</p></td>
 <td><p>No key data</p></td>
-<td><p><pubkey></p></td>
+<td><p><xonlypubkey></p></td>
 <td><p>The X-only pubkey used as the internal key in this output.</p></td>
 <td></td>
 <td></td>

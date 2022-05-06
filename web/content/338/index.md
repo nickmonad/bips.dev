@@ -90,21 +90,25 @@ made on the network.
     response to a version message from that peer if the peer's protocol
     version is \>= 70017. If sent, the disabletx message MUST be sent
     prior to sending a verack.
-4.  A node that has sent or received a disabletx message to/from a peer
+4.  A node MUST NOT send the disabletx message if the transaction relay
+    field in the version message is omitted or set to true.
+5.  A node that has sent or received a disabletx message to/from a peer
     MUST NOT send any of these messages to the peer:
     1.  inv messages for transactions
-    2.  getdata messages for transactions
-    3.  getdata messages for merkleblock (BIP 37)
-    4.  filteradd/filterload/filterclear (BIP 37)
-    5.  mempool (BIP 35)
-    6.  tx message
-5.  It is RECOMMENDED that a node that has sent or received a disabletx
+    2.  notfound messages for transactions
+    3.  getdata messages for transactions
+    4.  getdata messages for merkleblock (BIP 37)
+    5.  filteradd/filterload/filterclear (BIP 37)
+    6.  feefilter (BIP 133)
+    7.  mempool (BIP 35)
+    8.  tx message
+6.  It is RECOMMENDED that a node that has sent or received a disabletx
     message to/from a peer not send any of these messages to the peer:
     1.  addr/getaddr
     2.  addrv2 (BIP 155)
-6.  The behavior regarding sending or processing other message types is
+7.  The behavior regarding sending or processing other message types is
     not specified by this BIP.
-7.  Nodes MAY decide to not remain connected to peers that send this
+8.  Nodes MAY decide to not remain connected to peers that send this
     message (for example, if trying to find a peer that will relay
     transactions).
 

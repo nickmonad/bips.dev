@@ -111,13 +111,17 @@ a peer to false, then the disabletx message MAY also be sent in
 response to a version message from that peer if the peer's protocol
 version is &gt;= 70017. If sent, the disabletx message MUST be sent
 prior to sending a verack.</li>
+<li>A node MUST NOT send the disabletx message if the transaction relay
+field in the version message is omitted or set to true.</li>
 <li>A node that has sent or received a disabletx message to/from a peer
 MUST NOT send any of these messages to the peer:
 <ol>
 <li>inv messages for transactions</li>
+<li>notfound messages for transactions</li>
 <li>getdata messages for transactions</li>
 <li>getdata messages for merkleblock (BIP 37)</li>
 <li>filteradd/filterload/filterclear (BIP 37)</li>
+<li>feefilter (BIP 133)</li>
 <li>mempool (BIP 35)</li>
 <li>tx message</li>
 </ol>

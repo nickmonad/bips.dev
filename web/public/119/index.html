@@ -183,98 +183,87 @@ variant where the coins move along the control path.</p>
 <h3 id="coinjoin-payment-pools-join-pools">CoinJoin / Payment Pools / Join Pools</h3>
 <p>CHECKTEMPLATEVERIFY makes it much easier to set up trustless CoinJoins
 than previously because participants agree on a single output which pays
-all participants, which will be lower fee than before. Further Each
+all participants, which will be lower fee than before. Further each
 participant doesn't need to know the totality of the outputs committed
 to by that output, they only have to verify their own sub-tree will pay
 them. These trees can then, using a top-level Schnorr key, be
 interactively updated on a rolling basis forming a &quot;Payment Pool&quot;.</p>
 <h2 id="detailed-specification">Detailed Specification</h2>
-<p>The below code is the main logic for verifying CHECKTEMPLATEVERIFY, and
-is the canonical specification for the semantics of
-OP_CHECKTEMPLATEVERIFY.</p>
-<p><code>   case OP_CHECKTEMPLATEVERIFY:</code><br />
-<code>   {</code><br />
-<code>       // if flags not enabled; treat as a NOP4</code><br />
-<code>       if (!(flags &amp; SCRIPT_VERIFY_DEFAULT_CHECK_TEMPLATE_VERIFY_HASH)) {</code><br />
-<code>           if (flags &amp; SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS)</code><br />
-<code>               return set_error(serror, SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS);</code><br />
-<code>           break;</code><br />
-<code>       }</code></p>
-<p><code>       if (stack.size() &lt; 1)</code><br />
-<code>           return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);</code></p>
-<p><code>       // If the argument was not 32 bytes, treat as OP_NOP4:</code><br />
-<code>       switch (stack.back().size()) {</code><br />
-<code>           case 32:</code><br />
-<code>               if (!checker.CheckDefaultCheckTemplateVerifyHash(stack.back())) {</code><br />
-<code>                   return set_error(serror, SCRIPT_ERR_TEMPLATE_MISMATCH);</code><br />
-<code>               }</code><br />
-<code>               break;</code><br />
-<code>           default:</code><br />
-<code>               // future upgrade can add semantics for this opcode with different length args</code><br />
-<code>               // so discourage use when applicable</code><br />
-<code>               if (flags &amp; SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS) {</code><br />
-<code>                   return set_error(serror, SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS);</code><br />
-<code>               }</code><br />
-<code>       }</code><br />
-<code>   }</code><br />
-<code>   break;</code></p>
-<p>Where</p>
-<p><code>   bool CheckDefaultCheckTemplateVerifyHash(const std::vector</code><unsigned char><code>&amp; hash) {</code><br />
-<code>       // note: for anti-DoS, a real implementation *must* cache parts of this computation</code><br />
-<code>       // to avoid quadratic hashing DoS all variable length computations must be precomputed</code><br />
-<code>       // including hashes of the scriptsigs, sequences, and outputs. See the section</code><br />
-<code>       // &quot;Denial of Service and Validation Costs&quot; below.</code><br />
-<code>       return GetDefaultCheckTemplateVerifyHash(current_tx, current_input_index) == uint256(hash);</code><br />
-<code>   }</code></p>
-<p>The hash is computed as follows:</p>
-<p><code>   // not DoS safe, for reference/testing!</code><br />
-<code>   uint256 GetDefaultCheckTemplateVerifyHash(const CTransaction&amp; tx, uint32_t input_index) {</code><br />
-<code>       return GetDefaultCheckTemplateVerifyHash(tx, GetOutputsSHA256(tx), GetSequenceSHA256(tx), input_index);</code><br />
-<code>   }</code><br />
-<code>   // not DoS safe for reference/testing!</code><br />
-<code>   uint256 GetDefaultCheckTemplateVerifyHash(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
-<code>                                   const uint32_t input_index) {</code><br />
-<code>       bool skip_scriptSigs = std::find_if(tx.vin.begin(), tx.vin.end(),</code><br />
-<code>               [](const CTxIn&amp; c) { return c.scriptSig != CScript(); }) == tx.vin.end();</code><br />
-<code>       return skip_scriptSigs ? GetDefaultCheckTemplateVerifyHashEmptyScript(tx, outputs_hash, sequences_hash, input_index) :</code><br />
-<code>           GetDefaultCheckTemplateVerifyHashWithScript(tx, outputs_hash, sequences_hash, GetScriptSigsSHA256(tx), input_index);</code><br />
-<code>   }</code><br />
-<code>   // DoS safe, fixed length hash!</code><br />
-<code>   uint256 GetDefaultCheckTemplateVerifyHashWithScript(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
-<code>                                   const uint256&amp; scriptSig_hash, const uint32_t input_index) {</code><br />
-<code>       auto h =  CHashWriter(SER_GETHASH, 0)</code><br />
-<code>           &lt;&lt; tx.nVersion</code><br />
-<code>           &lt;&lt; tx.nLockTime</code><br />
-<code>           &lt;&lt; scriptSig_hash</code><br />
-<code>           &lt;&lt; uint32_t(tx.vin.size())</code><br />
-<code>           &lt;&lt; sequences_hash</code><br />
-<code>           &lt;&lt; uint32_t(tx.vout.size())</code><br />
-<code>           &lt;&lt; outputs_hash</code><br />
-<code>           &lt;&lt; input_index;</code><br />
-<code>       return h.GetSHA256();</code><br />
-<code>   }</code><br />
-<code>   // DoS safe, fixed length hash!</code><br />
-<code>   uint256 GetDefaultCheckTemplateVerifyHashEmptyScript(const CTransaction&amp; tx, const uint256&amp; outputs_hash, const uint256&amp; sequences_hash,</code><br />
-<code>                                   const uint32_t input_index) {</code><br />
-<code>       auto h =  CHashWriter(SER_GETHASH, 0)</code><br />
-<code>           &lt;&lt; tx.nVersion</code><br />
-<code>           &lt;&lt; tx.nLockTime</code><br />
-<code>           &lt;&lt; uint32_t(tx.vin.size())</code><br />
-<code>           &lt;&lt; sequences_hash</code><br />
-<code>           &lt;&lt; uint32_t(tx.vout.size())</code><br />
-<code>           &lt;&lt; outputs_hash</code><br />
-<code>           &lt;&lt; input_index;</code><br />
-<code>       return h.GetSHA256();</code><br />
-<code>   }</code></p>
+<p>The below code is the main logic for verifying CHECKTEMPLATEVERIFY,
+described in pythonic pseduocode. The canonical specification for the
+semantics of OP_CHECKTEMPLATEVERIFY as implemented in C++ in the
+context of Bitcoin Core can be seen in the reference implementation.</p>
+<p>The execution of the opcode is as follows:</p>
+<p><code>   def execute_bip_119(self):</code><br />
+<code>       # Before soft-fork activation / failed activation</code><br />
+<code>       if not self.flags.script_verify_default_check_template_verify_hash:</code><br />
+<code>           # Potentially set for node-local policy to discourage premature use</code><br />
+<code>           if self.flags.script_verify_discourage_upgradable_nops:</code><br />
+<code>               return self.errors_with(errors.script_err_discourage_upgradable_nops)</code><br />
+<code>           return self.return_as_nop()</code><br />
+<code>       # CTV always requires at least one stack argument</code><br />
+<code>       if len(self.stack) &lt; 1:</code><br />
+<code>           return self.errors_with(errors.script_err_invalid_stack_operation)</code><br />
+<code>       # CTV only verifies the hash against a 32 byte argument</code><br />
+<code>       if len(self.stack[-1]) == 32:</code><br />
+<code>           # Ensure the precomputed data required for anti-DoS is available,</code><br />
+<code>           # or cache it on first use</code><br />
+<code>           if self.context.precomputed_ctv_data == None:</code><br />
+<code>               self.context.precomputed_ctv_data = self.context.tx.get_default_check_template_precomputed_data()</code><br />
+<code>           if stack[-1] != self.context.tx.get_default_check_template_hash(self.context.nIn, self.context.precomputed_ctv_data)</code><br />
+<code>               return self.errors_with(errors.script_err_template_mismatch)</code><br />
+<code>           return self.return_as_nop()</code><br />
+<code>       # future upgrade can add semantics for this opcode with different length args</code><br />
+<code>       # so discourage use when applicable</code><br />
+<code>       if self.flags.script_verify_discourage_upgradable_nops:</code><br />
+<code>           return self.errors_with(errors.script_err_discourage_upgradable_nops)</code><br />
+<code>       else:</code><br />
+<code>           return self.return_as_nop()</code></p>
+<p>The computation of this hash can be implemented as specified below
+(where self is the transaction type). Care must be taken that in any
+validation context, the precomputed data must be initialized to prevent
+Denial-of-Service attacks. Any implementation *must* cache these parts
+of the hash computation to avoid quadratic hashing DoS. All variable
+length computations must be precomputed including hashes of the
+scriptsigs, sequences, and outputs. See the section &quot;Denial of Service
+and Validation Costs&quot; below. This is not a performance optimization.</p>
+<p><code>   def get_default_check_template_precomputed_data(self):</code><br />
+<code>       result = {}</code><br />
+<code>       # If there are no scriptSigs we do not need to precompute a hash</code><br />
+<code>       if any(inp.scriptSig for inp in self.vin):</code><br />
+<code>           result[&quot;scriptSigs&quot;] = sha256(b&quot;&quot;.join(ser_string(inp.scriptSig) for inp in self.vin))</code><br />
+<code>       # The same value is also pre-computed for and defined in BIP-341 and can be shared</code><br />
+<code>       result[&quot;sequences&quot;] = sha256(b&quot;&quot;.join(struct.pack(&quot;&lt;I&quot;, inp.nSequence) for inp in self.vin))</code><br />
+<code>       # The same value is also pre-computed for and defined in BIP-341 and can be shared</code><br />
+<code>       result[&quot;outputs&quot;] = sha256(b&quot;&quot;.join(out.serialize() for out in self.vout))</code><br />
+<code>       return result</code></p>
+<p><code>   # parameter precomputed must be passed in for DoS resistance</code><br />
+<code>   def get_default_check_template_hash(self, nIn, precomputed = None):</code><br />
+<code>       if precomputed == None:</code><br />
+<code>           precomputed = self.get_default_check_template_precomputed_data()</code><br />
+<code>       r = b&quot;&quot;</code><br />
+<code>       # pack as 4 byte signed integer</code><br />
+<code>       r += struct.pack(&quot;&lt;i&quot;, self.nVersion)</code><br />
+<code>       # pack as 4 byte unsigned integer</code><br />
+<code>       r += struct.pack(&quot;&lt;I&quot;, self.nLockTime)</code><br />
+<code>       # we do not include the hash in the case where there is no</code><br />
+<code>       # scriptSigs</code><br />
+<code>       if &quot;scriptSigs&quot; in precomputed:</code><br />
+<code>           r += precomputed[&quot;scriptSigs&quot;]</code><br />
+<code>       # pack as 4 byte unsigned integer</code><br />
+<code>       r += struct.pack(&quot;&lt;I&quot;, len(self.vin))</code><br />
+<code>       r += precomputed[&quot;sequences&quot;]</code><br />
+<code>       # pack as 4 byte unsigned integer</code><br />
+<code>       r += struct.pack(&quot;&lt;I&quot;, len(self.vout))</code><br />
+<code>       r += precomputed[&quot;outputs&quot;]</code><br />
+<code>       # pack as 4 byte unsigned integer</code><br />
+<code>       r += struct.pack(&quot;&lt;I&quot;, nIn)</code><br />
+<code>       return sha256(r)</code></p>
 <p>A PayToBareDefaultCheckTemplateVerifyHash output matches the following
 template:</p>
-<p><code>   bool CScript::IsPayToBareDefaultCheckTemplateVerifyHash() const</code><br />
-<code>   {</code><br />
-<code>    // Extra-fast test for pay-to-basic-standard-template CScripts:</code><br />
-<code>    return (this-&gt;size() == 34 &amp;&amp;</code><br />
-<code>            (*this)[0] == 0x20 &amp;&amp;</code><br />
-<code>            (*this)[33] == OP_CHECKTEMPLATEVERIFY);</code><br />
-<code>   }</code></p>
+<p><code>   # Extra-fast test for pay-to-basic-standard-template CScripts:</code><br />
+<code>   def is_pay_to_bare_default_check_template_verify_hash(self):</code><br />
+<code>       return len(self) == 34 and self[0] == 0x20 and self[-1] == OP_CHECKTEMPLATEVERIFY</code></p>
 <h2 id="deployment">Deployment</h2>
 <p>Deployment could be done via BIP 9 VersionBits deployed through Speedy
 Trial. The Bitcoin Core reference implementation includes the below
@@ -541,7 +530,7 @@ available due to similar issues in CHECKSIG behavior. Computing the
 caches is O(T) (the size of the transaction).</p>
 <p>An example of a script that could experience an DoS issue without
 caching is:</p>
-<p>``` <H> CTV CTV CTV... CTV ```</p>
+<p><code>   </code><H><code> CTV CTV CTV... CTV</code></p>
 <p>Such a script would cause the intepreter to compute hashes (supposing N
 CTV's) over O(N*T) data. If the scriptSigs non-nullity is not cached,
 then the O(T) transaction could be scanned over O(N) times as well
