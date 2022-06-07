@@ -273,6 +273,22 @@ Given below parameters:
 Produce signatures:
 
   - Message = "" (empty string):
-    `AkcwRAIgFuS8y5m0ym9Gj2odoVB5NIL+cPYkeEj8LL1N/6P58X8CIA6jJ9QH2iYKRXVfmhsDzHq1bMS4Adj0nb8DDSdN/SpBASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
+    `AkcwRAIgM2gBAQqvZX15ZiysmKmQpDrG83avLIT492QBzLnQIxYCIBaTpOaD20qRlEylyxFSeEA2ba9YOixpX8z46TSDtS40ASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
   - Message = "Hello World":
-    `AkcwRAIgG3PASL/vRTgAqogWT6S8rUOQXNnfRzX6JncmbFlHc1ACIGQdsW+rnVmsQzyAYRQisHKFMigDmKiL7LUw4x17Fw5tASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
+    `AkcwRAIgZRfIY3p7/DoVTty6YZbWS71bc5Vct9p9Fia83eRmw2QCICK/ENGfwLtptFluMGs2KsqoNSk89pO7F29zJLUx9a/sASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
+
+### Transaction Hashes
+
+to\_spend:
+
+  - Message = "" (empty string):
+    `c5680aa69bb8d860bf82d4e9cd3504b55dde018de765a91bb566283c545a99a7`
+  - Message = "Hello World":
+    `b79d196740ad5217771c1098fc4a4b51e0535c32236c71f1ea4d61a2d603352b`
+
+to\_sign:
+
+  - Message = "" (empty string):
+    `1e9654e951a5ba44c8604c4de6c67fd78a27e81dcadcfe1edf638ba3aaebaed6`
+  - Message = "Hello World":
+    `88737ae86f2077145f93cc4b153ae9a1cb8d56afa511988c149c5c8c9d93bddf`
