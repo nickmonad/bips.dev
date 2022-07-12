@@ -5,7 +5,7 @@ weight = 179
 in_search_index = true
 
 [taxonomies]
-authors = ["Emil Engler", "MarcoFalke", "Luke Dashjr"]
+authors = ["Emil Engler", "Luke Dashjr"]
 status = ["Draft"]
 
 [extra]
@@ -18,7 +18,6 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0179.mediawiki"
   BIP: 179
   Title: Name for payment recipient identifiers
   Author: Emil Engler <me@emilengler.com>
-          MarcoFalke <falke.marco@gmail.com>
           Luke Dashjr <luke+bip@dashjr.org>
   Comments-Summary: No comments yet.
   Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0179
