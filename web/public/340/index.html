@@ -316,15 +316,16 @@ byte (inclusive) to the <em>j</em>-th byte (exclusive) of <em>x</em>.</li>
 encoding is <em>x</em>.</li>
 <li>The function <em>has_even_y(P)</em>, where <em>P</em> is a point for which
 <em>not is_infinite(P)</em>, returns <em>y(P) mod 2 = 0</em>.</li>
-<li>The function <em>lift_x(x)</em>, where <em>x</em> is an integer in range
-<em>0..p-1</em>, returns the point <em>P</em> for which <em>x(P) = x</em><ref></li>
+<li>The function <em>lift_x(x)</em>, where <em>x</em> is a 256-bit unsigned
+integer, returns the point <em>P</em> for which <em>x(P) = x</em><ref></li>
 </ul>
 </li>
 </ul>
-<p><code>   Given a candidate X coordinate </code><em><code>x</code></em><code> in the range </code><em><code>0..p-1</code></em><code>, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then </code><em><code>x</code></em><code> is not a valid X coordinate either, i.e., no point </code><em><code>P</code></em><code> exists for which </code><em><code>x(P)``  ``=``  ``x</code></em><code>. The valid Y coordinates for a given candidate </code><em><code>x</code></em><code> are the square roots of </code><em><code>c``  ``=``   ``x</code><sup><code>3</code></sup><code>   ``+``   ``7``   ``mod``  ``p</code></em><code> and they can be computed as </code><em><code>y``   ``=``  ``±c</code><sup><code>(p+1)/4</code></sup><code>   ``mod``   ``p</code></em><code> (see </code><a href="https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus"><code>Quadratic``  ``residue</code></a><code>) if they exist, which can be checked by squaring and comparing with </code><em><code>c</code></em><code>.</code></ref><code> and </code><em><code>has_even_y(P)</code></em><code>, or fails if no such point exists. The function </code><em><code>lift_x(x)</code></em><code> is equivalent to the following pseudocode:</code></p>
+<p><code>   Given a candidate X coordinate </code><em><code>x</code></em><code> in the range </code><em><code>0..p-1</code></em><code>, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then </code><em><code>x</code></em><code> is not a valid X coordinate either, i.e., no point </code><em><code>P</code></em><code> exists for which </code><em><code>x(P)``  ``=``  ``x</code></em><code>. The valid Y coordinates for a given candidate </code><em><code>x</code></em><code> are the square roots of </code><em><code>c``  ``=``   ``x</code><sup><code>3</code></sup><code>   ``+``   ``7``   ``mod``  ``p</code></em><code> and they can be computed as </code><em><code>y``   ``=``  ``±c</code><sup><code>(p+1)/4</code></sup><code>   ``mod``   ``p</code></em><code> (see </code><a href="https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus"><code>Quadratic``  ``residue</code></a><code>) if they exist, which can be checked by squaring and comparing with </code><em><code>c</code></em><code>.</code></ref><code> and </code><em><code>has_even_y(P)</code></em><code>, or fails if </code><em><code>x</code></em><code> is greater than </code><em><code>p-1</code></em><code> or no such point exists. The function </code><em><code>lift_x(x)</code></em><code> is equivalent to the following pseudocode:</code></p>
 <ul>
 <li>
 <ul>
+<li>Fail if <em>x ≥ p</em>.</li>
 <li>Let <em>c = x<sup>3</sup> + 7 mod p</em>.</li>
 <li>Let <em>y = c<sup>(p+1)/4</sup> mod p</em>.</li>
 <li>Fail if <em>c ≠ y<sup>2</sup> mod p</em>.</li>

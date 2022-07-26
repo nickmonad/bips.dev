@@ -207,6 +207,7 @@ JavaScript:
   - <https://github.com/bitpay/bitcore/tree/master/packages/bitcore-mnemonic>
   - <https://github.com/bitcoinjs/bip39> (used by
     [blockchain.info](https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/hd-wallet.js#L121-L146 "wikilink"))
+  - <https://github.com/hujiulong/web-bip39>
 
 Java:
 
@@ -232,6 +233,7 @@ Swift:
   - <https://github.com/pengpengliu/BIP39>
   - <https://github.com/matter-labs/web3swift/blob/develop/Sources/web3swift/KeystoreManager/BIP39.swift>
   - <https://github.com/zcash-hackworks/MnemonicSwift>
+  - <https://github.com/ShenghaiWang/BIP39>
 
 C++:
 
@@ -244,3 +246,7 @@ C (with Python/Java/Javascript bindings):
 Python:
 
   - <https://github.com/scgbckbone/btc-hd-wallet>
+
+Dart:
+
+  - <https://github.com/dart-bitcoin/bip39>

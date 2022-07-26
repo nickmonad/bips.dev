@@ -301,8 +301,8 @@ can result in an insecure scheme\[9\].
         encoding is *x*.
       - The function *has\_even\_y(P)*, where *P* is a point for which
         *not is\_infinite(P)*, returns *y(P) mod 2 = 0*.
-      - The function *lift\_x(x)*, where *x* is an integer in range
-        *0..p-1*, returns the point *P* for which *x(P) = x*<ref>
+      - The function *lift\_x(x)*, where *x* is a 256-bit unsigned
+        integer, returns the point *P* for which *x(P) = x*<ref>
 
 `   Given a candidate X coordinate `*`x`*` in the range `*`0..p-1`*`, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then `*`x`*` is not a valid X coordinate either, i.e., no point `*`P`*` exists for which `*`x(P)`` 
  ``=`` 
@@ -310,9 +310,10 @@ can result in an insecure scheme\[9\].
  ``=``   ``x`<sup>`3`</sup>`   ``+``   ``7``   ``mod`` 
  ``p`*` and they can be computed as `*`y``   ``=`` 
  ``±c`<sup>`(p+1)/4`</sup>`   ``mod``   ``p`*` (see `[`Quadratic`` 
- ``residue`](https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus)`) if they exist, which can be checked by squaring and comparing with `*`c`*`.`</ref>` and `*`has_even_y(P)`*`, or fails if no such point exists. The function `*`lift_x(x)`*` is equivalent to the following pseudocode:`
+ ``residue`](https://en.wikipedia.org/wiki/Quadratic_residue#Prime_or_prime_power_modulus)`) if they exist, which can be checked by squaring and comparing with `*`c`*`.`</ref>` and `*`has_even_y(P)`*`, or fails if `*`x`*` is greater than `*`p-1`*` or no such point exists. The function `*`lift_x(x)`*` is equivalent to the following pseudocode:`
 
-  -   - Let *c = x<sup>3</sup> + 7 mod p*.
+  -   - Fail if *x ≥ p*.
+      - Let *c = x<sup>3</sup> + 7 mod p*.
       - Let *y = c<sup>(p+1)/4</sup> mod p*.
       - Fail if *c ≠ y<sup>2</sup> mod p*.
       - Return the unique point *P* such that *x(P) = x* and *y(P) = y*

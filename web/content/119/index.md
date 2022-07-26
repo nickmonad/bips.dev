@@ -62,133 +62,21 @@ Covenants are restrictions on how a coin may be spent beyond key
 ownership. This is a general definition based on the legal definition
 which even simple scripts using CSV would satisfy. Covenants in Bitcoin
 transactions usually refer to restrictions on where coins can be
-transferred. Covenants can be useful to construct smart contracts. As
-covenants are complex to implement and risk of introducing fungibility
-discriminants they have not been seriously considered for inclusion in
-Bitcoin.
+transferred. Covenants can be useful to construct smart contracts.
+Covenants have historically been widely considered to be unfit for
+Bitcoin because they are too complex to implement and risk reducing the
+fungibility of coins bound by them.
 
 This BIP introduces a simple covenant called a \*template\* which
 enables a limited set of highly valuable use cases without significant
-risk.
-
-A few examples are described below, which should be the subject of
-future non-consensus standardization efforts.
-
-### Congestion Controlled Transactions
-
-When there is a high demand for blockspace it becomes very expensive to
-make transactions. A large volume payment processor may aggregate all
-their payments into a single O(1) transaction commitment for purposes of
-confirmation using CHECKTEMPLATEVERIFY. Then, some time later, the
-payments can be expanded out of that UTXO when the demand for blockspace
-is decreased. These payments can be structured in a tree-like fashion to
-reduce individual costs of redemption.
-
-The below chart showcases the structure of these transactions in
-comparison to normal transactions and batched transactions.
-
-<img src="bip-0119/states.svg" align="middle"></img>
-
-A simulation is shown below of what impact this could have on mempool
-backlog given 5% network adoption, and 50% network adoption. The code
-for the simulation is provided in this BIP's subdirectory.
-
-<img src="bip-0119/five.png" align="middle"></img>
-<img src="bip-0119/fifty.png" align="middle"></img>
-
-### Payment Channels
-
-There are numerous payment channel related uses.
-
-#### Batched Channel Creation
-
-Using CHECKTEMPLATEVERIFY for Batched Channel Creation is similar to the
-use for Congestion Control, except the leaf node transactions are
-channels instead of plain payments. The channel can be between the
-sender and recipient or a target of recipient's choice. Using an
-CHECKTEMPLATEVERIFY, the recipient may give the sender an address which
-makes a tree of channels unbeknownst to them. These channels are time
-insensitive for setup, as all punishments are relative timelocked to the
-penultimate transaction node. Thus, coins sent using a congestion
-controlled transaction can still enjoy instant liquidity.
-
-#### Non-Interactive Channels
-
-When opening a traditional payment channel, both parties to the channel
-must participate. This is because the channel uses pre-signed multi-sig
-transactions to ensure that a channel can always be exited by either
-party, before entering. With CHECKTEMPLATEVERIFY, it’s possible for a
-single party to construct a channel which either party can exit from
-without requiring signatures from both parties. These payment channels
-can operate in one direction, paying to the channel "listener" without
-need for their private key to be online.
-<img src="bip-0119/nic.svg" align="middle"></img>
-
-#### Increased Channel Routes
-
-In the Lightning Network protocol, Hashed Time Locked Contracts (HTLCS)
-are used in the construction of channels. A new HTLC is required per
-route that the channel is serving in. In BOLT \#2, this maximum number
-of HTLCs in a channel is hard limited to 483 as the maximum safe size to
-prevent the transaction from being too large to be valid. In common
-software implementations such as LND, this limit is set much lower to 12
-HTLCS. This is because accepting a larger number of HTLCS makes it more
-difficult for transactions to confirm during congested periods as they
-must pay higher fees. Therefore, similarly to how congestion control is
-handled for normal transaction, lightning channel updates can be done
-across an CHECKTEMPLATEVERIFY tree, allowing nodes to safely use many
-more HTLCS. Because each HTLC can have its own relative time lock in the
-tree, this also improves the latency sensitivity of the lightning
-protocol on contested channel close.
-
-### Wallet Vaults
-
-This section will detail two variants of wallet vault that can be built
-using CTV. Wallet vaults are a useful tool when greater security is
-required for cold storage solutions, providing default transactional
-paths that move funds from one's cold storage to a hot wallet.
-
-One type of cold wallet can be set up such that a customer support desk
-can, without further authorization, move a portion of the funds (using
-multiple pre-set amounts) into a lukewarm wallet operated by an isolated
-support desk. The support desk can then issue some funds to a hot
-wallet, and send the remainder back to cold storage with a similar
-withdrawal mechanism in place. This is all possible without
-CHECKTEMPLATEVERIFY, but CHECKTEMPLATEVERIFY eliminates the need for
-coordination and online signers, as well as reducing the ability for a
-support desk to improperly move funds. Furthermore, all such designs can
-be combined with relative time locks to give time for compliance and
-risk desks to intervene. This is a 'Coins at Rest' or 'Optically
-Isolated' vault, and is shown below.
-
-<img src="bip-0119/vaults.svg" align="middle"></img>
-
-An alternative design for vaults is also highly effective and simpler to
-implement in Sapio, a smart contract programming language. In this
-design, the user commits to a single UTXO that contains a program for an
-annuity of withdrawals from cold storage to a hot wallet. At any time,
-the remaining balance for the annuity can be cancelled and funds locked
-entirely in cold storage. The withdrawals to the hot wallet can be
-'cancelled' before a maturity date to ensure the action was authorized.
-These sort of vaults strongly benefit from non-interactivity because the
-withdrawal program can be set up with cold keys that are permanently
-offline, except in case of emergency. The image below shows an instance
-of this type of wallet vault created with Sapio in Sapio Studio. These
-types of wallet vault can also be chained together by taking advantage
-of CTV's scriptSig commitment. This type of vault is a 'Coins in Motion'
-variant where the coins move along the control path.
-
-<img src="bip-0119/vaultanim.gif" align="middle"></img>
-
-### CoinJoin / Payment Pools / Join Pools
-
-CHECKTEMPLATEVERIFY makes it much easier to set up trustless CoinJoins
-than previously because participants agree on a single output which pays
-all participants, which will be lower fee than before. Further each
-participant doesn't need to know the totality of the outputs committed
-to by that output, they only have to verify their own sub-tree will pay
-them. These trees can then, using a top-level Schnorr key, be
-interactively updated on a rolling basis forming a "Payment Pool".
+risk. BIP-119 templates allow for **non-recursive** fully-enumerated
+covenants with no dynamic state. CTV serves as a replacement for a
+pre-signed transaction oracle, which eliminates the trust and
+interactivity requirements. Examples of uses include vaults,
+non-interactive payment channel creation, congestion controlled
+batching, efficient to construct discreet log contracts, and payment
+pools, among many others. For more details on these applications, please
+see the references.
 
 ## Detailed Specification
 
@@ -199,31 +87,40 @@ context of Bitcoin Core can be seen in the reference implementation.
 
 The execution of the opcode is as follows:
 
-`   def execute_bip_119(self):`  
-`       # Before soft-fork activation / failed activation`  
-`       if not self.flags.script_verify_default_check_template_verify_hash:`  
-`           # Potentially set for node-local policy to discourage premature use`  
-`           if self.flags.script_verify_discourage_upgradable_nops:`  
-`               return self.errors_with(errors.script_err_discourage_upgradable_nops)`  
-`           return self.return_as_nop()`  
-`       # CTV always requires at least one stack argument`  
-`       if len(self.stack) < 1:`  
-`           return self.errors_with(errors.script_err_invalid_stack_operation)`  
-`       # CTV only verifies the hash against a 32 byte argument`  
-`       if len(self.stack[-1]) == 32:`  
-`           # Ensure the precomputed data required for anti-DoS is available,`  
-`           # or cache it on first use`  
-`           if self.context.precomputed_ctv_data == None:`  
-`               self.context.precomputed_ctv_data = self.context.tx.get_default_check_template_precomputed_data()`  
-`           if stack[-1] != self.context.tx.get_default_check_template_hash(self.context.nIn, self.context.precomputed_ctv_data)`  
-`               return self.errors_with(errors.script_err_template_mismatch)`  
-`           return self.return_as_nop()`  
-`       # future upgrade can add semantics for this opcode with different length args`  
-`       # so discourage use when applicable`  
-`       if self.flags.script_verify_discourage_upgradable_nops:`  
-`           return self.errors_with(errors.script_err_discourage_upgradable_nops)`  
-`       else:`  
-`           return self.return_as_nop()`
+``` python
+def execute_bip_119(self):
+    # Before soft-fork activation / failed activation
+    # continue to treat as NOP4
+    if not self.flags.script_verify_default_check_template_verify_hash:
+        # Potentially set for node-local policy to discourage premature use
+        if self.flags.script_verify_discourage_upgradable_nops:
+            return self.errors_with(errors.script_err_discourage_upgradable_nops)
+        return self.return_as_nop()
+
+    # CTV always requires at least one stack argument
+    if len(self.stack) < 1:
+        return self.errors_with(errors.script_err_invalid_stack_operation)
+
+    # CTV only verifies the hash against a 32 byte argument
+    if len(self.stack[-1]) == 32:
+        # Ensure the precomputed data required for anti-DoS is available,
+        # or cache it on first use
+        if self.context.precomputed_ctv_data == None:
+            self.context.precomputed_ctv_data = self.context.tx.get_default_check_template_precomputed_data()
+
+        # If the hashes do not match, return error
+        if stack[-1] != self.context.tx.get_default_check_template_hash(self.context.nIn, self.context.precomputed_ctv_data)
+            return self.errors_with(errors.script_err_template_mismatch)
+
+        return self.return_as_nop()
+
+    # future upgrade can add semantics for this opcode with different length args
+    # so discourage use when applicable
+    if self.flags.script_verify_discourage_upgradable_nops:
+        return self.errors_with(errors.script_err_discourage_upgradable_nops)
+    else:
+        return self.return_as_nop()
+```
 
 The computation of this hash can be implemented as specified below
 (where self is the transaction type). Care must be taken that in any
@@ -234,46 +131,80 @@ length computations must be precomputed including hashes of the
 scriptsigs, sequences, and outputs. See the section "Denial of Service
 and Validation Costs" below. This is not a performance optimization.
 
-`   def get_default_check_template_precomputed_data(self):`  
-`       result = {}`  
-`       # If there are no scriptSigs we do not need to precompute a hash`  
-`       if any(inp.scriptSig for inp in self.vin):`  
-`           result["scriptSigs"] = sha256(b"".join(ser_string(inp.scriptSig) for inp in self.vin))`  
-`       # The same value is also pre-computed for and defined in BIP-341 and can be shared`  
-`       result["sequences"] = sha256(b"".join(struct.pack("<I", inp.nSequence) for inp in self.vin))`  
-`       # The same value is also pre-computed for and defined in BIP-341 and can be shared`  
-`       result["outputs"] = sha256(b"".join(out.serialize() for out in self.vout))`  
-`       return result`
+``` python
 
-`   # parameter precomputed must be passed in for DoS resistance`  
-`   def get_default_check_template_hash(self, nIn, precomputed = None):`  
-`       if precomputed == None:`  
-`           precomputed = self.get_default_check_template_precomputed_data()`  
-`       r = b""`  
-`       # pack as 4 byte signed integer`  
-`       r += struct.pack("<i", self.nVersion)`  
-`       # pack as 4 byte unsigned integer`  
-`       r += struct.pack("<I", self.nLockTime)`  
-`       # we do not include the hash in the case where there is no`  
-`       # scriptSigs`  
-`       if "scriptSigs" in precomputed:`  
-`           r += precomputed["scriptSigs"]`  
-`       # pack as 4 byte unsigned integer`  
-`       r += struct.pack("<I", len(self.vin))`  
-`       r += precomputed["sequences"]`  
-`       # pack as 4 byte unsigned integer`  
-`       r += struct.pack("<I", len(self.vout))`  
-`       r += precomputed["outputs"]`  
-`       # pack as 4 byte unsigned integer`  
-`       r += struct.pack("<I", nIn)`  
-`       return sha256(r)`
+def ser_compact_size(l):
+    r = b""
+    if l < 253:
+        # Serialize as unsigned char
+        r = struct.pack("B", l)
+    elif l < 0x10000:
+        # Serialize as unsigned char 253 followed by unsigned 2 byte integer (little endian)
+        r = struct.pack("<BH", 253, l)
+    elif l < 0x100000000:
+        # Serialize as unsigned char 254 followed by unsigned 4 byte integer (little endian)
+        r = struct.pack("<BI", 254, l)
+    else:
+        # Serialize as unsigned char 255 followed by unsigned 8 byte integer (little endian)
+        r = struct.pack("<BQ", 255, l)
+    return r
+
+def ser_string(s):
+    return ser_compact_size(len(s)) + s
+
+class CTxOut:
+    def serialize(self):
+        r = b""
+        # serialize as signed 8 byte integer (little endian)
+        r += struct.pack("<q", self.nValue)
+        r += ser_string(self.scriptPubKey)
+        return r
+
+def get_default_check_template_precomputed_data(self):
+    result = {}
+    # If there are no scriptSigs we do not need to precompute a hash
+    if any(inp.scriptSig for inp in self.vin):
+        result["scriptSigs"] = sha256(b"".join(ser_string(inp.scriptSig) for inp in self.vin))
+    # The same value is also pre-computed for and defined in BIP-341 and can be shared.
+    # each nSequence is packed as 4 byte unsigned integer (little endian)
+    result["sequences"] = sha256(b"".join(struct.pack("<I", inp.nSequence) for inp in self.vin))
+    # The same value is also pre-computed for and defined in BIP-341 and can be shared
+    # See class CTxOut above for details.
+    result["outputs"] = sha256(b"".join(out.serialize() for out in self.vout))
+    return result
+
+# parameter precomputed must be passed in for DoS resistance
+def get_default_check_template_hash(self, nIn, precomputed = None):
+    if precomputed == None:
+        precomputed = self.get_default_check_template_precomputed_data()
+    r = b""
+    # Serialize as 4 byte signed integer (little endian)
+    r += struct.pack("<i", self.nVersion)
+    # Serialize as 4 byte unsigned integer (little endian)
+    r += struct.pack("<I", self.nLockTime)
+    # we do not include the hash in the case where there is no
+    # scriptSigs
+    if "scriptSigs" in precomputed:
+        r += precomputed["scriptSigs"]
+    # Serialize as 4 byte unsigned integer (little endian)
+    r += struct.pack("<I", len(self.vin))
+    r += precomputed["sequences"]
+    # Serialize as 4 byte unsigned integer (little endian)
+    r += struct.pack("<I", len(self.vout))
+    r += precomputed["outputs"]
+    # Serialize as 4 byte unsigned integer (little endian)
+    r += struct.pack("<I", nIn)
+    return sha256(r)
+```
 
 A PayToBareDefaultCheckTemplateVerifyHash output matches the following
 template:
 
-`   # Extra-fast test for pay-to-basic-standard-template CScripts:`  
-`   def is_pay_to_bare_default_check_template_verify_hash(self):`  
-`       return len(self) == 34 and self[0] == 0x20 and self[-1] == OP_CHECKTEMPLATEVERIFY`
+``` python
+# Extra-fast test for pay-to-basic-standard-template CScripts:
+def is_pay_to_bare_default_check_template_verify_hash(self):
+    return len(self) == 34 and self[0] == 0x20 and self[-1] == OP_CHECKTEMPLATEVERIFY
+```
 
 ## Deployment
 
@@ -859,6 +790,19 @@ but not upgraded to a newer major release.
     idea.](https://bitcointalk.org/index.php?topic=278122.0)
   - [Enhancing Bitcoin Transactions with
     Covenants](https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf)
+  - [Simple CTV Vaults](https://github.com/jamesob/simple-ctv-vault)
+  - [Python Vaults](https://github.com/kanzure/python-vaults)
+  - [CTV Dramatically Improves
+    DLCs](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019808.html)
+  - [Calculus of
+    Covenants](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-April/020225.html)
+  - [Payment Pools with
+    CTV](https://rubin.io/bitcoin/2021/12/10/advent-13/)
+  - [Channels with CTV](https://rubin.io/bitcoin/2021/12/11/advent-14/)
+  - [Congestion Control with
+    CTV](https://rubin.io/bitcoin/2021/12/09/advent-12/)
+  - [Building Vaults on
+    Bitcoin](https://rubin.io/bitcoin/2021/12/07/advent-10/)
 
 ### Note on Similar Alternatives
 

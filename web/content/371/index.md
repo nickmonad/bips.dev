@@ -53,146 +53,22 @@ for signing Taproot inputs.
 
 The new per-input types are defined as follows:
 
-<table>
-<thead>
-<tr class="header">
-<th><p>Name</p></th>
-<th><p><keytype></p></th>
-<th><p><keydata></p></th>
-<th><p><keydata> Description</p></th>
-<th><p><valuedata></p></th>
-<th><p><valuedata> Description</p></th>
-<th><p>Versions Requiring Inclusion</p></th>
-<th><p>Versions Requiring Exclusion</p></th>
-<th><p>Versions Allowing Inclusion</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p>Taproot Key Spend Signature</p></td>
-<td><p><code>PSBT_IN_TAP_KEY_SIG = 0x13</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data [1]</p></td>
-<td><p><signature></p></td>
-<td><p>The 64 or 65 byte Schnorr signature for key path spending a Taproot output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Script Spend Signature</p></td>
-<td><p><code>PSBT_IN_TAP_SCRIPT_SIG = 0x14</code></p></td>
-<td><p><xonlypubkey><code> </code><leafhash></p></td>
-<td><p>A 32 byte X-only public key involved in a leaf script concatenated with the 32 byte hash of the leaf it is part of.</p></td>
-<td><p><signature></p></td>
-<td><p>The 64 or 65 byte Schnorr signature for this pubkey and leaf combination. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-<tr class="odd">
-<td><p>Taproot Leaf Script</p></td>
-<td><p><code>PSBT_IN_TAP_LEAF_SCRIPT = 0x15</code></p></td>
-<td><p><control block></p></td>
-<td><p>The control block for this leaf as specified in BIP 341. The control block contains the merkle tree path to this leaf.</p></td>
-<td><p><tt></p>
-<script>
-<p>&lt;8-bit uint&gt;</tt></p></td>
-<td><p>The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Key BIP 32 Derivation Path</p></td>
-<td><p><code>PSBT_IN_TAP_BIP32_DERIVATION = 0x16</code></p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>A 32 byte X-only public key involved in this input. It may be the internal key, or a key present in a leaf script.</p></td>
-<td><p><hashes len><code> </code><leaf hash><code>* &lt;4 byte fingerprint&gt; &lt;32-bit uint&gt;*</code></p></td>
-<td><p>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-<tr class="odd">
-<td><p>Taproot Internal Key</p></td>
-<td><p><code>PSBT_IN_TAP_INTERNAL_KEY = 0x17</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>The X-only pubkey used as the internal key in this output.[2] Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Merkle Root</p></td>
-<td><p><code>PSBT_IN_TAP_MERKLE_ROOT = 0x18</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;32-byte hash&gt;</code></p></td>
-<td><p>The 32 byte Merkle root hash. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-</tbody>
-</table>
+| Name                               | <keytype>                             | <keydata>                    | <keydata> Description                                                                                                  | <valuedata>                                                                                                                  | <valuedata> Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion |
+| ---------------------------------- | ------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------- | --------------------------- |
+| Taproot Key Spend Signature        | `PSBT_IN_TAP_KEY_SIG = 0x13`          | None                         | No key data \[1\]                                                                                                      | `<64 or 65 byte signature>`                                                                                                  | The 64 or 65 byte Schnorr signature for key path spending a Taproot output. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |                              |                              | 0, 2                        |
+| Taproot Script Spend Signature     | `PSBT_IN_TAP_SCRIPT_SIG = 0x14`       | <xonlypubkey>`   `<leafhash> | A 32 byte X-only public key involved in a leaf script concatenated with the 32 byte hash of the leaf it is part of.    | `<64 or 65 byte signature>`                                                                                                  | The 64 or 65 byte Schnorr signature for this pubkey and leaf combination. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |                              |                              | 0, 2                        |
+| Taproot Leaf Script                | `PSBT_IN_TAP_LEAF_SCRIPT = 0x15`      | <bytes control block>        | The control block for this leaf as specified in BIP 341. The control block contains the merkle tree path to this leaf. | <bytes script>`  <8-bit uint leaf version> `                                                                                 | The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                      |                              |                              | 0, 2                        |
+| Taproot Key BIP 32 Derivation Path | `PSBT_IN_TAP_BIP32_DERIVATION = 0x16` | `<32 byte xonlypubkey>`      | A 32 byte X-only public key involved in this input. It may be the internal key, or a key present in a leaf script.     | <compact size uint number of hashes>`  <32 byte leaf hash>* <4 byte fingerprint> <32-bit little endian uint path element>* ` | A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a `hashes len` of 0. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed. |                              |                              | 0, 2                        |
+| Taproot Internal Key               | `PSBT_IN_TAP_INTERNAL_KEY = 0x17`     | None                         | No key data                                                                                                            | `<32 byte xonlypubkey>`                                                                                                      | The X-only pubkey used as the internal key in this output.\[2\] Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                              |                              | 0, 2                        |
+| Taproot Merkle Root                | `PSBT_IN_TAP_MERKLE_ROOT = 0x18`      | None                         | No key data                                                                                                            | `<32-byte hash>`                                                                                                             | The 32 byte Merkle root hash. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |                              |                              | 0, 2                        |
 
 The new per-output types are defined as follows:
 
-<table>
-<thead>
-<tr class="header">
-<th><p>Name</p></th>
-<th><p><keytype></p></th>
-<th><p><keydata></p></th>
-<th><p><keydata> Description</p></th>
-<th><p><valuedata></p></th>
-<th><p><valuedata> Description</p></th>
-<th><p>Versions Requiring Inclusion</p></th>
-<th><p>Versions Requiring Exclusion</p></th>
-<th><p>Versions Allowing Inclusion</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p>Taproot Internal Key</p></td>
-<td><p><code>PSBT_OUT_TAP_INTERNAL_KEY = 0x05</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>The X-only pubkey used as the internal key in this output.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Tree</p></td>
-<td><p><code>PSBT_OUT_TAP_TREE = 0x06</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><tt>{&lt;8-bit uint depth&gt; &lt;8-bit uint leaf version&gt; <scriptlen></p>
-<script>
-<p>}*</tt></p></td>
-<td><p>One or more tuples representing the depth, leaf version, and script for a leaf in the Taproot tree, allowing the entire tree to be reconstructed. The tuples must be in depth first search order so that the tree is correctly reconstructed. Each tuple is an 8-bit unsigned integer representing the depth in the Taproot tree for this script, an 8-bit unsigned integer representing the leaf version, the length of the script as a compact size unsigned integer, and the script itself.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-<tr class="odd">
-<td><p>Taproot Key BIP 32 Derivation Path</p></td>
-<td><p><code>PSBT_OUT_TAP_BIP32_DERIVATION = 0x07</code></p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>A 32 byte X-only public key involved in this output. It may be the internal key, or a key present in a leaf script.</p></td>
-<td><p><hashes len><code> </code><leaf hash><code>* &lt;4 byte fingerprint&gt; &lt;32-bit uint&gt;*</code></p></td>
-<td><p>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-</tr>
-</tbody>
-</table>
+| Name                               | <keytype>                              | <keydata>               | <keydata> Description                                                                                               | <valuedata>                                                                                                                  | <valuedata> Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion |
+| ---------------------------------- | -------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------- | --------------------------- |
+| Taproot Internal Key               | `PSBT_OUT_TAP_INTERNAL_KEY = 0x05`     | None                    | No key data                                                                                                         | `<32 byte xonlypubkey>`                                                                                                      | The X-only pubkey used as the internal key in this output.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |                              |                              | 0, 2                        |
+| Taproot Tree                       | `PSBT_OUT_TAP_TREE = 0x06`             | None                    | No key data                                                                                                         | ` {<8-bit uint depth> <8-bit uint leaf version>  `<compact size uint scriptlen>`   `<bytes script>`}*`                       | One or more tuples representing the depth, leaf version, and script for a leaf in the Taproot tree, allowing the entire tree to be reconstructed. The tuples must be in depth first search order so that the tree is correctly reconstructed. Each tuple is an 8-bit unsigned integer representing the depth in the Taproot tree for this script, an 8-bit unsigned integer representing the leaf version, the length of the script as a compact size unsigned integer, and the script itself.                                                                                                                                            |                              |                              | 0, 2                        |
+| Taproot Key BIP 32 Derivation Path | `PSBT_OUT_TAP_BIP32_DERIVATION = 0x07` | `<32 byte xonlypubkey>` | A 32 byte X-only public key involved in this output. It may be the internal key, or a key present in a leaf script. | <compact size uint number of hashes>`  <32 byte leaf hash>* <4 byte fingerprint> <32-bit little endian uint path element>* ` | A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a `hashes len` of 0. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed. |                              |                              | 0, 2                        |
 
 ### UTXO Types
 
@@ -279,7 +155,7 @@ The following are invalid PSBTs:
 
   - Case: PSBT With `PSBT_IN_TAP_SCRIPT_SIG` signature that is too long
       - Bytes in Hex:
-            0736274ff01005e02000000019bd48765230bf9a72e662001f972556e54f0c6f97feb56bcb5600d817f6995260100000000ffffffff0148e6052a01000000225120030da4fce4f7db28c2cb2951631e003713856597fe963882cb500e68112cca63000000000001012b00f2052a01000000225120c2247efbfd92ac47f6f40b8d42d169175a19fa9fa10e4a25d7f35eb4dd85b69241142cb13ac68248de806aa6a3659cf3c03eb6821d09c8114a4e868febde865bb6d2cd970e15f53fc0c82f950fd560ffa919b76172be017368a89913af074f400b094289756aa3739ccc689ec0fcf3a360be32cc0b59b16e93a1e8bb4605726b2ca7a3ff706c4176649632b2cc68e1f912b8a578e3719ce7710885c7a966f49bcd43cb01010000
+            70736274ff01005e02000000019bd48765230bf9a72e662001f972556e54f0c6f97feb56bcb5600d817f6995260100000000ffffffff0148e6052a01000000225120030da4fce4f7db28c2cb2951631e003713856597fe963882cb500e68112cca63000000000001012b00f2052a01000000225120c2247efbfd92ac47f6f40b8d42d169175a19fa9fa10e4a25d7f35eb4dd85b69241142cb13ac68248de806aa6a3659cf3c03eb6821d09c8114a4e868febde865bb6d2cd970e15f53fc0c82f950fd560ffa919b76172be017368a89913af074f400b094289756aa3739ccc689ec0fcf3a360be32cc0b59b16e93a1e8bb4605726b2ca7a3ff706c4176649632b2cc68e1f912b8a578e3719ce7710885c7a966f49bcd43cb01010000
       - Base64 String:
             cHNidP8BAF4CAAAAAZvUh2UjC/mnLmYgAflyVW5U8Mb5f+tWvLVgDYF/aZUmAQAAAAD/////AUjmBSoBAAAAIlEgAw2k/OT32yjCyylRYx4ANxOFZZf+ljiCy1AOaBEsymMAAAAAAAEBKwDyBSoBAAAAIlEgwiR++/2SrEf29AuNQtFpF1oZ+p+hDkol1/NetN2FtpJBFCyxOsaCSN6AaqajZZzzwD62gh0JyBFKToaP696GW7bSzZcOFfU/wMgvlQ/VYP+pGbdhcr4Bc2iomROvB09ACwlCiXVqo3OczGiewPzzo2C+MswLWbFuk6Hou0YFcmssp6P/cGxBdmSWMrLMaOH5ErileONxnOdxCIXHqWb0m81DywEBAAA=
 

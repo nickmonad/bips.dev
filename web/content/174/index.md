@@ -104,485 +104,62 @@ in most significant byte order.
 
 The currently defined global types are as follows:
 
-| Name                         | <keytype>                              | <keydata>                                                       | <keydata> Description                                                                                                                                                                                                                                                                                                                     | <valuedata>                    | <valuedata> Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion | Parent BIP                           |
-| ---------------------------- | -------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ---------------------------- | --------------------------- | ------------------------------------ |
-| Unsigned Transaction         | `PSBT_GLOBAL_UNSIGNED_TX = 0x00`       | None                                                            | No key data                                                                                                                                                                                                                                                                                                                               | <transaction>                  | The transaction in network serialization. The scriptSigs and witnesses for each input must be empty. The transaction must be in the old serialization format (without witnesses).                                                                                                                                                                                                                                                                                                                                                                            | 0                            | 2                            | 0                           | 174                                  |
-| Extended Public Key          | `PSBT_GLOBAL_XPUB = 0x01`              | <xpub>                                                          | The 78 byte serialized extended public key as defined by BIP 32. Extended public keys are those that can be used to derive public keys used in the inputs and outputs of this transaction. It should be the public key at the highest hardened derivation index so that the unhardened child keys used in the transaction can be derived. | `<32-bit uint> <32-bit uint>*` | The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. The number of 32 bit unsigned integer indexes must match the depth provided in the extended public key.                                                                                                                                                                                                                           |                              |                              | 0, 2                        | 174                                  |
-| Transaction Version          | `PSBT_GLOBAL_TX_VERSION = 0x02`        | None                                                            | No key data                                                                                                                                                                                                                                                                                                                               | `<32-bit uint>`                | The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT\_GLOBAL\_VERSION field.                                                                                                                                                                                                                                                                                                                                            | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
-| Fallback Locktime            | `PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03` | None                                                            | No key data                                                                                                                                                                                                                                                                                                                               | `<32-bit uint>`                | The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.                                                                                                                                                                                                                                                                                                                                                                                                                             |                              | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
-| Input Count                  | `PSBT_GLOBAL_INPUT_COUNT = 0x04`       | None                                                            | No key data                                                                                                                                                                                                                                                                                                                               | <compact size uint>            | Compact size unsigned integer representing the number of inputs in this PSBT.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
-| Output Count                 | `PSBT_GLOBAL_OUTPUT_COUNT = 0x05`      | None                                                            | No key data                                                                                                                                                                                                                                                                                                                               | <compact size uint>            | Compact size unsigned integer representing the number of outputs in this PSBT.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
-| Transaction Modifiable Flags | `PSBT_GLOBAL_TX_MODIFIABLE = 0x06`     | None                                                            | No key data                                                                                                                                                                                                                                                                                                                               | `<8-bit uint>`                 | An 8 bit little endian unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag and indicates whether inputs can be modified. Bit 1 is the Outputs Modifiable Flag and indicates whether outputs can be modified. Bit 2 is the Has SIGHASH\_SINGLE flag and indicates whether the transaction has a SIGHASH\_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add an input. |                              | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
-| PSBT Version Number          | `PSBT_GLOBAL_VERSION = 0xFB`           | None                                                            | No key data                                                                                                                                                                                                                                                                                                                               | `<32-bit uint>`                | The 32-bit little endian unsigned integer representing the version number of this PSBT. If omitted, the version number is 0.                                                                                                                                                                                                                                                                                                                                                                                                                                 |                              |                              | 0, 2                        | 174                                  |
-| Proprietary Use Type         | `PSBT_GLOBAL_PROPRIETARY = 0xFC`       | <identifierlen>`   `<identifier>`   `<subtype>`   `<subkeydata> | Compact size unsigned integer <identifierlen>, followed by identifier prefix of that length <identifer>, followed by a subtype <subtype>, followed by the key data itself <subkeydata>.                                                                                                                                                   | <data>                         | Any value data as defined by the proprietary type user.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |                              |                              | 0, 2                        | 174                                  |
+| Name                         | <keytype>                              | <keydata>                                                                                                           | <keydata> Description                                                                                                                                                                                                                                                                                                                     | <valuedata>                                                      | <valuedata> Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion | Parent BIP                           |
+| ---------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ---------------------------- | --------------------------- | ------------------------------------ |
+| Unsigned Transaction         | `PSBT_GLOBAL_UNSIGNED_TX = 0x00`       | None                                                                                                                | No key data                                                                                                                                                                                                                                                                                                                               | <bytes transaction>                                              | The transaction in network serialization. The scriptSigs and witnesses for each input must be empty. The transaction must be in the old serialization format (without witnesses).                                                                                                                                                                                                                                                                                                                                                                            | 0                            | 2                            | 0                           | 174                                  |
+| Extended Public Key          | `PSBT_GLOBAL_XPUB = 0x01`              | <bytes xpub>                                                                                                        | The 78 byte serialized extended public key as defined by BIP 32. Extended public keys are those that can be used to derive public keys used in the inputs and outputs of this transaction. It should be the public key at the highest hardened derivation index so that the unhardened child keys used in the transaction can be derived. | `<4 byte fingerprint> <32-bit little endian uint path element>*` | The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. The number of 32 bit unsigned integer indexes must match the depth provided in the extended public key.                                                                                                                                                                                                                           |                              |                              | 0, 2                        | 174                                  |
+| Transaction Version          | `PSBT_GLOBAL_TX_VERSION = 0x02`        | None                                                                                                                | No key data                                                                                                                                                                                                                                                                                                                               | `<32-bit little endian uint version>`                            | The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT\_GLOBAL\_VERSION field.                                                                                                                                                                                                                                                                                                                                            | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Fallback Locktime            | `PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03` | None                                                                                                                | No key data                                                                                                                                                                                                                                                                                                                               | `<32-bit little endian uint locktime>`                           | The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.                                                                                                                                                                                                                                                                                                                                                                                                                             |                              | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Input Count                  | `PSBT_GLOBAL_INPUT_COUNT = 0x04`       | None                                                                                                                | No key data                                                                                                                                                                                                                                                                                                                               | <compact size uint input count>                                  | Compact size unsigned integer representing the number of inputs in this PSBT.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Output Count                 | `PSBT_GLOBAL_OUTPUT_COUNT = 0x05`      | None                                                                                                                | No key data                                                                                                                                                                                                                                                                                                                               | <compact size uint input count>                                  | Compact size unsigned integer representing the number of outputs in this PSBT.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Transaction Modifiable Flags | `PSBT_GLOBAL_TX_MODIFIABLE = 0x06`     | None                                                                                                                | No key data                                                                                                                                                                                                                                                                                                                               | `<8-bit uint flags>`                                             | An 8 bit little endian unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag and indicates whether inputs can be modified. Bit 1 is the Outputs Modifiable Flag and indicates whether outputs can be modified. Bit 2 is the Has SIGHASH\_SINGLE flag and indicates whether the transaction has a SIGHASH\_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add an input. |                              | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| PSBT Version Number          | `PSBT_GLOBAL_VERSION = 0xFB`           | None                                                                                                                | No key data                                                                                                                                                                                                                                                                                                                               | `<32-bit little endian uint version>`                            | The 32-bit little endian unsigned integer representing the version number of this PSBT. If omitted, the version number is 0.                                                                                                                                                                                                                                                                                                                                                                                                                                 |                              |                              | 0, 2                        | 174                                  |
+| Proprietary Use Type         | `PSBT_GLOBAL_PROPRIETARY = 0xFC`       | <compact size uint identifier length>`   `<bytes identifier>`   `<compact size uint subtype>`   `<bytes subkeydata> | Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself.                                                                                                                                                       | <bytes data>                                                     | Any value data as defined by the proprietary type user.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |                              |                              | 0, 2                        | 174                                  |
 
 The currently defined per-input types are defined as follows:
 
-<table>
-<thead>
-<tr class="header">
-<th><p>Name</p></th>
-<th><p><keytype></p></th>
-<th><p><keydata></p></th>
-<th><p><keydata> Description</p></th>
-<th><p><valuedata></p></th>
-<th><p><valuedata> Description</p></th>
-<th><p>Versions Requiring Inclusion</p></th>
-<th><p>Versions Requiring Exclusion</p></th>
-<th><p>Versions Allowing Inclusion</p></th>
-<th><p>Parent BIP</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p>Non-Witness UTXO</p></td>
-<td><p><code>PSBT_IN_NON_WITNESS_UTXO = 0x00</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><transaction></p></td>
-<td><p>The transaction in network serialization format the current input spends from. This should be present for inputs that spend non-segwit outputs and can be present for inputs that spend segwit outputs. An input can have both <code>PSBT_IN_NON_WITNESS_UTXO</code> and <code>PSBT_IN_WITNESS_UTXO</code>. [3]</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>Witness UTXO</p></td>
-<td><p><code>PSBT_IN_WITNESS_UTXO = 0x01</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;64-bit int&gt; </code><scriptPubKeylen><code> </code><scriptPubKey></p></td>
-<td><p>The entire transaction output in network serialization which the current input spends from. This should only be present for inputs which spend segwit outputs, including P2SH embedded ones. An input can have both <code>PSBT_IN_NON_WITNESS_UTXO</code> and <code>PSBT_IN_WITNESS_UTXO</code></p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="odd">
-<td><p>Partial Signature</p></td>
-<td><p><code>PSBT_IN_PARTIAL_SIG = 0x02</code></p></td>
-<td><p><pubkey></p></td>
-<td><p>The public key which corresponds to this signature.</p></td>
-<td><p><signature></p></td>
-<td><p>The signature as would be pushed to the stack from a scriptSig or witness. The signature should be a valid ECDSA signature corresponding to the pubkey that would return true when verified and not a value that would return false or be invalid otherwise (such as a NULLDUMMY).</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>Sighash Type</p></td>
-<td><p><code>PSBT_IN_SIGHASH_TYPE = 0x03</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;32-bit uint&gt;</code></p></td>
-<td><p>The 32-bit unsigned integer specifying the sighash type to be used for this input. Signatures for this input must use the sighash type, finalizers must fail to finalize inputs which have signatures that do not match the specified sighash type. Signers who cannot produce signatures with the sighash type must not provide a signature.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="odd">
-<td><p>Redeem Script</p></td>
-<td><p><code>PSBT_IN_REDEEM_SCRIPT = 0x04</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><redeemScript></p></td>
-<td><p>The redeemScript for this input if it has one.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>Witness Script</p></td>
-<td><p><code>PSBT_IN_WITNESS_SCRIPT = 0x05</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><witnessScript></p></td>
-<td><p>The witnessScript for this input if it has one.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="odd">
-<td><p>BIP 32 Derivation Path</p></td>
-<td><p><code>PSBT_IN_BIP32_DERIVATION = 0x06</code></p></td>
-<td><p><pubkey></p></td>
-<td><p>The public key</p></td>
-<td><p><code>&lt;32-bit uint&gt; &lt;32-bit uint&gt;*</code></p></td>
-<td><p>The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32 bit unsigned integer indexes concatenated with each other. Public keys are those that will be needed to sign this input.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>Finalized scriptSig</p></td>
-<td><p><code>PSBT_IN_FINAL_SCRIPTSIG = 0x07</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><scriptSig></p></td>
-<td><p>The Finalized scriptSig contains a fully constructed scriptSig with signatures and any other scripts necessary for the input to pass validation.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="odd">
-<td><p>Finalized scriptWitness</p></td>
-<td><p><code>PSBT_IN_FINAL_SCRIPTWITNESS = 0x08</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><scriptWitness></p></td>
-<td><p>The Finalized scriptWitness contains a fully constructed scriptWitness with signatures and any other scripts necessary for the input to pass validation.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>Proof-of-reserves commitment</p></td>
-<td><p><code>PSBT_IN_POR_COMMITMENT = 0x09</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><porCommitment></p></td>
-<td><p>The UTF-8 encoded commitment message string for the proof-of-reserves. See <a href="bip-0127.mediawiki" title="wikilink">BIP 127</a> for more information.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0127.mediawiki" title="wikilink">127</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>RIPEMD160 preimage</p></td>
-<td><p><code>PSBT_IN_RIPEMD160 = 0x0a</code></p></td>
-<td><p><code>&lt;20-byte hash&gt;</code></p></td>
-<td><p>The resulting hash of the preimage</p></td>
-<td><p><preimage></p></td>
-<td><p>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>RIPEMD160</code> algorithm</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>SHA256 preimage</p></td>
-<td><p><code>PSBT_IN_SHA256 = 0x0b</code></p></td>
-<td><p><code>&lt;32-byte hash&gt;</code></p></td>
-<td><p>The resulting hash of the preimage</p></td>
-<td><p><preimage></p></td>
-<td><p>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>SHA256</code> algorithm</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="odd">
-<td><p>HASH160 preimage</p></td>
-<td><p><code>PSBT_IN_HASH160 = 0x0c</code></p></td>
-<td><p><code>&lt;20-byte hash&gt;</code></p></td>
-<td><p>The resulting hash of the preimage</p></td>
-<td><p><preimage></p></td>
-<td><p>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>SHA256</code> algorithm followed by the <code>RIPEMD160</code> algorithm</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>HASH256 preimage</p></td>
-<td><p><code>PSBT_IN_HASH256 = 0x0d</code></p></td>
-<td><p><code>&lt;32-byte hash&gt;</code></p></td>
-<td><p>The resulting hash of the preimage</p></td>
-<td><p><preimage></p></td>
-<td><p>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>SHA256</code> algorithm twice</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="odd">
-<td><p>Previous TXID</p></td>
-<td><p><code>PSBT_IN_PREVIOUS_TXID = 0x0e</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><txid></p></td>
-<td><p>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</p></td>
-<td><p>2</p></td>
-<td><p>0</p></td>
-<td><p>2</p></td>
-<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Spent Output Index</p></td>
-<td><p><code>PSBT_IN_OUTPUT_INDEX = 0x0f</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;32-bit uint&gt;</code></p></td>
-<td><p>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</p></td>
-<td><p>2</p></td>
-<td><p>0</p></td>
-<td><p>2</p></td>
-<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Sequence Number</p></td>
-<td><p><code>PSBT_IN_SEQUENCE = 0x10</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;32-bit uint&gt;</code></p></td>
-<td><p>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</p></td>
-<td></td>
-<td><p>0</p></td>
-<td><p>2</p></td>
-<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Required Time-based Locktime</p></td>
-<td><p><code>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;32-bit uint&gt;</code></p></td>
-<td><p>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</p></td>
-<td></td>
-<td><p>0</p></td>
-<td><p>2</p></td>
-<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Required Height-based Locktime</p></td>
-<td><p><code>PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;32-bit uiht&gt;</code></p></td>
-<td><p>32 bit unsigned little endian integer less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.</p></td>
-<td></td>
-<td><p>0</p></td>
-<td><p>2</p></td>
-<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Key Spend Signature</p></td>
-<td><p><code>PSBT_IN_TAP_KEY_SIG = 0x13</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><signature></p></td>
-<td><p>The 64 or 65 byte Schnorr signature for key path spending a Taproot output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Taproot Script Spend Signature</p></td>
-<td><p><code>PSBT_IN_TAP_SCRIPT_SIG = 0x14</code></p></td>
-<td><p><xonlypubkey><code> </code><leafhash></p></td>
-<td><p>A 32 byte X-only public key involved in a leaf script concatenated with the 32 byte hash of the leaf it is part of.</p></td>
-<td><p><signature></p></td>
-<td><p>The 64 or 65 byte Schnorr signature for this pubkey and leaf combination. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Leaf Script</p></td>
-<td><p><code>PSBT_IN_TAP_LEAF_SCRIPT = 0x15</code></p></td>
-<td><p><control block></p></td>
-<td><p>The control block for this leaf as specified in BIP 341. The control block contains the merkle tree path to this leaf.</p></td>
-<td><p><tt></p>
-<script>
-<p>&lt;8-bit uint&gt;</tt></p></td>
-<td><p>The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Taproot Key BIP 32 Derivation Path</p></td>
-<td><p><code>PSBT_IN_TAP_BIP32_DERIVATION = 0x16</code></p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>A 32 byte X-only public key involved in this input. It may be the internal key, or a key present in a leaf script.</p></td>
-<td><p><hashes len><code> </code><leaf hash><code>* &lt;4 byte fingerprint&gt; &lt;32-bit uint&gt;*</code></p></td>
-<td><p>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Internal Key</p></td>
-<td><p><code>PSBT_IN_TAP_INTERNAL_KEY = 0x17</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>The X-only pubkey used as the internal key in this output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Taproot Merkle Root</p></td>
-<td><p><code>PSBT_IN_TAP_MERKLE_ROOT = 0x18</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;32-byte hash&gt;</code></p></td>
-<td><p>The 32 byte Merkle root hash. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Proprietary Use Type</p></td>
-<td><p><code>PSBT_IN_PROPRIETARY = 0xFC</code></p></td>
-<td><p><identifierlen><code> </code><identifier><code> </code><subtype><code> </code><subkeydata></p></td>
-<td><p>Compact size unsigned integer <identifierlen>, followed by identifier prefix of that length <identifer>, followed by a subtype <subtype>, followed by the key data itself <subkeydata>.</p></td>
-<td><p><data></p></td>
-<td><p>Any value data as defined by the proprietary type user.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-</tbody>
-</table>
+| Name                               | <keytype>                                 | <keydata>                                                                                                           | <keydata> Description                                                                                                                                                               | <valuedata>                                                                                                                  | <valuedata> Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion | Parent BIP                           |
+| ---------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------- | --------------------------- | ------------------------------------ |
+| Non-Witness UTXO                   | `PSBT_IN_NON_WITNESS_UTXO = 0x00`         | None                                                                                                                | No key data                                                                                                                                                                         | <bytes transaction>                                                                                                          | The transaction in network serialization format the current input spends from. This should be present for inputs that spend non-segwit outputs and can be present for inputs that spend segwit outputs. An input can have both `PSBT_IN_NON_WITNESS_UTXO` and `PSBT_IN_WITNESS_UTXO`. \[3\]                                                                                                                                                                                                                                                                                                                                               |                              |                              | 0, 2                        | 174                                  |
+| Witness UTXO                       | `PSBT_IN_WITNESS_UTXO = 0x01`             | None                                                                                                                | No key data                                                                                                                                                                         | ` <64-bit little endian int amount>  `<compact size uint scriptPubKeylen>`   `<bytes scriptPubKey>                           | The entire transaction output in network serialization which the current input spends from. This should only be present for inputs which spend segwit outputs, including P2SH embedded ones. An input can have both `PSBT_IN_NON_WITNESS_UTXO` and `PSBT_IN_WITNESS_UTXO`                                                                                                                                                                                                                                                                                                                                                                 |                              |                              | 0, 2                        | 174                                  |
+| Partial Signature                  | `PSBT_IN_PARTIAL_SIG = 0x02`              | <bytes pubkey>                                                                                                      | The public key which corresponds to this signature.                                                                                                                                 | <bytes signature>                                                                                                            | The signature as would be pushed to the stack from a scriptSig or witness. The signature should be a valid ECDSA signature corresponding to the pubkey that would return true when verified and not a value that would return false or be invalid otherwise (such as a NULLDUMMY).                                                                                                                                                                                                                                                                                                                                                        |                              |                              | 0, 2                        | 174                                  |
+| Sighash Type                       | `PSBT_IN_SIGHASH_TYPE = 0x03`             | None                                                                                                                | No key data                                                                                                                                                                         | `<32-bit little endian uint sighash type>`                                                                                   | The 32-bit unsigned integer specifying the sighash type to be used for this input. Signatures for this input must use the sighash type, finalizers must fail to finalize inputs which have signatures that do not match the specified sighash type. Signers who cannot produce signatures with the sighash type must not provide a signature.                                                                                                                                                                                                                                                                                             |                              |                              | 0, 2                        | 174                                  |
+| Redeem Script                      | `PSBT_IN_REDEEM_SCRIPT = 0x04`            | None                                                                                                                | No key data                                                                                                                                                                         | <bytes redeemScript>                                                                                                         | The redeemScript for this input if it has one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |                              |                              | 0, 2                        | 174                                  |
+| Witness Script                     | `PSBT_IN_WITNESS_SCRIPT = 0x05`           | None                                                                                                                | No key data                                                                                                                                                                         | <bytes witnessScript>                                                                                                        | The witnessScript for this input if it has one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |                              |                              | 0, 2                        | 174                                  |
+| BIP 32 Derivation Path             | `PSBT_IN_BIP32_DERIVATION = 0x06`         | <bytes pubkey>                                                                                                      | The public key                                                                                                                                                                      | `<4 byte fingerprint> <32-bit little endian uint path element>*`                                                             | The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32 bit unsigned integer indexes concatenated with each other. Public keys are those that will be needed to sign this input.                                                                                                                                                                                                                                                                                                                                                                |                              |                              | 0, 2                        | 174                                  |
+| Finalized scriptSig                | `PSBT_IN_FINAL_SCRIPTSIG = 0x07`          | None                                                                                                                | No key data                                                                                                                                                                         | <bytes scriptSig>                                                                                                            | The Finalized scriptSig contains a fully constructed scriptSig with signatures and any other scripts necessary for the input to pass validation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |                              |                              | 0, 2                        | 174                                  |
+| Finalized scriptWitness            | `PSBT_IN_FINAL_SCRIPTWITNESS = 0x08`      | None                                                                                                                | No key data                                                                                                                                                                         | <bytes scriptWitness>                                                                                                        | The Finalized scriptWitness contains a fully constructed scriptWitness with signatures and any other scripts necessary for the input to pass validation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |                              |                              | 0, 2                        | 174                                  |
+| Proof-of-reserves commitment       | `PSBT_IN_POR_COMMITMENT = 0x09`           | None                                                                                                                | No key data                                                                                                                                                                         | <bytes porCommitment>                                                                                                        | The UTF-8 encoded commitment message string for the proof-of-reserves. See [BIP 127](bip-0127.mediawiki "wikilink") for more information.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |                              |                              | 0, 2                        | [127](bip-0127.mediawiki "wikilink") |
+| RIPEMD160 preimage                 | `PSBT_IN_RIPEMD160 = 0x0a`                | `<20-byte hash>`                                                                                                    | The resulting hash of the preimage                                                                                                                                                  | <bytes preimage>                                                                                                             | The hash preimage, encoded as a byte vector, which must equal the key when run through the `RIPEMD160` algorithm                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |                              |                              | 0, 2                        | 174                                  |
+| SHA256 preimage                    | `PSBT_IN_SHA256 = 0x0b`                   | `<32-byte hash>`                                                                                                    | The resulting hash of the preimage                                                                                                                                                  | <bytes preimage>                                                                                                             | The hash preimage, encoded as a byte vector, which must equal the key when run through the `SHA256` algorithm                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |                              |                              | 0, 2                        | 174                                  |
+| HASH160 preimage                   | `PSBT_IN_HASH160 = 0x0c`                  | `<20-byte hash>`                                                                                                    | The resulting hash of the preimage                                                                                                                                                  | <bytes preimage>                                                                                                             | The hash preimage, encoded as a byte vector, which must equal the key when run through the `SHA256` algorithm followed by the `RIPEMD160` algorithm                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |                              |                              | 0, 2                        | 174                                  |
+| HASH256 preimage                   | `PSBT_IN_HASH256 = 0x0d`                  | `<32-byte hash>`                                                                                                    | The resulting hash of the preimage                                                                                                                                                  | <bytes preimage>                                                                                                             | The hash preimage, encoded as a byte vector, which must equal the key when run through the `SHA256` algorithm twice                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |                              |                              | 0, 2                        | 174                                  |
+| Previous TXID                      | `PSBT_IN_PREVIOUS_TXID = 0x0e`            | None                                                                                                                | No key data                                                                                                                                                                         | `<32 byte txid>`                                                                                                             | 32 byte txid of the previous transaction whose output at PSBT\_IN\_OUTPUT\_INDEX is being spent.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Spent Output Index                 | `PSBT_IN_OUTPUT_INDEX = 0x0f`             | None                                                                                                                | No key data                                                                                                                                                                         | `<32-bit little endian uint index>`                                                                                          | 32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT\_IN\_PREVIOUS\_TXID.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Sequence Number                    | `PSBT_IN_SEQUENCE = 0x10`                 | None                                                                                                                | No key data                                                                                                                                                                         | `<32-bit little endian uint sequence>`                                                                                       | The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |                              | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Required Time-based Locktime       | `PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11`   | None                                                                                                                | No key data                                                                                                                                                                         | `<32-bit little endian uint locktime>`                                                                                       | 32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.                                                                                                                                                                                                                                                                                                                                                                                                                                                       |                              | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Required Height-based Locktime     | `PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12` | None                                                                                                                | No key data                                                                                                                                                                         | `<32-bit uiht locktime>`                                                                                                     | 32 bit unsigned little endian integer less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |                              | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Taproot Key Spend Signature        | `PSBT_IN_TAP_KEY_SIG = 0x13`              | None                                                                                                                | No key data                                                                                                                                                                         | `<64 or 65 byte signature>`                                                                                                  | The 64 or 65 byte Schnorr signature for key path spending a Taproot output. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Taproot Script Spend Signature     | `PSBT_IN_TAP_SCRIPT_SIG = 0x14`           | ` <32 byte xonlypubkey>  `<leafhash>                                                                                | A 32 byte X-only public key involved in a leaf script concatenated with the 32 byte hash of the leaf it is part of.                                                                 | `<64 or 65 byte signature>`                                                                                                  | The 64 or 65 byte Schnorr signature for this pubkey and leaf combination. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Taproot Leaf Script                | `PSBT_IN_TAP_LEAF_SCRIPT = 0x15`          | <bytes control block>                                                                                               | The control block for this leaf as specified in BIP 341. The control block contains the merkle tree path to this leaf.                                                              | <bytes script>`  <8-bit uint leaf version> `                                                                                 | The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                      |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Taproot Key BIP 32 Derivation Path | `PSBT_IN_TAP_BIP32_DERIVATION = 0x16`     | `<32 byte xonlypubkey>`                                                                                             | A 32 byte X-only public key involved in this input. It may be the internal key, or a key present in a leaf script.                                                                  | <compact size uint number of hashes>`  <32 byte leaf hash>* <4 byte fingerprint> <32-bit little endian uint path element>* ` | A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a `hashes len` of 0. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed. |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Taproot Internal Key               | `PSBT_IN_TAP_INTERNAL_KEY = 0x17`         | None                                                                                                                | No key data                                                                                                                                                                         | `<32 byte xonlypubkey>`                                                                                                      | The X-only pubkey used as the internal key in this output. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Taproot Merkle Root                | `PSBT_IN_TAP_MERKLE_ROOT = 0x18`          | None                                                                                                                | No key data                                                                                                                                                                         | `<32-byte hash>`                                                                                                             | The 32 byte Merkle root hash. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Proprietary Use Type               | `PSBT_IN_PROPRIETARY = 0xFC`              | <compact size uint identifier length>`   `<bytes identifier>`   `<compact size uint subtype>`   `<bytes subkeydata> | Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself. | <bytes data>                                                                                                                 | Any value data as defined by the proprietary type user.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                              |                              | 0, 2                        | 174                                  |
 
 The currently defined per-output \[4\] types are defined as follows:
 
-<table>
-<thead>
-<tr class="header">
-<th><p>Name</p></th>
-<th><p><keytype></p></th>
-<th><p><keydata></p></th>
-<th><p><keydata> Description</p></th>
-<th><p><valuedata></p></th>
-<th><p><valuedata> Description</p></th>
-<th><p>Versions Requiring Inclusion</p></th>
-<th><p>Versions Requiring Exclusion</p></th>
-<th><p>Versions Allowing Inclusion</p></th>
-<th><p>Parent BIP</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p>Redeem Script</p></td>
-<td><p><code>PSBT_OUT_REDEEM_SCRIPT = 0x00</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><redeemScript></p></td>
-<td><p>The redeemScript for this output if it has one.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>Witness Script</p></td>
-<td><p><code>PSBT_OUT_WITNESS_SCRIPT = 0x01</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><witnessScript></p></td>
-<td><p>The witnessScript for this output if it has one.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="odd">
-<td><p>BIP 32 Derivation Path</p></td>
-<td><p><code>PSBT_OUT_BIP32_DERIVATION = 0x02</code></p></td>
-<td><p><public key></p></td>
-<td><p>The public key</p></td>
-<td><p><code>&lt;32-bit uint&gt; &lt;32-bit uint&gt;*</code></p></td>
-<td><p>The master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-<tr class="even">
-<td><p>Output Amount</p></td>
-<td><p><code>PSBT_OUT_AMOUNT = 0x03</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><code>&lt;64-bit int&gt;</code></p></td>
-<td><p>64 bit signed little endian integer representing the output's amount in satoshis.</p></td>
-<td><p>2</p></td>
-<td><p>0</p></td>
-<td><p>2</p></td>
-<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Output Script</p></td>
-<td><p><code>PSBT_OUT_SCRIPT = 0x04</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><tt></p>
-<script>
-<p></tt></p></td>
-<td><p>The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.</p></td>
-<td><p>2</p></td>
-<td><p>0</p></td>
-<td><p>2</p></td>
-<td><p><a href="bip-0370.mediawiki" title="wikilink">370</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Internal Key</p></td>
-<td><p><code>PSBT_OUT_TAP_INTERNAL_KEY = 0x05</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>The X-only pubkey used as the internal key in this output.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Taproot Tree</p></td>
-<td><p><code>PSBT_OUT_TAP_TREE = 0x06</code></p></td>
-<td><p>None</p></td>
-<td><p>No key data</p></td>
-<td><p><tt>{&lt;8-bit uint depth&gt; &lt;8-bit uint leaf version&gt; <scriptlen></p>
-<script>
-<p>}*</tt></p></td>
-<td><p>One or more tuples representing the depth, leaf version, and script for a leaf in the Taproot tree, allowing the entire tree to be reconstructed. The tuples must be in depth first search order so that the tree is correctly reconstructed. Each tuple is an 8-bit unsigned integer representing the depth in the Taproot tree for this script, an 8-bit unsigned integer representing the leaf version, the length of the script as a compact size unsigned integer, and the script itself.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="even">
-<td><p>Taproot Key BIP 32 Derivation Path</p></td>
-<td><p><code>PSBT_OUT_TAP_BIP32_DERIVATION = 0x07</code></p></td>
-<td><p><xonlypubkey></p></td>
-<td><p>A 32 byte X-only public key involved in this output. It may be the internal key, or a key present in a leaf script.</p></td>
-<td><p><hashes len><code> </code><leaf hash><code>* &lt;4 byte fingerprint&gt; &lt;32-bit uint&gt;*</code></p></td>
-<td><p>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p><a href="bip-0371.mediawiki" title="wikilink">371</a></p></td>
-</tr>
-<tr class="odd">
-<td><p>Proprietary Use Type</p></td>
-<td><p><code>PSBT_OUT_PROPRIETARY = 0xFC</code></p></td>
-<td><p><identifierlen><code> </code><identifier><code> </code><subtype><code> </code><subkeydata></p></td>
-<td><p>Compact size unsigned integer <identifierlen>, followed by identifier prefix of that length <identifer>, followed by a subtype <subtype>, followed by the key data itself <subkeydata>.</p></td>
-<td><p><data></p></td>
-<td><p>Any value data as defined by the proprietary type user.</p></td>
-<td></td>
-<td></td>
-<td><p>0, 2</p></td>
-<td><p>174</p></td>
-</tr>
-</tbody>
-</table>
+| Name                               | <keytype>                              | <keydata>                                                                                                           | <keydata> Description                                                                                                                                                               | <valuedata>                                                                                                                  | <valuedata> Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion | Parent BIP                           |
+| ---------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------- | --------------------------- | ------------------------------------ |
+| Redeem Script                      | `PSBT_OUT_REDEEM_SCRIPT = 0x00`        | None                                                                                                                | No key data                                                                                                                                                                         | <bytes redeemScript>                                                                                                         | The redeemScript for this output if it has one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |                              |                              | 0, 2                        | 174                                  |
+| Witness Script                     | `PSBT_OUT_WITNESS_SCRIPT = 0x01`       | None                                                                                                                | No key data                                                                                                                                                                         | <bytes witnessScript>                                                                                                        | The witnessScript for this output if it has one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |                              |                              | 0, 2                        | 174                                  |
+| BIP 32 Derivation Path             | `PSBT_OUT_BIP32_DERIVATION = 0x02`     | <bytes public key>                                                                                                  | The public key                                                                                                                                                                      | `<4 byte fingerprint> <32-bit little endian uint path element>*`                                                             | The master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output.                                                                                                                                                                                                                                                                                                                                                                                  |                              |                              | 0, 2                        | 174                                  |
+| Output Amount                      | `PSBT_OUT_AMOUNT = 0x03`               | None                                                                                                                | No key data                                                                                                                                                                         | `<64-bit int amount>`                                                                                                        | 64 bit signed little endian integer representing the output's amount in satoshis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Output Script                      | `PSBT_OUT_SCRIPT = 0x04`               | None                                                                                                                | No key data                                                                                                                                                                         | <bytes script>                                                                                                               | The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | 2                            | 0                            | 2                           | [370](bip-0370.mediawiki "wikilink") |
+| Taproot Internal Key               | `PSBT_OUT_TAP_INTERNAL_KEY = 0x05`     | None                                                                                                                | No key data                                                                                                                                                                         | `<32 byte xonlypubkey>`                                                                                                      | The X-only pubkey used as the internal key in this output.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Taproot Tree                       | `PSBT_OUT_TAP_TREE = 0x06`             | None                                                                                                                | No key data                                                                                                                                                                         | ` {<8-bit uint depth> <8-bit uint leaf version>  `<compact size uint scriptlen>`   `<bytes script>`}*`                       | One or more tuples representing the depth, leaf version, and script for a leaf in the Taproot tree, allowing the entire tree to be reconstructed. The tuples must be in depth first search order so that the tree is correctly reconstructed. Each tuple is an 8-bit unsigned integer representing the depth in the Taproot tree for this script, an 8-bit unsigned integer representing the leaf version, the length of the script as a compact size unsigned integer, and the script itself.                                                                                                                                            |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Taproot Key BIP 32 Derivation Path | `PSBT_OUT_TAP_BIP32_DERIVATION = 0x07` | `<32 byte xonlypubkey>`                                                                                             | A 32 byte X-only public key involved in this output. It may be the internal key, or a key present in a leaf script.                                                                 | <compact size uint number of hashes>`  <32 byte leaf hash>* <4 byte fingerprint> <32-bit little endian uint path element>* ` | A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a `hashes len` of 0. Finalizers should remove this field after `PSBT_IN_FINAL_SCRIPTWITNESS` is constructed. |                              |                              | 0, 2                        | [371](bip-0371.mediawiki "wikilink") |
+| Proprietary Use Type               | `PSBT_OUT_PROPRIETARY = 0xFC`          | <compact size uint identifier length>`   `<bytes identifier>`   `<compact size uint subtype>`   `<bytes subkeydata> | Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself. | <bytes data>                                                                                                                 | Any value data as defined by the proprietary type user.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                              |                              | 0, 2                        | 174                                  |
 
 Types can be skipped when they are unnecessary. For example, if an input
 is a witness input, then it should not have a Non-Witness UTXO key-value

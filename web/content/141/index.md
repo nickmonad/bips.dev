@@ -115,11 +115,11 @@ The `marker` MUST be a 1-byte zero value: `0x00`.
 The `flag` MUST be a 1-byte non-zero value. Currently, `0x01` MUST be
 used.
 
-The `witness` is a serialization of all witness data of the transaction.
-Each txin is associated with a witness field. A witness field starts
-with a `var_int` to indicate the number of stack items for the txin. It
-is followed by stack items, with each item starts with a `var_int` to
-indicate the length. Witness data is NOT script.
+The `witness` is a serialization of all witness fields of the
+transaction. Each txin is associated with a witness field. A witness
+field starts with a `var_int` to indicate the number of stack items for
+the txin. It is followed by stack items, with each item starts with a
+`var_int` to indicate the length. Witness data is NOT script.
 
 A non-witness program (defined hereinafter) txin MUST be associated with
 an empty witness field, represented by a `0x00`. If all txins are not
