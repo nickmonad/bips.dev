@@ -271,7 +271,7 @@ D2 controls Bundles, and is driven by M3, M4, M5, and M6.
 | --------- | ---------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 1         | Sidechain Number       | uint8\_t  | Links the withdrawal-request to a specific hashrate escrow.                                                                                                                                            |
 | 2         | Bundle Hash            | uint256   | A withdrawal attempt. Specifically, it is a "blinded transaction id" (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain. |
-| 3         | ACKs (Work Score)      | uint16\_t | The current total number of ACKs (the PoW that has been used to validate the Bundle).                                                                                                                  |
+| 3         | ACKs (Work Score)      | uint16\_t | The current ACK-counter, which is the total number of ACKs (the PoW that has been used to validate the Bundle).                                                                                        |
 | 4         | Blocks Remaining (Age) | uint16\_t | The number of blocks which this Bundle has remaining to accumulate ACKs                                                                                                                                |
 
 A hash of D2 exists in each coinbase txn, and has
@@ -286,8 +286,9 @@ consensus-significance.
     (ie, Blocks Remaining decreases by 1).
 4.  Bundles are stored in D2 until they fail (which occurs at "Age" =
     "MaxAge"), or they succeed (Bundle is paid out).
-5.  From one block to the next, the value in the ACKs field can increase
-    or decrease by a maximum of 1 (see below).
+5.  From one block to the next, the value in the ACKs field
+    (ACK-counter) can increase or decrease by a maximum of 1 (see
+    below).
 
 If a Bundle succeeds (in D2), it "becomes" an M6 message and is included
 in a block.
@@ -319,7 +320,7 @@ From one block to the next, "ACKs" can only change as follows:
   - The ACK-counter of any Bundle can only change by (-1,0,+1).
   - Within a sidechain-group, upvoting one Bundle ("+1") requires you to
     downvote all other Bundles in that group. However, the minimum
-    ACK-value is zero.
+    ACK-counter is zero.
   - While only one Bundle can be upvoted at once; the whole group can
     all be unchanged at once ("abstain"), and they can all be downvoted
     at once ("alarm").
@@ -369,8 +370,8 @@ are always valid.
 We come, finally, to the critical matter: where users can take their
 money \*out\* of the sidechain.
 
-In each block, a Bundle in D2 is considered "approved" if its "ACKs"
-value meets the threshold (13,150).
+In each block, a Bundle in D2 is considered "approved" if its
+"ACK-counter" value meets the threshold (13,150).
 
 The Bundle must meet all these criteria:
 
