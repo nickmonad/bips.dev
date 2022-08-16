@@ -963,7 +963,7 @@ additional comments and suggestions for improving this proposal.
     invalid. If the values are valid, then it does not matter which is
     chosen as either way the transaction is still valid.
 6.  **Why would non-witness UTXOs be provided for segwit inputs?** The
-    sighash algorithm for Segwit specified in BIP 173 is known to have
+    sighash algorithm for Segwit specified in BIP 143 is known to have
     an issue where an attacker could trick a user to sending Bitcoin to
     fees if they are able to convince the user to sign a malicious
     transaction multiple times. This is possible because the amounts in
