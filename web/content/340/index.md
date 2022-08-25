@@ -612,6 +612,13 @@ algorithm](bip-0340/reference.py "wikilink"). The reference
 implementation is for demonstration purposes only and not to be used in
 production environments.
 
+## Changelog
+
+To help implementors understand updates to this BIP, we keep a list of
+substantial changes.
+
+  - 2022-08: Fix function signature of lift\_x in reference code
+
 ## Footnotes
 
 <references />
