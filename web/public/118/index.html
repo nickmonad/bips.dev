@@ -126,11 +126,8 @@ key, <code>p</code>, as defined in <a href="https://bips.dev/118/bip-0341.mediaw
 340</a>, remove the <code>0x01</code> prefix and use
 the remaining 32 bytes.</p>
 <h4 id="signature-message">Signature message</h4>
-<p>The function <em>SigMsg118(hash_type, ext_flag)</em> computes the message
-being signed as a byte array, analogously to <em>SigMsg(hash_type,
-ext_flag)</em> defined in <a href="https://bips.dev/118/bip-0341.mediawiki" title="wikilink">BIP 341</a>,
-<em>SigExt118(hash_type,key_version)</em> computes the extension, similarly
-to <a href="https://bips.dev/118/bip-0342.mediawiki" title="wikilink">BIP 342</a>.</p>
+<p>We define the functions <em>Msg118(hash_type)</em> and <em>Ext118(hash_type)</em>
+which compute the message being signed as a byte array.</p>
 <p>The parameter <em>hash_type</em> is an 8-bit unsigned value, reusing values
 defined in <a href="https://bips.dev/118/bip-0341.mediawiki" title="wikilink">BIP 341</a>, with the addition
 that the values <code>0x41</code>, <code>0x42</code>, <code>0x43</code>, <code>0xc1</code>, <code>0xc2</code>, and <code>0xc3</code> are
@@ -140,11 +137,6 @@ also valid for BIP 118 public keys.</p>
 <li><code>SIGHASH_ANYPREVOUT = 0x40</code></li>
 <li><code>SIGHASH_ANYPREVOUTANYSCRIPT = 0xc0</code></li>
 </ul>
-<p>As per <a href="https://bips.dev/118/bip-0341.mediawiki" title="wikilink">BIP 341</a>, the parameter
-<em>ext_flag</em> is an integer in the range 0-127, used for indicating that
-extensions are added at the end of the message. The parameter
-<em>key_version</em> is an 8-bit unsigned value (an integer in the range
-0-255) used for committing to the public key version.</p>
 <p>The following restrictions apply and cause validation failure if
 violated:</p>
 <ul>
@@ -154,10 +146,15 @@ violated:</p>
 <li>Using <code>SIGHASH_SINGLE</code> without a &quot;corresponding output&quot; (an output
 with the same index as the input being verified).</li>
 </ul>
-<p>If these restrictions aren't violated, <em>SigMsg118(hash_type,ext_flag)</em>
-evaluates to the concatenation of the following data, in order (with
-byte size of each item listed in parentheses). Numerical values in 2, 4,
-or 8-byte items are encoded in little-endian.</p>
+<p>If these restrictions are not violated, <em>Msg118(hash_type)</em> evaluates
+as follows.</p>
+<p>If <em>hash_type &amp; 0x40 == 0</em>, then <em>Msg118(hash_type) =
+SigMsg(hash_type, 1)</em>, where <em>SigMsg</em> is as defined in <a href="https://bips.dev/118/bip-0341.mediawiki" title="wikilink">BIP
+341</a>.</p>
+<p>If <em>hash_type &amp; 0x40 != 0</em>, then <em>Msg118(hash_type)</em> is the
+concatenation of the following data, in order (with byte size of each
+item listed in parentheses). Numerical values in 2, 4, or 8-byte items
+are encoded in little-endian.</p>
 <ul>
 <li>Control:
 <ul>
@@ -168,18 +165,6 @@ or 8-byte items are encoded in little-endian.</p>
 <ul>
 <li><em>nVersion</em> (4): the <em>nVersion</em> of the transaction.</li>
 <li><em>nLockTime</em> (4): the <em>nLockTime</em> of the transaction.</li>
-<li>If <em>hash_type &amp; 0xc0</em> is zero:
-<ul>
-<li><em>sha_prevouts</em> (32): the SHA256 of the serialization of all
-input outpoints.</li>
-<li><em>sha_amounts</em> (32): the SHA256 of the serialization of all
-spent output amounts.</li>
-<li><em>sha_scriptpubkeys</em> (32): the SHA256 of the serialization
-of all spent output <em>scriptPubKey</em>s.</li>
-<li><em>sha_sequences</em> (32): the SHA256 of the serialization of
-all input <em>nSequence</em>.</li>
-</ul>
-</li>
 <li>If <em>hash_type &amp; 3</em> does not equal <code>SIGHASH_NONE</code> or
 <code>SIGHASH_SINGLE</code>:
 <ul>
@@ -191,37 +176,19 @@ outputs in <code>CTxOut</code> format.</li>
 </li>
 <li>Data about this input:
 <ul>
-<li><em>spend_type</em> (1): equal to <em>(ext_flag * 2) + annex_present</em>,
-where <em>annex_present</em> is 0 if no annex is present, or 1
+<li><em>spend_type</em> (1): equal to 2 if no annex is present, or 3
 otherwise (the original witness stack has two or more witness
 elements, and the first byte of the last element is <em>0x50</em>)</li>
-<li>If <em>hash_type &amp; 0xc0</em> is non-zero:
-<ul>
-<li>If <em>hash_type &amp; 0xc0</em> is <code>SIGHASH_ANYONECANPAY</code>:
-<ul>
-<li><em>outpoint</em> (36): the <code>COutPoint</code> of this input (32-byte
-hash + 4-byte little-endian).</li>
-</ul>
-</li>
-<li>If <em>hash_type &amp; 0xc0</em> is <code>SIGHASH_ANYONECANPAY</code> or
-<code>SIGHASH_ANYPREVOUT</code>:
+<li>If <em>hash_type &amp; 0xc0</em> is <code>SIGHASH_ANYPREVOUT</code>:
 <ul>
 <li><em>amount</em> (8): value of the previous output spent by this
 input.</li>
-<li><em>scriptPubKey</em> (35): <em>scriptPubKey</em> of the previous
-output spent by this input, serialized as script inside
-<code>CTxOut</code>. Its size is always 35 bytes.</li>
+<li><em>scriptPubKey</em> (35): <em>scriptPubKey</em> of the previous output
+spent by this input, serialized as script inside <code>CTxOut</code>.
+Its size is always 35 bytes.</li>
 </ul>
 </li>
 <li><em>nSequence</em> (4): <em>nSequence</em> of this input.</li>
-</ul>
-</li>
-<li>If <em>hash_type &amp; 0xc0</em> is zero:
-<ul>
-<li><em>input_index</em> (4): index of this input in the transaction
-input vector. Index of the first input is 0.</li>
-</ul>
-</li>
 <li>If an annex is present (the lowest bit of <em>spend_type</em> is set):
 <ul>
 <li><em>sha_annex</em> (32): the SHA256 of <em>(compact_size(size of
@@ -242,8 +209,8 @@ output in <code>CTxOut</code> format.</li>
 </ul>
 </li>
 </ul>
-<p>Similarly, <em>SigExt118(hash_type,key_version)</em> evaluates to the
-concatenation of:</p>
+<p>Similarly, <em>Ext118(hash_type)</em> evaluates to the concatenation of the
+following data, in order:</p>
 <ul>
 <li>Extension:
 <ul>
@@ -253,7 +220,8 @@ concatenation of:</p>
 341</a></li>
 </ul>
 </li>
-<li><em>key_version</em> (1).</li>
+<li><em>key_version</em> (1): a constant value <em>0x01</em> representing that
+this is a signature for a BIP 118 public key.</li>
 <li><em>codesep_pos</em> (4): the opcode position of the last executed
 <code>OP_CODESEPARATOR</code> before the currently executed signature
 opcode, with the value in little endian (or <em>0xffffffff</em> if none
@@ -263,21 +231,17 @@ the size of data being pushed.</li>
 </ul>
 </li>
 </ul>
-<p>Note that if <em>hash_type &amp; 0x40</em> is zero,
-<em>SigMsg118(hash_type,ext_flag) == SigMsg(hash_type,ext_flag)</em>, and
-<em>SigExt118(hash_type,0x00) == ext</em> (where <em>ext</em> is the message
-extension as defined in <a href="https://bips.dev/118/bip-0342.mediawiki" title="wikilink">BIP 342</a>).</p>
 <p>To verify a signature <em>sig</em> for a BIP 118 public key <em>p</em>:</p>
 <ul>
 <li>If the <em>sig</em> is 64 bytes long, return <em>Verify(p,
-hash<sub>TapSigHash</sub>(0x00 || SigMsg118(0x00, 1) ||
-SigExt118(0x00, 0x01), sig)</em>, where <em>Verify</em> is defined in <a href="https://bips.dev/118/bip-0340.mediawiki" title="wikilink">BIP
-340</a>.</li>
+hash<sub>TapSigHash</sub>(0x00 || Msg118(0x00) || Ext118(0x00)),
+sig)</em></li>
 <li>If the <em>sig</em> is 65 bytes long, return <em>sig[64] ≠ 0x00 and
-Verify(p, hash<sub>TapSighash</sub>(0x00 || SigMsg118(sig[64], 1)
-|| SigExt118(sig[64], 0x01), sig[0:64])</em>.</li>
+Verify(p, hash<sub>TapSighash</sub>(0x00 || Msg118(sig[64]) ||
+Ext118(sig[64])), sig[0:64])</em>.</li>
 <li>Otherwise, fail.</li>
 </ul>
+<p><em>Verify</em> is as defined in <a href="https://bips.dev/118/bip-0340.mediawiki" title="wikilink">BIP 340</a>.</p>
 <p>The key differences from <a href="https://bips.dev/118/bip-0342.mediawiki" title="wikilink">BIP 342</a>
 signature verification are:</p>
 <ul>
@@ -287,8 +251,8 @@ instead of <code>0x00</code>.[6]</li>
 <code>SIGHASH_ANYONECANPAY</code> was set, except <code>outpoint</code> is not included in
 the digest.</li>
 <li>If <code>SIGHASH_ANYPREVOUTANYSCRIPT</code> is set, the digest is calculated as
-if <code>SIGHASH_ANYONECANPAY</code> was set, except <code>outpoint</code>, <code>scriptPubKey</code>
-and <code>tapleaf_hash</code> are not included in the digest.</li>
+if <code>SIGHASH_ANYONECANPAY</code> was set, except <code>outpoint</code>, <code>amount</code>,
+<code>scriptPubKey</code> and <code>tapleaf_hash</code> are not included in the digest.</li>
 </ul>
 <h2 id="security">Security</h2>
 <h4 id="signature-replay">Signature replay</h4>

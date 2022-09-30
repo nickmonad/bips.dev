@@ -109,11 +109,8 @@ the remaining 32 bytes.
 
 #### Signature message
 
-The function *SigMsg118(hash\_type, ext\_flag)* computes the message
-being signed as a byte array, analogously to *SigMsg(hash\_type,
-ext\_flag)* defined in [BIP 341](bip-0341.mediawiki "wikilink"),
-*SigExt118(hash\_type,key\_version)* computes the extension, similarly
-to [BIP 342](bip-0342.mediawiki "wikilink").
+We define the functions *Msg118(hash\_type)* and *Ext118(hash\_type)*
+which compute the message being signed as a byte array.
 
 The parameter *hash\_type* is an 8-bit unsigned value, reusing values
 defined in [BIP 341](bip-0341.mediawiki "wikilink"), with the addition
@@ -125,12 +122,6 @@ We define the following constants using bits 6 and 7 of `hash_type`:
   - `SIGHASH_ANYPREVOUT = 0x40`
   - `SIGHASH_ANYPREVOUTANYSCRIPT = 0xc0`
 
-As per [BIP 341](bip-0341.mediawiki "wikilink"), the parameter
-*ext\_flag* is an integer in the range 0-127, used for indicating that
-extensions are added at the end of the message. The parameter
-*key\_version* is an 8-bit unsigned value (an integer in the range
-0-255) used for committing to the public key version.
-
 The following restrictions apply and cause validation failure if
 violated:
 
@@ -140,49 +131,38 @@ violated:
   - Using `SIGHASH_SINGLE` without a "corresponding output" (an output
     with the same index as the input being verified).
 
-If these restrictions aren't violated, *SigMsg118(hash\_type,ext\_flag)*
-evaluates to the concatenation of the following data, in order (with
-byte size of each item listed in parentheses). Numerical values in 2, 4,
-or 8-byte items are encoded in little-endian.
+If these restrictions are not violated, *Msg118(hash\_type)* evaluates
+as follows.
+
+If *hash\_type & 0x40 == 0*, then *Msg118(hash\_type) =
+SigMsg(hash\_type, 1)*, where *SigMsg* is as defined in [BIP
+341](bip-0341.mediawiki "wikilink").
+
+If *hash\_type & 0x40 \!= 0*, then *Msg118(hash\_type)* is the
+concatenation of the following data, in order (with byte size of each
+item listed in parentheses). Numerical values in 2, 4, or 8-byte items
+are encoded in little-endian.
 
   - Control:
       - *hash\_type* (1).
   - Transaction data:
       - *nVersion* (4): the *nVersion* of the transaction.
       - *nLockTime* (4): the *nLockTime* of the transaction.
-      - If *hash\_type & 0xc0* is zero:
-          - *sha\_prevouts* (32): the SHA256 of the serialization of all
-            input outpoints.
-          - *sha\_amounts* (32): the SHA256 of the serialization of all
-            spent output amounts.
-          - *sha\_scriptpubkeys* (32): the SHA256 of the serialization
-            of all spent output *scriptPubKey*s.
-          - *sha\_sequences* (32): the SHA256 of the serialization of
-            all input *nSequence*.
       - If *hash\_type & 3* does not equal `SIGHASH_NONE` or
         `SIGHASH_SINGLE`:
           - *sha\_outputs* (32): the SHA256 of the serialization of all
             outputs in `CTxOut` format.
   - Data about this input:
-      - *spend\_type* (1): equal to *(ext\_flag \* 2) + annex\_present*,
-        where *annex\_present* is 0 if no annex is present, or 1
+      - *spend\_type* (1): equal to 2 if no annex is present, or 3
         otherwise (the original witness stack has two or more witness
         elements, and the first byte of the last element is *0x50*)
-      - If *hash\_type & 0xc0* is non-zero:
-          - If *hash\_type & 0xc0* is `SIGHASH_ANYONECANPAY`:
-              - *outpoint* (36): the `COutPoint` of this input (32-byte
-                hash + 4-byte little-endian).
-          - If *hash\_type & 0xc0* is `SIGHASH_ANYONECANPAY` or
-            `SIGHASH_ANYPREVOUT`:
-              - *amount* (8): value of the previous output spent by this
-                input.
-              - *scriptPubKey* (35): *scriptPubKey* of the previous
-                output spent by this input, serialized as script inside
-                `CTxOut`. Its size is always 35 bytes.
-          - *nSequence* (4): *nSequence* of this input.
-      - If *hash\_type & 0xc0* is zero:
-          - *input\_index* (4): index of this input in the transaction
-            input vector. Index of the first input is 0.
+      - If *hash\_type & 0xc0* is `SIGHASH_ANYPREVOUT`:
+          - *amount* (8): value of the previous output spent by this
+            input.
+          - *scriptPubKey* (35): *scriptPubKey* of the previous output
+            spent by this input, serialized as script inside `CTxOut`.
+            Its size is always 35 bytes.
+      - *nSequence* (4): *nSequence* of this input.
       - If an annex is present (the lowest bit of *spend\_type* is set):
           - *sha\_annex* (32): the SHA256 of *(compact\_size(size of
             annex) || annex)*, where *annex* includes the mandatory
@@ -192,14 +172,15 @@ or 8-byte items are encoded in little-endian.
           - *sha\_single\_output* (32): the SHA256 of the corresponding
             output in `CTxOut` format.
 
-Similarly, *SigExt118(hash\_type,key\_version)* evaluates to the
-concatenation of:
+Similarly, *Ext118(hash\_type)* evaluates to the concatenation of the
+following data, in order:
 
   - Extension:
       - If *hash\_type & 0xc0* is not `SIGHASH_ANYPREVOUTANYSCRIPT`:
           - *tapleaf\_hash* (32): the tapleaf hash as defined in [BIP
             341](bip-0341.mediawiki "wikilink")
-      - *key\_version* (1).
+      - *key\_version* (1): a constant value *0x01* representing that
+        this is a signature for a BIP 118 public key.
       - *codesep\_pos* (4): the opcode position of the last executed
         `OP_CODESEPARATOR` before the currently executed signature
         opcode, with the value in little endian (or *0xffffffff* if none
@@ -207,21 +188,17 @@ concatenation of:
         multi-byte push opcode is counted as one opcode, regardless of
         the size of data being pushed.
 
-Note that if *hash\_type & 0x40* is zero,
-*SigMsg118(hash\_type,ext\_flag) == SigMsg(hash\_type,ext\_flag)*, and
-*SigExt118(hash\_type,0x00) == ext* (where *ext* is the message
-extension as defined in [BIP 342](bip-0342.mediawiki "wikilink")).
-
 To verify a signature *sig* for a BIP 118 public key *p*:
 
   - If the *sig* is 64 bytes long, return *Verify(p,
-    hash<sub>TapSigHash</sub>(0x00 || SigMsg118(0x00, 1) ||
-    SigExt118(0x00, 0x01), sig)*, where *Verify* is defined in [BIP
-    340](bip-0340.mediawiki "wikilink").
+    hash<sub>TapSigHash</sub>(0x00 || Msg118(0x00) || Ext118(0x00)),
+    sig)*
   - If the *sig* is 65 bytes long, return *sig\[64\] ≠ 0x00 and
-    Verify(p, hash<sub>TapSighash</sub>(0x00 || SigMsg118(sig\[64\], 1)
-    || SigExt118(sig\[64\], 0x01), sig\[0:64\])*.
+    Verify(p, hash<sub>TapSighash</sub>(0x00 || Msg118(sig\[64\]) ||
+    Ext118(sig\[64\])), sig\[0:64\])*.
   - Otherwise, fail.
+
+*Verify* is as defined in [BIP 340](bip-0340.mediawiki "wikilink").
 
 The key differences from [BIP 342](bip-0342.mediawiki "wikilink")
 signature verification are:
@@ -232,8 +209,8 @@ signature verification are:
     `SIGHASH_ANYONECANPAY` was set, except `outpoint` is not included in
     the digest.
   - If `SIGHASH_ANYPREVOUTANYSCRIPT` is set, the digest is calculated as
-    if `SIGHASH_ANYONECANPAY` was set, except `outpoint`, `scriptPubKey`
-    and `tapleaf_hash` are not included in the digest.
+    if `SIGHASH_ANYONECANPAY` was set, except `outpoint`, `amount`,
+    `scriptPubKey` and `tapleaf_hash` are not included in the digest.
 
 ## Security
 

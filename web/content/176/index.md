@@ -56,7 +56,7 @@ Potential benefits of utilizing "bits" include:
 
 ## Specification
 
-Definition: 1 bit = 100 satoshis. Plural of "bit" is "bits". The terms
+Definition: 1 bit = 100 satoshis. Plural of "bit" is "bits." The terms
 "bit" and "bits" are not proper nouns and thus should not be capitalized
 unless used at the start of a sentence, etc.
 
@@ -79,21 +79,21 @@ bitcoin (BTC) do not conflict as they operate at different orders of
 magnitude.
 
 The term micro-bitcoin (µBTC) can continue to exist in tandem with the
-term "bits".
+term "bits."
 
 ## Backwards Compatibility
 
 Software such as the Bitcoin Core GUI currently use the µBTC
 denomination and can continue to do so. There is no obligation to switch
-to "bits".
+to "bits."
 
 The term "bit" has many different definitions, but the ones of
 particular note are these:
 
-  - 1 bit = 1/8 dollar (e.g. That candy cost me 2 bits)
-  - bit meaning some amount of data (e.g. The first bit of the version
+  - 1 bit = 1/8 dollar (e.g., that candy cost me 2 bits {or 1/4 dollar})
+  - bit meaning some amount of data (e.g., the first bit of the version
     field is 0)
-  - bit meaning strength of a cryptographic algorithm (e.g. 256-bit
+  - bit meaning strength of a cryptographic algorithm (e.g., 256-bit
     ECDSA is used in Bitcoin)
 
 The first is a bit dated and isn't likely to confuse people dealing with
@@ -106,6 +106,6 @@ This BIP is licensed under the BSD 2-clause license.
 
 ## Credit
 
-It's hard to ascertain exactly who invented the term "bits", but the
+It's hard to ascertain exactly who invented the term "bits," but the
 term has been around for a while and the author of this BIP does not
 take any credit for inventing the term.

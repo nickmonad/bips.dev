@@ -444,12 +444,13 @@ def taproot_tweak_pubkey(pubkey, h):
     return 0 if has_even_y(Q) else 1, bytes_from_int(x(Q))
 
 def taproot_tweak_seckey(seckey0, h):
-    P = point_mul(G, int_from_bytes(seckey0))
+    seckey0 = int_from_bytes(seckey0)
+    P = point_mul(G, seckey0)
     seckey = seckey0 if has_even_y(P) else SECP256K1_ORDER - seckey0
     t = int_from_bytes(tagged_hash("TapTweak", bytes_from_int(x(P)) + h))
     if t >= SECP256K1_ORDER:
         raise ValueError
-    return (seckey + t) % SECP256K1_ORDER
+    return bytes_from_int((seckey + t) % SECP256K1_ORDER)
 ```
 
 The following function, `taproot_output_script`, returns a byte array
