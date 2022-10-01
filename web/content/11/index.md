@@ -120,7 +120,7 @@ bytes of opcodes.
 OP\_CHECKMULTISIG is already supported by old clients and miners as a
 non-standard transaction type.
 
-<https://github.com/gavinandresen/bitcoin-git/tree/op_eval>
+<https://github.com/gavinandresen/bitcoin-git/tree/77f21f1583deb89bf3fffe80fe9b181fedb1dd60>
 
 ## Post History
 

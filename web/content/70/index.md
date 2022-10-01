@@ -360,7 +360,7 @@ Javascript Object Signing and Encryption working group :
 Wikipedia's page on Invoices: <http://en.wikipedia.org/wiki/Invoice>
 especially the list of Electronic Invoice standards
 
-sipa's payment protocol proposal: <https://gist.github.com/1237788>
+sipa's payment protocol proposal: <https://gist.github.com/sipa/1237788>
 
 ThomasV's "Signed Aliases" proposal :
 <http://ecdsa.org/bitcoin_URIs.html>

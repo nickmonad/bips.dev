@@ -153,7 +153,7 @@ miners/clients:
 
 ## Reference Implementation
 
-<https://github.com/gavinandresen/bitcoin-git/tree/op_eval>
+<https://github.com/gavinandresen/bitcoin-git/tree/77f21f1583deb89bf3fffe80fe9b181fedb1dd60>
 
 ## See Also
 
