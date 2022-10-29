@@ -245,14 +245,14 @@ supported.</p>
 (fRelay=0) in &quot;version&quot;. Otherwise, the sender should be disconnected.</p>
 <p>Its payload consists of:</p>
 <table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>bool</td><td>initiator</td><td>Indicates whether the sender will send &quot;reqrecon&quot; message</td></tr>
-<tr><td>bool</td><td>responder</td><td>Indicates whether the sender will respond to &quot;reqrecon&quot; messages.</td></tr>
 <tr><td>uint32</td><td>version</td><td>Sender must set this to 1 currently, otherwise receiver should ignore the message. v1 is the lowest protocol version, everything below that is a protocol violation.</td></tr>
 <tr><td>uint64</td><td>salt</td><td>The salt used in the short transaction ID computation.</td></tr>
 </tbody></table>
-<p>&quot;reqrecon&quot; messages can only be sent if the inititor has sent a
-&quot;sendtxrcncl&quot; message with initiator=true, and the receiver has sent a
-&quot;sendtxrcncl&quot; message with responder=true.</p>
+<p>After both peers have confirmed support by sending &quot;sendtxrcncl&quot;, the
+initiator of the P2P connection assumes the role of reconciliation
+initiator (will send &quot;reqrecon&quot; messages) and the other peer assumes the
+role of reconciliation responder (will respond to &quot;reqrecon&quot; messages).
+&quot;reqrecon&quot; messages can only be sent by the reconciliation initiator.</p>
 <h4 id="reqrecon">reqrecon</h4>
 <p>The reqrecon message initiates a reconciliation round.</p>
 <table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
