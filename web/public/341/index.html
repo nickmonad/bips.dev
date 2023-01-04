@@ -488,7 +488,10 @@ applying the tweak.</p>
     t </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(</span><span style="color:#f29718;">tagged_hash</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;TapTweak&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">pubkey </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">h))
     </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">t </span><span style="color:#ed9366;">&gt;= </span><span style="color:#61676c;">SECP256K1_ORDER:
         </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
-    </span><span style="color:#61676c;">Q </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">point_add</span><span style="color:#61676c;">(</span><span style="color:#f29718;">lift_x</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">int</span><span style="color:#61676c;">(pubkey))</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">point_mul</span><span style="color:#61676c;">(G</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">t))
+    </span><span style="color:#61676c;">P </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">lift_x</span><span style="color:#61676c;">(</span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(pubkey))
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">P </span><span style="color:#ed9366;">is </span><span style="color:#ff8f40;">None</span><span style="color:#61676c;">:
+        </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
+    </span><span style="color:#61676c;">Q </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">point_add</span><span style="color:#61676c;">(P</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">point_mul</span><span style="color:#61676c;">(G</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">t))
     </span><span style="color:#fa6e32;">return </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">if </span><span style="color:#f29718;">has_even_y</span><span style="color:#61676c;">(Q) </span><span style="color:#fa6e32;">else </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">, </span><span style="color:#f29718;">bytes_from_int</span><span style="color:#61676c;">(</span><span style="color:#f29718;">x</span><span style="color:#61676c;">(Q))
 
 </span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tweak_seckey</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">seckey0</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">h</span><span style="color:#61676c;">):
@@ -551,10 +554,10 @@ stack consists of a single element: a
 as defined above, with the secret key tweaked by the same <code>h</code> as in the
 above snippet. See the code below:</p>
 <pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_sign_key</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">internal_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">hash_type</span><span style="color:#61676c;">):
+<code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_sign_key</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">internal_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">hash_type</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">bip340_aux_rand</span><span style="color:#61676c;">):
     </span><span style="font-style:italic;color:#55b4d4;">_</span><span style="color:#61676c;">, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(script_tree)
     output_seckey </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_seckey</span><span style="color:#61676c;">(internal_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">h)
-    sig </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">schnorr_sign</span><span style="color:#61676c;">(</span><span style="color:#f29718;">sighash</span><span style="color:#61676c;">(hash_type)</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">output_seckey)
+    sig </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">schnorr_sign</span><span style="color:#61676c;">(</span><span style="color:#f29718;">sighash</span><span style="color:#61676c;">(hash_type)</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">output_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">bip340_aux_rand)
     </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">hash_type </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">:
         sig </span><span style="color:#ed9366;">+= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">([hash_type])
     </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">[sig]
@@ -883,7 +886,7 @@ of <code>hash_type</code> implicit, a byte can often be saved.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-03</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-04</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

@@ -440,7 +440,10 @@ def taproot_tweak_pubkey(pubkey, h):
     t = int_from_bytes(tagged_hash("TapTweak", pubkey + h))
     if t >= SECP256K1_ORDER:
         raise ValueError
-    Q = point_add(lift_x(int(pubkey)), point_mul(G, t))
+    P = lift_x(int_from_bytes(pubkey))
+    if P is None:
+        raise ValueError
+    Q = point_add(P, point_mul(G, t))
     return 0 if has_even_y(Q) else 1, bytes_from_int(x(Q))
 
 def taproot_tweak_seckey(seckey0, h):
@@ -515,10 +518,10 @@ as defined above, with the secret key tweaked by the same `h` as in the
 above snippet. See the code below:
 
 ``` python
-def taproot_sign_key(script_tree, internal_seckey, hash_type):
+def taproot_sign_key(script_tree, internal_seckey, hash_type, bip340_aux_rand):
     _, h = taproot_tree_helper(script_tree)
     output_seckey = taproot_tweak_seckey(internal_seckey, h)
-    sig = schnorr_sign(sighash(hash_type), output_seckey)
+    sig = schnorr_sign(sighash(hash_type), output_seckey, bip340_aux_rand)
     if hash_type != 0:
         sig += bytes([hash_type])
     return [sig]
