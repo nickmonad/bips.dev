@@ -25,6 +25,7 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0151.mediawiki"
   Type: Standards Track
   Created: 2016-03-23
   License: PD
+  Superseded-By: 324
 ```
 
 ## Abstract

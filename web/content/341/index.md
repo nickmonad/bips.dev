@@ -519,7 +519,10 @@ above snippet. See the code below:
 
 ``` python
 def taproot_sign_key(script_tree, internal_seckey, hash_type, bip340_aux_rand):
-    _, h = taproot_tree_helper(script_tree)
+    if script_tree is None:
+        h = bytes()
+    else:
+        _, h = taproot_tree_helper(script_tree)
     output_seckey = taproot_tweak_seckey(internal_seckey, h)
     sig = schnorr_sign(sighash(hash_type), output_seckey, bip340_aux_rand)
     if hash_type != 0:
