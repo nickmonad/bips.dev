@@ -14,17 +14,15 @@ status = ["Replaced"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0001.mediawiki"
 +++
 
-``` 
-  BIP: 1
-  Title: BIP Purpose and Guidelines
-  Author: Amir Taaki <genjix@riseup.net>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0001
-  Status: Replaced
-  Type: Process
-  Created: 2011-09-19
-  Superseded-By: 2
-```
+      BIP: 1
+      Title: BIP Purpose and Guidelines
+      Author: Amir Taaki <genjix@riseup.net>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0001
+      Status: Replaced
+      Type: Process
+      Created: 2011-09-19
+      Superseded-By: 2
 
 ## What is a BIP?
 
@@ -47,27 +45,27 @@ their revision history is the historical record of the feature proposal.
 
 There are three kinds of BIP:
 
-  - A Standards Track BIP describes any change that affects most or all
-    Bitcoin implementations, such as a change to the network protocol, a
-    change in block or transaction validity rules, or any change or
-    addition that affects the interoperability of applications using
-    Bitcoin.
-  - An Informational BIP describes a Bitcoin design issue, or provides
-    general guidelines or information to the Bitcoin community, but does
-    not propose a new feature. Informational BIPs do not necessarily
-    represent a Bitcoin community consensus or recommendation, so users
-    and implementors are free to ignore Informational BIPs or follow
-    their advice.
-  - A Process BIP describes a process surrounding Bitcoin, or proposes a
-    change to (or an event in) a process. Process BIPs are like
-    Standards Track BIPs but apply to areas other than the Bitcoin
-    protocol itself. They may propose an implementation, but not to
-    Bitcoin's codebase; they often require community consensus; unlike
-    Informational BIPs, they are more than recommendations, and users
-    are typically not free to ignore them. Examples include procedures,
-    guidelines, changes to the decision-making process, and changes to
-    the tools or environment used in Bitcoin development. Any meta-BIP
-    is also considered a Process BIP.
+- A Standards Track BIP describes any change that affects most or all
+  Bitcoin implementations, such as a change to the network protocol, a
+  change in block or transaction validity rules, or any change or
+  addition that affects the interoperability of applications using
+  Bitcoin.
+- An Informational BIP describes a Bitcoin design issue, or provides
+  general guidelines or information to the Bitcoin community, but does
+  not propose a new feature. Informational BIPs do not necessarily
+  represent a Bitcoin community consensus or recommendation, so users
+  and implementors are free to ignore Informational BIPs or follow their
+  advice.
+- A Process BIP describes a process surrounding Bitcoin, or proposes a
+  change to (or an event in) a process. Process BIPs are like Standards
+  Track BIPs but apply to areas other than the Bitcoin protocol itself.
+  They may propose an implementation, but not to Bitcoin's codebase;
+  they often require community consensus; unlike Informational BIPs,
+  they are more than recommendations, and users are typically not free
+  to ignore them. Examples include procedures, guidelines, changes to
+  the decision-making process, and changes to the tools or environment
+  used in Bitcoin development. Any meta-BIP is also considered a Process
+  BIP.
 
 ## BIP Work Flow
 
@@ -183,73 +181,72 @@ if they are never meant to be completed. E.g. BIP 1 (this BIP).
 
 Each BIP should have the following parts:
 
-  - Preamble -- RFC 822 style headers containing meta-data about the
-    BIP, including the BIP number, a short descriptive title (limited to
-    a maximum of 44 characters), the names, and optionally the contact
-    info for each author, etc.
+- Preamble -- RFC 822 style headers containing meta-data about the BIP,
+  including the BIP number, a short descriptive title (limited to a
+  maximum of 44 characters), the names, and optionally the contact info
+  for each author, etc.
 
-<!-- end list -->
+<!-- -->
 
-  - Abstract -- a short (\~200 word) description of the technical issue
-    being addressed.
+- Abstract -- a short (\~200 word) description of the technical issue
+  being addressed.
 
-<!-- end list -->
+<!-- -->
 
-  - Copyright/public domain -- Each BIP must either be explicitly
-    labelled as placed in the public domain (see this BIP as an example)
-    or licensed under the Open Publication License.
+- Copyright/public domain -- Each BIP must either be explicitly labelled
+  as placed in the public domain (see this BIP as an example) or
+  licensed under the Open Publication License.
 
-<!-- end list -->
+<!-- -->
 
-  - Specification -- The technical specification should describe the
-    syntax and semantics of any new feature. The specification should be
-    detailed enough to allow competing, interoperable implementations
-    for any of the current Bitcoin platforms (Satoshi, BitcoinJ,
-    bitcoin-js, libbitcoin).
+- Specification -- The technical specification should describe the
+  syntax and semantics of any new feature. The specification should be
+  detailed enough to allow competing, interoperable implementations for
+  any of the current Bitcoin platforms (Satoshi, BitcoinJ, bitcoin-js,
+  libbitcoin).
 
-<!-- end list -->
+<!-- -->
 
-  - Motivation -- The motivation is critical for BIPs that want to
-    change the Bitcoin protocol. It should clearly explain why the
-    existing protocol specification is inadequate to address the problem
-    that the BIP solves. BIP submissions without sufficient motivation
-    may be rejected outright.
+- Motivation -- The motivation is critical for BIPs that want to change
+  the Bitcoin protocol. It should clearly explain why the existing
+  protocol specification is inadequate to address the problem that the
+  BIP solves. BIP submissions without sufficient motivation may be
+  rejected outright.
 
-<!-- end list -->
+<!-- -->
 
-  - Rationale -- The rationale fleshes out the specification by
-    describing what motivated the design and why particular design
-    decisions were made. It should describe alternate designs that were
-    considered and related work, e.g. how the feature is supported in
-    other languages.
+- Rationale -- The rationale fleshes out the specification by describing
+  what motivated the design and why particular design decisions were
+  made. It should describe alternate designs that were considered and
+  related work, e.g. how the feature is supported in other languages.
 
-<!-- end list -->
+<!-- -->
 
-  - The rationale should provide evidence of consensus within the
-    community and discuss important objections or concerns raised during
-    discussion.
+- The rationale should provide evidence of consensus within the
+  community and discuss important objections or concerns raised during
+  discussion.
 
-<!-- end list -->
+<!-- -->
 
-  - Backwards Compatibility -- All BIPs that introduce backwards
-    incompatibilities must include a section describing these
-    incompatibilities and their severity. The BIP must explain how the
-    author proposes to deal with these incompatibilities. BIP
-    submissions without a sufficient backwards compatibility treatise
-    may be rejected outright.
+- Backwards Compatibility -- All BIPs that introduce backwards
+  incompatibilities must include a section describing these
+  incompatibilities and their severity. The BIP must explain how the
+  author proposes to deal with these incompatibilities. BIP submissions
+  without a sufficient backwards compatibility treatise may be rejected
+  outright.
 
-<!-- end list -->
+<!-- -->
 
-  - Reference Implementation -- The reference implementation must be
-    completed before any BIP is given status "Final", but it need not be
-    completed before the BIP is accepted. It is better to finish the
-    specification and rationale first and reach consensus on it before
-    writing code.
+- Reference Implementation -- The reference implementation must be
+  completed before any BIP is given status "Final", but it need not be
+  completed before the BIP is accepted. It is better to finish the
+  specification and rationale first and reach consensus on it before
+  writing code.
 
-<!-- end list -->
+<!-- -->
 
-  - The final implementation must include test code and documentation
-    appropriate for the Bitcoin protocol.
+- The final implementation must include test code and documentation
+  appropriate for the Bitcoin protocol.
 
 ## BIP Formats and Templates
 
@@ -261,20 +258,18 @@ Each BIP must begin with an RFC 822 style header preamble. The headers
 must appear in the following order. Headers marked with "\*" are
 optional and are described below. All other headers are required.
 
-``` 
-  BIP: <BIP number>
-  Title: <BIP title>
-  Author: <list of authors' real names and optionally, email addrs>
-* Discussions-To: <email address>
-  Status: <Draft | Active | Accepted | Deferred | Rejected |
-           Withdrawn | Final | Superseded>
-  Type: <Standards Track | Informational | Process>
-  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
-* Post-History: <dates of postings to bitcoin mailing list>
-* Replaces: <BIP number>
-* Superseded-By: <BIP number>
-* Resolution: <url>
-```
+      BIP: <BIP number>
+      Title: <BIP title>
+      Author: <list of authors' real names and optionally, email addrs>
+    * Discussions-To: <email address>
+      Status: <Draft | Active | Accepted | Deferred | Rejected |
+               Withdrawn | Final | Superseded>
+      Type: <Standards Track | Informational | Process>
+      Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
+    * Post-History: <dates of postings to bitcoin mailing list>
+    * Replaces: <BIP number>
+    * Superseded-By: <BIP number>
+    * Resolution: <url>
 
 The Author header lists the names, and optionally the email addresses of
 all the authors/owners of the BIP. The format of the Author header value
@@ -348,23 +343,23 @@ such decisions can't be reversed :).
 ## BIP Editors
 
 The current BIP editor is Luke Dashjr who can be contacted at
-[luke\_bipeditor@dashjr.org](mailto:luke_bipeditor@dashjr.org "wikilink").
+<luke_bipeditor@dashjr.org>.
 
 ## BIP Editor Responsibilities & Workflow
 
 The BIP editor subscribes to the Bitcoin development mailing list. All
 BIP-related correspondence should be sent (or CC'd) to
-luke\_bipeditor@dashjr.org.
+luke_bipeditor@dashjr.org.
 
 For each new BIP that comes in an editor does the following:
 
-  - Read the BIP to check if it is ready: sound and complete. The ideas
-    must make technical sense, even if they don't seem likely to be
-    accepted.
-  - The title should accurately describe the content.
-  - Edit the BIP for language (spelling, grammar, sentence structure,
-    etc.), markup (for reST BIPs), code style (examples should match BIP
-    8 & 7).
+- Read the BIP to check if it is ready: sound and complete. The ideas
+  must make technical sense, even if they don't seem likely to be
+  accepted.
+- The title should accurately describe the content.
+- Edit the BIP for language (spelling, grammar, sentence structure,
+  etc.), markup (for reST BIPs), code style (examples should match BIP 8
+  & 7).
 
 If the BIP isn't ready, the editor will send it back to the author for
 revision, with specific instructions.
@@ -375,23 +370,23 @@ repository on GitHub where it may get further feedback.
 
 The BIP editor will:
 
-  - Assign a BIP number (almost always just the next available number,
-    but sometimes it's a special/joke number, like 666 or 3141) in the
-    pull request comments.
+- Assign a BIP number (almost always just the next available number, but
+  sometimes it's a special/joke number, like 666 or 3141) in the pull
+  request comments.
 
-<!-- end list -->
+<!-- -->
 
-  - Merge the pull request when the author is ready (allowing some time
-    for further peer review).
+- Merge the pull request when the author is ready (allowing some time
+  for further peer review).
 
-<!-- end list -->
+<!-- -->
 
-  - List the BIP in [README.mediawiki](README.mediawiki "wikilink")
+- List the BIP in [README.mediawiki](README.mediawiki "wikilink")
 
-<!-- end list -->
+<!-- -->
 
-  - Send email back to the BIP author with next steps (post to
-    bitcoin-dev mailing list).
+- Send email back to the BIP author with next steps (post to bitcoin-dev
+  mailing list).
 
 The BIP editors are intended to fulfill administrative and editorial
 responsibilities. The BIP editors monitor BIP changes, and correct any

@@ -17,18 +17,16 @@ github = "https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki"
 **NOTICE: This document is a work in progress and is not complete,
 implemented, or otherwise suitable for deployment.**
 
-``` 
-  BIP: 62
-  Layer: Consensus (soft fork)
-  Title: Dealing with malleability
-  Author: Pieter Wuille <pieter.wuille@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0062
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2014-03-12
-  License: BSD-2-Clause
-```
+      BIP: 62
+      Layer: Consensus (soft fork)
+      Title: Dealing with malleability
+      Author: Pieter Wuille <pieter.wuille@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0062
+      Status: Withdrawn
+      Type: Standards Track
+      Created: 2014-03-12
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -49,14 +47,13 @@ keys.
 
 This is a problem for multiple reasons:
 
-  - The sender may not recognize his own transaction after being
-    modified.
-  - The sender may create transactions that spend change created by the
-    original transaction. In case the modified transaction gets mined,
-    this becomes invalid.
-  - Modified transactions are effectively double-spends which can be
-    created without malicious intent (of the sender), but can be used to
-    make other attacks easier.
+- The sender may not recognize his own transaction after being modified.
+- The sender may create transactions that spend change created by the
+  original transaction. In case the modified transaction gets mined,
+  this becomes invalid.
+- Modified transactions are effectively double-spends which can be
+  created without malicious intent (of the sender), but can be used to
+  make other attacks easier.
 
 Several sources of malleability are known:
 
@@ -70,10 +67,10 @@ Several sources of malleability are known:
     but is not just a push of that data, results in an alternative
     transaction with the same validity.
 3.  **Push operations in scriptSig of non-standard size type** The
-    Bitcoin scripting language has several push operators (OP\_0,
-    single-byte pushes, data pushes of up to 75 bytes, OP\_PUSHDATA1,
-    OP\_PUSHDATA2, OP\_PUSHDATA4). As the later ones have the same
-    result as the former ones, they result in additional possibilities.
+    Bitcoin scripting language has several push operators (OP_0,
+    single-byte pushes, data pushes of up to 75 bytes, OP_PUSHDATA1,
+    OP_PUSHDATA2, OP_PUSHDATA4). As the later ones have the same result
+    as the former ones, they result in additional possibilities.
 4.  **Zero-padded number pushes** In cases where scriptPubKey opcodes
     use inputs that are interpreted as numbers, they can be zero padded.
 5.  **Inherent ECDSA signature malleability** ECDSA signatures
@@ -83,7 +80,7 @@ Several sources of malleability are known:
     start of scripts, which are not consumed by the corresponding
     scriptPubKey, is also a source of malleability.
 7.  **Inputs ignored by scripts** If a scriptPubKey starts with an
-    OP\_DROP, for example, the last data push of the corresponding
+    OP_DROP, for example, the last data push of the corresponding
     scriptSig will always be ignored.
 8.  **Sighash flags based masking** Sighash flags can be used to ignore
     certain parts of a script when signing.
@@ -107,13 +104,13 @@ Seven extra rules are introduced, to combat exactly the seven first
 sources of malleability listed above:
 
 1.  **Canonically encoded ECDSA signatures** An ECDSA signature passed
-    to OP\_CHECKSIG, OP\_CHECKSIGVERIFY, OP\_CHECKMULTISIG or
-    OP\_CHECKMULTISIGVERIFY must be encoded using strict DER encoding.
-    To provide a compact way to deliberately create an invalid signature
-    for OP\_CHECKSIG and OP\_CHECKMULTISIG, an empty byte array (i.e.,
-    the result of OP\_0) is also allowed. Doing a verification with a
-    non-DER signature makes the entire script evaluate to False (not
-    just the signature verification). See reference: [DER
+    to OP_CHECKSIG, OP_CHECKSIGVERIFY, OP_CHECKMULTISIG or
+    OP_CHECKMULTISIGVERIFY must be encoded using strict DER encoding. To
+    provide a compact way to deliberately create an invalid signature
+    for OP_CHECKSIG and OP_CHECKMULTISIG, an empty byte array (i.e., the
+    result of OP_0) is also allowed. Doing a verification with a non-DER
+    signature makes the entire script evaluate to False (not just the
+    signature verification). See reference: [DER
     encoding](#der-encoding "wikilink").
 2.  **Non-push operations in scriptSig** Only data pushes are allowed in
     scriptSig. Evaluating any other operation makes the script evaluate
@@ -137,8 +134,8 @@ sources of malleability listed above:
     required to result in a single non-zero value. If any extra data
     elements remain on the stack, the script evaluates to false.
 7.  **Inputs ignored by scripts** The (unnecessary) extra stack element
-    consumed by OP\_CHECKMULTISIG and OP\_CHECKMULTISIGVERIFY must be
-    the empty byte array (the result of OP\_0). Anything else makes the
+    consumed by OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY must be the
+    empty byte array (the result of OP_0). Anything else makes the
     script evaluate to false.
 
 ### Block validity
@@ -150,9 +147,9 @@ treated identically to v1 transactions. The same mechanism as in BIP
 0034 is used to introduce v3 blocks. When 75% of the past 1000 blocks
 are v3, a new consensus rule is activated:
 
-  - All transactions in v3 blocks are required to follow rules \#1-\#2.
-  - v3 (and higher) transactions in v3 blocks are required to follow
-    rules \#3-\#7 as well.
+- All transactions in v3 blocks are required to follow rules \#1-#2.
+- v3 (and higher) transactions in v3 blocks are required to follow rules
+  \#3-#7 as well.
 
 When 95% of the past 1000 blocks are v3 or higher, v2 blocks become
 invalid entirely. Note however that v1 (and v2) transactions remain
@@ -187,17 +184,17 @@ For reference, here is how to encode signatures correctly in DER format.
 0x30 \[total-length\] 0x02 \[R-length\] \[R\] 0x02 \[S-length\] \[S\]
 \[sighash-type\]
 
-  - total-length: 1-byte length descriptor of everything that follows,
-    excluding the sighash byte.
-  - R-length: 1-byte length descriptor of the R value that follows.
-  - R: arbitrary-length big-endian encoded R value. It cannot start with
-    any 0x00 bytes, unless the first byte that follows is 0x80 or
-    higher, in which case a single 0x00 is required.
-  - S-length: 1-byte length descriptor of the S value that follows.
-  - S: arbitrary-length big-endian encoded S value. The same rules apply
-    as for R.
-  - sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81,
-    0x82 and 0x83 are allowed).
+- total-length: 1-byte length descriptor of everything that follows,
+  excluding the sighash byte.
+- R-length: 1-byte length descriptor of the R value that follows.
+- R: arbitrary-length big-endian encoded R value. It cannot start with
+  any 0x00 bytes, unless the first byte that follows is 0x80 or higher,
+  in which case a single 0x00 is required.
+- S-length: 1-byte length descriptor of the S value that follows.
+- S: arbitrary-length big-endian encoded S value. The same rules apply
+  as for R.
+- sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81, 0x82
+  and 0x83 are allowed).
 
 This is already enforced by the reference client as of version 0.8.0
 (only as relay policy, not as a consensus rule).
@@ -208,17 +205,17 @@ signature size being at most 72 bytes (and on average 71.494 bytes).
 
 #### Push operators
 
-  - Pushing an empty byte sequence must use OP\_0.
-  - Pushing a 1-byte sequence of byte 0x01 through 0x10 must use OP\_n.
-  - Pushing the byte 0x81 must use OP\_1NEGATE.
-  - Pushing any other byte sequence up to 75 bytes must use the normal
-    data push (opcode byte n, with n the number of bytes, followed n
-    bytes of data being pushed).
-  - Pushing 76 to 255 bytes must use OP\_PUSHDATA1.
-  - Pushing 256 to 520 bytes must use OP\_PUSHDATA2.
-  - OP\_PUSHDATA4 can never be used, as pushes over 520 bytes are not
-    allowed, and those below can be done using other operators.
-  - Any other operation is not considered to be a push.
+- Pushing an empty byte sequence must use OP_0.
+- Pushing a 1-byte sequence of byte 0x01 through 0x10 must use OP_n.
+- Pushing the byte 0x81 must use OP_1NEGATE.
+- Pushing any other byte sequence up to 75 bytes must use the normal
+  data push (opcode byte n, with n the number of bytes, followed n bytes
+  of data being pushed).
+- Pushing 76 to 255 bytes must use OP_PUSHDATA1.
+- Pushing 256 to 520 bytes must use OP_PUSHDATA2.
+- OP_PUSHDATA4 can never be used, as pushes over 520 bytes are not
+  allowed, and those below can be done using other operators.
+- Any other operation is not considered to be a push.
 
 #### Numbers
 
@@ -228,19 +225,19 @@ endian with an explicit sign bit (the highest bit of the last byte). The
 shortest encodings for numbers are (with the range boundaries encodings
 given in hex between ()).
 
-  - 0: OP\_0; (00)
-  - 1..16: OP\_1..OP\_16; (51)..(60)
-  - \-1: OP\_1NEGATE; (79)
-  - \-127..-2 and 17..127: normal 1-byte data push; (01 FF)..(01 82) and
-    (01 11)..(01 7F)
-  - \-32767..-128 and 128..32767: normal 2-byte data push; (02 FF
-    FF)..(02 80 80) and (02 80 00)..(02 FF 7F)
-  - \-8388607..-32768 and 32768..8388607: normal 3-byte data push; (03
-    FF FF FF)..(03 00 80 80) and (03 00 80 00)..(03 FF FF 7F)
-  - \-2147483647..-8388608 and 8388608..2147483647: normal 4-byte data
-    push; (04 FF FF FF FF)..(04 00 00 80 80) and (04 00 00 80 00)..(04
-    FF FF FF 7F)
-  - Any other numbers cannot be encoded.
+- 0: OP_0; (00)
+- 1..16: OP_1..OP_16; (51)..(60)
+- -1: OP_1NEGATE; (79)
+- -127..-2 and 17..127: normal 1-byte data push; (01 FF)..(01 82) and
+  (01 11)..(01 7F)
+- -32767..-128 and 128..32767: normal 2-byte data push; (02 FF FF)..(02
+  80 80) and (02 80 00)..(02 FF 7F)
+- -8388607..-32768 and 32768..8388607: normal 3-byte data push; (03 FF
+  FF FF)..(03 00 80 80) and (03 00 80 00)..(03 FF FF 7F)
+- -2147483647..-8388608 and 8388608..2147483647: normal 4-byte data
+  push; (04 FF FF FF FF)..(04 00 00 80 80) and (04 00 00 80 00)..(04 FF
+  FF FF 7F)
+- Any other numbers cannot be encoded.
 
 In particular, note that zero could be encoded as (01 80) (negative
 zero) if using the non-shortest form is allowed.

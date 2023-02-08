@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,20 +46,20 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 310
-  Layer: Applications
-  Title: Stratum protocol extensions
-  Author: Pavel Moravec &lt;pavel.moravec@braiins.cz&gt;
-          Jan Čapek &lt;jan.capek@braiins.cz&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0310
-  Status: Draft
-  Type: Informational
-  Created: 2018-03-10
-  License: BSD-3-Clause
-           CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 310
+</span><span>  Layer: Applications
+</span><span>  Title: Stratum protocol extensions
+</span><span>  Author: Pavel Moravec &lt;pavel.moravec@braiins.cz&gt;
+</span><span>          Jan Čapek &lt;jan.capek@braiins.cz&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0310
+</span><span>  Status: Draft
+</span><span>  Type: Informational
+</span><span>  Created: 2018-03-10
+</span><span>  License: BSD-3-Clause
+</span><span>           CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP provides a generic mechanism for specifying stratum protocol
 extensions. At the same time, one of the important extensions that is
 specified by this BIP is configuration of bits for &quot;version rolling&quot; in
@@ -67,7 +67,7 @@ nVersion field of bitcoin block header.</p>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
 document are to be interpreted as described in RFC 2119.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The initial motivation for specifying some general support for stratum
 protocol extensions was a need to allow miners to do so called &quot;version
 rolling&quot;, changing value in the first field of the Bitcoin block header.</p>
@@ -93,38 +93,38 @@ configuration/negotiation of features in a generic way. So that adding
 features in the future can be done without a necessity to add new
 messages to stratum protocol.</p>
 <p>Each extension has its unique string name, so called <strong>extension code</strong>.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>Currently, the following extensions are defined:</p>
 <ul>
 <li><strong>&quot;version-rolling&quot;</strong></li>
 <li><strong>&quot;minimum-difficulty&quot;</strong></li>
 <li><strong>&quot;subscribe-extranonce&quot;</strong></li>
 </ul>
-<h3 id="additional-data-types">Additional data types</h3>
+<h3 id="Additional_data_types">Additional data types</h3>
 <p>The following names are used as type aliases, making the message
 description easier.</p>
 <ul>
-<li><strong>TMask</strong> - case independent hexadecimal string of length 8,
-encoding an unsigned 32-bit integer (~<code>[0-9a-fA-F]{8}</code>)</li>
+<li><strong>TMask</strong> - case independent hexadecimal string of length 8, encoding
+an unsigned 32-bit integer (~<code>[0-9a-fA-F]{8}</code>)</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li><strong>TExtensionCode</strong> - non-empty string with a value equal to the name
 of some protocol extension.</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li><strong>TExtensionResult</strong> - <code>true</code> / <code>false</code> / <em>String</em>.
 <ul>
-<li><code>true</code> = The requested feature is supported and its
-configuration understood and applied.</li>
+<li><code>true</code> = The requested feature is supported and its configuration
+understood and applied.</li>
 <li><code>false</code> = The feature is not supported or unknown.</li>
 <li><em>String</em> = Error message containing information about what went
 wrong.</li>
 </ul>
 </li>
 </ul>
-<h3 id="request-mining-configure">Request &quot;mining.configure&quot;</h3>
+<h3 id="Request_&quot;mining.configure&quot;">Request &quot;mining.configure&quot;</h3>
 <p>This message (JSON RPC Request) SHOULD be the <strong>first message</strong> sent by
 the miner after the connection with the server is established. The
 client uses the message to advertise its features and to request/allow
@@ -143,66 +143,43 @@ the return values, which are transferred in a result map too. E.g.
 <ul>
 <li><strong>extensions</strong> (REQUIRED, List of <em>TExtensionCode</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Each string in the list MUST be a valid extension code. The
-    meaning of each code is described independently as part of the
-    extension definition. A miner SHOULD advertise all its available
-    features.
-</code></pre><!-- end list -->
+<p>- Each string in the list MUST be a valid extension code. The meaning
+of each code is described independently as part of the extension
+definition. A miner SHOULD advertise all its available features.</p>
 <ul>
 <li><strong>extension-parameters</strong> (REQUIRED, <em>Map of (String -&gt; Any)</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Parameters of the requested/allowed extensions from the first
-    parameter.
-</code></pre>
+<p>- Parameters of the requested/allowed extensions from the first
+parameter.</p>
 <p><strong>Return value</strong>:</p>
 <ul>
 <li><em>Map of (String -&gt; Any)</em></li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Each code from the **extensions** list MUST have a defined
-    return value (*TExtensionCode* -\&gt; *TExtensionResult*). This way
-    the miner knows if the extension is activated or not. E.g.
-    `{&quot;version-rolling&quot;:false}` for unsupported version rolling.
-    \- Some extensions need additional information to be delivered
-    to the miner. The return value map is used for this purpose.
-</code></pre>
+<p>- Each code from the <strong>extensions</strong> list MUST have a defined return
+value (<em>TExtensionCode</em> -&gt; <em>TExtensionResult</em>). This way the miner
+knows if the extension is activated or not. E.g.
+<code>{&quot;version-rolling&quot;:false}</code> for unsupported version rolling.</p>
+<p>- Some extensions need additional information to be delivered to the
+miner. The return value map is used for this purpose.</p>
 <p>Example request (new-lines added):</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;"> {&quot;method&quot;: &quot;mining.configure&quot;,
-  &quot;id&quot;: 1,
-  &quot;params&quot;: [[&quot;minimum-difficulty&quot;, &quot;version-rolling&quot;],
-         {&quot;minimum-difficulty.value&quot;: 2048,
-          &quot;version-rolling.mask&quot;: &quot;1fffe000&quot;, &quot;version-rolling.min-bit-count&quot;: 2}]}
+<pre style="background-color:#fafafa;color:#61676c;"><code><span> {&quot;method&quot;: &quot;mining.configure&quot;,
+</span><span>  &quot;id&quot;: 1,
+</span><span>  &quot;params&quot;: [[&quot;minimum-difficulty&quot;, &quot;version-rolling&quot;],
+</span><span>         {&quot;minimum-difficulty.value&quot;: 2048,
+</span><span>          &quot;version-rolling.mask&quot;: &quot;1fffe000&quot;, &quot;version-rolling.min-bit-count&quot;: 2}]}
 </span></code></pre>
 <p>(The miner requests extensions <code>&quot;version-rolling&quot;</code> and
 <code>&quot;minimum-difficulty&quot;</code>. It sets the parameters according to the
 extensions' definitions.)</p>
 <p>Example result (new-lines added):</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;"> {&quot;error&quot;: null,
-  &quot;id&quot;: 1,
-  &quot;result&quot;: {&quot;version-rolling&quot;: true,
-         &quot;version-rolling.mask&quot;: &quot;18000000&quot;,
-         &quot;minimum-difficulty&quot;: true}}
-</span></code></pre><h1 id="defined-extensions">Defined extensions</h1>
-<h2 id="extension-version-rolling">Extension &quot;version-rolling&quot;</h2>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span> {&quot;error&quot;: null,
+</span><span>  &quot;id&quot;: 1,
+</span><span>  &quot;result&quot;: {&quot;version-rolling&quot;: true,
+</span><span>         &quot;version-rolling.mask&quot;: &quot;18000000&quot;,
+</span><span>         &quot;minimum-difficulty&quot;: true}}
+</span></code></pre>
+<h1 id="Defined_extensions">Defined extensions</h1>
+<h2 id="Extension_&quot;version-rolling&quot;">Extension &quot;version-rolling&quot;</h2>
 <p>This extension allows the miner to change the value of some bits in the
 version field in the block header. Currently there are no standard bits
 used for version rolling so they need to be negotiated between a miner
@@ -215,7 +192,8 @@ version rolling.</p>
 (<code>server_mask</code>) and the rest of the version bits are fixed. E.g. because
 the block needs to be valid or some signaling is in place.</p>
 <p>The server responds to the configuration message by sending a mask with
-common bits intersection of the miner's mask and its a mask (<code>response = server_mask &amp; miner_mask</code>)</p>
+common bits intersection of the miner's mask and its a mask
+(<code>response = server_mask &amp; miner_mask</code>)</p>
 <p>Example request (a miner capable of changing any 2 bits from a 16-bit
 mask):</p>
 <p><code>{&quot;method&quot;: &quot;mining.configure&quot;, &quot;id&quot;: 1, &quot;params&quot;: [[&quot;version-rolling&quot;], {&quot;version-rolling.mask&quot;: &quot;1fffe000&quot;, &quot;version-rolling.min-bit-count&quot;: 2}]}</code></p>
@@ -228,68 +206,37 @@ mask):</p>
 <li><strong>&quot;version-rolling.mask&quot;</strong> (OPTIONAL, <em>TMask</em>, default value
 <code>&quot;ffffffff&quot;</code>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Bits set to 1 can be changed by the miner. This value is
-    expected
-</code></pre>
+<p>- Bits set to 1 can be changed by the miner. This value is expected</p>
 <p>to be stable for the whole mining session. A miner doesn't have to send
 the mask, in this case a default full mask is used.</p>
 <p><strong>Extension return values</strong>:</p>
 <ul>
 <li><strong>&quot;version-rolling&quot;</strong> (REQUIRED, <em>TExtensionResult</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- When responded with `true`, the server will accept new
-    parameter of **&quot;mining.submit&quot;**, see later.
-</code></pre><!-- end list -->
+<p>- When responded with <code>true</code>, the server will accept new parameter of
+<strong>&quot;mining.submit&quot;</strong>, see later.</p>
 <ul>
 <li><strong>&quot;version-rolling.mask&quot;</strong> (REQUIRED, <em>TMask</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Bits set to 1 are allowed to be changed by the miner. If a
-    miner changes bits with mask value 0, the server will reject the
-    submit.
-    \- The server SHOULD return the largest mask possible (as many
-    bits set to 1 as possible). This can be useful in a mining proxy
-    setup when a proxy needs to negotiate the best mask for its
-    future clients. There is a \[Draft
-    BIP\](https://github.com/bitcoin/bips/pull/661/files) describing
-    available nVersion bits. The server SHOULD pick a mask that
-    preferably covers all bits specified in the BIP.
-</code></pre><!-- end list -->
+<p>- Bits set to 1 are allowed to be changed by the miner. If a miner
+changes bits with mask value 0, the server will reject the submit.</p>
+<p>- The server SHOULD return the largest mask possible (as many bits set
+to 1 as possible). This can be useful in a mining proxy setup when a
+proxy needs to negotiate the best mask for its future clients. There is
+a [Draft BIP](https://github.com/bitcoin/bips/pull/661/files)
+describing available nVersion bits. The server SHOULD pick a mask that
+preferably covers all bits specified in the BIP.</p>
 <ul>
 <li><strong>&quot;version-rolling.min-bit-count&quot;</strong> (REQUIRED, <em>TMask</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- The miner also provides a minimum number of bits that it
-    needs for efficient version rolling in hardware. Note that this
-    parameter provides important diagnostic information to the pool
-    server. If the requested bit count exceeds the limit of the pool
-    server, the miner always has the chance to operate in a degraded
-    mode without using full hashing power. The pool server SHOULD
-    NOT terminate miner connection if this rare mismatch case
-    occurs.
-</code></pre><h3 id="notification-mining-set-version-mask">Notification <strong>&quot;mining.set_version_mask&quot;</strong></h3>
+<p>- The miner also provides a minimum number of bits that it needs for
+efficient version rolling in hardware. Note that this parameter provides
+important diagnostic information to the pool server. If the requested
+bit count exceeds the limit of the pool server, the miner always has the
+chance to operate in a degraded mode without using full hashing power.
+The pool server SHOULD NOT terminate miner connection if this rare
+mismatch case occurs.</p>
+<h3 id="Notification_&quot;mining.set_version_mask&quot;">Notification <strong>&quot;mining.set_version_mask&quot;</strong></h3>
 <p>Server notifies the miner about a new mask valid for the connection.
 This message can be sent at any time after the successful setup of the
 version rolling extension by the &quot;mining.configure&quot; message. The new
@@ -302,7 +249,7 @@ next job.</p>
 </ul>
 <p>Example:</p>
 <p><code>{&quot;params&quot;:[&quot;00003000&quot;], &quot;id&quot;:null, &quot;method&quot;: &quot;mining.set_version_mask&quot;}</code></p>
-<h3 id="changes-in-request-mining-submit">Changes in request <strong>&quot;mining.submit&quot;</strong></h3>
+<h3 id="Changes_in_request_&quot;mining.submit&quot;">Changes in request <strong>&quot;mining.submit&quot;</strong></h3>
 <p>Immediately after successful activation of the version-rolling extension
 (result to <strong>&quot;mining.configure&quot;</strong> sent by server), the server MUST
 accept an additional parameter of the message <strong>&quot;mining.submit&quot;</strong>. The
@@ -313,29 +260,15 @@ parameter, after <em>worker_name</em>, <em>job_id</em>, <em>extranonce2</em>, <e
 <ul>
 <li><em>version_bits</em> (REQUIRED, <em>TMask</em>) - Version bits set by miner.</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Miner can set only bits corresponding to the set bits in the
-    last received mask from the server either as response to
-    &quot;mining.configure&quot; or &quot;mining.set\_version\_mask&quot; notification
-    (`last_mask`). This must hold:
-</code></pre>
+<p>- Miner can set only bits corresponding to the set bits in the last
+received mask from the server either as response to &quot;mining.configure&quot;
+or &quot;mining.set_version_mask&quot; notification (<code>last_mask</code>). This must hold:</p>
 <p><code>version_bits &amp; ~last_mask ==  0</code></p>
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- The server computes *nVersion* for the submit as follows:
-</code></pre>
+<p>- The server computes <em>nVersion</em> for the submit as follows:</p>
 <p><code>nVersion = (job_version &amp; ~last_mask) | (version_bits &amp; last_mask)</code></p>
 <p>where <code>job_version</code> is the block version sent to miner as part of job
 with id <code>job_id</code>.</p>
-<h2 id="extension-minimum-difficulty">Extension &quot;minimum-difficulty&quot;</h2>
+<h2 id="Extension_&quot;minimum-difficulty&quot;">Extension &quot;minimum-difficulty&quot;</h2>
 <p>This extension allows miner to request a minimum difficulty for the
 connected machine. It solves a problem in the original stratum protocol
 where there is no way how to communicate hard limit of the connected
@@ -344,88 +277,47 @@ device.</p>
 <ul>
 <li><strong>&quot;minimum-difficulty.value&quot;</strong> (REQUIRED, <em>Integer/Float</em>, &gt;= 0)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- The minimum difficulty value acceptable for the
-    miner/connection. The value can be 0 for essentially disabling
-    the feature.
-</code></pre>
+<p>- The minimum difficulty value acceptable for the miner/connection. The
+value can be 0 for essentially disabling the feature.</p>
 <p><strong>Extension return values</strong>:</p>
 <ul>
 <li><strong>&quot;minimum-difficulty&quot;</strong> (REQUIRED, <em>TExtensionResult</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Whether the minimum difficulty was accepted or not.
-    \- This extension can be configured multiple times by calling
-    &quot;mining.configure&quot; with &quot;minimum-difficulty&quot; code again.
-</code></pre><h2 id="extension-subscribe-extranonce">Extension &quot;subscribe-extranonce&quot;</h2>
+<p>- Whether the minimum difficulty was accepted or not.</p>
+<p>- This extension can be configured multiple times by calling
+&quot;mining.configure&quot; with &quot;minimum-difficulty&quot; code again.</p>
+<h2 id="Extension_&quot;subscribe-extranonce&quot;">Extension &quot;subscribe-extranonce&quot;</h2>
 <p>Parameter-less extension. Miner advertises its capability of receiving
 message <strong>&quot;mining.set_extranonce&quot;</strong> message (useful for hash rate
 routing scenarios).</p>
-<h2 id="extension-info">Extension &quot;info&quot;</h2>
+<h2 id="Extension_&quot;info&quot;">Extension &quot;info&quot;</h2>
 <p>Miner provides additional text-based information.</p>
 <p><strong>Extension parameters</strong>:</p>
 <ul>
 <li><strong>&quot;info.connection-url&quot;</strong> (OPTIONAL, <em>String</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Exact URL used by the mining software to connect to the
-    stratum server.
-</code></pre><!-- end list -->
+<p>- Exact URL used by the mining software to connect to the stratum
+server.</p>
 <ul>
 <li><strong>&quot;info.hw-version&quot;</strong> (OPTIONAL, <em>String</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Manufacturer specific hardware revision string.
-</code></pre><!-- end list -->
+<p>- Manufacturer specific hardware revision string.</p>
 <ul>
 <li><strong>&quot;info.sw-version&quot;</strong> (OPTIONAL, <em>String</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Manufacturer specific software version
-</code></pre><!-- end list -->
+<p>- Manufacturer specific software version</p>
 <ul>
 <li><strong>&quot;info.hw-id&quot;</strong> (OPTIONAL, <em>String</em>)</li>
 </ul>
-<!-- end list -->
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    \- Unique identifier of the mining device
-</code></pre><h2 id="compatibility">Compatibility</h2>
+<p>- Unique identifier of the mining device</p>
+<h2 id="Compatibility">Compatibility</h2>
 <p>Currently, there is a similar protocol feature <strong>mining.capabilities</strong>
 that was intended for various protocol extensions. However,
 <strong>mining.configure</strong> is incompatible with this feature as it requires a
 server response confirming all accepted/negotatied extensions. The
 reason why we made it incompatible is that <strong>mining.capabilities</strong>
 request has no associated response.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0
 1.0 Universal.</p>
 
@@ -435,7 +327,7 @@ request has no associated response.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

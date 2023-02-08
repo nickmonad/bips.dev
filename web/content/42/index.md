@@ -14,18 +14,16 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0042.mediawiki"
 +++
 
-``` 
-  BIP: 42
-  Layer: Consensus (soft fork)
-  Title: A finite monetary supply for Bitcoin
-  Author: Pieter Wuille <pieter.wuille@gmail.com>
-  Comments-Summary: Unanimously Recommended for implementation
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0042
-  Status: Final
-  Type: Standards Track
-  Created: 2014-04-01
-  License: PD
-```
+      BIP: 42
+      Layer: Consensus (soft fork)
+      Title: A finite monetary supply for Bitcoin
+      Author: Pieter Wuille <pieter.wuille@gmail.com>
+      Comments-Summary: Unanimously Recommended for implementation
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0042
+      Status: Final
+      Type: Standards Track
+      Created: 2014-04-01
+      License: PD
 
 ## Abstract
 

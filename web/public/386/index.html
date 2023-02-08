@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,31 +46,31 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 386
-  Layer: Applications
-  Title: tr() Output Script Descriptors
-  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
-          Andrew Chow &lt;andrew@achow101.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0386
-  Status: Draft
-  Type: Informational
-  Created: 2021-06-27
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 386
+</span><span>  Layer: Applications
+</span><span>  Title: tr() Output Script Descriptors
+</span><span>  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
+</span><span>          Andrew Chow &lt;andrew@achow101.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0386
+</span><span>  Status: Draft
+</span><span>  Type: Informational
+</span><span>  Created: 2021-06-27
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document specifies <code>tr()</code> output script descriptors. <code>tr()</code>
 descriptors take a key and optionally a tree of scripts and produces a
 P2TR output script.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Taproot added one additional standard output script format: P2TR. These
 expressions allow specifying those formats as a descriptor.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>A new script expression is defined: <code>tr()</code>. A new expression is defined:
 Tree Expressions</p>
-<h3 id="tree-expression">Tree Expression</h3>
+<h3 id="Tree_Expression">Tree Expression</h3>
 <p>A Tree Expression (denoted <code>TREE</code>) is an expression which represents a
 tree of scripts. The way the tree is represented in an output script is
 dependent on the higher level expressions.</p>
@@ -88,39 +88,36 @@ Expression is in.</li>
 </ul>
 </li>
 </ul>
-<h3 id="tr"><code>tr()</code></h3>
+<h3 id="tr()"><code>tr()</code></h3>
 <p>The <code>tr(KEY)</code> or <code>tr(KEY, TREE)</code> expression can only be used as a top
 level expression. All key expressions under any <code>tr()</code> expression must
 create x-only public keys.</p>
 <p><code>tr(KEY)</code> takes a single key expression as an argument and produces a
 P2TR output script which does not have a script path. Each key produced
 by the key expression is used as the internal key of a P2TR output as
-specified by <a href="https://bips.dev/386/bip-0341.mediawiki#cite_ref-22-0" title="wikilink">BIP 341</a>.
+specified by <a href="/341">BIP 341</a>.
 Specifically, &quot;If the spending conditions do not require a script path,
 the output key should commit to an unspendable script path instead of
 having no script path. This can be achieved by computing the output key
 point as <em>Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G</em>.&quot;</p>
-<pre style="background-color:#fafafa;">
-<code>internal_key:       lift_x(KEY)
-32_byte_output_key: internal_key + int(HashTapTweak(bytes(internal_key)))G
-scriptPubKey:       OP_1 &lt;32_byte_output_key&gt;
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>internal_key:       lift_x(KEY)
+</span><span>32_byte_output_key: internal_key + int(HashTapTweak(bytes(internal_key)))G
+</span><span>scriptPubKey:       OP_1 &lt;32_byte_output_key&gt;
+</span></code></pre>
 <p><code>tr(KEY, TREE)</code> takes a key expression as the first argument, and a tree
 expression as the second argument and produces a P2TR output script
 which has a script path. The keys produced by the first key expression
-are used as the internal key as specified by <a href="https://bips.dev/386/bip-0341.mediawiki#Constructing_and_spending_Taproot_outputs" title="wikilink">BIP
+are used as the internal key as specified by <a href="/341">BIP
 341</a>.
-The Tree expression becomes the Taproot script tree as described in BIP</p>
-<ol start="341">
-<li>A merkle root is computed from this tree and combined with the
-internal key to create the Taproot output key.</li>
-</ol>
-<pre style="background-color:#fafafa;">
-<code>internal_key:       lift_x(KEY)
-merkle_root:        HashTapBranch(TREE)
-32_byte_output_key: internal_key + int(HashTapTweak(bytes(internal_key) || merkle_root))G
-scriptPubKey:       OP_1 &lt;32_byte_output_key&gt;
-</code></pre><h3 id="modified-key-expression">Modified Key Expression</h3>
+The Tree expression becomes the Taproot script tree as described in BIP
+341. A merkle root is computed from this tree and combined with the
+internal key to create the Taproot output key.</p>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>internal_key:       lift_x(KEY)
+</span><span>merkle_root:        HashTapBranch(TREE)
+</span><span>32_byte_output_key: internal_key + int(HashTapTweak(bytes(internal_key) || merkle_root))G
+</span><span>scriptPubKey:       OP_1 &lt;32_byte_output_key&gt;
+</span></code></pre>
+<h3 id="Modified_Key_Expression">Modified Key Expression</h3>
 <p>Key Expressions within a <code>tr()</code> expression must only create x-only
 public keys. Uncompressed public keys are not allowed, but compressed
 public keys would be implicitly converted to x-only public keys. The
@@ -130,11 +127,11 @@ keys. An additional key expression is defined only for use within a
 <ul>
 <li>A 64 hex character string representing an x-only public key</li>
 </ul>
-<h2 id="test-vectors">Test Vectors</h2>
+<h2 id="Test_Vectors">Test Vectors</h2>
 <p>TBD</p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p><code>tr()</code> descriptors use the format and general operation specified in
-<a href="https://bips.dev/386/bip-0380.mediawiki" title="wikilink">380</a>. As these are a set of wholly new
+<a href="/380">380</a>. As these are a set of wholly new
 descriptors, they are not compatible with any implementation. However
 the scripts produced are standard scripts so existing software are
 likely to be familiar with them.</p>
@@ -143,7 +140,7 @@ expressions due to the restrictions in those expressions. As of
 2021-06-27, the only allowed script expression that can be used in a
 tree expression is <code>pk()</code>. However there will be future BIPs that
 specify script expressions that can be used in tree expressions.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
 <p><code>tr()</code> descriptors have been implemented in Bitcoin Core since version
 22.0.</p>
 
@@ -153,7 +150,7 @@ specify script expressions that can be used in tree expressions.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

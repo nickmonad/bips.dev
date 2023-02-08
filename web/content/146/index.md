@@ -14,19 +14,17 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0146.mediawiki"
 +++
 
-``` 
-  BIP: 146
-  Layer: Consensus (soft fork)
-  Title: Dealing with signature encoding malleability
-  Author: Johnson Lau <jl2012@xbt.hk>
-          Pieter Wuille <pieter.wuille@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0146
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2016-08-16
-  License: PD
-```
+      BIP: 146
+      Layer: Consensus (soft fork)
+      Title: Dealing with signature encoding malleability
+      Author: Johnson Lau <jl2012@xbt.hk>
+              Pieter Wuille <pieter.wuille@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0146
+      Status: Withdrawn
+      Type: Standards Track
+      Created: 2016-08-16
+      License: PD
 
 ## Abstract
 
@@ -55,7 +53,7 @@ there are 2 remaining known sources of malleability in ECDSA signatures:
     inherently malleable as taking the negative of the number S inside
     (modulo the curve order) does not invalidate it.
 
-<!-- end list -->
+<!-- -->
 
 1.  **Malleability of failing signature**: If a signature failed to
     validate in `OP_CHECKSIG` or `OP_CHECKMULTISIG`, a `FALSE` would be
@@ -71,24 +69,24 @@ malleability.
 To fix signature encoding malleability, the following new rules are
 applied to pre-segregated witness and segregated witness scripts:
 
-### LOW\_S
+### LOW_S
 
 We require that the S value inside ECDSA signatures is at most the curve
 order divided by 2 (essentially restricting this value to its lower half
-range). Every signature passed to `OP_CHECKSIG`\[1\],
+range). Every signature passed to `OP_CHECKSIG`[^1],
 `OP_CHECKSIGVERIFY`, `OP_CHECKMULTISIG`, or `OP_CHECKMULTISIGVERIFY`, to
 which ECDSA verification is applied, MUST use a S value between `0x1`
-and `0x7FFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 5D576E73 57A4501D
-DFE92F46 681B20A0` (inclusive) with strict DER encoding (see
+and
+`0x7FFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 5D576E73 57A4501D DFE92F46 681B20A0`
+(inclusive) with strict DER encoding (see
 [BIP66](https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki)).
 
 If a signature passing to ECDSA verification does not pass the Low S
 value check and is not an empty byte array, the entire script evaluates
 to false immediately.
 
-A high S value in signature could be trivially replaced by `S'
-= 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C
-D0364141 - S`.
+A high S value in signature could be trivially replaced by
+`S' = 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 - S`.
 
 ### NULLFAIL
 
@@ -105,8 +103,8 @@ Otherwise, the entire script evaluates to false immediately.
 
 ## Examples
 
-The following examples are the combined results of the LOW\_S and
-NULLFAIL rules.\[2\]
+The following examples are the combined results of the LOW_S and
+NULLFAIL rules.[^2]
 
 Notation:
 
@@ -163,8 +161,8 @@ timestamp TBD).
 
 ## Compatibility
 
-The reference client has produced LOW\_S compatible signatures since
-v0.9.0, and the LOW\_S rule has been enforced as relay policy by the
+The reference client has produced LOW_S compatible signatures since
+v0.9.0, and the LOW_S rule has been enforced as relay policy by the
 reference client since v0.11.1. As of August 2016, very few transactions
 violating the requirement are being added to the chain. For all
 scriptPubKey types in actual use, non-compliant signatures can trivially
@@ -202,9 +200,10 @@ proposal which had input from various people.
 
 This document is placed in the public domain.
 
-1.  Including pay-to-witness-public-key-hash (P2WPKH) described in
+[^1]: Including pay-to-witness-public-key-hash (P2WPKH) described in
     BIP141
-2.  Please note that due to implementation details in reference client
+
+[^2]: Please note that due to implementation details in reference client
     v0.13.1, some signatures with S value higher than the half curve
-    order might pass the LOW\_S test. However, such signatures are
+    order might pass the LOW_S test. However, such signatures are
     certainly invalid, and will fail later due to NULLFAIL test.

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,27 +46,27 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 48
-  Layer: Applications
-  Title: Multi-Script Hierarchy for Multi-Sig Wallets
-  Author: Fontaine &lt;dentondevelopment@protonmail.com&gt;
-  Comments-Summary: No comments
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0048
-  Status: Proposed
-  Type: Standards Track
-  Created: 2020-12-16
-  License: MIT
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 48
+</span><span>  Layer: Applications
+</span><span>  Title: Multi-Script Hierarchy for Multi-Sig Wallets
+</span><span>  Author: Fontaine &lt;dentondevelopment@protonmail.com&gt;
+</span><span>  Comments-Summary: No comments
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0048
+</span><span>  Status: Proposed
+</span><span>  Type: Standards Track
+</span><span>  Created: 2020-12-16
+</span><span>  License: MIT
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP defines a logical hierarchy for deterministic multi-sig wallets
 based on an algorithm described in BIP-0067 (BIP67 from now on),
 BIP-0032 (BIP32 from now on), purpose scheme described in BIP-0043
 (BIP43 from now on), and multi-account hierarchy described in BIP-0044
 (BIP44 from now on).</p>
 <p>This BIP is a particular application of BIP43.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP falls under the MIT License.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The motivation of this BIP is to define the existing industry wide
 practice of utilizing m/48' derivation paths in hierarchical
 deterministic multi-sig wallets so that other developers may benefit
@@ -77,37 +77,36 @@ every future script type.</p>
 the handling of multiple accounts, external and internal chains per
 account, multiple script types and millions of addresses per chain.</p>
 <p>This paper was inspired from BIP44.</p>
-<h2 id="backwards-compatibility">Backwards compatibility</h2>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>Currently a number of wallets utilize the ‎<code>m/48'</code> derivation scheme for
 HD multi-sig accounts. This BIP is intended to maintain the *existing*
 real world use of the ‎<code>m/48'</code> derivation. No breaking changes are made
 so as to avoid &quot;loss of funds&quot; to existing users. Wallets which
 currently support the ‎<code>m/48'</code> derivation will not need to make any
 changes to comply with this BIP.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="key-sorting">Key sorting</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Key_sorting">Key sorting</h3>
 <p>Any wallet that supports BIP48 inherently supports deterministic key
 sorting as per BIP67 so that all possible multi-signature
 addresses/scripts are derived from deterministically sorted public keys.</p>
-<h3 id="path-levels">Path levels</h3>
+<h3 id="Path_levels">Path levels</h3>
 <p>We define the following 6 levels in BIP32 path:</p>
-<pre style="background-color:#fafafa;">
-<code>m / purpose' / coin_type' / account' / script_type' / change / address_index
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>m / purpose&#39; / coin_type&#39; / account&#39; / script_type&#39; / change / address_index
+</span></code></pre>
 <p><code>h</code> or <code>'</code> in the path indicates that BIP32 hardened derivation is used.</p>
 <p>Each level has a special meaning, described in the chapters below.</p>
-<h3 id="purpose">Purpose</h3>
+<h3 id="Purpose">Purpose</h3>
 <p>Purpose is a constant set to 48' following the BIP43 recommendation. It
 indicates that the subtree of this node is used according to this
 specification.</p>
 <p>Hardened derivation is used at this level.</p>
-<h3 id="coin-type">Coin type</h3>
+<h3 id="Coin_type">Coin type</h3>
 <p>One master node (seed) can be used for multiple Bitcoin networks.
 Sharing the same space for various networks has some disadvantages.</p>
 <p>Avoiding reusing addresses across networks and improving privacy issues.</p>
 <p>Coin type <code>0</code> for mainnet and <code>1</code> for testnet.</p>
 <p>Hardened derivation is used at this level.</p>
-<h3 id="account">Account</h3>
+<h3 id="Account">Account</h3>
 <p>This level splits the key space into independent user identities,
 following the BIP44 pattern, so the wallet never mixes the coins across
 different accounts.</p>
@@ -117,7 +116,7 @@ considered public), for saving purposes, for common expenses etc.</p>
 <p>Accounts are numbered from index 0 in sequentially increasing manner.
 This number is used as child index in BIP32 derivation.</p>
 <p>Hardened derivation is used at this level.</p>
-<h3 id="script">Script</h3>
+<h3 id="Script">Script</h3>
 <p>This level splits the key space into two separate <code>script_type</code>(s). To
 provide forward compatibility for future script types this specification
 can be easily extended.</p>
@@ -131,7 +130,7 @@ account 0: <code>1'</code>: Nested Segwit (p2sh-p2wsh) <code>m/48'/0'/0'/1'</cod
 <code>m/48'/0'/0'/2'</code>.</p>
 <p>To add new script types submit a PR to this specification and include it
 in the list above: <code>X'</code>: Future script type <code>m/48'/0'/0'/X'</code></br></p>
-<h3 id="change">Change</h3>
+<h3 id="Change">Change</h3>
 <p>Constant 0 is used for external chain and constant 1 for internal chain
 (also known as change addresses). External chain is used for addresses
 that are meant to be visible outside of the wallet (e.g. for receiving
@@ -139,11 +138,11 @@ payments). Internal chain is used for addresses which are not meant to
 be visible outside of the wallet and is used for return transaction
 change.</p>
 <p>Public derivation is used at this level.</p>
-<h3 id="index">Index</h3>
+<h3 id="Index">Index</h3>
 <p>Addresses are numbered from index 0 in sequentially increasing manner.
 This number is used as child index in BIP32 derivation.</p>
 <p>Public derivation is used at this level.</p>
-<h2 id="examples">Examples</h2>
+<h2 id="Examples">Examples</h2>
 <table><thead><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody>
 <tr><td>network</td><td>account</td><td>script</td><td>chain</td><td>address</td><td>path</td></tr>
 <tr><td>mainnet</td><td>first</td><td>p2wsh</td><td>external</td><td>first</td><td>m / 48' / 0' / 0' / 2' / 0 / 0</td></tr>
@@ -161,15 +160,15 @@ This number is used as child index in BIP32 derivation.</p>
 <tr><td>testnet</td><td>second</td><td>p2wsh</td><td>change</td><td>first</td><td>m / 48' / 1' / 1' / 2' / 1 / 0</td></tr>
 <tr><td>testnet</td><td>second</td><td>p2wsh</td><td>change</td><td>second</td><td>m / 48' / 1' / 1' / 2' / 1 / 1</td></tr>
 </tbody></table>
-<h2 id="reference">Reference</h2>
+<h2 id="Reference">Reference</h2>
 <ul>
-<li><a href="https://bips.dev/48/bip-0067.mediawiki" title="wikilink">BIP67 - Deterministic Pay-to-script-hash multi-signature addresses
+<li><a href="/67">BIP67 - Deterministic Pay-to-script-hash multi-signature addresses
 through public key sorting</a></li>
-<li><a href="https://bips.dev/48/bip-0032.mediawiki" title="wikilink">BIP32 - Hierarchical Deterministic
+<li><a href="/32">BIP32 - Hierarchical Deterministic
 Wallets</a></li>
-<li><a href="https://bips.dev/48/bip-0043.mediawiki" title="wikilink">BIP43 - Purpose Field for Deterministic
+<li><a href="/43">BIP43 - Purpose Field for Deterministic
 Wallets</a></li>
-<li><a href="https://bips.dev/48/bip-0044.mediawiki" title="wikilink">BIP44 - Multi-Account Hierarchy for Deterministic
+<li><a href="/44">BIP44 - Multi-Account Hierarchy for Deterministic
 Wallets</a></li>
 </ul>
 
@@ -179,7 +178,7 @@ Wallets</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

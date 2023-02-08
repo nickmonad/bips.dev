@@ -14,18 +14,16 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0114.mediawiki"
 +++
 
-``` 
-  BIP: 114
-  Layer: Consensus (soft fork)
-  Title: Merkelized Abstract Syntax Tree
-  Author: Johnson Lau <jl2012@xbt.hk>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0114
-  Status: Rejected
-  Type: Standards Track
-  Created: 2016-04-02
-  License: PD
-```
+      BIP: 114
+      Layer: Consensus (soft fork)
+      Title: Merkelized Abstract Syntax Tree
+      Author: Johnson Lau <jl2012@xbt.hk>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0114
+      Status: Rejected
+      Type: Standards Track
+      Created: 2016-04-02
+      License: PD
 
 ## Abstract
 
@@ -54,14 +52,14 @@ complicated scripts:
     script are visible to the public, consuming block space while
     damaging privacy.
 
-The [BIP16](bip-0016.mediawiki "wikilink") (Pay-to-script-hash, "P2SH")
+The [BIP16](/16) (Pay-to-script-hash, "P2SH")
 fixes the first 3 problems by using a fixed-length 20-byte script hash
 in the scriptPubKey, and moving the responsibility for supplying the
 script to the redeemer. However, due to the data push size limit in
 script, a P2SH script may not be bigger than 520 bytes. Also, P2SH still
 requires the redeemer to publish all unexecuted branches of the script.
 
-The [BIP141](bip-0141.mediawiki "wikilink") defines 2 new types of
+The [BIP141](/141) defines 2 new types of
 scripts that support segregated witness. The pay-to-witness-script-hash
 (P2WSH) is similar to P2SH is many ways. By supplying the script in
 witness, P2WSH restores the original 10,000 byte script limit. However,
@@ -81,10 +79,10 @@ enforced data with very low or no additional cost.
 
 ## Specification
 
-In [BIP141](bip-0141.mediawiki "wikilink"), witness programs with a
+In [BIP141](/141), witness programs with a
 version byte of 1 or larger are considered to be anyone-can-spend
 scripts. The following new validation rules are applied if the witness
-program version byte is 1 and the program size is 32 bytes.\[1\] The
+program version byte is 1 and the program size is 32 bytes.[^1] The
 witness program is the `MAST Root`.
 
 To redeem an output of this kind, the witness must consist of the
@@ -107,9 +105,9 @@ following items:
 `Metadata` is the last witness item. It is a vector of 1 to 5 bytes. The
 first byte is an unsigned integer between 1 to 255 denoting the number
 of `Subscript` (defined hereinafter). The following 0 to 4 byte(s) is an
-unsigned little-endian integer denoting the `MAST version`. `MAST
-Version` must be minimally encoded (the most significant byte must not
-be 0).
+unsigned little-endian integer denoting the `MAST version`.
+`MAST Version` must be minimally encoded (the most significant byte must
+not be 0).
 
 `Path` is the second last witness item. It is a serialized Merkle path
 of the `Script Hash` (defined hereinafter). Size of `Path` must be a
@@ -154,21 +152,21 @@ greater than 0, the script returns a success without further evaluation.
 upgrades.
 
 If the `MAST Version` is 0, the `Subscript`(s) are serialized to form
-the final `MAST Script`, beginning with </code>Subscript\_1</code>. The
-unused witness item(s) before the </code>Subscript\_1</code> are used as
+the final `MAST Script`, beginning with </code>Subscript_1</code>. The
+unused witness item(s) before the </code>Subscript_1</code> are used as
 `Input Stack` to feed to the `MASTScript`. (Similar to P2WSH in BIP141)
 
 The script fails with one of the following conditions:
 
-  - `MAST Script` is malformed (i.e. not enough data provided for the
-    last push operation). Individual `Subscript` might be malformed, as
-    long as they are serialized into a valid `MAST Script`
-  - Size of `MAST Script` is larger than 10,000 bytes
-  - Size of any one of the `Input Stack` item is larger than 520 bytes
-  - Number of non-push operations (`nOpCount`) is more than 201.
-    `nOpCount` is the sum of the number of non-push operations in `MAST
-    Script` (counted in the same way as P2WSH `witnessScript`), number
-    of `Subscript` (Y), and `Depth` of the Merkle tree.
+- `MAST Script` is malformed (i.e. not enough data provided for the last
+  push operation). Individual `Subscript` might be malformed, as long as
+  they are serialized into a valid `MAST Script`
+- Size of `MAST Script` is larger than 10,000 bytes
+- Size of any one of the `Input Stack` item is larger than 520 bytes
+- Number of non-push operations (`nOpCount`) is more than 201.
+  `nOpCount` is the sum of the number of non-push operations in
+  `MAST Script` (counted in the same way as P2WSH `witnessScript`),
+  number of `Subscript` (Y), and `Depth` of the Merkle tree.
 
 The `MAST Script` is then evaluated with the `Input Stack` (with some
 new or redefined opcodes described in BIPXXX). The evaluation must not
@@ -216,24 +214,24 @@ review.
 
 The advantages of the current proposal are:
 
-  - `Subscript` are located at a fixed position in the witness stack.
-    This allows static program analysis, such as static `SigOpsCost`
-    counting and early termination of scripts with disabled opcodes.
-  - If different parties in a contract do not want to expose their
-    scripts to each other, they may provide only `H(Subscript)` and keep
-    the `Subscript` private until redemption.
-  - If they are willing to share the actual scripts, they may combine
-    them into one `Subscript` for each branch, saving some `nOpCount`
-    and a few bytes of witness space.
+- `Subscript` are located at a fixed position in the witness stack. This
+  allows static program analysis, such as static `SigOpsCost` counting
+  and early termination of scripts with disabled opcodes.
+- If different parties in a contract do not want to expose their scripts
+  to each other, they may provide only `H(Subscript)` and keep the
+  `Subscript` private until redemption.
+- If they are willing to share the actual scripts, they may combine them
+  into one `Subscript` for each branch, saving some `nOpCount` and a few
+  bytes of witness space.
 
 The are some disadvantages, but only when the redemption condition is
 very complicated:
 
-  - It may require more branches than a general MAST design (as shown in
-    the previous example) and take more witness space in redemption
-  - Creation and storage of the MAST structure may take more time and
-    space. However, such additional costs affect only the related
-    parties in the contract but not any other Bitcoin users.
+- It may require more branches than a general MAST design (as shown in
+  the previous example) and take more witness space in redemption
+- Creation and storage of the MAST structure may take more time and
+  space. However, such additional costs affect only the related parties
+  in the contract but not any other Bitcoin users.
 
 ### MAST Version
 
@@ -247,11 +245,11 @@ system.
 
 ### nOpCount limit
 
-In version 0 MAST, the extra hashing operations in calculating the `MAST
-Root` are counted towards the 201 `nOpCount` limit to prevent abusive
-use. This limitation is not applied to undefined `MAST Version` for
-flexibility, but it is constrained by the 255 `Subscript` and 32 `Depth`
-limits.
+In version 0 MAST, the extra hashing operations in calculating the
+`MAST Root` are counted towards the 201 `nOpCount` limit to prevent
+abusive use. This limitation is not applied to undefined `MAST Version`
+for flexibility, but it is constrained by the 255 `Subscript` and 32
+`Depth` limits.
 
 ### Script evaluation
 
@@ -312,14 +310,14 @@ To redeem with the `SD|SE|SF` branch, the witness is
 ### Imbalance MAST
 
 When constructing a MAST, if the user believes that some of the branches
-are more likely to be executed, they may put them closer to the `Script
-Root`. It will save some witness space when the preferred branches are
-actually executed.
+are more likely to be executed, they may put them closer to the
+`Script Root`. It will save some witness space when the preferred
+branches are actually executed.
 
 ### Escrow with Timeout
 
 The following is the "Escrow with Timeout" example in
-[BIP112](bip-0112.mediawiki "wikilink"):
+[BIP112](/112):
 
 `   IF`  
 `       2 <Alice's pubkey> <Bob's pubkey> <Escrow's pubkey> 3 CHECKMULTISIG`  
@@ -331,7 +329,7 @@ The following is the "Escrow with Timeout" example in
 Using compressed public key, the size of this script is 150 bytes.
 
 With MAST, this script could be broken down into 2 mutually exclusive
-branches:\[2\]
+branches:[^2]
 
 `   2 <Alice's pubkey> <Bob's pubkey> <Escrow's pubkey> 3 CHECKMULTISIGVERIFY (105 bytes)`  
 `   "30d" CHECKSEQUENCEVERIFY <Alice's pubkey> CHECKSIGVERIFY (42 bytes)`
@@ -342,7 +340,7 @@ blockchain analyst to determine the details of the escrow.
 ### Hashed Time-Lock Contract
 
 The following is the "Hashed TIme-Lock Contract" example in
-[BIP112](bip-0112.mediawiki "wikilink"):
+[BIP112](/112):
 
 `   HASH160 DUP `<R-HASH>` EQUAL`  
 `   IF`  
@@ -384,7 +382,7 @@ redemption witness will be very compact, with less than 1,500 bytes.
 ### Commitment of non-consensus enforced data
 
 Currently, committing non-consensus enforced data in the scriptPubKey
-requires the use of OP\_RETURN which occupies additional block space.
+requires the use of OP_RETURN which occupies additional block space.
 With MAST, users may commit such data as a branch. Depends on the number
 of executable branches, inclusion of such a commitment may incur no
 extra witness space, or 32 bytes at most.
@@ -402,8 +400,8 @@ anyone-can-spend scripts and treat them with suspicion.
 
 ## Deployment
 
-This BIP depends on [BIP141](bip-0141.mediawiki "wikilink") and will be
-deployed by version-bits [BIP9](bip-0009.mediawiki "wikilink") after
+This BIP depends on [BIP141](/141) and will be
+deployed by version-bits [BIP9](/9) after
 BIP141 is enforced. Exact details TBD.
 
 ## Credits
@@ -551,15 +549,16 @@ uint256 ComputeMerkleRootFromBranch(const uint256& leaf, const std::vector<uint2
 
 ## References
 
-  - [BIP141 Segregated Witness (Consensus
-    layer)](bip-0141.mediawiki "wikilink")
+- [BIP141 Segregated Witness (Consensus
+  layer)](/141)
 
 ## Copyright
 
 This document is placed in the public domain.
 
-1.  If the version byte is 1, but the witness program is not 32 bytes,
+[^1]: If the version byte is 1, but the witness program is not 32 bytes,
     no further interpretation of the witness program or witness stack
     happens. This is reserved for future extensions.
-2.  In BIPXXX, it is proposed that CHECKLOCKTIMEVERIFY and
+
+[^2]: In BIPXXX, it is proposed that CHECKLOCKTIMEVERIFY and
     CHECKSEQUENCEVERIFY will pop the top stack item

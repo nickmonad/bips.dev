@@ -14,19 +14,17 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0325.mediawiki"
 +++
 
-``` 
-  BIP: 325
-  Layer: Applications
-  Title: Signet
-  Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
-          Anthony Towns <aj@erisian.com.au>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0325
-  Status: Proposed
-  Type: Standards Track
-  Created: 2019-03-20
-  License: CC0-1.0
-```
+      BIP: 325
+      Layer: Applications
+      Title: Signet
+      Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
+              Anthony Towns <aj@erisian.com.au>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0325
+      Status: Proposed
+      Type: Standards Track
+      Created: 2019-03-20
+      License: CC0-1.0
 
 ## Abstract
 
@@ -89,7 +87,7 @@ To sign the block or verify a block signature, two virtual transactions,
 each with a single input and output are constructed from the block as
 follows.
 
-The "to\_spend" transaction is:
+The "to_spend" transaction is:
 
 `   nVersion = 0`  
 `   nLockTime = 0`  
@@ -101,8 +99,8 @@ The "to\_spend" transaction is:
 `   vout[0].nValue = 0`  
 `   vout[0].scriptPubKey = signet_challenge`
 
-where block\_data is the serialization of the block's nVersion,
-hashPrevBlock, signet\_merkle\_root, and nTime. The `signet_merkle_root`
+where block_data is the serialization of the block's nVersion,
+hashPrevBlock, signet_merkle_root, and nTime. The `signet_merkle_root`
 is obtained by generating the merkle root of the block transactions,
 after modifying the coinbase witness commitment by replacing the signet
 solution with an empty solution (that is, the witness commitment
@@ -113,7 +111,7 @@ root in the signet commitment. This is needed, because the signature can
 never be included in the very message (in this case, a block) that is
 being signed.
 
-The "to\_sign" transaction is:
+The "to_sign" transaction is:
 
 `   nVersion = 0`  
 `   nLockTime = 0`  
@@ -135,14 +133,13 @@ grinding proof of work, the extended nonce cannot be used as it would
 invalidate the signature. Instead, simply resigning the same (or an
 updated) block will give a new search space.
 
-A block is considered fully validated only if the to\_sign transaction
-is a valid spend of the to\_spend transaction. It is recommended that
-this verification is done directly before or after the witness
-commitment verification, as the data required to do both is
-approximately the same.
+A block is considered fully validated only if the to_sign transaction is
+a valid spend of the to_spend transaction. It is recommended that this
+verification is done directly before or after the witness commitment
+verification, as the data required to do both is approximately the same.
 
 There is one other acceptable special case: if a block's challenge is
-e.g. \`OP\_TRUE\` (\`0x51\`), where an empty solution would result in
+e.g. \`OP_TRUE\` (\`0x51\`), where an empty solution would result in
 success, the block is also considered valid if the signet commitment is
 absent.
 
@@ -154,10 +151,10 @@ challenge script as a single data push (see below).
 
 ### Genesis Block
 
-  - Time stamp: 1598918400
-  - Nonce: 52613770
-  - Difficulty: 0x1e0377ae
-  - Version: 1
+- Time stamp: 1598918400
+- Nonce: 52613770
+- Difficulty: 0x1e0377ae
+- Version: 1
 
 The resulting genesis block hash is
 00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6, and
@@ -170,11 +167,11 @@ The message start is defined as the first four bytes of the sha256d of
 the challenge script, as a single push (i.e. prefixed with the challenge
 script length). Example:
 
-  - Challenge script =
-    512103ad5e0edad18cb1f0fc0d28a3d4f1f3e445640337489abb10404f2d1e086be43051ae
-  - Sha256d(len || challenge script) = sha256d(25512103ad...51ae) =
-    7ec653a59b1912f9db10da2c461ed827d48f9404d5ef0346a6c94aadd4203646
-  - First four bytes = the message start = 7ec653a5
+- Challenge script =
+  512103ad5e0edad18cb1f0fc0d28a3d4f1f3e445640337489abb10404f2d1e086be43051ae
+- Sha256d(len \|\| challenge script) = sha256d(25512103ad...51ae) =
+  7ec653a59b1912f9db10da2c461ed827d48f9404d5ef0346a6c94aadd4203646
+- First four bytes = the message start = 7ec653a5
 
 ## Compatibility
 

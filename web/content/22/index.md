@@ -14,18 +14,16 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0022.mediawiki"
 +++
 
-``` 
-  BIP: 22
-  Layer: API/RPC
-  Title: getblocktemplate - Fundamentals
-  Author: Luke Dashjr <luke+bip22@dashjr.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0022
-  Status: Final
-  Type: Standards Track
-  Created: 2012-02-28
-  License: BSD-2-Clause
-```
+      BIP: 22
+      Layer: API/RPC
+      Title: getblocktemplate - Fundamentals
+      Author: Luke Dashjr <luke+bip22@dashjr.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0022
+      Status: Final
+      Type: Standards Track
+      Created: 2012-02-28
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -46,12 +44,12 @@ A JSON-RPC method is defined, called "getblocktemplate". It accepts
 exactly one argument, which MUST be an Object of request parameters. If
 the request parameters include a "mode" key, that is used to explicitly
 select between the default "template" request or a
-["proposal"](bip-0023.mediawiki#Block_Proposal "wikilink").
+["proposal"](/23).
 
 Block template creation can be influenced by various parameters:
 
 | template request |
-| ---------------- |
+|------------------|
 | Key              |
 | capabilities     |
 | mode             |
@@ -60,7 +58,7 @@ getblocktemplate MUST return a JSON Object containing the following
 keys:
 
 | template          |
-| ----------------- |
+|-------------------|
 | Key               |
 | bits              |
 | curtime           |
@@ -81,7 +79,7 @@ The Objects listed in the response's "transactions" key contains these
 keys:
 
 | template "transactions" element |
-| ------------------------------- |
+|---------------------------------|
 | Key                             |
 | data                            |
 | depends                         |
@@ -101,7 +99,7 @@ String of the hex-encoded block data to submit; the second is an Object
 of parameters, and is optional if parameters are not needed.
 
 | submitblock parameters (2nd argument) |
-| ------------------------------------- |
+|---------------------------------------|
 | Key                                   |
 | workid                                |
 
@@ -113,13 +111,13 @@ to.
 ### Optional: Long Polling
 
 | template request |
-| ---------------- |
+|------------------|
 | Key              |
 | capabilities     |
 | longpollid       |
 
 | template    |
-| ----------- |
+|-------------|
 | Key         |
 | longpollid  |
 | longpolluri |
@@ -150,12 +148,12 @@ delaying the completion of the final JSON response until processing.
 
 Upon receiving a completed response:
 
-  - Only if "submitold" is provided and false, the client MAY discard
-    the results of past operations and MUST begin working on the new
-    work immediately.
-  - The client SHOULD begin working on the new work received as soon as
-    possible, if not immediately.
-  - The client SHOULD make a new request to the same long polling URI.
+- Only if "submitold" is provided and false, the client MAY discard the
+  results of past operations and MUST begin working on the new work
+  immediately.
+- The client SHOULD begin working on the new work received as soon as
+  possible, if not immediately.
+- The client SHOULD make a new request to the same long polling URI.
 
 If a client receives an incomplete or invalid response, it SHOULD retry
 the request with an exponential backoff. Clients MAY implement this
@@ -168,7 +166,7 @@ attempt to retry without user intervention.
 ### Optional: Template Tweaking
 
 | template request |
-| ---------------- |
+|------------------|
 | Key              |
 | sigoplimit       |
 | sizelimit        |
@@ -187,7 +185,7 @@ Possible reasons a share may be rejected include, but are not limited
 to:
 
 | share rejection reasons |
-| ----------------------- |
+|-------------------------|
 | Reason                  |
 | bad-cb-flag             |
 | bad-cb-length           |
@@ -224,35 +222,35 @@ generation software.
 
 Why not just deal with transactions as hashes (txids)?
 
-  - Servers might not have access to the transaction database, or miners
-    may wish to include transactions not broadcast to the network as a
-    whole.
-  - Miners may opt not to do full transaction verification, and may not
-    have access to the transaction database on their end.
+- Servers might not have access to the transaction database, or miners
+  may wish to include transactions not broadcast to the network as a
+  whole.
+- Miners may opt not to do full transaction verification, and may not
+  have access to the transaction database on their end.
 
 What is the purpose of "workid"?
 
-  - If servers allow all mutations, it may be hard to identify which job
-    it is based on. While it may be possible to verify the submission by
-    its content, it is much easier to compare it to the job issued. It
-    is very easy for the miner to keep track of this. Therefore, using a
-    "workid" is a very cheap solution to enable more mutations.
+- If servers allow all mutations, it may be hard to identify which job
+  it is based on. While it may be possible to verify the submission by
+  its content, it is much easier to compare it to the job issued. It is
+  very easy for the miner to keep track of this. Therefore, using a
+  "workid" is a very cheap solution to enable more mutations.
 
 Why should "sigops" be provided for transactions?
 
-  - Due to the [BIP 0016](bip-0016.mediawiki "wikilink") changes
-    regarding rules on block sigops, it is impossible to count sigops
-    from the transactions themselves (the sigops in the scriptCheck must
-    also be included in the count).
+- Due to the [BIP 0016](/16) changes regarding
+  rules on block sigops, it is impossible to count sigops from the
+  transactions themselves (the sigops in the scriptCheck must also be
+  included in the count).
 
 ## Reference Implementation
 
-  - [Eloipool (server)](https://gitorious.org/bitcoin/eloipool)
-  - [libblkmaker (client)](http://gitorious.org/bitcoin/libblkmaker)
-  - [bitcoind (minimal
-    server)](https://github.com/bitcoin/bitcoin/pull/936/files)
+- [Eloipool (server)](https://gitorious.org/bitcoin/eloipool)
+- [libblkmaker (client)](http://gitorious.org/bitcoin/libblkmaker)
+- [bitcoind (minimal
+  server)](https://github.com/bitcoin/bitcoin/pull/936/files)
 
 ## See Also
 
-  - [BIP 23: getblocktemplate - Pooled
-    Mining](bip-0023.mediawiki "wikilink")
+- [BIP 23: getblocktemplate - Pooled
+  Mining](/23)

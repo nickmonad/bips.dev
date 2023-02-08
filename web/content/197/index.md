@@ -14,20 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0197.mediawiki"
 +++
 
-``` 
-  BIP: 197
-  Layer: Applications
-  Title: Hashed Time-Locked Collateral Contract
-  Author: Matthew Black <matthew@atomicloans.io>
-          Tony Cai <tony@atomicloans.io>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0197
-  Status: Draft
-  Type: Standards Track
-  Created: 2019-03-19
-  License: BSD-3-Clause
-           CC0-1.0
-```
+      BIP: 197
+      Layer: Applications
+      Title: Hashed Time-Locked Collateral Contract
+      Author: Matthew Black <matthew@atomicloans.io>
+              Tony Cai <tony@atomicloans.io>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0197
+      Status: Draft
+      Type: Standards Track
+      Created: 2019-03-19
+      License: BSD-3-Clause
+               CC0-1.0
 
 ## Abstract
 
@@ -89,73 +87,69 @@ The Seizable Collateral script takes the following form:
 `       OP_ENDIF`  
 `   OP_ENDIF`
 
-\[HASHOP\] is either OP\_SHA256 or OP\_HASH160.
+\[HASHOP\] is either OP_SHA256 or OP_HASH160.
 
-\[TIMEOUTOP\] is either OP\_CHECKSEQUENCEVERIFY or
-OP\_CHECKLOCKTIMEVERIFY.
+\[TIMEOUTOP\] is either OP_CHECKSEQUENCEVERIFY or
+OP_CHECKLOCKTIMEVERIFY.
 
 ### Interaction
 
-  - Alice (the "borrower") and Bob (the "lender") exchange public keys
-    as well as two secret hashes A1, A2 created by Alice and three
-    hashes B1, B2, B3 created by Bob. They then mutually agree upon a
-    timeout threshold for the Loan Period, Liquidation Period, and
-    Seizure Period. Alice constructs the script and P2SH address for the
-    Refundable Collateral Contract and Seizable Collateral Contract. Bob
-    constructs the script for the blockchain on which the loan principal
-    will be issued - the principal blockchain.
+- Alice (the "borrower") and Bob (the "lender") exchange public keys as
+  well as two secret hashes A1, A2 created by Alice and three hashes B1,
+  B2, B3 created by Bob. They then mutually agree upon a timeout
+  threshold for the Loan Period, Liquidation Period, and Seizure Period.
+  Alice constructs the script and P2SH address for the Refundable
+  Collateral Contract and Seizable Collateral Contract. Bob constructs
+  the script for the blockchain on which the loan principal will be
+  issued - the principal blockchain.
 
-<!-- end list -->
+<!-- -->
 
-  - Bob sends loan principal funds to the loan script on the principal
-    blockchain
+- Bob sends loan principal funds to the loan script on the principal
+  blockchain
 
-<!-- end list -->
+<!-- -->
 
-  - Alice sends funds to the Refundable Collateral P2SH address and the
-    Seizable Collateral P2SH address. The amount of funds she sends to
-    the two addresses will be determined beforehand off-chain between
-    Alice and Bob.
+- Alice sends funds to the Refundable Collateral P2SH address and the
+  Seizable Collateral P2SH address. The amount of funds she sends to the
+  two addresses will be determined beforehand off-chain between Alice
+  and Bob.
 
-<!-- end list -->
+<!-- -->
 
-  - Either
-      - Bob accepts locking of collateral by Alice and reveals B1,
-        allowing Alice to withdraw the loan amount on the principal
-        blockchain.
-      - Bob doesn't accept locking of collateral by Alice, and recovers
-        the funds after the approve expiration while revealing B2, which
-        allows Alice to refund the Refundable and Seizable collateral.
+- Either
+  - Bob accepts locking of collateral by Alice and reveals B1, allowing
+    Alice to withdraw the loan amount on the principal blockchain.
+  - Bob doesn't accept locking of collateral by Alice, and recovers the
+    funds after the approve expiration while revealing B2, which allows
+    Alice to refund the Refundable and Seizable collateral.
 
-<!-- end list -->
+<!-- -->
 
-  -   - If Bob accepts the locking of collateral by Alice
+- - If Bob accepts the locking of collateral by Alice
 
-<!-- end list -->
+<!-- -->
 
-  -   - Either
-          - Alice repays the loan by the end of the Loan Period and Bob
-            reveals the secret to Alice by revealing it in the loan
-            repayment acceptance transaction; OR
-          - Alice defaults on the loan and Alice and Bob both opt for
-            collateral liquidation, where any third-party is able to bid
-            on the collateral. The winning bidder, Charlie, will
-            subsequently receive the liquidated collateral by way of an
-            Atomic Swap between the collateral funds (ie. BTC locked in
-            both the Refundable Collateral P2SH and the Seizable
-            Collateral P2SH) and the bid funds (ie. funds denominated in
-            the loan currency, put forth by Charlie as part of his bid).
-            This is done by both Alice and Bob signing a multisig and
-            revealing A2 and B2; OR
-          - Alice defaults on the loan and at least one of Alice or Bob
-            opts out of collateral liquidation, then Alice recovers the
-            Refundable Collateral funds and Bob spends the Seizable
-            Collateral funds.
-          - Alice defaults on the loan and at least one of Alice or Bob
-            opts out of collateral liquidation. But Bob doesn't spend
-            the Seizable Collateral funds, so Alice recovers both the
-            Refundable Collateral funds and the Seizable Collateral
-            funds.
+- - Either
+    - Alice repays the loan by the end of the Loan Period and Bob
+      reveals the secret to Alice by revealing it in the loan repayment
+      acceptance transaction; OR
+    - Alice defaults on the loan and Alice and Bob both opt for
+      collateral liquidation, where any third-party is able to bid on
+      the collateral. The winning bidder, Charlie, will subsequently
+      receive the liquidated collateral by way of an Atomic Swap between
+      the collateral funds (ie. BTC locked in both the Refundable
+      Collateral P2SH and the Seizable Collateral P2SH) and the bid
+      funds (ie. funds denominated in the loan currency, put forth by
+      Charlie as part of his bid). This is done by both Alice and Bob
+      signing a multisig and revealing A2 and B2; OR
+    - Alice defaults on the loan and at least one of Alice or Bob opts
+      out of collateral liquidation, then Alice recovers the Refundable
+      Collateral funds and Bob spends the Seizable Collateral funds.
+    - Alice defaults on the loan and at least one of Alice or Bob opts
+      out of collateral liquidation. But Bob doesn't spend the Seizable
+      Collateral funds, so Alice recovers both the Refundable Collateral
+      funds and the Seizable Collateral funds.
 
 ## Compatibility
 
@@ -280,8 +274,7 @@ locked in the Seizable Collateral script.
 ## Rationale
 
 The rational for the following script checking the length of secrets
-pushed to the stack that are used with OP\_SHA256 in the following
-script
+pushed to the stack that are used with OP_SHA256 in the following script
 
 ` OP_SIZE `<secret b2 length>` OP_EQUALVERIFY`
 

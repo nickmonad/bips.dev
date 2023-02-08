@@ -14,18 +14,16 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0103.mediawiki"
 +++
 
-``` 
-  BIP: 103
-  Layer: Consensus (hard fork)
-  Title: Block size following technological growth
-  Author: Pieter Wuille <pieter.wuille@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0103
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2015-07-21
-  License: BSD-2-Clause
-```
+      BIP: 103
+      Layer: Consensus (hard fork)
+      Title: Block size following technological growth
+      Author: Pieter Wuille <pieter.wuille@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0103
+      Status: Withdrawn
+      Type: Standards Track
+      Created: 2015-07-21
+      License: BSD-2-Clause
 
 ## Abstract
 

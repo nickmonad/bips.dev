@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,39 +46,39 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 115
-  Layer: Consensus (soft fork)
-  Title: Generic anti-replay protection using Script
-  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0115
-  Status: Rejected
-  Type: Standards Track
-  Created: 2016-09-23
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 115
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: Generic anti-replay protection using Script
+</span><span>  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0115
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2016-09-23
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a new opcode (<code>OP_CHECKBLOCKATHEIGHT</code>) for the
 Bitcoin scripting system that allows construction of transactions which
 are valid only on specific blockchains.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p><code>OP_CHECKBLOCKATHEIGHT</code> redefines the existing <code>OP_NOP5</code> opcode.</p>
 <p>When this opcode is executed:</p>
 <ul>
 <li>If the stack has fewer than 2 elements, the script fails.</li>
-<li>If the top item on the stack cannot be interpreted as a
-minimal-length 32-bit CScriptNum, the script fails.</li>
+<li>If the top item on the stack cannot be interpreted as a minimal-length
+32-bit CScriptNum, the script fails.</li>
 <li>The top item on the stack is interpreted as a block height
 (ParamHeight).</li>
 <li>If the blockchain (in the context of the execution) does not have
 ParamHeight blocks prior to the one including this transaction, the
 script fails (this failure must not be cached across blocks; it is
 equivalent to non-final status).</li>
-<li>If ParamHeight specifies a block deeper than 52596 blocks in the
-chain (including negative values), the opcode completes successfully
-and script continues as normal.</li>
+<li>If ParamHeight specifies a block deeper than 52596 blocks in the chain
+(including negative values), the opcode completes successfully and
+script continues as normal.</li>
 <li>The second-to-top item on the stack is interpreted as a block hash
 (ParamBlockHash).</li>
 <li>If ParamBlockHash is longer than 28 bytes, the script fails.</li>
@@ -86,16 +86,16 @@ and script continues as normal.</li>
 block hash specified by ParamHeight, the script fails.</li>
 </ul>
 <p>Otherwise, script execution will continue as if a NOP had been executed.</p>
-<h3 id="deployment">Deployment</h3>
+<h3 id="Deployment">Deployment</h3>
 <p>This BIP will be deployed by &quot;version bits&quot;
-<a href="https://bips.dev/115/bip-0009.mediawiki" title="wikilink">BIP9</a> with the <strong>name</strong> &quot;cbah&quot; and using
+<a href="/9">BIP9</a> with the <strong>name</strong> &quot;cbah&quot; and using
 <strong>bit</strong> TBD.</p>
 <p>For Bitcoin <strong>mainnet</strong>, the BIP9 <strong>starttime</strong> will be TBD (Epoch
 timestamp TBD) and BIP9 <strong>timeout</strong> will be TBD (Epoch timestamp TBD).</p>
 <p>For Bitcoin <strong>mainnet</strong>, the BIP9 <strong>starttime</strong> will be TBD (Epoch
 timestamp TBD) and BIP9 <strong>timeout</strong> will be TBD (Epoch timestamp TBD).</p>
-<h2 id="motivation">Motivation</h2>
-<h3 id="securely-recovering-from-double-spends">Securely recovering from double spends</h3>
+<h2 id="Motivation">Motivation</h2>
+<h3 id="Securely_recovering_from_double_spends">Securely recovering from double spends</h3>
 <p>In some circumstances, users may wish to spend received bitcoins before
 they have confirmed on the blockchain (Tx B1). However, if the
 transaction sending them those bitcoins (Tx A1) is double-spent, the
@@ -111,14 +111,14 @@ transactions Tx B1 and Tx B2.</p>
 <p>By adding <code>OP_CHECKBLOCKATHEIGHT</code>, the wallet can issue Tx B2 with a
 condition that the block confirming Tx A2 is in the history, thus
 eliminating this risk.</p>
-<h3 id="replay-protection-in-the-event-of-a-persistent-blockchain-split">Replay protection in the event of a persistent blockchain split</h3>
+<h3 id="Replay_protection_in_the_event_of_a_persistent_blockchain_split">Replay protection in the event of a persistent blockchain split</h3>
 <p>In the event of a persistent blockchain split, some mechanism is desired
 by which the UTXOs valid in either chain may be spent without the
 transaction being validly replayable on the other chain.</p>
 <p>This can be guaranteed by choosing a block which exists only on either
 side of the split, and pinning (using <code>OP_CHECKBLOCKATHEIGHT</code>) common
 UTXOs to be spent only on chains based on that block.</p>
-<h2 id="best-practices-for-wallets">Best practices for wallets</h2>
+<h2 id="Best_practices_for_wallets">Best practices for wallets</h2>
 <p>To avoid unnecessary conflicts when a chain is reorganized, wallets
 should always avoid specifying the last 100 blocks when practical.
 Wallets that use recent blocks when unavoidable SHOULD actively monitor
@@ -129,40 +129,40 @@ such transactions until the pinned block is at least 100 blocks deep
 into the chain.</p>
 <p>For ordinary usage, wallets SHOULD specify the ParamBlockHash as 16
 bytes.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>How is this different from the transaction's lock-time?</p>
 <ul>
 <li>The lock-time specifies a time or block height before a transaction
-becomes valid. <code>OP_CHECKBLOCKATHEIGHT</code>, on the other hand, specifies
-a specific block's hash.</li>
+becomes valid. <code>OP_CHECKBLOCKATHEIGHT</code>, on the other hand, specifies a
+specific block's hash.</li>
 </ul>
 <p>Why are block heights required to be absolute, rather than relative?</p>
 <ul>
-<li>A relative block height would allow for creation of transactions
-which are valid at block N, but not N+1. This is carefully avoided
-by Bitcoin to ensure that if any given block is reorganised out,
+<li>A relative block height would allow for creation of transactions which
+are valid at block N, but not N+1. This is carefully avoided by
+Bitcoin to ensure that if any given block is reorganised out,
 non-malicious transactions can be simply re-confirmed in a later
 block.</li>
 </ul>
 <p>Why are blocks older than 52596 deep in the chain not verified?</p>
 <ul>
 <li>This is to avoid creating an infinite storage requirement from all
-full nodes which would be necessary to maintain all the block
-headers indefinitely. 52596 block headers requires a fixed size of
+full nodes which would be necessary to maintain all the block headers
+indefinitely. 52596 block headers requires a fixed size of
 approximately 4 MB.</li>
 <li>In any case where you might want to specify a deeper block, you can
 also just as well specify a more recent one that descends from it.</li>
 <li>It is assumed that 1 year is sufficient time to double-spend any
 common UTXOs on all blockchains of interest.</li>
-<li>If a deeper check is needed, it can be softforked in. Making the
-check more shallow, on the other hand, is a hardfork.</li>
+<li>If a deeper check is needed, it can be softforked in. Making the check
+more shallow, on the other hand, is a hardfork.</li>
 </ul>
 <p>Why is ParamBlockHash allowed to match less than the full block hash?</p>
 <ul>
-<li>In a chain split, it is sufficient to check only a few bytes to
-avoid replay.</li>
-<li>In all scenarios, it is likely sufficient to check only a minority
-of the full hash to avoid any realistic chance of replay.</li>
+<li>In a chain split, it is sufficient to check only a few bytes to avoid
+replay.</li>
+<li>In all scenarios, it is likely sufficient to check only a minority of
+the full hash to avoid any realistic chance of replay.</li>
 <li>Allowing less than the full hash to be specified saves space in
 transaction data.</li>
 <li>Using a single byte can be combined with other opcodes (such as
@@ -181,13 +181,13 @@ ParamBlockHash may not be larger than 28 bytes.</li>
 previous block?</p>
 <ul>
 <li>This should only be used when necessary (ie, the deeper block is not
-sufficient), and when the wallet can actively issue updates should
-the blockchain reorganise.</li>
+sufficient), and when the wallet can actively issue updates should the
+blockchain reorganise.</li>
 <li>While this allows intentionally creating a transaction which may be
 invalid in a reorganization, the same can already be accomplished by
 creating double spends.</li>
 </ul>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p><code>OP_NOP5</code> ought to be forbidden by policy by all miners for future
 extensions such as this, so old miners will under no circumstances
 produce blocks which would now be considered invalid under the new
@@ -196,8 +196,8 @@ building on top of such a possible invalid block as part of an attack.</p>
 <p>Old nodes will likely also not relay transactions using this opcode for
 the same extensibility reasons, but this is not important since the rule
 cannot be verified deterministically outside the context of a block.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
-<p><a href="https://github.com/bitcoin/bitcoin/compare/master">https://github.com/bitcoin/bitcoin/compare/master</a>...luke-jr:cbah</p>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/compare/master">https://github.com/bitcoin/bitcoin/compare/master</a>...luke-jr:cbah</p>
 
     </div>
 
@@ -205,7 +205,7 @@ cannot be verified deterministically outside the context of a block.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

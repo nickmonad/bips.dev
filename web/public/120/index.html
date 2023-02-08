@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,31 +46,31 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 120
-  Layer: Applications
-  Title: Proof of Payment
-  Author: Kalle Rosenbaum &lt;kalle@rosenbaum.se&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0120
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2015-07-28
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 120
+</span><span>  Layer: Applications
+</span><span>  Title: Proof of Payment
+</span><span>  Author: Kalle Rosenbaum &lt;kalle@rosenbaum.se&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0120
+</span><span>  Status: Withdrawn
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-07-28
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a system called Proof of Payment, PoP. It is used to
 prove that a wallet has the credentials that were used to sign a
 previously generated transaction. Or simply put, it lets you prove that
 you have made a payment.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>There are several scenarios in which it would be useful to prove that
 you have paid for something. For example:</p>
 <ul>
 <li>A pre-paid hotel room where your PoP functions as a key to the door.</li>
-<li>An online video rental service where you pay for a video and watch
-it on any device.</li>
+<li>An online video rental service where you pay for a video and watch it
+on any device.</li>
 <li>An ad-sign where you pay in advance for e.g. 2 weeks exclusivity.
-During this period you can upload new content to the sign whenever
-you like using PoP.</li>
+During this period you can upload new content to the sign whenever you
+like using PoP.</li>
 <li>Log in to a pay site using a PoP.</li>
 <li>A parking lot you pay for monthly and the car authenticates itself
 using PoP.</li>
@@ -81,7 +81,7 @@ exchange the prize for a PoP for the winning transaction.</li>
 <p>With Proof of Payment, these use cases can be achieved without any
 personal information (user name, password, e-mail address, etc) being
 involved.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>Desirable properties:</p>
 <ol>
 <li>A PoP should be generated on demand.</li>
@@ -96,13 +96,13 @@ adoption.</li>
 <p>Current methods of proving a payment:</p>
 <ul>
 <li>In BIP0070, the PaymentRequest together with the transactions
-fulfilling the request makes some sort of proof. However, it does
-not meet 1, 2 or 4 and it obviously only meets 3 if the payment is
-made through BIP0070. Also, there's no standard way to
-request/provide the proof. If standardized it would probably meet 5.</li>
-<li>Signing messages, chosen by the server, with the private keys used
-to sign the transaction. This could meet 1 and 2 but probably not 3.
-This is not standardized either. 4 Could be met if designed so.</li>
+fulfilling the request makes some sort of proof. However, it does not
+meet 1, 2 or 4 and it obviously only meets 3 if the payment is made
+through BIP0070. Also, there's no standard way to request/provide the
+proof. If standardized it would probably meet 5.</li>
+<li>Signing messages, chosen by the server, with the private keys used to
+sign the transaction. This could meet 1 and 2 but probably not 3. This
+is not standardized either. 4 Could be met if designed so.</li>
 </ul>
 <p>If an input script type is P2SH, any satisfying script should do, just
 as if it was a payment. For M-of-N multisig scripts, that would mean
@@ -110,8 +110,8 @@ that any set of M keys should be sufficient, not necessarily the same
 set of M keys that signed the transaction. This is important because
 strictly demanding the same set of M keys would defeat the purpose of a
 multisig address.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="data-structure">Data structure</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Data_structure">Data structure</h3>
 <p>A proof of payment for a transaction T, here called PoP(T), is used to
 prove that one has ownership of the credentials needed to unlock all the
 inputs of T. It has the exact same structure as a bitcoin transaction
@@ -127,42 +127,41 @@ pop output, with value 0. The pop output must have the following format:</p>
 <p>The lock_time of the PoP must be set to 499999999 to prevent the PoP
 from being included in a block, should it appear on the bitcoin p2p
 network. This is also the reason for setting the sequence numbers to 0,
-since sequence number of ffffffff would make lock_time ineffective.
-This specification demands that all input sequence numbers are 0, not
-just one of them, which would be sufficient to make lock_time
-effective. This is for simplicity reasons.</p>
+since sequence number of ffffffff would make lock_time ineffective. This
+specification demands that all input sequence numbers are 0, not just
+one of them, which would be sufficient to make lock_time effective. This
+is for simplicity reasons.</p>
 <p>An illustration of the PoP data structure and its original payment is
 shown below.</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  T
- +------------------------------------------------+
- |inputs                | outputs                 |
- |       Value,Sequence | Value,Script            |
- +------------------------------------------------+
- |input0 1,ffffffff     | 0,pay to A              |
- |input1 3,ffffffff     | 2,OP_RETURN &lt;some data&gt; |
- |input2 4,ffffffff     | 1,pay to B              |
- |                      | 4,pay to C              |
- +------------------------------------------------+
- 
-  PoP(T)
- +-------------------------------------------------------------+
- | inputs               | outputs                              |
- |       Value,Sequence | Value,Script                         |
- +-------------------------------------------------------------+
- |input0 1,00000000     | 0,OP_RETURN &lt;version&gt; &lt;txid&gt; &lt;nonce&gt; |
- |input1 3,00000000     |                                      |
- |input2 4,00000000     |                                      |
- +-------------------------------------------------------------+
- | lock_time=499999999                                         |
- +-------------------------------------------------------------+
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>  T
+</span><span> +------------------------------------------------+
+</span><span> |inputs                | outputs                 |
+</span><span> |       Value,Sequence | Value,Script            |
+</span><span> +------------------------------------------------+
+</span><span> |input0 1,ffffffff     | 0,pay to A              |
+</span><span> |input1 3,ffffffff     | 2,OP_RETURN &lt;some data&gt; |
+</span><span> |input2 4,ffffffff     | 1,pay to B              |
+</span><span> |                      | 4,pay to C              |
+</span><span> +------------------------------------------------+
+</span><span> 
+</span><span>  PoP(T)
+</span><span> +-------------------------------------------------------------+
+</span><span> | inputs               | outputs                              |
+</span><span> |       Value,Sequence | Value,Script                         |
+</span><span> +-------------------------------------------------------------+
+</span><span> |input0 1,00000000     | 0,OP_RETURN &lt;version&gt; &lt;txid&gt; &lt;nonce&gt; |
+</span><span> |input1 3,00000000     |                                      |
+</span><span> |input2 4,00000000     |                                      |
+</span><span> +-------------------------------------------------------------+
+</span><span> | lock_time=499999999                                         |
+</span><span> +-------------------------------------------------------------+
 </span></code></pre>
 <p>The PoP is signed using the same signing process that is used for
 bitcoin transactions.</p>
 <p>The purpose of the nonce is to make it harder to use a stolen PoP; Once
 the PoP has reached the server, that PoP is useless since the server
 will generate a new nonce for every PoP request.</p>
-<h3 id="process">Process</h3>
+<h3 id="Process">Process</h3>
 <ol>
 <li>A proof of payment request is sent from the server to the wallet.
 The PoP request contains:
@@ -175,8 +174,7 @@ For example:
 <li>txid, if known by the server</li>
 <li>PaymentRequest.PaymentDetails.merchant_data (in case of a
 BIP0070 payment)</li>
-<li>amount, label, message or other information from a BIP0021
-URI</li>
+<li>amount, label, message or other information from a BIP0021 URI</li>
 </ul>
 </li>
 </ol>
@@ -195,13 +193,13 @@ or “invalid”.</li>
 </ol>
 <p><strong>Remarks:</strong></p>
 <ul>
-<li>The method of transferring the PoP request at step 1 is not
-specified here. Instead that is specified in separate
-specifications, see BIP0121.</li>
+<li>The method of transferring the PoP request at step 1 is not specified
+here. Instead that is specified in separate specifications, see
+BIP0121.</li>
 <li>The nonce must be randomly generated by the server for every new PoP
 request.</li>
 </ul>
-<h3 id="validating-a-pop">Validating a PoP</h3>
+<h3 id="Validating_a_PoP">Validating a PoP</h3>
 <p>The server needs to validate the PoP and reply with &quot;valid&quot; or
 &quot;invalid&quot;. That process is outlined below. If any step fails, the
 validation is aborted and &quot;invalid&quot; is returned:</p>
@@ -222,24 +220,24 @@ you want proof for, check that the transaction actually pays for the
 product/service you deliver.</li>
 <li>Return &quot;valid&quot;.</li>
 </ol>
-<h2 id="security-considerations">Security considerations</h2>
+<h2 id="Security_considerations">Security considerations</h2>
 <ul>
-<li>Someone can intercept the PoP-request and change any parameter in
-it. These can be mitigated by using secure connections. Examples of
+<li>Someone can intercept the PoP-request and change any parameter in it.
+These can be mitigated by using secure connections. Examples of
 tampered parameters:
 <ul>
 <li>Pop destination - Stealing your PoP.</li>
-<li>label - Trick you to sign an unintended pop or set a label that
-your wallet doesn't have any record for, resulting in a broken
-service. Always check the PoP before signing.</li>
+<li>label - Trick you to sign an unintended pop or set a label that your
+wallet doesn't have any record for, resulting in a broken service.
+Always check the PoP before signing.</li>
 <li>nonce - Your pop will not validate on server.</li>
 </ul>
 </li>
 <li>Someone can steal a PoP, for example by tampering with the PoP
 request, and try to use the service hoping to get a matching nonce.
-Probability per try: 1/(2^48). The server should have a mechanism
-for detecting a brute force attack of this kind, or at least slow
-down the process by delaying the PoP request by some 100 ms or so.</li>
+Probability per try: 1/(2^48). The server should have a mechanism for
+detecting a brute force attack of this kind, or at least slow down the
+process by delaying the PoP request by some 100 ms or so.</li>
 <li>Even if a wallet has no funds it might still be valuable as a
 generator for PoPs. This makes it important to keep the security of
 the wallet after it has been emptied.</li>
@@ -250,16 +248,16 @@ Wallets should not rely on the transaction id of the outgoing
 transaction. Instead it should listen for the transaction on the
 network and put that in its list of transactions.</li>
 </ul>
-<h2 id="reference-implementation">Reference implementation</h2>
-<p><a href="https://github.com/kallerosenbaum/poppoc">PoP Demo server on GitHub</a></p>
-<p><a href="https://github.com/kallerosenbaum/wallet">PoP-enabled Mycelium fork on
+<h2 id="Reference_implementation">Reference implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/kallerosenbaum/poppoc">PoP Demo server on GitHub</a></p>
+<p><a rel="noopener" target="_blank" href="https://github.com/kallerosenbaum/wallet">PoP-enabled Mycelium fork on
 GitHub</a></p>
-<h2 id="references">References</h2>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki">BIP0021</a>:
+<h2 id="References">References</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki">BIP0021</a>:
 URI Scheme</p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki">BIP0070</a>:
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki">BIP0070</a>:
 Payment Protocol</p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0121.mediawiki">BIP0121</a>:
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0121.mediawiki">BIP0121</a>:
 Proof of Payment URI scheme</p>
 
     </div>
@@ -268,7 +266,7 @@ Proof of Payment URI scheme</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

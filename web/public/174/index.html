@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,19 +46,19 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 174
-  Layer: Applications
-  Title: Partially Signed Bitcoin Transaction Format
-  Author: Andrew Chow &lt;achow101@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0174
-  Status: Final
-  Type: Standards Track
-  Created: 2017-07-12
-  License: BSD-2-Clause
-</span></code></pre><h2 id="introduction">Introduction</h2>
-<h3 id="abstract">Abstract</h3>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 174
+</span><span>  Layer: Applications
+</span><span>  Title: Partially Signed Bitcoin Transaction Format
+</span><span>  Author: Andrew Chow &lt;achow101@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0174
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-07-12
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Introduction">Introduction</h2>
+<h3 id="Abstract">Abstract</h3>
 <p>This document proposes a binary transaction format which contains the
 information necessary for a signer to produce signatures for the
 transaction and holds the signatures for an input while the input does
@@ -66,9 +66,9 @@ not have a complete set of signatures. The signer can be offline as all
 necessary information will be provided in the transaction.</p>
 <p>The generic format is described here in addition to the specification
 for version 0 of this format.</p>
-<h3 id="copyright">Copyright</h3>
+<h3 id="Copyright">Copyright</h3>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h3 id="motivation">Motivation</h3>
+<h3 id="Motivation">Motivation</h3>
 <p>Creating unsigned or partially signed transactions to be passed around
 to multiple signers is currently implementation dependent, making it
 hard for people who use different wallet software from being able to
@@ -82,10 +82,10 @@ being spent. This transaction format will allow offline signers such as
 air-gapped wallets and hardware wallets to be able to sign transactions
 without needing direct access to the UTXO set and without risk of being
 defrauded.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>The Partially Signed Bitcoin Transaction (PSBT) format consists of
 key-value maps. Each map consists of a sequence of key-value records,
-terminated by a <code>0x00</code> byte [1].</p>
+terminated by a <code>0x00</code> byte <sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
 <p><psbt><code> := </code><magic><code> </code><global-map><code> </code><input-map><code>* </code><output-map><code>*</code><br />
 <magic><code> := 0x70 0x73 0x62 0x74 0xFF</code><br />
 <global-map><code> := </code><keypair><code>* 0x00</code><br />
@@ -95,50 +95,44 @@ terminated by a <code>0x00</code> byte [1].</p>
 <key><code> := </code><keylen><code> </code><keytype><code> </code><keydata><br />
 <value><code> := </code><valuelen><code> </code><valuedata></p>
 <p>Where:</p>
-<ul>
-<li><keytype>  
+<keytype>  
 A [compact
 size](https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer)
 unsigned integer representing the type. This compact size unsigned
-integer must be minimally encoded, i.e. if the value can be
-represented using one byte, it must be represented as one byte.
-There can be multiple entries with the same <keytype> within a
-specific <map>, but the <key> must be unique.
-</li>
-<li><keylen>  
+integer must be minimally encoded, i.e. if the value can be represented
+using one byte, it must be represented as one byte. There can be
+multiple entries with the same <keytype> within a specific <map>, but
+the <key> must be unique.
+<keylen>  
 The compact size unsigned integer containing the combined length of
 <keytype> and <keydata>
-</li>
-<li><valuelen>  
-The compact size unsigned integer containing the length of
-<valuedata>.
-</li>
-<li><magic>  
-Magic bytes which are ASCII for psbt <ref>**Why use 4 bytes for
-psbt?** The
-</li>
-</ul>
+<valuelen>  
+The compact size unsigned integer containing the length of <valuedata>.
+<magic>  
+Magic bytes which are ASCII for psbt <ref>**Why use 4 bytes for psbt?**
+The
 <p>transaction format needed to start with a 5 byte header which uniquely
 identifies it. The first bytes were chosen to be the ASCII for psbt
-because that stands for Partially Signed Bitcoin Transaction. </ref>
-followed by a separator of <code>0xFF</code>[2]. This integer must be serialized
+because that stands for Partially Signed Bitcoin Transaction.</p>
+</ref>
+<p>followed by a separator of <code>0xFF</code><sup class="footnote-reference"><a href="#2">2</a></sup>. This integer must be serialized
 in most significant byte order.</p>
 <p>The currently defined global types are as follows:</p>
 <table><thead><tr><th>Name</th><th><keytype></th><th><keydata></th><th><keydata> Description</th><th><valuedata></th><th><valuedata> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th><th>Parent BIP</th></tr></thead><tbody>
 <tr><td>Unsigned Transaction</td><td><code>PSBT_GLOBAL_UNSIGNED_TX = 0x00</code></td><td>None</td><td>No key data</td><td><bytes transaction></td><td>The transaction in network serialization. The scriptSigs and witnesses for each input must be empty. The transaction must be in the old serialization format (without witnesses).</td><td>0</td><td>2</td><td>0</td><td>174</td></tr>
 <tr><td>Extended Public Key</td><td><code>PSBT_GLOBAL_XPUB = 0x01</code></td><td><bytes xpub></td><td>The 78 byte serialized extended public key as defined by BIP 32. Extended public keys are those that can be used to derive public keys used in the inputs and outputs of this transaction. It should be the public key at the highest hardened derivation index so that the unhardened child keys used in the transaction can be derived.</td><td><code>&lt;4 byte fingerprint&gt; &lt;32-bit little endian uint path element&gt;*</code></td><td>The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. The number of 32 bit unsigned integer indexes must match the depth provided in the extended public key.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
-<tr><td>Transaction Version</td><td><code>PSBT_GLOBAL_TX_VERSION = 0x02</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint version&gt;</code></td><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Fallback Locktime</td><td><code>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint locktime&gt;</code></td><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Input Count</td><td><code>PSBT_GLOBAL_INPUT_COUNT = 0x04</code></td><td>None</td><td>No key data</td><td><compact size uint input count></td><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Output Count</td><td><code>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</code></td><td>None</td><td>No key data</td><td><compact size uint input count></td><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Transaction Modifiable Flags</td><td><code>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</code></td><td>None</td><td>No key data</td><td><code>&lt;8-bit uint flags&gt;</code></td><td>An 8 bit little endian unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag and indicates whether inputs can be modified. Bit 1 is the Outputs Modifiable Flag and indicates whether outputs can be modified. Bit 2 is the Has SIGHASH_SINGLE flag and indicates whether the transaction has a SIGHASH_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add an input.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
+<tr><td>Transaction Version</td><td><code>PSBT_GLOBAL_TX_VERSION = 0x02</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint version&gt;</code></td><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td><td>2</td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Fallback Locktime</td><td><code>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint locktime&gt;</code></td><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td><td></td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Input Count</td><td><code>PSBT_GLOBAL_INPUT_COUNT = 0x04</code></td><td>None</td><td>No key data</td><td><compact size uint input count></td><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Output Count</td><td><code>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</code></td><td>None</td><td>No key data</td><td><compact size uint input count></td><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td><td>2</td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Transaction Modifiable Flags</td><td><code>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</code></td><td>None</td><td>No key data</td><td><code>&lt;8-bit uint flags&gt;</code></td><td>An 8 bit little endian unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag and indicates whether inputs can be modified. Bit 1 is the Outputs Modifiable Flag and indicates whether outputs can be modified. Bit 2 is the Has SIGHASH_SINGLE flag and indicates whether the transaction has a SIGHASH_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add an input.</td><td></td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
 <tr><td>PSBT Version Number</td><td><code>PSBT_GLOBAL_VERSION = 0xFB</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint version&gt;</code></td><td>The 32-bit little endian unsigned integer representing the version number of this PSBT. If omitted, the version number is 0.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
-<tr><td>Proprietary Use Type</td><td><code>PSBT_GLOBAL_PROPRIETARY = 0xFC</code></td><td><compact size uint identifier length><code>   </code><bytes identifier><code>   </code><compact size uint subtype><code>   </code><bytes subkeydata></td><td>Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself.</td><td><bytes data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
+<tr><td>Proprietary Use Type</td><td><code>PSBT_GLOBAL_PROPRIETARY = 0xFC</code></td><td><compact size uint identifier length><code> </code><bytes identifier><code> </code><compact size uint subtype><code> </code><bytes subkeydata></td><td>Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself.</td><td><bytes data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 </tbody></table>
 <p>The currently defined per-input types are defined as follows:</p>
 <table><thead><tr><th>Name</th><th><keytype></th><th><keydata></th><th><keydata> Description</th><th><valuedata></th><th><valuedata> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th><th>Parent BIP</th></tr></thead><tbody>
-<tr><td>Non-Witness UTXO</td><td><code>PSBT_IN_NON_WITNESS_UTXO = 0x00</code></td><td>None</td><td>No key data</td><td><bytes transaction></td><td>The transaction in network serialization format the current input spends from. This should be present for inputs that spend non-segwit outputs and can be present for inputs that spend segwit outputs. An input can have both <code>PSBT_IN_NON_WITNESS_UTXO</code> and <code>PSBT_IN_WITNESS_UTXO</code>. [3]</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
-<tr><td>Witness UTXO</td><td><code>PSBT_IN_WITNESS_UTXO = 0x01</code></td><td>None</td><td>No key data</td><td><code>&lt;64-bit little endian int amount&gt; </code><compact size uint scriptPubKeylen><code>   </code><bytes scriptPubKey></td><td>The entire transaction output in network serialization which the current input spends from. This should only be present for inputs which spend segwit outputs, including P2SH embedded ones. An input can have both <code>PSBT_IN_NON_WITNESS_UTXO</code> and <code>PSBT_IN_WITNESS_UTXO</code></td><td></td><td></td><td>0, 2</td><td>174</td></tr>
+<tr><td>Non-Witness UTXO</td><td><code>PSBT_IN_NON_WITNESS_UTXO = 0x00</code></td><td>None</td><td>No key data</td><td><bytes transaction></td><td>The transaction in network serialization format the current input spends from. This should be present for inputs that spend non-segwit outputs and can be present for inputs that spend segwit outputs. An input can have both <code>PSBT_IN_NON_WITNESS_UTXO</code> and <code>PSBT_IN_WITNESS_UTXO</code>. <sup class="footnote-reference"><a href="#3">3</a></sup></td><td></td><td></td><td>0, 2</td><td>174</td></tr>
+<tr><td>Witness UTXO</td><td><code>PSBT_IN_WITNESS_UTXO = 0x01</code></td><td>None</td><td>No key data</td><td><code>&lt;64-bit little endian int amount&gt; </code><compact size uint scriptPubKeylen><code> </code><bytes scriptPubKey></td><td>The entire transaction output in network serialization which the current input spends from. This should only be present for inputs which spend segwit outputs, including P2SH embedded ones. An input can have both <code>PSBT_IN_NON_WITNESS_UTXO</code> and <code>PSBT_IN_WITNESS_UTXO</code></td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Partial Signature</td><td><code>PSBT_IN_PARTIAL_SIG = 0x02</code></td><td><bytes pubkey></td><td>The public key which corresponds to this signature.</td><td><bytes signature></td><td>The signature as would be pushed to the stack from a scriptSig or witness. The signature should be a valid ECDSA signature corresponding to the pubkey that would return true when verified and not a value that would return false or be invalid otherwise (such as a NULLDUMMY).</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Sighash Type</td><td><code>PSBT_IN_SIGHASH_TYPE = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint sighash type&gt;</code></td><td>The 32-bit unsigned integer specifying the sighash type to be used for this input. Signatures for this input must use the sighash type, finalizers must fail to finalize inputs which have signatures that do not match the specified sighash type. Signers who cannot produce signatures with the sighash type must not provide a signature.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Redeem Script</td><td><code>PSBT_IN_REDEEM_SCRIPT = 0x04</code></td><td>None</td><td>No key data</td><td><bytes redeemScript></td><td>The redeemScript for this input if it has one.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
@@ -146,35 +140,35 @@ in most significant byte order.</p>
 <tr><td>BIP 32 Derivation Path</td><td><code>PSBT_IN_BIP32_DERIVATION = 0x06</code></td><td><bytes pubkey></td><td>The public key</td><td><code>&lt;4 byte fingerprint&gt; &lt;32-bit little endian uint path element&gt;*</code></td><td>The master key fingerprint as defined by BIP 32 concatenated with the derivation path of the public key. The derivation path is represented as 32 bit unsigned integer indexes concatenated with each other. Public keys are those that will be needed to sign this input.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Finalized scriptSig</td><td><code>PSBT_IN_FINAL_SCRIPTSIG = 0x07</code></td><td>None</td><td>No key data</td><td><bytes scriptSig></td><td>The Finalized scriptSig contains a fully constructed scriptSig with signatures and any other scripts necessary for the input to pass validation.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Finalized scriptWitness</td><td><code>PSBT_IN_FINAL_SCRIPTWITNESS = 0x08</code></td><td>None</td><td>No key data</td><td><bytes scriptWitness></td><td>The Finalized scriptWitness contains a fully constructed scriptWitness with signatures and any other scripts necessary for the input to pass validation.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
-<tr><td>Proof-of-reserves commitment</td><td><code>PSBT_IN_POR_COMMITMENT = 0x09</code></td><td>None</td><td>No key data</td><td><bytes porCommitment></td><td>The UTF-8 encoded commitment message string for the proof-of-reserves. See <a href="https://bips.dev/174/bip-0127.mediawiki" title="wikilink">BIP 127</a> for more information.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0127.mediawiki" title="wikilink">127</a></td></tr>
+<tr><td>Proof-of-reserves commitment</td><td><code>PSBT_IN_POR_COMMITMENT = 0x09</code></td><td>None</td><td>No key data</td><td><bytes porCommitment></td><td>The UTF-8 encoded commitment message string for the proof-of-reserves. See <a href="/127">BIP 127</a> for more information.</td><td></td><td></td><td>0, 2</td><td><a href="/127">127</a></td></tr>
 <tr><td>RIPEMD160 preimage</td><td><code>PSBT_IN_RIPEMD160 = 0x0a</code></td><td><code>&lt;20-byte hash&gt;</code></td><td>The resulting hash of the preimage</td><td><bytes preimage></td><td>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>RIPEMD160</code> algorithm</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>SHA256 preimage</td><td><code>PSBT_IN_SHA256 = 0x0b</code></td><td><code>&lt;32-byte hash&gt;</code></td><td>The resulting hash of the preimage</td><td><bytes preimage></td><td>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>SHA256</code> algorithm</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>HASH160 preimage</td><td><code>PSBT_IN_HASH160 = 0x0c</code></td><td><code>&lt;20-byte hash&gt;</code></td><td>The resulting hash of the preimage</td><td><bytes preimage></td><td>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>SHA256</code> algorithm followed by the <code>RIPEMD160</code> algorithm</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>HASH256 preimage</td><td><code>PSBT_IN_HASH256 = 0x0d</code></td><td><code>&lt;32-byte hash&gt;</code></td><td>The resulting hash of the preimage</td><td><bytes preimage></td><td>The hash preimage, encoded as a byte vector, which must equal the key when run through the <code>SHA256</code> algorithm twice</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
-<tr><td>Previous TXID</td><td><code>PSBT_IN_PREVIOUS_TXID = 0x0e</code></td><td>None</td><td>No key data</td><td><code>&lt;32 byte txid&gt;</code></td><td>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Spent Output Index</td><td><code>PSBT_IN_OUTPUT_INDEX = 0x0f</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint index&gt;</code></td><td>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Sequence Number</td><td><code>PSBT_IN_SEQUENCE = 0x10</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint sequence&gt;</code></td><td>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Required Time-based Locktime</td><td><code>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint locktime&gt;</code></td><td>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Required Height-based Locktime</td><td><code>PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint locktime&gt;</code></td><td>32 bit unsigned little endian integer less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Taproot Key Spend Signature</td><td><code>PSBT_IN_TAP_KEY_SIG = 0x13</code></td><td>None</td><td>No key data</td><td><code>&lt;64 or 65 byte signature&gt;</code></td><td>The 64 or 65 byte Schnorr signature for key path spending a Taproot output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Taproot Script Spend Signature</td><td><code>PSBT_IN_TAP_SCRIPT_SIG = 0x14</code></td><td><code>&lt;32 byte xonlypubkey&gt; </code><leafhash></td><td>A 32 byte X-only public key involved in a leaf script concatenated with the 32 byte hash of the leaf it is part of.</td><td><code>&lt;64 or 65 byte signature&gt;</code></td><td>The 64 or 65 byte Schnorr signature for this pubkey and leaf combination. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Taproot Leaf Script</td><td><code>PSBT_IN_TAP_LEAF_SCRIPT = 0x15</code></td><td><bytes control block></td><td>The control block for this leaf as specified in BIP 341. The control block contains the merkle tree path to this leaf.</td><td><bytes script><code> &lt;8-bit uint leaf version&gt;</code></td><td>The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Taproot Key BIP 32 Derivation Path</td><td><code>PSBT_IN_TAP_BIP32_DERIVATION = 0x16</code></td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>A 32 byte X-only public key involved in this input. It may be the internal key, or a key present in a leaf script.</td><td><compact size uint number of hashes><code> &lt;32 byte leaf hash&gt;* &lt;4 byte fingerprint&gt; &lt;32-bit little endian uint path element&gt;*</code></td><td>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Taproot Internal Key</td><td><code>PSBT_IN_TAP_INTERNAL_KEY = 0x17</code></td><td>None</td><td>No key data</td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>The X-only pubkey used as the internal key in this output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Taproot Merkle Root</td><td><code>PSBT_IN_TAP_MERKLE_ROOT = 0x18</code></td><td>None</td><td>No key data</td><td><code>&lt;32-byte hash&gt;</code></td><td>The 32 byte Merkle root hash. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Proprietary Use Type</td><td><code>PSBT_IN_PROPRIETARY = 0xFC</code></td><td><compact size uint identifier length><code>   </code><bytes identifier><code>   </code><compact size uint subtype><code>   </code><bytes subkeydata></td><td>Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself.</td><td><bytes data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
+<tr><td>Previous TXID</td><td><code>PSBT_IN_PREVIOUS_TXID = 0x0e</code></td><td>None</td><td>No key data</td><td><code>&lt;32 byte txid&gt;</code></td><td>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td><td>2</td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Spent Output Index</td><td><code>PSBT_IN_OUTPUT_INDEX = 0x0f</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint index&gt;</code></td><td>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</td><td>2</td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Sequence Number</td><td><code>PSBT_IN_SEQUENCE = 0x10</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint sequence&gt;</code></td><td>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</td><td></td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Required Time-based Locktime</td><td><code>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint locktime&gt;</code></td><td>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Required Height-based Locktime</td><td><code>PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit uint locktime&gt;</code></td><td>32 bit unsigned little endian integer less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Taproot Key Spend Signature</td><td><code>PSBT_IN_TAP_KEY_SIG = 0x13</code></td><td>None</td><td>No key data</td><td><code>&lt;64 or 65 byte signature&gt;</code></td><td>The 64 or 65 byte Schnorr signature for key path spending a Taproot output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Taproot Script Spend Signature</td><td><code>PSBT_IN_TAP_SCRIPT_SIG = 0x14</code></td><td><code>&lt;32 byte xonlypubkey&gt; </code><leafhash></td><td>A 32 byte X-only public key involved in a leaf script concatenated with the 32 byte hash of the leaf it is part of.</td><td><code>&lt;64 or 65 byte signature&gt;</code></td><td>The 64 or 65 byte Schnorr signature for this pubkey and leaf combination. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Taproot Leaf Script</td><td><code>PSBT_IN_TAP_LEAF_SCRIPT = 0x15</code></td><td><bytes control block></td><td>The control block for this leaf as specified in BIP 341. The control block contains the merkle tree path to this leaf.</td><td><bytes script><code> &lt;8-bit uint leaf version&gt;</code></td><td>The script for this leaf as would be provided in the witness stack followed by the single byte leaf version. Note that the leaves included in this field should be those that the signers of this input are expected to be able to sign for. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Taproot Key BIP 32 Derivation Path</td><td><code>PSBT_IN_TAP_BIP32_DERIVATION = 0x16</code></td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>A 32 byte X-only public key involved in this input. It may be the internal key, or a key present in a leaf script.</td><td><compact size uint number of hashes><code> &lt;32 byte leaf hash&gt;* &lt;4 byte fingerprint&gt; &lt;32-bit little endian uint path element&gt;*</code></td><td>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Taproot Internal Key</td><td><code>PSBT_IN_TAP_INTERNAL_KEY = 0x17</code></td><td>None</td><td>No key data</td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>The X-only pubkey used as the internal key in this output. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Taproot Merkle Root</td><td><code>PSBT_IN_TAP_MERKLE_ROOT = 0x18</code></td><td>None</td><td>No key data</td><td><code>&lt;32-byte hash&gt;</code></td><td>The 32 byte Merkle root hash. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Proprietary Use Type</td><td><code>PSBT_IN_PROPRIETARY = 0xFC</code></td><td><compact size uint identifier length><code> </code><bytes identifier><code> </code><compact size uint subtype><code> </code><bytes subkeydata></td><td>Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself.</td><td><bytes data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 </tbody></table>
-<p>The currently defined per-output [4] types are defined as follows:</p>
+<p>The currently defined per-output <sup class="footnote-reference"><a href="#4">4</a></sup> types are defined as follows:</p>
 <table><thead><tr><th>Name</th><th><keytype></th><th><keydata></th><th><keydata> Description</th><th><valuedata></th><th><valuedata> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th><th>Parent BIP</th></tr></thead><tbody>
 <tr><td>Redeem Script</td><td><code>PSBT_OUT_REDEEM_SCRIPT = 0x00</code></td><td>None</td><td>No key data</td><td><bytes redeemScript></td><td>The redeemScript for this output if it has one.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>Witness Script</td><td><code>PSBT_OUT_WITNESS_SCRIPT = 0x01</code></td><td>None</td><td>No key data</td><td><bytes witnessScript></td><td>The witnessScript for this output if it has one.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 <tr><td>BIP 32 Derivation Path</td><td><code>PSBT_OUT_BIP32_DERIVATION = 0x02</code></td><td><bytes public key></td><td>The public key</td><td><code>&lt;4 byte fingerprint&gt; &lt;32-bit little endian uint path element&gt;*</code></td><td>The master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
-<tr><td>Output Amount</td><td><code>PSBT_OUT_AMOUNT = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;64-bit int amount&gt;</code></td><td>64 bit signed little endian integer representing the output's amount in satoshis.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Output Script</td><td><code>PSBT_OUT_SCRIPT = 0x04</code></td><td>None</td><td>No key data</td><td><bytes script></td><td>The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.</td><td>2</td><td>0</td><td>2</td><td><a href="https://bips.dev/174/bip-0370.mediawiki" title="wikilink">370</a></td></tr>
-<tr><td>Taproot Internal Key</td><td><code>PSBT_OUT_TAP_INTERNAL_KEY = 0x05</code></td><td>None</td><td>No key data</td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>The X-only pubkey used as the internal key in this output.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Taproot Tree</td><td><code>PSBT_OUT_TAP_TREE = 0x06</code></td><td>None</td><td>No key data</td><td><code>{&lt;8-bit uint depth&gt; &lt;8-bit uint leaf version&gt; </code><compact size uint scriptlen><code>   </code><bytes script><code>}*</code></td><td>One or more tuples representing the depth, leaf version, and script for a leaf in the Taproot tree, allowing the entire tree to be reconstructed. The tuples must be in depth first search order so that the tree is correctly reconstructed. Each tuple is an 8-bit unsigned integer representing the depth in the Taproot tree for this script, an 8-bit unsigned integer representing the leaf version, the length of the script as a compact size unsigned integer, and the script itself.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Taproot Key BIP 32 Derivation Path</td><td><code>PSBT_OUT_TAP_BIP32_DERIVATION = 0x07</code></td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>A 32 byte X-only public key involved in this output. It may be the internal key, or a key present in a leaf script.</td><td><compact size uint number of hashes><code> &lt;32 byte leaf hash&gt;* &lt;4 byte fingerprint&gt; &lt;32-bit little endian uint path element&gt;*</code></td><td>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="https://bips.dev/174/bip-0371.mediawiki" title="wikilink">371</a></td></tr>
-<tr><td>Proprietary Use Type</td><td><code>PSBT_OUT_PROPRIETARY = 0xFC</code></td><td><compact size uint identifier length><code>   </code><bytes identifier><code>   </code><compact size uint subtype><code>   </code><bytes subkeydata></td><td>Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself.</td><td><bytes data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
+<tr><td>Output Amount</td><td><code>PSBT_OUT_AMOUNT = 0x03</code></td><td>None</td><td>No key data</td><td><code>&lt;64-bit int amount&gt;</code></td><td>64 bit signed little endian integer representing the output's amount in satoshis.</td><td>2</td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Output Script</td><td><code>PSBT_OUT_SCRIPT = 0x04</code></td><td>None</td><td>No key data</td><td><bytes script></td><td>The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.</td><td>2</td><td>0</td><td>2</td><td><a href="/370">370</a></td></tr>
+<tr><td>Taproot Internal Key</td><td><code>PSBT_OUT_TAP_INTERNAL_KEY = 0x05</code></td><td>None</td><td>No key data</td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>The X-only pubkey used as the internal key in this output.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Taproot Tree</td><td><code>PSBT_OUT_TAP_TREE = 0x06</code></td><td>None</td><td>No key data</td><td><code>{&lt;8-bit uint depth&gt; &lt;8-bit uint leaf version&gt; </code><compact size uint scriptlen><code> </code><bytes script><code>}*</code></td><td>One or more tuples representing the depth, leaf version, and script for a leaf in the Taproot tree, allowing the entire tree to be reconstructed. The tuples must be in depth first search order so that the tree is correctly reconstructed. Each tuple is an 8-bit unsigned integer representing the depth in the Taproot tree for this script, an 8-bit unsigned integer representing the leaf version, the length of the script as a compact size unsigned integer, and the script itself.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Taproot Key BIP 32 Derivation Path</td><td><code>PSBT_OUT_TAP_BIP32_DERIVATION = 0x07</code></td><td><code>&lt;32 byte xonlypubkey&gt;</code></td><td>A 32 byte X-only public key involved in this output. It may be the internal key, or a key present in a leaf script.</td><td><compact size uint number of hashes><code> &lt;32 byte leaf hash&gt;* &lt;4 byte fingerprint&gt; &lt;32-bit little endian uint path element&gt;*</code></td><td>A compact size unsigned integer representing the number of leaf hashes, followed by a list of leaf hashes, followed by the 4 byte master key fingerprint concatenated with the derivation path of the public key. The derivation path is represented as 32-bit little endian unsigned integer indexes concatenated with each other. Public keys are those needed to spend this output. The leaf hashes are of the leaves which involve this public key. The internal key does not have leaf hashes, so can be indicated with a <code>hashes len</code> of 0. Finalizers should remove this field after <code>PSBT_IN_FINAL_SCRIPTWITNESS</code> is constructed.</td><td></td><td></td><td>0, 2</td><td><a href="/371">371</a></td></tr>
+<tr><td>Proprietary Use Type</td><td><code>PSBT_OUT_PROPRIETARY = 0xFC</code></td><td><compact size uint identifier length><code> </code><bytes identifier><code> </code><compact size uint subtype><code> </code><bytes subkeydata></td><td>Compact size unsigned integer of the length of the identifier, followed by identifier prefix, followed by a compact size unsigned integer subtype, followed by the key data itself.</td><td><bytes data></td><td>Any value data as defined by the proprietary type user.</td><td></td><td></td><td>0, 2</td><td>174</td></tr>
 </tbody></table>
 <p>Types can be skipped when they are unnecessary. For example, if an input
 is a witness input, then it should not have a Non-Witness UTXO key-value
@@ -186,13 +180,13 @@ transaction.</p>
 not match the specified format for that type, the PSBT must be
 considered invalid. For example, any key that has no data except for the
 type specifier must only have the type specifier in the key.</p>
-<h3 id="handling-duplicated-keys">Handling Duplicated Keys</h3>
+<h3 id="Handling_Duplicated_Keys">Handling Duplicated Keys</h3>
 <p>Keys within each scope should never be duplicated; all keys in the
 format are unique. PSBTs containing duplicate keys are invalid. However
 implementors will still need to handle events where keys are duplicated
 when combining transactions with duplicated fields. In this event, the
-software may choose whichever value it wishes.[5]</p>
-<h3 id="proprietary-use-type">Proprietary Use Type</h3>
+software may choose whichever value it wishes.<sup class="footnote-reference"><a href="#5">5</a></sup></p>
+<h3 id="Proprietary_Use_Type">Proprietary Use Type</h3>
 <p>For all global, per-input, and per-output maps, the type <code>0xFC</code> is
 reserved for proprietary use. The proprietary use type requires keys
 that follow the type with a compact size unsigned integer representing
@@ -214,27 +208,27 @@ use type is not to be used by any public specification and there is no
 expectation that any publicly available software be able to understand
 any specific meanings of it and the subtypes. This type must be used for
 internal processes only.</p>
-<h2 id="version-0">Version 0</h2>
+<h2 id="Version_0">Version 0</h2>
 <p>Partially Signed Bitcoin Transactions version 0 is the first version of
-the PSBT format. Version 0 PSBTs must either omit PSBT_GLOBAL_VERSION
-or include it and set it to 0. Version 0 PSBTs must include
+the PSBT format. Version 0 PSBTs must either omit PSBT_GLOBAL_VERSION or
+include it and set it to 0. Version 0 PSBTs must include
 PSBT_GLOBAL_UNSIGNED_TX, if omitted, the PSBT is invalid.</p>
-<h2 id="roles">Roles</h2>
+<h2 id="Roles">Roles</h2>
 <p>Using the transaction format involves many different roles. Multiple
 roles can be handled by a single entity, but each role is specialized in
 what it should be capable of doing.</p>
-<h3 id="creator">Creator</h3>
+<h3 id="Creator">Creator</h3>
 <p>The Creator creates a new PSBT. It must create an unsigned transaction
 and place it in the PSBT. The Creator must create empty input and output
 fields.</p>
-<h3 id="updater">Updater</h3>
+<h3 id="Updater">Updater</h3>
 <p>The Updater must only accept a PSBT. The Updater adds information to the
 PSBT that it has access to. If it has the UTXO for an input, it should
 add it to the PSBT. The Updater should also add redeemScripts,
 witnessScripts, and BIP 32 derivation paths to the input and output data
 if it knows them.</p>
 <p>A single entity is likely to be both a Creator and Updater.</p>
-<h3 id="signer">Signer</h3>
+<h3 id="Signer">Signer</h3>
 <p>The Signer must only accept a PSBT. The Signer must only use the UTXOs
 provided in the PSBT to produce signatures for inputs. Before signing a
 non-witness input, the Signer must verify that the TXID of the
@@ -243,7 +237,7 @@ Before signing a witness input, the Signer must verify that the
 witnessScript (if provided) matches the hash specified in the UTXO or
 the redeemScript, and the redeemScript (if provided) matches the hash in
 the UTXO. The Signer may choose to fail to sign a segwit input if a
-non-witness UTXO is not provided. [6] The Signer should not need any
+non-witness UTXO is not provided. <sup class="footnote-reference"><a href="#6">6</a></sup> The Signer should not need any
 additional data sources, as all necessary information is provided in the
 PSBT format. The Signer must only add data to a PSBT. Any signatures
 created by the Signer must be added as a &quot;Partial Signature&quot; key-value
@@ -256,63 +250,62 @@ confirmation of intent and the consequences of signing the PSBT.</p>
 signer may choose to only sign Segwit inputs.</p>
 <p>A single entity is likely to be both a Signer and an Updater as it can
 update a PSBT with necessary information prior to signing it.</p>
-<h4 id="data-signers-check-for">Data Signers Check For</h4>
+<h4 id="Data_Signers_Check_For">Data Signers Check For</h4>
 <p>For a Signer to only produce valid signatures for what it expects to
 sign, it must check that the following conditions are true:</p>
 <ul>
 <li>If a non-witness UTXO is provided, its hash must match the hash
 specified in the prevout</li>
-<li>If a witness UTXO is provided, no non-witness signature may be
-created</li>
+<li>If a witness UTXO is provided, no non-witness signature may be created</li>
 <li>If a redeemScript is provided, the scriptPubKey must be for that
 redeemScript</li>
 <li>If a witnessScript is provided, the scriptPubKey or the redeemScript
 must be for that witnessScript</li>
-<li>If a sighash type is provided, the signer must check that the
-sighash is acceptable. If unacceptable, they must fail.</li>
+<li>If a sighash type is provided, the signer must check that the sighash
+is acceptable. If unacceptable, they must fail.</li>
 <li>If a sighash type is not provided, the signer should sign using
 SIGHASH_ALL, but may use any sighash type they wish.</li>
 </ul>
-<h5 id="simple-signer-algorithm">Simple Signer Algorithm</h5>
+<h5 id="Simple_Signer_Algorithm">Simple Signer Algorithm</h5>
 <p>A simple signer can use the following algorithm to determine what and
 how to sign</p>
-<pre style="background-color:#fafafa;">
-<code>sign_witness(script_code, i):
-    for key, sighash_type in psbt.inputs[i].items:
-        if sighash_type == None:
-            sighash_type = SIGHASH_ALL
-        if IsMine(key) and IsAcceptable(sighash_type):
-            sign(witness_sighash(script_code, i, input))
-
-sign_non_witness(script_code, i):
-    for key, sighash_type in psbt.inputs[i].items:
-        if sighash_type == None:
-            sighash_type = SIGHASH_ALL
-        if IsMine(key) and IsAcceptable(sighash_type):
-            sign(non_witness_sighash(script_code, i, input))
-
-for input,i in enumerate(psbt.inputs):
-    if non_witness_utxo.exists:
-        assert(sha256d(non_witness_utxo) == psbt.tx.input[i].prevout.hash)
-        if redeemScript.exists:
-            assert(non_witness_utxo.vout[psbt.tx.input[i].prevout.n].scriptPubKey == P2SH(redeemScript))
-            sign_non_witness(redeemScript, i)
-        else:
-            sign_non_witness(non_witness_utxo.vout[psbt.tx.input[i].prevout.n].scriptPubKey, i)
-    else if witness_utxo.exists:
-        if redeemScript.exists:
-            assert(witness_utxo.scriptPubKey == P2SH(redeemScript))
-            script = redeemScript
-        else:
-            script = witness_utxo.scriptPubKey
-        if IsP2WPKH(script):
-            sign_witness(P2PKH(script[2:22]), i)
-        else if IsP2WSH(script):
-            assert(script == P2WSH(witnessScript))
-            sign_witness(witnessScript, i)
-    else:
-        assert False
-</code></pre><h4 id="change-detection">Change Detection</h4>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>sign_witness(script_code, i):
+</span><span>    for key, sighash_type in psbt.inputs[i].items:
+</span><span>        if sighash_type == None:
+</span><span>            sighash_type = SIGHASH_ALL
+</span><span>        if IsMine(key) and IsAcceptable(sighash_type):
+</span><span>            sign(witness_sighash(script_code, i, input))
+</span><span>
+</span><span>sign_non_witness(script_code, i):
+</span><span>    for key, sighash_type in psbt.inputs[i].items:
+</span><span>        if sighash_type == None:
+</span><span>            sighash_type = SIGHASH_ALL
+</span><span>        if IsMine(key) and IsAcceptable(sighash_type):
+</span><span>            sign(non_witness_sighash(script_code, i, input))
+</span><span>
+</span><span>for input,i in enumerate(psbt.inputs):
+</span><span>    if non_witness_utxo.exists:
+</span><span>        assert(sha256d(non_witness_utxo) == psbt.tx.input[i].prevout.hash)
+</span><span>        if redeemScript.exists:
+</span><span>            assert(non_witness_utxo.vout[psbt.tx.input[i].prevout.n].scriptPubKey == P2SH(redeemScript))
+</span><span>            sign_non_witness(redeemScript, i)
+</span><span>        else:
+</span><span>            sign_non_witness(non_witness_utxo.vout[psbt.tx.input[i].prevout.n].scriptPubKey, i)
+</span><span>    else if witness_utxo.exists:
+</span><span>        if redeemScript.exists:
+</span><span>            assert(witness_utxo.scriptPubKey == P2SH(redeemScript))
+</span><span>            script = redeemScript
+</span><span>        else:
+</span><span>            script = witness_utxo.scriptPubKey
+</span><span>        if IsP2WPKH(script):
+</span><span>            sign_witness(P2PKH(script[2:22]), i)
+</span><span>        else if IsP2WSH(script):
+</span><span>            assert(script == P2WSH(witnessScript))
+</span><span>            sign_witness(witnessScript, i)
+</span><span>    else:
+</span><span>        assert False
+</span></code></pre>
+<h4 id="Change_Detection">Change Detection</h4>
 <p>Signers may wish to display the inputs and outputs to users for extra
 verification. In such displays, signers may wish to identify which
 outputs are change outputs in order to omit them to avoid additional
@@ -337,7 +330,7 @@ index and master fingerprint. The signer would construct this script
 policy with extended public keys for all of the inputs and outputs.
 Change outputs would then be identified as being the outputs which have
 the same script policy as the inputs that are being signed.</p>
-<h3 id="combiner">Combiner</h3>
+<h3 id="Combiner">Combiner</h3>
 <p>The Combiner can accept 1 or many PSBTs. The Combiner must merge them
 into one PSBT (if possible), or fail. The resulting PSBT must contain
 all of the key-value pairs from each of the PSBTs. The Combiner must
@@ -356,7 +349,7 @@ independent participants A and B should be functionally equivalent to a
 result obtained from processing the original PSBT by A and then B in a
 sequence. Or, for participants performing fA(psbt) and fB(psbt):
 Combine(fA(psbt), fB(psbt)) == fA(fB(psbt)) == fB(fA(psbt))</p>
-<h3 id="input-finalizer">Input Finalizer</h3>
+<h3 id="Input_Finalizer">Input Finalizer</h3>
 <p>The Input Finalizer must only accept a PSBT. For each input, the Input
 Finalizer determines if the input has enough data to pass validation. If
 it does, it must construct the <code>0x07</code> Finalized scriptSig and <code>0x08</code>
@@ -368,7 +361,7 @@ All other data except the UTXO and unknown fields in the input key-value
 map should be cleared from the PSBT. The UTXO should be kept to allow
 Transaction Extractors to verify the final network serialized
 transaction.</p>
-<h3 id="transaction-extractor">Transaction Extractor</h3>
+<h3 id="Transaction_Extractor">Transaction Extractor</h3>
 <p>The Transaction Extractor must only accept a PSBT. It checks whether all
 inputs have complete scriptSigs and scriptWitnesses by checking for the
 presence of <code>0x07</code> Finalized scriptSig and <code>0x08</code> Finalized
@@ -383,18 +376,18 @@ be able to in order to validate the network serialized transaction at
 the same time.</p>
 <p>A single entity is likely to be both a Transaction Extractor and an
 Input Finalizer.</p>
-<h2 id="encoding">Encoding</h2>
+<h2 id="Encoding">Encoding</h2>
 <p>A PSBT can be represented in two ways: in binary (as a file) or as a
 Base64 string using the encoding described in
-<a href="https://tools.ietf.org/html/rfc4648#section-4">RFC4648</a>.</p>
+<a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc4648#section-4">RFC4648</a>.</p>
 <p>Binary PSBT files should use the <code>.psbt</code> file extension. A MIME type
 name will be added to this document once one has been registered.</p>
-<h2 id="extensibility">Extensibility</h2>
+<h2 id="Extensibility">Extensibility</h2>
 <p>The Partially Signed Transaction format can be extended in the future by
 adding new types for key-value pairs. Backwards compatibilty will still
 be maintained as those new types will be ignored and passed-through by
 signers which do not know about them.</p>
-<h3 id="version-numbers">Version Numbers</h3>
+<h3 id="Version_Numbers">Version Numbers</h3>
 <p>The Version number field exists only as a safeguard in the event that a
 backwards incompatible change is introduced to PSBT. If a parser
 encounters a version number it does not recognize, it should exit
@@ -412,7 +405,7 @@ PSBT with version 1. If an updater is updating a PSBT and needs to add a
 field that is only available in version 1, then it should set the PSBT
 version number to 1 unless a version higher than that is already
 specified.</p>
-<h3 id="procedure-for-new-fields">Procedure For New Fields</h3>
+<h3 id="Procedure_For_New_Fields">Procedure For New Fields</h3>
 <p>New fields should first be proposed on the bitcoin-dev mailing list. If
 a field requires significant description as to its usage, it should be
 accompanied by a separate BIP. The field must be added to the field
@@ -420,22 +413,22 @@ listing tables in the Specification section. Although some PSBT version
 0 implementations encode types as uint8_t rather than compact size, it
 is still safe to add &gt;0xFD fields to PSBT 0, because these old parsers
 ignore unknown fields, and <keytype> is prefixed by its length.</p>
-<h3 id="procedure-for-new-versions">Procedure For New Versions</h3>
+<h3 id="Procedure_For_New_Versions">Procedure For New Versions</h3>
 <p>New PSBT versions must be described in a separate BIP. The BIP may
 reference this BIP and any components of PSBT version 0 that are
 retained in the new version. Any new fields described in the new version
 must be added to the field listing tables in the Specification section.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This transaction format is designed so that it is unable to be properly
 unserialized by normal transaction unserializers. Likewise, a normal
 transaction will not be able to be unserialized by an unserializer for
 the PSBT format.</p>
-<h2 id="examples">Examples</h2>
-<h3 id="manual-coinjoin-workflow">Manual CoinJoin Workflow</h3>
+<h2 id="Examples">Examples</h2>
+<h3 id="Manual_CoinJoin_Workflow">Manual CoinJoin Workflow</h3>
 <p><img src="bip-0174/coinjoin-workflow.svg" align="middle"></img></p>
-<h3 id="2-of-3-multisig-workflow">2-of-3 Multisig Workflow</h3>
+<h3 id="2-of-3_Multisig_Workflow">2-of-3 Multisig Workflow</h3>
 <p><img src="bip-0174/multisig-workflow.svg" align="middle"></img></p>
-<h2 id="test-vectors">Test Vectors</h2>
+<h2 id="Test_Vectors">Test Vectors</h2>
 <p>The following are invalid PSBTs:</p>
 <ul>
 <li>Case: Network transaction, not PSBT format
@@ -447,7 +440,7 @@ AgAAAAEmgXE3Ht/yhek3re6ks3t4AAwFZsuzrWRkFxPKQhcb9gAAAABqRzBEAiBwsiRRI+a/R01gxbUM
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT missing outputs
 <ul>
@@ -458,7 +451,7 @@ cHNidP8BAHUCAAAAASaBcTce3/KF6Tet7qSze3gADAVmy7OtZGQXE8pCFxv2AAAAAAD+////AtPf9QUA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT where one input has a filled scriptSig in the unsigned tx
 <ul>
@@ -469,7 +462,7 @@ cHNidP8BAP0KAQIAAAACqwlJoIxa98SbghL0F+LxWrP1wz3PFTghqBOfh3pbe+QAAAAAakcwRAIgR1lm
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT where inputs and outputs are provided but without an
 unsigned tx
@@ -481,7 +474,7 @@ cHNidP8AAQD9pQEBAAAAAAECiaPHHqtNIOA3G7ukzGmPopXJRjr6Ljl/hTPMti+VZ+UBAAAAFxYAFL4Y
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with duplicate keys in an input
 <ul>
@@ -492,7 +485,7 @@ cHNidP8BAHUCAAAAASaBcTce3/KF6Tet7qSze3gADAVmy7OtZGQXE8pCFxv2AAAAAAD+////AtPf9QUA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid global transaction typed key
 <ul>
@@ -503,7 +496,7 @@ cHNidP8CAAFVAgAAAAEnmiMjpd+1H8RfIg+liw/BPh4zQnkqhdfjbNYzO1y8OQAAAAAA/////wGgWuoL
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid input witness utxo typed key
 <ul>
@@ -514,7 +507,7 @@ cHNidP8BAFUCAAAAASeaIyOl37UfxF8iD6WLD8E+HjNCeSqF1+Ns1jM7XLw5AAAAAAD/////AaBa6gsA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid pubkey length for input partial signature
 typed key
@@ -526,7 +519,7 @@ cHNidP8BAFUCAAAAASeaIyOl37UfxF8iD6WLD8E+HjNCeSqF1+Ns1jM7XLw5AAAAAAD/////AaBa6gsA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid redeemscript typed key
 <ul>
@@ -537,7 +530,7 @@ cHNidP8BAFUCAAAAASeaIyOl37UfxF8iD6WLD8E+HjNCeSqF1+Ns1jM7XLw5AAAAAAD/////AaBa6gsA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid witnessscript typed key
 <ul>
@@ -548,10 +541,10 @@ cHNidP8BAFUCAAAAASeaIyOl37UfxF8iD6WLD8E+HjNCeSqF1+Ns1jM7XLw5AAAAAAD/////AaBa6gsA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
-<li>Case: PSBT with invalid pubkey in input BIP 32 derivation paths
-typed key
+<li>Case: PSBT with invalid pubkey in input BIP 32 derivation paths typed
+key
 <ul>
 <li>Bytes in Hex:
 70736274ff0100550200000001279a2323a5dfb51fc45f220fa58b0fc13e1e3342792a85d7e36cd6333b5cbc390000000000ffffffff01a05aea0b000000001976a914ffe9c0061097cc3b636f2cb0460fa4fc427d2b4588ac0000000000010120955eea0b0000000017a9146345200f68d189e1adc0df1c4d16ea8f14c0dbeb87220203b1341ccba7683b6af4f1238cd6e97e7167d569fac47f1e48d47541844355bd4646304302200424b58effaaa694e1559ea5c93bbfd4a89064224055cdf070b6771469442d07021f5c8eb0fea6516d60b8acb33ad64ede60e8785bfb3aa94b99bdf86151db9a9a010104220020771fd18ad459666dd49f3d564e3dbc42f4c84774e360ada16816a8ed488d5681010547522103b1341ccba7683b6af4f1238cd6e97e7167d569fac47f1e48d47541844355bd462103de55d1e1dac805e3f8a58c1fbf9b94c02f3dbaafe127fefca4995f26f82083bd52ae210603b1341ccba7683b6af4f1238cd6e97e7167d569fac47f1e48d47541844355bd10b4a6ba67000000800000008004000080220603de55d1e1dac805e3f8a58c1fbf9b94c02f3dbaafe127fefca4995f26f82083bd10b4a6ba670000008000000080050000800000</li>
@@ -560,7 +553,7 @@ cHNidP8BAFUCAAAAASeaIyOl37UfxF8iD6WLD8E+HjNCeSqF1+Ns1jM7XLw5AAAAAAD/////AaBa6gsA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid non-witness utxo typed key
 <ul>
@@ -571,7 +564,7 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid final scriptsig typed key
 <ul>
@@ -582,7 +575,7 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid final script witness typed key
 <ul>
@@ -593,10 +586,10 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
-<li>Case: PSBT with invalid pubkey in output BIP 32 derivation paths
-typed key
+<li>Case: PSBT with invalid pubkey in output BIP 32 derivation paths typed
+key
 <ul>
 <li>Bytes in Hex:
 70736274ff01009a020000000258e87a21b56daf0c23be8e7070456c336f7cbaa5c8757924f545887bb2abdd750000000000ffffffff838d0427d0ec650a68aa46bb0b098aea4422c071b2ca78352a077959d07cea1d0100000000ffffffff0270aaf00800000000160014d85c2b71d0060b09c9886aeb815e50991dda124d00e1f5050000000016001400aea9a2e5f0f876a588df5546e8742d1d87008f00000000000100bb0200000001aad73931018bd25f84ae400b68848be09db706eac2ac18298babee71ab656f8b0000000048473044022058f6fc7c6a33e1b31548d481c826c015bd30135aad42cd67790dab66d2ad243b02204a1ced2604c6735b6393e5b41691dd78b00f0c5942fb9f751856faa938157dba01feffffff0280f0fa020000000017a9140fb9463421696b82c833af241c78c17ddbde493487d0f20a270100000017a91429ca74f8a08f81999428185c97b5d852e4063f6187650000000107da00473044022074018ad4180097b873323c0015720b3684cc8123891048e7dbcd9b55ad679c99022073d369b740e3eb53dcefa33823c8070514ca55a7dd9544f157c167913261118c01483045022100f61038b308dc1da865a34852746f015772934208c6d24454393cd99bdf2217770220056e675a675a6d0a02b85b14e5e29074d8a25a9b5760bea2816f661910a006ea01475221029583bf39ae0a609747ad199addd634fa6108559d6c5cd39b4c2183f1ab96e07f2102dab61ff49a14db6a7d02b0cd1fbb78fc4b18312b5b4e54dae4dba2fbfef536d752ae0001012000c2eb0b0000000017a914b7f5faf40e3d40a5a459b1db3535f2b72fa921e8870107232200208c2353173743b595dfb4a07b72ba8e42e3797da74e87fe7d9d7497e3b20289030108da0400473044022062eb7a556107a7c73f45ac4ab5a1dddf6f7075fb1275969a7f383efff784bcb202200c05dbb7470dbf2f08557dd356c7325c1ed30913e996cd3840945db12228da5f01473044022065f45ba5998b59a27ffe1a7bed016af1f1f90d54b3aa8f7450aa5f56a25103bd02207f724703ad1edb96680b284b56d4ffcb88f7fb759eabbe08aa30f29b851383d20147522103089dc10c7ac6db54f91329af617333db388cead0c231f723379d1b99030b02dc21023add904f3d6dcf59ddb906b0dee23529b7ffb9ed50e5e86151926860221f0e7352ae00210203a9a4c37f5996d3aa25dbac6b570af0650394492942460b354753ed9eeca58710d90c6a4f000000800000008004000080002202027f6399757d2eff55a136ad02c684b1838b6556e5f1b6b34282a94b6b5005109610d90c6a4f00000080000000800500008000</li>
@@ -605,7 +598,7 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid input sighash type typed key
 <ul>
@@ -616,7 +609,7 @@ cHNidP8BAHMCAAAAATAa6YblFqHsisW0vGVz0y+DtGXiOtdhZ9aLOOcwtNvbAAAAAAD/////AnR7AQAA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid output redeemScript typed key
 <ul>
@@ -627,7 +620,7 @@ cHNidP8BAHMCAAAAATAa6YblFqHsisW0vGVz0y+DtGXiOtdhZ9aLOOcwtNvbAAAAAAD/////AnR7AQAA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with invalid output witnessScript typed key
 <ul>
@@ -638,7 +631,7 @@ cHNidP8BAHMCAAAAATAa6YblFqHsisW0vGVz0y+DtGXiOtdhZ9aLOOcwtNvbAAAAAAD/////AnR7AQAA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with unsigned tx serialized with witness serialization
 format
@@ -661,10 +654,10 @@ cHNidP8BAHUCAAAAASaBcTce3/KF6Tet7qSze3gADAVmy7OtZGQXE8pCFxv2AAAAAAD+////AtPf9QUA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
-<li>Case: PSBT with one P2PKH input and one P2SH-P2WPKH input. First
-input is signed and finalized. Outputs are empty
+<li>Case: PSBT with one P2PKH input and one P2SH-P2WPKH input. First input
+is signed and finalized. Outputs are empty
 <ul>
 <li>Bytes in Hex:
 70736274ff0100a00200000002ab0949a08c5af7c49b8212f417e2f15ab3f5c33dcf153821a8139f877a5b7be40000000000feffffffab0949a08c5af7c49b8212f417e2f15ab3f5c33dcf153821a8139f877a5b7be40100000000feffffff02603bea0b000000001976a914768a40bbd740cbe81d988e71de2a4d5c71396b1d88ac8e240000000000001976a9146f4620b553fa095e721b9ee0efe9fa039cca459788ac000000000001076a47304402204759661797c01b036b25928948686218347d89864b719e1f7fcf57d1e511658702205309eabf56aa4d8891ffd111fdf1336f3a29da866d7f8486d75546ceedaf93190121035cdc61fc7ba971c0b501a646a2a83b102cb43881217ca682dc86e2d73fa882920001012000e1f5050000000017a9143545e6e33b832c47050f24d3eeb93c9c03948bc787010416001485d13537f2e265405a34dbafa9e3dda01fb82308000000</li>
@@ -673,7 +666,7 @@ cHNidP8BAKACAAAAAqsJSaCMWvfEm4IS9Bfi8Vqz9cM9zxU4IagTn4d6W3vkAAAAAAD+////qwlJoIxa
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with one P2PKH input which has a non-final scriptSig and
 has a sighash type specified. Outputs are empty
@@ -685,7 +678,7 @@ cHNidP8BAHUCAAAAASaBcTce3/KF6Tet7qSze3gADAVmy7OtZGQXE8pCFxv2AAAAAAD+////AtPf9QUA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with one P2PKH input and one P2SH-P2WPKH input both with
 non-final scriptSigs. P2SH-P2WPKH input's redeemScript is available.
@@ -698,11 +691,11 @@ cHNidP8BAKACAAAAAqsJSaCMWvfEm4IS9Bfi8Vqz9cM9zxU4IagTn4d6W3vkAAAAAAD+////qwlJoIxa
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with one P2SH-P2WSH input of a 2-of-2 multisig,
-redeemScript, witnessScript, and keypaths are available. Contains
-one signature.
+redeemScript, witnessScript, and keypaths are available. Contains one
+signature.
 <ul>
 <li>Bytes in Hex:
 70736274ff0100550200000001279a2323a5dfb51fc45f220fa58b0fc13e1e3342792a85d7e36cd6333b5cbc390000000000ffffffff01a05aea0b000000001976a914ffe9c0061097cc3b636f2cb0460fa4fc427d2b4588ac0000000000010120955eea0b0000000017a9146345200f68d189e1adc0df1c4d16ea8f14c0dbeb87220203b1341ccba7683b6af4f1238cd6e97e7167d569fac47f1e48d47541844355bd4646304302200424b58effaaa694e1559ea5c93bbfd4a89064224055cdf070b6771469442d07021f5c8eb0fea6516d60b8acb33ad64ede60e8785bfb3aa94b99bdf86151db9a9a010104220020771fd18ad459666dd49f3d564e3dbc42f4c84774e360ada16816a8ed488d5681010547522103b1341ccba7683b6af4f1238cd6e97e7167d569fac47f1e48d47541844355bd462103de55d1e1dac805e3f8a58c1fbf9b94c02f3dbaafe127fefca4995f26f82083bd52ae220603b1341ccba7683b6af4f1238cd6e97e7167d569fac47f1e48d47541844355bd4610b4a6ba67000000800000008004000080220603de55d1e1dac805e3f8a58c1fbf9b94c02f3dbaafe127fefca4995f26f82083bd10b4a6ba670000008000000080050000800000</li>
@@ -711,7 +704,7 @@ cHNidP8BAFUCAAAAASeaIyOl37UfxF8iD6WLD8E+HjNCeSqF1+Ns1jM7XLw5AAAAAAD/////AaBa6gsA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with one P2WSH input of a 2-of-2 multisig. witnessScript,
 keypaths, and global xpubs are available. Contains no signatures.
@@ -724,7 +717,7 @@ cHNidP8BAFICAAAAAZ38ZijCbFiZ/hvT3DOGZb/VXXraEPYiCXPfLTht7BJ2AQAAAAD/////AfA9zR0A
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with unknown types in the inputs.
 <ul>
@@ -735,7 +728,7 @@ cHNidP8BAD8CAAAAAf//////////////////////////////////////////AAAAAAD/////AQAAAAAA
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with `PSBT_GLOBAL_XPUB`.
 <ul>
@@ -746,7 +739,7 @@ cHNidP8BAJ0BAAAAAnEOp2q0XFy2Q45gflnMA3YmmBgFrp4N/ZCJASq7C+U1AQAAAAD/////GQmU1qiz
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with global unsigned tx that has 0 inputs and 0 outputs
 <ul>
@@ -757,7 +750,7 @@ cHNidP8BAAoAAAAAAAAAAAAAAA==</li>
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: PSBT with 0 inputs
 <ul>
@@ -779,7 +772,7 @@ cHNidP8BAKACAAAAAqsJSaCMWvfEm4IS9Bfi8Vqz9cM9zxU4IagTn4d6W3vkAAAAAAD+////qwlJoIxa
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: redeemScript with non-witness UTXO does not match the
 scriptPubKey
@@ -791,7 +784,7 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Case: redeemScript with witness UTXO does not match the scriptPubKey
 <ul>
@@ -802,10 +795,9 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
-<li>Case: witnessScript with witness UTXO does not match the
-redeemScript
+<li>Case: witnessScript with witness UTXO does not match the redeemScript
 <ul>
 <li>Bytes in Hex:
 70736274ff01009a020000000258e87a21b56daf0c23be8e7070456c336f7cbaa5c8757924f545887bb2abdd750000000000ffffffff838d0427d0ec650a68aa46bb0b098aea4422c071b2ca78352a077959d07cea1d0100000000ffffffff0270aaf00800000000160014d85c2b71d0060b09c9886aeb815e50991dda124d00e1f5050000000016001400aea9a2e5f0f876a588df5546e8742d1d87008f00000000000100bb0200000001aad73931018bd25f84ae400b68848be09db706eac2ac18298babee71ab656f8b0000000048473044022058f6fc7c6a33e1b31548d481c826c015bd30135aad42cd67790dab66d2ad243b02204a1ced2604c6735b6393e5b41691dd78b00f0c5942fb9f751856faa938157dba01feffffff0280f0fa020000000017a9140fb9463421696b82c833af241c78c17ddbde493487d0f20a270100000017a91429ca74f8a08f81999428185c97b5d852e4063f618765000000220202dab61ff49a14db6a7d02b0cd1fbb78fc4b18312b5b4e54dae4dba2fbfef536d7483045022100f61038b308dc1da865a34852746f015772934208c6d24454393cd99bdf2217770220056e675a675a6d0a02b85b14e5e29074d8a25a9b5760bea2816f661910a006ea01010304010000000104475221029583bf39ae0a609747ad199addd634fa6108559d6c5cd39b4c2183f1ab96e07f2102dab61ff49a14db6a7d02b0cd1fbb78fc4b18312b5b4e54dae4dba2fbfef536d752ae2206029583bf39ae0a609747ad199addd634fa6108559d6c5cd39b4c2183f1ab96e07f10d90c6a4f000000800000008000000080220602dab61ff49a14db6a7d02b0cd1fbb78fc4b18312b5b4e54dae4dba2fbfef536d710d90c6a4f0000008000000080010000800001012000c2eb0b0000000017a914b7f5faf40e3d40a5a459b1db3535f2b72fa921e8872202023add904f3d6dcf59ddb906b0dee23529b7ffb9ed50e5e86151926860221f0e73473044022065f45ba5998b59a27ffe1a7bed016af1f1f90d54b3aa8f7450aa5f56a25103bd02207f724703ad1edb96680b284b56d4ffcb88f7fb759eabbe08aa30f29b851383d2010103040100000001042200208c2353173743b595dfb4a07b72ba8e42e3797da74e87fe7d9d7497e3b2028903010547522103089dc10c7ac6db54f91329af617333db388cead0c231f723379d1b99030b02dc21023add904f3d6dcf59ddb906b0dee23529b7ffb9ed50e5e86151926860221f0e7352ad2206023add904f3d6dcf59ddb906b0dee23529b7ffb9ed50e5e86151926860221f0e7310d90c6a4f000000800000008003000080220603089dc10c7ac6db54f91329af617333db388cead0c231f723379d1b99030b02dc10d90c6a4f00000080000000800200008000220203a9a4c37f5996d3aa25dbac6b570af0650394492942460b354753ed9eeca5877110d90c6a4f000000800000008004000080002202027f6399757d2eff55a136ad02c684b1838b6556e5f1b6b34282a94b6b5005109610d90c6a4f00000080000000800500008000</li>
@@ -817,8 +809,9 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 <p>The private keys in the tests below are derived from the following
 master private key:</p>
 <ul>
-<li>Extended Private Key:
-tprv8ZgxMBicQKsPd9TeAdPADNnSyH9SSUUbTVeFszDE23Ki6TBB5nCefAdHkK8Fm3qMQR6sHwA56zqRmKmxnHk37JkiFzvncDqoKmPWubu7hDF
+<li>
+<p>Extended Private Key:
+tprv8ZgxMBicQKsPd9TeAdPADNnSyH9SSUUbTVeFszDE23Ki6TBB5nCefAdHkK8Fm3qMQR6sHwA56zqRmKmxnHk37JkiFzvncDqoKmPWubu7hDF</p>
 <ul>
 <li>Seed:
 cUkG8i1RFfWGWy5ziR11zJ5V4U4W3viSFCfyJmZnvQaUsd1xuF3T</li>
@@ -828,10 +821,10 @@ cUkG8i1RFfWGWy5ziR11zJ5V4U4W3viSFCfyJmZnvQaUsd1xuF3T</li>
 <p>A creator creating a PSBT for a transaction which creates the following
 outputs:</p>
 <ul>
-<li>scriptPubKey: <code>0014d85c2b71d0060b09c9886aeb815e50991dda124d</code>,
-Amount: <code>1.49990000</code></li>
-<li>scriptPubKey: <code>001400aea9a2e5f0f876a588df5546e8742d1d87008f</code>,
-Amount: <code>1.00000000</code></li>
+<li>scriptPubKey: <code>0014d85c2b71d0060b09c9886aeb815e50991dda124d</code>, Amount:
+<code>1.49990000</code></li>
+<li>scriptPubKey: <code>001400aea9a2e5f0f876a588df5546e8742d1d87008f</code>, Amount:
+<code>1.00000000</code></li>
 </ul>
 <p>and spends the following inputs:</p>
 <ul>
@@ -864,12 +857,12 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </li>
 <li>Previous Transactions:
 <ul>
-<li><pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">0200000000010158e87a21b56daf0c23be8e7070456c336f7cbaa5c8757924f545887bb2abdd7501000000171600145f275f436b09a8cc9a2eb2a2f528485c68a56323feffffff02d8231f1b0100000017a914aed962d6654f9a2b36608eb9d64d2b260db4f1118700c2eb0b0000000017a914b7f5faf40e3d40a5a459b1db3535f2b72fa921e88702483045022100a22edcc6e5bc511af4cc4ae0de0fcd75c7e04d8c1c3a8aa9d820ed4b967384ec02200642963597b9b1bc22c75e9f3e117284a962188bf5e8a74c895089046a20ad770121035509a48eb623e10aace8bfd0212fdb8a8e5af3c94b0b133b95e114cab89e4f7965000000
-</span></code></pre></li>
-<li><pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">0200000001aad73931018bd25f84ae400b68848be09db706eac2ac18298babee71ab656f8b0000000048473044022058f6fc7c6a33e1b31548d481c826c015bd30135aad42cd67790dab66d2ad243b02204a1ced2604c6735b6393e5b41691dd78b00f0c5942fb9f751856faa938157dba01feffffff0280f0fa020000000017a9140fb9463421696b82c833af241c78c17ddbde493487d0f20a270100000017a91429ca74f8a08f81999428185c97b5d852e4063f618765000000
-</span></code></pre></li>
+<li>
+<p>0200000000010158e87a21b56daf0c23be8e7070456c336f7cbaa5c8757924f545887bb2abdd7501000000171600145f275f436b09a8cc9a2eb2a2f528485c68a56323feffffff02d8231f1b0100000017a914aed962d6654f9a2b36608eb9d64d2b260db4f1118700c2eb0b0000000017a914b7f5faf40e3d40a5a459b1db3535f2b72fa921e88702483045022100a22edcc6e5bc511af4cc4ae0de0fcd75c7e04d8c1c3a8aa9d820ed4b967384ec02200642963597b9b1bc22c75e9f3e117284a962188bf5e8a74c895089046a20ad770121035509a48eb623e10aace8bfd0212fdb8a8e5af3c94b0b133b95e114cab89e4f7965000000</p>
+</li>
+<li>
+<p>0200000001aad73931018bd25f84ae400b68848be09db706eac2ac18298babee71ab656f8b0000000048473044022058f6fc7c6a33e1b31548d481c826c015bd30135aad42cd67790dab66d2ad243b02204a1ced2604c6735b6393e5b41691dd78b00f0c5942fb9f751856faa938157dba01feffffff0280f0fa020000000017a9140fb9463421696b82c833af241c78c17ddbde493487d0f20a270100000017a91429ca74f8a08f81999428185c97b5d852e4063f618765000000</p>
+</li>
 </ul>
 </li>
 <li>Public Keys
@@ -914,10 +907,8 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 P2PKH and P2WPKH spends and uses RFC6979 for nonce generation and has
 the following keys:</p>
 <ul>
-<li><code>cP53pDbR5WtAD8dYAW9hhTjuvvTVaEiQBdrz9XPrgLBeRFiyCbQr</code>
-(<code>m/0'/0'/0'</code>)</li>
-<li><code>cR6SXDoyfQrcp4piaiHE97Rsgta9mNhGTen9XeonVgwsh4iSgw6d</code>
-(<code>m/0'/0'/2'</code>)</li>
+<li><code>cP53pDbR5WtAD8dYAW9hhTjuvvTVaEiQBdrz9XPrgLBeRFiyCbQr</code> (<code>m/0'/0'/0'</code>)</li>
+<li><code>cR6SXDoyfQrcp4piaiHE97Rsgta9mNhGTen9XeonVgwsh4iSgw6d</code> (<code>m/0'/0'/2'</code>)</li>
 </ul>
 <p>must create this PSBT:</p>
 <ul>
@@ -928,10 +919,8 @@ cHNidP8BAJoCAAAAAljoeiG1ba8MI76OcHBFbDNvfLqlyHV5JPVFiHuyq911AAAAAAD/////g40EJ9Ds
 </ul>
 <p>Given the above updated PSBT, a signer with the following keys:</p>
 <ul>
-<li><code>cT7J9YpCwY3AVRFSjN6ukeEeWY6mhpbJPxRaDaP5QTdygQRxP9Au</code>
-(<code>m/0'/0'/1'</code>)</li>
-<li><code>cNBc3SWUip9PPm1GjRoLEJT6T41iNzCYtD7qro84FMnM5zEqeJsE</code>
-(<code>m/0'/0'/3'</code>)</li>
+<li><code>cT7J9YpCwY3AVRFSjN6ukeEeWY6mhpbJPxRaDaP5QTdygQRxP9Au</code> (<code>m/0'/0'/1'</code>)</li>
+<li><code>cNBc3SWUip9PPm1GjRoLEJT6T41iNzCYtD7qro84FMnM5zEqeJsE</code> (<code>m/0'/0'/3'</code>)</li>
 </ul>
 <p>must create this PSBT:</p>
 <ul>
@@ -962,18 +951,20 @@ transaction:</p>
 </ul>
 <p>Given these two PSBTs with unknown key-value pairs:</p>
 <ul>
-<li>Bytes in Hex:
-70736274ff01003f0200000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000ffffffff010000000000000000036a0100000000000af00102030405060708090f0102030405060708090a0b0c0d0e0f000af00102030405060708090f0102030405060708090a0b0c0d0e0f000af00102030405060708090f0102030405060708090a0b0c0d0e0f00
+<li>
+<p>Bytes in Hex:
+70736274ff01003f0200000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000ffffffff010000000000000000036a0100000000000af00102030405060708090f0102030405060708090a0b0c0d0e0f000af00102030405060708090f0102030405060708090a0b0c0d0e0f000af00102030405060708090f0102030405060708090a0b0c0d0e0f00</p>
 <ul>
 <li>Base64 String:
 cHNidP8BAD8CAAAAAf//////////////////////////////////////////AAAAAAD/////AQAAAAAAAAAAA2oBAAAAAAAK8AECAwQFBgcICQ8BAgMEBQYHCAkKCwwNDg8ACvABAgMEBQYHCAkPAQIDBAUGBwgJCgsMDQ4PAArwAQIDBAUGBwgJDwECAwQFBgcICQoLDA0ODwA=</li>
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
-<li>Bytes in Hex:
-70736274ff01003f0200000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000ffffffff010000000000000000036a0100000000000af00102030405060708100f0102030405060708090a0b0c0d0e0f000af00102030405060708100f0102030405060708090a0b0c0d0e0f000af00102030405060708100f0102030405060708090a0b0c0d0e0f00
+<li>
+<p>Bytes in Hex:
+70736274ff01003f0200000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000ffffffff010000000000000000036a0100000000000af00102030405060708100f0102030405060708090a0b0c0d0e0f000af00102030405060708100f0102030405060708090a0b0c0d0e0f000af00102030405060708100f0102030405060708090a0b0c0d0e0f00</p>
 <ul>
 <li>Base64 String:
 cHNidP8BAD8CAAAAAf//////////////////////////////////////////AAAAAAD/////AQAAAAAAAAAAA2oBAAAAAAAK8AECAwQFBgcIEA8BAgMEBQYHCAkKCwwNDg8ACvABAgMEBQYHCBAPAQIDBAUGBwgJCgsMDQ4PAArwAQIDBAUGBwgQDwECAwQFBgcICQoLDA0ODwA=</li>
@@ -988,48 +979,58 @@ following PSBT:</p>
 <li>Base64 String:
 cHNidP8BAD8CAAAAAf//////////////////////////////////////////AAAAAAD/////AQAAAAAAAAAAA2oBAAAAAAAK8AECAwQFBgcICQ8BAgMEBQYHCAkKCwwNDg8K8AECAwQFBgcIEA8BAgMEBQYHCAkKCwwNDg8ACvABAgMEBQYHCAkPAQIDBAUGBwgJCgsMDQ4PCvABAgMEBQYHCBAPAQIDBAUGBwgJCgsMDQ4PAArwAQIDBAUGBwgJDwECAwQFBgcICQoLDA0ODwrwAQIDBAUGBwgQDwECAwQFBgcICQoLDA0ODwA=</li>
 </ul>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <references/>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>The reference implementation of the PSBT format is available at
-<a href="https://github.com/achow101/bitcoin/tree/psbt">https://github.com/achow101/bitcoin/tree/psbt</a>.</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<a rel="noopener" target="_blank" href="https://github.com/achow101/bitcoin/tree/psbt">https://github.com/achow101/bitcoin/tree/psbt</a>.</p>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>Special thanks to Pieter Wuille for suggesting that such a transaction
 format should be made and for coming up with the name and abbreviation
 of PSBT.</p>
 <p>Thanks to Pieter Wuille, Gregory Maxwell, Jonathan Underwood, Daniel
 Cousens and those who commented on the bitcoin-dev mailing list for
 additional comments and suggestions for improving this proposal.</p>
-<ol>
-<li><strong>Why is the separator here <code>0x00</code> instead of <code>0xff</code>?</strong> The
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><strong>Why is the separator here <code>0x00</code> instead of <code>0xff</code>?</strong> The
 separator here is used to distinguish between each chunk of data. A
 separator of 0x00 would mean that the unserializer can read it as a
 key length of 0, which would never occur with actual keys. It can
 thus be used as a separator and allow for easier unserializer
-implementation.</li>
-<li><strong>Why Use a separator after the magic bytes?</strong> The separator is part
-of the 5 byte header for PSBT. This byte is a separator of <code>0xff</code>
-because this will cause any non-PSBT unserializer to fail to
+implementation.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><strong>Why Use a separator after the magic bytes?</strong> The separator is
+part of the 5 byte header for PSBT. This byte is a separator of
+<code>0xff</code> because this will cause any non-PSBT unserializer to fail to
 properly unserialize the PSBT as a normal transaction. Likewise,
 since the 5 byte header is fixed, no transaction in the non-PSBT
-format will be able to be unserialized by a PSBT unserializer.</li>
-<li><strong>Why can both UTXO types be provided?</strong> Many wallets began
+format will be able to be unserialized by a PSBT unserializer.</p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><strong>Why can both UTXO types be provided?</strong> Many wallets began
 requiring the full previous transaction (i.e.
 <code>PSBT_IN_NON_WITNESS_UTXO</code>) for segwit inputs when PSBT was already
 in use. In order to be compatible with software which were expecting
-<code>PSBT_IN_WITNESS_UTXO</code>, both UTXO types must be allowed.</li>
-<li><strong>Why do we need per-output data?</strong> Per-output data allows signers
+<code>PSBT_IN_WITNESS_UTXO</code>, both UTXO types must be allowed.</p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><strong>Why do we need per-output data?</strong> Per-output data allows signers
 to verify that the outputs are going to the intended recipient. The
 output data can also be use by signers to determine which outputs
 are change outputs and verify that the change is returning to the
-correct place.</li>
-<li><strong>Why can the values be arbitrarily chosen?</strong> When there are
+correct place.</p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><strong>Why can the values be arbitrarily chosen?</strong> When there are
 duplicated keys, the values that can be chosen will either be valid
 or invalid. If the values are invalid, a signer would simply produce
 an invalid signature and the final transaction itself would be
 invalid. If the values are valid, then it does not matter which is
-chosen as either way the transaction is still valid.</li>
-<li><strong>Why would non-witness UTXOs be provided for segwit inputs?</strong> The
+chosen as either way the transaction is still valid.</p>
+</div>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<p><strong>Why would non-witness UTXOs be provided for segwit inputs?</strong> The
 sighash algorithm for Segwit specified in BIP 143 is known to have
 an issue where an attacker could trick a user to sending Bitcoin to
 fees if they are able to convince the user to sign a malicious
@@ -1039,8 +1040,8 @@ without effecting the signature for a particular input. In order to
 prevent this kind of attack, many wallets are requiring that the
 full previous transaction (i.e. <code>PSBT_IN_NON_WITNESS_UTXO</code>) be
 provided to ensure that the amounts of other inputs are not being
-tampered with.</li>
-</ol>
+tampered with.</p>
+</div>
 
     </div>
 
@@ -1048,7 +1049,7 @@ tampered with.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

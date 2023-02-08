@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,17 +46,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 50
-  Title: March 2013 Chain Fork Post-Mortem
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0050
-  Status: Final
-  Type: Informational
-  Created: 2013-03-20
-  License: PD
-</span></code></pre><h2 id="what-went-wrong">What went wrong</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 50
+</span><span>  Title: March 2013 Chain Fork Post-Mortem
+</span><span>  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0050
+</span><span>  Status: Final
+</span><span>  Type: Informational
+</span><span>  Created: 2013-03-20
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="What_went_wrong">What went wrong</h2>
 <p>A block that had a larger number of total transaction inputs than
 previously seen was mined and broadcasted. Bitcoin 0.8 nodes were able
 to handle this, but some pre-0.8 Bitcoin nodes rejected it, causing an
@@ -70,11 +70,11 @@ Slush downgraded their Bitcoin 0.8 nodes to 0.7 so their pools would
 also reject the larger block. This placed majority hashpower on the
 chain without the larger block, thus eventually causing the 0.8 nodes to
 reorganise to the pre-0.8 chain.</p>
-<p>During this time there was at least <a href="https://bitcointalk.org/index.php?topic=152348.0">one large double
+<p>During this time there was at least <a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=152348.0">one large double
 spend</a>. However, it
 was done by someone experimenting to see if it was possible and was not
 intended to be malicious.</p>
-<h2 id="what-went-right">What went right</h2>
+<h2 id="What_went_right">What went right</h2>
 <ul>
 <li>The split was detected very quickly.</li>
 <li>The right people were online and available in IRC or could be
@@ -85,21 +85,19 @@ canonical, despite the fact that this caused them to sacrifice
 significant amounts of money.</li>
 <li>Deposits to the major exchanges and payments via BitPay were also
 suspended (and then un-suspended) very quickly.</li>
-<li>Fortunately, the only attack on a merchant was done by someone who
-was not intending to actually steal money.</li>
+<li>Fortunately, the only attack on a merchant was done by someone who was
+not intending to actually steal money.</li>
 </ul>
-<h2 id="root-cause">Root cause</h2>
+<h2 id="Root_cause">Root cause</h2>
 <p>Bitcoin versions prior to 0.8 configure an insufficient number of
 Berkeley DB locks to process large but otherwise valid blocks. Berkeley
 DB locks have to be manually configured by API users depending on
 anticipated load. The manual says this:</p>
-<ul>
-<li>The recommended algorithm for selecting the maximum number of locks,
+<p>The recommended algorithm for selecting the maximum number of locks,
 lockers, and lock objects is to run the application under stressful
-conditions and then review the lock system's statistics to determine
-the maximum number of locks, lockers, and lock objects that were
-used. Then, double these values for safety.</li>
-</ul>
+conditions and then review the lock system's statistics to determine the
+maximum number of locks, lockers, and lock objects that were used. Then,
+double these values for safety.</p>
 <p>With the insufficiently high BDB lock configuration, it implicitly had
 become a network consensus rule determining block validity (albeit an
 inconsistent and unsafe rule, since the lock usage could vary from node
@@ -124,8 +122,8 @@ re-orgs that peers cannot validate, because the contents of each node's
 blkindex.dat database is not identical, and the number of locks required
 depends on the exact arrangement of the blkindex.dat on disk (locks are
 acquired per-page).</p>
-<h2 id="action-items">Action items</h2>
-<h3 id="immediately">Immediately</h3>
+<h2 id="Action_items">Action items</h2>
+<h3 id="Immediately">Immediately</h3>
 <p><strong>Done</strong>: Release a version 0.8.1, forked directly from 0.8.0, that, for
 the next two months has the following new rules:</p>
 <ol>
@@ -140,7 +138,7 @@ they absolutely cannot.</li>
 <li>Over the next 2 months, send a series of alerts to users of older
 versions, pointing to the web page.</li>
 </ol>
-<h3 id="alert-system">Alert system</h3>
+<h3 id="Alert_system">Alert system</h3>
 <p><strong>Done</strong>: Review who has access to the alert system keys, make sure they
 all have contact information for each other, and get good timezone
 overlap by people with access to the keys.</p>
@@ -153,18 +151,18 @@ as-close-to-real-world conditions as possible).</p>
 <p>Idea from Michael Gronager: encourage merchants/exchanges (and maybe
 pools) to run new code behind a bitcoind running the network-majority
 version.</p>
-<h3 id="safe-mode">Safe mode</h3>
+<h3 id="Safe_mode">Safe mode</h3>
 <p><strong>Done</strong>: Perhaps trigger an alert if there is a long enough side chain
 detected, even if it is not the main chain. Pools could use this to
 automatically suspend payouts if a long side-chain suddenly appeared out
 of nowhere (it’s hard for an attacker to mine such a thing).</p>
-<h3 id="testing">Testing</h3>
+<h3 id="Testing">Testing</h3>
 <p>Start running bots on the testnet that grab some coins from a testnet
 faucet, generate large numbers of random transactions that
 split/recombine them and then send them back to the faucet. Randomized
 online testing on the testnet might have revealed the pathological block
 type earlier.</p>
-<h3 id="double-spending">Double spending</h3>
+<h3 id="Double_spending">Double spending</h3>
 <p>A double spend attack was successful, despite that both sides of the
 chain heard about the transactions in the same order. The reason is most
 likely that the memory pools were cleared when the mining pool nodes
@@ -172,11 +170,11 @@ were downgraded. A solution is for nodes to sync their mempools to each
 other at startup, however, this requires a memory pool expiry policy to
 be implemented as currently node restarts are the only way for
 unconfirmed transactions to be evicted from the system.</p>
-<h3 id="resolution">Resolution</h3>
+<h3 id="Resolution">Resolution</h3>
 <p>On 16 August, 2013 block 252,451
 (0x0000000000000024b58eeb1134432f00497a6a860412996e7a260f47126eed07) was
 accepted by the main network, forking unpatched nodes off the network.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -185,7 +183,7 @@ accepted by the main network, forking unpatched nodes off the network.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0351.mediawiki"
 +++
 
-``` 
-  BIP: 351
-  Layer: Applications
-  Title: Private Payments
-  Author: Alfred Hodler <alfred_hodler@protonmail.com>
-          Clark Moody <clark@clarkmoody.com>
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0351
-  Status: Draft
-  Type: Informational
-  Created: 2022-07-10
-  License: MIT
-```
+      BIP: 351
+      Layer: Applications
+      Title: Private Payments
+      Author: Alfred Hodler <alfred_hodler@protonmail.com>
+              Clark Moody <clark@clarkmoody.com>
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0351
+      Status: Draft
+      Type: Informational
+      Created: 2022-07-10
+      License: MIT
 
 ## Abstract
 
@@ -74,21 +72,20 @@ server is vulnerable to takedown remotely and physically.
 **Sharing a BIP47 payment code** addresses most of the above
 shortcomings. However, it introduces the following problems:
 
-  - The BIP uses a notification mechanism that relies on publicly known
-    per-recipient notification addresses. If Alice wants to send funds
-    to Bob, she has to use the same notification address that everyone
-    else uses to notify Bob. If Alice is not careful with coin
-    selection, i.e. ensuring that her notification UTXO is not linked to
-    her, she will publicly expose herself as someone who is trying to
-    send funds to Bob and their relationship becomes permanently visible
-    on the blockchain.
+- The BIP uses a notification mechanism that relies on publicly known
+  per-recipient notification addresses. If Alice wants to send funds to
+  Bob, she has to use the same notification address that everyone else
+  uses to notify Bob. If Alice is not careful with coin selection, i.e.
+  ensuring that her notification UTXO is not linked to her, she will
+  publicly expose herself as someone who is trying to send funds to Bob
+  and their relationship becomes permanently visible on the blockchain.
 
-<!-- end list -->
+<!-- -->
 
-  - The BIP does not say anything about address types. Receiving wallets
-    therefore have to watch all address types that can be created from a
-    single public key. Even then, a sender could send to a script that a
-    receipient cannot spend from.
+- The BIP does not say anything about address types. Receiving wallets
+  therefore have to watch all address types that can be created from a
+  single public key. Even then, a sender could send to a script that a
+  receipient cannot spend from.
 
 ## Method
 
@@ -110,28 +107,28 @@ entirely preserved.
 
 ### Definitions
 
-  - Alice: sender
-  - Bob: recipient
-  - Payment code: static string that Bob generates and shares with
-    others so that he can receive payments
-  - *P*: public key contained in Bob's payment code
-  - *p*: private key associated with Bob's public key *P*
-  - *N*: extended public key used by Alice to derive child keys for each
-    Bob she wants to transact with
-  - *n*: private key associated with Alice's public key *N*
-  - *x*: Alice's secret recipient index, unique for each Bob
-  - *N<sub>x</sub>*: child public key derived from *N* at index *x*
-    (non-hardened)
-  - *n<sub>x</sub>*: private key associated with *N<sub>x</sub>*
-  - *c*: Alice's transaction count toward Bob
-  - *P<sub>c</sub>*: Bob's public key at index *c*
-  - *p<sub>c</sub>*: Bob's private key at index *c*
-  - *A<sub>c</sub>*: Bob's receive address at index *c*
-  - *H*: SHA256 hash function
-  - *\**: EC multiplication
-  - *+*: EC addition
-  - *|*: string concatenation
-  - *\[a..b\]*: string slicing (inclusive of *a*, exclusive of *b*)
+- Alice: sender
+- Bob: recipient
+- Payment code: static string that Bob generates and shares with others
+  so that he can receive payments
+- *P*: public key contained in Bob's payment code
+- *p*: private key associated with Bob's public key *P*
+- *N*: extended public key used by Alice to derive child keys for each
+  Bob she wants to transact with
+- *n*: private key associated with Alice's public key *N*
+- *x*: Alice's secret recipient index, unique for each Bob
+- *N<sub>x</sub>*: child public key derived from *N* at index *x*
+  (non-hardened)
+- *n<sub>x</sub>*: private key associated with *N<sub>x</sub>*
+- *c*: Alice's transaction count toward Bob
+- *P<sub>c</sub>*: Bob's public key at index *c*
+- *p<sub>c</sub>*: Bob's private key at index *c*
+- *A<sub>c</sub>*: Bob's receive address at index *c*
+- *H*: SHA256 hash function
+- *\**: EC multiplication
+- *+*: EC addition
+- *\|*: string concatenation
+- *\[a..b\]*: string slicing (inclusive of *a*, exclusive of *b*)
 
 ### Public Key Derivation Path
 
@@ -150,8 +147,8 @@ instance, the path of *N<sub>0</sub>* from *N* is *m / 0*.
 
 ### Payment Code Structure and Encoding
 
-  - bytes `[0..2]`: address type flags (2 bytes)
-  - bytes `[2..35]`: compressed public key P (33 bytes)
+- bytes `[0..2]`: address type flags (2 bytes)
+- bytes `[2..35]`: compressed public key P (33 bytes)
 
 Payment codes are encoded in bech32m and the human readable part is
 "pay" for mainnet and "payt" for testnet (all types), resulting in
@@ -168,7 +165,7 @@ defined bits set to 1 (`0xffff`).
 Currently defined flags:
 
 | Address Type | Flag     | Flag Value | Ordinal Value |
-| ------------ | -------- | ---------- | ------------- |
+|--------------|----------|------------|---------------|
 | P2PKH        | `1 << 0` | `0x0001`   | 0             |
 | P2WPKH       | `1 << 1` | `0x0002`   | 1             |
 | P2TR         | `1 << 2` | `0x0004`   | 2             |
@@ -187,23 +184,23 @@ Notifications are performed by publishing transactions that contain a
 40-byte `OP_RETURN` output. The value of the `OP_RETURN` is constructed
 using the following formula:
 
-*search\_key | notification\_code | N<sub>x</sub> | address\_type*
+*search_key \| notification_code \| N<sub>x</sub> \| address_type*
 
-  - *search\_key* equals "PP" and is a static ASCII-encoded string (2
-    bytes)
-  - *notification\_code* is *H(n<sub>x</sub> \* P)\[0..4\]* (4 bytes)
-  - *N<sub>x</sub>* is the unique public key a sender is using for a
-    particular recipient (33 bytes)
-  - *address\_type* is the **ordinal** value of a single address type
-    that a sender wants to send to (1 byte). This must be selected from
-    the recepient's accepted address types.
+- *search_key* equals "PP" and is a static ASCII-encoded string (2
+  bytes)
+- *notification_code* is *H(n<sub>x</sub> \* P)\[0..4\]* (4 bytes)
+- *N<sub>x</sub>* is the unique public key a sender is using for a
+  particular recipient (33 bytes)
+- *address_type* is the **ordinal** value of a single address type that
+  a sender wants to send to (1 byte). This must be selected from the
+  recepient's accepted address types.
 
 When Alice wants to notify Bob that he will receive future payments from
 her, she performs the following procedure:
 
 1.  Assigns an unused, unique index *x* to Bob (*0* if Bob is the first
     party she is notifying).
-2.  Calculates a 4-byte notification code: *notification\_code =
+2.  Calculates a 4-byte notification code: *notification_code =
     H(n<sub>x</sub> \* P)\[0..4\]*
 3.  Commits to one of Bob's accepted address types by choosing its
     ordinal value. Going forward Alice must not send to address types
@@ -218,13 +215,13 @@ When Bob notices a 40-byte `OP_RETURN` starting with *search key*, he
 performs the following procedure:
 
 1.  Breaks down the payload into its four constituent parts.
-2.  Discards the *search\_key* (item \#0).
+2.  Discards the *search_key* (item \#0).
 3.  Selects *N<sub>x</sub>* (item \#2) and performs *H(N<sub>x</sub> \*
     p)* (Bob does not know the value of *x*). Bob takes the first four
     bytes of the calculated value.
 4.  If the four bytes match the notification value (item \#1), Bob found
     a notification addressed to himself and stores *N<sub>x</sub>*
-    together with *address\_type*.
+    together with *address_type*.
 5.  If this process fails for any reason, Bob assumes a spurious
     notification or one not addressed to himself and gives up.
 
@@ -243,7 +240,7 @@ notifications.
 
 ### Allowing Notification Collisions
 
-Since *notification\_code* is a 4-byte truncation of the full value, Bob
+Since *notification_code* is a 4-byte truncation of the full value, Bob
 has a 1 in \~4.3 billion chance of detecting a spurious notification.
 This is considered acceptable because the cost of doing so is adding a
 few more addresses to Bob's watchlist. The benefit of this approach is
@@ -253,14 +250,14 @@ that is saves 28 bytes per notification.
 
 There is a scanning requirement on the recipient side in that the
 recipient must have access to full blocks in order to be able to search
-them for OP\_RETURN outputs containing notifications. For more
+them for OP_RETURN outputs containing notifications. For more
 information on how light clients can get around this limitation and
 still use the standard, see Appendix B.
 
 Recipients that do not want to decode raw block data can quickly search
 for notifications in a block by looking for the following byte array:
-`[106, 40, 80, 80]`. The first two bytes represent *OP\_RETURN* and
-*OP\_PUSHBYTES\_40*, followed by the ASCII value of *search\_key*.
+`[106, 40, 80, 80]`. The first two bytes represent *OP_RETURN* and
+*OP_PUSHBYTES_40*, followed by the ASCII value of *search_key*.
 
 ### Transacting
 
@@ -274,7 +271,7 @@ hasher as a big-endian encoded array of 8 bytes.
 
 2\. Alice calculates a shared secret:
 
-*s = H(S | c)*
+*s = H(S \| c)*
 
 3\. Alice calculates Bob's ephemeral public key and its associated
 address where the funds will be sent:
@@ -343,7 +340,7 @@ xprv9s21ZrQH143K47bRNtc26e8Gb3wkUiJ4fH3ewYgJeiGABp7vQtTKsLBzHM2fsfiK7Er6uMrWbdDw
 **P:**
 0x0302be8bff520f35fae3439f245c52afb9085a7bf62d099c1f5e9e1b15a7e2121a
 
-**Accepted scripts:** 0x03 (legacy + segwit) (0x01 | 0x02)
+**Accepted scripts:** 0x03 (legacy + segwit) (0x01 \| 0x02)
 
 **Payment code:**
 pay1qqpsxq4730l4yre4lt3588eyt3f2lwggtfalvtgfns04a8smzkn7yys6xv2gs8
@@ -357,7 +354,7 @@ pay1qqpsxq4730l4yre4lt3588eyt3f2lwggtfalvtgfns04a8smzkn7yys6xv2gs8
 
 **Address type commitment:** 1 (segwit)
 
-**Notification output script:** OP\_RETURN OP\_PUSHBYTES\_40
+**Notification output script:** OP_RETURN OP_PUSHBYTES_40
 505049cb55bb02e3217349724307eed5514b53b1f53f0802672a9913d9bbb76afecc86be23f46401
 
 ### Alice sending to Bob
@@ -382,7 +379,7 @@ pay1qqpsxq4730l4yre4lt3588eyt3f2lwggtfalvtgfns04a8smzkn7yys6xv2gs8
 **p<sub>c</sub>:**
 0x84846fe6b592fd7531af88a58ccc92a88faa1c8bbdbe3de5810d3acebc7d6d33
 
-## Appendix B: Potential OP\_RETURN Services
+## Appendix B: Potential OP_RETURN Services
 
 Compact Block Filters, as formulated in BIP-0158, do not cover
 `OP_RETURN` data payloads. In support of light wallets, an external
@@ -414,17 +411,16 @@ Reference implementation is available at
 
 ## Reference
 
-  - [BIP32 - Hierarchical Deterministic
-    Wallets](bip-0032.mediawiki "wikilink")
-  - [BIP43 - Purpose Field for Deterministic
-    Wallets](bip-0043.mediawiki "wikilink")
-  - [BIP44 - Multi-Account Hierarchy for Deterministic
-    Wallets](bip-0044.mediawiki "wikilink")
-  - [BIP47 - Reusable Payment Codes for Hierarchical Deterministic
-    Wallets](bip-0047.mediawiki "wikilink")
-  - [BIP157 - Client Side Block
-    Filtering](bip-0157.mediawiki "wikilink")
-  - [BIP158 - Compact Block Filters for Light
-    Clients](bip-0158.mediawiki "wikilink")
-  - [BIP47 Prague Discussion (acknowledgements: @rubensomsen, @afilini,
-    @kixunil](https://gist.github.com/RubenSomsen/21c477c90c942acf45f8e8f5c1ad4fae))
+- [BIP32 - Hierarchical Deterministic
+  Wallets](/32)
+- [BIP43 - Purpose Field for Deterministic
+  Wallets](/43)
+- [BIP44 - Multi-Account Hierarchy for Deterministic
+  Wallets](/44)
+- [BIP47 - Reusable Payment Codes for Hierarchical Deterministic
+  Wallets](/47)
+- [BIP157 - Client Side Block Filtering](/157)
+- [BIP158 - Compact Block Filters for Light
+  Clients](/158)
+- [BIP47 Prague Discussion (acknowledgements: @rubensomsen, @afilini,
+  @kixunil](https://gist.github.com/RubenSomsen/21c477c90c942acf45f8e8f5c1ad4fae))

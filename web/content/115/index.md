@@ -14,18 +14,16 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0115.mediawiki"
 +++
 
-``` 
-  BIP: 115
-  Layer: Consensus (soft fork)
-  Title: Generic anti-replay protection using Script
-  Author: Luke Dashjr <luke+bip@dashjr.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0115
-  Status: Rejected
-  Type: Standards Track
-  Created: 2016-09-23
-  License: BSD-2-Clause
-```
+      BIP: 115
+      Layer: Consensus (soft fork)
+      Title: Generic anti-replay protection using Script
+      Author: Luke Dashjr <luke+bip@dashjr.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0115
+      Status: Rejected
+      Type: Standards Track
+      Created: 2016-09-23
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -43,30 +41,30 @@ This BIP is licensed under the BSD 2-clause license.
 
 When this opcode is executed:
 
-  - If the stack has fewer than 2 elements, the script fails.
-  - If the top item on the stack cannot be interpreted as a
-    minimal-length 32-bit CScriptNum, the script fails.
-  - The top item on the stack is interpreted as a block height
-    (ParamHeight).
-  - If the blockchain (in the context of the execution) does not have
-    ParamHeight blocks prior to the one including this transaction, the
-    script fails (this failure must not be cached across blocks; it is
-    equivalent to non-final status).
-  - If ParamHeight specifies a block deeper than 52596 blocks in the
-    chain (including negative values), the opcode completes successfully
-    and script continues as normal.
-  - The second-to-top item on the stack is interpreted as a block hash
-    (ParamBlockHash).
-  - If ParamBlockHash is longer than 28 bytes, the script fails.
-  - If ParamBlockHash does not match the equivalent ending bytes of the
-    block hash specified by ParamHeight, the script fails.
+- If the stack has fewer than 2 elements, the script fails.
+- If the top item on the stack cannot be interpreted as a minimal-length
+  32-bit CScriptNum, the script fails.
+- The top item on the stack is interpreted as a block height
+  (ParamHeight).
+- If the blockchain (in the context of the execution) does not have
+  ParamHeight blocks prior to the one including this transaction, the
+  script fails (this failure must not be cached across blocks; it is
+  equivalent to non-final status).
+- If ParamHeight specifies a block deeper than 52596 blocks in the chain
+  (including negative values), the opcode completes successfully and
+  script continues as normal.
+- The second-to-top item on the stack is interpreted as a block hash
+  (ParamBlockHash).
+- If ParamBlockHash is longer than 28 bytes, the script fails.
+- If ParamBlockHash does not match the equivalent ending bytes of the
+  block hash specified by ParamHeight, the script fails.
 
 Otherwise, script execution will continue as if a NOP had been executed.
 
 ### Deployment
 
 This BIP will be deployed by "version bits"
-[BIP9](bip-0009.mediawiki "wikilink") with the **name** "cbah" and using
+[BIP9](/9) with the **name** "cbah" and using
 **bit** TBD.
 
 For Bitcoin **mainnet**, the BIP9 **starttime** will be TBD (Epoch
@@ -124,60 +122,60 @@ bytes.
 
 How is this different from the transaction's lock-time?
 
-  - The lock-time specifies a time or block height before a transaction
-    becomes valid. `OP_CHECKBLOCKATHEIGHT`, on the other hand, specifies
-    a specific block's hash.
+- The lock-time specifies a time or block height before a transaction
+  becomes valid. `OP_CHECKBLOCKATHEIGHT`, on the other hand, specifies a
+  specific block's hash.
 
 Why are block heights required to be absolute, rather than relative?
 
-  - A relative block height would allow for creation of transactions
-    which are valid at block N, but not N+1. This is carefully avoided
-    by Bitcoin to ensure that if any given block is reorganised out,
-    non-malicious transactions can be simply re-confirmed in a later
-    block.
+- A relative block height would allow for creation of transactions which
+  are valid at block N, but not N+1. This is carefully avoided by
+  Bitcoin to ensure that if any given block is reorganised out,
+  non-malicious transactions can be simply re-confirmed in a later
+  block.
 
 Why are blocks older than 52596 deep in the chain not verified?
 
-  - This is to avoid creating an infinite storage requirement from all
-    full nodes which would be necessary to maintain all the block
-    headers indefinitely. 52596 block headers requires a fixed size of
-    approximately 4 MB.
-  - In any case where you might want to specify a deeper block, you can
-    also just as well specify a more recent one that descends from it.
-  - It is assumed that 1 year is sufficient time to double-spend any
-    common UTXOs on all blockchains of interest.
-  - If a deeper check is needed, it can be softforked in. Making the
-    check more shallow, on the other hand, is a hardfork.
+- This is to avoid creating an infinite storage requirement from all
+  full nodes which would be necessary to maintain all the block headers
+  indefinitely. 52596 block headers requires a fixed size of
+  approximately 4 MB.
+- In any case where you might want to specify a deeper block, you can
+  also just as well specify a more recent one that descends from it.
+- It is assumed that 1 year is sufficient time to double-spend any
+  common UTXOs on all blockchains of interest.
+- If a deeper check is needed, it can be softforked in. Making the check
+  more shallow, on the other hand, is a hardfork.
 
 Why is ParamBlockHash allowed to match less than the full block hash?
 
-  - In a chain split, it is sufficient to check only a few bytes to
-    avoid replay.
-  - In all scenarios, it is likely sufficient to check only a minority
-    of the full hash to avoid any realistic chance of replay.
-  - Allowing less than the full hash to be specified saves space in
-    transaction data.
-  - Using a single byte can be combined with other opcodes (such as
-    `OP_LESSTHAN`) to enable on-chain gambling logic.
+- In a chain split, it is sufficient to check only a few bytes to avoid
+  replay.
+- In all scenarios, it is likely sufficient to check only a minority of
+  the full hash to avoid any realistic chance of replay.
+- Allowing less than the full hash to be specified saves space in
+  transaction data.
+- Using a single byte can be combined with other opcodes (such as
+  `OP_LESSTHAN`) to enable on-chain gambling logic.
 
 What if ParamBlockHash has leading zeros? Should this be prevented?
 
-  - If leading zeros are included, they should be compared to the actual
-    block hash. (If they were truncated, fewer bytes would be compared.)
-  - It is unlikely that the leading zeros will ever be necessary for
-    sufficient precision, so the additional space is not a concern.
-  - Since all block hashes are in principle shorter than than 29 bytes,
-    ParamBlockHash may not be larger than 28 bytes.
+- If leading zeros are included, they should be compared to the actual
+  block hash. (If they were truncated, fewer bytes would be compared.)
+- It is unlikely that the leading zeros will ever be necessary for
+  sufficient precision, so the additional space is not a concern.
+- Since all block hashes are in principle shorter than than 29 bytes,
+  ParamBlockHash may not be larger than 28 bytes.
 
 Why is it safe to allow checking blocks as recently as the immediate
 previous block?
 
-  - This should only be used when necessary (ie, the deeper block is not
-    sufficient), and when the wallet can actively issue updates should
-    the blockchain reorganise.
-  - While this allows intentionally creating a transaction which may be
-    invalid in a reorganization, the same can already be accomplished by
-    creating double spends.
+- This should only be used when necessary (ie, the deeper block is not
+  sufficient), and when the wallet can actively issue updates should the
+  blockchain reorganise.
+- While this allows intentionally creating a transaction which may be
+  invalid in a reorganization, the same can already be accomplished by
+  creating double spends.
 
 ## Backwards Compatibility
 

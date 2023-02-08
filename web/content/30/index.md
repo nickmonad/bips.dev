@@ -14,18 +14,16 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki"
 +++
 
-``` 
-  BIP: 30
-  Layer: Consensus (soft fork)
-  Title: Duplicate transactions
-  Author: Pieter Wuille <pieter.wuille@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0030
-  Status: Final
-  Type: Standards Track
-  Created: 2012-02-22
-  License: BSD-2-Clause
-```
+      BIP: 30
+      Layer: Consensus (soft fork)
+      Title: Duplicate transactions
+      Author: Pieter Wuille <pieter.wuille@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0030
+      Status: Final
+      Type: Standards Track
+      Created: 2012-02-22
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -54,9 +52,9 @@ for a subset of the network.
 
 To counter this problem, the following network rule is introduced:
 
-  - Blocks are not allowed to contain a transaction whose identifier
-    matches that of an earlier, not-fully-spent transaction in the same
-    chain.
+- Blocks are not allowed to contain a transaction whose identifier
+  matches that of an earlier, not-fully-spent transaction in the same
+  chain.
 
 This rule initially applied to all blocks whose timestamp is after March
 15, 2012, 00:00 UTC (testnet: February 20, 2012 00:00 UTC). It was later
@@ -114,8 +112,8 @@ A patch for the reference client can be found on
 <https://github.com/sipa/bitcoin/tree/nooverwritetx>
 
 This BIP was implemented in Commit [Do not allow overwriting unspent
-transactions
-(BIP 30)](https://github.com/bitcoin/bitcoin/commit/a206b0ea12eb4606b93323268fc81a4f1f952531)
+transactions (BIP
+30)](https://github.com/bitcoin/bitcoin/commit/a206b0ea12eb4606b93323268fc81a4f1f952531)
 There have been additional commits to refine the implementation of this
 BIP.
 

@@ -14,18 +14,16 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0180.mediawiki"
 +++
 
-``` 
-  BIP: 180
-  Layer: Peer Services
-  Title: Block size/weight fraud proof
-  Author: Luke Dashjr <luke+bip@dashjr.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0180
-  Status: Rejected
-  Type: Standards Track
-  Created: 2017-03-17
-  License: BSD-2-Clause
-```
+      BIP: 180
+      Layer: Peer Services
+      Title: Block size/weight fraud proof
+      Author: Luke Dashjr <luke+bip@dashjr.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0180
+      Status: Rejected
+      Type: Standards Track
+      Created: 2017-03-17
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -38,37 +36,32 @@ This BIP is licensed under the BSD 2-clause license.
 
 ## Definitions
 
-  - full tx size proof : SHA2 midstate and tail data proving the size of
-    the full transaction data being hashed.  
-    size component : Either a merkle link and height in the merkle tree
-    thereof, or a full tx size proof.  
-    full-size proof : The set of size components proving the lower-bound
-    size of the block.  
-    stripped-size proof : The set of size components proving the
-    lower-bound size of the block when stripped of segwit witness data.
+full tx size proof : SHA2 midstate and tail data proving the size of the full transaction data being hashed.  
+size component : Either a merkle link and height in the merkle tree thereof, or a full tx size proof.  
+full-size proof : The set of size components proving the lower-bound size of the block.  
+stripped-size proof : The set of size components proving the lower-bound size of the block when stripped of segwit witness data.  
 
 ## Specification
 
 ### Proof format
 
-  - varint: ceil(log2(number of transactions in block))
-  - varint: number of size components in stripped-size proof
-  - foreach:
-      - varint: ceil(log2(number of transactions represented by this
-        size-component)) + 1
-      - if zero:
-          - (this indicates a full tx size proof)
-          - 256-bit: SHA2 midstate up until just before the final SHA2
-            chunk
-          - varint: total size of tx
-          - uint8: size of final SHA2 chunk (0-55)
-          - 0-55 bytes: final SHA2 chunk
-      - if one or more:
-          - (this indicates default tx size counting)
-          - 256-bit: SHA2 hash of merkle link
-  - varint: number of size components in full-size proof (zero in case
-    of a size-exceeded proof; non-zero for a weight-exceeded proof)
-  - foreach: (same as with stripped-size proof)
+- varint: ceil(log2(number of transactions in block))
+- varint: number of size components in stripped-size proof
+- foreach:
+  - varint: ceil(log2(number of transactions represented by this
+    size-component)) + 1
+  - if zero:
+    - (this indicates a full tx size proof)
+    - 256-bit: SHA2 midstate up until just before the final SHA2 chunk
+    - varint: total size of tx
+    - uint8: size of final SHA2 chunk (0-55)
+    - 0-55 bytes: final SHA2 chunk
+  - if one or more:
+    - (this indicates default tx size counting)
+    - 256-bit: SHA2 hash of merkle link
+- varint: number of size components in full-size proof (zero in case of
+  a size-exceeded proof; non-zero for a weight-exceeded proof)
+- foreach: (same as with stripped-size proof)
 
 ### Proof verification
 
@@ -129,16 +122,16 @@ ignored).
 Compatible nodes will respond with a (new) `fraud` message, which has
 2-3 parameters:
 
-  - uint256: The hash of the most recent block in the locator (or a
-    parent thereof) that it has checked. In the event of an invalid
-    block, this should be the exact invalid block's hash (post-invalid
-    blocks should be treated as unchecked, even if the node has
-    independently checked them for some reason).
-  - varint: Fraud proof type code
-      - 0 = Block is valid
-      - 1 = No fraud proof available
-      - 2 = Size/weight exceeded
-  - (For type 2) the fraud proof
+- uint256: The hash of the most recent block in the locator (or a parent
+  thereof) that it has checked. In the event of an invalid block, this
+  should be the exact invalid block's hash (post-invalid blocks should
+  be treated as unchecked, even if the node has independently checked
+  them for some reason).
+- varint: Fraud proof type code
+  - 0 = Block is valid
+  - 1 = No fraud proof available
+  - 2 = Size/weight exceeded
+- (For type 2) the fraud proof
 
 If none of the blocks in the locator are recognised, compatible nodes
 should send a `fraud` message with no parameters. (To avoid this
@@ -192,50 +185,50 @@ clients can protect their users from this form of unconsensual
 
 Why must a full tx size proof be included?
 
-  - This is necessary to establish that the claimed block transaction
-    count is not inflated. Otherwise, a prover could claim any number of
-    represented transactions for merkle links, and rely on the default
-    size alone to exceed the limit.
+- This is necessary to establish that the claimed block transaction
+  count is not inflated. Otherwise, a prover could claim any number of
+  represented transactions for merkle links, and rely on the default
+  size alone to exceed the limit.
 
 How does the full tx size proof actually prove the size?
 
-  - The first step of SHA2 hashing is to transform the input data into
-    chunks (per
-    [RFC 4634](https://tools.ietf.org/html/rfc4634#section-4.1)). The
-    final chunk is required to include the absolute length of the input
-    data at the end of the final chunk. Therefore, by committing to the
-    midstate prior to the final chunk, and replaying only the final
-    chunk, we can confirm that the claimed size matches the full
-    transaction data being hashed.
+- The first step of SHA2 hashing is to transform the input data into
+  chunks (per [RFC
+  4634](https://tools.ietf.org/html/rfc4634#section-4.1)). The final
+  chunk is required to include the absolute length of the input data at
+  the end of the final chunk. Therefore, by committing to the midstate
+  prior to the final chunk, and replaying only the final chunk, we can
+  confirm that the claimed size matches the full transaction data being
+  hashed.
 
 How does this prove the block weight?
 
-  - The block weight defined by [BIP 141](bip-0141.mediawiki "wikilink")
-    is the size of the block stripped of its segwit signatures times 3,
-    plus the full size of the block. By proving lower-bound sizes of
-    both the stripped block and the full block, a lower-bound weight can
-    also be calculated.
+- The block weight defined by [BIP 141](/141)
+  is the size of the block stripped of its segwit signatures times 3,
+  plus the full size of the block. By proving lower-bound sizes of both
+  the stripped block and the full block, a lower-bound weight can also
+  be calculated.
 
 Why is the number of transactions in the block represented as a log2?
 
-  - To avoid attacks that rely on fooling clients by claiming an amount
-    they cannot verify.
+- To avoid attacks that rely on fooling clients by claiming an amount
+  they cannot verify.
 
 Why does it matter if a full tx size proof is on the right side of a
 duplicate merkle link?
 
-  - We assume full tx size proofs show the number of transactions in the
-    block. This assumption doesn't hold if the proof is provided on the
-    right-hand side of duplicate links.
+- We assume full tx size proofs show the number of transactions in the
+  block. This assumption doesn't hold if the proof is provided on the
+  right-hand side of duplicate links.
 
 Why a fraud proof only for oversized/overweight blocks?
 
-  - While it is currently believed to be impossible to prove all invalid
-    (or rather, won't-be-part-of-the-main-chain) blocks, there are
-    regularly active proposals of miners attacking with simply oversized
-    blocks in an attempt to force a hardfork. This specific attack can
-    be proven, and reliably so, since the proof cannot be broken without
-    also breaking the attempted hardfork at the same time.
+- While it is currently believed to be impossible to prove all invalid
+  (or rather, won't-be-part-of-the-main-chain) blocks, there are
+  regularly active proposals of miners attacking with simply oversized
+  blocks in an attempt to force a hardfork. This specific attack can be
+  proven, and reliably so, since the proof cannot be broken without also
+  breaking the attempted hardfork at the same time.
 
 ## Backwards compatibility
 

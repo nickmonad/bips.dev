@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0338.mediawiki"
 +++
 
-``` 
-  BIP: 338
-  Layer: Peer Services
-  Title: Disable transaction relay message
-  Author: Suhas Daftuar <sdaftuar@chaincode.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0338
-  Status: Draft
-  Type: Standards Track
-  Created: 2020-09-03
-  License: BSD-2-Clause
-```
+      BIP: 338
+      Layer: Peer Services
+      Title: Disable transaction relay message
+      Author: Suhas Daftuar <sdaftuar@chaincode.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0338
+      Status: Draft
+      Type: Standards Track
+      Created: 2020-09-03
+      License: BSD-2-Clause
 
 ## Abstract
 

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,55 +46,55 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 341
-  Layer: Consensus (soft fork)
-  Title: Taproot: SegWit version 1 spending rules
-  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-          Jonas Nick &lt;jonasd.nick@gmail.com&gt;
-          Anthony Towns &lt;aj@erisian.com.au&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0341
-  Status: Draft
-  Type: Standards Track
-  Created: 2020-01-19
-  License: BSD-3-Clause
-  Requires: 340
-  Post-History: 2019-05-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-May/016914.html [bitcoin-dev] Taproot proposal
-                2019-10-09: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-October/017378.html [bitcoin-dev] Taproot updates
-</span></code></pre><h2 id="introduction">Introduction</h2>
-<h3 id="abstract">Abstract</h3>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 341
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: Taproot: SegWit version 1 spending rules
+</span><span>  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+</span><span>          Jonas Nick &lt;jonasd.nick@gmail.com&gt;
+</span><span>          Anthony Towns &lt;aj@erisian.com.au&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0341
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2020-01-19
+</span><span>  License: BSD-3-Clause
+</span><span>  Requires: 340
+</span><span>  Post-History: 2019-05-06: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-May/016914.html [bitcoin-dev] Taproot proposal
+</span><span>                2019-10-09: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-October/017378.html [bitcoin-dev] Taproot updates
+</span></code></pre>
+<h2 id="Introduction">Introduction</h2>
+<h3 id="Abstract">Abstract</h3>
 <p>This document proposes a new SegWit version 1 output type, with spending
 rules based on Taproot, Schnorr signatures, and Merkle branches.</p>
-<h3 id="copyright">Copyright</h3>
+<h3 id="Copyright">Copyright</h3>
 <p>This document is licensed under the 3-clause BSD license.</p>
-<h3 id="motivation">Motivation</h3>
+<h3 id="Motivation">Motivation</h3>
 <p>This proposal aims to improve privacy, efficiency, and flexibility of
 Bitcoin's scripting capabilities without adding new security
-assumptions[1]. Specifically, it seeks to minimize how much
-information about the spendability conditions of a transaction output is
-revealed on chain at creation or spending time and to add a number of
-upgrade mechanisms, while fixing a few minor but long-standing issues.</p>
-<h2 id="design">Design</h2>
+assumptions<sup class="footnote-reference"><a href="#1">1</a></sup>. Specifically, it seeks to minimize how much information
+about the spendability conditions of a transaction output is revealed on
+chain at creation or spending time and to add a number of upgrade
+mechanisms, while fixing a few minor but long-standing issues.</p>
+<h2 id="Design">Design</h2>
 <p>A number of related ideas for improving Bitcoin's scripting capabilities
 have been previously proposed: Schnorr signatures
-(<a href="https://bips.dev/341/bip-0340.mediawiki" title="wikilink">BIP340</a>), Merkle branches (&quot;MAST&quot;,
-<a href="https://bips.dev/341/bip-0114.mediawiki" title="wikilink">BIP114</a>,
-<a href="https://bips.dev/341/bip-0117.mediawiki" title="wikilink">BIP117</a>), new sighash modes
-(<a href="https://bips.dev/341/bip-0118.mediawiki" title="wikilink">BIP118</a>), new opcodes like
+(<a href="/340">BIP340</a>), Merkle branches (&quot;MAST&quot;,
+<a href="/114">BIP114</a>,
+<a href="/117">BIP117</a>), new sighash modes
+(<a href="/118">BIP118</a>), new opcodes like
 CHECKSIGFROMSTACK,
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-January/015614.html">Taproot</a>,
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-February/015700.html">Graftroot</a>,
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-July/016249.html">G'root</a>,
-and <a href="https://bitcointalk.org/index.php?topic=1377298.0">cross-input
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-January/015614.html">Taproot</a>,
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-February/015700.html">Graftroot</a>,
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-July/016249.html">G'root</a>,
+and <a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=1377298.0">cross-input
 aggregation</a>.</p>
 <p>Combining all these ideas in a single proposal would be an extensive
 change, be hard to review, and likely miss new discoveries that
 otherwise could have been made along the way. Not all are equally mature
 as well. For example, cross-input aggregation
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015838.html">interacts</a>
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015838.html">interacts</a>
 in complex ways with upgrade mechanisms, and solutions to that are still
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-October/016461.html">in
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-October/016461.html">in
 flux</a>.
 On the other hand, separating them all into independent upgrades would
 reduce the efficiency and privacy gains to be had, and wallet and
@@ -109,11 +109,10 @@ downsides.</p>
 <p>As a result we choose this combination of technologies:</p>
 <ul>
 <li><strong>Merkle branches</strong> let us only reveal the actually executed part of
-the script to the blockchain, as opposed to all possible ways a
-script can be executed. Among the various known mechanisms for
-implementing this, one where the Merkle tree becomes part of the
-script's structure directly maximizes the space savings, so that
-approach is chosen.</li>
+the script to the blockchain, as opposed to all possible ways a script
+can be executed. Among the various known mechanisms for implementing
+this, one where the Merkle tree becomes part of the script's structure
+directly maximizes the space savings, so that approach is chosen.</li>
 <li><strong>Taproot</strong> on top of that lets us merge the traditionally separate
 pay-to-pubkey and pay-to-scripthash policies, making all outputs
 spendable by either a key or (optionally) a script, and
@@ -123,27 +122,27 @@ was permitted as well, resulting in space savings and an increase in
 scripting privacy at spending time.</li>
 <li>Taproot's advantages become apparent under the assumption that most
 applications involve outputs that could be spent by all parties
-agreeing. That's where <strong>Schnorr</strong> signatures come in, as they
-permit <a href="https://eprint.iacr.org/2018/068">key aggregation</a>: a public
-key can be constructed from multiple participant public keys, and
-which requires cooperation between all participants to sign for.
-Such multi-party public keys and signatures are indistinguishable
-from their single-party equivalents. This means that with taproot
-most applications can use the key-based spending path, which is both
+agreeing. That's where <strong>Schnorr</strong> signatures come in, as they permit
+<a rel="noopener" target="_blank" href="https://eprint.iacr.org/2018/068">key aggregation</a>: a public key can
+be constructed from multiple participant public keys, and which
+requires cooperation between all participants to sign for. Such
+multi-party public keys and signatures are indistinguishable from
+their single-party equivalents. This means that with taproot most
+applications can use the key-based spending path, which is both
 efficient and private. This can be generalized to arbitrary M-of-N
-policies, as Schnorr signatures support threshold signing, at the
-cost of more complex setup protocols.</li>
+policies, as Schnorr signatures support threshold signing, at the cost
+of more complex setup protocols.</li>
 <li>As Schnorr signatures also permit <strong>batch validation</strong>, allowing
 multiple signatures to be validated together more efficiently than
 validating each one independently, we make sure all parts of the
 design are compatible with this.</li>
 <li>Where unused bits appear as a result of the above changes, they are
-reserved for mechanisms for <strong>future extensions</strong>. As a result,
-every script in the Merkle tree has an associated version such that
-new script versions can be introduced with a soft fork while
-remaining compatible with BIP 341. Additionally, future soft forks
-can make use of the currently unused <code>annex</code> in the witness (see
-<a href="https://bips.dev/341/bip-0341.mediawiki#Rationale" title="wikilink">BIP341</a>).</li>
+reserved for mechanisms for <strong>future extensions</strong>. As a result, every
+script in the Merkle tree has an associated version such that new
+script versions can be introduced with a soft fork while remaining
+compatible with BIP 341. Additionally, future soft forks can make use
+of the currently unused <code>annex</code> in the witness (see
+<a href="/341">BIP341</a>).</li>
 <li>While the core semantics of the <strong>signature hashing algorithm</strong> are
 not changed, a number of improvements are included in this proposal.
 The new signature hashing algorithm fixes the verification
@@ -151,86 +150,83 @@ capabilities of offline signing devices by including amount and
 scriptPubKey in the signature message, avoids unnecessary hashing,
 uses <strong>tagged hashes</strong> and defines a default sighash byte.</li>
 <li>The <strong>public key is directly included in the output</strong> in contrast to
-typical earlier constructions which store a hash of the public key
-or script in the output. This has the same cost for senders and is
-more space efficient overall if the key-based spending path is
-taken. [2]</li>
+typical earlier constructions which store a hash of the public key or
+script in the output. This has the same cost for senders and is more
+space efficient overall if the key-based spending path is taken. <sup class="footnote-reference"><a href="#2">2</a></sup></li>
 </ul>
 <p>Informally, the resulting design is as follows: a new witness version is
 added (version 1), whose programs consist of 32-byte encodings of points
-<em>Q</em>. <em>Q</em> is computed as <em>P + hash(P||m)G</em> for a public key <em>P</em>, and the
-root <em>m</em> of a Merkle tree whose leaves consist of a version number and a
-script. These outputs can be spent directly by providing a signature for
-<em>Q</em>, or indirectly by revealing <em>P</em>, the script and leaf version, inputs
-that satisfy the script, and a Merkle path that proves <em>Q</em> committed to
-that leaf. All hashes in this construction (the hash for computing <em>Q</em>
-from <em>P</em>, the hashes inside the Merkle tree's inner nodes, and the
-signature hashes used) are tagged to guarantee domain separation.</p>
-<h2 id="specification">Specification</h2>
+<em>Q</em>. <em>Q</em> is computed as <em>P + hash(P||m)G</em> for a public key <em>P</em>, and
+the root <em>m</em> of a Merkle tree whose leaves consist of a version number
+and a script. These outputs can be spent directly by providing a
+signature for <em>Q</em>, or indirectly by revealing <em>P</em>, the script and leaf
+version, inputs that satisfy the script, and a Merkle path that proves
+<em>Q</em> committed to that leaf. All hashes in this construction (the hash
+for computing <em>Q</em> from <em>P</em>, the hashes inside the Merkle tree's inner
+nodes, and the signature hashes used) are tagged to guarantee domain
+separation.</p>
+<h2 id="Specification">Specification</h2>
 <p>This section specifies the Taproot consensus rules. Validity is defined
 by exclusion: a block or transaction is valid if no condition exists
 that marks it failed.</p>
 <p>The notation below follows that of
-<a href="https://bips.dev/341/bip-0340.mediawiki#design" title="wikilink">BIP340</a>. This includes the
+<a href="/340">BIP340</a>. This includes the
 <em>hash<sub>tag</sub>(x)</em> notation to refer to <em>SHA256(SHA256(tag) ||
 SHA256(tag) || x)</em>. To the best of the authors' knowledge, no existing
 use of SHA256 in Bitcoin feeds it a message that starts with two single
 SHA256 outputs, making collisions between <em>hash<sub>tag</sub></em> with
 other hashes extremely unlikely.</p>
-<h3 id="script-validation-rules">Script validation rules</h3>
+<h3 id="Script_validation_rules">Script validation rules</h3>
 <p>A Taproot output is a native SegWit output (see
-<a href="https://bips.dev/341/bip-0141.mediawiki" title="wikilink">BIP141</a>) with version number 1, and a
+<a href="/141">BIP141</a>) with version number 1, and a
 32-byte witness program. The following rules only apply when such an
 output is being spent. Any other outputs, including version 1 outputs
-with lengths other than 32 bytes, or P2SH-wrapped version 1
-outputs[3], remain unencumbered.</p>
+with lengths other than 32 bytes, or P2SH-wrapped version 1 outputs<sup class="footnote-reference"><a href="#3">3</a></sup>,
+remain unencumbered.</p>
 <ul>
 <li>Let <em>q</em> be the 32-byte array containing the witness program (the
 second push in the scriptPubKey) which represents a public key
-according to <a href="https://bips.dev/341/bip-0340.mediawiki#design" title="wikilink">BIP340</a>.</li>
+according to <a href="/340">BIP340</a>.</li>
 <li>Fail if the witness stack has 0 elements.</li>
-<li>If there are at least two witness elements, and the first byte of
-the last element is 0x50[4], this last element is called <em>annex</em>
-<em>a</em>[5] and is removed from the witness stack. The annex (or the
-lack of thereof) is always covered by the signature and contributes
-to transaction weight, but is otherwise ignored during taproot
+<li>If there are at least two witness elements, and the first byte of the
+last element is 0x50<sup class="footnote-reference"><a href="#4">4</a></sup>, this last element is called <em>annex</em> <em>a</em><sup class="footnote-reference"><a href="#5">5</a></sup>
+and is removed from the witness stack. The annex (or the lack of
+thereof) is always covered by the signature and contributes to
+transaction weight, but is otherwise ignored during taproot
 validation.</li>
 <li>If there is exactly one element left in the witness stack, key path
 spending is used:
 <ul>
-<li>The single witness stack element is interpreted as the signature
-and must be valid (see the next section) for the public key <em>q</em>
-(see the next subsection).</li>
+<li>The single witness stack element is interpreted as the signature and
+must be valid (see the next section) for the public key <em>q</em> (see the
+next subsection).</li>
 </ul>
 </li>
-<li>If there are at least two witness elements left, script path
-spending is used:
+<li>If there are at least two witness elements left, script path spending
+is used:
 <ul>
 <li>Call the second-to-last stack element <em>s</em>, the script.</li>
 <li>The last stack element is called the control block <em>c</em>, and must
 have length <em>33 + 32m</em>, for a value of <em>m</em> that is an integer
-between 0 and 128[6], inclusive. Fail if it does not have such
-a length.</li>
-<li>Let <em>p = c[1:33]</em> and let <em>P = lift_x(int(p))</em> where
-<em>lift_x</em> and <em>[:]</em> are defined as in
-<a href="https://bips.dev/341/bip-0340.mediawiki#design" title="wikilink">BIP340</a>. Fail if this
-point is not on the curve.</li>
-<li>Let <em>v = c[0] &amp; 0xfe</em> and call it the <em>leaf version</em>[7].</li>
-<li>Let <em>k<sub>0</sub> = hash<sub>TapLeaf</sub>(v ||
-compact_size(size of s) || s)</em>; also call it the <em>tapleaf
-hash</em>.</li>
+between 0 and 128<sup class="footnote-reference"><a href="#6">6</a></sup>, inclusive. Fail if it does not have such a
+length.</li>
+<li>Let <em>p = c[1:33]</em> and let <em>P = lift_x(int(p))</em> where <em>lift_x</em> and
+<em>[:]</em> are defined as in
+<a href="/340">BIP340</a>. Fail if this point
+is not on the curve.</li>
+<li>Let <em>v = c[0] &amp; 0xfe</em> and call it the <em>leaf version</em><sup class="footnote-reference"><a href="#7">7</a></sup>.</li>
+<li>Let <em>k<sub>0</sub> = hash<sub>TapLeaf</sub>(v || compact_size(size
+of s) || s)</em>; also call it the <em>tapleaf hash</em>.</li>
 <li>For <em>j</em> in <em>[0,1,...,m-1]</em>:
 <ul>
 <li>Let <em>e<sub>j</sub> = c[33+32j:65+32j]</em>.</li>
-<li>Let ''k<sub>j+1</sub> depend on whether <em>k<sub>j</sub> &lt;
-e<sub>j</sub></em> (lexicographically)[8]:
+<li>Let <em>k<sub>j+1</sub> depend on whether</em>k<sub>j</sub> &lt;
+e<sub>j</sub>'' (lexicographically)<sup class="footnote-reference"><a href="#8">8</a></sup>:
 <ul>
 <li>If <em>k<sub>j</sub> &lt; e<sub>j</sub></em>: <em>k<sub>j+1</sub> =
-hash<sub>TapBranch</sub>(k<sub>j</sub> ||
-e<sub>j</sub>)</em>[9].</li>
+hash<sub>TapBranch</sub>(k<sub>j</sub> || e<sub>j</sub>)</em><sup class="footnote-reference"><a href="#9">9</a></sup>.</li>
 <li>If <em>k<sub>j</sub> ≥ e<sub>j</sub></em>: <em>k<sub>j+1</sub> =
-hash<sub>TapBranch</sub>(e<sub>j</sub> ||
-k<sub>j</sub>)</em>.</li>
+hash<sub>TapBranch</sub>(e<sub>j</sub> || k<sub>j</sub>)</em>.</li>
 </ul>
 </li>
 </ul>
@@ -239,22 +235,22 @@ k<sub>j</sub>)</em>.</li>
 <li>If <em>t ≥ 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B
 BFD25E8C D0364141</em> (order of secp256k1), fail.</li>
 <li>Let <em>Q = P + int(t)G</em>.</li>
-<li>If <em>q ≠ x(Q)</em> or <em>c[0] &amp; 1 ≠ y(Q) mod 2</em>, fail[10].</li>
-<li>Execute the script, according to the applicable script
-rules[11], using the witness stack elements excluding the
-script <em>s</em>, the control block <em>c</em>, and the annex <em>a</em> if present,
-as initial stack. This implies that for the future leaf versions
-(non-<em>0xC0</em>) the execution must succeed.[12].</li>
+<li>If <em>q ≠ x(Q)</em> or <em>c[0] &amp; 1 ≠ y(Q) mod 2</em>, fail<sup class="footnote-reference"><a href="#10">10</a></sup>.</li>
+<li>Execute the script, according to the applicable script rules<sup class="footnote-reference"><a href="#11">11</a></sup>,
+using the witness stack elements excluding the script <em>s</em>, the
+control block <em>c</em>, and the annex <em>a</em> if present, as initial stack.
+This implies that for the future leaf versions (non-<em>0xC0</em>) the
+execution must succeed.<sup class="footnote-reference"><a href="#12">12</a></sup>.</li>
 </ul>
 </li>
 </ul>
 <p><em>q</em> is referred to as <em>taproot output key</em> and <em>p</em> as <em>taproot internal
 key</em>.</p>
-<h3 id="signature-validation-rules">Signature validation rules</h3>
+<h3 id="Signature_validation_rules">Signature validation rules</h3>
 <p>We first define a reusable common signature message calculation
 function, followed by the actual signature validation as it's used in
 key path spending.</p>
-<h4 id="common-signature-message">Common signature message</h4>
+<h4 id="Common_signature_message">Common signature message</h4>
 <p>The function <em>SigMsg(hash_type, ext_flag)</em> computes the common portion
 of the message being signed as a byte array. It is implicitly also a
 function of the spending transaction and the outputs it spends, but
@@ -267,14 +263,14 @@ encodings from the legacy script system are reused, including
 as for <code>SIGHASH_ALL</code>. The following restrictions apply, which cause
 validation failure if violated:</p>
 <ul>
-<li>Using any undefined <em>hash_type</em> (not <em>0x00</em>, <em>0x01</em>, <em>0x02</em>,
-<em>0x03</em>, <em>0x81</em>, <em>0x82</em>, or <em>0x83</em>[13]).</li>
+<li>Using any undefined <em>hash_type</em> (not <em>0x00</em>, <em>0x01</em>, <em>0x02</em>, <em>0x03</em>,
+<em>0x81</em>, <em>0x82</em>, or <em>0x83</em><sup class="footnote-reference"><a href="#13">13</a></sup>).</li>
 <li>Using <code>SIGHASH_SINGLE</code> without a &quot;corresponding output&quot; (an output
 with the same index as the input being verified).</li>
 </ul>
 <p>The parameter <em>ext_flag</em> is an integer in range 0-127, and is used for
 indicating (in the message) that extensions are appended to the output
-of <em>SigMsg()</em>[14].</p>
+of <em>SigMsg()</em><sup class="footnote-reference"><a href="#14">14</a></sup>.</p>
 <p>If the parameters take acceptable values, the message is the
 concatenation of the following data, in order (with byte size of each
 item listed in parentheses). Numerical values in 2, 4, or 8-byte are
@@ -289,60 +285,54 @@ encoded in little-endian.</p>
 <ul>
 <li><em>nVersion</em> (4): the <em>nVersion</em> of the transaction.</li>
 <li><em>nLockTime</em> (4): the <em>nLockTime</em> of the transaction.</li>
-<li>If the <em>hash_type &amp; 0x80</em> does not equal
-<code>SIGHASH_ANYONECANPAY</code>:
+<li>If the <em>hash_type &amp; 0x80</em> does not equal <code>SIGHASH_ANYONECANPAY</code>:
 <ul>
-<li><em>sha_prevouts</em> (32): the SHA256 of the serialization of all
-input outpoints.</li>
-<li><em>sha_amounts</em> (32): the SHA256 of the serialization of all
-spent output amounts.</li>
+<li><em>sha_prevouts</em> (32): the SHA256 of the serialization of all input
+outpoints.</li>
+<li><em>sha_amounts</em> (32): the SHA256 of the serialization of all spent
+output amounts.</li>
 <li><em>sha_scriptpubkeys</em> (32): the SHA256 of all spent outputs'
 <em>scriptPubKeys</em>, serialized as script inside <code>CTxOut</code>.</li>
-<li><em>sha_sequences</em> (32): the SHA256 of the serialization of
-all input <em>nSequence</em>.</li>
+<li><em>sha_sequences</em> (32): the SHA256 of the serialization of all input
+<em>nSequence</em>.</li>
 </ul>
 </li>
 <li>If <em>hash_type &amp; 3</em> does not equal <code>SIGHASH_NONE</code> or
 <code>SIGHASH_SINGLE</code>:
 <ul>
-<li><em>sha_outputs</em> (32): the SHA256 of the serialization of all
-outputs in <code>CTxOut</code> format.</li>
+<li><em>sha_outputs</em> (32): the SHA256 of the serialization of all outputs
+in <code>CTxOut</code> format.</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>Data about this input:
 <ul>
-<li><em>spend_type</em> (1): equal to <em>(ext_flag * 2) + annex_present</em>,
-where <em>annex_present</em> is 0 if no annex is present, or 1
-otherwise (the original witness stack has two or more witness
-elements, and the first byte of the last element is <em>0x50</em>)</li>
+<li><em>spend_type</em> (1): equal to <em>(ext_flag * 2) + annex_present</em>, where
+<em>annex_present</em> is 0 if no annex is present, or 1 otherwise (the
+original witness stack has two or more witness elements, and the
+first byte of the last element is <em>0x50</em>)</li>
 <li>If <em>hash_type &amp; 0x80</em> equals <code>SIGHASH_ANYONECANPAY</code>:
 <ul>
-<li><em>outpoint</em> (36): the <code>COutPoint</code> of this input (32-byte hash
-<ul>
-<li>4-byte little-endian).</li>
-</ul>
-</li>
-<li><em>amount</em> (8): value of the previous output spent by this
-input.</li>
-<li><em>scriptPubKey</em> (35): <em>scriptPubKey</em> of the previous output
-spent by this input, serialized as script inside <code>CTxOut</code>.
-Its size is always 35 bytes.</li>
+<li><em>outpoint</em> (36): the <code>COutPoint</code> of this input (32-byte hash +
+4-byte little-endian).</li>
+<li><em>amount</em> (8): value of the previous output spent by this input.</li>
+<li><em>scriptPubKey</em> (35): <em>scriptPubKey</em> of the previous output spent
+by this input, serialized as script inside <code>CTxOut</code>. Its size is
+always 35 bytes.</li>
 <li><em>nSequence</em> (4): <em>nSequence</em> of this input.</li>
 </ul>
 </li>
 <li>If <em>hash_type &amp; 0x80</em> does not equal <code>SIGHASH_ANYONECANPAY</code>:
 <ul>
-<li><em>input_index</em> (4): index of this input in the transaction
-input vector. Index of the first input is 0.</li>
+<li><em>input_index</em> (4): index of this input in the transaction input
+vector. Index of the first input is 0.</li>
 </ul>
 </li>
 <li>If an annex is present (the lowest bit of <em>spend_type</em> is set):
 <ul>
-<li><em>sha_annex</em> (32): the SHA256 of <em>(compact_size(size of
-annex) || annex)</em>, where <em>annex</em> includes the mandatory
-<em>0x50</em> prefix.</li>
+<li><em>sha_annex</em> (32): the SHA256 of <em>(compact_size(size of annex) ||
+annex)</em>, where <em>annex</em> includes the mandatory <em>0x50</em> prefix.</li>
 </ul>
 </li>
 </ul>
@@ -351,45 +341,45 @@ annex) || annex)</em>, where <em>annex</em> includes the mandatory
 <ul>
 <li>If <em>hash_type &amp; 3</em> equals <code>SIGHASH_SINGLE</code>:
 <ul>
-<li><em>sha_single_output</em> (32): the SHA256 of the corresponding
-output in <code>CTxOut</code> format.</li>
+<li><em>sha_single_output</em> (32): the SHA256 of the corresponding output
+in <code>CTxOut</code> format.</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<p>The total length of <em>SigMsg()</em> is at most <em>206</em> bytes[15]. Note that
+<p>The total length of <em>SigMsg()</em> is at most <em>206</em> bytes<sup class="footnote-reference"><a href="#15">15</a></sup>. Note that
 this does not include the size of sub-hashes such as <em>sha_prevouts</em>,
 which may be cached across signatures of the same transaction.</p>
-<p>In summary, the semantics of the <a href="https://bips.dev/341/bip-0143.mediawiki" title="wikilink">BIP143</a>
+<p>In summary, the semantics of the <a href="/143">BIP143</a>
 sighash types remain unchanged, except the following:</p>
 <ol>
-<li>The way and order of serialization is changed.[16]</li>
+<li>The way and order of serialization is changed.<sup class="footnote-reference"><a href="#16">16</a></sup></li>
 <li>The signature message commits to the <em>scriptPubKey</em> of the spent
 output and if the <code>SIGHASH_ANYONECANPAY</code> flag is not set, the
 message commits to the <em>scriptPubKey</em>s of <em>all</em> outputs spent by the
-transaction. [17].</li>
+transaction. <sup class="footnote-reference"><a href="#17">17</a></sup>.</li>
 <li>If the <code>SIGHASH_ANYONECANPAY</code> flag is not set, the message commits
-to the amounts of <em>all</em> transaction inputs.[18]</li>
+to the amounts of <em>all</em> transaction inputs.<sup class="footnote-reference"><a href="#18">18</a></sup></li>
 <li>The signature message commits to all input <em>nSequence</em> if
 <code>SIGHASH_NONE</code> or <code>SIGHASH_SINGLE</code> are set (unless
-<code>SIGHASH_ANYONECANPAY</code> is set as well).[19]</li>
+<code>SIGHASH_ANYONECANPAY</code> is set as well).<sup class="footnote-reference"><a href="#19">19</a></sup></li>
 <li>The signature message includes commitments to the taproot-specific
 data <em>spend_type</em> and <em>annex</em> (if present).</li>
 </ol>
-<h4 id="taproot-key-path-spending-signature-validation">Taproot key path spending signature validation</h4>
+<h4 id="Taproot_key_path_spending_signature_validation">Taproot key path spending signature validation</h4>
 <p>To validate a signature <em>sig</em> with public key <em>q</em>:</p>
 <ul>
 <li>If the <em>sig</em> is 64 bytes long, return <em>Verify(q,
-hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)</em>[20],
+hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)</em><sup class="footnote-reference"><a href="#20">20</a></sup>,
 where <em>Verify</em> is defined in
-<a href="https://bips.dev/341/bip-0340.mediawiki#design" title="wikilink">BIP340</a>.</li>
-<li>If the <em>sig</em> is 65 bytes long, return <em>sig[64] ≠ 0x00[21] and
+<a href="/340">BIP340</a>.</li>
+<li>If the <em>sig</em> is 65 bytes long, return <em>sig[64] ≠ 0x00<sup class="footnote-reference"><a href="#21">21</a></sup> and
 Verify(q, hash<sub>TapSighash</sub>(0x00 || SigMsg(sig[64], 0)),
 sig[0:64])</em>.</li>
-<li>Otherwise, fail[22].</li>
+<li>Otherwise, fail<sup class="footnote-reference"><a href="#22">22</a></sup>.</li>
 </ul>
-<h2 id="constructing-and-spending-taproot-outputs">Constructing and spending Taproot outputs</h2>
+<h2 id="Constructing_and_spending_Taproot_outputs">Constructing and spending Taproot outputs</h2>
 <p>This section discusses how to construct and spend Taproot outputs. It
 only affects wallet software that chooses to implement receiving and
 spending, and is not consensus critical in any way.</p>
@@ -409,31 +399,31 @@ preferable to pick the latter.</li>
 aggregation techniques like MuSig can be used to combine them into a
 single key. The details are out of scope for this document, but note
 that this may complicate the signing procedure.</li>
-<li>If one or more of the spending conditions consist of just a single
-key (after aggregation), the most likely one should be made the
-internal key. If no such condition exists, it may be worthwhile
-adding one that consists of an aggregation of all keys participating
-in all scripts combined; effectively adding an &quot;everyone agrees&quot;
-branch. If that is inacceptable, pick as internal key a point with
-unknown discrete logarithm. One example of such a point is <em>H =
+<li>If one or more of the spending conditions consist of just a single key
+(after aggregation), the most likely one should be made the internal
+key. If no such condition exists, it may be worthwhile adding one that
+consists of an aggregation of all keys participating in all scripts
+combined; effectively adding an &quot;everyone agrees&quot; branch. If that is
+inacceptable, pick as internal key a point with unknown discrete
+logarithm. One example of such a point is <em>H =
 lift_x(0x0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0)</em>
 which is
-<a href="https://github.com/ElementsProject/secp256k1-zkp/blob/11af7015de624b010424273be3d91f117f172c82/src/modules/rangeproof/main_impl.h#L16">constructed</a>
+<a rel="noopener" target="_blank" href="https://github.com/ElementsProject/secp256k1-zkp/blob/11af7015de624b010424273be3d91f117f172c82/src/modules/rangeproof/main_impl.h#L16">constructed</a>
 by taking the hash of the standard uncompressed encoding of the
-<a href="https://www.secg.org/sec2-v2.pdf">secp256k1</a> base point <em>G</em> as X
+<a rel="noopener" target="_blank" href="https://www.secg.org/sec2-v2.pdf">secp256k1</a> base point <em>G</em> as X
 coordinate. In order to avoid leaking the information that key path
-spending is not possible it is recommended to pick a fresh integer
-<em>r</em> in the range <em>0...n-1</em> uniformly at random and use <em>H + rG</em> as
-internal key. It is possible to prove that this internal key does
-not have a known discrete logarithm with respect to <em>G</em> by revealing
-<em>r</em> to a verifier who can then reconstruct how the internal key was
+spending is not possible it is recommended to pick a fresh integer <em>r</em>
+in the range <em>0...n-1</em> uniformly at random and use <em>H + rG</em> as
+internal key. It is possible to prove that this internal key does not
+have a known discrete logarithm with respect to <em>G</em> by revealing <em>r</em>
+to a verifier who can then reconstruct how the internal key was
 created.</li>
 <li>If the spending conditions do not require a script path, the output
 key should commit to an unspendable script path instead of having no
-script path. This can be achieved by computing the output key point
-as <em>Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G</em>. <ref><strong>Why
-should the output key always have a taproot commitment, even if
-there is no script path?</strong></li>
+script path. This can be achieved by computing the output key point as
+<em>Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G</em>. <ref><strong>Why should
+the output key always have a taproot commitment, even if there is no
+script path?</strong></li>
 </ul>
 <p>If the taproot output key is an aggregate of keys, there is the
 possibility for a malicious party to add a script path without being
@@ -443,27 +433,23 @@ issue because it already causes the internal key to be randomized.</p>
 <p>The attack works as follows: Assume Alice and Mallory want to aggregate
 their keys into a taproot output key without a script path. In order to
 prevent key cancellation and related attacks they use
-<a href="https://eprint.iacr.org/2018/483.pdf">MSDL-pop</a> instead of MuSig. The
+<a rel="noopener" target="_blank" href="https://eprint.iacr.org/2018/483.pdf">MSDL-pop</a> instead of MuSig. The
 MSDL-pop protocol requires all parties to provide a proof of possession
 of their corresponding secret key and the aggregated key is just the sum
 of the individual keys. After Mallory receives Alice's key <em>A</em>, Mallory
 creates <em>M = M<sub>0</sub> + int(t)G</em> where <em>M<sub>0</sub></em> is Mallory's
-original key and <em>t</em> allows a script path spend with internal key *P = A</p>
+original key and <em>t</em> allows a script path spend with internal key <em>P =
+A + M<sub>0</sub></em> and a script that only contains Mallory's key.
+Mallory sends a proof of possession of <em>M</em> to Alice and both parties
+compute output key <em>Q = A + M = P + int(t)G</em>. Alice will not be able to
+notice the script path, but Mallory can unilaterally spend any coin with
+output key <em>Q</em>.</p>
+</ref>
 <ul>
-<li>
-<p>M<sub>0</sub>* and a script that only contains Mallory's key. Mallory
-sends a proof of possession of <em>M</em> to Alice and both parties compute
-output key <em>Q = A + M = P + int(t)G</em>. Alice will not be able to notice
-the script path, but Mallory can unilaterally spend any coin with output
-key <em>Q</em>. </ref></p>
-<ul>
-<li>The remaining scripts should be organized into the leaves of a
-binary tree. This can be a balanced tree if each of the conditions
-these scripts correspond to are equally likely. If probabilities for
-each condition are known, consider constructing the tree as a
-Huffman tree.</li>
-</ul>
-</li>
+<li>The remaining scripts should be organized into the leaves of a binary
+tree. This can be a balanced tree if each of the conditions these
+scripts correspond to are equally likely. If probabilities for each
+condition are known, consider constructing the tree as a Huffman tree.</li>
 </ul>
 <p><strong>Computing the output script</strong> Once the spending conditions are split
 into an internal key <code>internal_pubkey</code> and a binary tree whose leaves
@@ -473,7 +459,7 @@ helper functions from the <a href="bip-0340/reference.py" title="wikilink">BIP34
 code</a> for integer conversion, point
 multiplication, and tagged hashes.</p>
 <p>First, we define <code>taproot_tweak_pubkey</code> for 32-byte
-<a href="https://bips.dev/341/bip-0340.mediawiki" title="wikilink">BIP340</a> public key arrays. The function
+<a href="/340">BIP340</a> public key arrays. The function
 returns a bit indicating the tweaked public key's Y coordinate as well
 as the public key byte array. The parity bit will be required for
 spending the output with a script path. In order to allow spending with
@@ -483,87 +469,83 @@ for a tweaked public key. For any byte string <code>h</code> it holds that
 <p>Note that because tweaks are applied to 32-byte public keys,
 `taproot_tweak_seckey` may need to negate the secret key before
 applying the tweak.</p>
-<pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">h</span><span style="color:#61676c;">):
-    t </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(</span><span style="color:#f29718;">tagged_hash</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;TapTweak&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">pubkey </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">h))
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">t </span><span style="color:#ed9366;">&gt;= </span><span style="color:#61676c;">SECP256K1_ORDER:
-        </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
-    </span><span style="color:#61676c;">P </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">lift_x</span><span style="color:#61676c;">(</span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(pubkey))
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">P </span><span style="color:#ed9366;">is </span><span style="color:#ff8f40;">None</span><span style="color:#61676c;">:
-        </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
-    </span><span style="color:#61676c;">Q </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">point_add</span><span style="color:#61676c;">(P</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">point_mul</span><span style="color:#61676c;">(G</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">t))
-    </span><span style="color:#fa6e32;">return </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">if </span><span style="color:#f29718;">has_even_y</span><span style="color:#61676c;">(Q) </span><span style="color:#fa6e32;">else </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">, </span><span style="color:#f29718;">bytes_from_int</span><span style="color:#61676c;">(</span><span style="color:#f29718;">x</span><span style="color:#61676c;">(Q))
-
-</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tweak_seckey</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">seckey0</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">h</span><span style="color:#61676c;">):
-    seckey0 </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(seckey0)
-    P </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">point_mul</span><span style="color:#61676c;">(G</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">seckey0)
-    seckey </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">seckey0 </span><span style="color:#fa6e32;">if </span><span style="color:#f29718;">has_even_y</span><span style="color:#61676c;">(P) </span><span style="color:#fa6e32;">else </span><span style="color:#61676c;">SECP256K1_ORDER </span><span style="color:#ed9366;">- </span><span style="color:#61676c;">seckey0
-    t </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span style="color:#61676c;">(</span><span style="color:#f29718;">tagged_hash</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;TapTweak&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">bytes_from_int</span><span style="color:#61676c;">(</span><span style="color:#f29718;">x</span><span style="color:#61676c;">(P)) </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">h))
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">t </span><span style="color:#ed9366;">&gt;= </span><span style="color:#61676c;">SECP256K1_ORDER:
-        </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
-    </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">bytes_from_int</span><span style="color:#61676c;">((seckey </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">t) </span><span style="color:#ed9366;">% </span><span style="color:#61676c;">SECP256K1_ORDER)
+<pre data-lang="python" style="background-color:#fafafa;color:#61676c;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span>(</span><span style="color:#ff8f40;">pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">h</span><span>):
+</span><span>    t </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span>(</span><span style="color:#f29718;">tagged_hash</span><span>(</span><span style="color:#86b300;">&quot;TapTweak&quot;</span><span style="color:#61676ccc;">, </span><span>pubkey </span><span style="color:#ed9366;">+ </span><span>h))
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>t </span><span style="color:#ed9366;">&gt;= </span><span>SECP256K1_ORDER:
+</span><span>        </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
+</span><span>    P </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">lift_x</span><span>(</span><span style="color:#f29718;">int_from_bytes</span><span>(pubkey))
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>P </span><span style="color:#ed9366;">is </span><span style="color:#ff8f40;">None</span><span>:
+</span><span>        </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
+</span><span>    Q </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">point_add</span><span>(P</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">point_mul</span><span>(G</span><span style="color:#61676ccc;">, </span><span>t))
+</span><span>    </span><span style="color:#fa6e32;">return </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">if </span><span style="color:#f29718;">has_even_y</span><span>(Q) </span><span style="color:#fa6e32;">else </span><span style="color:#ff8f40;">1</span><span>, </span><span style="color:#f29718;">bytes_from_int</span><span>(</span><span style="color:#f29718;">x</span><span>(Q))
+</span><span>
+</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tweak_seckey</span><span>(</span><span style="color:#ff8f40;">seckey0</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">h</span><span>):
+</span><span>    seckey0 </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span>(seckey0)
+</span><span>    P </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">point_mul</span><span>(G</span><span style="color:#61676ccc;">, </span><span>seckey0)
+</span><span>    seckey </span><span style="color:#ed9366;">= </span><span>seckey0 </span><span style="color:#fa6e32;">if </span><span style="color:#f29718;">has_even_y</span><span>(P) </span><span style="color:#fa6e32;">else </span><span>SECP256K1_ORDER </span><span style="color:#ed9366;">- </span><span>seckey0
+</span><span>    t </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">int_from_bytes</span><span>(</span><span style="color:#f29718;">tagged_hash</span><span>(</span><span style="color:#86b300;">&quot;TapTweak&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">bytes_from_int</span><span>(</span><span style="color:#f29718;">x</span><span>(P)) </span><span style="color:#ed9366;">+ </span><span>h))
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>t </span><span style="color:#ed9366;">&gt;= </span><span>SECP256K1_ORDER:
+</span><span>        </span><span style="color:#fa6e32;">raise </span><span style="font-style:italic;color:#55b4d4;">ValueError
+</span><span>    </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">bytes_from_int</span><span>((seckey </span><span style="color:#ed9366;">+ </span><span>t) </span><span style="color:#ed9366;">% </span><span>SECP256K1_ORDER)
 </span></code></pre>
 <p>The following function, <code>taproot_output_script</code>, returns a byte array
-with the scriptPubKey (see <a href="https://bips.dev/341/bip-0141.mediawiki" title="wikilink">BIP141</a>).
+with the scriptPubKey (see <a href="/141">BIP141</a>).
 <code>ser_script</code> refers to a function that prefixes its input with a
 CompactSize-encoded length.</p>
-<pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676c;">):
-    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">isinstance</span><span style="color:#61676c;">(script_tree</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">tuple</span><span style="color:#61676c;">):
-        leaf_version, script </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">script_tree
-        h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">tagged_hash</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;TapLeaf&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">([leaf_version]) </span><span style="color:#ed9366;">+ </span><span style="color:#f29718;">ser_script</span><span style="color:#61676c;">(script))
-        </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">([((leaf_version</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">script)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">())]</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">h)
-    left, left_h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(script_tree[</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">])
-    right, right_h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(script_tree[</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">])
-    ret </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">[(l</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">c </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">right_h) </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">l</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">c </span><span style="color:#fa6e32;">in </span><span style="color:#61676c;">left] </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">[(l</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">c </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">left_h) </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">l</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">c </span><span style="color:#fa6e32;">in </span><span style="color:#61676c;">right]
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">right_h </span><span style="color:#ed9366;">&lt; </span><span style="color:#61676c;">left_h:
-        left_h, right_h </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">right_h, left_h
-    </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">(ret</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">tagged_hash</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;TapBranch&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">left_h </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">right_h))
-
-</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_output_script</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676c;">):
-    </span><span style="font-style:italic;color:#abb0b6;">&quot;&quot;&quot;Given a internal public key and a tree of scripts, compute the output script.
-    script_tree is either:
-     - a (leaf_version, script) tuple (leaf_version is 0xc0 for [[bip-0342.mediawiki|BIP342]] scripts)
-     - a list of two elements, each with the same structure as script_tree itself
-     - None
-    &quot;&quot;&quot;
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">script_tree </span><span style="color:#ed9366;">is </span><span style="color:#ff8f40;">None</span><span style="color:#61676c;">:
-        h </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">()
-    </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;">:
-        </span><span style="font-style:italic;color:#55b4d4;">_</span><span style="color:#61676c;">, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(script_tree)
-    </span><span style="font-style:italic;color:#55b4d4;">_</span><span style="color:#61676c;">, output_pubkey </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span style="color:#61676c;">(internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">h)
-    </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">([</span><span style="color:#ff8f40;">0x51</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">0x20</span><span style="color:#61676c;">]) </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">output_pubkey
+<pre data-lang="python" style="background-color:#fafafa;color:#61676c;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_tree_helper</span><span>(</span><span style="color:#ff8f40;">script_tree</span><span>):
+</span><span>    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">isinstance</span><span>(script_tree</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">tuple</span><span>):
+</span><span>        leaf_version, script </span><span style="color:#ed9366;">= </span><span>script_tree
+</span><span>        h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">tagged_hash</span><span>(</span><span style="color:#86b300;">&quot;TapLeaf&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span>([leaf_version]) </span><span style="color:#ed9366;">+ </span><span style="color:#f29718;">ser_script</span><span>(script))
+</span><span>        </span><span style="color:#fa6e32;">return </span><span>([((leaf_version</span><span style="color:#61676ccc;">, </span><span>script)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span>())]</span><span style="color:#61676ccc;">, </span><span>h)
+</span><span>    left, left_h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span>(script_tree[</span><span style="color:#ff8f40;">0</span><span>])
+</span><span>    right, right_h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span>(script_tree[</span><span style="color:#ff8f40;">1</span><span>])
+</span><span>    ret </span><span style="color:#ed9366;">= </span><span>[(l</span><span style="color:#61676ccc;">, </span><span>c </span><span style="color:#ed9366;">+ </span><span>right_h) </span><span style="color:#fa6e32;">for </span><span>l</span><span style="color:#61676ccc;">, </span><span>c </span><span style="color:#fa6e32;">in </span><span>left] </span><span style="color:#ed9366;">+ </span><span>[(l</span><span style="color:#61676ccc;">, </span><span>c </span><span style="color:#ed9366;">+ </span><span>left_h) </span><span style="color:#fa6e32;">for </span><span>l</span><span style="color:#61676ccc;">, </span><span>c </span><span style="color:#fa6e32;">in </span><span>right]
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>right_h </span><span style="color:#ed9366;">&lt; </span><span>left_h:
+</span><span>        left_h, right_h </span><span style="color:#ed9366;">= </span><span>right_h, left_h
+</span><span>    </span><span style="color:#fa6e32;">return </span><span>(ret</span><span style="color:#61676ccc;">, </span><span style="color:#f29718;">tagged_hash</span><span>(</span><span style="color:#86b300;">&quot;TapBranch&quot;</span><span style="color:#61676ccc;">, </span><span>left_h </span><span style="color:#ed9366;">+ </span><span>right_h))
+</span><span>
+</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_output_script</span><span>(</span><span style="color:#ff8f40;">internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">script_tree</span><span>):
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;">&quot;&quot;&quot;Given a internal public key and a tree of scripts, compute the output script.
+</span><span style="font-style:italic;color:#abb0b6;">    script_tree is either:
+</span><span style="font-style:italic;color:#abb0b6;">     - a (leaf_version, script) tuple (leaf_version is 0xc0 for [[bip-0342.mediawiki|BIP342]] scripts)
+</span><span style="font-style:italic;color:#abb0b6;">     - a list of two elements, each with the same structure as script_tree itself
+</span><span style="font-style:italic;color:#abb0b6;">     - None
+</span><span style="font-style:italic;color:#abb0b6;">    &quot;&quot;&quot;
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>script_tree </span><span style="color:#ed9366;">is </span><span style="color:#ff8f40;">None</span><span>:
+</span><span>        h </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span>()
+</span><span>    </span><span style="color:#fa6e32;">else</span><span>:
+</span><span>        </span><span style="font-style:italic;color:#55b4d4;">_</span><span>, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span>(script_tree)
+</span><span>    </span><span style="font-style:italic;color:#55b4d4;">_</span><span>, output_pubkey </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span>(internal_pubkey</span><span style="color:#61676ccc;">, </span><span>h)
+</span><span>    </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span>([</span><span style="color:#ff8f40;">0x51</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">0x20</span><span>]) </span><span style="color:#ed9366;">+ </span><span>output_pubkey
 </span></code></pre>
-<p><img src="bip-0341/tree.png" alt="This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD." title="This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD." /></p>
+<p><img src="https://bips.dev/341/bip-0341/tree.png" alt="This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD." title="This diagram shows the hashing structure to obtain the tweak from an internal key P and a Merkle tree consisting of 5 script leaves. A, B, C and E are TapLeaf hashes similar to D and AB is a TapBranch hash. Note that when CDE is computed E is hashed first because E is less than CD." /></p>
 <p>To spend this output using script <em>D</em>, the control block would contain
 the following data in this order:</p>
 <p><code>    </code><control byte with leaf version and parity bit><code> </code><internal key p><code> </code><C><code> </code><E><code> </code><AB></p>
 <p>The TapTweak would then be computed as described
-<a href="https://bips.dev/341/bip-0341.mediawiki#script-validation-rules" title="wikilink">above</a> like so:</p>
-<pre style="background-color:#fafafa;">
-<code>D = tagged_hash(&quot;TapLeaf&quot;, bytes([leaf_version]) + ser_script(script))
-CD = tagged_hash(&quot;TapBranch&quot;, C + D)
-CDE = tagged_hash(&quot;TapBranch&quot;, E + CD)
-ABCDE = tagged_hash(&quot;TapBranch&quot;, AB + CDE)
-TapTweak = tagged_hash(&quot;TapTweak&quot;, p + ABCDE)
-</code></pre>
+<a href="/341">above</a> like so:</p>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>D = tagged_hash(&quot;TapLeaf&quot;, bytes([leaf_version]) + ser_script(script))
+</span><span>CD = tagged_hash(&quot;TapBranch&quot;, C + D)
+</span><span>CDE = tagged_hash(&quot;TapBranch&quot;, E + CD)
+</span><span>ABCDE = tagged_hash(&quot;TapBranch&quot;, AB + CDE)
+</span><span>TapTweak = tagged_hash(&quot;TapTweak&quot;, p + ABCDE)
+</span></code></pre>
 <p><strong>Spending using the key path</strong> A Taproot output can be spent with the
 secret key corresponding to the <code>internal_pubkey</code>. To do so, a witness
 stack consists of a single element: a
-<a href="https://bips.dev/341/bip-0340.mediawiki" title="wikilink">BIP340</a> signature on the signature hash
+<a href="/340">BIP340</a> signature on the signature hash
 as defined above, with the secret key tweaked by the same <code>h</code> as in the
 above snippet. See the code below:</p>
-<pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_sign_key</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">internal_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">hash_type</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">bip340_aux_rand</span><span style="color:#61676c;">):
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">script_tree </span><span style="color:#ed9366;">is </span><span style="color:#ff8f40;">None</span><span style="color:#61676c;">:
-        h </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">()
-    </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;">:
-        </span><span style="font-style:italic;color:#55b4d4;">_</span><span style="color:#61676c;">, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(script_tree)
-    output_seckey </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_seckey</span><span style="color:#61676c;">(internal_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">h)
-    sig </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">schnorr_sign</span><span style="color:#61676c;">(</span><span style="color:#f29718;">sighash</span><span style="color:#61676c;">(hash_type)</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">output_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">bip340_aux_rand)
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">hash_type </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">:
-        sig </span><span style="color:#ed9366;">+= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">([hash_type])
-    </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">[sig]
+<pre data-lang="python" style="background-color:#fafafa;color:#61676c;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_sign_key</span><span>(</span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">internal_seckey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">hash_type</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">bip340_aux_rand</span><span>):
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>script_tree </span><span style="color:#ed9366;">is </span><span style="color:#ff8f40;">None</span><span>:
+</span><span>        h </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span>()
+</span><span>    </span><span style="color:#fa6e32;">else</span><span>:
+</span><span>        </span><span style="font-style:italic;color:#55b4d4;">_</span><span>, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span>(script_tree)
+</span><span>    output_seckey </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_seckey</span><span>(internal_seckey</span><span style="color:#61676ccc;">, </span><span>h)
+</span><span>    sig </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">schnorr_sign</span><span>(</span><span style="color:#f29718;">sighash</span><span>(hash_type)</span><span style="color:#61676ccc;">, </span><span>output_seckey</span><span style="color:#61676ccc;">, </span><span>bip340_aux_rand)
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>hash_type </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">0</span><span>:
+</span><span>        sig </span><span style="color:#ed9366;">+= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span>([hash_type])
+</span><span>    </span><span style="color:#fa6e32;">return </span><span>[sig]
 </span></code></pre>
 <p>This function returns the witness stack necessary and a <code>sighash</code>
 function to compute the signature hash as defined above (for simplicity,
@@ -573,14 +555,14 @@ input position, ... to the sighashing code).</p>
 satisfying any of the scripts used in its construction. To do so, a
 witness stack consisting of the script's inputs, plus the script itself
 and the control block are necessary. See the code below:</p>
-<pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_sign_script</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">script_num</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">inputs</span><span style="color:#61676c;">):
-    info, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span style="color:#61676c;">(script_tree)
-    (leaf_version</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">script), path </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">info[script_num]
-    output_pubkey_y_parity, </span><span style="font-style:italic;color:#55b4d4;">_ </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span style="color:#61676c;">(internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">h)
-    pubkey_data </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span style="color:#61676c;">([output_pubkey_y_parity </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">leaf_version]) </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">internal_pubkey
-    </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">inputs </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">[script</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">pubkey_data </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">path]
-</span></code></pre><h2 id="security">Security</h2>
+<pre data-lang="python" style="background-color:#fafafa;color:#61676c;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">taproot_sign_script</span><span>(</span><span style="color:#ff8f40;">internal_pubkey</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">script_tree</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">script_num</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">inputs</span><span>):
+</span><span>    info, h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tree_helper</span><span>(script_tree)
+</span><span>    (leaf_version</span><span style="color:#61676ccc;">, </span><span>script), path </span><span style="color:#ed9366;">= </span><span>info[script_num]
+</span><span>    output_pubkey_y_parity, </span><span style="font-style:italic;color:#55b4d4;">_ </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">taproot_tweak_pubkey</span><span>(internal_pubkey</span><span style="color:#61676ccc;">, </span><span>h)
+</span><span>    pubkey_data </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">bytes</span><span>([output_pubkey_y_parity </span><span style="color:#ed9366;">+ </span><span>leaf_version]) </span><span style="color:#ed9366;">+ </span><span>internal_pubkey
+</span><span>    </span><span style="color:#fa6e32;">return </span><span>inputs </span><span style="color:#ed9366;">+ </span><span>[script</span><span style="color:#61676ccc;">, </span><span>pubkey_data </span><span style="color:#ed9366;">+ </span><span>path]
+</span></code></pre>
+<h2 id="Security">Security</h2>
 <p>Taproot improves the privacy of Bitcoin because instead of revealing all
 possible conditions for spending an output, only the satisfied spending
 condition has to be published. Ideally, outputs are spent using the key
@@ -610,44 +592,43 @@ balanced (sub-) trees. In addition, every leaf should have a set of keys
 distinct from every other leaf. The reason for this is to increase leaf
 entropy and prevent an observer from learning an undisclosed script
 using brute-force search.</p>
-<h2 id="test-vectors">Test vectors</h2>
+<h2 id="Test_vectors">Test vectors</h2>
 <p>Test vectors for wallet operation (scriptPubKey computation, key path
 spending, control block construction) can be found
 <a href="bip-0341/wallet-test-vectors.json" title="wikilink">here</a>. It consists of two
 sets of vectors.</p>
 <ul>
-<li>The first &quot;scriptPubKey&quot; tests concern computing the scriptPubKey
-and (mainnet) BIP350 address given an internal public key, and a
-script tree. The script tree is encoded as <code>null</code> to represent no
-scripts, a JSON object to represent a leaf node, or a 2-element
-array to represent an inner node. The control blocks needed for
-script path spending are also provided for each of the script
-leaves.</li>
+<li>The first &quot;scriptPubKey&quot; tests concern computing the scriptPubKey and
+(mainnet) BIP350 address given an internal public key, and a script
+tree. The script tree is encoded as <code>null</code> to represent no scripts, a
+JSON object to represent a leaf node, or a 2-element array to
+represent an inner node. The control blocks needed for script path
+spending are also provided for each of the script leaves.</li>
 <li>The second &quot;keyPathSpending&quot; tests consists of a list of test cases,
 each of which provides an unsigned transaction and the UTXOs it
 spends. For each of its BIP341 inputs, the internal private key and
-the Merkle root it was derived from is given, as well as the
-expected witness to spend it. All signatures are created with an
-all-zero (0x0000...0000) BIP340 auxiliary randomness array.</li>
+the Merkle root it was derived from is given, as well as the expected
+witness to spend it. All signatures are created with an all-zero
+(0x0000...0000) BIP340 auxiliary randomness array.</li>
 <li>In all cases, hexadecimal values represent byte arrays, not numbers.
 In particular, that means that provided hash values have the hex
 digits corresponding to the first bytes first. This differs from the
 convention used for txids and block hashes, where the hex strings
 represent numbers, resulting in a reversed order.</li>
 </ul>
-<p>Validation test vectors used in the <a href="https://github.com/bitcoin/bitcoin/blob/3820090bd619ac85ab35eff376c03136fe4a9f04/src/test/script_tests.cpp#L1718">Bitcoin Core unit test
+<p>Validation test vectors used in the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/3820090bd619ac85ab35eff376c03136fe4a9f04/src/test/script_tests.cpp#L1718">Bitcoin Core unit test
 framework</a>
 can be found
-<a href="https://github.com/bitcoin-core/qa-assets/blob/main/unit_test_data/script_assets_test.json?raw=true">here</a>.</p>
-<h2 id="rationale">Rationale</h2>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin-core/qa-assets/blob/main/unit_test_data/script_assets_test.json?raw=true">here</a>.</p>
+<h2 id="Rationale">Rationale</h2>
 <references />
-<h2 id="deployment">Deployment</h2>
+<h2 id="Deployment">Deployment</h2>
 <p>This BIP is deployed concurrently with
-<a href="https://bips.dev/341/bip-0342.mediawiki" title="wikilink">BIP342</a>.</p>
+<a href="/342">BIP342</a>.</p>
 <p>For Bitcoin signet, these BIPs are always active.</p>
 <p>For Bitcoin mainnet and testnet3, these BIPs are deployed by &quot;version
 bits&quot; with the name &quot;taproot&quot; and bit 2, using
-<a href="https://bips.dev/341/bip-0009.mediawiki" title="wikilink">BIP9</a> modified to use a lower threshold,
+<a href="/9">BIP9</a> modified to use a lower threshold,
 with an additional <em>min_activation_height</em> parameter and replacing the
 state transition logic for the DEFINED, STARTED and LOCKED_IN states as
 follows:</p>
@@ -679,16 +660,14 @@ follows:</p>
 <p>For Bitcoin mainnet, the starttime is epoch timestamp 1619222400
 (midnight 24 April 2021 UTC), timeout is epoch timestamp 1628640000
 (midnight 11 August 2021 UTC), the threshold is 1815 blocks (90%)
-instead of 1916 blocks (95%), and the min_activation_height is block</p>
-<ol start="709632">
-<li>The deployment did activate at height 709632 on Bitcoin mainnet.</li>
-</ol>
+instead of 1916 blocks (95%), and the min_activation_height is block
+709632. The deployment did activate at height 709632 on Bitcoin mainnet.</p>
 <p>For Bitcoin testnet3, the starttime is epoch timestamp 1619222400
 (midnight 24 April 2021 UTC), timeout is epoch timestamp 1628640000
 (midnight 11 August 2021 UTC), the threshold is 1512 blocks (75%), and
 the min_activation_height is block 0. The deployment did activate at
 height 2011968 on Bitcoin testnet3.</p>
-<h2 id="backwards-compatibility">Backwards compatibility</h2>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>As a soft fork, older software will continue to operate without
 modification. Non-upgraded nodes, however, will consider all SegWit
 version 1 witness programs as anyone-can-spend scripts. They are
@@ -698,8 +677,8 @@ programs.</p>
 upgraded wallets using SegWit version 0 programs, traditional
 pay-to-pubkey-hash, etc. Depending on the implementation non-upgraded
 wallets may be able to send to Segwit version 1 programs if they support
-sending to <a href="https://bips.dev/341/bip-0350.mediawiki" title="wikilink">BIP350</a> Bech32m addresses.</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+sending to <a href="/350">BIP350</a> Bech32m addresses.</p>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>This document is the result of discussions around script and signature
 improvements with many people, and had direct contributions from Greg
 Maxwell and others. It further builds on top of earlier published
@@ -708,61 +687,71 @@ constructions by Russell O'Connor, Johnson Lau, and Mark Friedenbach.</p>
 <p>The authors wish the thank Arik Sosman for suggesting to sort Merkle
 node children before hashes, removing the need to transfer the position
 in the tree, as well as all those who provided valuable feedback and
-reviews, including the participants of the <a href="https://github.com/ajtowns/taproot-review">structured
+reviews, including the participants of the <a rel="noopener" target="_blank" href="https://github.com/ajtowns/taproot-review">structured
 reviews</a>.</p>
-<ol>
-<li><strong>What does not adding security assumptions mean?</strong> Unforgeability
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><strong>What does not adding security assumptions mean?</strong> Unforgeability
 of signatures is a necessary requirement to prevent theft. At least
 when treating script execution as a digital signature scheme itself,
-unforgeability can be <a href="https://github.com/apoelstra/taproot">proven</a>
+unforgeability can be <a rel="noopener" target="_blank" href="https://github.com/apoelstra/taproot">proven</a>
 in the Random Oracle Model assuming the Discrete Logarithm problem
 is hard. A
-<a href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">proof</a> for
+<a rel="noopener" target="_blank" href="https://nbn-resolving.de/urn:nbn:de:hbz:294-60803">proof</a> for
 unforgeability of ECDSA in the current script system needs
 non-standard assumptions on top of that. Note that it is hard in
 general to model exactly what security for script means, as it
-depends on the policies and protocols used by wallet software.</li>
-<li><strong>Why is the public key directly included in the output?</strong> While
+depends on the policies and protocols used by wallet software.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><strong>Why is the public key directly included in the output?</strong> While
 typical earlier constructions store a hash of a script or a public
 key in the output, this is rather wasteful when a public key is
 always involved. To guarantee batch verifiability, the public key
 must be known to every verifier, and thus only revealing its hash as
 an output would imply adding an additional 32 bytes to the witness.
-Furthermore, to maintain <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-January/012198.html">128-bit collision
+Furthermore, to maintain <a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-January/012198.html">128-bit collision
 security</a>
 for outputs, a 256-bit hash would be required anyway, which is
 comparable in size (and thus in cost for senders) to revealing the
 public key directly. While the usage of public key hashes is often
 said to protect against ECDLP breaks or quantum computers, this
 protection is very weak at best: transactions are not protected
-while being confirmed, and a very <a href="https://twitter.com/pwuille/status/1108097835365339136">large
+while being confirmed, and a very <a rel="noopener" target="_blank" href="https://twitter.com/pwuille/status/1108097835365339136">large
 portion</a> of
 the currency's supply is not under such protection regardless.
 Actual resistance to such systems can be introduced by relying on
 different cryptographic assumptions, but this proposal focuses on
-improvements that do not change the security model.</li>
-<li><strong>Why is P2SH-wrapping not supported?</strong> Using P2SH-wrapped outputs
+improvements that do not change the security model.</p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><strong>Why is P2SH-wrapping not supported?</strong> Using P2SH-wrapped outputs
 only provides 80-bit collision security due to the use of a 160-bit
 hash. This is considered low, and becomes a security risk whenever
 the output includes data from more than a single party (public keys,
-hashes, ...).</li>
-<li><strong>Why is the first byte of the annex <code>0x50</code>?</strong> The <code>0x50</code> is chosen
-as it could not be confused with a valid P2WPKH or P2WSH spending.
-As the control block's initial byte's lowest bit is used to indicate
-the parity of the public key's Y coordinate, each leaf version needs
-an even byte value and the immediately following odd byte value that
-are both not yet used in P2WPKH or P2WSH spending. To indicate the
-annex, only an &quot;unpaired&quot; available byte is necessary like <code>0x50</code>.
-This choice maximizes the available options for future script
-versions.</li>
-<li><strong>What is the purpose of the annex?</strong> The annex is a reserved space
-for future extensions, such as indicating the validation costs of
-computationally expensive new opcodes in a way that is recognizable
-without knowing the scriptPubKey of the output being spent. Until
-the meaning of this field is defined by another softfork, users
-SHOULD NOT include <code>annex</code> in transactions, or it may lead to
-PERMANENT FUND LOSS.</li>
-<li><strong>Why is the Merkle path length limited to 128?</strong> The optimally
+hashes, ...).</p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><strong>Why is the first byte of the annex <code>0x50</code>?</strong> The <code>0x50</code> is
+chosen as it could not be confused with a valid P2WPKH or P2WSH
+spending. As the control block's initial byte's lowest bit is used
+to indicate the parity of the public key's Y coordinate, each leaf
+version needs an even byte value and the immediately following odd
+byte value that are both not yet used in P2WPKH or P2WSH spending.
+To indicate the annex, only an &quot;unpaired&quot; available byte is
+necessary like <code>0x50</code>. This choice maximizes the available options
+for future script versions.</p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><strong>What is the purpose of the annex?</strong> The annex is a reserved
+space for future extensions, such as indicating the validation costs
+of computationally expensive new opcodes in a way that is
+recognizable without knowing the scriptPubKey of the output being
+spent. Until the meaning of this field is defined by another
+softfork, users SHOULD NOT include <code>annex</code> in transactions, or it
+may lead to PERMANENT FUND LOSS.</p>
+</div>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<p><strong>Why is the Merkle path length limited to 128?</strong> The optimally
 space-efficient Merkle tree can be constructed based on the
 probabilities of the scripts in the leaves, using the Huffman
 algorithm. This algorithm will construct branches with lengths
@@ -770,39 +759,48 @@ approximately equal to <em>log<sub>2</sub>(1/probability)</em>, but to have
 branches longer than 128 you would need to have scripts with an
 execution chance below 1 in <em>2<sup>128</sup></em>. As that is our
 security bound, scripts that truly have such a low chance can
-probably be removed entirely.</li>
-<li><strong>What constraints are there on the leaf version?</strong> First, the leaf
-version cannot be odd as <em>c[0] &amp; 0xfe</em> will always be even, and
-cannot be <em>0x50</em> as that would result in ambiguity with the annex.
-In addition, in order to support some forms of static analysis that
-rely on being able to identify script spends without access to the
-output being spent, it is recommended to avoid using any leaf
-versions that would conflict with a valid first byte of either a
-valid P2WPKH pubkey or a valid P2WSH script (that is, both <em>v</em> and
-<em>v | 1</em> should be an undefined, invalid or disabled opcode or an
-opcode that is not valid as the first opcode). The values that
+probably be removed entirely.</p>
+</div>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
+<p><strong>What constraints are there on the leaf version?</strong> First, the
+leaf version cannot be odd as <em>c[0] &amp; 0xfe</em> will always be even,
+and cannot be <em>0x50</em> as that would result in ambiguity with the
+annex. In addition, in order to support some forms of static
+analysis that rely on being able to identify script spends without
+access to the output being spent, it is recommended to avoid using
+any leaf versions that would conflict with a valid first byte of
+either a valid P2WPKH pubkey or a valid P2WSH script (that is, both
+<em>v</em> and <em>v | 1</em> should be an undefined, invalid or disabled opcode
+or an opcode that is not valid as the first opcode). The values that
 comply to this rule are the 32 even values between <em>0xc0</em> and <em>0xfe</em>
 and also <em>0x66</em>, <em>0x7e</em>, <em>0x80</em>, <em>0x84</em>, <em>0x96</em>, <em>0x98</em>, <em>0xba</em>,
 <em>0xbc</em>, <em>0xbe</em>. Note also that this constraint implies that leaf
 versions should be shared amongst different witness versions, as
 knowing the witness version requires access to the output being
-spent.</li>
-<li><strong>Why are child elements sorted before hashing in the Merkle tree?</strong>
-By doing so, it is not necessary to reveal the left/right directions
-along with the hashes in revealed Merkle branches. This is possible
-because we do not actually care about the position of specific
-scripts in the tree; only that they are actually committed to.</li>
-<li><strong>Why not use a more efficient hash construction for inner Merkle
+spent.</p>
+</div>
+<div class="footnote-definition" id="8"><sup class="footnote-definition-label">8</sup>
+<p><strong>Why are child elements sorted before hashing in the Merkle
+tree?</strong> By doing so, it is not necessary to reveal the left/right
+directions along with the hashes in revealed Merkle branches. This
+is possible because we do not actually care about the position of
+specific scripts in the tree; only that they are actually committed
+to.</p>
+</div>
+<div class="footnote-definition" id="9"><sup class="footnote-definition-label">9</sup>
+<p><strong>Why not use a more efficient hash construction for inner Merkle
 nodes?</strong> The chosen construction does require two invocations of the
 SHA256 compression functions, one of which can be avoided in theory
-(see <a href="https://bips.dev/341/bip-0098.mediawiki" title="wikilink">BIP98</a>). However, it seems
+(see <a href="/98">BIP98</a>). However, it seems
 preferable to stick to constructions that can be implemented using
 standard cryptographic primitives, both for implementation
 simplicity and analyzability. If necessary, a significant part of
 the second compression function can be optimized out by
-<a href="https://github.com/bitcoin/bitcoin/pull/13191">specialization</a> for
-64-byte inputs.</li>
-<li><strong>Why is it necessary to reveal a bit in a script path spend and
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/13191">specialization</a> for
+64-byte inputs.</p>
+</div>
+<div class="footnote-definition" id="10"><sup class="footnote-definition-label">10</sup>
+<p><strong>Why is it necessary to reveal a bit in a script path spend and
 check that it matches the parity of the Y coordinate of <em>Q</em>?</strong> The
 parity of the Y coordinate is necessary to lift the X coordinate <em>q</em>
 to a unique point. While this is not strictly necessary for
@@ -811,25 +809,37 @@ to allow batch verification. Alternatively, <em>Q</em> could be forced to
 have an even Y coordinate, but that would require retrying with
 different internal public keys (or different messages) until <em>Q</em> has
 that property. There is no downside to adding the parity bit because
-otherwise the control block bit would be unused.</li>
-<li><strong>What are the applicable script rules in script path spends?</strong>
-<a href="https://bips.dev/341/bip-0342.mediawiki" title="wikilink">BIP342</a> specifies validity rules
+otherwise the control block bit would be unused.</p>
+</div>
+<div class="footnote-definition" id="11"><sup class="footnote-definition-label">11</sup>
+<p><strong>What are the applicable script rules in script path spends?</strong>
+<a href="/342">BIP342</a> specifies validity rules
 that apply for leaf version 0xc0, but future proposals can introduce
-rules for other leaf versions.</li>
-<li><strong>Why we need to success on future leaf version validation</strong> This is
-required to enable future leaf versions as soft forks</li>
-<li><strong>Why reject unknown <em>hash_type</em> values?</strong> By doing so, it is
+rules for other leaf versions.</p>
+</div>
+<div class="footnote-definition" id="12"><sup class="footnote-definition-label">12</sup>
+<p><strong>Why we need to success on future leaf version validation</strong> This
+is required to enable future leaf versions as soft forks</p>
+</div>
+<div class="footnote-definition" id="13"><sup class="footnote-definition-label">13</sup>
+<p><strong>Why reject unknown <em>hash_type</em> values?</strong> By doing so, it is
 easier to reason about the worst case amount of signature hashing an
-implementation with adequate caching must perform.</li>
-<li><strong>What extensions use the <em>ext_flag</em> mechanism?</strong>
-<a href="https://bips.dev/341/bip-0342.mediawiki#common-signature-message-extension" title="wikilink">BIP342</a>
+implementation with adequate caching must perform.</p>
+</div>
+<div class="footnote-definition" id="14"><sup class="footnote-definition-label">14</sup>
+<p><strong>What extensions use the <em>ext_flag</em> mechanism?</strong>
+<a href="/342">BIP342</a>
 reuses the same common signature message algorithm, but adds
 BIP342-specific data at the end, which is indicated using <em>ext_flag
-= 1</em>.</li>
-<li><strong>What is the output length of <em>SigMsg()</em>?</strong> The total length of
+= 1</em>.</p>
+</div>
+<div class="footnote-definition" id="15"><sup class="footnote-definition-label">15</sup>
+<p><strong>What is the output length of <em>SigMsg()</em>?</strong> The total length of
 <em>SigMsg()</em> can be computed using the following formula: <em>174 -
-is_anyonecanpay * 49 - is_none * 32 + has_annex * 32</em>.</li>
-<li><strong>Why is the serialization in the signature message changed?</strong>
+is_anyonecanpay * 49 - is_none * 32 + has_annex * 32</em>.</p>
+</div>
+<div class="footnote-definition" id="16"><sup class="footnote-definition-label">16</sup>
+<p><strong>Why is the serialization in the signature message changed?</strong>
 Hashes that go into the signature message and the message itself are
 now computed with a single SHA256 invocation instead of double
 SHA256. There is no expected security improvement by doubling SHA256
@@ -845,43 +855,54 @@ sub-hashes can be skipped when calculating the message (for example
 setting them to zero and then hashing them as in BIP143. Despite
 that, collisions are made impossible by committing to the length of
 the data (implicit in <em>hash_type</em> and <em>spend_type</em>) before the
-variable length data.</li>
-<li><strong>Why does the signature message commit to the <em>scriptPubKey</em>?</strong>
+variable length data.</p>
+</div>
+<div class="footnote-definition" id="17"><sup class="footnote-definition-label">17</sup>
+<p><strong>Why does the signature message commit to the <em>scriptPubKey</em>?</strong>
 This prevents lying to offline signing devices about output being
 spent, even when the actually executed script (<em>scriptCode</em> in
 BIP143) is correct. This means it's possible to compactly prove to a
 hardware wallet what (unused) execution paths existed. Moreover,
 committing to all spent <em>scriptPubKey</em>s helps offline signing
 devices to determine the subset that belong to its own wallet. This
-is useful in <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-April/017801.html">automated
-coinjoins</a>.</li>
-<li><strong>Why does the signature message commit to the amounts of all
+is useful in <a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-April/017801.html">automated
+coinjoins</a>.</p>
+</div>
+<div class="footnote-definition" id="18"><sup class="footnote-definition-label">18</sup>
+<p><strong>Why does the signature message commit to the amounts of all
 transaction inputs?</strong> This eliminates the possibility to lie to
-offline signing devices about the fee of a transaction.</li>
-<li><strong>Why does the signature message commit to all input <em>nSequence</em> if
-<code>SIGHASH_SINGLE</code> or <code>SIGHASH_NONE</code> are set?</strong> Because setting them
-already makes the message commit to the <code>prevouts</code> part of all
+offline signing devices about the fee of a transaction.</p>
+</div>
+<div class="footnote-definition" id="19"><sup class="footnote-definition-label">19</sup>
+<p><strong>Why does the signature message commit to all input <em>nSequence</em>
+if <code>SIGHASH_SINGLE</code> or <code>SIGHASH_NONE</code> are set?</strong> Because setting
+them already makes the message commit to the <code>prevouts</code> part of all
 transaction inputs, it is not useful to treat the <em>nSequence</em> any
 different. Moreover, this change makes <em>nSequence</em> consistent with
 the view that <code>SIGHASH_SINGLE</code> and <code>SIGHASH_NONE</code> only modify the
 signature message with respect to transaction outputs and not
-inputs.</li>
-<li><strong>Why is the input to <em>hash<sub>TapSighash</sub></em> prefixed with
+inputs.</p>
+</div>
+<div class="footnote-definition" id="20"><sup class="footnote-definition-label">20</sup>
+<p><strong>Why is the input to <em>hash<sub>TapSighash</sub></em> prefixed with
 0x00?</strong> This prefix is called the sighash epoch, and allows reusing
 the <em>hash<sub>TapSighash</sub></em> tagged hash in future signature
 algorithms that make invasive changes to how hashing is performed
-(as opposed to the <em>ext_flag</em> mechanism that is used for
-incremental extensions). An alternative is having them use a
-different tag, but supporting a growing number of tags may become
-undesirable.</li>
-<li><strong>Why can the <code>hash_type</code> not be <code>0x00</code> in 65-byte signatures?</strong>
+(as opposed to the <em>ext_flag</em> mechanism that is used for incremental
+extensions). An alternative is having them use a different tag, but
+supporting a growing number of tags may become undesirable.</p>
+</div>
+<div class="footnote-definition" id="21"><sup class="footnote-definition-label">21</sup>
+<p><strong>Why can the <code>hash_type</code> not be <code>0x00</code> in 65-byte signatures?</strong>
 Permitting that would enable malleating (by third parties, including
 miners) 64-byte signatures into 65-byte ones, resulting in a
 different `wtxid` and a different fee rate than the creator
-intended.</li>
-<li><strong>Why permit two signature lengths?</strong> By making the most common type
-of <code>hash_type</code> implicit, a byte can often be saved.</li>
-</ol>
+intended.</p>
+</div>
+<div class="footnote-definition" id="22"><sup class="footnote-definition-label">22</sup>
+<p><strong>Why permit two signature lengths?</strong> By making the most common
+type of <code>hash_type</code> implicit, a byte can often be saved.</p>
+</div>
 
     </div>
 
@@ -889,7 +910,7 @@ of <code>hash_type</code> implicit, a byte can often be saved.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

@@ -14,22 +14,20 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0073.mediawiki"
 +++
 
-``` 
-  BIP: 73
-  Layer: Applications
-  Title: Use "Accept" header for response type negotiation with Payment Request URLs
-  Author: Stephen Pair <stephen@bitpay.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0073
-  Status: Final
-  Type: Standards Track
-  Created: 2013-08-27
-```
+      BIP: 73
+      Layer: Applications
+      Title: Use "Accept" header for response type negotiation with Payment Request URLs
+      Author: Stephen Pair <stephen@bitpay.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0073
+      Status: Final
+      Type: Standards Track
+      Created: 2013-08-27
 
 ## Abstract
 
 This BIP describes an enhancement to the payment protocol ([BIP
-70](bip-0070.mediawiki "wikilink")) that addresses the need for short
+70](/70)) that addresses the need for short
 URLs when scanning from QR codes. It generalizes the specification for
 the behavior of a payment request URL in a way that allows the client
 and server to negotiate the content of the response using the HTTP
@@ -37,7 +35,7 @@ Accept: header field. Specifically, the client can indicate to the
 server whether it prefers to receive a bitcoin URI or a payment request.
 
 Implementation of this BIP does not require full payment request ([BIP
-70](bip-0070.mediawiki "wikilink")) support.
+70](/70)) support.
 
 ## Motivation
 

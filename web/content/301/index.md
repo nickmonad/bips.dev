@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0301.mediawiki"
 +++
 
-``` 
-  BIP: 301
-  Layer: Consensus (soft fork)
-  Title: Blind Merged Mining (Consensus layer)
-  Author: Paul Sztorc <truthcoin@gmail.com>
-          CryptAxe <cryptaxe@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0301
-  Status: Draft
-  Type: Standards Track
-  Created: 2019-07-23
-  License: BSD-2-Clause
-```
+      BIP: 301
+      Layer: Consensus (soft fork)
+      Title: Blind Merged Mining (Consensus layer)
+      Author: Paul Sztorc <truthcoin@gmail.com>
+              CryptAxe <cryptaxe@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0301
+      Status: Draft
+      Type: Standards Track
+      Created: 2019-07-23
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -59,20 +57,21 @@ the mainchain version from its sidechain counterpart. We name all
 sidechain users "Simon", and name all mainchain miners "Mary".
 
 Example: imagine that a sidechain block contains 20,000 txns, each
-paying a $0.10 fee; therefore, the block is worth $2000 of fee-revenue.
-As usual: the sidechain's coinbase txn will pay this $2000 to someone
-(in this case, "Simon"). Under Bip301, Simon does no hashing, but
-instead makes one layer1 txn paying $1999 to the layer1 miners ("Mary").
+paying a \$0.10 fee; therefore, the block is worth \$2000 of
+fee-revenue. As usual: the sidechain's coinbase txn will pay this \$2000
+to someone (in this case, "Simon"). Under Bip301, Simon does no hashing,
+but instead makes one layer1 txn paying \$1999 to the layer1 miners
+("Mary").
 
-| Upon finding a sidechain block worth $2000... |
-| --------------------------------------------- |
-| Item                                          |
-| Runs a sidechain node?                        |
-| How much hashing?                             |
-| Coins collected, on Layer2                    |
-| Coins paid out, on Layer1                     |
-| Coins rec'd, on Layer1                        |
-| d(Net Worth)                                  |
+| Upon finding a sidechain block worth \$2000... |
+|------------------------------------------------|
+| Item                                           |
+| Runs a sidechain node?                         |
+| How much hashing?                              |
+| Coins collected, on Layer2                     |
+| Coins paid out, on Layer1                      |
+| Coins rec'd, on Layer1                         |
+| d(Net Worth)                                   |
 
 Bip301 makes this specialization-of-labor trustless on layer1. If Mary
 takes Simon's money, then she must let Simon control the side:block.
@@ -126,7 +125,7 @@ endorse Simon's block.
 [Code details
 here](https://github.com/drivechain-project/mainchain/blob/8901d469975752d799b6a7a61d4e00a9a124028f/src/validation.cpp#L3530-L3572).
 
-If these OP\_RETURN outputs are not present, then no Requests were
+If these OP_RETURN outputs are not present, then no Requests were
 accepted. (And, Mary would get no money from Requests.)
 
 It is possible for Mary and Simon to be the same person.They would trust
@@ -212,9 +211,9 @@ Also, for interest, see an example sidechain here:
 
 ## References
 
-  - <http://www.drivechain.info/literature/index.html>
-  - <http://www.truthcoin.info/blog/blind-merged-mining/>
-  - <http://www.truthcoin.info/images/bmm-outline.txt>
+- <http://www.drivechain.info/literature/index.html>
+- <http://www.truthcoin.info/blog/blind-merged-mining/>
+- <http://www.truthcoin.info/images/bmm-outline.txt>
 
 ## Thanks
 

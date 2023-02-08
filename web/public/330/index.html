@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,26 +46,26 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 330
-  Layer: Peer Services
-  Title: Transaction announcements reconciliation
-  Author: Gleb Naumenko &lt;naumenko.gs@gmail.com&gt;
-          Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0330
-  Status: Draft
-  Type: Standards Track
-  Created: 2019-09-25
-  License: CC0-1.0
-  License-Code: MIT
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 330
+</span><span>  Layer: Peer Services
+</span><span>  Title: Transaction announcements reconciliation
+</span><span>  Author: Gleb Naumenko &lt;naumenko.gs@gmail.com&gt;
+</span><span>          Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0330
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2019-09-25
+</span><span>  License: CC0-1.0
+</span><span>  License-Code: MIT
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document specifies a P2P protocol extension for reconciliation of
 transaction announcements <b>between 2 nodes</b>, which is a building
 block for efficient transaction relay protocols (e.g.,
-<a href="https://arxiv.org/pdf/1905.10518.pdf">Erlay</a>). This is a step towards
+<a rel="noopener" target="_blank" href="https://arxiv.org/pdf/1905.10518.pdf">Erlay</a>). This is a step towards
 increasing the connectivity of the network for almost no bandwidth cost.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Currently in the Bitcoin network, every 32-byte transaction ID is
 announced in at least one direction between every pair of connected
 peers, via INV messages. This results in high cost of announcing
@@ -79,8 +79,8 @@ transaction relay to <em>O(nodes)</em> (and without a high constant overhead)
 would allow us to improve the security of the network by increasing
 connectivity. It would also reduce the bandwidth required to run a
 Bitcoin node and potentially enable more users to run full nodes.</p>
-<h3 id="erlay">Erlay</h3>
-<p><a href="https://arxiv.org/pdf/1905.10518.pdf">Erlay</a> is an example of a
+<h3 id="Erlay">Erlay</h3>
+<p><a rel="noopener" target="_blank" href="https://arxiv.org/pdf/1905.10518.pdf">Erlay</a> is an example of a
 high-level transaction relay protocol which employs set reconciliation
 for bandwidth efficiency.</p>
 <p>Note that what we are going to describe here is a modified version from
@@ -105,18 +105,17 @@ below.</p>
 <p>Erlay allows us to:</p>
 <ul>
 <li>save a significant portion of the bandwidth consumed by a node</li>
-<li>increase network connectivity for almost no bandwidth or latency
-cost</li>
+<li>increase network connectivity for almost no bandwidth or latency cost</li>
 <li>keep transaction propagation latency at the same level</li>
 </ul>
 <p>This document proposes a P2P-layer extension which is required to enable
 efficient reconciliation-based protocols (like Erlay) for transaction
 relay.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="new-data-structures">New data structures</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="New_data_structures">New data structures</h3>
 <p>Several new data structures are introduced to the P2P protocol first, to
 aid with efficient transaction relay.</p>
-<h4 id="32-bit-short-transaction-ids">32-bit short transaction IDs</h4>
+<h4 id="32-bit_short_transaction_IDs">32-bit short transaction IDs</h4>
 <p>= Short IDs are computed as follows:</p>
 <ul>
 <li>Let <em>salt<sub>1</sub></em> and <em>salt<sub>2</sub></em> be the entropy
@@ -127,11 +126,11 @@ details how they are exchanged.</li>
 <li>Compute <em>h = TaggedHash(&quot;Tx Relay Salting&quot;, salt<sub>1</sub>,
 salt<sub>2</sub>)</em>, where the two salts are encoded in 64-bit
 little-endian byte order, and TaggedHash is specified by
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP-340</a>.</li>
-<li>Let <em>k<sub>0</sub></em> be the 64-bit integer obtained by interpreting
-the first 8 bytes of <em>h</em> in little-endian byte order.</li>
-<li>Let <em>k<sub>1</sub></em> be the 64-bit integer obtained by interpreting
-the second 8 bytes of <em>h</em> in little-endian byte order.</li>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP-340</a>.</li>
+<li>Let <em>k<sub>0</sub></em> be the 64-bit integer obtained by interpreting the
+first 8 bytes of <em>h</em> in little-endian byte order.</li>
+<li>Let <em>k<sub>1</sub></em> be the 64-bit integer obtained by interpreting the
+second 8 bytes of <em>h</em> in little-endian byte order.</li>
 <li>Let <em>s = SipHash-2-4((k<sub>0</sub>,k<sub>1</sub>),wtxid)</em>, where
 <em>wtxid</em> is the transaction hash including witness data as defined by
 BIP141.</li>
@@ -140,10 +139,10 @@ BIP141.</li>
 <p>This results in approximately uniformly distributed IDs in the range
 <em>[1..0xFFFFFFFF]</em>, which is a requirement for using them as elements
 in 32-bit sketches. See the next paragraph for details.</p>
-<h4 id="short-transaction-id-sketches">Short transaction ID sketches</h4>
+<h4 id="Short_transaction_ID_sketches">Short transaction ID sketches</h4>
 <p>Reconciliation-based relay uses
-<a href="https://www.cs.bu.edu/%7Ereyzin/code/fuzzy.html">PinSketch</a> BCH-based
-secure sketches as introduced by the <a href="https://www.cs.bu.edu/%7Ereyzin/fuzzy.html">Fuzzy Extractors
+<a rel="noopener" target="_blank" href="https://www.cs.bu.edu/~reyzin/code/fuzzy.html">PinSketch</a> BCH-based
+secure sketches as introduced by the <a rel="noopener" target="_blank" href="https://www.cs.bu.edu/~reyzin/fuzzy.html">Fuzzy Extractors
 paper</a>. They are a form of set
 checksums with the following properties:</p>
 <ul>
@@ -152,23 +151,24 @@ elements in the set does not exceed the capacity, it is always
 possible to recover the entire set from the sketch by decoding the
 sketch. A sketch of nonzero b-bit elements with capacity c can be
 stored in bc bits.</li>
-<li>A sketch of the <a href="https://en.wikipedia.org/wiki/Symmetric_difference">symmetric
+<li>A sketch of the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Symmetric_difference">symmetric
 difference</a>
 between the two sets (i.e., all elements that occur in one but not
 both input sets), can be obtained by combining the sketches of those
 sets.</li>
 </ul>
-<p>The sketches used here consists of elements of the <a href="https://en.wikipedia.org/wiki/Finite_field">finite
+<p>The sketches used here consists of elements of the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Finite_field">finite
 field</a> <em>GF(2<sup>32</sup>)</em>.
 Specifically, we represent finite field elements as polynomials in <em>x</em>
 over <em>GF(2)</em> modulo <em>x<sup>32</sup>7</sup> + x<sup>3</sup> +
 x<sup>2</sup> + 1</em>. To map integers to finite field elements, simply
 treat each bit <em>i</em> (with value <em>2<sup>i</sup></em>) in the integer as the
 coefficient of <em>x<sup>i</sup></em> in the polynomial representation. For
-example the integer <em>101 = 2<sup>6</sup> + 2<sup>5</sup> + 2<sup>2</sup>
-+ 1</em> is mapped to field element <em>x<sup>6</sup> + x<sup>5</sup> +
-x<sup>2</sup> + 1</em>. These field elements can be added and multiplied
-together, but the specifics of that are out of scope for this document.</p>
+example the integer <em>101 = 2<sup>6</sup> + 2<sup>5</sup> +
+2<sup>2</sup> + 1</em> is mapped to field element <em>x<sup>6</sup> +
+x<sup>5</sup> + x<sup>2</sup> + 1</em>. These field elements can be added
+and multiplied together, but the specifics of that are out of scope for
+this document.</p>
 <p>A short ID sketch with capacity <em>c</em> consists of a sequence of <em>c</em> field
 elements. The first is the sum of all short IDs in the set, the second
 is the sum of the 3rd powers of all short IDs, the third is the sum of
@@ -176,43 +176,42 @@ the 5th powers etc., up to the last element with is the sum of the
 *(2c-1)*th powers. These elements are then encoded as 32-bit integers in
 little endian byte order, resulting in a <em>4c</em>-byte serialization.</p>
 <p>The following Python 3.2+ code implements the creation of sketches:</p>
-<pre style="background-color:#fafafa;">
-<code>FIELD_BITS = 32
-FIELD_MODULUS = (1 &lt;&lt; FIELD_BITS) + 0b10001101
-
-def mul2(x):
-    &quot;&quot;&quot;Compute 2*x in GF(2^FIELD_BITS)&quot;&quot;&quot;
-    return (x &lt;&lt; 1) ^ (FIELD_MODULUS if x.bit_length() &gt;= FIELD_BITS else 0)
-
-def mul(x, y):
-    &quot;&quot;&quot;Compute x*y in GF(2^FIELD_BITS)&quot;&quot;&quot;
-    ret = 0
-    for bit in [(x &gt;&gt; i) &amp; 1 for i in range(x.bit_length())]:
-        ret, y = ret ^ bit * y, mul2(y)
-    return ret
-
-def create_sketch(shortids, capacity):
-    &quot;&quot;&quot;Compute the bytes of a sketch for given shortids and given capacity.&quot;&quot;&quot;
-    odd_sums = [0 for _ in range(capacity)]
-    for shortid in shortids:
-        squared = mul(shortid, shortid)
-        for i in range(capacity):
-            odd_sums[i] ^= shortid
-            shortid = mul(shortid, squared)
-    return b''.join(elem.to_bytes(4, 'little') for elem in odd_sums)
-</code></pre>
-<p>The <a href="https://github.com/sipa/minisketch/">minisketch</a> library implements
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>FIELD_BITS = 32
+</span><span>FIELD_MODULUS = (1 &lt;&lt; FIELD_BITS) + 0b10001101
+</span><span>
+</span><span>def mul2(x):
+</span><span>    &quot;&quot;&quot;Compute 2*x in GF(2^FIELD_BITS)&quot;&quot;&quot;
+</span><span>    return (x &lt;&lt; 1) ^ (FIELD_MODULUS if x.bit_length() &gt;= FIELD_BITS else 0)
+</span><span>
+</span><span>def mul(x, y):
+</span><span>    &quot;&quot;&quot;Compute x*y in GF(2^FIELD_BITS)&quot;&quot;&quot;
+</span><span>    ret = 0
+</span><span>    for bit in [(x &gt;&gt; i) &amp; 1 for i in range(x.bit_length())]:
+</span><span>        ret, y = ret ^ bit * y, mul2(y)
+</span><span>    return ret
+</span><span>
+</span><span>def create_sketch(shortids, capacity):
+</span><span>    &quot;&quot;&quot;Compute the bytes of a sketch for given shortids and given capacity.&quot;&quot;&quot;
+</span><span>    odd_sums = [0 for _ in range(capacity)]
+</span><span>    for shortid in shortids:
+</span><span>        squared = mul(shortid, shortid)
+</span><span>        for i in range(capacity):
+</span><span>            odd_sums[i] ^= shortid
+</span><span>            shortid = mul(shortid, squared)
+</span><span>    return b&#39;&#39;.join(elem.to_bytes(4, &#39;little&#39;) for elem in odd_sums)
+</span></code></pre>
+<p>The <a rel="noopener" target="_blank" href="https://github.com/sipa/minisketch/">minisketch</a> library implements
 the construction, merging, and decoding of these sketches efficiently.</p>
-<h3 id="intended-protocol-flow">Intended Protocol Flow</h3>
+<h3 id="Intended_Protocol_Flow">Intended Protocol Flow</h3>
 <p>Set reconciliation primarily consists of the transmission and decoding
 of a reconciliation set sketch upon request.</p>
 <p>Since sketches are based on the WTXIDs, the negotiation and support of
 Erlay should be enabled only if both peers signal
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki">BIP-339</a>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki">BIP-339</a>
 support.</p>
 <p><a href="File:bip-0330/recon_scheme_merged.png" title="wikilink">framed|center|Protocol
 flow</a></p>
-<h4 id="sketch-extension">Sketch extension</h4>
+<h4 id="Sketch_extension">Sketch extension</h4>
 <p>If a node is unable to reconstruct the set difference from the received
 sketch, the node then makes a request for sketch extension. The peer
 would then send an extension, which is a sketch of a higher capacity
@@ -221,7 +220,7 @@ the sketch part which was already sent initially (to save bandwidth). To
 allow this optimization, the initiator is supposed to locally store a
 sketch received initially. This optimization is possible because
 extending a sketch is just concatenating new elements to an array.</p>
-<h3 id="new-messages">New messages</h3>
+<h3 id="New_messages">New messages</h3>
 <p>Several new protocol messages are added: sendtxrcncl, reqrecon, sketch,
 reqsketchext, reconcildiff. This section describes their serialization,
 contents, and semantics.</p>
@@ -261,10 +260,10 @@ role of reconciliation responder (will respond to &quot;reqrecon&quot; messages)
 </tbody></table>
 <p>Upon receipt of a &quot;reqrecon&quot; message, the receiver:</p>
 <ul>
-<li>Constructs and sends a &quot;sketch&quot; message (see below), with a sketch
-of certain <em>capacity=f(set_size, local_set_size, q)</em> (the exact
-function is suggested below), where <em>local_set_size</em> represents
-size of the receiver's reconciliation set.</li>
+<li>Constructs and sends a &quot;sketch&quot; message (see below), with a sketch of
+certain <em>capacity=f(set_size, local_set_size, q)</em> (the exact function
+is suggested below), where <em>local_set_size</em> represents size of the
+receiver's reconciliation set.</li>
 <li>Makes a snapshot of their current reconciliation set, and clears the
 set itself. The snapshot is kept until a &quot;reconcildiff&quot; message is
 received by the node.</li>
@@ -288,8 +287,7 @@ sketch by sending a &quot;reqsketchext&quot; message. Alternatively, the node
 may terminate the reconciliation right away by sending a
 &quot;reconcildiff&quot; message is sent with the failure flag set
 (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with
-success=true.</li>
+<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
 </ul>
 <p>The receiver also makes snapshot of their current reconciliation set,
 and clears the set itself. The snapshot is kept until a &quot;reconcildiff&quot;
@@ -302,10 +300,9 @@ corresponding reconciliation set snapshot. The receiving node then tries
 to decode the extended difference sketch and based on the result:</p>
 <ul>
 <li>If the decoding failed, the receiving node terminates the
-reconciliation right away by sending a &quot;reconcildiff&quot; message is
-sent with the failure flag set (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with
-success=true.</li>
+reconciliation right away by sending a &quot;reconcildiff&quot; message is sent
+with the failure flag set (success=false).</li>
+<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
 </ul>
 <p>In either cases, a &quot;reconcildiff&quot; with success=false should also be
 accompanied with announcing all transactions from the reconciliation set
@@ -345,15 +342,15 @@ by the sender and the receiver of the message.</p>
 <p>The sender should also send their own &quot;inv&quot; message along with the
 reconcildiff message to announce transactions which are missing on the
 receiver's side.</p>
-<h2 id="local-state">Local state</h2>
+<h2 id="Local_state">Local state</h2>
 <p>This BIP suggests a stateful protocol and it requires storing several
 variables at every node to operate properly.</p>
-<h4 id="reconciliation-salt">Reconciliation salt</h4>
+<h4 id="Reconciliation_salt">Reconciliation salt</h4>
 <p>When negotiating reconciliation support, peers send each other their
 contribution to the reconciliation salt (see how we construct short IDs
 above). These salts (or just the resulting salt) should be stored on
 both sides of the connection.</p>
-<h4 id="reconciliation-sets">Reconciliation sets</h4>
+<h4 id="Reconciliation_sets">Reconciliation sets</h4>
 <p>Every node stores a set of wtxids for every peer which supports
 transaction reconciliation, representing the transactions which would
 have been sent according to the regular flooding protocol. Incoming
@@ -361,7 +358,7 @@ transactions are added to sets when those transactions are received (if
 they satisfy the policies such as minimum fee set by a peer). A
 reconciliation set is moved to the corresponding set snapshot after the
 transmission of the initial sketch.</p>
-<h4 id="reconciliation-set-snapshot">Reconciliation set snapshot</h4>
+<h4 id="Reconciliation_set_snapshot">Reconciliation set snapshot</h4>
 <p>After transmitting the initial sketch (either sending or receiving of
 the reconcildiff message), every node should store the snapshot of the
 current reconciliation set, and clear the set. This is important to make
@@ -370,7 +367,7 @@ snapshot). Otherwise, extension would contain transactions received
 after sending out the initial sketch. The snapshot is cleared after the
 end of the reconciliation round (sending or receiving of the
 reconcildiff message).</p>
-<h4 id="sketch-capacity-estimation-and-q-coefficient">Sketch capacity estimation and q-coefficient</h4>
+<h4 id="Sketch_capacity_estimation_and_q-coefficient">Sketch capacity estimation and q-coefficient</h4>
 <p>Earlier we suggested that upon receiving a reconciliation request, a
 node should estimate the sketch capacity it should send:
 <em>capacity=f(set_size, local_set_size, q)</em>.</p>
@@ -380,9 +377,9 @@ local_set_size| + q * min(set_size, local_set_size) + c</em>.</p>
 are, the lower optimal <em>q</em> is. Per the Erlay paper, <em>q</em> should be
 derived as an optimal <em>q</em> value for the previous reconciliation with a
 given peer, once the actual set sizes and set difference are known. For
-example, if in previous round <em>set_size=30</em> and <em>local_set_size=20</em>,
-and the *actual* difference was <em>12</em>, then a node should compute <em>q</em>
-as following: <em>q=(12 - |30-20|) / min(30, 20)=0.1</em></p>
+example, if in previous round <em>set_size=30</em> and <em>local_set_size=20</em>, and
+the *actual* difference was <em>12</em>, then a node should compute <em>q</em> as
+following: <em>q=(12 - |30-20|) / min(30, 20)=0.1</em></p>
 <p>The derivation of <em>q</em> can be changed according to the version of the
 protocol. For example, a static value could be chosen for simplicity.
 However, we suggest that <em>q</em> remains a parameter sent in every
@@ -390,28 +387,28 @@ reconciliation request to enable future compatibility with more
 sophisticated (non-static) choices of this parameter.</p>
 <p>As for the <em>c</em> parameter, it is suggested to use <em>c=1</em> to avoid sending
 empty sketches and reduce the overhead caused by under-estimations.</p>
-<h2 id="backward-compatibility">Backward compatibility</h2>
+<h2 id="Backward_compatibility">Backward compatibility</h2>
 <p>Older clients remain fully compatible and interoperable after this
 change.</p>
 <p>Clients which do not implement this protocol remain fully compatible
 after this change using existing protocols, because transaction
 announcement reconciliation is used only for peers that negotiate
 support for it.</p>
-<h2 id="rationale">Rationale</h2>
-<h4 id="why-use-pinsketch-for-set-reconciliation">Why use PinSketch for set reconciliation?</h4>
+<h2 id="Rationale">Rationale</h2>
+<h4 id="Why_use_PinSketch_for_set_reconciliation?">Why use PinSketch for set reconciliation?</h4>
 <p>PinSketch is more bandwidth efficient than IBLT, especially for the
 small differences in sets we expect to operate over. PinSketch is as
 bandwidth efficient as CPISync, but PinSketch has quadratic decoding
 complexity, while CPISync have cubic decoding complexity. This makes
 PinSketch significantly faster.</p>
-<h4 id="why-use-32-bit-short-transaction-ids">Why use 32-bit short transaction IDs?</h4>
+<h4 id="Why_use_32-bit_short_transaction_IDs?">Why use 32-bit short transaction IDs?</h4>
 <p>To use Minisketch in practice, transaction IDs should be shortened
 (ideally, not more than 64 bits per element). A small number of bits per
 transaction also allows saving extra bandwidth and make operations over
 sketches faster. According to our estimates, 32 bits provides low
 collision rate in a non-adversarial model (which is enabled by using
 independent salts per-link).</p>
-<h4 id="why-use-sketch-extensions-instead-of-bisection">Why use sketch extensions instead of bisection?</h4>
+<h4 id="Why_use_sketch_extensions_instead_of_bisection?">Why use sketch extensions instead of bisection?</h4>
 <p>Bisection is an alternative to sketch extensions, per which a second
 sketch with the same initial capacity is computed over half of the txID
 space. Due to the linearity of sketches, transmitting just this one
@@ -424,7 +421,7 @@ of initial reconciliation failure, similarly to extension sketches,
 making the overhead negligible.</p>
 <p>The main benefit of sketch extensions is a much simpler implementation.
 Implementing bisection is hard (see
-<a href="https://github.com/naumenkogs/bitcoin/commit/b5c92a41e4cc0599504cf838d20212f1a403e573">implementation</a>)
+<a rel="noopener" target="_blank" href="https://github.com/naumenkogs/bitcoin/commit/b5c92a41e4cc0599504cf838d20212f1a403e573">implementation</a>)
 because, in the end, we have to operate with two sketches and handle
 scenarios where one sketch decoded and another sketch failed.</p>
 <p>It becomes even more difficult if in the future we decide to allow more
@@ -441,15 +438,15 @@ sketches of higher capacities (exponential cost). We believe that since
 the protocol is currently designed to operate in the conditions where
 sketches usually have at most the capacity of 20, this efficiency is not
 crucial.</p>
-<h2 id="implementation">Implementation</h2>
-<p><a href="https://github.com/bitcoin/bitcoin/pull/21515">https://github.com/bitcoin/bitcoin/pull/21515</a></p>
-<h2 id="acknowledgments">Acknowledgments</h2>
+<h2 id="Implementation">Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/21515">https://github.com/bitcoin/bitcoin/pull/21515</a></p>
+<h2 id="Acknowledgments">Acknowledgments</h2>
 <p>A large fraction of this proposal was done during designing Erlay with
 Gregory Maxwell, Sasha Fedorova and Ivan Beschastnikh. We would like to
 thank Suhas Daftuar for contributions to the design and BIP structure.
 We would like to thank Ben Woosley for contributions to the high-level
 description of the idea.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
 
@@ -459,7 +456,7 @@ license.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

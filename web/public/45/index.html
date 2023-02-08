@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,25 +46,25 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 45
-  Layer: Applications
-  Title: Structure for Deterministic P2SH Multisignature Wallets
-  Author: Manuel Araoz &lt;manu@bitpay.com&gt;
-          Ryan X. Charles &lt;ryan@bitpay.com&gt;
-          Matias Alejo Garcia &lt;matias@bitpay.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0045
-  Status: Proposed
-  Type: Standards Track
-  Created: 2014-04-25
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 45
+</span><span>  Layer: Applications
+</span><span>  Title: Structure for Deterministic P2SH Multisignature Wallets
+</span><span>  Author: Manuel Araoz &lt;manu@bitpay.com&gt;
+</span><span>          Ryan X. Charles &lt;ryan@bitpay.com&gt;
+</span><span>          Matias Alejo Garcia &lt;matias@bitpay.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0045
+</span><span>  Status: Proposed
+</span><span>  Type: Standards Track
+</span><span>  Created: 2014-04-25
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP defines a structure for hierarchical deterministic P2SH
 multi-party multi-signature wallets (HDPM wallets from now on) based on
 the algorithm described in BIP-0032 (BIP32 from now on) and purpose
 scheme described in BIP-0043 (BIP43 from now on). This BIP is a
 particular application of BIP43.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The structure proposed in this document allows for standard ways to
 create, use, import, and store HDPM wallets. It allows to handle
 multiple parties sharing an m-of-n wallet, on the following assumptions:</p>
@@ -81,18 +81,18 @@ parties.</li>
 </ul>
 <p>This BIP will allow interoperability between various HDPM wallet
 implementations.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>We define the following levels in BIP32 path:</p>
 <p><code>m / purpose' / cosigner_index / change / address_index</code></p>
 <p>Apostrophe in the path indicates that BIP32 hardened derivation is used.</p>
 <p>Each level has special meaning described in the chapters below.</p>
-<h3 id="purpose">Purpose</h3>
+<h3 id="Purpose">Purpose</h3>
 <p>Purpose is a constant set to 45, following the BIP43 recommendation. It
 indicates that the subtree of this node is used according to this
 specification.</p>
 <p><code>m / 45' / *</code></p>
 <p>Hardened derivation is used at this level.</p>
-<h3 id="cosigner-index">Cosigner Index</h3>
+<h3 id="Cosigner_Index">Cosigner Index</h3>
 <p>The index of the party creating a P2SH multisig address. The indices can
 be determined independently by lexicographically sorting the purpose
 public keys of each cosigner. Each cosigner creates addresses on its own
@@ -104,13 +104,13 @@ what is used to derive child extended public keys.</p>
 <p>Software should only use indices corresponding to each of the N
 cosigners sequentially. For example, for a 2-of-3 HDPM wallet, having
 the following purpose public keys:</p>
-<pre style="background-color:#fafafa;">
-<code>03a473275a750a20b7b71ebeadfec83130c014da4b53f1c4743fcf342af6589a38
-039863fb5f07b667d9b1ca68773c6e6cdbcac0088ffba9af46f6f6acd153d44463
-03f76588e06c0d688617ef365d1e58a7f1aa84daa3801380b1e7f12acc9a69cd13
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>03a473275a750a20b7b71ebeadfec83130c014da4b53f1c4743fcf342af6589a38
+</span><span>039863fb5f07b667d9b1ca68773c6e6cdbcac0088ffba9af46f6f6acd153d44463
+</span><span>03f76588e06c0d688617ef365d1e58a7f1aa84daa3801380b1e7f12acc9a69cd13
+</span></code></pre>
 <p>it should use <code>m / 45 ' / 0 / *</code> for
-<code>039863fb5f07b667d9b1ca68773c6e6cdbcac0088ffba9af46f6f6acd153d44463</code>, <code>m / 45 ' / 1 / *</code> for
+<code>039863fb5f07b667d9b1ca68773c6e6cdbcac0088ffba9af46f6f6acd153d44463</code>,
+<code>m / 45 ' / 1 / *</code> for
 <code>03a473275a750a20b7b71ebeadfec83130c014da4b53f1c4743fcf342af6589a38</code>,
 and <code>m / 45 ' / 2 / *</code> for
 <code>03f76588e06c0d688617ef365d1e58a7f1aa84daa3801380b1e7f12acc9a69cd13</code>, as
@@ -119,7 +119,7 @@ dictated by their lexicographical order.</p>
 an external source. Such algorithm is described in &quot;Address discovery&quot;
 chapter.</p>
 <p>Non-hardened derivation is used at this level.</p>
-<h3 id="change">Change</h3>
+<h3 id="Change">Change</h3>
 <p>Constant 0 is used for external chain and constant 1 for internal chain
 (also known as change addresses). External chain is used for addresses
 that are meant to be visible outside of the wallet (e.g. for receiving
@@ -130,23 +130,23 @@ change.</p>
 use <code>m / 45 ' / 2 / 1 / *</code>, and <code>m / 45 ' / 2 / 0 / *</code> for a receive
 address.</p>
 <p>Non-hardened derivation is used at this level.</p>
-<h3 id="address-index">Address Index</h3>
+<h3 id="Address_Index">Address Index</h3>
 <p>Addresses are numbered from index 0 in sequentially increasing manner.
 This number is used as child index in BIP32 derivation.</p>
 <p>Non-hardened derivation is used at this level.</p>
-<h3 id="hdpm-wallet-high-level-description">HDPM Wallet High-level Description</h3>
+<h3 id="HDPM_Wallet_High-level_Description">HDPM Wallet High-level Description</h3>
 <p>Each party generates their own extended master keypair and shares the
 extended purpose' public key with the others, which is stored encrypted.
 Each party can generate any of the other's derived public keys, but only
 his own private keys.</p>
-<h3 id="address-generation-procedure">Address Generation Procedure</h3>
+<h3 id="Address_Generation_Procedure">Address Generation Procedure</h3>
 <p>When generating an address, each party can independently generate the N
 needed public keys. They do this by deriving the public key in each of
 the different trees, but using the same path. They can then generate the
 multisig script (by lexicographically sorting the public keys) and the
 corresponding p2sh address. In this way, each path corresponds to an
 address, but the public keys for that address come from different trees.</p>
-<h4 id="receive-address-case">Receive address case</h4>
+<h4 id="Receive_address_case">Receive address case</h4>
 <p>Each cosigner generates addresses only on his own branch. One of the n
 cosigners wants to receive a payment, and the others are offline. He
 knows the last used index in his own branch, because only he generates
@@ -158,7 +158,7 @@ His last used index on his own branch is 4. Then, the path for the next
 receive address is <code>m/45'/2/0/5</code>. He uses this same path in all of the
 cosigners trees to generate a public key for each one, and from that he
 gets the new p2sh address.</p>
-<h4 id="change-address-case">Change address case</h4>
+<h4 id="Change_address_case">Change address case</h4>
 <p>Again, each cosigner generates addresses only on his own branch. One of
 the n cosigners wants to create an outgoing payment, for which he'll
 need a change address. He generates a new address using the same
@@ -170,7 +170,7 @@ own branch is 11. Then, the path for the next change address is
 <code>m/45'/5/1/12</code>. He uses this same path in all of the cosigners trees to
 generate a public key for each one, and from that he gets the new p2sh
 address.</p>
-<h3 id="transaction-creation-and-signing">Transaction creation and signing</h3>
+<h3 id="Transaction_creation_and_signing">Transaction creation and signing</h3>
 <p>When creating a transaction, first one of the parties creates a
 Transaction Proposal. This is a transaction that spends some output
 stored in any of the p2sh multisig addresses (corresponding to any of
@@ -182,27 +182,28 @@ the private key instead), and sign it. Once the proposal reaches m
 signatures, any cosigner can broadcast it to the network, becoming
 final. The specifics of how this proposal is structured, and the
 protocol to accept or reject it, belong to another BIP, in my opinion.</p>
-<h3 id="address-discovery">Address discovery</h3>
+<h3 id="Address_discovery">Address discovery</h3>
 <p>When the master seed is imported from an external source the software
 should start to discover the addresses in the following manner:</p>
 <ol>
 <li>for each cosigner:</li>
 <li>derive the cosigner's node (<code>m / 45' / cosigner_index</code>)</li>
-<li>for both the external and internal chains on this node (<code>m / 45' / cosigner_index / 0</code> and <code>m / 45' / cosigner_index / 1</code>):</li>
+<li>for both the external and internal chains on this node
+(<code>m / 45' / cosigner_index / 0</code> and <code>m / 45' / cosigner_index / 1</code>):</li>
 <li>scan addresses of the chain; respect the gap limit described below</li>
 </ol>
 <p>Please note that the algorithm uses the transaction history, not address
 balances, so even if the address has 0 coins, the program should
 continue with discovery. Opposite to BIP44, each cosigner branch needs
 to be checked, even if the earlier ones don't have transactions</p>
-<h3 id="address-gap-limit">Address gap limit</h3>
+<h3 id="Address_gap_limit">Address gap limit</h3>
 <p>Address gap limit is currently set to 20. If the software hits 20 unused
 addresses (no transactions associated with that address) in a row, it
 expects there are no used addresses beyond this point and stops
 searching the address chain.</p>
 <p>Wallet software should warn when user is trying to exceed the gap limit
 on an external chain by generating a new address.</p>
-<h3 id="rationale">Rationale</h3>
+<h3 id="Rationale">Rationale</h3>
 <p>This structure provides a general way of doing HDPM wallets between
 m-of-n parties. Here are some explanations about the design decisions
 made.</p>
@@ -210,7 +211,7 @@ made.</p>
 want two of them generating the same address and receiving simultaneous
 payments to it. The ideal case is that each address receives at most one
 payment, requested by the corresponding cosigner.</p>
-<h2 id="examples">Examples</h2>
+<h2 id="Examples">Examples</h2>
 <table><thead><tr><th>cosigner_index</th><th>change</th><th>address_index</th><th>path</th></tr></thead><tbody>
 <tr><td>first</td><td>receive</td><td>first</td><td>m / 45' / 0 / 0 / 0</td></tr>
 <tr><td>first</td><td>receive</td><td>second</td><td>m / 45' / 0 / 0 / 1</td></tr>
@@ -220,18 +221,18 @@ payment, requested by the corresponding cosigner.</p>
 <tr><td>second</td><td>receive</td><td>first</td><td>m / 45' / 1 / 0 / 0</td></tr>
 <tr><td>third</td><td>change</td><td>tenth</td><td>m / 45' / 2 / 1 / 9</td></tr>
 </tbody></table>
-<h2 id="compatible-wallets">Compatible wallets</h2>
+<h2 id="Compatible_wallets">Compatible wallets</h2>
 <ul>
-<li><a href="https://copay.io" title="wikilink">Copay wallet</a>
-(<a href="https://github.com/bitpay/copay" title="wikilink">source</a>)</li>
+<li><a rel="noopener" target="_blank" title="wikilink" href="https://copay.io">Copay wallet</a>
+(<a rel="noopener" target="_blank" title="wikilink" href="https://github.com/bitpay/copay">source</a>)</li>
 </ul>
-<h2 id="reference">Reference</h2>
+<h2 id="Reference">Reference</h2>
 <ul>
-<li><a href="https://bips.dev/45/bip-0032.mediawiki" title="wikilink">BIP32 - Hierarchical Deterministic
+<li><a href="/32">BIP32 - Hierarchical Deterministic
 Wallets</a></li>
-<li><a href="https://bips.dev/45/bip-0043.mediawiki" title="wikilink">BIP43 - Purpose Field for Deterministic
+<li><a href="/43">BIP43 - Purpose Field for Deterministic
 Wallets</a></li>
-<li><a href="https://www.mail-archive.com/bitcoin-development@lists.sourceforge.net/msg05156.html" title="wikilink">Original mailing list
+<li><a rel="noopener" target="_blank" title="wikilink" href="https://www.mail-archive.com/bitcoin-development@lists.sourceforge.net/msg05156.html">Original mailing list
 discussion</a></li>
 </ul>
 
@@ -241,7 +242,7 @@ discussion</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

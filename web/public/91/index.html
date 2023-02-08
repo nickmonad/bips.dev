@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,29 +46,29 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 91
-  Layer: Consensus (soft fork)
-  Title: Reduced threshold Segwit MASF
-  Author: James Hilliard &lt;james.hilliard1@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0091
-  Status: Final
-  Type: Standards Track
-  Created: 2017-05-22
-  License: BSD-3-Clause
-           CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 91
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: Reduced threshold Segwit MASF
+</span><span>  Author: James Hilliard &lt;james.hilliard1@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0091
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-05-22
+</span><span>  License: BSD-3-Clause
+</span><span>           CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document specifies a method to activate the existing BIP9 segwit
 deployment with a majority hashpower less than 95%.</p>
-<h2 id="definitions">Definitions</h2>
+<h2 id="Definitions">Definitions</h2>
 <p>&quot;existing segwit deployment&quot; refer to the BIP9 &quot;segwit&quot; deployment using
 bit 1, between November 15th 2016 and November 15th 2017 to activate
 BIP141, BIP143 and BIP147.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Segwit increases the blocksize, fixes transaction malleability, and
 makes scripting easier to upgrade as well as bringing many other
-<a href="https://bitcoincore.org/en/2016/01/26/segwit-benefits/">benefits</a>.</p>
+<a rel="noopener" target="_blank" href="https://bitcoincore.org/en/2016/01/26/segwit-benefits/">benefits</a>.</p>
 <p>This BIP provides a way for a simple majority of miners to coordinate
 activation of the existing segwit deployment with less than 95%
 hashpower. For a number of reasons a complete redeployment of segwit is
@@ -78,12 +78,12 @@ all the P2P components, the new network service flag, the witness-tx and
 block messages, compact blocks v2 and preferential peering. A
 redeployment of segwit will need to redefine all these things and doing
 so before expiry would greatly complicate testing.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>While this BIP is active, all blocks must set the nVersion header top 3
 bits to 001 together with bit field (1&lt;&lt;1) (according to the existing
 segwit deployment). Blocks that do not signal as required will be
 rejected.</p>
-<h2 id="deployment">Deployment</h2>
+<h2 id="Deployment">Deployment</h2>
 <p>This BIP will be deployed by a &quot;version bits&quot; with an 80%(this can be
 adjusted if desired) 269 block activation threshold and 336 block
 confirmation window BIP9 with the name &quot;segsignal&quot; and using bit 4.</p>
@@ -91,63 +91,62 @@ confirmation window BIP9 with the name &quot;segsignal&quot; and using bit 4.</p
 1496275200) and timeout on midnight November 15th 2017 (epoch time
 1510704000). This BIP will cease to be active when segwit (BIP141) is
 locked-in, active, or failed</p>
-<h3 id="reference-implementation">Reference implementation</h3>
-<pre style="background-color:#fafafa;">
-<code>// Deployment of SEGSIGNAL
-consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].bit = 4;
-consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nStartTime = 1496275200; // June 1st, 2017.
-consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nTimeout = 1510704000; // November 15th, 2017.
-consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nOverrideMinerConfirmationWindow = 336; // ~2.33 days
-consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nOverrideRuleChangeActivationThreshold = 269; // 80%
-
-class VersionBitsConditionChecker : public AbstractThresholdConditionChecker {
-private:
-    const Consensus::DeploymentPos id;
-
-protected:
-    int64_t BeginTime(const Consensus::Params&amp; params) const { return params.vDeployments[id].nStartTime; }
-    int64_t EndTime(const Consensus::Params&amp; params) const { return params.vDeployments[id].nTimeout; }
-    int Period(const Consensus::Params&amp; params) const {
-        if (params.vDeployments[id].nOverrideMinerConfirmationWindow &gt; 0)
-            return params.vDeployments[id].nOverrideMinerConfirmationWindow;
-        return params.nMinerConfirmationWindow;
-    }
-    int Threshold(const Consensus::Params&amp; params) const {
-        if (params.vDeployments[id].nOverrideRuleChangeActivationThreshold &gt; 0)
-            return params.vDeployments[id].nOverrideRuleChangeActivationThreshold;
-        return params.nRuleChangeActivationThreshold;
-    }
-
-    bool Condition(const CBlockIndex* pindex, const Consensus::Params&amp; params) const
-    {
-        return (((pindex-&gt;nVersion &amp; VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &amp;&amp; (pindex-&gt;nVersion &amp; Mask(params)) != 0);
-    }
-
-public:
-    VersionBitsConditionChecker(Consensus::DeploymentPos id_) : id(id_) {}
-    uint32_t Mask(const Consensus::Params&amp; params) const { return ((uint32_t)1) &lt;&lt; params.vDeployments[id].bit; }
-};
-
-// SEGSIGNAL mandatory segwit signalling.
-if (VersionBitsState(pindex-&gt;pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGSIGNAL, versionbitscache) == THRESHOLD_ACTIVE &amp;&amp;
-    VersionBitsState(pindex-&gt;pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGWIT,    versionbitscache) == THRESHOLD_STARTED)
-{
-    bool fVersionBits = (pindex-&gt;nVersion &amp; VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS;
-    bool fSegbit = (pindex-&gt;nVersion &amp; VersionBitsMask(chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGWIT)) != 0;
-    if (!(fVersionBits &amp;&amp; fSegbit)) {
-        return state.DoS(0, error(&quot;ConnectBlock(): relayed block must signal for segwit, please upgrade&quot;), REJECT_INVALID, &quot;bad-no-segwit&quot;);
-    }
-}
-</code></pre>
-<p><a href="https://github.com/segsignal/bitcoin">https://github.com/segsignal/bitcoin</a></p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h3 id="Reference_implementation">Reference implementation</h3>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>// Deployment of SEGSIGNAL
+</span><span>consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].bit = 4;
+</span><span>consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nStartTime = 1496275200; // June 1st, 2017.
+</span><span>consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nTimeout = 1510704000; // November 15th, 2017.
+</span><span>consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nOverrideMinerConfirmationWindow = 336; // ~2.33 days
+</span><span>consensus.vDeployments[Consensus::DEPLOYMENT_SEGSIGNAL].nOverrideRuleChangeActivationThreshold = 269; // 80%
+</span><span>
+</span><span>class VersionBitsConditionChecker : public AbstractThresholdConditionChecker {
+</span><span>private:
+</span><span>    const Consensus::DeploymentPos id;
+</span><span>
+</span><span>protected:
+</span><span>    int64_t BeginTime(const Consensus::Params&amp; params) const { return params.vDeployments[id].nStartTime; }
+</span><span>    int64_t EndTime(const Consensus::Params&amp; params) const { return params.vDeployments[id].nTimeout; }
+</span><span>    int Period(const Consensus::Params&amp; params) const {
+</span><span>        if (params.vDeployments[id].nOverrideMinerConfirmationWindow &gt; 0)
+</span><span>            return params.vDeployments[id].nOverrideMinerConfirmationWindow;
+</span><span>        return params.nMinerConfirmationWindow;
+</span><span>    }
+</span><span>    int Threshold(const Consensus::Params&amp; params) const {
+</span><span>        if (params.vDeployments[id].nOverrideRuleChangeActivationThreshold &gt; 0)
+</span><span>            return params.vDeployments[id].nOverrideRuleChangeActivationThreshold;
+</span><span>        return params.nRuleChangeActivationThreshold;
+</span><span>    }
+</span><span>
+</span><span>    bool Condition(const CBlockIndex* pindex, const Consensus::Params&amp; params) const
+</span><span>    {
+</span><span>        return (((pindex-&gt;nVersion &amp; VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &amp;&amp; (pindex-&gt;nVersion &amp; Mask(params)) != 0);
+</span><span>    }
+</span><span>
+</span><span>public:
+</span><span>    VersionBitsConditionChecker(Consensus::DeploymentPos id_) : id(id_) {}
+</span><span>    uint32_t Mask(const Consensus::Params&amp; params) const { return ((uint32_t)1) &lt;&lt; params.vDeployments[id].bit; }
+</span><span>};
+</span><span>
+</span><span>// SEGSIGNAL mandatory segwit signalling.
+</span><span>if (VersionBitsState(pindex-&gt;pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGSIGNAL, versionbitscache) == THRESHOLD_ACTIVE &amp;&amp;
+</span><span>    VersionBitsState(pindex-&gt;pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGWIT,    versionbitscache) == THRESHOLD_STARTED)
+</span><span>{
+</span><span>    bool fVersionBits = (pindex-&gt;nVersion &amp; VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS;
+</span><span>    bool fSegbit = (pindex-&gt;nVersion &amp; VersionBitsMask(chainparams.GetConsensus(), Consensus::DEPLOYMENT_SEGWIT)) != 0;
+</span><span>    if (!(fVersionBits &amp;&amp; fSegbit)) {
+</span><span>        return state.DoS(0, error(&quot;ConnectBlock(): relayed block must signal for segwit, please upgrade&quot;), REJECT_INVALID, &quot;bad-no-segwit&quot;);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p><a rel="noopener" target="_blank" href="https://github.com/segsignal/bitcoin">https://github.com/segsignal/bitcoin</a></p>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>This deployment is compatible with the existing &quot;segwit&quot; bit 1
 deployment scheduled between midnight November 15th, 2016 and midnight
 November 15th, 2017. Miners will need to upgrade their nodes to support
 segsignal otherwise they may build on top of an invalid block. While
 this bip is active users should either upgrade to segsignal or wait for
 additional confirmations when accepting payments.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>Historically we have used IsSuperMajority() to activate soft forks such
 as BIP66 which has a mandatory signalling requirement for miners once
 activated, this ensures that miners are aware of new rules being
@@ -157,29 +156,29 @@ a backwards compatible way.</p>
 <p>By orphaning non-signalling blocks during the BIP9 bit 1 &quot;segwit&quot;
 deployment, this BIP can cause the existing &quot;segwit&quot; deployment to
 activate without needing to release a new deployment.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <ul>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-March/013714.html">Mailing list
+<li><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-March/013714.html">Mailing list
 discussion</a></li>
-<li><a href="https://github.com/bitcoin/bitcoin/blob/v0.6.0/src/main.cpp#L1281-L1283">P2SH flag day
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/v0.6.0/src/main.cpp#L1281-L1283">P2SH flag day
 activation</a></li>
-<li><a href="https://bips.dev/91/bip-0009.mediawiki" title="wikilink">BIP9 Version bits with timeout and
+<li><a href="/9">BIP9 Version bits with timeout and
 delay</a></li>
-<li><a href="https://bips.dev/91/bip-0016.mediawiki" title="wikilink">BIP16 Pay to Script Hash</a></li>
-<li><a href="https://bips.dev/91/bip-0141.mediawiki" title="wikilink">BIP141 Segregated Witness (Consensus
+<li><a href="/16">BIP16 Pay to Script Hash</a></li>
+<li><a href="/141">BIP141 Segregated Witness (Consensus
 layer)</a></li>
-<li><a href="https://bips.dev/91/bip-0143.mediawiki" title="wikilink">BIP143 Transaction Signature Verification for Version 0 Witness
+<li><a href="/143">BIP143 Transaction Signature Verification for Version 0 Witness
 Program</a></li>
-<li><a href="https://bips.dev/91/bip-0147.mediawiki" title="wikilink">BIP147 Dealing with dummy stack element
+<li><a href="/147">BIP147 Dealing with dummy stack element
 malleability</a></li>
-<li><a href="https://bips.dev/91/bip-0148.mediawiki" title="wikilink">BIP148 Mandatory activation of segwit
+<li><a href="/148">BIP148 Mandatory activation of segwit
 deployment</a></li>
-<li><a href="https://bips.dev/91/bip-0149.mediawiki" title="wikilink">BIP149 Segregated Witness (second
+<li><a href="/149">BIP149 Segregated Witness (second
 deployment)</a></li>
-<li><a href="https://bitcoincore.org/en/2016/01/26/segwit-benefits/">Segwit
+<li><a rel="noopener" target="_blank" href="https://bitcoincore.org/en/2016/01/26/segwit-benefits/">Segwit
 benefits</a></li>
 </ul>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0
 1.0 Universal.</p>
 
@@ -189,7 +188,7 @@ benefits</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

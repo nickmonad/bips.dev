@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,47 +46,47 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 147
-  Layer: Consensus (soft fork)
-  Title: Dealing with dummy stack element malleability
-  Author: Johnson Lau &lt;jl2012@xbt.hk&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0147
-  Status: Final
-  Type: Standards Track
-  Created: 2016-09-02
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 147
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: Dealing with dummy stack element malleability
+</span><span>  Author: Johnson Lau &lt;jl2012@xbt.hk&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0147
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2016-09-02
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document specifies proposed changes to the Bitcoin transaction
 validity rules to fix a malleability vector in the extra stack element
 consumed by <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code>.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Signature malleability refers to the ability of any relay node on the
 network to transform the signature in transactions, with no access to
 the relevant private keys required. For non-segregated witness
 transactions, signature malleability will change the <code>txid</code> and
 invalidate any unconfirmed child transactions. Although the <code>txid</code> of
 segregated witness
-(<a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a>)
+(<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a>)
 transactions is not third party malleable, this malleability vector will
 change the <code>wtxid</code> and may reduce the efficiency of compact block relay
-(<a href="https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki">BIP152</a>).</p>
+(<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki">BIP152</a>).</p>
 <p>A design flaw in <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> causes
 them to consume an extra stack element (&quot;dummy element&quot;) after signature
 validation. The dummy element is not inspected in any manner, and could
 be replaced by any value without invalidating the script. This document
 specifies a new rule to fix this signature malleability.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>To fix the dummy element malleability, a new consensus rule
 (&quot;<code>NULLDUMMY</code>&quot;) is deployed to require that the dummy element MUST be
 the empty byte array. Anything else makes the script evaluate to false
 immediately. The <code>NULLDUMMY</code> rule applies to <code>OP_CHECKMULTISIG</code> and
 <code>OP_CHECKMULTISIGVERIFY</code> in pre-segregated scripts, and also
 pay-to-witness-script-hash scripts described in BIP141.</p>
-<h2 id="deployment">Deployment</h2>
+<h2 id="Deployment">Deployment</h2>
 <p>This BIP will be deployed by &quot;version bits&quot;
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP9</a>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP9</a>
 using the same parameters for BIP141 and BIP143, with the name &quot;segwit&quot;
 and using bit 1.</p>
 <p>For Bitcoin mainnet, the BIP9 starttime is midnight 15 November 2016 UTC
@@ -95,7 +95,7 @@ and using bit 1.</p>
 <p>For Bitcoin testnet, the BIP9 starttime is midnight 1 May 2016 UTC
 (Epoch timestamp 1462060800) and BIP9 timeout is midnight 1 May 2017 UTC
 (Epoch timestamp 1493596800).</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>The reference client has produced compatible signatures from the
 beginning, and the <code>NULLDUMMY</code> rule has been enforced as relay policy by
 the reference client since v0.10.0. There has been no transactions
@@ -105,16 +105,16 @@ violating the requirement being added to the chain since at least August
 trivially be converted into compliant ones, so there is no loss of
 functionality by this requirement. Users MUST pay extra attention to
 this new rule when designing exotic scripts.</p>
-<h2 id="implementation">Implementation</h2>
+<h2 id="Implementation">Implementation</h2>
 <p>An implementation for the reference client is available at
-<a href="https://github.com/bitcoin/bitcoin/pull/8636">https://github.com/bitcoin/bitcoin/pull/8636</a></p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/8636">https://github.com/bitcoin/bitcoin/pull/8636</a></p>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>Peter Todd is the original author of NULLDUMMY. This document is
 extracted from the previous
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki">BIP62</a>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki">BIP62</a>
 proposal, which was composed by Pieter Wuille and had input from various
 people.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -123,7 +123,7 @@ people.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

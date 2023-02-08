@@ -14,21 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0116.mediawiki"
 +++
 
-``` 
-  BIP: 116
-  Layer: Consensus (soft fork)
-  Title: MERKLEBRANCHVERIFY
-  Author: Mark Friedenbach <mark@friedenbach.org>
-          Kalle Alm <kalle.alm@gmail.com>
-          BtcDrak <btcdrak@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0116
-  Status: Draft
-  Type: Standards Track
-  Created: 2017-08-25
-  License: CC-BY-SA-4.0
-  License-Code: MIT
-```
+      BIP: 116
+      Layer: Consensus (soft fork)
+      Title: MERKLEBRANCHVERIFY
+      Author: Mark Friedenbach <mark@friedenbach.org>
+              Kalle Alm <kalle.alm@gmail.com>
+              BtcDrak <btcdrak@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0116
+      Status: Draft
+      Type: Standards Track
+      Created: 2017-08-25
+      License: CC-BY-SA-4.0
+      License-Code: MIT
 
 ## Abstract
 
@@ -225,7 +223,7 @@ For Bitcoin testnet, the BIP8 startheight will be at height T to be
 determined and BIP8 timeout activation will occur on height T + 50,400
 blocks.
 
-We note that DISCOURAGE\_UPGRADABLE\_NOPS means that transactions which
+We note that DISCOURAGE_UPGRADABLE_NOPS means that transactions which
 use this feature are already considered non-standard by the rules of the
 network, making deployment easier than was the case with, for example,
 with BIP68 (Relative lock-time using consensus-enforced sequence
@@ -233,7 +231,7 @@ numbers)\[9\].
 
 ## Compatibility
 
-Old clients will consider the OP\_MERKLEBRANCHVERIFY as a NOP and ignore
+Old clients will consider the OP_MERKLEBRANCHVERIFY as a NOP and ignore
 it. Proof will not be verified, but the transaction will be accepted.
 
 ## References
@@ -251,7 +249,7 @@ layer)](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)
 CVE-2012-2459](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2459)
 
 \[5\] [BIP65:
-OP\_CHECKLOCKTIMEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki)
+OP_CHECKLOCKTIMEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki)
 
 \[6\] [BIP112:
 CHECKSEQUENCEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0112.mediawiki)

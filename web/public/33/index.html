@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,17 +46,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 33
-  Layer: Peer Services
-  Title: Stratized Nodes
-  Author: Amir Taaki &lt;genjix@riseup.net&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0033
-  Status: Rejected
-  Type: Standards Track
-  Created: 2012-05-15
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 33
+</span><span>  Layer: Peer Services
+</span><span>  Title: Stratized Nodes
+</span><span>  Author: Amir Taaki &lt;genjix@riseup.net&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0033
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2012-05-15
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>As the Bitcoin network scales, roles are fast becoming specialised. In
 the beginning, a single Bitcoin user would perform the synonymous roles
 of miner, merchant and end-user. With the growth however of this system,
@@ -72,7 +72,7 @@ stop-gap workarounds to stave off a growing problem.</p>
 <p>This document will examine a proposal which will be termed <em>stratized
 nodes</em>, a modification of an earlier concept termed <em>blockchain
 service</em>.</p>
-<h2 id="history">History</h2>
+<h2 id="History">History</h2>
 <p>Jan Moller created BCCAPI in 2011. BCCAPI allowed a user's client to
 delegate blockchain interaction to a remote server. This server would
 store and manage the blockchain while the user client would run queries
@@ -93,24 +93,24 @@ for user-clients. The proposal here is solely concerned with removing
 the onus of blockchain validation and lookups from user-clients to
 specialised services in a secure manner. Any secondary benefits or uses
 are purely incidental.</p>
-<h2 id="overview">Overview</h2>
+<h2 id="Overview">Overview</h2>
 <p>During the initial handshake between Bitcoin nodes, a version packet is
 sent. version packets have a bitfield called services. Nodes can fill
 this field to tell the network how they behave and which services they
 support. NODE_NETWORK (1) means a node can be asked for full blocks for
 example.</p>
 <p>We propose two more values of NODE_SERVICE (2) and NODE_STRATIZED (4).</p>
-<h3 id="node-service">NODE_SERVICE</h3>
+<h3 id="NODE_SERVICE">NODE_SERVICE</h3>
 <ul>
 <li>A blockchain service which supports the additional messages
 &quot;getoutputs&quot; and &quot;getspends&quot;.</li>
-<li>Does not respond to &quot;getdata&quot; messages by itself (unless
-NODE_NETWORK is specified)</li>
+<li>Does not respond to &quot;getdata&quot; messages by itself (unless NODE_NETWORK
+is specified)</li>
 <li>If NODE_NETWORK is specified, then &quot;getdata&quot; for transactions will
 retrieve them not only from the memory pool but also check the
 blockchain if necessary.</li>
 </ul>
-<h3 id="node-stratized">NODE_STRATIZED</h3>
+<h3 id="NODE_STRATIZED">NODE_STRATIZED</h3>
 <ul>
 <li>A node which uses the stratized strategy specified in this document.</li>
 <li>NODE_STRATIZED will relay inventories for accepted transactions.</li>
@@ -119,52 +119,48 @@ entire blockchain.</li>
 </ul>
 <p>Apart from the differences noted above, the nodes are otherwise
 unchanged in their behaviour from NODE_NETWORK.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="initialisation">Initialisation</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Initialisation">Initialisation</h3>
 <p>Four new messages are defined which are represented below in C-like
 pseudocode.</p>
 <p>&quot;getoutputs&quot;</p>
-<pre style="background-color:#fafafa;">
-<code>struct decoded_address
-{
-    uint8_t payment_type;
-    uint8_t address_hash[16];
-};
-
-struct get_outputs
-{
-    decoded_address dest;
-};
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct decoded_address
+</span><span>{
+</span><span>    uint8_t payment_type;
+</span><span>    uint8_t address_hash[16];
+</span><span>};
+</span><span>
+</span><span>struct get_outputs
+</span><span>{
+</span><span>    decoded_address dest;
+</span><span>};
+</span></code></pre>
 <p>&quot;outputs&quot;</p>
-<pre style="background-color:#fafafa;">
-<code>struct point_t
-{
-    uint8_t hash[32];
-    uint32_t index;
-};
-
-struct outputs
-{
-    decoded_address dest;
-    uint64_t number_outputs;  // variable uint
-    point_t outpoints[];
-};
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct point_t
+</span><span>{
+</span><span>    uint8_t hash[32];
+</span><span>    uint32_t index;
+</span><span>};
+</span><span>
+</span><span>struct outputs
+</span><span>{
+</span><span>    decoded_address dest;
+</span><span>    uint64_t number_outputs;  // variable uint
+</span><span>    point_t outpoints[];
+</span><span>};
+</span></code></pre>
 <p>&quot;getspend&quot;</p>
-<pre style="background-color:#fafafa;">
-<code>struct get_spend
-{
-    point_t outpoint;
-};
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct get_spend
+</span><span>{
+</span><span>    point_t outpoint;
+</span><span>};
+</span></code></pre>
 <p>&quot;spend&quot;</p>
-<pre style="background-color:#fafafa;">
-<code>struct spend
-{
-    point_t outpoint, inpoint;
-};
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct spend
+</span><span>{
+</span><span>    point_t outpoint, inpoint;
+</span><span>};
+</span></code></pre>
 <p>These four messages allow a node to discover the history of a Bitcoin
 address without needing direct access to the blockchain.</p>
 <p>A typical use case might look like:</p>
@@ -184,14 +180,14 @@ address without needing direct access to the blockchain.</p>
 </ol>
 <p>This sequence allows the gradual but fast build up of history for an
 address.</p>
-<h3 id="updates">Updates</h3>
+<h3 id="Updates">Updates</h3>
 <p>Nodes receive &quot;inv&quot; messages as normal from service nodes, issuing
 &quot;getdata&quot; to download the block or transaction data. From this they
 check for newly sent (in the input points) or received (in the output
 points) payments in the transaction data.</p>
 <p>Note that blocks must at minimum have their merkle root validated and
 transactions must be checked for uniqueness by stratized nodes.</p>
-<h2 id="security">Security</h2>
+<h2 id="Security">Security</h2>
 <p>The concern here is that stratized nodes are at the mercy of blockchain
 services. This proposal deals with that issue by designing this protocol
 in such a way that the implementation can resolve the common history
@@ -201,23 +197,23 @@ will only accept an output, spend or inventory vector that has been sent
 by a common subset of all those services (6 in our example). This
 spreads the risk between all services, and does not make a node
 vulnerable to any one rogue blockchain service.</p>
-<h2 id="privacy">Privacy</h2>
+<h2 id="Privacy">Privacy</h2>
 <p>The other strategy for thin clients termed <em>headers-only</em> or
 <em>Simplified. Payment. Verification.</em> have the same privacy issues as
 this proposal. SPV resolves this problem by sending out fake requests
 for transaction data which obfuscates the client data. By sending out a
 sufficient number of fake requests, privacy can be kept to a sufficient
 level.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>NODE_SERVICE does not respond to &quot;getdata&quot; requests by itself (unless
 used in conjunction with NODE_NETWORK) to prevent starvation attacks.
 This allows a single trusted NODE_SERVICE architecture (possibly acting
 as a front-end to multiple backends) to service very many nodes while
 externalising the costs to the Bitcoin network.</p>
-<p>NODE_STRATIZED tries its best to maintain the facade and help upkeep
-the Bitcoin network (see relaying), but cannot support &quot;getblocks&quot; as it
+<p>NODE_STRATIZED tries its best to maintain the facade and help upkeep the
+Bitcoin network (see relaying), but cannot support &quot;getblocks&quot; as it
 does not have the entire blockchain.</p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>This proposal is an addon to the current Bitcoin network, and is
 completely backwards compatible.</p>
 
@@ -227,7 +223,7 @@ completely backwards compatible.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

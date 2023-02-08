@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki"
 +++
 
-``` 
-  BIP: 85
-  Layer: Applications
-  Title: Deterministic Entropy From BIP32 Keychains
-  Author: Ethan Kosakovsky <ethankosakovsky@protonmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0085
-  Status: Draft
-  Type: Informational
-  Created: 2020-03-20
-  License: BSD-2-Clause
-           OPL
-```
+      BIP: 85
+      Layer: Applications
+      Title: Deterministic Entropy From BIP32 Keychains
+      Author: Ethan Kosakovsky <ethankosakovsky@protonmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0085
+      Status: Draft
+      Type: Informational
+      Created: 2020-03-20
+      License: BSD-2-Clause
+               OPL
 
 ## Abstract
 
@@ -110,13 +108,13 @@ For each application that requires its own wallet, a unique private key
 is derived from the BIP32 master root key using a fully hardened
 derivation path. The resulting private key (k) is then processed with
 HMAC-SHA512, where the key is "bip-entropy-from-k", and the message
-payload is the private key k: `HMAC-SHA512(key="bip-entropy-from-k",
-msg=k)`. The result produces 512 bits of entropy. Each application
-SHOULD use up to the required number of bits necessary for their
-operation truncating the rest.
+payload is the private key k:
+`HMAC-SHA512(key="bip-entropy-from-k", msg=k)`. The result produces 512
+bits of entropy. Each application SHOULD use up to the required number
+of bits necessary for their operation truncating the rest.
 
-The HMAC-SHA512 function is specified in
-[RFC 4231](http://tools.ietf.org/html/rfc4231).
+The HMAC-SHA512 function is specified in [RFC
+4231](http://tools.ietf.org/html/rfc4231).
 
 ### Test vectors
 
@@ -124,31 +122,31 @@ The HMAC-SHA512 function is specified in
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/0'/0'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/0'/0'
 
 OUTPUT:
 
-  - DERIVED
-    KEY=cca20ccb0e9a90feb0912870c3323b24874b0ca3d8018c4b96d0b97c0e82ded0
-  - DERIVED
-    ENTROPY=efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7
+- DERIVED
+  KEY=cca20ccb0e9a90feb0912870c3323b24874b0ca3d8018c4b96d0b97c0e82ded0
+- DERIVED
+  ENTROPY=efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7
 
 #### Test case 2
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/0'/1'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/0'/1'
 
 OUTPUT
 
-  - DERIVED
-    KEY=503776919131758bb7de7beb6c0ae24894f4ec042c26032890c29359216e21ba
-  - DERIVED
-    ENTROPY=70c6e3e8ebee8dc4c0dbba66076819bb8c09672527c4277ca8729532ad711872218f826919f6b67218adde99018a6df9095ab2b58d803b5b93ec9802085a690e
+- DERIVED
+  KEY=503776919131758bb7de7beb6c0ae24894f4ec042c26032890c29359216e21ba
+- DERIVED
+  ENTROPY=70c6e3e8ebee8dc4c0dbba66076819bb8c09672527c4277ca8729532ad711872218f826919f6b67218adde99018a6df9095ab2b58d803b5b93ec9802085a690e
 
 ## BIP85-DRNG
 
@@ -172,48 +170,48 @@ function has completed.
 INPUT:
 xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
 
-  - MASTER BIP32 ROOT KEY: m/83696968'/0'/0'
+- MASTER BIP32 ROOT KEY: m/83696968'/0'/0'
 
 OUTPUT
 
-  - DERIVED
-    KEY=cca20ccb0e9a90feb0912870c3323b24874b0ca3d8018c4b96d0b97c0e82ded0
-  - DERIVED
-    ENTROPY=efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7
+- DERIVED
+  KEY=cca20ccb0e9a90feb0912870c3323b24874b0ca3d8018c4b96d0b97c0e82ded0
+- DERIVED
+  ENTROPY=efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7
 
-<!-- end list -->
+<!-- -->
 
-  - DRNG(80
-    bytes)=b78b1ee6b345eae6836c2d53d33c64cdaf9a696487be81b03e822dc84b3f1cd883d7559e53d175f243e4c349e822a957bbff9224bc5dde9492ef54e8a439f6bc8c7355b87a925a37ee405a7502991111
+- DRNG(80
+  bytes)=b78b1ee6b345eae6836c2d53d33c64cdaf9a696487be81b03e822dc84b3f1cd883d7559e53d175f243e4c349e822a957bbff9224bc5dde9492ef54e8a439f6bc8c7355b87a925a37ee405a7502991111
 
 ## Reference Implementation
 
-  - Python library implementation:
-    [1](https://github.com/ethankosakovsky/bip85)
-  - JavaScript library implementation:
-    [2](https://github.com/hoganri/bip85-js)
+- Python library implementation:
+  [1](https://github.com/ethankosakovsky/bip85)
+- JavaScript library implementation:
+  [2](https://github.com/hoganri/bip85-js)
 
 ### Other Implementations
 
-  - JavaScript library implementation:
-    [3](https://github.com/hoganri/bip85-js)
+- JavaScript library implementation:
+  [3](https://github.com/hoganri/bip85-js)
 
-<!-- end list -->
+<!-- -->
 
-  - Coldcard Firmware: [4](https://github.com/Coldcard/firmware/pull/39)
+- Coldcard Firmware: [4](https://github.com/Coldcard/firmware/pull/39)
 
-<!-- end list -->
+<!-- -->
 
-  - Ian Coleman's Mnemonic Code Converter:
-    [5](https://github.com/iancoleman/bip39) and
-    [6](https://iancoleman.io/bip39/)
+- Ian Coleman's Mnemonic Code Converter:
+  [5](https://github.com/iancoleman/bip39) and
+  [6](https://iancoleman.io/bip39/)
 
-<!-- end list -->
+<!-- -->
 
-  - AirGap Vault:
-    [7](https://github.com/airgap-it/airgap-vault/commit/d64332fc2f332be622a1229acb27f621e23774d6)
+- AirGap Vault:
+  [7](https://github.com/airgap-it/airgap-vault/commit/d64332fc2f332be622a1229acb27f621e23774d6)
 
-btc\_hd\_wallet: [8](https://github.com/scgbckbone/btc-hd-wallet)
+btc_hd_wallet: [8](https://github.com/scgbckbone/btc-hd-wallet)
 
 ## Applications
 
@@ -221,7 +219,7 @@ The Application number defines how entropy will be used post processing.
 Some basic examples follow:
 
 Derivation path uses the format `m/83696968'/{app_no}'/{index}'` where
-*{app\_no}* is the path for the application, and *{index}* is the index.
+*{app_no}* is the path for the application, and *{index}* is the index.
 
 ### BIP39
 
@@ -241,7 +239,7 @@ the path `m/83696968'/39'/0'/12'/0'`, the next key would be
 Language Table
 
 | Wordlist              | Code |
-| --------------------- | ---- |
+|-----------------------|------|
 | English               | 0'   |
 | Japanese              | 1'   |
 | Korean                | 2'   |
@@ -255,7 +253,7 @@ Language Table
 Words Table
 
 | Words    | Entropy  | Code |
-| -------- | -------- | ---- |
+|----------|----------|------|
 | 12 words | 128 bits | 12'  |
 | 18 words | 192 bits | 18'  |
 | 24 words | 256 bits | 24'  |
@@ -268,15 +266,15 @@ BIP39 English 12 word mnemonic seed
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/39'/0'/12'/0'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/39'/0'/12'/0'
 
 OUTPUT:
 
-  - DERIVED ENTROPY=6250b68daf746d12a24d58b4787a714b
-  - DERIVED BIP39 MNEMONIC=girl mad pet galaxy egg matter matrix prison
-    refuse sense ordinary nose
+- DERIVED ENTROPY=6250b68daf746d12a24d58b4787a714b
+- DERIVED BIP39 MNEMONIC=girl mad pet galaxy egg matter matrix prison
+  refuse sense ordinary nose
 
 #### 18 English words
 
@@ -286,16 +284,16 @@ BIP39 English 18 word mnemonic seed
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/39'/0'/18'/0'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/39'/0'/18'/0'
 
 OUTPUT:
 
-  - DERIVED ENTROPY=938033ed8b12698449d4bbca3c853c66b293ea1b1ce9d9dc
-  - DERIVED BIP39 MNEMONIC=near account window bike charge season chef
-    number sketch tomorrow excuse sniff circle vital hockey outdoor
-    supply token
+- DERIVED ENTROPY=938033ed8b12698449d4bbca3c853c66b293ea1b1ce9d9dc
+- DERIVED BIP39 MNEMONIC=near account window bike charge season chef
+  number sketch tomorrow excuse sniff circle vital hockey outdoor supply
+  token
 
 #### 24 English words
 
@@ -305,17 +303,17 @@ Derives 24 word BIP39 mnemonic seed
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/39'/0'/24'/0'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/39'/0'/24'/0'
 
 OUTPUT:
 
-  - DERIVED
-    ENTROPY=ae131e2312cdc61331542efe0d1077bac5ea803adf24b313a4f0e48e9c51f37f
-  - DERIVED BIP39 MNEMONIC=puppy ocean match cereal symbol another shed
-    magic wrap hammer bulb intact gadget divorce twin tonight reason
-    outdoor destroy simple truth cigar social volcano
+- DERIVED
+  ENTROPY=ae131e2312cdc61331542efe0d1077bac5ea803adf24b313a4f0e48e9c51f37f
+- DERIVED BIP39 MNEMONIC=puppy ocean match cereal symbol another shed
+  magic wrap hammer bulb intact gadget divorce twin tonight reason
+  outdoor destroy simple truth cigar social volcano
 
 ### HD-Seed WIF
 
@@ -329,15 +327,15 @@ Path format is `m/83696968'/2'/{index}'`
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/2'/0'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/2'/0'
 
 OUTPUT
 
-  - DERIVED
-    ENTROPY=7040bb53104f27367f317558e78a994ada7296c6fde36a364e5baf206e502bb1
-  - DERIVED WIF=Kzyv4uF39d4Jrw2W7UryTHwZr1zQVNk4dAFyqE6BuMrMh1Za7uhp
+- DERIVED
+  ENTROPY=7040bb53104f27367f317558e78a994ada7296c6fde36a364e5baf206e502bb1
+- DERIVED WIF=Kzyv4uF39d4Jrw2W7UryTHwZr1zQVNk4dAFyqE6BuMrMh1Za7uhp
 
 ### XPRV
 
@@ -351,16 +349,16 @@ Path format is `m/83696968'/32'/{index}'`
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/32'/0'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/32'/0'
 
 OUTPUT
 
-  - DERIVED
-    ENTROPY=ead0b33988a616cf6a497f1c169d9e92562604e38305ccd3fc96f2252c177682
-  - DERIVED
-    WIF=xprv9s21ZrQH143K2srSbCSg4m4kLvPMzcWydgmKEnMmoZUurYuBuYG46c6P71UGXMzmriLzCCBvKQWBUv3vPB3m1SATMhp3uEjXHJ42jFg7myX
+- DERIVED
+  ENTROPY=ead0b33988a616cf6a497f1c169d9e92562604e38305ccd3fc96f2252c177682
+- DERIVED
+  WIF=xprv9s21ZrQH143K2srSbCSg4m4kLvPMzcWydgmKEnMmoZUurYuBuYG46c6P71UGXMzmriLzCCBvKQWBUv3vPB3m1SATMhp3uEjXHJ42jFg7myX
 
 ### HEX
 
@@ -369,21 +367,21 @@ Application number: 128169'
 The derivation path format is:
 `m/83696968'/128169'/{num_bytes}'/{index}'`
 
-\`16 \<= num\_bytes \<= 64\`
+\`16 \<= num_bytes \<= 64\`
 
 Truncate trailing (least significant) bytes of the entropy after
-\`num\_bytes\`.
+\`num_bytes\`.
 
 INPUT:
 
-  - MASTER BIP32 ROOT KEY:
-    xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
-  - PATH: m/83696968'/128169'/64'/0'
+- MASTER BIP32 ROOT KEY:
+  xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
+- PATH: m/83696968'/128169'/64'/0'
 
 OUTPUT
 
-  - DERIVED
-    ENTROPY=492db4698cf3b73a5a24998aa3e9d7fa96275d85724a91e71aa2d645442f878555d078fd1f1f67e368976f04137b1f7a0d19232136ca50c44614af72b5582a5c
+- DERIVED
+  ENTROPY=492db4698cf3b73a5a24998aa3e9d7fa96275d85724a91e71aa2d645442f878555d078fd1f1f67e368976f04137b1f7a0d19232136ca50c44614af72b5582a5c
 
 ### RSA
 
@@ -398,13 +396,13 @@ The RSA key generator should use BIP85-DRNG as the input RNG function.
 
 Keys allocated for RSA-GPG purposes use the following scheme:
 
-`- Main key m/83696968'/828365'/{key_bits}'/{key_index}'`  
-`- Sub keys:  m/83696968'/828365'/{key_bits}'/{key_index}'/{sub_key}'`
+`- Main key ``m/83696968'/828365'/{key_bits}'/{key_index}'`  
+`- Sub keys:  ``m/83696968'/828365'/{key_bits}'/{key_index}'/{sub_key}'`
 
 `   - key_index is the parent key for CERTIFY capability`  
-`   - sub_key 0' is used as the ENCRYPTION key`  
-`   - sub_key 1' is used as the AUTHENTICATION key`  
-`   - sub_key 2' is usually used as SIGNATURE key`
+`   - sub_key ``0'`` is used as the ENCRYPTION key`  
+`   - sub_key ``1'`` is used as the AUTHENTICATION key`  
+`   - sub_key ``2'`` is usually used as SIGNATURE key`
 
 Note on timestamps:
 

@@ -14,20 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0100.mediawiki"
 +++
 
-``` 
-  BIP: 100
-  Layer: Consensus (hard fork)
-  Title: Dynamic maximum block size by miner vote
-  Author: Jeff Garzik <jgarzik@gmail.com>
-          Tom Harding <tomh@thinlink.com>
-          Dagur Valberg Johannsson <dagurval@pvv.ntnu.no>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0100
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-06-11
-  License: BSD-2-Clause
-```
+      BIP: 100
+      Layer: Consensus (hard fork)
+      Title: Dynamic maximum block size by miner vote
+      Author: Jeff Garzik <jgarzik@gmail.com>
+              Tom Harding <tomh@thinlink.com>
+              Dagur Valberg Johannsson <dagurval@pvv.ntnu.no>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0100
+      Status: Rejected
+      Type: Standards Track
+      Created: 2015-06-11
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -87,9 +85,8 @@ excessive-block value for the benefit of all observers.
             consensus pattern `/EB[0-9]+/`, if any, is accepted as the
             megabyte vote.  
               
-    
+
     2.  Maximum block size recalculation
-        
         1.  A `new hardLimit` is calculated after each difficulty
             adjustment period of 2016 blocks, and applies to the next
             2016 blocks.
@@ -101,26 +98,26 @@ excessive-block value for the benefit of all observers.
               
             \# The `raise value` is defined as the vote of the 1512th
             highest block, converted to bytes.
-            1.  If the resultant `raise value` is greater than (`current
-                hardLimit` \* 1.05) rounded down, it is set to that
-                value.
-            2.  If the resultant `raise value` is greater than `current
-                hardLimit`, the `raise value` becomes the `new
-                hardLimit` and the recalculation is complete.  
+            1.  If the resultant `raise value` is greater than
+                (`current hardLimit` \* 1.05) rounded down, it is set to
+                that value.
+            2.  If the resultant `raise value` is greater than
+                `current hardLimit`, the `raise value` becomes the
+                `new hardLimit` and the recalculation is complete.  
                   
         5.  Lowering `hardLimit`  
               
             \# The `lower value` is defined as the vote of the 1512th
             lowest block, converted to bytes.
-            1.  If the resultant `lower value` is less than (`current
-                hardLimit` / 1.05) rounded down, it is set to that
-                value.
-            2.  If the resultant `lower value` is less than `current
-                hardLimit`, the `lower value` becomes the `new
-                hardLimit` and the recalculation is complete.  
+            1.  If the resultant `lower value` is less than
+                (`current hardLimit` / 1.05) rounded down, it is set to
+                that value.
+            2.  If the resultant `lower value` is less than
+                `current hardLimit`, the `lower value` becomes the
+                `new hardLimit` and the recalculation is complete.  
                   
-        6.  Otherwise, `new hardLimit` remains the same as `current
-            hardLimit`.
+        6.  Otherwise, `new hardLimit` remains the same as
+            `current hardLimit`.
 
 ### Signature Hashing Operations Limits
 

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,22 +46,22 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 322
-  Layer: Applications
-  Title: Generic Signed Message Format
-  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0322
-  Status: Draft
-  Type: Standards Track
-  Created: 2018-09-10
-  License: CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 322
+</span><span>  Layer: Applications
+</span><span>  Title: Generic Signed Message Format
+</span><span>  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0322
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2018-09-10
+</span><span>  License: CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>A standard for interoperable signed messages based on the Bitcoin Script
 format, either for proving fund availability, or committing to a message
 as the intended recipient of funds sent to the invoice address.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The current message signing standard only works for P2PKH (1...) invoice
 addresses. We propose to extend and generalize the standard by using a
 Bitcoin Script based approach. This ensures that any coins, no matter
@@ -80,16 +80,16 @@ funds, both because a signature is obsolete as soon as it is created,
 and because the possessor of a secret key may be willing to sign
 messages on others' behalf even if it would not sign actual
 transactions. No signmessage protocol can fix these limitations.</p>
-<h2 id="types-of-signatures">Types of Signatures</h2>
+<h2 id="Types_of_Signatures">Types of Signatures</h2>
 <p>This BIP specifies three formats for signing messages: <em>legacy</em>,
 <em>simple</em> and <em>full</em>. Additionally, a variant of the <em>full</em> format can be
 used to demonstrate control over a set of UTXOs.</p>
-<h3 id="legacy">Legacy</h3>
+<h3 id="Legacy">Legacy</h3>
 <p>New proofs should use the new format for all invoice address formats,
 including P2PKH.</p>
 <p>The legacy format MAY be used, but must be restricted to the legacy
 P2PKH invoice address format.</p>
-<h3 id="simple">Simple</h3>
+<h3 id="Simple">Simple</h3>
 <p>A <em>simple</em> signature consists of a witness stack, consensus encoded as a
 vector of vectors of bytes, and base64-encoded. Validators should
 construct <code>to_spend</code> and <code>to_sign</code> as defined below, with default values
@@ -103,7 +103,7 @@ signed with</li>
 signature.</li>
 </ul>
 <p>and then proceed as they would for a full signature.</p>
-<h3 id="full">Full</h3>
+<h3 id="Full">Full</h3>
 <p>Full signatures follow an analogous specification to the BIP-325
 challenges and solutions used by Signet.</p>
 <p>Let there be two virtual transactions <code>to_spend</code> and <code>to_sign</code>.</p>
@@ -132,7 +132,7 @@ message as is without length prefix or null terminator, and
 <code>   vout[0].scriptPubKey = OP_RETURN</code></p>
 <p>A full signature consists of the base64-encoding of the <code>to_sign</code>
 transaction in standard network serialisation once it has been signed.</p>
-<h3 id="full-proof-of-funds">Full (Proof of Funds)</h3>
+<h3 id="Full_(Proof_of_Funds)">Full (Proof of Funds)</h3>
 <p>A signer may construct a proof of funds, demonstrating control of a set
 of UTXOs, by constructing a full signature as above, with the following
 modifications.</p>
@@ -147,12 +147,12 @@ being spent.</li>
 <p>Unlike an ordinary signature, validators of a proof of funds need access
 to the current UTXO set, to learn that the claimed inputs exist on the
 blockchain, and to learn their scriptPubKeys.</p>
-<h2 id="detailed-specification">Detailed Specification</h2>
+<h2 id="Detailed_Specification">Detailed Specification</h2>
 <p>For all signature types, except legacy, the <code>to_spend</code> and <code>to_sign</code>
 transactions must be valid transactions which pass all consensus checks,
 except of course that the output with prevout <code>000...000:FFFFFFFF</code> does
 not exist.</p>
-<h3 id="verification">Verification</h3>
+<h3 id="Verification">Verification</h3>
 <p>A validator is given as input an address <em>A</em> (which may be omitted in a
 proof-of-funds), signature <em>s</em> and message <em>m</em>, and outputs one of three
 states</p>
@@ -162,7 +162,7 @@ timelocks but is otherwise valid</li>
 <li><em>inconclusive</em> means the validator was unable to check the scripts</li>
 <li><em>invalid</em> means that some check failed</li>
 </ul>
-<h4 id="verification-process">Verification Process</h4>
+<h4 id="Verification_Process">Verification Process</h4>
 <p>Validation consists of the following steps:</p>
 <ol>
 <li>Basic validation
@@ -215,7 +215,7 @@ output the <em>inconclusive</em> state.</li>
 the first input of <code>to_sign</code>. Output the state <em>valid at time T and
 age S</em>.</li>
 </ol>
-<h3 id="signing">Signing</h3>
+<h3 id="Signing">Signing</h3>
 <p>Signers who control an address <em>A</em> who wish to sign a message <em>m</em> act as
 follows:</p>
 <ol>
@@ -231,34 +231,34 @@ they wish to prove control of.</li>
 <p>They then encode their signature, choosing either <em>simple</em> or <em>full</em> as
 follows:</p>
 <ul>
-<li>If they added no inputs to <code>to_sign</code>, left nSequence and nLockTime
-at 0, and <em>A</em> is a Segwit address (either pure or P2SH-wrapped),
-then they may base64-encode <code>message_signature</code></li>
+<li>If they added no inputs to <code>to_sign</code>, left nSequence and nLockTime at
+0, and <em>A</em> is a Segwit address (either pure or P2SH-wrapped), then
+they may base64-encode <code>message_signature</code></li>
 <li>Otherwise they must base64-encode <code>to_sign</code>.</li>
 </ul>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This specification is backwards compatible with the legacy
 signmessage/verifymessage specification through the special case as
 described above.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <ul>
 <li>Bitcoin Core pull request (basic support) at:
-<a href="https://github.com/bitcoin/bitcoin/pull/24058">https://github.com/bitcoin/bitcoin/pull/24058</a></li>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/24058">https://github.com/bitcoin/bitcoin/pull/24058</a></li>
 </ul>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>Thanks to David Harding, Jim Posen, Kalle Rosenbaum, Pieter Wuille,
 Andrew Poelstra, and many others for their feedback on the
 specification.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <ol>
 <li>Original mailing list thread:
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015818.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015818.html</a></li>
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015818.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-March/015818.html</a></li>
 </ol>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
-<h2 id="test-vectors">Test vectors</h2>
-<h3 id="message-hashing">Message hashing</h3>
+<h2 id="Test_vectors">Test vectors</h2>
+<h3 id="Message_hashing">Message hashing</h3>
 <p>Message hashes are BIP340-tagged hashes of a message, i.e.
 sha256_tag(m), where tag = <code>BIP0322-signed-message</code>, and m is the
 message as is without length prefix or null terminator:</p>
@@ -268,7 +268,7 @@ message as is without length prefix or null terminator:</p>
 <li>Message = &quot;Hello World&quot;:
 <code>f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a</code></li>
 </ul>
-<h3 id="message-signing">Message signing</h3>
+<h3 id="Message_signing">Message signing</h3>
 <p>Given below parameters:</p>
 <ul>
 <li>private key <code>L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k</code></li>
@@ -281,7 +281,7 @@ message as is without length prefix or null terminator:</p>
 <li>Message = &quot;Hello World&quot;:
 <code>AkcwRAIgZRfIY3p7/DoVTty6YZbWS71bc5Vct9p9Fia83eRmw2QCICK/ENGfwLtptFluMGs2KsqoNSk89pO7F29zJLUx9a/sASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=</code></li>
 </ul>
-<h3 id="transaction-hashes">Transaction Hashes</h3>
+<h3 id="Transaction_Hashes">Transaction Hashes</h3>
 <p>to_spend:</p>
 <ul>
 <li>Message = &quot;&quot; (empty string):
@@ -303,7 +303,7 @@ message as is without length prefix or null terminator:</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,18 +46,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 15
-  Layer: Applications
-  Title: Aliases
-  Author: Amir Taaki &lt;genjix@riseup.net&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0015
-  Status: Deferred
-  Type: Standards Track
-  Created: 2011-12-10
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 15
+</span><span>  Layer: Applications
+</span><span>  Title: Aliases
+</span><span>  Author: Amir Taaki &lt;genjix@riseup.net&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0015
+</span><span>  Status: Deferred
+</span><span>  Type: Standards Track
+</span><span>  Created: 2011-12-10
 </span></code></pre>
-<p><a href="https://bips.dev/15/bip-0070.mediawiki" title="wikilink">BIP 0070</a> (payment protocol) may be seen
+<p><a href="/70">BIP 0070</a> (payment protocol) may be seen
 as the alternative to Aliases.</p>
 <p>Using vanilla bitcoin, to send funds to a destination, an address in the
 form 1Hd44nkJfNAcPJeZyrGC5sKJS1TzgmCTjjZ is needed. The problem with
@@ -68,9 +67,9 @@ websites if domain names did not exist.</p>
 system. This is a big modification to the protocol that is not easily
 changed in the future and has big ramifications. There is impetus in
 getting it correct the first time. Aliases have to be robust and secure.</p>
-<h2 id="schemes">Schemes</h2>
+<h2 id="Schemes">Schemes</h2>
 <p>Here are a few different proposals and the properties of each system.</p>
-<h3 id="firstbits">FirstBits</h3>
+<h3 id="FirstBits">FirstBits</h3>
 <p>FirstBits is a proposal for using the blockchain as an address book.</p>
 <p>When bitcoins are sent to an address, that address becomes recorded in
 the blockchain. It is therefore known that this address exists or did
@@ -90,7 +89,7 @@ requires a mobile handset that this author does not own) or find their
 address on the internet to copy and paste into the client to send
 bitcoins. FirstBits alleviates this impracticality by providing an easy
 method to make payments.</p>
-<p>Together with <a href="https://bips.dev/15/vanitygen" title="wikilink">Vanitygen (vanity generator)</a>, it
+<p>Together with <a href="vanitygen" title="wikilink">Vanitygen (vanity generator)</a>, it
 becomes possible to create memorable unique named addresses. Addresses
 that are meaningful, rather than an odd assemblage of letters and
 numbers but add context to the destination.</p>
@@ -113,7 +112,7 @@ trusted third party for their alias lookups. The cost of storing every
 bitcoin address is too high considering their typical use-case on
 low-resource devices. This factor more than the others, means this
 scheme is sub-optimal and must be rejected.</p>
-<h3 id="dns-txt-records">DNS TXT Records</h3>
+<h3 id="DNS_TXT_Records">DNS TXT Records</h3>
 <p>DNS allows TXT records to be created containing arbitrary data. In a
 bitcoin alias system, a custom format mutually agreed upon by a BIP
 standard would be used to store mappings to bitcoin addresses from
@@ -135,7 +134,7 @@ registrars provide access to DNS through a web interface only.</p>
 <p>The disadvantage of DNS TXT records is that updating a record takes
 time. This encourages people to not use new addresses per transaction
 which has certain security issues.</p>
-<h3 id="server-service">Server Service</h3>
+<h3 id="Server_Service">Server Service</h3>
 <p>Aside from using DNS TXT records, another possibility is using the
 domain name system to lookup hosts and then contact a service running on
 a predefined port to get the bitcoin address.</p>
@@ -161,7 +160,7 @@ and hence also being vulnerable to spoofing. Hence DNSSEC is also
 required. This approach is slightly better than the DNS TXT records
 though since it makes inserting new users and modifying aliases very
 easy which allows people to run these server services more cheaply.</p>
-<h3 id="https-web-service">HTTPS Web Service</h3>
+<h3 id="HTTPS_Web_Service">HTTPS Web Service</h3>
 <p>HTTPS provides an additional layer of security by encrypting the
 connection, providing much needed privacy for users. Together with using
 Certificate Authorities, it fixes the issue with using DNSSEC since an
@@ -172,7 +171,7 @@ the local network.</p>
 <p>The request is broken into the handle (genjix) and domain (foo.org) at
 the last occurrence of the @. The client then constructs a request that
 will query for the address.</p>
-<p><code> </code><a href="https://foo.org/bitcoin-alias/?handle=genjix">https://foo.org/bitcoin-alias/?handle=genjix</a></p>
+<p><code> </code><a rel="noopener" target="_blank" href="https://foo.org/bitcoin-alias/?handle=genjix"><code>https://foo.org/bitcoin-alias/?handle=genjix</code></a></p>
 <p>bitcoin-alias has been chosen as the query suffix because it allows this
 system to co-exist easily within another web root without the fear of
 name clashes.</p>
@@ -196,235 +195,235 @@ their website.</p>
 attach a backend with a variety of database technologies then provide a
 web frontend for users to customise and create their own aliases.</p>
 <p>A naive implementation is provided below as an example.</p>
-<pre style="background-color:#fafafa;">
-<code>// resolv.h
-#ifndef NOMRESOLV_H__
-#define NOMRESOLV_H__
-
-#include &lt;string&gt;
-#include &quot;curl/curl.h&quot;
-
-using std::string;
-
-/*
-
-This class resolves against a server to lookup addresses.
-To not conflict with the bitcoin addresses, we refer here to people's handles.
-A handle is of the form:
-
-   genjix@foo.org
-
-Most characters are valid for the username + password (and handled accordingly), but the domain follows usual web standards. It is possible to affix a path if needed,
-
-   genjix@bar.com/path/to/
-
-*/
-
-class NameResolutionService
-{
-public:
-    NameResolutionService();
-    ~NameResolutionService();
-
-    // Three main methods map to RPC actions.
-    string FetchAddress(const string&amp; strHandle, string&amp; strAddy);
-
-private:
-    // A POST block
-    class PostVariables
-    {
-    public:
-        PostVariables();
-        ~PostVariables();
-        // Add a new key, value pair
-        bool Add(const string&amp; strKey, const string&amp; strVal);
-        curl_httppost* operator()() const;
-    private:
-        // CURL stores POST blocks as linked lists.
-        curl_httppost *pBegin, *pEnd;
-    };
-
-    // Explodes user@domain =&gt; user, domain
-    static void ExplodeHandle(const string&amp; strHandle, string&amp; strNickname, string&amp; strDomain);
-    // Perform the HTTP request. Returns true on success.
-    bool Perform();
-
-    // CURL error message
-    char pErrorBuffer[CURL_ERROR_SIZE];
-    // CURL response
-    string strBuffer;
-    // CURL handle
-    CURL *curl;
-};
-
-#endif
-
-// resolv.cpp
-#include &quot;resolv.h&quot;
-
-#include &lt;boost/lexical_cast.hpp&gt;
-
-#include &quot;access.h&quot;
-
-// callback used to write response from the server
-static int writer(char *pData, size_t nSize, size_t nNmemb, std::string *pBuffer)
-{
-  int nResult = 0;
-  if (pBuffer != NULL)
-  {
-    pBuffer-&gt;append(pData, nSize * nNmemb);
-    // How much did we write?
-    nResult = nSize * nNmemb;
-  }
-  return nResult;
-}
-
-NameResolutionService::NameResolutionService()
-{
-    // Initialise CURL with our various options.
-    curl = curl_easy_init();
-    // This goes first in case of any problems below. We get an error message.
-    curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, pErrorBuffer);
-    // fail when server sends &gt;= 404
-    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1);
-    curl_easy_setopt(curl, CURLOPT_HEADER, 0);
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_easy_setopt(curl, CURLOPT_POSTREDIR, CURL_REDIR_POST_302);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
-    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1);
-    // server response goes in strBuffer
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &amp;strBuffer);
-    pErrorBuffer[0] = '\0';
-}
-NameResolutionService::~NameResolutionService()
-{
-    curl_easy_cleanup(curl);
-}
-
-void NameResolutionService::ExplodeHandle(const string&amp; strHandle, string&amp; strNickname, string&amp; strDomain)
-{
-    // split address at @ furthrest to the right
-    size_t nPosAtsym = strHandle.rfind('@');
-    strNickname = strHandle.substr(0, nPosAtsym);
-    strDomain = strHandle.substr(nPosAtsym + 1, strHandle.size());
-}
-bool NameResolutionService::Perform()
-{
-    // Called after everything has been setup. This actually does the request.
-    CURLcode result = curl_easy_perform(curl);
-    return (result == CURLE_OK);
-}
-
-string NameResolutionService::FetchAddress(const string&amp; strHandle, string&amp; strAddy)
-{
-    // GET is defined for 'getting' data, so we use GET for the low risk fetching of people's addresses
-    if (!curl)
-        // For some reason CURL didn't start...
-        return pErrorBuffer;
-    // Expand the handle
-    string strNickname, strDomain;
-    ExplodeHandle(strHandle, strNickname, strDomain);
-    // url encode the nickname for get request
-    const char* pszEncodedNick = curl_easy_escape(curl, strNickname.c_str(), strNickname.size());
-    if (!pszEncodedNick)
-        return &quot;Unable to encode nickname.&quot;;
-    // construct url for GET request
-    string strRequestUrl = strDomain + &quot;/bitcoin-alias/?handle=&quot; + pszEncodedNick;
-    // Pass URL to CURL
-    curl_easy_setopt(curl, CURLOPT_URL, strRequestUrl.c_str());
-    if (!Perform())
-        return pErrorBuffer;
-    // Server should respond with a JSON that has the address in.
-    strAddy = strBuffer;
-    return &quot;&quot;;  // no error
-}
-
-NameResolutionService::PostVariables::PostVariables()
-{
-    // pBegin/pEnd *must* be null before calling curl_formadd
-    pBegin = NULL;
-    pEnd = NULL;
-}
-NameResolutionService::PostVariables::~PostVariables()
-{
-    curl_formfree(pBegin);
-}
-bool NameResolutionService::PostVariables::Add(const string&amp; strKey, const string&amp; strVal)
-{
-    // Copy strings to this block. Return true on success.
-    return curl_formadd(&amp;pBegin, &amp;pEnd, CURLFORM_COPYNAME, strKey.c_str(), CURLFORM_COPYCONTENTS, strVal.c_str(), CURLFORM_END) == CURL_FORMADD_OK;
-}
-
-curl_httppost* NameResolutionService::PostVariables::operator()() const
-{
-    return pBegin;
-}
-&lt;/source&gt;
-
-&lt;source lang=&quot;cpp&quot;&gt;
-// rpc.cpp
-...
-
-const Object CheckMaybeThrow(const string&amp; strJsonIn)
-{
-    // Parse input JSON
-    Value valRequest;
-    if (!read_string(strJsonIn, valRequest) || valRequest.type() != obj_type)
-        throw JSONRPCError(-32700, &quot;Parse error&quot;);
-    const Object&amp; request = valRequest.get_obj();
-    // Now check for a key called &quot;error&quot;
-    const Value&amp; error  = find_value(request, &quot;error&quot;);
-    // It's an error JSON! so propagate the error.
-    if (error.type() != null_type)
-        throw JSONRPCError(-4, error.get_str());
-    // Return JSON object
-    return request;
-}
-
-const string CollectAddress(const string&amp; strIn)
-{
-    // If the handle does not have an @ in it, then it's a normal base58 bitcoin address
-    if (strIn.find('@') == (size_t)-1)
-        return strIn;
-
-    // Open the lookup service
-    NameResolutionService ns;
-    // We established that the input string is not a BTC address, so we use it as a handle now.
-    string strHandle = strIn, strAddy;
-    string strError = ns.FetchAddress(strHandle, strAddy);
-    if (!strError.empty())
-        throw JSONRPCError(-4, strError);
-
-    const Object&amp; request(CheckMaybeThrow(strAddy));
-    // Get the BTC address from the JSON
-    const Value&amp; address = find_value(request, &quot;address&quot;);
-    if (address.type() != str_type)
-        throw JSONRPCError(-32600, &quot;Server responded with malformed reply.&quot;);
-    return address.get_str();
-}
-
-// Named this way to prevent possible conflicts.
-Value rpc_send(const Array&amp; params, bool fHelp)
-{
-    if (fHelp || params.size() != 2)
-        throw runtime_error(
-            &quot;send &lt;name@domain or address&gt; &lt;amount&gt;\n&quot;
-            &quot;&lt;amount&gt; is a real and is rounded to the nearest 0.01&quot;);
-
-    // Intelligent function which looks up address given handle, or returns address
-    string strAddy = CollectAddress(params[0].get_str());
-    int64 nAmount = AmountFromValue(params[1]);
-    // Do the send
-    CWalletTx wtx;
-    string strError = SendMoneyToBitcoinAddress(strAddy, nAmount, wtx);
-    if (!strError.empty())
-        throw JSONRPCError(-4, strError);
-    return wtx.GetHash().GetHex();
-}
-
-...
-</code></pre><h3 id="ip-transactions">IP Transactions</h3>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>// resolv.h
+</span><span>#ifndef NOMRESOLV_H__
+</span><span>#define NOMRESOLV_H__
+</span><span>
+</span><span>#include &lt;string&gt;
+</span><span>#include &quot;curl/curl.h&quot;
+</span><span>
+</span><span>using std::string;
+</span><span>
+</span><span>/*
+</span><span>
+</span><span>This class resolves against a server to lookup addresses.
+</span><span>To not conflict with the bitcoin addresses, we refer here to people&#39;s handles.
+</span><span>A handle is of the form:
+</span><span>
+</span><span>   genjix@foo.org
+</span><span>
+</span><span>Most characters are valid for the username + password (and handled accordingly), but the domain follows usual web standards. It is possible to affix a path if needed,
+</span><span>
+</span><span>   genjix@bar.com/path/to/
+</span><span>
+</span><span>*/
+</span><span>
+</span><span>class NameResolutionService
+</span><span>{
+</span><span>public:
+</span><span>    NameResolutionService();
+</span><span>    ~NameResolutionService();
+</span><span>
+</span><span>    // Three main methods map to RPC actions.
+</span><span>    string FetchAddress(const string&amp; strHandle, string&amp; strAddy);
+</span><span>
+</span><span>private:
+</span><span>    // A POST block
+</span><span>    class PostVariables
+</span><span>    {
+</span><span>    public:
+</span><span>        PostVariables();
+</span><span>        ~PostVariables();
+</span><span>        // Add a new key, value pair
+</span><span>        bool Add(const string&amp; strKey, const string&amp; strVal);
+</span><span>        curl_httppost* operator()() const;
+</span><span>    private:
+</span><span>        // CURL stores POST blocks as linked lists.
+</span><span>        curl_httppost *pBegin, *pEnd;
+</span><span>    };
+</span><span>
+</span><span>    // Explodes user@domain =&gt; user, domain
+</span><span>    static void ExplodeHandle(const string&amp; strHandle, string&amp; strNickname, string&amp; strDomain);
+</span><span>    // Perform the HTTP request. Returns true on success.
+</span><span>    bool Perform();
+</span><span>
+</span><span>    // CURL error message
+</span><span>    char pErrorBuffer[CURL_ERROR_SIZE];
+</span><span>    // CURL response
+</span><span>    string strBuffer;
+</span><span>    // CURL handle
+</span><span>    CURL *curl;
+</span><span>};
+</span><span>
+</span><span>#endif
+</span><span>
+</span><span>// resolv.cpp
+</span><span>#include &quot;resolv.h&quot;
+</span><span>
+</span><span>#include &lt;boost/lexical_cast.hpp&gt;
+</span><span>
+</span><span>#include &quot;access.h&quot;
+</span><span>
+</span><span>// callback used to write response from the server
+</span><span>static int writer(char *pData, size_t nSize, size_t nNmemb, std::string *pBuffer)
+</span><span>{
+</span><span>  int nResult = 0;
+</span><span>  if (pBuffer != NULL)
+</span><span>  {
+</span><span>    pBuffer-&gt;append(pData, nSize * nNmemb);
+</span><span>    // How much did we write?
+</span><span>    nResult = nSize * nNmemb;
+</span><span>  }
+</span><span>  return nResult;
+</span><span>}
+</span><span>
+</span><span>NameResolutionService::NameResolutionService()
+</span><span>{
+</span><span>    // Initialise CURL with our various options.
+</span><span>    curl = curl_easy_init();
+</span><span>    // This goes first in case of any problems below. We get an error message.
+</span><span>    curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, pErrorBuffer);
+</span><span>    // fail when server sends &gt;= 404
+</span><span>    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1);
+</span><span>    curl_easy_setopt(curl, CURLOPT_HEADER, 0);
+</span><span>    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+</span><span>    curl_easy_setopt(curl, CURLOPT_POSTREDIR, CURL_REDIR_POST_302);
+</span><span>    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
+</span><span>    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
+</span><span>    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1);
+</span><span>    // server response goes in strBuffer
+</span><span>    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &amp;strBuffer);
+</span><span>    pErrorBuffer[0] = &#39;\0&#39;;
+</span><span>}
+</span><span>NameResolutionService::~NameResolutionService()
+</span><span>{
+</span><span>    curl_easy_cleanup(curl);
+</span><span>}
+</span><span>
+</span><span>void NameResolutionService::ExplodeHandle(const string&amp; strHandle, string&amp; strNickname, string&amp; strDomain)
+</span><span>{
+</span><span>    // split address at @ furthrest to the right
+</span><span>    size_t nPosAtsym = strHandle.rfind(&#39;@&#39;);
+</span><span>    strNickname = strHandle.substr(0, nPosAtsym);
+</span><span>    strDomain = strHandle.substr(nPosAtsym + 1, strHandle.size());
+</span><span>}
+</span><span>bool NameResolutionService::Perform()
+</span><span>{
+</span><span>    // Called after everything has been setup. This actually does the request.
+</span><span>    CURLcode result = curl_easy_perform(curl);
+</span><span>    return (result == CURLE_OK);
+</span><span>}
+</span><span>
+</span><span>string NameResolutionService::FetchAddress(const string&amp; strHandle, string&amp; strAddy)
+</span><span>{
+</span><span>    // GET is defined for &#39;getting&#39; data, so we use GET for the low risk fetching of people&#39;s addresses
+</span><span>    if (!curl)
+</span><span>        // For some reason CURL didn&#39;t start...
+</span><span>        return pErrorBuffer;
+</span><span>    // Expand the handle
+</span><span>    string strNickname, strDomain;
+</span><span>    ExplodeHandle(strHandle, strNickname, strDomain);
+</span><span>    // url encode the nickname for get request
+</span><span>    const char* pszEncodedNick = curl_easy_escape(curl, strNickname.c_str(), strNickname.size());
+</span><span>    if (!pszEncodedNick)
+</span><span>        return &quot;Unable to encode nickname.&quot;;
+</span><span>    // construct url for GET request
+</span><span>    string strRequestUrl = strDomain + &quot;/bitcoin-alias/?handle=&quot; + pszEncodedNick;
+</span><span>    // Pass URL to CURL
+</span><span>    curl_easy_setopt(curl, CURLOPT_URL, strRequestUrl.c_str());
+</span><span>    if (!Perform())
+</span><span>        return pErrorBuffer;
+</span><span>    // Server should respond with a JSON that has the address in.
+</span><span>    strAddy = strBuffer;
+</span><span>    return &quot;&quot;;  // no error
+</span><span>}
+</span><span>
+</span><span>NameResolutionService::PostVariables::PostVariables()
+</span><span>{
+</span><span>    // pBegin/pEnd *must* be null before calling curl_formadd
+</span><span>    pBegin = NULL;
+</span><span>    pEnd = NULL;
+</span><span>}
+</span><span>NameResolutionService::PostVariables::~PostVariables()
+</span><span>{
+</span><span>    curl_formfree(pBegin);
+</span><span>}
+</span><span>bool NameResolutionService::PostVariables::Add(const string&amp; strKey, const string&amp; strVal)
+</span><span>{
+</span><span>    // Copy strings to this block. Return true on success.
+</span><span>    return curl_formadd(&amp;pBegin, &amp;pEnd, CURLFORM_COPYNAME, strKey.c_str(), CURLFORM_COPYCONTENTS, strVal.c_str(), CURLFORM_END) == CURL_FORMADD_OK;
+</span><span>}
+</span><span>
+</span><span>curl_httppost* NameResolutionService::PostVariables::operator()() const
+</span><span>{
+</span><span>    return pBegin;
+</span><span>}
+</span><span>&lt;/source&gt;
+</span><span>
+</span><span>&lt;source lang=&quot;cpp&quot;&gt;
+</span><span>// rpc.cpp
+</span><span>...
+</span><span>
+</span><span>const Object CheckMaybeThrow(const string&amp; strJsonIn)
+</span><span>{
+</span><span>    // Parse input JSON
+</span><span>    Value valRequest;
+</span><span>    if (!read_string(strJsonIn, valRequest) || valRequest.type() != obj_type)
+</span><span>        throw JSONRPCError(-32700, &quot;Parse error&quot;);
+</span><span>    const Object&amp; request = valRequest.get_obj();
+</span><span>    // Now check for a key called &quot;error&quot;
+</span><span>    const Value&amp; error  = find_value(request, &quot;error&quot;);
+</span><span>    // It&#39;s an error JSON! so propagate the error.
+</span><span>    if (error.type() != null_type)
+</span><span>        throw JSONRPCError(-4, error.get_str());
+</span><span>    // Return JSON object
+</span><span>    return request;
+</span><span>}
+</span><span>
+</span><span>const string CollectAddress(const string&amp; strIn)
+</span><span>{
+</span><span>    // If the handle does not have an @ in it, then it&#39;s a normal base58 bitcoin address
+</span><span>    if (strIn.find(&#39;@&#39;) == (size_t)-1)
+</span><span>        return strIn;
+</span><span>
+</span><span>    // Open the lookup service
+</span><span>    NameResolutionService ns;
+</span><span>    // We established that the input string is not a BTC address, so we use it as a handle now.
+</span><span>    string strHandle = strIn, strAddy;
+</span><span>    string strError = ns.FetchAddress(strHandle, strAddy);
+</span><span>    if (!strError.empty())
+</span><span>        throw JSONRPCError(-4, strError);
+</span><span>
+</span><span>    const Object&amp; request(CheckMaybeThrow(strAddy));
+</span><span>    // Get the BTC address from the JSON
+</span><span>    const Value&amp; address = find_value(request, &quot;address&quot;);
+</span><span>    if (address.type() != str_type)
+</span><span>        throw JSONRPCError(-32600, &quot;Server responded with malformed reply.&quot;);
+</span><span>    return address.get_str();
+</span><span>}
+</span><span>
+</span><span>// Named this way to prevent possible conflicts.
+</span><span>Value rpc_send(const Array&amp; params, bool fHelp)
+</span><span>{
+</span><span>    if (fHelp || params.size() != 2)
+</span><span>        throw runtime_error(
+</span><span>            &quot;send &lt;name@domain or address&gt; &lt;amount&gt;\n&quot;
+</span><span>            &quot;&lt;amount&gt; is a real and is rounded to the nearest 0.01&quot;);
+</span><span>
+</span><span>    // Intelligent function which looks up address given handle, or returns address
+</span><span>    string strAddy = CollectAddress(params[0].get_str());
+</span><span>    int64 nAmount = AmountFromValue(params[1]);
+</span><span>    // Do the send
+</span><span>    CWalletTx wtx;
+</span><span>    string strError = SendMoneyToBitcoinAddress(strAddy, nAmount, wtx);
+</span><span>    if (!strError.empty())
+</span><span>        throw JSONRPCError(-4, strError);
+</span><span>    return wtx.GetHash().GetHex();
+</span><span>}
+</span><span>
+</span><span>...
+</span></code></pre>
+<h3 id="IP_Transactions">IP Transactions</h3>
 <p>An IP transaction is an old transaction format in bitcoin that is
 disabled and possibly could be deprecated. It involves being given an IP
 address to make payment to. Upon connecting to the node and requesting
@@ -446,7 +445,7 @@ would be used for all future &quot;reply&quot; messages originating from that
 host. First time use would require a confirmation for acceptance of that
 public key; like with SSH. Should the &quot;reply&quot; message not match the
 accepted public key, then the host will be given an error.</p>
-<h3 id="namecoin-id">Namecoin ID</h3>
+<h3 id="Namecoin_ID">Namecoin ID</h3>
 <p>This proposal uses the Namecoin blockchain to associate an alias with a
 bitcoin address. Bitcoin queries a namecoin node. This retreives the
 structured data containing the bitcoin address(es) associated with this
@@ -483,7 +482,7 @@ one.</p>
 <code>{</code><br />
 <code>  &quot;bitcoin&quot; :</code><br />
 <code>  {</code><br />
-<code>    &quot;url&quot; : &quot;</code><a href="http://merchant.com/bitcoin/getnewaddres/">http://merchant.com/bitcoin/getnewaddres/</a><code>&quot;,</code><br />
+<code>    &quot;url&quot; : &quot;</code><a rel="noopener" target="_blank" href="http://merchant.com/bitcoin/getnewaddres/"><code>http://merchant.com/bitcoin/getnewaddres/</code></a><code>&quot;,</code><br />
 <code>    &quot;signedWith&quot; : &quot;1KHAL8bUjnkMRMg9yd2dNrYnJgZGH8Nj6T&quot;</code><br />
 <code>  }</code><br />
 <code>}</code></p>
@@ -495,7 +494,7 @@ etc</li>
 <code>{</code><br />
 <code>  &quot;bitcoin&quot; :</code><br />
 <code>  {</code><br />
-<code>    &quot;url&quot; : &quot;</code><a href="http://merchant.com/bitcoin/getaddres/%7BYour"><code>http://merchant.com/bitcoin/getaddres/{Your</code></a><code> customer id}&quot;,</code><br />
+<code>    &quot;url&quot; : &quot;</code><a rel="noopener" target="_blank" href="http://merchant.com/bitcoin/getaddres/%7BYour"><code>http://merchant.com/bitcoin/getaddres/{Your</code></a><code> customer id}&quot;,</code><br />
 <code>    &quot;signedWith&quot; : &quot;1KHAL8bUjnkMRMg9yd2dNrYnJgZGH8Nj6T&quot;,</code><br />
 <code>    &quot;useOnce&quot;: false</code><br />
 <code>  }</code><br />
@@ -510,7 +509,7 @@ all their needs.</p>
 <li>Specification is extensible</li>
 </ul>
 <p>New features can be added later to support uncovered cases.</p>
-<p>See the specification of <a href="http://dot-bit.org/Namespace:Identity">Namecoin
+<p>See the specification of <a rel="noopener" target="_blank" href="http://dot-bit.org/Namespace:Identity">Namecoin
 ID</a> for more informations.</p>
 <p><a href="Category:BIP" title="wikilink">E</a></p>
 
@@ -520,7 +519,7 @@ ID</a> for more informations.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

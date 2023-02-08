@@ -14,18 +14,16 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0088.mediawiki"
 +++
 
-``` 
-  BIP: 88
-  Layer: Applications
-  Title: Hierarchical Deterministic Path Templates
-  Author: Dmitry Petukhov <dp@simplexum.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0088
-  Status: Proposed
-  Type: Informational
-  Created: 2020-06-23
-  License: BSD-2-Clause
-```
+      BIP: 88
+      Layer: Applications
+      Title: Hierarchical Deterministic Path Templates
+      Author: Dmitry Petukhov <dp@simplexum.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0088
+      Status: Proposed
+      Type: Informational
+      Created: 2020-06-23
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -135,11 +133,11 @@ hardened marker: either an apostrophe (`'`) or letter `h`.
 
 Index template can be:
 
-  - An integer value from 0 to 2147483647 ("Unit index template")
-  - A single `*` character, which denotes any value from 0 to 2147483647
-    ("Wildcard index template")
-  - The `{` character, followed by a number of *index ranges* delimited
-    by commas (`,`), followed by `}` character ("Ranged index template")
+- An integer value from 0 to 2147483647 ("Unit index template")
+- A single `*` character, which denotes any value from 0 to 2147483647
+  ("Wildcard index template")
+- The `{` character, followed by a number of *index ranges* delimited by
+  commas (`,`), followed by `}` character ("Ranged index template")
 
 Implementations MAY limit the maximum number of index ranges within the
 Ranged index template.
@@ -150,23 +148,23 @@ increased by 2147483648 for the purposes of matching.
 
 Index range can be:
 
-  - An integer value from 0 to 2147483647 ("Unit range")
-  - An integer value from 0 to 2147483647, followed by the `-`
-    character, followed by another integer value from 0 to 2147483647
-    ("Non-unit range")
+- An integer value from 0 to 2147483647 ("Unit range")
+- An integer value from 0 to 2147483647, followed by the `-` character,
+  followed by another integer value from 0 to 2147483647 ("Non-unit
+  range")
 
 For Non-unit range, value on the left side of the `-` character is the
-range\_start, and the value on the right side of the `-` character is
-the range\_end.
+range_start, and the value on the right side of the `-` character is the
+range_end.
 
-For Unit range, we say that range\_start is equal to range\_end, even
+For Unit range, we say that range_start is equal to range_end, even
 though there is no start/end in the Unit range.
 
 Unit index template contains a single index range, which is the Unit
 range
 
 Wildcard index template contains a single index range, and we say that
-its range\_start is set to 0 and its range\_end is set to 2147483647
+its range_start is set to 0 and its range_end is set to 2147483647
 
 Constraints:
 
@@ -178,10 +176,10 @@ Constraints:
     be specified as Unit range.
 4.  To avoid ambiguity, an index range `0-2147483647` is not allowed,
     and MUST be specified as Wildcard index template instead
-5.  For Non-unit range, range\_end MUST be larger than range\_start.
+5.  For Non-unit range, range_end MUST be larger than range_start.
 6.  If there is more than one index range within the Ranged index
-    template, range\_start of the second and any subsequent range MUST
-    be larger than the range\_end of the preceeding range.
+    template, range_start of the second and any subsequent range MUST be
+    larger than the range_end of the preceeding range.
 7.  To avoid ambiguity, all representations of integer values larger
     than 0 MUST NOT start with character `0` (no leading zeroes
     allowed).
@@ -202,16 +200,16 @@ without any parsing.
 
 To achieve this, two extra rules are needed:
 
-  - Within Ranged index template, subsequent range MUST NOT start with
-    the value that is equal to the end of the previous range plus one.
-    Thus, `{1,2,3-5}` is not allowed, and should be specified as `{1-5}`
-    instead. This rule might make templates less convenient for frequent
-    edits, though.
+- Within Ranged index template, subsequent range MUST NOT start with the
+  value that is equal to the end of the previous range plus one. Thus,
+  `{1,2,3-5}` is not allowed, and should be specified as `{1-5}`
+  instead. This rule might make templates less convenient for frequent
+  edits, though.
 
-<!-- end list -->
+<!-- -->
 
-  - Only one type of hardened marker should be allowed (either `h` or
-    `'`).
+- Only one type of hardened marker should be allowed (either `h` or
+  `'`).
 
 Instead of requiring the second extra rule, implementations can simply
 replace one type of marker with another in the template strings before
@@ -247,7 +245,7 @@ the templates.
 
 The result of successful parsing of a valid path template can be
 represented by a list of sections, where each section is a list of index
-ranges, where index range is a tuple of (range\_start, range\_end). The
+ranges, where index range is a tuple of (range_start, range_end). The
 length of the list of sections is also referred to as the "length of the
 template".
 
@@ -299,13 +297,13 @@ implementation, and vise versa.
 
 At the moment, three implementations exist:
 
-  - FSM implementation in C:
-    <https://github.com/dgpv/bip32_template_c_implementation>
-  - FSM implementation in Python (micropython compatible):
-    <https://github.com/dgpv/bip32_template_python_implementation>
-  - non-FSM implementation in python: BIP32PathTemplate class in
-    bitcointx.core.key module of python-bitcointx library
-    (https://github.com/Simplexum/python-bitcointx)
+- FSM implementation in C:
+  <https://github.com/dgpv/bip32_template_c_implementation>
+- FSM implementation in Python (micropython compatible):
+  <https://github.com/dgpv/bip32_template_python_implementation>
+- non-FSM implementation in python: BIP32PathTemplate class in
+  bitcointx.core.key module of python-bitcointx library
+  (https://github.com/Simplexum/python-bitcointx)
 
 ## Compatibility
 

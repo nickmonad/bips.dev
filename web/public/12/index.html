@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,40 +46,39 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 12
-  Layer: Consensus (soft fork)
-  Title: OP_EVAL
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0012
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2011-10-18
-</span></code></pre><h2 id="abstract">Abstract</h2>
-<p>This BIP describes a new opcode (OP_EVAL) for the <a href="https://en.bitcoin.it/wiki/Script">Bitcoin scripting
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 12
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: OP_EVAL
+</span><span>  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0012
+</span><span>  Status: Withdrawn
+</span><span>  Type: Standards Track
+</span><span>  Created: 2011-10-18
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
+<p>This BIP describes a new opcode (OP_EVAL) for the <a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Script">Bitcoin scripting
 system</a>, and a new 'standard'
 transaction type that uses it to enables the receiver of bitcoins to
 specify the transaction type needed to re-spend them.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Enable &quot;end-to-end&quot; secure wallets and payments to fund escrow
 transactions or other complex transactions in a way that is
 backwards-compatible for old clients and miners.</p>
-<h2 id="specification">Specification</h2>
-<p>OP_EVAL will re-define the existing OP_NOP1 opcode, and will function
-as follows:</p>
+<h2 id="Specification">Specification</h2>
+<p>OP_EVAL will re-define the existing OP_NOP1 opcode, and will function as
+follows:</p>
 <ul>
-<li>When executed during transaction verification, pops the item from
-the top of the stack, deserializes it, and executes the resulting
-script.</li>
-<li>If there is no item on the top of the stack or the item is not a
-valid script then transaction validation fails.</li>
+<li>When executed during transaction verification, pops the item from the
+top of the stack, deserializes it, and executes the resulting script.</li>
+<li>If there is no item on the top of the stack or the item is not a valid
+script then transaction validation fails.</li>
 <li>If there are any OP_CODESEPARATORs in the deserialized script then
 transaction validation fails.</li>
 <li>If there are any OP_EVALs in the deserialized script they are also
 executed, but recursion is limited to a depth of 2.</li>
-<li>Transaction verification must fail if interpreting OP_EVAL as a
-no-op would cause the verification to fail.</li>
+<li>Transaction verification must fail if interpreting OP_EVAL as a no-op
+would cause the verification to fail.</li>
 </ul>
 <p>A new standard transaction type (scriptPubKey) that is relayed by
 clients and included in mined blocks is also defined:</p>
@@ -89,35 +88,34 @@ clients and included in mined blocks is also defined:</p>
 <p>Transactions that redeem standard OP_EVAL scriptPubKeys are only
 considered standard if the <em>serialized script</em> is, itself, one of the
 standard transaction types.</p>
-<h2 id="rationale">Rationale</h2>
-<p>OP_EVAL allows the receiver of bitcoins to specify how they can be
-spent when they are spent, instead of requiring the sender of the
-bitcoins to know the details of how the bitcoins may be redeemed. The
-sender only needs to know the hash of the <em>serialized script</em>, and one
-new type of bitcoin address can be used to fund arbitrarily complex
-transactions.</p>
+<h2 id="Rationale">Rationale</h2>
+<p>OP_EVAL allows the receiver of bitcoins to specify how they can be spent
+when they are spent, instead of requiring the sender of the bitcoins to
+know the details of how the bitcoins may be redeemed. The sender only
+needs to know the hash of the <em>serialized script</em>, and one new type of
+bitcoin address can be used to fund arbitrarily complex transactions.</p>
 <p>If <em>serialized script</em> is a large or complicated multi-signature script,
 then the burden of paying for it (in increased transaction fees due to
 more signature operations or transaction size) is shifted from the
 sender to the receiver.</p>
-<p>The main objection to OP_EVAL is that it adds complexity, and
-complexity is the enemy of security. Also, evaluating data as code has a
-long record of being a source of security vulnerabilties.</p>
+<p>The main objection to OP_EVAL is that it adds complexity, and complexity
+is the enemy of security. Also, evaluating data as code has a long
+record of being a source of security vulnerabilties.</p>
 <p>That same argument can be applied to the existing Bitcoin 'scripting'
 system; scriptPubKeys are transmit as data across the network and are
-then interpreted by every bitcoin implementation. OP_EVAL just moves
-the data that will be interpreted. It is debatable whether or not the
-entire idea of putting a little interpreted expression evaluation
-language at the core of Bitcoin was brilliant or stupid, but the
-existence of OP_EVAL does not make the expression language less secure.</p>
+then interpreted by every bitcoin implementation. OP_EVAL just moves the
+data that will be interpreted. It is debatable whether or not the entire
+idea of putting a little interpreted expression evaluation language at
+the core of Bitcoin was brilliant or stupid, but the existence of
+OP_EVAL does not make the expression language less secure.</p>
 <p>There is a 1-confirmation attack on old clients that interepret OP_EVAL
 as a no-op, but it is expensive and difficult in practice. The attack
 is:</p>
 <ol>
-<li>Attacker creates an OP_EVAL transaction that is valid as seen by
-old clients, but invalid for new clients.</li>
-<li>Attacker also creates a standard transaction that spends the
-OP_EVAL transaction, and pays the victim.</li>
+<li>Attacker creates an OP_EVAL transaction that is valid as seen by old
+clients, but invalid for new clients.</li>
+<li>Attacker also creates a standard transaction that spends the OP_EVAL
+transaction, and pays the victim.</li>
 <li>Attacker manages to mine a block that contains both transactions. If
 the victim accepts the 1-confirmation payment, then the attacker
 wins because both transactions will be invalidated when the rest of
@@ -127,7 +125,7 @@ the network overwrites the attacker's invalid block.</li>
 that they know will be invalidated. It is difficult because bitcoin
 businesses should not accept 1-confirmation transactions for
 higher-value transactions.</p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>Surprisingly, because OP_EVAL redefines the OP_NOP1 opcode, standard
 OP_EVAL transactions will validate with old clients and miners. They
 will check only that the <em>serialized script</em> hashes to the correct
@@ -154,15 +152,15 @@ postponed until more than 50% of hashing power supports OP_EVAL (the
 rollout will be rejected if it becomes clear that a majority of hashing
 power will not be achieved).</p>
 <p>For case (2), new clients and miners will be written to make sure that
-transactions involving OP_EVAL are valid if OP_EVAL is interpreted as
-a no-op. Example of a transaction that must fail for both old and new
+transactions involving OP_EVAL are valid if OP_EVAL is interpreted as a
+no-op. Example of a transaction that must fail for both old and new
 miners/clients:</p>
 <p><code> scriptSig:  {serialized OP_11}</code><br />
 <code> scriptPubKey:  OP_EVAL OP_11 OP_EQUAL</code></p>
-<h2 id="reference-implementation">Reference Implementation</h2>
-<p><a href="https://github.com/gavinandresen/bitcoin-git/tree/77f21f1583deb89bf3fffe80fe9b181fedb1dd60">https://github.com/gavinandresen/bitcoin-git/tree/77f21f1583deb89bf3fffe80fe9b181fedb1dd60</a></p>
-<h2 id="see-also">See Also</h2>
-<p><a href="https://bitcointalk.org/index.php?topic=46538">https://bitcointalk.org/index.php?topic=46538</a></p>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/gavinandresen/bitcoin-git/tree/77f21f1583deb89bf3fffe80fe9b181fedb1dd60">https://github.com/gavinandresen/bitcoin-git/tree/77f21f1583deb89bf3fffe80fe9b181fedb1dd60</a></p>
+<h2 id="See_Also">See Also</h2>
+<p><a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=46538">https://bitcointalk.org/index.php?topic=46538</a></p>
 <p>&quot;Bitcoin Address 01&quot; BIP</p>
 <p>M-of-N Multisignature Transactions BIP 11</p>
 
@@ -172,7 +170,7 @@ miners/clients:</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

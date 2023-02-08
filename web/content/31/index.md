@@ -14,17 +14,15 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0031.mediawiki"
 +++
 
-``` 
-  BIP: 31
-  Layer: Peer Services
-  Title: Pong message
-  Author: Mike Hearn <hearn@google.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0031
-  Status: Final
-  Type: Standards Track
-  Created: 2012-04-11
-```
+      BIP: 31
+      Layer: Peer Services
+      Title: Pong message
+      Author: Mike Hearn <hearn@google.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0031
+      Status: Final
+      Type: Standards Track
+      Created: 2012-04-11
 
 ## Abstract
 

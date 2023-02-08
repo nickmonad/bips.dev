@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,23 +46,23 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 100
-  Layer: Consensus (hard fork)
-  Title: Dynamic maximum block size by miner vote
-  Author: Jeff Garzik &lt;jgarzik@gmail.com&gt;
-          Tom Harding &lt;tomh@thinlink.com&gt;
-          Dagur Valberg Johannsson &lt;dagurval@pvv.ntnu.no&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0100
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-06-11
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 100
+</span><span>  Layer: Consensus (hard fork)
+</span><span>  Title: Dynamic maximum block size by miner vote
+</span><span>  Author: Jeff Garzik &lt;jgarzik@gmail.com&gt;
+</span><span>          Tom Harding &lt;tomh@thinlink.com&gt;
+</span><span>          Dagur Valberg Johannsson &lt;dagurval@pvv.ntnu.no&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0100
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-06-11
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>Replace the static 1M block size hard limit with a hard limit set by
 coinbase vote, conducted on the same schedule as difficulty retargeting.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Miners directly feel the effects, both positive and negative, of any
 maximum block size change imposed by their peers. Larger blocks allow
 more growth in the on-chain ecosystem, while smaller blocks reduce
@@ -82,8 +82,8 @@ rule. Excessive-block values signaled by emergent consensus blocks are
 considered in the calculation of the BIP100 block size hard limit, and
 the BIP100 calculated maximum block size is signaled as an
 excessive-block value for the benefit of all observers.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="dynamic-maximum-block-size">Dynamic Maximum Block Size</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Dynamic_Maximum_Block_Size">Dynamic Maximum Block Size</h3>
 <ol>
 <li>
 <p>Initial value of <code>hardLimit</code> is 1000000 bytes, preserving current
@@ -144,9 +144,12 @@ vote.</p>
 <p># The <code>raise value</code> is defined as the vote of the 1512th
 highest block, converted to bytes.</p>
 <ol>
-<li>If the resultant <code>raise value</code> is greater than (<code>current hardLimit</code> * 1.05) rounded down, it is set to that
-value.</li>
-<li>If the resultant <code>raise value</code> is greater than <code>current hardLimit</code>, the <code>raise value</code> becomes the <code>new hardLimit</code> and the recalculation is complete.</li>
+<li>If the resultant <code>raise value</code> is greater than
+(<code>current hardLimit</code> * 1.05) rounded down, it is set to
+that value.</li>
+<li>If the resultant <code>raise value</code> is greater than
+<code>current hardLimit</code>, the <code>raise value</code> becomes the
+<code>new hardLimit</code> and the recalculation is complete.</li>
 </ol>
 </li>
 <li>
@@ -154,28 +157,32 @@ value.</li>
 <p># The <code>lower value</code> is defined as the vote of the 1512th
 lowest block, converted to bytes.</p>
 <ol>
-<li>If the resultant <code>lower value</code> is less than (<code>current hardLimit</code> / 1.05) rounded down, it is set to that
-value.</li>
-<li>If the resultant <code>lower value</code> is less than <code>current hardLimit</code>, the <code>lower value</code> becomes the <code>new hardLimit</code> and the recalculation is complete.</li>
+<li>If the resultant <code>lower value</code> is less than
+(<code>current hardLimit</code> / 1.05) rounded down, it is set to
+that value.</li>
+<li>If the resultant <code>lower value</code> is less than
+<code>current hardLimit</code>, the <code>lower value</code> becomes the
+<code>new hardLimit</code> and the recalculation is complete.</li>
 </ol>
 </li>
 <li>
-<p>Otherwise, <code>new hardLimit</code> remains the same as <code>current hardLimit</code>.</p>
+<p>Otherwise, <code>new hardLimit</code> remains the same as
+<code>current hardLimit</code>.</p>
 </li>
 </ol>
 </li>
 </ol>
 </li>
 </ol>
-<h3 id="signature-hashing-operations-limits">Signature Hashing Operations Limits</h3>
+<h3 id="Signature_Hashing_Operations_Limits">Signature Hashing Operations Limits</h3>
 <ol>
 <li>The per-block signature hashing operations limit is scaled to
 (actual block size, fractional megabyte rounded to next higher
 megabyte) / 50.</li>
 <li>A maximum serialized transaction size of 1000000 bytes is imposed.</li>
 </ol>
-<h2 id="recommendations">Recommendations</h2>
-<h3 id="publication-of-hardlimit">Publication of <code>hardLimit</code></h3>
+<h2 id="Recommendations">Recommendations</h2>
+<h3 id="Publication_of_hardLimit">Publication of <code>hardLimit</code></h3>
 <ol>
 <li>
 <p>For the benefit of all observers, it is recommended that <code>hardLimit</code>
@@ -186,19 +193,19 @@ be published. Example: a complete coinbase string might read</p>
 coinbase string.</p>
 </li>
 </ol>
-<h2 id="deployment">Deployment</h2>
+<h2 id="Deployment">Deployment</h2>
 <p>This BIP is presumed deployed and activated as of block height 449568 by
 implementing nodes on the bitcoin mainnet. It has no effect until a
 raise value different from 1M is observed, which requires at least 1512
 of 2016 blocks to vote differently from 1M.</p>
-<h2 id="backward-compatibility">Backward compatibility</h2>
+<h2 id="Backward_compatibility">Backward compatibility</h2>
 <p>The first block larger than 1M will create a network partition, as nodes
 with a fixed 1M hard limit reject that block.</p>
-<h2 id="implementations">Implementations</h2>
-<p><a href="https://github.com/bitcoinxt/bitcoinxt/pull/188">https://github.com/bitcoinxt/bitcoinxt/pull/188</a></br>
-<a href="https://github.com/bitcoinxt/bitcoin/pull/1">https://github.com/bitcoinxt/bitcoin/pull/1</a></br>
-<a href="https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398">https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398</a></br></p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Implementations">Implementations</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoinxt/bitcoinxt/pull/188">https://github.com/bitcoinxt/bitcoinxt/pull/188</a></br>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoinxt/bitcoin/pull/1">https://github.com/bitcoinxt/bitcoin/pull/1</a></br>
+<a rel="noopener" target="_blank" href="https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398">https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398</a></br></p>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the BSD 2-clause license.</p>
 
     </div>
@@ -207,7 +214,7 @@ with a fixed 1M hard limit reject that block.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

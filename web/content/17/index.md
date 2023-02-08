@@ -14,22 +14,20 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0017.mediawiki"
 +++
 
-``` 
-  BIP: 17
-  Layer: Consensus (soft fork)
-  Title: OP_CHECKHASHVERIFY (CHV)
-  Author: Luke Dashjr <luke+bip17@dashjr.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0017
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2012-01-18
-  License: BSD-2-Clause
-```
+      BIP: 17
+      Layer: Consensus (soft fork)
+      Title: OP_CHECKHASHVERIFY (CHV)
+      Author: Luke Dashjr <luke+bip17@dashjr.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0017
+      Status: Withdrawn
+      Type: Standards Track
+      Created: 2012-01-18
+      License: BSD-2-Clause
 
 ## Abstract
 
-This BIP describes a new opcode (OP\_CHECKHASHVERIFY) for the Bitcoin
+This BIP describes a new opcode (OP_CHECKHASHVERIFY) for the Bitcoin
 scripting system, and a new 'standard' transaction type that uses it to
 enables the receiver of bitcoins to specify the transaction type needed
 to re-spend them.
@@ -50,20 +48,20 @@ enough to scan from a QR code or easily copied and pasted.
 
 ## Specification
 
-OP\_CHECKHASHVERIFY will re-define the existing OP\_NOP2 opcode, and
-will function as follows when executed:
+OP_CHECKHASHVERIFY will re-define the existing OP_NOP2 opcode, and will
+function as follows when executed:
 
-  - First, hash the end of the prior script (in the general case,
-    scriptSig; if no prior script, a null string is hashed) beginning
-    from the last evaluated OP\_CODESEPARATOR onward (or from the
-    beginning of the script, if no OP\_CODESEPARATOR was present)
-  - Then, compare this with the item on the top of the stack (if there
-    is none, the script fails immediately)
-  - If the hashes match, do nothing, proceed as if an OP\_NOP; if they
-    do not match, the script fails immediately.
-  - Note that in the case of a matched hash, the top stack item (the
-    hash being compared with) is <u>not</u> popped off the stack. This
-    is for backward compatibility.
+- First, hash the end of the prior script (in the general case,
+  scriptSig; if no prior script, a null string is hashed) beginning from
+  the last evaluated OP_CODESEPARATOR onward (or from the beginning of
+  the script, if no OP_CODESEPARATOR was present)
+- Then, compare this with the item on the top of the stack (if there is
+  none, the script fails immediately)
+- If the hashes match, do nothing, proceed as if an OP_NOP; if they do
+  not match, the script fails immediately.
+- Note that in the case of a matched hash, the top stack item (the hash
+  being compared with) is <u>not</u> popped off the stack. This is for
+  backward compatibility.
 
 This opcode reassignment shall be applied when validating transactions
 in blocks only with timestamps after February 23, 2012 (see the
@@ -82,8 +80,8 @@ This new transaction type is redeemed by a standard scriptSig:
 `   ...signatures... OP_CODESEPARATOR {script}`
 
 Transactions that redeem these pay-to-script outpoints are only
-considered standard if they contain exactly one OP\_CODESEPARATOR and
-the appended *script* is, itself, one of the other standard transaction
+considered standard if they contain exactly one OP_CODESEPARATOR and the
+appended *script* is, itself, one of the other standard transaction
 types.
 
 ## Example
@@ -146,8 +144,8 @@ this BIP.
 Avoiding a block-chain split by malicious pay-to-script transactions
 requires careful handling of one case:
 
-  - A pay-to-script-hash transaction that is invalid for new
-    clients/miners but valid for old clients/miners.
+- A pay-to-script-hash transaction that is invalid for new
+  clients/miners but valid for old clients/miners.
 
 To gracefully upgrade and ensure no long-lasting block-chain split
 occurs, more than 50% of miners must support full validation of the new
@@ -169,25 +167,25 @@ If a majority of hashing power does not support the new validation
 rules, then rollout will be postponed (or rejected if it becomes clear
 that a majority will never be achieved).
 
-OP\_NOP2 is used, so existing OP\_EVAL (BIP 12) transactions in the
-block chain can still be redeemed.
+OP_NOP2 is used, so existing OP_EVAL (BIP 12) transactions in the block
+chain can still be redeemed.
 
 ## Reference Implementation
 
 [Validation, sending, and receiving for bitcoind git
 master](https://gitorious.org/~Luke-Jr/bitcoin/luke-jr-bitcoin/commits/checkhashverify)
 
-[Validation only
-for 0.3.19+](https://gitorious.org/~Luke-Jr/bitcoin/luke-jr-bitcoin/commits/checkhashverify_backport)
+[Validation only for
+0.3.19+](https://gitorious.org/~Luke-Jr/bitcoin/luke-jr-bitcoin/commits/checkhashverify_backport)
 
 ## See Also
 
-  - The [Address format for Pay to Script Hash
-    BIP](bip-0013.mediawiki "wikilink")
-  - [M-of-N Multisignature Transactions (BIP
-    11)](bip-0011.mediawiki "wikilink")
-  - Example BIP 17 transaction chain:
-    [a](http://blockexplorer.com/tx/b8fd633e7713a43d5ac87266adc78444669b987a56b3a65fb92d58c2c4b0e84d)
-    [b](http://blockexplorer.com/tx/eb3b82c0884e3efa6d8b0be55b4915eb20be124c9766245bcc7f34fdac32bccb)
-    [c](http://blockexplorer.com/tx/055707ce7fea7b9776fdc70413f65ceec413d46344424ab01acd5138767db137)
-    [d](http://blockexplorer.com/tx/6d36bc17e947ce00bb6f12f8e7a56a1585c5a36188ffa2b05e10b4743273a74b)
+- The [Address format for Pay to Script Hash
+  BIP](/13)
+- [M-of-N Multisignature Transactions (BIP
+  11)](/11)
+- Example BIP 17 transaction chain:
+  [a](http://blockexplorer.com/tx/b8fd633e7713a43d5ac87266adc78444669b987a56b3a65fb92d58c2c4b0e84d)
+  [b](http://blockexplorer.com/tx/eb3b82c0884e3efa6d8b0be55b4915eb20be124c9766245bcc7f34fdac32bccb)
+  [c](http://blockexplorer.com/tx/055707ce7fea7b9776fdc70413f65ceec413d46344424ab01acd5138767db137)
+  [d](http://blockexplorer.com/tx/6d36bc17e947ce00bb6f12f8e7a56a1585c5a36188ffa2b05e10b4743273a74b)

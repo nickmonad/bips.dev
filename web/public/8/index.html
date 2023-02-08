@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,21 +46,21 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 8
-  Title: Version bits with lock-in by height
-  Author: Shaolin Fry &lt;shaolinfry@protonmail.ch&gt;
-          Luke Dashjr &lt;luke+bip@dashjr.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0008
-  Status: Draft
-  Type: Informational
-  Created: 2017-02-01
-  License: BSD-3-Clause
-           CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 8
+</span><span>  Title: Version bits with lock-in by height
+</span><span>  Author: Shaolin Fry &lt;shaolinfry@protonmail.ch&gt;
+</span><span>          Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0008
+</span><span>  Status: Draft
+</span><span>  Type: Informational
+</span><span>  Created: 2017-02-01
+</span><span>  License: BSD-3-Clause
+</span><span>           CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document specifies an alternative to
-<a href="https://bips.dev/8/bip-0009.mediawiki" title="wikilink">BIP9</a> that corrects for a number of
+<a href="/9">BIP9</a> that corrects for a number of
 perceived mistakes. Block heights are used for start and timeout rather
 than POSIX timestamps. It additionally introduces an activation
 parameter that can guarantee activation of backward-compatible changes
@@ -68,7 +68,7 @@ parameter that can guarantee activation of backward-compatible changes
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
 document are to be interpreted as described in RFC 2119.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>BIP9 introduced a mechanism for doing parallel soft forking deployments
 based on repurposing the block nVersion field. Activation is dependent
 on near unanimous hashrate signalling which may be impractical and
@@ -90,8 +90,8 @@ after a given time, which is non-intuitive. Since each new block must
 increase the height by one, thresholds based on block height are much
 more reliable and intuitive and can be calculated exactly for difficulty
 retarget.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="parameters">Parameters</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Parameters">Parameters</h3>
 <p>Each soft fork deployment is specified by the following per-chain
 parameters (further elaborated below):</p>
 <ol>
@@ -109,13 +109,13 @@ deployment is considered failed on all descendants of the block.</li>
 <li>The <strong>threshold</strong> specifies the minimum number of block per retarget
 period which indicate lock-in of the soft fork during the subsequent
 period.</li>
-<li>The <strong>minimum_activation_height</strong> specifies the height of the
-first block at which the soft fork is allowed to become active.</li>
+<li>The <strong>minimum_activation_height</strong> specifies the height of the first
+block at which the soft fork is allowed to become active.</li>
 <li>The <strong>lockinontimeout</strong> boolean if set to true, blocks are required
 to signal in the final period, ensuring the soft fork has locked in
 by timeoutheight.</li>
 </ol>
-<h3 id="selection-guidelines">Selection guidelines</h3>
+<h3 id="Selection_guidelines">Selection guidelines</h3>
 <p>The following guidelines are suggested for selecting these parameters
 for a soft fork:</p>
 <ol>
@@ -131,11 +131,11 @@ the same bit. The bit chosen should not overlap with active usage
 <strong>startheight</strong> should be set to a height when a majority of
 economic activity is expected to have upgraded to software including
 the activation parameters. Some allowance should be made for
-potential release delays. If <strong>minimum_activation_height</strong> is
-going to be set, then <strong>startheight</strong> can be set to be soon after
-software with parameters is expected to be released. This shifts the
-time for upgrading from before signaling begins to during the
-LOCKED_IN state.</li>
+potential release delays. If <strong>minimum_activation_height</strong> is going
+to be set, then <strong>startheight</strong> can be set to be soon after software
+with parameters is expected to be released. This shifts the time for
+upgrading from before signaling begins to during the LOCKED_IN
+state.</li>
 <li><strong>timeoutheight</strong> should be set to a block height when it is
 considered reasonable to expect the entire economy to have upgraded
 by, probably at least 1 year, or 52416 blocks (26 retarget
@@ -164,7 +164,7 @@ pause in between to detect buggy software.</p>
 must be an exact multiple of 2016 (ie, at a retarget boundary), and
 <strong>timeoutheight</strong> must be at least 4032 blocks (2 retarget intervals)
 after <strong>startheight</strong>.</p>
-<h3 id="states">States</h3>
+<h3 id="States">States</h3>
 <p>With each block and soft fork, we associate a deployment state. The
 possible states are:</p>
 <ol>
@@ -177,13 +177,13 @@ LOCKED_IN was not reached and <strong>lockinontimeout</strong> is true.</li>
 <li><strong>LOCKED_IN</strong> for at least one retarget period after the first
 retarget period with STARTED (or MUST_SIGNAL) blocks of which at
 least threshold have the associated bit set in nVersion. A soft fork
-remains in LOCKED_IN until at least <strong>minimum_activation_height</strong>
-is reached.</li>
+remains in LOCKED_IN until at least <strong>minimum_activation_height</strong> is
+reached.</li>
 <li><strong>ACTIVE</strong> for all blocks after the LOCKED_IN state.</li>
 <li><strong>FAILED</strong> for all blocks after the timeoutheight if LOCKED_IN is
 not reached.</li>
 </ol>
-<h3 id="bit-flags">Bit flags</h3>
+<h3 id="Bit_flags">Bit flags</h3>
 <p>The nVersion block header field is to be interpreted as a 32-bit
 little-endian integer (as present), and bits are selected within this
 integer as values (1 &lt;&lt; N) where N is the bit number.</p>
@@ -200,13 +200,13 @@ block nVersion does not have top bits 001, it is treated as if all bits
 are 0 for the purposes of deployments.</p>
 <p>Miners should continue setting the bit in LOCKED_IN phase so uptake is
 visible, though this has no effect on consensus rules.</p>
-<h3 id="new-consensus-rules">New consensus rules</h3>
+<h3 id="New_consensus_rules">New consensus rules</h3>
 <p>The new consensus rules for each soft fork are enforced for each block
 that has ACTIVE state.</p>
 <p>During the MUST_SIGNAL phase, if <strong>(2016 - threshold)</strong> blocks in the
 retarget period have already failed to signal, any further blocks that
 fail to signal are invalid.</p>
-<h3 id="state-transitions">State transitions</h3>
+<h3 id="State_transitions">State transitions</h3>
 <p><img src="bip-0008/states.png" align="middle"></img></p>
 <p>Note that when <strong>lockinontimeout</strong> is true, the LOCKED_IN state will be
 reached no later than at a height of <strong>timeoutheight</strong>. Regardless of
@@ -288,9 +288,9 @@ completely determined by its ancestry before the current retarget period
 (block.height % 2016)), it is possible to implement the mechanism above
 efficiently and safely by caching the resulting state of every
 multiple-of-2016 block, indexed by its parent.</p>
-<h3 id="mandatory-signalling">Mandatory signalling</h3>
-<p>Blocks received while in the MUST_SIGNAL phase must be checked to
-ensure that they signal as required. For example:</p>
+<h3 id="Mandatory_signalling">Mandatory signalling</h3>
+<p>Blocks received while in the MUST_SIGNAL phase must be checked to ensure
+that they signal as required. For example:</p>
 <p><code>   if (GetStateForBlock(block) == MUST_SIGNAL) {</code><br />
 <code>       int nonsignal = 0;</code><br />
 <code>       walk = block;</code><br />
@@ -325,7 +325,7 @@ implementations set <em>lockinontimeout</em> to true should either use
 parameters that do not risk there being a higher work alternative chain,
 or specify a mechanism for implementations that support the deployment
 to preferentially peer with each other.</p>
-<h3 id="warning-mechanism">Warning mechanism</h3>
+<h3 id="Warning_mechanism">Warning mechanism</h3>
 <p>To support upgrade warnings, an extra &quot;unknown upgrade&quot; is tracked,
 using the &quot;implicit bit&quot; mask = (block.nVersion &amp; ~expectedVersion) !=
 0. Mask will be non-zero whenever an unexpected bit is set in nVersion.
@@ -333,7 +333,7 @@ Whenever LOCKED_IN for the unknown upgrade is detected, the software
 should warn loudly about the upcoming soft fork. It should warn even
 more loudly after the next retarget period (when the unknown upgrade is
 in the ACTIVE state).</p>
-<h3 id="getblocktemplate-changes">getblocktemplate changes</h3>
+<h3 id="getblocktemplate_changes">getblocktemplate changes</h3>
 <p>The template request Object is extended to include a new item:</p>
 <table><thead><tr><th>template request</th></tr></thead><tbody>
 <tr><td>Key</td></tr>
@@ -356,8 +356,8 @@ included as a bit in &quot;vbrequired&quot;. Servers MUST set bits in &quot;vbre
 for deployments in MUST_SIGNAL state, to ensure blocks produced are
 valid.</p>
 <p>Softfork deployment names listed in &quot;rules&quot; or as keys in &quot;vbavailable&quot;
-may be prefixed by a '!' character. Without this prefix, GBT clients
-may assume the rule will not impact usage of the template as-is; typical
+may be prefixed by a '!' character. Without this prefix, GBT clients may
+assume the rule will not impact usage of the template as-is; typical
 examples of this would be when previously valid transactions cease to be
 valid, such as BIPs 16, 65, 66, 68, 112, and 113. If a client does not
 understand a rule without the prefix, it may use it unmodified for
@@ -368,28 +368,28 @@ of this would be BIP 34 (because it modifies coinbase construction) and
 generation transaction). A client that does not understand a rule
 prefixed by '!' must not attempt to process the template, and must not
 attempt to use it for mining even unmodified.</p>
-<h3 id="reference-implementation">Reference implementation</h3>
-<p><a href="https://github.com/bitcoin/bitcoin/compare/master">https://github.com/bitcoin/bitcoin/compare/master</a>...luke-jr:bip8</p>
-<h2 id="contrasted-with-bip-9">Contrasted with BIP 9</h2>
+<h3 id="Reference_implementation">Reference implementation</h3>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/compare/master">https://github.com/bitcoin/bitcoin/compare/master</a>...luke-jr:bip8</p>
+<h2 id="Contrasted_with_BIP_9">Contrasted with BIP 9</h2>
 <ul>
 <li>The <strong>lockinontimeout</strong> flag is added, providing a way to guarantee
 transition to LOCKED_IN.</li>
-<li>Block heights are used for the deployment monotonic clock, rather
-than median-time-past.</li>
+<li>Block heights are used for the deployment monotonic clock, rather than
+median-time-past.</li>
 </ul>
-<h2 id="backwards-compatibility">Backwards compatibility</h2>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>BIP8 and BIP9 deployments should not share concurrent active deployment
 bits. Nodes that only implement BIP9 will not activate a BIP8 soft fork
 if hashpower threshold is not reached by <strong>timeoutheight</strong>, however,
 those nodes will still accept the blocks generated by activated nodes.</p>
-<h2 id="deployments">Deployments</h2>
+<h2 id="Deployments">Deployments</h2>
 <p>A living list of deployment proposals can be found
 <a href="bip-0008/assignments.mediawiki" title="wikilink">here</a>.</p>
-<h2 id="references">References</h2>
-<p><a href="https://bips.dev/8/bip-0009.mediawiki" title="wikilink">BIP9</a></p>
-<p><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-February/013643.html">Mailing list
+<h2 id="References">References</h2>
+<p><a href="/9">BIP9</a></p>
+<p><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-February/013643.html">Mailing list
 discussion</a></p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0
 1.0 Universal.</p>
 
@@ -399,7 +399,7 @@ discussion</a></p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

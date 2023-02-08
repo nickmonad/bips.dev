@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,81 +46,67 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 99
-  Title: Motivation and deployment of consensus rule changes ([soft/hard]forks)
-  Author: Jorge Timón &lt;jtimon@jtimon.cc&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0099
-  Status: Rejected
-  Type: Informational
-  Created: 2015-06-20
-  License: PD
-  Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008936.html
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 99
+</span><span>  Title: Motivation and deployment of consensus rule changes ([soft/hard]forks)
+</span><span>  Author: Jorge Timón &lt;jtimon@jtimon.cc&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0099
+</span><span>  Status: Rejected
+</span><span>  Type: Informational
+</span><span>  Created: 2015-06-20
+</span><span>  License: PD
+</span><span>  Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008936.html
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP attempts to create a taxonomy of the different types of
 consensus forks and proposes a deployment mechanism for each of them.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The security assumptions of p2p consensus-based systems like Bitcoin are
 not always well-understood, and the best upgrade mechanisms to the
 consensus validation rules may vary depending on the type of change
 being deployed. Discussing such changes without a uniform view on the
 deployment paths often leads to misunderstandings and unnecessarily
 delays the deployment of changes.</p>
-<h2 id="definitions">Definitions</h2>
-<ul>
-<li>Software fork<br />
+<h2 id="Definitions">Definitions</h2>
+<p>Software fork<br />
 A copy of an existing project. In free software, this can be done
-without the permission of the original project's maintainers.</li>
-</ul>
-<!-- end list -->
-<ul>
-<li>Consensus fork<br />
-A divergence in the implementation of the verification consensus
-rules can impede the expected eventual convergence of the network in
-a single chain that has the most proof of work and also satisfies
-the rules. This can be intentional or be caused by a bug in
-consensus validation reimplementations.</li>
-</ul>
-<!-- end list -->
-<ul>
-<li>Softfork<br />
-A consensus fork wherein everything that was previously invalid
-remains invalid while blocks that would have previously considered
-valid become invalid. A hashrate majority of miners can impose the
-new rules. They have some deployment advantages like backward
-compatibility.</li>
-</ul>
-<!-- end list -->
-<ul>
-<li>Hardfork<br />
-A consensus fork that makes previously invalid blocks valid.
-Hardforks require all users to upgrade.</li>
-</ul>
-<!-- end list -->
-<ul>
-<li>Libconsensus<br />
-a theoretical piece of software that contains the specifications
-that define the validity of a block for a given state and chain
-parameters (ie it may act differently on, for example, regtest).</li>
-</ul>
-<!-- end list -->
-<ul>
-<li>Libbitcoinconsensus<br />
+without the permission of the original project's maintainers.</p>
+<!-- -->
+<p>Consensus fork<br />
+A divergence in the implementation of the verification consensus rules
+can impede the expected eventual convergence of the network in a single
+chain that has the most proof of work and also satisfies the rules. This
+can be intentional or be caused by a bug in consensus validation
+reimplementations.</p>
+<!-- -->
+<p>Softfork<br />
+A consensus fork wherein everything that was previously invalid remains
+invalid while blocks that would have previously considered valid become
+invalid. A hashrate majority of miners can impose the new rules. They
+have some deployment advantages like backward compatibility.</p>
+<!-- -->
+<p>Hardfork<br />
+A consensus fork that makes previously invalid blocks valid. Hardforks
+require all users to upgrade.</p>
+<!-- -->
+<p>Libconsensus<br />
+a theoretical piece of software that contains the specifications that
+define the validity of a block for a given state and chain parameters
+(ie it may act differently on, for example, regtest).</p>
+<!-- -->
+<p>Libbitcoinconsensus<br />
 the existing implementation is a library that is compiled by default
 with Bitcoin Core master and exposes a single C function named
-bitcoinconsensus_verify_script(). Although it has a deterministic
-build and implements the most complex rules (most of the
-cryptography, which is itself heavily based on libsecp256k1 after
-#REPLACE_libsecp256k1_PR), it is still not a complete
-specification of the consensus rules. Since libconsensus doesn't
-manage the current state but only the validation of the next block
-given that state, it is known that this long effort of encapsulation
-and decoupling will eventually finish, and that the person who moves
-the last line</li>
-</ul>
-<h2 id="taxonomy-of-consensus-forks">Taxonomy of consensus forks</h2>
-<h3 id="accidental-consensus-fork">Accidental consensus fork</h3>
+bitcoinconsensus_verify_script(). Although it has a deterministic build
+and implements the most complex rules (most of the cryptography, which
+is itself heavily based on libsecp256k1 after
+#REPLACE_libsecp256k1_PR), it is still not a complete specification of
+the consensus rules. Since libconsensus doesn't manage the current state
+but only the validation of the next block given that state, it is known
+that this long effort of encapsulation and decoupling will eventually
+finish, and that the person who moves the last line</p>
+<h2 id="Taxonomy_of_consensus_forks">Taxonomy of consensus forks</h2>
+<h3 id="Accidental_consensus_fork">Accidental consensus fork</h3>
 <p>Software forks are very different in nature from consensus rules forks.
 No software maintainer has special powers over consensus rules changes.
 There's many good reasons (experimentation, lack of features,
@@ -148,7 +134,7 @@ independently changing their consensus rules: they can always fork the
 libbitcoinconsensus project (once it is in a separate repository).</p>
 <p>Hopefully libbitcoinconsensus will remove this type of consensus fork
 which - being accidental - obviously doesn't need a deployment plan.</p>
-<h4 id="11-12-march-2013-chain-fork">11/12 March 2013 Chain Fork</h4>
+<h4 id="11/12_March_2013_Chain_Fork">11/12 March 2013 Chain Fork</h4>
 <p>There is a precedent of an accidental consensus fork at height 225430.
 Without entering into much detail (see [2]), the situation was
 different from what's being described from the alternative
@@ -190,7 +176,7 @@ of one but the first one deployed practically for free. The practical
 result would have been identical and only the definitions change. This
 means discussing something that went uncontroversially well further is
 &quot;philosophical bike-shed&quot; (TM).</p>
-<h3 id="unilateral-softforks">Unilateral softforks</h3>
+<h3 id="Unilateral_softforks">Unilateral softforks</h3>
 <p>If it is in their best interest of miners to softfork it should be
 assumed that they may likely enforce it. In some cases, even against the
 will of a super-majority of users. This is practically an attack on the
@@ -198,7 +184,7 @@ network and the only solution is to carefully design the incentives so
 that the case is simply impossible. If that fails, miners should still
 consider the risk of motivating a schism hardfork before attempting such
 a consensus fork. A deployment plan for this case is also unnecessary.</p>
-<h3 id="schism-hardforks">Schism hardforks</h3>
+<h3 id="Schism_hardforks">Schism hardforks</h3>
 <p>Fundamental disagreements and controversies are part of social systems,
 like the one defined as the human participants in the Bitcoin network.
 Without judging the motivation of the rule discrepancies or what rules
@@ -229,7 +215,7 @@ healthy decentralization-wise that many independent software projects
 are ready to deploy a schism hardfork.</p>
 <p>In all of the following examples there's clearly a confrontation that is
 being resolved using an intentional consensus hardfork.</p>
-<h4 id="asic-reset-hardfork">ASIC-reset hardfork</h4>
+<h4 id="ASIC-reset_hardfork">ASIC-reset hardfork</h4>
 <p>Imagine ASIC production has been consolidated to a single company and
 distribution is simply not happening: the company is keeping them to
 mine itself. For that or another reason, a single entity controls 40%+
@@ -243,7 +229,7 @@ opposed to what the &quot;ASIC-hard&quot; proponents would want), but that's
 another story...]</p>
 <p>Since in this case the confrontation is clearly against the current
 miners any notion of &quot;miners' voting&quot; is utterly irrelevant.</p>
-<h4 id="anti-block-creator-hardfork">Anti-Block-creator hardfork</h4>
+<h4 id="Anti-Block-creator_hardfork">Anti-Block-creator hardfork</h4>
 <p>There's less extreme cases where changing the pow function would not be
 necessary. For example, let's imagine a bright future where commoditized
 ASICs are running in millions home-heaters all over the world, but the
@@ -259,7 +245,7 @@ would probably be against the fork and, again, their voting is
 irrelevant.</p>
 <p>Like in the previous example, miners are expected to oppose and they
 have to be ignored.</p>
-<h4 id="anti-cabal-hardfork">Anti-cabal hardfork</h4>
+<h4 id="Anti-cabal_hardfork">Anti-cabal hardfork</h4>
 <p>Let's imagine BIP66 had a crypto backdoor that nobody noticed and allows
 an evil developer cabal to steal everyone's coins. The users and
 non-evil developers could join, fork libconsensus and use the forked
@@ -269,7 +255,7 @@ part of the cabal? In the unlikely event that most miners are part of
 such an evil cabal, changing the pow function may be required. In other
 cases, mining &quot;vote&quot; doesn't have much value either since this kind of
 hardfork would not qualify as uncontroversial anyway.</p>
-<h3 id="uncontroversial-consensus-upgrades">Uncontroversial consensus upgrades</h3>
+<h3 id="Uncontroversial_consensus_upgrades">Uncontroversial consensus upgrades</h3>
 <p>&quot;Uncontroversial&quot; is something tough to define in this context. What if
 a single user decides he won't upgrade no matter what and he doesn't
 even attempt to explain his decision? Obviously, such a user should be
@@ -277,7 +263,7 @@ just ignored. But what if the circumstances are slightly different? What
 if they're 2, 10 users? where's the line. It is possible that we can
 never have a better definition than &quot;I know it when I see it&quot; [citation
 needed].</p>
-<h4 id="uncontroversial-softforks">Uncontroversial softforks</h4>
+<h4 id="Uncontroversial_softforks">Uncontroversial softforks</h4>
 <p>If a majority of miners adopts a softfork, users will follow that chain,
 even without understanding the new rules. For them is like if blocks are
 created in a certain way or certain valid transactions are being
@@ -306,7 +292,7 @@ changes to be deployed in parallel, the rejection of a concrete softfork
 without getting locked for the deployment of the next one, and also a
 more efficient use of the version field in block headers [3]. BIP65 is
 expected to be deployed with the improved mechanism.</p>
-<h4 id="uncontroversial-hardforks">Uncontroversial hardforks</h4>
+<h4 id="Uncontroversial_hardforks">Uncontroversial hardforks</h4>
 <p>Some consensus changes require all participants to upgrade their
 software before the new rules can be safely activated or they will face
 serious risk of following the wrong chain and being defrauded. Even if
@@ -322,7 +308,7 @@ the softfork one. Probably 100% is too strict, since it would allow a
 relatively small miner to attack the network and block a consensus
 upgrade. Something between 99% and 95% is probably a sensible choice for
 this parameter.</p>
-<h4 id="uncontroversial-emergency-hardforks">Uncontroversial emergency hardforks</h4>
+<h4 id="Uncontroversial_emergency_hardforks">Uncontroversial emergency hardforks</h4>
 <p>Emergency forks may not have time to consult miners and have to be
 deployed simply by choosing a block height not so far in the future.</p>
 <p>But emergency forks could be prepared ahead of time. For example, an
@@ -335,7 +321,7 @@ required, and both intermediary and new versions would be prepared for
 it (which would make deployment much easier). Other related consensus
 changes could be deployed in the meantime (say, quadrupling the block
 size) making the emergency softfork unnecessary.</p>
-<h2 id="code">Code</h2>
+<h2 id="Code">Code</h2>
 <p>This BIP is complemented with a concrete code proposal[4] for an
 uncontroversial hardfork which acts as a precedent and removes the
 perception that hardforks are impossible in Bitcoin. The deployment of
@@ -356,23 +342,23 @@ point when this matters to bitcoin, we would be already in serious
 trouble&quot; were used against it. This shouldn't be seen as a disadvantage
 in this context, since it means we can safely activate the fix very far
 away in the future (say, 4 years worth of blocks).</p>
-<h2 id="footnotes">Footnotes</h2>
-<p>[1] <a href="https://en.wikipedia.org/wiki/Schism">https://en.wikipedia.org/wiki/Schism</a></p>
-<p>[2] <a href="https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki</a></p>
+<h2 id="Footnotes">Footnotes</h2>
+<p>[1] <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Schism">https://en.wikipedia.org/wiki/Schism</a></p>
+<p>[2] <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki</a></p>
 <p>[non_proportional_inflatacoin_fork] TODO missing link</p>
-<p>[spinoffs] <a href="https://bitcointalk.org/index.php?topic=563972.0">https://bitcointalk.org/index.php?topic=563972.0</a></p>
-<p>[3] <a href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki</a></p>
+<p>[spinoffs] <a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=563972.0">https://bitcointalk.org/index.php?topic=563972.0</a></p>
+<p>[3] <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki</a></p>
 <p>[4]
-<a href="https://github.com/bitcoin/bitcoin/compare/0.11">https://github.com/bitcoin/bitcoin/compare/0.11</a>...jtimon:hardfork-timewarp-0.11</p>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/compare/0.11">https://github.com/bitcoin/bitcoin/compare/0.11</a>...jtimon:hardfork-timewarp-0.11</p>
 <p>[5] Original references:
-<a href="https://bitcointalk.org/index.php?topic=114751.0">https://bitcointalk.org/index.php?topic=114751.0</a>
-<a href="https://bitcointalk.org/index.php?topic=43692.msg521772#msg521772">https://bitcointalk.org/index.php?topic=43692.msg521772#msg521772</a>
+<a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=114751.0">https://bitcointalk.org/index.php?topic=114751.0</a>
+<a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=43692.msg521772#msg521772">https://bitcointalk.org/index.php?topic=43692.msg521772#msg521772</a>
 Rebased patch:
-<a href="https://github.com/freicoin/freicoin/commit/beb2fa54745180d755949470466cbffd1cd6ff14">https://github.com/freicoin/freicoin/commit/beb2fa54745180d755949470466cbffd1cd6ff14</a></p>
-<h2 id="attribution">Attribution</h2>
+<a rel="noopener" target="_blank" href="https://github.com/freicoin/freicoin/commit/beb2fa54745180d755949470466cbffd1cd6ff14">https://github.com/freicoin/freicoin/commit/beb2fa54745180d755949470466cbffd1cd6ff14</a></p>
+<h2 id="Attribution">Attribution</h2>
 <p>Incorporated corrections and suggestions from: Andy Chase, Bryan Bishop,
 Btcdrak, Gavin Andresen, Gregory Sanders, Luke Dashjr, Marco Falke.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -381,7 +367,7 @@ Btcdrak, Gavin Andresen, Gregory Sanders, Luke Dashjr, Marco Falke.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

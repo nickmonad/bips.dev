@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,21 +46,21 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 83
-  Layer: Applications
-  Title: Dynamic Hierarchical Deterministic Key Trees
-  Author: Eric Lombrozo &lt;eric@ciphrex.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0083
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-11-16
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 83
+</span><span>  Layer: Applications
+</span><span>  Title: Dynamic Hierarchical Deterministic Key Trees
+</span><span>  Author: Eric Lombrozo &lt;eric@ciphrex.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0083
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-11-16
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP defines a scheme for key derivation that allows for dynamic
 creation of key hierarchies based on the algorithm described in BIP32.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Several proposals have been made to try to standardize a structure for
 hierarchical deterministic wallets for the sake of interoperability
 (reference BIP32, BIP44, BIP45). However, all proposals to date have
@@ -71,7 +71,7 @@ distinct structures.</p>
 <p>Instead of attempting to impose a specific structure upfront, this BIP
 proposes that we design the derivation in such a way that we can
 continue extending hierarchies arbitrarily and indefinitely.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>BIP32 provides a hierarchical derivation scheme where every node in the
 tree can be either used to derive child nodes or used as a signing key
 for ECDSA. This means that as soon as we choose to use a node as a
@@ -85,8 +85,8 @@ used for signing keys, we've lost the ability to nest deeper levels into
 the tree.</p>
 <p>At every level of the hierarchy, we reserve the child with index 0 to
 allow further nesting, and for signing key parent nodes use child
-indices 1 to MAX_INDEX (2<sup>31</sup> - 1) for signing keys. We can
-use either hardened or nonhardened derivation.</p>
+indices 1 to MAX_INDEX (2<sup>31</sup> - 1) for signing keys. We can use
+either hardened or nonhardened derivation.</p>
 <p>Let p denote a specific signing key parent node and k be an index
 greater than 0. The children signing keys are then:</p>
 <p>p / k</p>
@@ -96,11 +96,11 @@ greater than 0. The children signing keys are then:</p>
 <p>with n ≥ 0.</p>
 <p>Each of these nodes can now contain signing key children of their own,
 and again we reserve index 0 to allow deeper nesting.</p>
-<h2 id="notation">Notation</h2>
+<h2 id="Notation">Notation</h2>
 <p>We propose the following shorthand for writing nested node derivations:</p>
 <p>p // n instead of p / 0 / n</p>
 <p>p //' n instead of p / 0' / n</p>
-<h2 id="mappings">Mappings</h2>
+<h2 id="Mappings">Mappings</h2>
 <p>Rather than specifying upfront which path is to be used for a specific
 purpose (i.e. external invoicing vs. internal change), different
 applications can specify arbitrary parent nodes and derivation paths.
@@ -122,8 +122,8 @@ MAX_INDEX (2<sup>31</sup> - 1) for this purpose. However, we believe
 doing so introduces more ideosyncracies into the semantics and will
 present a problem if we ever decide to extend the scheme to use indices
 larger than 31 bits.</p>
-<h2 id="use-cases">Use Cases</h2>
-<h3 id="account-hierarchies">Account Hierarchies</h3>
+<h2 id="Use_Cases">Use Cases</h2>
+<h3 id="Account_Hierarchies">Account Hierarchies</h3>
 <p>For all that follows, we assume that key indices k &gt; 0 and parent node
 indices n ≥ 0.</p>
 <p>From a master seed m, we can construct a default account using the
@@ -136,7 +136,7 @@ following derivations for nonhardened signing keys:</p>
 <p>a<sub>n</sub> / 1 / k (for change/internal outputs)</p>
 <p>a<sub>n</sub> / 2 / k (for invoice/external outputs)</p>
 <p>We can continue creating subaccounts indefinitely using this scheme.</p>
-<h3 id="bidirectional-payment-channels">Bidirectional Payment Channels</h3>
+<h3 id="Bidirectional_Payment_Channels">Bidirectional Payment Channels</h3>
 <p>In order to create a bidirectional payment channel, it is necessary that
 previous commitments be revokable. In order to revoke previous
 commitments, each party reveals a secret to the other that would allow
@@ -145,14 +145,14 @@ commitment is inserted into the blockchain.</p>
 <p>By allowing for arbitrary nesting of sublevels, we can construct
 decision trees of arbitrary depth and revoke an entire branch by
 revealing a parent node used to derive all the children.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <ul>
-<li><a href="https://bips.dev/83/bip-0032.mediawiki" title="wikilink">BIP32 - Hierarchical Deterministic
+<li><a href="/32">BIP32 - Hierarchical Deterministic
 Wallets</a></li>
-<li><a href="https://lightning.network/lightning-network-paper.pdf" title="wikilink">Lightning Network
+<li><a rel="noopener" target="_blank" title="wikilink" href="https://lightning.network/lightning-network-paper.pdf">Lightning Network
 Whitepaper</a></li>
 </ul>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -161,7 +161,7 @@ Whitepaper</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

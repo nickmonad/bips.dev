@@ -14,20 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0300.mediawiki"
 +++
 
-``` 
-  BIP: 300
-  Layer: Consensus (soft fork)
-  Title: Hashrate Escrows (Consensus layer)
-  Author: Paul Sztorc <truthcoin@gmail.com>
-          CryptAxe <cryptaxe@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0300
-  Status: Draft
-  Type: Standards Track
-  Created: 2017-08-14
-  License: BSD-2-Clause
-  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-May/014364.html
-```
+      BIP: 300
+      Layer: Consensus (soft fork)
+      Title: Hashrate Escrows (Consensus layer)
+      Author: Paul Sztorc <truthcoin@gmail.com>
+              CryptAxe <cryptaxe@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0300
+      Status: Draft
+      Type: Standards Track
+      Created: 2017-08-14
+      License: BSD-2-Clause
+      Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-May/014364.html
 
 ## Abstract
 
@@ -44,8 +42,8 @@ See [this site](http://www.drivechain.info/) for more information.
 
 ## Motivation
 
-As Reid Hoffman [wrote
-in 2014](https://blockstream.com/2015/01/13/en-reid-hoffman-on-the-future-of-the-bitcoin-ecosystem/):
+As Reid Hoffman [wrote in
+2014](https://blockstream.com/2015/01/13/en-reid-hoffman-on-the-future-of-the-bitcoin-ecosystem/):
 "Sidechains allow developers to add features and functionality to the
 Bitcoin universe without actually modifying the Bitcoin Core
 code...Consequently, innovation can occur faster, in more flexible and
@@ -82,19 +80,19 @@ harmful changes.
 Bip300 allows for six new blockchain messages (these have consensus
 significance):
 
-  - M1. "Propose New Sidechain"
-  - M2. "ACK Proposal"
-  - M3. "Propose Bundle"
-  - M4. "ACK Bundle"
-  - M5. Deposit -- a transfer of BTC from-main-to-side
-  - M6. Withdrawal -- a transfer of BTC from-side-to-main
+- M1. "Propose New Sidechain"
+- M2. "ACK Proposal"
+- M3. "Propose Bundle"
+- M4. "ACK Bundle"
+- M5. Deposit -- a transfer of BTC from-main-to-side
+- M6. Withdrawal -- a transfer of BTC from-side-to-main
 
 Nodes organize those messages into two caches:
 
-  - D1. "The Sidechain List", which tracks the 256 Hashrate Escrows
-    (Escrows are slots that a sidechain can live in).
-  - D2. "The Withdrawal List", which tracks the withdrawal-Bundles
-    (coins leaving a Sidechain).
+- D1. "The Sidechain List", which tracks the 256 Hashrate Escrows
+  (Escrows are slots that a sidechain can live in).
+- D2. "The Withdrawal List", which tracks the withdrawal-Bundles (coins
+  leaving a Sidechain).
 
 #### D1 (The Sidechain List)
 
@@ -114,7 +112,8 @@ D1 is a list of active sidechains. D1 is updated via M1 and M2.
 <td><p>1</p></td>
 <td><p>Escrow Number</p></td>
 <td><p>uint8_t</p></td>
-<td><p>The escrow's ID number. Used to uniquely refer to each sidechain.</p></td>
+<td><p>The escrow's ID number. Used to uniquely refer to each
+sidechain.</p></td>
 </tr>
 <tr class="even">
 <td><p>2</p></td>
@@ -140,7 +139,8 @@ D1 is a list of active sidechains. D1 is updated via M1 and M2.
 </p></td>
 <td><p>ScriptPubKey</p></td>
 <td><p>CScript</p></td>
-<td><p>Where the sidechain coins go. This always stays the same, even though the CTIP (UTXO) containing the coins is always changing.</p></td>
+<td><p>Where the sidechain coins go. This always stays the same, even
+though the CTIP (UTXO) containing the coins is always changing.</p></td>
 </tr>
 <tr class="even">
 <td><p>6</p></td>
@@ -158,13 +158,17 @@ D1 is a list of active sidechains. D1 is updated via M1 and M2.
 <td><p>8</p></td>
 <td><p>Hash1 - tarball hash</p></td>
 <td><p>uint256</p></td>
-<td><p>Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</p></td>
+<td><p>Intended as the sha256 hash of the tar.gz of the canonical
+sidechain software. (This is not enforced anywhere by Bip300, and is for
+human purposes only.)</p></td>
 </tr>
 <tr class="odd">
 <td><p>9</p></td>
 <td><p>Hash2 - git commit hash</p></td>
 <td><p>uint160</p></td>
-<td><p>Intended as the git commit hash of the canonical sidechain node software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</p></td>
+<td><p>Intended as the git commit hash of the canonical sidechain node
+software. (This is not enforced anywhere by Bip300, and is for human
+purposes only.)</p></td>
 </tr>
 <tr class="even">
 <td><p>10</p></td>
@@ -177,13 +181,16 @@ D1 is a list of active sidechains. D1 is updated via M1 and M2.
 <td><p>11</p></td>
 <td><p>"CTIP" -- Part 1 "TxID"</p></td>
 <td><p>uint256</p></td>
-<td><p>The CTIP, or "Critical (TxID, Index) Pair" is a variable for keeping track of where the sidechain's money is (ie, which member of the UTXO set).</p></td>
+<td><p>The CTIP, or "Critical (TxID, Index) Pair" is a variable for
+keeping track of where the sidechain's money is (ie, which member of the
+UTXO set).</p></td>
 </tr>
 <tr class="even">
 <td><p>12</p></td>
 <td><p>"CTIP" -- Part 2 "Index"</p></td>
 <td><p>int32_t</p></td>
-<td><p>Of the CTIP, the second element of the pair: the Index. See #11 above.</p></td>
+<td><p>Of the CTIP, the second element of the pair: the Index. See #11
+above.</p></td>
 </tr>
 </tbody>
 </table>
@@ -210,12 +217,12 @@ principles:
 7.  If a Bundle cannot possibly succeed ( 13500 - "ACKs" \> "Blocks
     Remaining" ), it is removed immediately.
 
-| Field No. | Label                  | Type      | Description / Purpose                                                                                                                                                                                  |
-| --------- | ---------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1         | Sidechain Number       | uint8\_t  | Links the withdrawal-request to a specific hashrate escrow.                                                                                                                                            |
-| 2         | Bundle Hash            | uint256   | A withdrawal attempt. Specifically, it is a "blinded transaction id" (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain. |
-| 3         | ACKs (Work Score)      | uint16\_t | The current ACK-counter, which is the total number of ACKs (the PoW that has been used to validate the Bundle).                                                                                        |
-| 4         | Blocks Remaining (Age) | uint16\_t | The number of blocks which this Bundle has remaining to accumulate ACKs                                                                                                                                |
+| Field No. | Label                  | Type     | Description / Purpose                                                                                                                                                                                  |
+|-----------|------------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1         | Sidechain Number       | uint8_t  | Links the withdrawal-request to a specific hashrate escrow.                                                                                                                                            |
+| 2         | Bundle Hash            | uint256  | A withdrawal attempt. Specifically, it is a "blinded transaction id" (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain. |
+| 3         | ACKs (Work Score)      | uint16_t | The current ACK-counter, which is the total number of ACKs (the PoW that has been used to validate the Bundle).                                                                                        |
+| 4         | Blocks Remaining (Age) | uint16_t | The number of blocks which this Bundle has remaining to accumulate ACKs                                                                                                                                |
 
 ### The Six New Bip300 Messages
 
@@ -294,7 +301,7 @@ not the M6 itself (nor any sidechain data, of course).
 A bundle either pays all its withdrawals out (via M6), or else it fails
 (and pays nothing out).
 
-\===== Bundle Hash = Blinded TxID of M6 =====
+===== Bundle Hash = Blinded TxID of M6 =====
 
 The Bundle hash is static as it is being ACKed. Unfortunately, the M6
 TxID will be constantly changing -- as users deposit to the sidechain,

@@ -27,8 +27,13 @@ move_static() {
 export -f bip_number
 export -f move_static
 
-find bips -type f -name 'bip*.mediawiki' -maxdepth 1 \
+find bips -maxdepth 1 -type f -name 'bip*.mediawiki' \
     | cargo run --release
 
-find bips -type d -name 'bip-*' -maxdepth 1 \
+find bips -maxdepth 1 -type d -name 'bip-*' \
     | xargs -I{} bash -c 'move_static "{}"'
+
+# replace every bip.mediawiki link with the absolute path equivalent
+# stored in a `.md.rg` file
+find web/content -type f -name 'index.md' \
+    | xargs -I{} bash -c "rg --passthru '\(bip-[0]+(\d+).mediawiki.+?\)' -r '(/\$1)' {} > {}.rg && mv {}.rg {} && rm {}.rg"

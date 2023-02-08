@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,23 +46,23 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 171
-  Layer: Applications
-  Title: Currency/exchange rate information API
-  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0171
-  Status: Rejected
-  Type: Standards Track
-  Created: 2017-03-04
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 171
+</span><span>  Layer: Applications
+</span><span>  Title: Currency/exchange rate information API
+</span><span>  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0171
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-03-04
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>A common interface for requesting currency exchange rate information
 from a server.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>Four requests are defined, which are all made by a GET request to a
 common URI with parameters encoded in application/x-www-form-urlencoded
 format. All matching parameters may be specified with multiple
@@ -78,27 +78,27 @@ currency-pair compared to XBT. All inquiries for bitcoin amounts MUST be
 specified in XBT, even if the presentation to the end user is in another
 unit. (FIXME: or should this be satoshis?)</p>
 <p>Currency-pair tokens are arbitrary Strings no longer than 255
-characters, which may include any ASCII <a href="https://tools.ietf.org/html/rfc3986#section-2.3">RFC 3986 unreserved
+characters, which may include any ASCII <a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc3986#section-2.3">RFC 3986 unreserved
 characters</a> (ie,
 alphanumerics and the hyphen, underscore, period, and tilde symbols).</p>
 <p>Currency code(s) used herein are defined as such:</p>
 <ul>
 <li>All ISO 4217 codes are valid currency codes.</li>
 <li>XBT is defined as 100000000 satoshis (commonly known as 1 BTC).</li>
-<li>Strings longer than 3 characters may be used for currencies without
-an applicable code. (If a shorter code is desired despite this, it
-may be padded with space(s) to the left until it is 4 characters.
-Software MAY strip these spaces.)</li>
+<li>Strings longer than 3 characters may be used for currencies without an
+applicable code. (If a shorter code is desired despite this, it may be
+padded with space(s) to the left until it is 4 characters. Software
+MAY strip these spaces.)</li>
 </ul>
 <p>Rate is defined as the amount of quote-currency to be exchanged for one
-unit of the base-currency. In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
-<h3 id="enumerating-supported-currency-pair-tokens">Enumerating supported currency-pair tokens</h3>
+unit of the base-currency. In other words,
+<code>1 baseCurrency = rate quoteCurrency</code>.</p>
+<h3 id="Enumerating_supported_currency-pair_tokens">Enumerating supported currency-pair tokens</h3>
 <p>Parameters:</p>
 <ul>
 <li><em>mode</em> - Always &quot;list&quot; for this request.</li>
 <li><em>quote</em> - If provided, the server MAY limit the results to only
-currency-pairs describing a currency with the given currency
-code(s).</li>
+currency-pairs describing a currency with the given currency code(s).</li>
 <li><em>base</em> - If provided, the server MAY limit the results to only
 currency-pairs describing currency rates compared to the given
 currency code(s).</li>
@@ -115,17 +115,16 @@ the following information:</p>
 locale.</li>
 <li><em>desc</em> - Optional description. For example, it could be &quot;Based on
 Florida BTM prices.&quot; or any other short String that provides
-information useful to the user. SHOULD be shorter than 45
-characters.</li>
+information useful to the user. SHOULD be shorter than 45 characters.</li>
 <li><em>signature</em> - Optional. May be used for Linked Data Signatures.</li>
 </ul>
 <p>Example:</p>
-<p><code>   Request: </code><a href="http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB">http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB</a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB"><code>http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB</code></a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Smoothed averages&quot;}</code><br />
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Updated per-trade&quot;}</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-european&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_GB&quot;}</code></p>
-<h3 id="currency-pair-information">Currency-pair information</h3>
+<h3 id="Currency-pair_information">Currency-pair information</h3>
 <p>Parameters:</p>
 <ul>
 <li><em>mode</em> - Always &quot;info&quot; for this request.</li>
@@ -141,32 +140,31 @@ the following information:</p>
 locale.</li>
 <li><em>desc</em> - Optional description. For example, it could be &quot;Based on
 Florida BTM prices.&quot; or any other short String that provides
-information useful to the user. SHOULD be shorter than 45
-characters.</li>
+information useful to the user. SHOULD be shorter than 45 characters.</li>
 <li><em>longdesc</em> - Optional description, but may be longer and include
 newlines.</li>
-<li><em>symbol</em> - An Array of prefix and suffix for the quote currency.
-Each may be either a fixed String, an Array of two Strings (negative
-and positive), or null. Any positive or negative symbols must be
-included in this prefix/suffix; it MUST NOT be implied otherwise.</li>
-<li><em>digits</em> - The type of digits to use for the quote currency's
-numbers. &quot;arabic&quot; should be used for common 0-9 digits.</li>
+<li><em>symbol</em> - An Array of prefix and suffix for the quote currency. Each
+may be either a fixed String, an Array of two Strings (negative and
+positive), or null. Any positive or negative symbols must be included
+in this prefix/suffix; it MUST NOT be implied otherwise.</li>
+<li><em>digits</em> - The type of digits to use for the quote currency's numbers.
+&quot;arabic&quot; should be used for common 0-9 digits.</li>
 <li><em>grouping</em> - An Array alternating between Numbers representing a
 series of digits, and Strings used as delimiters. If terminated by a
 zero, the final grouping is to be repeated continually. For example,
 the common US locale thousands grouping would be <code>[3, &quot;,&quot;, 0]</code></li>
 <li><em>fraction_sep</em> - A String to be placed between whole numbers and a
 fractional amount.</li>
-<li><em>fraction_digits</em> - Array of absolute minimum (even for whole
-numbers) number of fractional digits, minimum fractional digits when
-a fraction exists, and maximum number of fractional digits when
-absolute precision is not demanded (below which is to be rounded in
-an implementation-dependent manner).</li>
+<li><em>fraction_digits</em> - Array of absolute minimum (even for whole numbers)
+number of fractional digits, minimum fractional digits when a fraction
+exists, and maximum number of fractional digits when absolute
+precision is not demanded (below which is to be rounded in an
+implementation-dependent manner).</li>
 <li><em>minpoll</em> - A Number of seconds indicating a minimum time between
 polls to the server. Clients should be prudent about not polling too
 often, even if this number is low.</li>
-<li><em>longpoll</em> - If provided and true, indicates longpolling is
-supported by the server.</li>
+<li><em>longpoll</em> - If provided and true, indicates longpolling is supported
+by the server.</li>
 <li><em>history</em> - If provided, indicates the server has historical records
 going back no earlier than the POSIX timestamp provided as a value.</li>
 <li><em>archive</em> - If provided, indicates the server no longer has current
@@ -175,21 +173,21 @@ timestamp provided as a value.</li>
 <li><em>signature</em> - Optional. May be used for Linked Data Signatures.</li>
 </ul>
 <p>Example:</p>
-<p><code>   Request: </code><a href="http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2">http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2</a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2"><code>http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2</code></a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Smoothed averages&quot;, &quot;longdesc&quot;: &quot;USD price quotes as compared to Bitcoin value\n\nRecommended for casual usage&quot;, &quot;symbol&quot;: [[&quot;-$&quot;, &quot;$&quot;], null], &quot;digits&quot;: &quot;arabic&quot;, &quot;grouping&quot;: [3, &quot;,&quot;, 0], &quot;fraction_sep&quot;: &quot;.&quot;, &quot;fraction_digits&quot;: [0, 2, 2], &quot;minpoll&quot;: 300, &quot;longpoll&quot;: true, &quot;history&quot;: 1457231416}</code><br />
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Updated per-trade&quot;, &quot;longdesc&quot;: &quot;Maximum precision USD price quotes as compared to Bitcoin value&quot;, &quot;symbol&quot;: [[&quot;-$&quot;, &quot;$&quot;], null], &quot;digits&quot;: &quot;arabic&quot;, &quot;grouping&quot;: [3, &quot;,&quot;, 0], &quot;fraction_sep&quot;: &quot;.&quot;, &quot;fraction_digits&quot;: [0, 2, 2], &quot;minpoll&quot;: 3600, &quot;longpoll&quot;: false, &quot;history&quot;: 1467458333.1225}</code></p>
-<h3 id="current-exchange-rate">Current exchange rate</h3>
+<h3 id="Current_exchange_rate">Current exchange rate</h3>
 <p>Parameters:</p>
 <ul>
 <li><em>mode</em> - Always &quot;rate&quot; for this request.</li>
 <li><em>cp</em> - Currency pair(s) for which rate is requested.</li>
 <li><em>type</em> - Type of exchange rate data being requested. May be &quot;high&quot;,
-&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If
-omitted, the server may provide any rates it deems appropriate.</li>
+&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If omitted,
+the server may provide any rates it deems appropriate.</li>
 <li><em>minrate</em>, <em>maxrate</em> - If specified, indicates this request is a
-longpoll. The server should not send a response until the rate(s)
-fall below or above (respectively) the provided value.</li>
+longpoll. The server should not send a response until the rate(s) fall
+below or above (respectively) the provided value.</li>
 <li><em>nonce</em> - If specified, the server SHOULD return it in each result.</li>
 </ul>
 <p>Each currency-pair receives a separate result (a JSON Object) with all
@@ -205,18 +203,18 @@ include it here as a JSON String.</li>
 <li><em>signature</em> - Optional. May be used for Linked Data Signatures.</li>
 </ul>
 <p>Example:</p>
-<p><code>   Request: </code><a href="http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high">http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high</a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high"><code>http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high</code></a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;time&quot;: 1488767410.5463133, &quot;rates&quot;: {&quot;typical&quot;: 1349.332215, &quot;high&quot;: 1351.2}}</code><br />
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;time&quot;: 1488767410, &quot;rates&quot;: {&quot;typical&quot;: 1350.111332}}</code></p>
-<h3 id="historical-exchange-rates">Historical exchange rates</h3>
+<h3 id="Historical_exchange_rates">Historical exchange rates</h3>
 <p>Parameters:</p>
 <ul>
 <li><em>mode</em> - Always &quot;history&quot; for this request.</li>
 <li><em>cp</em> - Currency pair(s) for which rate is requested.</li>
 <li><em>type</em> - Type of exchange rate data being requested. May be &quot;high&quot;,
-&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If
-omitted, the server may provide any rates it deems appropriate.</li>
+&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If omitted,
+the server may provide any rates it deems appropriate.</li>
 <li><em>from</em> - POSIX timestamp the results should begin with.</li>
 <li><em>to</em> - POSIX timestamp the results should end with. If omitted, the
 present time shall be used.</li>
@@ -240,7 +238,7 @@ included. This is not necessary when only the nearest record is
 requested, or when &quot;to&quot; is omitted (ie, ending at the most recent
 record).</p>
 <p>Example:</p>
-<p><code>   Request: </code><a href="http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090">http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090</a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090"><code>http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090</code></a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;time&quot;: 1488760000, &quot;rates&quot;: {&quot;typical&quot;: 1300}}</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;time&quot;: 1488760010, &quot;rates&quot;: {&quot;typical&quot;: 1301.1}}</code><br />
@@ -260,7 +258,7 @@ record).</p>
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;time&quot;: 1488760072, &quot;rates&quot;: {&quot;typical&quot;: 1308}}</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;time&quot;: 1488760082, &quot;rates&quot;: {&quot;typical&quot;: 1309}}</code><br />
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;time&quot;: 1488760082, &quot;rates&quot;: {&quot;typical&quot;: 1309.1}}</code></p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>End users often desire to see fiat currency information in their Bitcoin
 wallet software. Due to the nature of Bitcoin, there is inherently no
 authoritative source for exchange rates. There are many independent
@@ -271,30 +269,30 @@ dedicated code for each provider.</p>
 wallets (and other software) and service providers can implement it
 once, and become immediately interoperable with all other compatible
 implementations.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>Why are multiple results separated by a line-feed rather than using a
 JSON Array?</p>
 <ul>
 <li>Clients ought to cache historical data, and using a line-feed format
 allows them to simply append to a cache file.</li>
 <li>Parsing JSON typically requires the entire data parsed together as a
-single memory object. Using simple lines to separate results,
-however, allows parsing a single result at a time.</li>
+single memory object. Using simple lines to separate results, however,
+allows parsing a single result at a time.</li>
 </ul>
 <p>What if long descriptions require line and paragraph breaks?</p>
 <ul>
-<li>Clients should word-wrap long lines, and JSON escapes newlines as
-&quot;\n&quot; which can be used doubly (&quot;\n\n&quot;) for paragraph breaks.</li>
+<li>Clients should word-wrap long lines, and JSON escapes newlines as &quot;\n&quot;
+which can be used doubly (&quot;\n\n&quot;) for paragraph breaks.</li>
 </ul>
-<h2 id="backwards-compatibility">Backwards compatibility</h2>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>While this new standard is adopted, software and providers can continue
 to use and provide their current formats until they are no longer
 needed.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>TODO</p>
-<h2 id="see-also">See also</h2>
+<h2 id="See_also">See also</h2>
 <ul>
-<li><a href="https://w3c-dvcg.github.io/ld-signatures/">Draft W3c Linked Data Signatures
+<li><a rel="noopener" target="_blank" href="https://w3c-dvcg.github.io/ld-signatures/">Draft W3c Linked Data Signatures
 specification</a></li>
 </ul>
 
@@ -304,7 +302,7 @@ specification</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

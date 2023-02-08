@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki"
 +++
 
-``` 
-  BIP: 339
-  Layer: Peer Services
-  Title: WTXID-based transaction relay
-  Author: Suhas Daftuar <sdaftuar@chaincode.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0339
-  Status: Draft
-  Type: Standards Track
-  Created: 2020-02-03
-  License: BSD-2-Clause
-```
+      BIP: 339
+      Layer: Peer Services
+      Title: WTXID-based transaction relay
+      Author: Suhas Daftuar <sdaftuar@chaincode.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0339
+      Status: Draft
+      Type: Standards Track
+      Created: 2020-02-03
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -65,20 +63,20 @@ when announcing and fetching transactions.
     from a peer whose protocol version is \>= 70016 and prior to sending
     a verack. A wtxidrelay message received after a verack message MUST
     be ignored or treated as invalid.
-4.  A new inv type MSG\_WTX (0x00000005) is added, for use in both inv
+4.  A new inv type MSG_WTX (0x00000005) is added, for use in both inv
     messages and getdata requests, indicating that the hash being
     referenced is a transaction's wtxid. In the case of getdata
-    requests, MSG\_WTX implies that the transaction being requested
+    requests, MSG_WTX implies that the transaction being requested
     should be serialized with witness as well, as described in BIP 144.
 5.  After a node has received a wtxidrelay message from a peer, the node
-    MUST use the MSG\_WTX inv type when announcing transactions to that
+    MUST use the MSG_WTX inv type when announcing transactions to that
     peer.
 6.  After a node has received a wtxidrelay message from a peer, the node
-    SHOULD use a MSG\_WTX getdata message to request any announced
+    SHOULD use a MSG_WTX getdata message to request any announced
     transactions. A node MAY still request transactions from that peer
-    using MSG\_TX getdata messages, such as for transactions not
-    recently announced by that peer (like the parents of recently
-    announced transactions).
+    using MSG_TX getdata messages, such as for transactions not recently
+    announced by that peer (like the parents of recently announced
+    transactions).
 
 ## Backward compatibility
 

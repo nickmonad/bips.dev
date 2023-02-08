@@ -14,17 +14,15 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0090.mediawiki"
 +++
 
-``` 
-  BIP: 90
-  Title: Buried Deployments
-  Author: Suhas Daftuar <sdaftuar@chaincode.com>
-  Comments-Summary: Mostly Recommended for implementation, with some Discouragement
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0090
-  Status: Final
-  Type: Informational
-  Created: 2016-11-08
-  License: PD
-```
+      BIP: 90
+      Title: Buried Deployments
+      Author: Suhas Daftuar <sdaftuar@chaincode.com>
+      Comments-Summary: Mostly Recommended for implementation, with some Discouragement
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0090
+      Status: Final
+      Type: Informational
+      Created: 2016-11-08
+      License: PD
 
 ## Abstract
 
@@ -57,7 +55,8 @@ inefficient.
 
 In addition, this mechanism for code deployments have been deprecated in
 favor of BIP 9 deployments, which offer several advantages (please see
-[BIP 9](https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki)).
+[BIP
+9](https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki)).
 
 Thus we propose elimination of the logic implementing these kinds of
 deployments, by replacing the test which governs enforcement of BIP 34,
@@ -152,7 +151,7 @@ Coinbase](https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki)
 signatures](https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki)
 
 [BIP65
-OP\_CHECKLOCKTIMEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki)
+OP_CHECKLOCKTIMEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki)
 
 [BIP9 Version bits with timeout and
 delay](https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki)

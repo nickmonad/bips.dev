@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0133.mediawiki"
 +++
 
-``` 
-  BIP: 133
-  Layer: Peer Services
-  Title: feefilter message
-  Author: Alex Morcos <morcos@chaincode.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0133
-  Status: Draft
-  Type: Standards Track
-  Created: 2016-02-13
-  License: PD
-```
+      BIP: 133
+      Layer: Peer Services
+      Title: feefilter message
+      Author: Alex Morcos <morcos@chaincode.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0133
+      Status: Draft
+      Type: Standards Track
+      Created: 2016-02-13
+      License: PD
 
 ## Abstract
 
@@ -58,7 +56,7 @@ inv for that transaction to that peer.
 
 ## Specification
 
-1.  The feefilter message is defined as a message containing an int64\_t
+1.  The feefilter message is defined as a message containing an int64_t
     where pchCommand == "feefilter"
 2.  Upon receipt of a "feefilter" message, the node will be permitted,
     but not required, to filter transaction invs for transactions that

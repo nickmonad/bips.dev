@@ -14,18 +14,16 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0105.mediawiki"
 +++
 
-``` 
-  BIP: 105
-  Layer: Consensus (hard fork)
-  Title: Consensus based block size retargeting algorithm
-  Author: BtcDrak <btcdrak@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0105
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-08-21
-  License: PD
-```
+      BIP: 105
+      Layer: Consensus (hard fork)
+      Title: Consensus based block size retargeting algorithm
+      Author: BtcDrak <btcdrak@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0105
+      Status: Rejected
+      Type: Standards Track
+      Created: 2015-08-21
+      License: PD
 
 ## Abstract
 
@@ -87,8 +85,8 @@ Votes are cast using the block's coinbase transaction scriptSig.
 
 As per BIP34, the coinbase transaction scriptSig starts with a push of
 the block height. The next push is a little-endian number representing
-the preferred block size in bytes. For example, 0x4c(OP\_PUSHDATA1)
-0x03(size of constant) 0x80 0x84 0x1e(2MB) or 0x4c(OP\_PUSHDATA1)
+the preferred block size in bytes. For example, 0x4c(OP_PUSHDATA1)
+0x03(size of constant) 0x80 0x84 0x1e(2MB) or 0x4c(OP_PUSHDATA1)
 0x04(size of constant) 0x80 0x96 0x98 0x00(10MB).
 
 If a miner votes for an increase, the block hash must meet a difficulty
@@ -120,7 +118,7 @@ of Meni Rosenfeld and Gregory Maxwell.
 
 ## References
 
-[BIP34](bip-0034.mediawiki "wikilink")
+[BIP34](/34)
 
 ## Copyright
 

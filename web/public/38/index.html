@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,19 +46,19 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 38
-  Layer: Applications
-  Title: Passphrase-protected private key
-  Author: Mike Caldwell &lt;mcaldwell@swipeclock.com&gt;
-          Aaron Voisine &lt;voisine@gmail.com&gt;
-  Comments-Summary: Unanimously Discourage for implementation
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0038
-  Status: Draft (Some confusion applies: The announcements for this never made it to the list, so it hasn&#39;t had public discussion)
-  Type: Standards Track
-  Created: 2012-11-20
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 38
+</span><span>  Layer: Applications
+</span><span>  Title: Passphrase-protected private key
+</span><span>  Author: Mike Caldwell &lt;mcaldwell@swipeclock.com&gt;
+</span><span>          Aaron Voisine &lt;voisine@gmail.com&gt;
+</span><span>  Comments-Summary: Unanimously Discourage for implementation
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0038
+</span><span>  Status: Draft (Some confusion applies: The announcements for this never made it to the list, so it hasn&#39;t had public discussion)
+</span><span>  Type: Standards Track
+</span><span>  Created: 2012-11-20
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>A method is proposed for encrypting and encoding a passphrase-protected
 Bitcoin private key record in the form of a 58-character
 Base58Check-encoded printable string. Encrypted private key records are
@@ -78,7 +78,7 @@ within each encrypted key, so it can be correlated to a Bitcoin address
 with reasonable probability by someone not knowing the passphrase. The
 complete Bitcoin address can be derived through successful decryption of
 the key record.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The motivation to make this proposal stems from observations of the way
 physical bitcoins and paper wallets are used.</p>
 <p>An issuer of physical bitcoins must be trustworthy and trusted. Even if
@@ -126,35 +126,32 @@ password at home or share it with trusted associates as protection
 against someone at the bank gaining access to the paper wallets and
 spending from them. The foreseeable and unforeseeable use cases for
 password-protected private keys are numerous.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This proposal is hereby placed in the public domain.</p>
-<h2 id="rationale">Rationale</h2>
-<ul>
-<li><em><strong>User story:</strong> As a Bitcoin user who uses paper wallets, I would
-like the ability to add encryption, so that my Bitcoin paper storage
-can be two factor: something I have plus something I know.</em>
-<em><strong>User story:</strong> As a Bitcoin user who would like to pay a person or
-a company with a private key, I do not want to worry that any part
-of the communication path may result in the interception of the key
-and theft of my funds. I would prefer to offer an encrypted private
-key, and then follow it up with the password using a different
-communication channel (e.g. a phone call or SMS).</em>
-<em><strong>User story:</strong> (EC-multiplied keys) As a user of physical
-bitcoins, I would like a third party to be able to create
-password-protected Bitcoin private keys for me, without them knowing
-the password, so I can benefit from the physical bitcoin without the
-issuer having access to the private key. I would like to be able to
-choose a password whose minimum length and required format does not
-preclude me from memorizing it or engraving it on my physical
-bitcoin, without exposing me to an undue risk of password cracking
-and/or theft by the manufacturer of the item.</em>
-'<strong>'User story:</strong> (EC multiplied keys) As a user of paper wallets, I
-would like the ability to generate a large number of Bitcoin
-addresses protected by the same password, while enjoying a high
-degree of security (highly expensive scrypt parameters), but without
-having to incur the scrypt delay for each address I generate.</li>
-</ul>
-<h2 id="specification">Specification</h2>
+<h2 id="Rationale">Rationale</h2>
+<p><em><strong>User story:</strong> As a Bitcoin user who uses paper wallets, I would like
+the ability to add encryption, so that my Bitcoin paper storage can be
+two factor: something I have plus something I know.</em></p>
+<p><em><strong>User story:</strong> As a Bitcoin user who would like to pay a person or a
+company with a private key, I do not want to worry that any part of the
+communication path may result in the interception of the key and theft
+of my funds. I would prefer to offer an encrypted private key, and then
+follow it up with the password using a different communication channel
+(e.g. a phone call or SMS).</em></p>
+<p><em><strong>User story:</strong> (EC-multiplied keys) As a user of physical bitcoins, I
+would like a third party to be able to create password-protected Bitcoin
+private keys for me, without them knowing the password, so I can benefit
+from the physical bitcoin without the issuer having access to the
+private key. I would like to be able to choose a password whose minimum
+length and required format does not preclude me from memorizing it or
+engraving it on my physical bitcoin, without exposing me to an undue
+risk of password cracking and/or theft by the manufacturer of the item.</em></p>
+<p>'<strong>'User story:</strong> (EC multiplied keys) As a user of paper wallets, I
+would like the ability to generate a large number of Bitcoin addresses
+protected by the same password, while enjoying a high degree of security
+(highly expensive scrypt parameters), but without having to incur the
+scrypt delay for each address I generate.</p>
+<h2 id="Specification">Specification</h2>
 <p>This proposal makes use of the following functions and definitions:</p>
 <ul>
 <li><strong>AES256Encrypt, AES256Decrypt</strong>: the simple form of the well-known
@@ -162,29 +159,28 @@ AES block cipher without consideration for initialization vectors or
 block chaining. Each of these functions takes a 256-bit key and 16
 bytes of input, and deterministically yields 16 bytes of output.</li>
 <li><strong>SHA256</strong>, a well-known hashing algorithm that takes an arbitrary
-number of bytes as input and deterministically yields a 32-byte
-hash.</li>
+number of bytes as input and deterministically yields a 32-byte hash.</li>
 <li><strong>scrypt</strong>: A well-known key derivation algorithm. It takes the
-following parameters: (string) password, (string) salt, (int) n,
-(int) r, (int) p, (int) length, and deterministically yields an
-array of bytes whose length is equal to the length parameter.</li>
-<li><strong>ECMultiply</strong>: Multiplication of an elliptic curve point by a
-scalar integer with respect to the <a href="https://bips.dev/38/secp256k1" title="wikilink">secp256k1</a>
-elliptic curve.</li>
+following parameters: (string) password, (string) salt, (int) n, (int)
+r, (int) p, (int) length, and deterministically yields an array of
+bytes whose length is equal to the length parameter.</li>
+<li><strong>ECMultiply</strong>: Multiplication of an elliptic curve point by a scalar
+integer with respect to the <a href="secp256k1" title="wikilink">secp256k1</a> elliptic
+curve.</li>
 <li><strong>G, N</strong>: Constants defined as part of the
-<a href="https://bips.dev/38/secp256k1" title="wikilink">secp256k1</a> elliptic curve. G is an elliptic
+<a href="secp256k1" title="wikilink">secp256k1</a> elliptic curve. G is an elliptic
 curve point, and N is a large positive integer.</li>
-<li><strong><a href="https://bips.dev/38/Base58Check" title="wikilink">Base58Check</a></strong>: a method for encoding
-arrays of bytes using 58 alphanumeric characters commonly used in
-the Bitcoin ecosystem.</li>
+<li><strong><a href="Base58Check" title="wikilink">Base58Check</a></strong>: a method for encoding
+arrays of bytes using 58 alphanumeric characters commonly used in the
+Bitcoin ecosystem.</li>
 </ul>
-<h3 id="prefix">Prefix</h3>
+<h3 id="Prefix">Prefix</h3>
 <p>It is proposed that the resulting Base58Check-encoded string start with
 a '6'. The number '6' is intended to represent, from the perspective of
 the user, &quot;a private key that needs something else to be usable&quot; - an
 umbrella definition that could be understood in the future to include
 keys participating in multisig transactions, and was chosen with
-deference to the existing prefix '5' most commonly observed in <a href="https://bips.dev/38/Wallet_Import_Format" title="wikilink">Wallet
+deference to the existing prefix '5' most commonly observed in <a href="Wallet_Import_Format" title="wikilink">Wallet
 Import Format</a> which denotes an
 unencrypted private key.</p>
 <p>It is proposed that the second character ought to give a hint as to what
@@ -194,12 +190,12 @@ passphrase, the uppercase letter P is proposed.</p>
 (IVs) are used in the AES encryption. Rather, suitable values for
 IV-like use are derived using scrypt from the passphrase and from using
 a 32-bit hash of the resulting Bitcoin address as salt.</p>
-<h3 id="proposed-specification">Proposed specification</h3>
+<h3 id="Proposed_specification">Proposed specification</h3>
 <ul>
 <li>Object identifier prefix: 0x0142 (non-EC-multiplied) or 0x0143
-(EC-multiplied). These are constant bytes that appear at the
-beginning of the Base58Check-encoded record, and their presence
-causes the resulting string to have a predictable prefix.</li>
+(EC-multiplied). These are constant bytes that appear at the beginning
+of the Base58Check-encoded record, and their presence causes the
+resulting string to have a predictable prefix.</li>
 <li>How the user sees it: 58 characters always starting with '6P'
 <ul>
 <li>Visual cues are present in the third character for visually
@@ -210,86 +206,84 @@ identifying the EC-multiply and compress flag.</li>
 <ul>
 <li>1 byte (<em>flagbyte</em>):
 <ul>
-<li>the most significant two bits are set as follows to preserve
-the visibility of the compression flag in the prefix, as
-well as to keep the payload within the range of allowable
-values that keep the &quot;6P&quot; prefix intact. For
-non-EC-multiplied keys, the bits are 11. For EC-multiplied
-keys, the bits are 00.</li>
+<li>the most significant two bits are set as follows to preserve the
+visibility of the compression flag in the prefix, as well as to
+keep the payload within the range of allowable values that keep
+the &quot;6P&quot; prefix intact. For non-EC-multiplied keys, the bits
+are 11. For EC-multiplied keys, the bits are 00.</li>
 <li>the bit with value 0x20 when set indicates the key should be
-converted to a base58check encoded P2PKH bitcoin address
-using the DER compressed public key format. When not set, it
-should be a base58check encoded P2PKH bitcoin address using
-the DER uncompressed public key format.</li>
+converted to a base58check encoded P2PKH bitcoin address using the
+DER compressed public key format. When not set, it should be a
+base58check encoded P2PKH bitcoin address using the DER
+uncompressed public key format.</li>
 <li>the bits with values 0x10 and 0x08 are reserved for a future
-specification that contemplates using multisig as a way to
-combine the factors such that parties in possession of the
-separate factors can independently sign a proposed
-transaction without requiring that any party possess both
-factors. These bits must be 0 to comply with this version of
-the specification.</li>
+specification that contemplates using multisig as a way to combine
+the factors such that parties in possession of the separate
+factors can independently sign a proposed transaction without
+requiring that any party possess both factors. These bits must be
+0 to comply with this version of the specification.</li>
 <li>the bit with value 0x04 indicates whether a lot and sequence
-number are encoded into the first factor, and activates
-special behavior for including them in the decryption
-process. This applies to EC-multiplied keys only. Must be 0
-for non-EC-multiplied keys.</li>
-<li>remaining bits are reserved for future use and must all be 0
-to comply with this version of the specification.</li>
+number are encoded into the first factor, and activates special
+behavior for including them in the decryption process. This
+applies to EC-multiplied keys only. Must be 0 for
+non-EC-multiplied keys.</li>
+<li>remaining bits are reserved for future use and must all be 0 to
+comply with this version of the specification.</li>
 </ul>
 </li>
-<li>4 bytes: SHA256(SHA256(expected_bitcoin_address))[0...3],
-used both for typo checking and as salt</li>
+<li>4 bytes: SHA256(SHA256(expected_bitcoin_address))[0...3], used
+both for typo checking and as salt</li>
 <li>16 bytes: Contents depend on whether EC multiplication is used.</li>
-<li>16 bytes: lasthalf: An AES-encrypted key material record
-(contents depend on whether EC multiplication is used)</li>
+<li>16 bytes: lasthalf: An AES-encrypted key material record (contents
+depend on whether EC multiplication is used)</li>
 </ul>
 </li>
 <li>Range in base58check encoding for non-EC-multiplied keys without
 compression (prefix 6PR):
 <ul>
 <li>Minimum value:
-6PRHv1jg1ytiE4kT2QtrUz8gEjMQghZDWg1FuxjdYDzjUkcJeGdFj9q9Vi
-(based on 01 42 C0 plus thirty-six 00's)</li>
+6PRHv1jg1ytiE4kT2QtrUz8gEjMQghZDWg1FuxjdYDzjUkcJeGdFj9q9Vi (based on
+01 42 C0 plus thirty-six 00's)</li>
 <li>Maximum value:
-6PRWdmoT1ZursVcr5NiD14p5bHrKVGPG7yeEoEeRb8FVaqYSHnZTLEbYsU
-(based on 01 42 C0 plus thirty-six FF's)</li>
+6PRWdmoT1ZursVcr5NiD14p5bHrKVGPG7yeEoEeRb8FVaqYSHnZTLEbYsU (based on
+01 42 C0 plus thirty-six FF's)</li>
 </ul>
 </li>
 <li>Range in base58check encoding for non-EC-multiplied keys with
 compression (prefix 6PY):
 <ul>
 <li>Minimum value:
-6PYJxKpVnkXUsnZAfD2B5ZsZafJYNp4ezQQeCjs39494qUUXLnXijLx6LG
-(based on 01 42 E0 plus thirty-six 00's)</li>
+6PYJxKpVnkXUsnZAfD2B5ZsZafJYNp4ezQQeCjs39494qUUXLnXijLx6LG (based on
+01 42 E0 plus thirty-six 00's)</li>
 <li>Maximum value:
-6PYXg5tGnLYdXDRZiAqXbeYxwDoTBNthbi3d61mqBxPpwZQezJTvQHsCnk
-(based on 01 42 E0 plus thirty-six FF's)</li>
+6PYXg5tGnLYdXDRZiAqXbeYxwDoTBNthbi3d61mqBxPpwZQezJTvQHsCnk (based on
+01 42 E0 plus thirty-six FF's)</li>
 </ul>
 </li>
 <li>Range in base58check encoding for EC-multiplied keys without
 compression (prefix 6Pf):
 <ul>
 <li>Minimum value:
-6PfKzduKZXAFXWMtJ19Vg9cSvbFg4va6U8p2VWzSjtHQCCLk3JSBpUvfpf
-(based on 01 43 00 plus thirty-six 00's)</li>
+6PfKzduKZXAFXWMtJ19Vg9cSvbFg4va6U8p2VWzSjtHQCCLk3JSBpUvfpf (based on
+01 43 00 plus thirty-six 00's)</li>
 <li>Maximum value:
-6PfYiPy6Z7BQAwEHLxxrCEHrH9kasVQ95ST1NnuEnnYAJHGsgpNPQ9dTHc
-(based on 01 43 00 plus thirty-six FF's)</li>
+6PfYiPy6Z7BQAwEHLxxrCEHrH9kasVQ95ST1NnuEnnYAJHGsgpNPQ9dTHc (based on
+01 43 00 plus thirty-six FF's)</li>
 </ul>
 </li>
-<li>Range in base58check encoding for EC-multiplied keys with
-compression (prefix 6Pn):
+<li>Range in base58check encoding for EC-multiplied keys with compression
+(prefix 6Pn):
 <ul>
 <li>Minimum value:
-6PnM2wz9LHo2BEAbvoGpGjMLGXCom35XwsDQnJ7rLiRjYvCxjpLenmoBsR
-(based on 01 43 20 plus thirty-six 00's)</li>
+6PnM2wz9LHo2BEAbvoGpGjMLGXCom35XwsDQnJ7rLiRjYvCxjpLenmoBsR (based on
+01 43 20 plus thirty-six 00's)</li>
 <li>Maximum value:
-6PnZki3vKspApf2zym6Anp2jd5hiZbuaZArPfa2ePcgVf196PLGrQNyVUh
-(based on 01 43 20 plus thirty-six FF's)</li>
+6PnZki3vKspApf2zym6Anp2jd5hiZbuaZArPfa2ePcgVf196PLGrQNyVUh (based on
+01 43 20 plus thirty-six FF's)</li>
 </ul>
 </li>
 </ul>
-<h4 id="encryption-when-ec-multiply-flag-is-not-used">Encryption when EC multiply flag is not used</h4>
+<h4 id="Encryption_when_EC_multiply_flag_is_not_used">Encryption when EC multiply flag is not used</h4>
 <p>Encrypting a private key without the EC multiplication offers the
 advantage that any known private key can be encrypted. The party
 performing the encryption must know the passphrase.</p>
@@ -299,10 +293,10 @@ performing the encryption must know the passphrase.</p>
 of SHA256(SHA256()) of it. Let's call this &quot;addresshash&quot;.</li>
 <li>Derive a key from the passphrase using scrypt
 <ul>
-<li>Parameters: <em>passphrase</em> is the passphrase itself encoded in
-UTF-8 and normalized using Unicode Normalization Form C (NFC).
-salt is <em>addresshash</em> from the earlier step, n=16384, r=8, p=8,
-length=64 (n, r, p are provisional and subject to consensus)</li>
+<li>Parameters: <em>passphrase</em> is the passphrase itself encoded in UTF-8
+and normalized using Unicode Normalization Form C (NFC). salt is
+<em>addresshash</em> from the earlier step, n=16384, r=8, p=8, length=64
+(n, r, p are provisional and subject to consensus)</li>
 <li>Let's split the resulting 64 bytes in half, and call them
 <em>derivedhalf1</em> and <em>derivedhalf2</em>.</li>
 </ul>
@@ -317,8 +311,7 @@ result <em>encryptedhalf2</em></li>
 <p>The encrypted private key is the Base58Check-encoded concatenation of
 the following, which totals 39 bytes without Base58 checksum:</p>
 <ul>
-<li>0x01 0x42 + <em>flagbyte</em> + <em>salt</em> + <em>encryptedhalf1</em> +
-<em>encryptedhalf2</em></li>
+<li>0x01 0x42 + <em>flagbyte</em> + <em>salt</em> + <em>encryptedhalf1</em> + <em>encryptedhalf2</em></li>
 </ul>
 <p>Decryption steps:</p>
 <ol>
@@ -334,7 +327,7 @@ record.</li>
 encrypted private key record matches the hash. If not, report that
 the passphrase entry was incorrect.</li>
 </ol>
-<h4 id="encryption-when-ec-multiply-mode-is-used">Encryption when EC multiply mode is used</h4>
+<h4 id="Encryption_when_EC_multiply_mode_is_used">Encryption when EC multiply mode is used</h4>
 <p>Encrypting a private key with EC multiplication offers the ability for
 someone to generate encrypted keys knowing only an EC point derived from
 the original passphrase and some salt generated by the passphrase's
@@ -385,9 +378,9 @@ bytes <em>lotsequence</em>.</li>
 <em>ownerentropy</em>.</li>
 <li>Derive a key from the passphrase using scrypt
 <ul>
-<li>Parameters: <em>passphrase</em> is the passphrase itself encoded in
-UTF-8 and normalized using Unicode Normalization Form C (NFC).
-salt is <em>ownersalt</em>. n=16384, r=8, p=8, length=32.</li>
+<li>Parameters: <em>passphrase</em> is the passphrase itself encoded in UTF-8
+and normalized using Unicode Normalization Form C (NFC). salt is
+<em>ownersalt</em>. n=16384, r=8, p=8, length=32.</li>
 <li>Call the resulting 32 bytes <em>prefactor</em>.</li>
 <li>Take SHA256(SHA256(<em>prefactor</em> + <em>ownerentropy</em>)) and call this
 <em>passfactor</em>. The &quot;+&quot; operator is concatenation.</li>
@@ -429,9 +422,9 @@ passphrase):</p>
 <ol>
 <li>Set <em>flagbyte</em>.
 <ul>
-<li>Turn on bit 0x20 if the Bitcoin address will be formed by
-hashing the compressed public key (optional, saves space, but
-many Bitcoin implementations aren't compatible with it)</li>
+<li>Turn on bit 0x20 if the Bitcoin address will be formed by hashing
+the compressed public key (optional, saves space, but many Bitcoin
+implementations aren't compatible with it)</li>
 <li>Turn on bit 0x04 if <em>ownerentropy</em> contains a value for
 <em>lotsequence</em>. (While it has no effect on the keypair generation
 process, the decryption process needs this flag to know how to
@@ -451,12 +444,9 @@ call it <em>addresshash</em>.</li>
 using scrypt
 <ul>
 <li>Parameters: <em>passphrase</em> is <em>passpoint</em> provided from the first
-party (expressed in binary as 33 bytes). <em>salt</em> is <em>addresshash</em>
-<ul>
-<li><em>ownerentropy</em>, n=1024, r=1, p=1, length=64. The &quot;+&quot; operator
-is concatenation.</li>
-</ul>
-</li>
+party (expressed in binary as 33 bytes). <em>salt</em> is <em>addresshash</em> +
+<em>ownerentropy</em>, n=1024, r=1, p=1, length=64. The &quot;+&quot; operator is
+concatenation.</li>
 <li>Split the result into two 32-byte halves and call them
 <em>derivedhalf1</em> and <em>derivedhalf2</em>.</li>
 </ul>
@@ -475,7 +465,7 @@ the following, which totals 39 bytes without Base58 checksum:</p>
 <li>0x01 0x43 + <em>flagbyte</em> + <em>addresshash</em> + <em>ownerentropy</em> +
 <em>encryptedpart1</em>[0...7] + <em>encryptedpart2</em></li>
 </ul>
-<h5 id="confirmation-code">Confirmation code</h5>
+<h5 id="Confirmation_code">Confirmation code</h5>
 <p>The party generating the Bitcoin address has the option to return a
 <em>confirmation code</em> back to <em>owner</em> which allows <em>owner</em> to
 independently verify that he has been given a Bitcoin address that
@@ -525,7 +515,7 @@ passphrase and use it to recompute <em>passpoint</em></li>
 public key and hash it into <em>address</em> using either compressed or
 uncompressed public key methodology as specifid in <em>flagbyte</em>.</li>
 </ol>
-<h5 id="decryption">Decryption</h5>
+<h5 id="Decryption">Decryption</h5>
 <ol>
 <li>Collect encrypted private key and passphrase from user.</li>
 <li>Derive <em>passfactor</em> using scrypt with <em>ownersalt</em> and the user's
@@ -544,16 +534,16 @@ compression preference specified in the encrypted key.</li>
 encrypted private key record matches the hash. If not, report that
 the passphrase entry was incorrect.</li>
 </ol>
-<h2 id="backwards-compatibility">Backwards compatibility</h2>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>Backwards compatibility is minimally applicable since this is a new
-standard that at most extends <a href="https://bips.dev/38/Wallet_Import_Format" title="wikilink">Wallet Import
+standard that at most extends <a href="Wallet_Import_Format" title="wikilink">Wallet Import
 Format</a>. It is assumed that an entry
 point for private key data may also accept existing formats of private
-keys (such as hexadecimal and <a href="https://bips.dev/38/Wallet_Import_Format" title="wikilink">Wallet Import
+keys (such as hexadecimal and <a href="Wallet_Import_Format" title="wikilink">Wallet Import
 Format</a>); this draft uses a key format
 that cannot be mistaken for any existing one and preserves
 auto-detection capabilities.</p>
-<h2 id="suggestions-for-implementers-of-proposal-with-alt-chains">Suggestions for implementers of proposal with alt-chains</h2>
+<h2 id="Suggestions_for_implementers_of_proposal_with_alt-chains">Suggestions for implementers of proposal with alt-chains</h2>
 <p>If this proposal is accepted into alt-chains, it is requested that the
 unused flag bytes not be used for denoting that the key belongs to an
 alt-chain.</p>
@@ -564,7 +554,7 @@ leading '1', an alt-chain can easily be denoted simply by using the
 alt-chain's preferred format for representing an address. Alt-chain
 implementers may also change the prefix such that encrypted addresses do
 not start with &quot;6P&quot;.</p>
-<h2 id="discussion-item-scrypt-parameters">Discussion item: scrypt parameters</h2>
+<h2 id="Discussion_item:_scrypt_parameters">Discussion item: scrypt parameters</h2>
 <p>This proposal leaves the scrypt parameters up in the air. The following
 items are proposed for consideration:</p>
 <p>The main goal of scrypt is to reduce the feasibility of brute force
@@ -594,72 +584,64 @@ following properties:</p>
 <ul>
 <li>Encryption/decryption in javascript requiring several seconds per
 operation</li>
-<li>Use of the parallelization parameter provides a modest opportunity
-for speedups in environments where concurrent threading is available
-<ul>
-<li>such environments would be selected for processes that must handle
+<li>Use of the parallelization parameter provides a modest opportunity for
+speedups in environments where concurrent threading is available -
+such environments would be selected for processes that must handle
 bulk quantities of encryption/decryption operations. Estimated time
 for an operation is in the tens or hundreds of milliseconds.</li>
 </ul>
-</li>
-</ul>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>Added to alpha version of Casascius Bitcoin Address Utility for Windows
 available at:</p>
 <ul>
-<li>via https: <a href="https://casascius.com/btcaddress-alpha.zip">https://casascius.com/btcaddress-alpha.zip</a></li>
-<li>at github: <a href="https://github.com/casascius/Bitcoin-Address-Utility">https://github.com/casascius/Bitcoin-Address-Utility</a></li>
+<li>via https: <a rel="noopener" target="_blank" href="https://casascius.com/btcaddress-alpha.zip">https://casascius.com/btcaddress-alpha.zip</a></li>
+<li>at github: <a rel="noopener" target="_blank" href="https://github.com/casascius/Bitcoin-Address-Utility">https://github.com/casascius/Bitcoin-Address-Utility</a></li>
 </ul>
 <p>Click &quot;Tools&quot; then &quot;PPEC Keygen&quot; (provisional name)</p>
-<h2 id="other-implementations">Other implementations</h2>
+<h2 id="Other_implementations">Other implementations</h2>
 <ul>
-<li>Javascript - <a href="https://github.com/bitcoinjs/bip38">https://github.com/bitcoinjs/bip38</a></li>
+<li>Javascript - <a rel="noopener" target="_blank" href="https://github.com/bitcoinjs/bip38">https://github.com/bitcoinjs/bip38</a></li>
 </ul>
-<h2 id="test-vectors">Test vectors</h2>
-<h3 id="no-compression-no-ec-multiply">No compression, no EC multiply</h3>
+<h2 id="Test_vectors">Test vectors</h2>
+<h3 id="No_compression,_no_EC_multiply">No compression, no EC multiply</h3>
 <p>Test 1:</p>
 <ul>
 <li>Passphrase: TestingOneTwoThree</li>
-<li>Encrypted:
-6PRVWUbkzzsbcVac2qwfssoUJAN1Xhrg6bNk8J7Nzm5H7kxEbn2Nh2ZoGg</li>
-<li>Unencrypted (WIF):
-5KN7MzqK5wt2TP1fQCYyHBtDrXdJuXbUzm4A9rKAteGu3Qi5CVR</li>
+<li>Encrypted: 6PRVWUbkzzsbcVac2qwfssoUJAN1Xhrg6bNk8J7Nzm5H7kxEbn2Nh2ZoGg</li>
+<li>Unencrypted (WIF): 5KN7MzqK5wt2TP1fQCYyHBtDrXdJuXbUzm4A9rKAteGu3Qi5CVR</li>
 <li>Unencrypted (hex):
 CBF4B9F70470856BB4F40F80B87EDB90865997FFEE6DF315AB166D713AF433A5</li>
 </ul>
 <p>Test 2:</p>
 <ul>
 <li>Passphrase: Satoshi</li>
-<li>Encrypted:
-6PRNFFkZc2NZ6dJqFfhRoFNMR9Lnyj7dYGrzdgXXVMXcxoKTePPX1dWByq</li>
-<li>Unencrypted (WIF):
-5HtasZ6ofTHP6HCwTqTkLDuLQisYPah7aUnSKfC7h4hMUVw2gi5</li>
+<li>Encrypted: 6PRNFFkZc2NZ6dJqFfhRoFNMR9Lnyj7dYGrzdgXXVMXcxoKTePPX1dWByq</li>
+<li>Unencrypted (WIF): 5HtasZ6ofTHP6HCwTqTkLDuLQisYPah7aUnSKfC7h4hMUVw2gi5</li>
 <li>Unencrypted (hex):
 09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE</li>
 </ul>
 <p>Test 3:</p>
 <ul>
-<li>Passphrase ϓ␀𐐀💩 (<code>\u03D2\u0301\u0000\U00010400\U0001F4A9</code>; <a href="http://codepoints.net/U+03D2">GREEK
-UPSILON WITH HOOK</a>, <a href="http://codepoints.net/U+0301">COMBINING ACUTE
+<li>Passphrase ϓ␀𐐀💩 (<code>\u03D2\u0301\u0000\U00010400\U0001F4A9</code>; <a rel="noopener" target="_blank" href="http://codepoints.net/U+03D2">GREEK
+UPSILON WITH HOOK</a>, <a rel="noopener" target="_blank" href="http://codepoints.net/U+0301">COMBINING ACUTE
 ACCENT</a>,
-<a href="http://codepoints.net/U+0000">NULL</a>, <a href="http://codepoints.net/U+10400">DESERET CAPITAL LETTER LONG
-I</a>, <a href="http://codepoints.net/U+1F4A9">PILE OF
+<a rel="noopener" target="_blank" href="http://codepoints.net/U+0000">NULL</a>, <a rel="noopener" target="_blank" href="http://codepoints.net/U+10400">DESERET CAPITAL LETTER LONG
+I</a>, <a rel="noopener" target="_blank" href="http://codepoints.net/U+1F4A9">PILE OF
 POO</a>)</li>
 <li>Encrypted key:
 6PRW5o9FLp4gJDDVqJQKJFTpMvdsSGJxMYHtHaQBF3ooa8mwD69bapcDQn</li>
 <li>Bitcoin Address: 16ktGzmfrurhbhi6JGqsMWf7TyqK9HNAeF</li>
 <li>Unencrypted private key (WIF):
 5Jajm8eQ22H3pGWLEVCXyvND8dQZhiQhoLJNKjYXk9roUFTMSZ4</li>
-<li><em>Note:</em> The non-standard UTF-8 characters in this passphrase should
-be NFC normalized to result in a passphrase of
-<code>0xcf9300f0909080f09f92a9</code> before further processing</li>
+<li><em>Note:</em> The non-standard UTF-8 characters in this passphrase should be
+NFC normalized to result in a passphrase of <code>0xcf9300f0909080f09f92a9</code>
+before further processing</li>
 </ul>
-<h3 id="compression-no-ec-multiply">Compression, no EC multiply</h3>
+<h3 id="Compression,_no_EC_multiply">Compression, no EC multiply</h3>
 <p>Test 1:</p>
 <ul>
 <li>Passphrase: TestingOneTwoThree</li>
-<li>Encrypted:
-6PYNKZ1EAgYgmQfmNVamxyXVWHzK5s6DGhwP4J5o44cvXdoY7sRzhtpUeo</li>
+<li>Encrypted: 6PYNKZ1EAgYgmQfmNVamxyXVWHzK5s6DGhwP4J5o44cvXdoY7sRzhtpUeo</li>
 <li>Unencrypted (WIF):
 L44B5gGEpqEDRS9vVPz7QT35jcBG2r3CZwSwQ4fCewXAhAhqGVpP</li>
 <li>Unencrypted (hex):
@@ -668,14 +650,13 @@ CBF4B9F70470856BB4F40F80B87EDB90865997FFEE6DF315AB166D713AF433A5</li>
 <p>Test 2:</p>
 <ul>
 <li>Passphrase: Satoshi</li>
-<li>Encrypted:
-6PYLtMnXvfG3oJde97zRyLYFZCYizPU5T3LwgdYJz1fRhh16bU7u6PPmY7</li>
+<li>Encrypted: 6PYLtMnXvfG3oJde97zRyLYFZCYizPU5T3LwgdYJz1fRhh16bU7u6PPmY7</li>
 <li>Unencrypted (WIF):
 KwYgW8gcxj1JWJXhPSu4Fqwzfhp5Yfi42mdYmMa4XqK7NJxXUSK7</li>
 <li>Unencrypted (hex):
 09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE</li>
 </ul>
-<h3 id="ec-multiply-no-compression-no-lot-sequence-numbers">EC multiply, no compression, no lot/sequence numbers</h3>
+<h3 id="EC_multiply,_no_compression,_no_lot/sequence_numbers">EC multiply, no compression, no lot/sequence numbers</h3>
 <p>Test 1:</p>
 <ul>
 <li>Passphrase: TestingOneTwoThree</li>
@@ -702,7 +683,7 @@ passphraseoRDGAXTWzbp72eVbtUDdn1rwpgPUGjNZEc6CGBo8i5EC1FPW8wcnLdq4ThKzAS</li>
 <li>Unencrypted private key (hex):
 C2C8036DF268F498099350718C4A3EF3984D2BE84618C2650F5171DCC5EB660A</li>
 </ul>
-<h3 id="ec-multiply-no-compression-lot-sequence-numbers">EC multiply, no compression, lot/sequence numbers</h3>
+<h3 id="EC_multiply,_no_compression,_lot/sequence_numbers">EC multiply, no compression, lot/sequence numbers</h3>
 <p>Test 1:</p>
 <ul>
 <li>Passphrase: MOLON LABE</li>
@@ -743,7 +724,7 @@ cfrm38V8G4qq2ywYEFfWLD5Cc6msj9UwsG2Mj4Z6QdGJAFQpdatZLavkgRd1i4iBMdRngDqDs51</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

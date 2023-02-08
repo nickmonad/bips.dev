@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,32 +46,32 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 18
-  Layer: Consensus (soft fork)
-  Title: hashScriptCheck
-  Author: Luke Dashjr &lt;luke+bip17@dashjr.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0018
-  Status: Proposed
-  Type: Standards Track
-  Created: 2012-01-27
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 18
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: hashScriptCheck
+</span><span>  Author: Luke Dashjr &lt;luke+bip17@dashjr.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0018
+</span><span>  Status: Proposed
+</span><span>  Type: Standards Track
+</span><span>  Created: 2012-01-27
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP modifies the basic format of transaction inputs and outputs,
 replacing the current scriptSig and scriptPubKey (scripts executed to
 validate a transaction) with new contents: dataSig, scriptCheck, and
 hashScriptCheck.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The purpose of pay-to-script-hash is to move the responsibility for
 supplying the conditions to redeem a transaction from the sender of the
 funds to the redeemer.</p>
 <p>The benefit is allowing a sender to fund any arbitrary transaction, no
 matter how complicated, using a fixed-length 20-byte hash that is short
 enough to scan from a QR code or easily copied and pasted.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>scriptSig and scriptPubKey are hereby deemed to be deprecated.
 Bitcoin-compatible clients MUST still continue to support them for
 compatibility, but it should not be used for any new transaction types.
@@ -83,8 +83,8 @@ addresses.</p>
 <ul>
 <li>dataSig is included in place of scriptSig in transaction inputs, and
 contains multiple serialized data elements</li>
-<li>scriptCheck is the final element of dataSig, and is executed with
-the preceding dataSig elements preloaded onto the stack (the element
+<li>scriptCheck is the final element of dataSig, and is executed with the
+preceding dataSig elements preloaded onto the stack (the element
 immediately before scriptCheck is the top of the stack)</li>
 <li>hashScriptCheck is included in place of scriptPubKey in transaction
 outputs, to specify the hash of the scriptCheck allowed to redeem it</li>
@@ -101,16 +101,15 @@ MUST proceed in backward-compatibility mode, using
 scriptSig+scriptPubKey rather than dataSig+scriptCheck+hashScriptCheck.</p>
 <p>A hashScriptCheck-compliant input is valid only if:</p>
 <ul>
-<li>dataSig MUST NOT contain any operations other than &quot;push data&quot; (it
-is data, not a script; no mixing scriptSig with hashScriptCheck)</li>
+<li>dataSig MUST NOT contain any operations other than &quot;push data&quot; (it is
+data, not a script; no mixing scriptSig with hashScriptCheck)</li>
 <li>scriptCheck MUST hash (using Bitcoin's Hash160 algorithm) to the
 output's hashScriptCheck.</li>
 <li>scriptCheck MUST be executed with the dataSig-based stack specified
 above (ie, not including scriptCheck itself) to perform validation
 (this does not imply clients are required to validate transactions).</li>
-<li>scriptCheck must not abort, and must leave a true value on the top
-of the stack. This is the current behaviour for
-scriptSig+scriptPubKey.</li>
+<li>scriptCheck must not abort, and must leave a true value on the top of
+the stack. This is the current behaviour for scriptSig+scriptPubKey.</li>
 </ul>
 <p>The new scriptCheck SHOULD be checked against &quot;standard transaction&quot;
 templates by miners.</p>
@@ -119,25 +118,25 @@ one-signature-required transaction is:</p>
 <p><code>   scriptCheck: [pubkey] OP_CHECKSIG</code><br />
 <code>   dataSig: [signature] {[pubkey] OP_CHECKSIG}</code><br />
 <code>   hashScriptCheck: [20-byte-hash of {[pubkey] OP_CHECKSIG}]</code></p>
-<h3 id="signature-operation-limits-for-scriptcheck">Signature operation limits for scriptCheck</h3>
+<h3 id="Signature_operation_limits_for_scriptCheck">Signature operation limits for scriptCheck</h3>
 <p>Signature operations in scriptCheck do not follow the same rules
 previously applied to scriptSig and scriptPubKey. Instead, they shall
 contribute to the maximum number allowed per block (20,000) as follows:</p>
 <ol>
 <li>OP_CHECKSIG and OP_CHECKSIGVERIFY count as 1 signature operation,
 whether or not they are evaluated.</li>
-<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded
-by OP_1 through OP_16 are counted as 1 to 16 signature operation,
+<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded by
+OP_1 through OP_16 are counted as 1 to 16 signature operation,
 whether or not they are evaluated.</li>
-<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted
-as 20 signature operations.</li>
+<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted as
+20 signature operations.</li>
 </ol>
 <p>Examples:</p>
 <p>+3 signature operations:</p>
 <p><code>   2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG</code></p>
 <p>+22 signature operations</p>
 <p><code>   OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF</code></p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>This BIP replaces BIPs 12 and 17, which propose extensions to the Script
 system to allow scriptPubKey to outsource its verification. It also
 replaces BIP 16, which is identical in terms of protocol, but suggests a
@@ -178,7 +177,7 @@ network overwrites the attacker's invalid block.</p>
 that they know will be invalidated by the rest of the network. It is
 difficult because creating blocks is difficult and users should not
 accept 1-confirmation transactions for higher-value transactions.</p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>hashScriptCheck transactions are non-standard to old implementations,
 which will (typically) not relay them nor include them in blocks.</p>
 <p>Old implementations will validate that scriptCheck's hash value matches
@@ -208,20 +207,20 @@ approximately 55% of the network supporting the new feature.</p>
 <p>If a majority of hashing power does not support the new validation
 rules, then rollout will be postponed (or rejected if it becomes clear
 that a majority will never be achieved).</p>
-<h2 id="forwards-compatibility">Forwards Compatibility</h2>
+<h2 id="Forwards_Compatibility">Forwards Compatibility</h2>
 <p>The first two bytes of hashScriptCheck specify the hash algorithm and
 length used to verify scriptCheck. This BIP only allows Bitcoin's
 Hash160 algorithm, but leaves open the possibility of a future BIP
 implementing others.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
-<p><a href="https://github.com/gavinandresen/bitcoin-git/tree/pay_to_script_hash">https://github.com/gavinandresen/bitcoin-git/tree/pay_to_script_hash</a></p>
-<h2 id="see-also">See Also</h2>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/gavinandresen/bitcoin-git/tree/pay_to_script_hash">https://github.com/gavinandresen/bitcoin-git/tree/pay_to_script_hash</a></p>
+<h2 id="See_Also">See Also</h2>
 <ul>
-<li>The <a href="https://bips.dev/18/bip-0013.mediawiki" title="wikilink">Address format for Pay to Script Hash
+<li>The <a href="/13">Address format for Pay to Script Hash
 BIP</a></li>
-<li><a href="https://bips.dev/18/bip-0016.mediawiki" title="wikilink">BIP 16 - Pay to Script Hash (aka
+<li><a href="/16">BIP 16 - Pay to Script Hash (aka
 &quot;/P2SH/&quot;)</a></li>
-<li>M-of-N Multisignature Transactions <a href="https://bips.dev/18/bip-0011.mediawiki" title="wikilink">BIP
+<li>M-of-N Multisignature Transactions <a href="/11">BIP
 11</a></li>
 </ul>
 
@@ -231,7 +230,7 @@ BIP</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

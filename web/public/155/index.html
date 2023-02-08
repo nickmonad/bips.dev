@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,52 +46,52 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 155
-  Layer: Peer Services
-  Title: addrv2 message
-  Author: Wladimir J. van der Laan &lt;laanwj@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0155
-  Status: Draft
-  Type: Standards Track
-  Created: 2019-02-27
-  License: BSD-2-Clause
-</span></code></pre><h2 id="introduction">Introduction</h2>
-<h3 id="abstract">Abstract</h3>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 155
+</span><span>  Layer: Peer Services
+</span><span>  Title: addrv2 message
+</span><span>  Author: Wladimir J. van der Laan &lt;laanwj@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0155
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2019-02-27
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Introduction">Introduction</h2>
+<h3 id="Abstract">Abstract</h3>
 <p>This document proposes a new P2P message to gossip longer node addresses
 over the P2P network. This is required to support new-generation Onion
 addresses, I2P, and potentially other networks that have longer endpoint
 addresses than fit in the 128 bits of the current <code>addr</code> message.</p>
-<h3 id="copyright">Copyright</h3>
+<h3 id="Copyright">Copyright</h3>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h3 id="motivation">Motivation</h3>
+<h3 id="Motivation">Motivation</h3>
 <p>Tor v3 hidden services are part of the stable release of Tor since
 version 0.3.2.9. They have various advantages compared to the old hidden
-services, among which better encryption and privacy [1]. These
-services have 256 bit addresses and thus do not fit in the existing
-<code>addr</code> message, which encapsulates onion addresses in OnionCat IPv6
-addresses.</p>
+services, among which better encryption and privacy <sup class="footnote-reference"><a href="#1">1</a></sup>. These services
+have 256 bit addresses and thus do not fit in the existing <code>addr</code>
+message, which encapsulates onion addresses in OnionCat IPv6 addresses.</p>
 <p>Other transport-layer protocols such as I2P have always used longer
 addresses. This change would make it possible to gossip such addresses
 over the P2P network, so that other peers can connect to them.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <blockquote>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
-document are to be interpreted as described in RFC 2119[2].</p>
+document are to be interpreted as described in RFC 2119<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
 </blockquote>
-<p>The <code>addrv2</code> message is defined as a message where <code>pchCommand == &quot;addrv2&quot;</code>. It is serialized in the standard encoding for P2P messages.
-Its format is similar to the current <code>addr</code> message format, with the
-difference that the fixed 16-byte IP address is replaced by a network ID
-and a variable-length address, and the services format has been changed
-to
-<a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">CompactSize</a>.</p>
+<p>The <code>addrv2</code> message is defined as a message where
+<code>pchCommand == &quot;addrv2&quot;</code>. It is serialized in the standard encoding for
+P2P messages. Its format is similar to the current <code>addr</code> message
+format, with the difference that the fixed 16-byte IP address is
+replaced by a network ID and a variable-length address, and the services
+format has been changed to
+<a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">CompactSize</a>.</p>
 <p>This means that the message contains a serialized <code>std::vector</code> of the
 following structure:</p>
 <table><thead><tr><th>Type</th><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>uint32_t</code></td><td><code>time</code></td><td>Time that this node was last seen as connected to the network. A time in Unix epoch time format.</td></tr>
-<tr><td><code>CompactSize</code></td><td><code>services</code></td><td>Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">CompactSize</a>.</td></tr>
+<tr><td><code>CompactSize</code></td><td><code>services</code></td><td>Service bits. A bit field that is 64 bits wide, encoded in <a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">CompactSize</a>.</td></tr>
 <tr><td><code>uint8_t</code></td><td><code>networkID</code></td><td>Network identifier. An 8-bit value that specifies which network is addressed.</td></tr>
 <tr><td><code>std::vector</code>&lt;uint8_t&gt;</td><td><code>addr</code></td><td>Network address. The interpretation depends on networkID.</td></tr>
 <tr><td><code>uint16_t</code></td><td><code>port</code></td><td>Network port. If not relevant for the network this MUST be 0.</td></tr>
@@ -123,7 +123,7 @@ different length than specified in this table for a specific network ID,
 as these are meaningless.</p>
 <p>See the appendices for the address encodings to be used for the various
 networks.</p>
-<h2 id="signaling-support-and-compatibility">Signaling support and compatibility</h2>
+<h2 id="Signaling_support_and_compatibility">Signaling support and compatibility</h2>
 <p>Introduce a new message type <code>sendaddrv2</code>. Sending such a message
 indicates that a node can understand and prefers to receive <code>addrv2</code>
 messages instead of <code>addr</code> messages. I.e. &quot;Send me addrv2&quot;. Sending or
@@ -134,15 +134,15 @@ message from a peer and prior to sending the <code>verack</code> message.</p>
 <p>For older peers, that did not emit <code>sendaddrv2</code>, keep sending the legacy
 <code>addr</code> message, ignoring addresses with the newly introduced address
 types.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>The reference implementation is available at (to be done)</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>- Jonas Schnelli: change <code>services</code> field to
-<a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">CompactSize</a>,
+<a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">CompactSize</a>,
 to make the message more compact in the likely case instead of always
 using 8 bytes.</p>
 <p>- Gregory Maxwell: various suggestions regarding extensibility</p>
-<h2 id="appendix-a-tor-v2-address-encoding">Appendix A: Tor v2 address encoding</h2>
+<h2 id="Appendix_A:_Tor_v2_address_encoding">Appendix A: Tor v2 address encoding</h2>
 <p>The new message introduces a separate network ID for <code>TORV2</code>.</p>
 <p>Clients MUST send Tor hidden service addresses with this network ID,
 with the 80-bit hidden service ID in the address field. This is the same
@@ -150,46 +150,53 @@ as the representation in the legacy <code>addr</code> message, minus the 6 byte
 prefix of the OnionCat wrapping.</p>
 <p>Clients SHOULD ignore OnionCat (<code>fd87:d87e:eb43::/48</code>) addresses on
 receive if they come with the <code>IPV6</code> network ID.</p>
-<h2 id="appendix-b-tor-v3-address-encoding">Appendix B: Tor v3 address encoding</h2>
-<p>According to the spec [3], next-gen <code>.onion</code> addresses are encoded as
+<h2 id="Appendix_B:_Tor_v3_address_encoding">Appendix B: Tor v3 address encoding</h2>
+<p>According to the spec <sup class="footnote-reference"><a href="#3">3</a></sup>, next-gen <code>.onion</code> addresses are encoded as
 follows:</p>
-<pre style="background-color:#fafafa;">
-<code>onion_address = base32(PUBKEY | CHECKSUM | VERSION) + &quot;.onion&quot;
- CHECKSUM = H(&quot;.onion checksum&quot; | PUBKEY | VERSION)[:2]
-
- where:
-   - PUBKEY is the 32 bytes ed25519 master pubkey of the hidden service
-   - VERSION is a one byte version field (default value '\x03')
-   - &quot;.onion checksum&quot; is a constant string
-   - CHECKSUM is truncated to two bytes before inserting it in onion_address
-   - H() is the SHA3-256 cryptographic hash function
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>onion_address = base32(PUBKEY | CHECKSUM | VERSION) + &quot;.onion&quot;
+</span><span> CHECKSUM = H(&quot;.onion checksum&quot; | PUBKEY | VERSION)[:2]
+</span><span>
+</span><span> where:
+</span><span>   - PUBKEY is the 32 bytes ed25519 master pubkey of the hidden service
+</span><span>   - VERSION is a one byte version field (default value &#39;\x03&#39;)
+</span><span>   - &quot;.onion checksum&quot; is a constant string
+</span><span>   - CHECKSUM is truncated to two bytes before inserting it in onion_address
+</span><span>   - H() is the SHA3-256 cryptographic hash function
+</span></code></pre>
 <p>Tor v3 addresses MUST be sent with the <code>TORV3</code> network ID, with the
 32-byte PUBKEY part in the address field. As VERSION will always be
 '\x03' in the case of v3 addresses, this is enough to reconstruct the
 onion address.</p>
-<h2 id="appendix-c-i2p-address-encoding">Appendix C: I2P address encoding</h2>
-<p>Like Tor, I2P naming uses a base32-encoded address format[4].</p>
+<h2 id="Appendix_C:_I2P_address_encoding">Appendix C: I2P address encoding</h2>
+<p>Like Tor, I2P naming uses a base32-encoded address format<sup class="footnote-reference"><a href="#4">4</a></sup>.</p>
 <p>I2P uses 52 characters (256 bits) to represent the full SHA-256 hash,
 followed by <code>.b32.i2p</code>.</p>
 <p>I2P addresses MUST be sent with the <code>I2P</code> network ID, with the decoded
 SHA-256 hash as address field.</p>
-<h2 id="appendix-d-cjdns-address-encoding">Appendix D: Cjdns address encoding</h2>
-<p>Cjdns addresses are simply IPv6 addresses in the <code>fc00::/8</code> range[5].
+<h2 id="Appendix_D:_Cjdns_address_encoding">Appendix D: Cjdns address encoding</h2>
+<p>Cjdns addresses are simply IPv6 addresses in the <code>fc00::/8</code> range<sup class="footnote-reference"><a href="#5">5</a></sup>.
 They MUST be sent with the <code>CJDNS</code> network ID.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <references/>
-<ol>
-<li><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification -
-Version 3</a></li>
-<li><a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a></li>
-<li><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification - Version 3: Encoding onion
-addresses</a></li>
-<li><a href="https://geti2p.net/en/docs/naming#base32">I2P: Naming and address
-book</a></li>
-<li><a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together">Cjdns whitepaper: Pulling It All
-Together</a></li>
-</ol>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a rel="noopener" target="_blank" href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification - Version
+3</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc2119">RFC 2119</a></p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><a rel="noopener" target="_blank" href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt">Tor Rendezvous Specification - Version 3: Encoding onion
+addresses</a></p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><a rel="noopener" target="_blank" href="https://geti2p.net/en/docs/naming#base32">I2P: Naming and address
+book</a></p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together">Cjdns whitepaper: Pulling It All
+Together</a></p>
+</div>
 
     </div>
 
@@ -197,7 +204,7 @@ Together</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

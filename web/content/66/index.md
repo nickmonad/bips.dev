@@ -14,18 +14,16 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki"
 +++
 
-``` 
-  BIP: 66
-  Layer: Consensus (soft fork)
-  Title: Strict DER signatures
-  Author: Pieter Wuille <pieter.wuille@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0066
-  Status: Final
-  Type: Standards Track
-  Created: 2015-01-10
-  License: BSD-2-Clause
-```
+      BIP: 66
+      Layer: Consensus (soft fork)
+      Title: Strict DER signatures
+      Author: Pieter Wuille <pieter.wuille@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0066
+      Status: Final
+      Type: Standards Track
+      Created: 2015-01-10
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -57,10 +55,9 @@ would want to remove all of OpenSSL from the consensus code.
 
 ## Specification
 
-Every signature passed to OP\_CHECKSIG, OP\_CHECKSIGVERIFY,
-OP\_CHECKMULTISIG, or OP\_CHECKMULTISIGVERIFY, to which ECDSA
-verification is applied, must be encoded using strict DER encoding (see
-further).
+Every signature passed to OP_CHECKSIG, OP_CHECKSIGVERIFY,
+OP_CHECKMULTISIG, or OP_CHECKMULTISIGVERIFY, to which ECDSA verification
+is applied, must be encoded using strict DER encoding (see further).
 
 These operators all perform ECDSA verifications on pubkey/signature
 pairs, iterating from the top of the stack backwards. For each such
@@ -97,56 +94,56 @@ DER is specified in <https://www.itu.int/rec/T-REC-X.690/en> .
         // * S: arbitrary-length big-endian encoded S value. The same rules apply.
         // * sighash: 1-byte value indicating what data is hashed (not part of the DER
         //   signature)
-    
+
         // Minimum and maximum size constraints.
         if (sig.size() < 9) return false;
         if (sig.size() > 73) return false;
-    
+
         // A signature is of type 0x30 (compound).
         if (sig[0] != 0x30) return false;
-    
+
         // Make sure the length covers the entire signature.
         if (sig[1] != sig.size() - 3) return false;
-    
+
         // Extract the length of the R element.
         unsigned int lenR = sig[3];
-    
+
         // Make sure the length of the S element is still inside the signature.
         if (5 + lenR >= sig.size()) return false;
-    
+
         // Extract the length of the S element.
         unsigned int lenS = sig[5 + lenR];
-    
+
         // Verify that the length of the signature matches the sum of the length
         // of the elements.
         if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
      
         // Check whether the R element is an integer.
         if (sig[2] != 0x02) return false;
-    
+
         // Zero-length integers are not allowed for R.
         if (lenR == 0) return false;
-    
+
         // Negative numbers are not allowed for R.
         if (sig[4] & 0x80) return false;
-    
+
         // Null bytes at the start of R are not allowed, unless R would
         // otherwise be interpreted as a negative number.
         if (lenR > 1 && (sig[4] == 0x00) && !(sig[5] & 0x80)) return false;
-    
+
         // Check whether the S element is an integer.
         if (sig[lenR + 4] != 0x02) return false;
-    
+
         // Zero-length integers are not allowed for S.
         if (lenS == 0) return false;
-    
+
         // Negative numbers are not allowed for S.
         if (sig[lenR + 6] & 0x80) return false;
-    
+
         // Null bytes at the start of S are not allowed, unless S would otherwise be
         // interpreted as a negative number.
         if (lenS > 1 && (sig[lenR + 6] == 0x00) && !(sig[lenR + 7] & 0x80)) return false;
-    
+
         return true;
     }
 
@@ -165,7 +162,7 @@ is any invalid and non-DER-compliant signature.
 5.  `F' P1 CHECKSIG` fails (unchanged)
 6.  `F' P1 CHECKSIG NOT` fails (<b>changed</b>)
 
-<!-- end list -->
+<!-- -->
 
 1.  `0 S1' S2 2 P1 P2 2 CHECKMULTISIG` fails (<b>changed</b>)
 2.  `0 S1' S2 2 P1 P2 2 CHECKMULTISIG NOT` fails (unchanged)
@@ -210,8 +207,8 @@ who gave feedback about this document as well.
 
 ## Disclosures
 
-  - Subsequent to the network-wide adoption and enforcement of this BIP,
-    the author
-    [disclosed](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-July/009697.html)
-    that strict DER signatures provided an indirect solution to a
-    consensus bug he had previously discovered.
+- Subsequent to the network-wide adoption and enforcement of this BIP,
+  the author
+  [disclosed](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-July/009697.html)
+  that strict DER signatures provided an indirect solution to a
+  consensus bug he had previously discovered.

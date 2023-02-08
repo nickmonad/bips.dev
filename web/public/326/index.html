@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,24 +46,24 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 326
-  Layer: Applications
-  Title: Anti-fee-sniping in taproot transactions
-  Author: Chris Belcher &lt;belcher@riseup.net&gt;
-  Status: Draft
-  Type: Informational
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0326
-  Created: 2021-06-10
-  License: CC0-1.0
-  Post-History: 2021-6-10: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-June/019048.html
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 326
+</span><span>  Layer: Applications
+</span><span>  Title: Anti-fee-sniping in taproot transactions
+</span><span>  Author: Chris Belcher &lt;belcher@riseup.net&gt;
+</span><span>  Status: Draft
+</span><span>  Type: Informational
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0326
+</span><span>  Created: 2021-06-10
+</span><span>  License: CC0-1.0
+</span><span>  Post-History: 2021-6-10: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-June/019048.html
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document proposes a certain type of wallet behaviour which uses
 BIP341 taproot[1]. It provides a greater anonymity set for off-chain
 protocols which will make use of point-time-locked contracts (PTLCs)
 such as CoinSwap, Lightning and Discrete Log Contracts.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>With taproot recently added to bitcoin, and wallet software about to
 implement taproot wallets, we are in a unique position to improve the
 privacy of off-chain protocols if we act soon.</p>
@@ -88,8 +88,8 @@ this could greatly improve the privacy and fungibility of bitcoin. The
 community and wallet developers should act now to implement this so that
 the anonymity set of nSequence transactions starts to be built up as
 soon as taproot itself becomes adopted by wallets.</p>
-<h2 id="background">Background</h2>
-<h3 id="fee-sniping">Fee sniping</h3>
+<h2 id="Background">Background</h2>
+<h3 id="Fee_sniping">Fee sniping</h3>
 <p>Fee sniping is a hypothetical outcome of bad incentives to bitcoin
 mining in the low-inflation future. For a large miner the value of the
 transactions in the best block and the mempool can be exceeded by the
@@ -101,7 +101,7 @@ Anti-fee-sniping adds to the incentive to move the blockchain forward.</p>
 <p>The nLockTime field is being used this way today. It is implemented in
 Bitcoin Core[2] and Electrum[3], and adopted by approximately 20% of
 all recent transactions[4].</p>
-<h3 id="absolute-vs-relative-locktime">Absolute vs relative locktime</h3>
+<h3 id="Absolute_vs_relative_locktime">Absolute vs relative locktime</h3>
 <p>nLockTime is an absolute lock time, it allows the transaction to only be
 mined after a certain block height or unix time. The widespread adoption
 of it might have provided a good anonymity set for off-chain protocols.
@@ -111,7 +111,7 @@ CoinSwaps) to remain open indefinitely as the countdown clock only
 starts ticking when the closing transaction is confirmed.</p>
 <p>Absolute locktimes are also still used, so we should keep using
 nLockTime, but also often use nSequence.</p>
-<h3 id="transaction-pinning">Transaction pinning</h3>
+<h3 id="Transaction_pinning">Transaction pinning</h3>
 <p>Transaction pinning[8] is a method for making fee bumping
 prohibitively expensive by abusing node protections against attacks that
 can waste bandwidth, CPU, and memory. This can make fee management more
@@ -124,7 +124,7 @@ in bitcoin spend inputs that were created just one or two blocks ago,
 following this BIP such transactions with `nSequence=1` would also
 provide cover traffic for off-chain transactions which disable
 transaction pinning.</p>
-<h2 id="specifications">Specifications</h2>
+<h2 id="Specifications">Specifications</h2>
 <p>When wallets create transactions spending UTXOs protected by BIP341
 taproot, they should set either an nLockTime value or nSequence values
 to discourage fee sniping, by allowing the transaction to only be mined
@@ -143,39 +143,39 @@ Electrum source codes linked in the references for an example.</p>
 <p>nSequence can only encode up to 65535 for the block distance[5] so if
 the UTXOs being spent have more than 65535 confirmations, then the
 wallet should use nLockTime instead.</p>
-<h3 id="pseudocode">Pseudocode</h3>
-<pre style="background-color:#fafafa;">
-<code>def apply_anti_fee_sniping_fields(transaction, rbf_set):
-    # bip68 requires v=2
-    transaction.version = 2
-    # Initialize all nsequence to indicate the requested RBF state
-    # nsequence can not be 2**32 - 1 in order for nlocktime to take effect
-    for input in transaction.inputs:
-        if rbf_set:
-            input.nsequence = 2**32 - 3
-        else:
-            input.nsequence = 2**32 - 2
-    # always set nlocktime if any of the transaction inputs have more
-    # confirmations than 65535 or are not taproot inputs, or have
-    # unconfirmed inputs
-    # otherwise choose either nlocktime or nsequence with 50% probability
-    if not rbf_set || any(map(lambda input: input.confirmations() &gt; 65535
-            || !input.is_taproot() || input.confirmations() == 0,
-            transaction.inputs)) || randint(2) == 0:
-        transaction.nlocktime = blockchain.height()
-        if randint(10) == 0:
-            transaction.nlocktime = max(0, transaction.nlocktime
-            - randint(0, 99))
-        # nsequence must be set in order for nlocktime to take effect
-    else:
-        transaction.nlocktime = 0
-        input_index = randint(len(transaction.inputs))
-        transaction.inputs[input_index].nsequence = transaction.inputs\
-            [input_index].confirmations()
-        if randint(10) == 0:
-            transaction.inputs[input_index].nsequence = max(1,
-                transaction.inputs[input_index].nsequence - randint(0, 99))
-</code></pre><h2 id="compatibility">Compatibility</h2>
+<h3 id="Pseudocode">Pseudocode</h3>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>def apply_anti_fee_sniping_fields(transaction, rbf_set):
+</span><span>    # bip68 requires v=2
+</span><span>    transaction.version = 2
+</span><span>    # Initialize all nsequence to indicate the requested RBF state
+</span><span>    # nsequence can not be 2**32 - 1 in order for nlocktime to take effect
+</span><span>    for input in transaction.inputs:
+</span><span>        if rbf_set:
+</span><span>            input.nsequence = 2**32 - 3
+</span><span>        else:
+</span><span>            input.nsequence = 2**32 - 2
+</span><span>    # always set nlocktime if any of the transaction inputs have more
+</span><span>    # confirmations than 65535 or are not taproot inputs, or have
+</span><span>    # unconfirmed inputs
+</span><span>    # otherwise choose either nlocktime or nsequence with 50% probability
+</span><span>    if not rbf_set || any(map(lambda input: input.confirmations() &gt; 65535
+</span><span>            || !input.is_taproot() || input.confirmations() == 0,
+</span><span>            transaction.inputs)) || randint(2) == 0:
+</span><span>        transaction.nlocktime = blockchain.height()
+</span><span>        if randint(10) == 0:
+</span><span>            transaction.nlocktime = max(0, transaction.nlocktime
+</span><span>            - randint(0, 99))
+</span><span>        # nsequence must be set in order for nlocktime to take effect
+</span><span>    else:
+</span><span>        transaction.nlocktime = 0
+</span><span>        input_index = randint(len(transaction.inputs))
+</span><span>        transaction.inputs[input_index].nsequence = transaction.inputs\
+</span><span>            [input_index].confirmations()
+</span><span>        if randint(10) == 0:
+</span><span>            transaction.inputs[input_index].nsequence = max(1,
+</span><span>                transaction.inputs[input_index].nsequence - randint(0, 99))
+</span></code></pre>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This BIP doesn't need any consensus changes. It can be adopted
 unilaterally and gradually by wallets. Although for greater privacy it
 would be good for software to adopt it as soon as possible. Ideally
@@ -185,27 +185,27 @@ nSequence code.</p>
 <p>All wallet software already keeps track of how many confirmations its
 UTXOs have, so the information required to set the nSequence field is
 already available.</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>Originally suggested by David Harding[6] and mentioned to me by
 ZmnSCPxj.</p>
 <p>Thanks to craigraw for suggesting a new value for input nsequence in the
 absolute locktime case[7].</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the Creative Commons CC0 1.0 Universal
 licence.</p>
-<h2 id="references">References</h2>
-<p>[1] <a href="https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki</a></p>
-<p>[2] <a href="https://github.com/bitcoin/bitcoin/pull/2340">https://github.com/bitcoin/bitcoin/pull/2340</a></p>
+<h2 id="References">References</h2>
+<p>[1] <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki</a></p>
+<p>[2] <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/2340">https://github.com/bitcoin/bitcoin/pull/2340</a></p>
 <p>[3]
-<a href="https://github.com/spesmilo/electrum/blob/7e6d65ec11c0dccfc24478471c5951d3ae586937/electrum/wallet.py#L211-L224">https://github.com/spesmilo/electrum/blob/7e6d65ec11c0dccfc24478471c5951d3ae586937/electrum/wallet.py#L211-L224</a></p>
+<a rel="noopener" target="_blank" href="https://github.com/spesmilo/electrum/blob/7e6d65ec11c0dccfc24478471c5951d3ae586937/electrum/wallet.py#L211-L224">https://github.com/spesmilo/electrum/blob/7e6d65ec11c0dccfc24478471c5951d3ae586937/electrum/wallet.py#L211-L224</a></p>
 <p>[4]
-<a href="https://txstats.com/dashboard/db/blocks-statistics?panelId=4&amp;fullscreen&amp;orgId=1">https://txstats.com/dashboard/db/blocks-statistics?panelId=4&amp;fullscreen&amp;orgId=1</a></p>
-<p>[5] <a href="https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki</a></p>
+<a rel="noopener" target="_blank" href="https://txstats.com/dashboard/db/blocks-statistics?panelId=4&amp;fullscreen&amp;orgId=1">https://txstats.com/dashboard/db/blocks-statistics?panelId=4&amp;fullscreen&amp;orgId=1</a></p>
+<p>[5] <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki</a></p>
 <p>[6]
-<a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-January/002412.html">https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-January/002412.html</a></p>
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-January/002412.html">https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-January/002412.html</a></p>
 <p>[7]
-<a href="https://github.com/sparrowwallet/sparrow/issues/161#issuecomment-925003231">https://github.com/sparrowwallet/sparrow/issues/161#issuecomment-925003231</a></p>
-<p>[8] <a href="https://bitcoinops.org/en/topics/transaction-pinning/">https://bitcoinops.org/en/topics/transaction-pinning/</a></p>
+<a rel="noopener" target="_blank" href="https://github.com/sparrowwallet/sparrow/issues/161#issuecomment-925003231">https://github.com/sparrowwallet/sparrow/issues/161#issuecomment-925003231</a></p>
+<p>[8] <a rel="noopener" target="_blank" href="https://bitcoinops.org/en/topics/transaction-pinning/">https://bitcoinops.org/en/topics/transaction-pinning/</a></p>
 
     </div>
 
@@ -213,7 +213,7 @@ licence.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

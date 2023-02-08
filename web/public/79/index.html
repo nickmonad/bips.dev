@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,19 +46,19 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 79
-  Layer: Applications
-  Title: Bustapay :: a practical coinjoin protocol
-  Author: Ryan Havar &lt;rhavar@protonmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0079
-  Status: Replaced
-  Type: Informational
-  Created: 2018-10-05
-  License: CC0-1.0
-  Superseded-By: 78
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 79
+</span><span>  Layer: Applications
+</span><span>  Title: Bustapay :: a practical coinjoin protocol
+</span><span>  Author: Ryan Havar &lt;rhavar@protonmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0079
+</span><span>  Status: Replaced
+</span><span>  Type: Informational
+</span><span>  Created: 2018-10-05
+</span><span>  License: CC0-1.0
+</span><span>  Superseded-By: 78
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>The way bitcoin transactions are normally created leaks more information
 than desirable, and as a result has been exploited by unreasonably
 effective blockchain analysis techniques to jeopardize important
@@ -69,10 +69,10 @@ that busts some analysis assumptions to the immediate benefit of the
 sender and receiver. Furthermore it does so in such a way that gives a
 significant amount of control to the receiver to help manage their utxo
 set size, a constant problem for bitcoin merchants.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>One of the most powerful blockchain analysis heuristics has been to
 assume all inputs of a transaction are controlled by a single party
 unless otherwise known (such as by the distinctive structure of a
@@ -102,34 +102,34 @@ send amounts.</p>
 <p>It is worth noting that this specification has eschewed complexity and
 potentially useful extensions on the assumption that simplicity is of
 the most important to encourage adoption.</p>
-<h2 id="overview">Overview</h2>
+<h2 id="Overview">Overview</h2>
 <p>A bustapay payment is made from a sender to a receiver.</p>
-<h4 id="step-1-sender-creates-a-bitcoin-transaction-paying-the-receiver">Step 1. Sender creates a bitcoin transaction paying the receiver</h4>
+<h4 id="Step_1._Sender_creates_a_bitcoin_transaction_paying_the_receiver">Step 1. Sender creates a bitcoin transaction paying the receiver</h4>
 <p>This transaction must use segwit for all inputs, and be fully valid and
 signed. The transaction must be eligible for propagation on the network
 (but not done so at this stage)</p>
-<h4 id="step-2-sender-gives-the-template-transaction-to-the-receiver">Step 2. Sender gives the &quot;template transaction&quot; to the receiver</h4>
+<h4 id="Step_2._Sender_gives_the_&quot;template_transaction&quot;_to_the_receiver">Step 2. Sender gives the &quot;template transaction&quot; to the receiver</h4>
 <p>This is done via an HTTP POST request, sent to a &quot;bustapay url&quot;</p>
-<h4 id="step-3-receiver-processes-the-transaction-and-returns-a-partially-signed-coinjoin">Step 3. Receiver processes the transaction and returns a partially signed coinjoin</h4>
+<h4 id="Step_3._Receiver_processes_the_transaction_and_returns_a_partially_signed_coinjoin">Step 3. Receiver processes the transaction and returns a partially signed coinjoin</h4>
 <p>The receiver validates the transaction, and pays himself. The receiver
 then adds one or more of his own inputs (known as the <em>contributed
 inputs</em>) and (optionally) increases the output that pays himself
 (generally by the sum of the <em>contributed inputs</em>). Doing so creates a
 <em>partial transaction</em>, which the receiver returns to the sender. It is
 called such as it requires the sender to re-sign his own inputs.</p>
-<h4 id="step-4-sender-validates-re-signs-and-propagates-on-the-bitcoin-network">Step 4. Sender validates, re-signs, and propagates on the bitcoin network</h4>
+<h4 id="Step_4._Sender_validates,_re-signs,_and_propagates_on_the_bitcoin_network">Step 4. Sender validates, re-signs, and propagates on the bitcoin network</h4>
 <p>The sender MUST validate the <em>partial transaction</em> was changed correctly
 and non-maliciously (to allow using potentially untrusted communication
 channels), re-sign its original inputs and propagate the final
 transaction over the bitcoin network.</p>
-<h4 id="step-5-receiver-observes-the-finalized-transaction-on-the-bitcoin-network">Step 5. Receiver observes the finalized transaction on the bitcoin network</h4>
+<h4 id="Step_5._Receiver_observes_the_finalized_transaction_on_the_bitcoin_network">Step 5. Receiver observes the finalized transaction on the bitcoin network</h4>
 <p>Once the receiver has seen the finalized transactions on the network
 (and has enough confirmations) it can process it like a normal payment
 for the sent amount (as opposed to the amount that it looks like on the
 network). If the receiver does not see the finalized transaction after a
 timeout, they will propagate the original &quot;template transaction&quot;, which
 ensures the payment happens and functions a strong anti-DoS mechanism.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>The standard way of letting a sender know where to send a bustapay
 transaction is done via a bip21 encoded address. The key value &quot;bpu&quot;
 (short for &quot;BustaPayUrl&quot;) should be used. An example of such address
@@ -156,7 +156,7 @@ assume the receiver will, and act accordingly (either retry with
 adjustments or just propagate the transaction). It is imperative that
 the sender never finds themselves in a situation where two payments to
 the sender could be valid.</p>
-<h3 id="contributed-input-choice">Contributed Input Choice</h3>
+<h3 id="Contributed_Input_Choice">Contributed Input Choice</h3>
 <p>The receiver must add at least one input to the transaction (the
 &quot;contributed inputs&quot;). If the receiver has no inputs, it should use a
 500 internal server error, so the client can send the transaction as per
@@ -170,13 +170,13 @@ when it's seen the same inputs.</p>
 <p>It is strongly preferable that the receiver makes an effort to pick a
 contributed input of the same type as the other transaction inputs if
 possible.</p>
-<h3 id="output-adjustment">Output Adjustment</h3>
+<h3 id="Output_Adjustment">Output Adjustment</h3>
 <p>After adding inputs to the transaction, the receiver generally will want
 to adjust the output that pays himself by increasing it by the sum of
 the contributed input amounts (minus any fees he wants to contribute).
 However the only strict requirement is that the receiver *must never*
 remove inputs, and *must not* ever decrease any output amount.</p>
-<h3 id="returning-the-partial-transaction">Returning the partial transaction</h3>
+<h3 id="Returning_the_partial_transaction">Returning the partial transaction</h3>
 <p>The receiver must sign all contributed inputs in the partial
 transaction. The partial transaction should also remove all witnesses
 from the the original template transaction as they are no longer valid,
@@ -185,19 +185,19 @@ partial transaction as a binary-encoded HTTP response with a status code
 of 200. To ensure compatibility with web-wallets and
 browser-based-tools, all responses (including errors) must contain the
 HTTP header &quot;Access-Control-Allow-Origin: *&quot;</p>
-<h3 id="sender-validation">Sender Validation</h3>
+<h3 id="Sender_Validation">Sender Validation</h3>
 <p>The sender *must* do important validation on the partial transaction.
 They *must* verify:</p>
 <ul>
 <li>All template transaction inputs are in the partial transaction (but
 perhaps different order) and have the same sequence numbers.</li>
-<li>The partial transaction contains at least one new (and signed)
-segwit input (owned by the receiver)</li>
+<li>The partial transaction contains at least one new (and signed) segwit
+input (owned by the receiver)</li>
 <li>All outputs from the template transaction exist in the partial
 transaction, except they are allowed to be reordered and have their
 amounts increased (but *never* decreased)</li>
 </ul>
-<h3 id="creating-final-transaction">Creating Final Transaction</h3>
+<h3 id="Creating_Final_Transaction">Creating Final Transaction</h3>
 <p>After validating the partial transaction, the sender signs all its
 inputs to create what is now the final transaction. It is important that
 the sender is careful to not be tricked by the receiver into signing
@@ -205,7 +205,7 @@ other inputs it owns. The sender must only sign inputs that existed in
 the template transaction. If the sender is not careful the receiver may
 &quot;contribute&quot; inputs that are actually owned with by the sender, with the
 hope the sender blindly signs everything.</p>
-<h3 id="transaction-publishing">Transaction Publishing</h3>
+<h3 id="Transaction_Publishing">Transaction Publishing</h3>
 <p>Once the final transaction is created, the sender should publish it
 directly onto the bitcoin network. If the sender does not do this after
 a reasonable time (e.g. 1 minute), the receiver should publish the
@@ -218,38 +218,38 @@ publishing the template transaction even after the finalized transaction
 is on the network (taking advantage of replace-by-fee) if the final
 transaction is not confirming and the template transaction has more
 fees.</p>
-<h3 id="implementation-notes">Implementation Notes</h3>
+<h3 id="Implementation_Notes">Implementation Notes</h3>
 <p>For anyone wanting to implement bustapay payments, here are some notes
 for receivers:</p>
 <ul>
 <li>A transaction can easily be checked if it's suitable for the mempool
 with testmempoolaccept in bitcoin core 0.17+</li>
-<li>Tracking transactions by txid is precarious. To keep your sanity
-make sure all inputs are segwit. But remember segwit does not
-prevent txid malleability unless you validate the transaction. So
-really make sure you're using testmempoolaccept at the very least</li>
+<li>Tracking transactions by txid is precarious. To keep your sanity make
+sure all inputs are segwit. But remember segwit does not prevent txid
+malleability unless you validate the transaction. So really make sure
+you're using testmempoolaccept at the very least</li>
 <li>Bustapay could be abused by a malicious party to query if you own a
 deposit address or not. So never accept a bustapay transaction that
 pays an already used deposit address</li>
-<li>You will need to keep a mapping of which utxos people have showed
-you and which you revealed. So if you see them again, you can reveal
-the same one of your own</li>
-<li>Check if the transaction was already sorted according to BIP69, if
-so ensure the result stays that way. Otherwise probably just shuffle
-the inputs/outputs</li>
+<li>You will need to keep a mapping of which utxos people have showed you
+and which you revealed. So if you see them again, you can reveal the
+same one of your own</li>
+<li>Check if the transaction was already sorted according to BIP69, if so
+ensure the result stays that way. Otherwise probably just shuffle the
+inputs/outputs</li>
 <li>A reference implementation is maintained at
-<a href="https://github.com/rhavar/bustapay">https://github.com/rhavar/bustapay</a> which functions as a wrapper
+<a rel="noopener" target="_blank" href="https://github.com/rhavar/bustapay">https://github.com/rhavar/bustapay</a> which functions as a wrapper
 around some RPC calls to bitcoin core's wallet.</li>
 <li>The sender must be careful of an attack where the receiver tries to
-add additional inputs that are controlled by the sender, with the
-hope that the sender blindly signs it.</li>
+add additional inputs that are controlled by the sender, with the hope
+that the sender blindly signs it.</li>
 </ul>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>Bustapay is an optional payment protocol and therefore has no backwards
 compatibility concerns. It in fact can only be supported in addition to
 normal transaction processing, as falling back to a normal bitcoin
 transaction is a required behavior.</p>
-<h2 id="credits">Credits</h2>
+<h2 id="Credits">Credits</h2>
 <p>The idea is obviously based upon Dr. Maxwell's seminal CoinJoin
 proposal, and reduced scope inspired by a simplification of the &quot;pay 2
 endpoint&quot; blog post by blockstream.</p>
@@ -260,7 +260,7 @@ endpoint&quot; blog post by blockstream.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

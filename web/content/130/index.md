@@ -14,18 +14,16 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0130.mediawiki"
 +++
 
-``` 
-  BIP: 130
-  Layer: Peer Services
-  Title: sendheaders message
-  Author: Suhas Daftuar <sdaftuar@chaincode.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0130
-  Status: Proposed
-  Type: Standards Track
-  Created: 2015-05-08
-  License: PD
-```
+      BIP: 130
+      Layer: Peer Services
+      Title: sendheaders message
+      Author: Suhas Daftuar <sdaftuar@chaincode.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0130
+      Status: Proposed
+      Type: Standards Track
+      Created: 2015-05-08
+      License: PD
 
 ## Abstract
 

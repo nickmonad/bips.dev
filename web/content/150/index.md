@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0150.mediawiki"
 +++
 
-``` 
-  BIP: 150
-  Layer: Peer Services
-  Title: Peer Authentication
-  Author: Jonas Schnelli <dev@jonasschnelli.ch>
-  Comments-Summary: Discouraged for implementation (one person)
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0150
-  Status: Draft
-  Type: Standards Track
-  Created: 2016-03-23
-  License: PD
-```
+      BIP: 150
+      Layer: Peer Services
+      Title: Peer Authentication
+      Author: Jonas Schnelli <dev@jonasschnelli.ch>
+      Comments-Summary: Discouraged for implementation (one person)
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0150
+      Status: Draft
+      Type: Standards Track
+      Created: 2016-03-23
+      License: PD
 
 ## Abstract
 
@@ -45,13 +43,13 @@ remote peer and ensure that they have not connected to a MITM
 
 Benefits of peer authentication:
 
-  - Peers can detect MITM attacks when connecting to known peers
-  - Peers can allow resource hungry transaction filtering only to
-    specific peers
-  - Peers can allow access to sensitive information that can lead to
-    node fingerprinting (fee estimation)
-  - Peers can allow custom message types (private extensions) to
-    authenticated peers
+- Peers can detect MITM attacks when connecting to known peers
+- Peers can allow resource hungry transaction filtering only to specific
+  peers
+- Peers can allow access to sensitive information that can lead to node
+  fingerprinting (fee estimation)
+- Peers can allow custom message types (private extensions) to
+  authenticated peers
 
 A simple authentication scheme based on elliptic cryptography will allow
 peers to identify each other and selectively allow access to restricted
@@ -104,11 +102,11 @@ Authentication based on this BIP will require both sides to
 authenticate. Signatures/public-keys will only be revealed if the remote
 peer can prove that they already know the remote identity-public-key.
 
-1.  \-\> Requesting peer sends `AUTHCHALLENGE` (hash)
+1.  -\> Requesting peer sends `AUTHCHALLENGE` (hash)
 2.  \<- Responding peer sends `AUTHREPLY` (signature)
-3.  \-\> Requesting peer sends `AUTHPROPOSE` (hash)
+3.  -\> Requesting peer sends `AUTHPROPOSE` (hash)
 4.  \<- Responding peer sends `AUTHCHALLENGE` (hash)
-5.  \-\> Requesting peer sends `AUTHREPLY` (signature)
+5.  -\> Requesting peer sends `AUTHREPLY` (signature)
 
 For privacy reasons, dropping the connection or aborting during the
 authentication process must not be allowed.
@@ -125,7 +123,7 @@ calculated with his own local identity-public-key. Fingerprinting the
 requesting peer is not possible.
 
 | Field Size | Description    | Data type | Comments                         |
-| ---------- | -------------- | --------- | -------------------------------- |
+|------------|----------------|-----------|----------------------------------|
 | 32bytes    | challenge-hash | hash      | <code>hash(encryption-session-ID |
 
 `challenge_type` is a single character. `i` if the
@@ -138,7 +136,7 @@ A peer must reply an `AUTHCHALLENGE`-message with an
 `AUTHREPLY`-message.
 
 | Field Size | Description | Data type                  | Comments                                                            |
-| ---------- | ----------- | -------------------------- | ------------------------------------------------------------------- |
+|------------|-------------|----------------------------|---------------------------------------------------------------------|
 | 64bytes    | signature   | normalized comp.-signature | A signature of the encryption-session-ID done with the identity-key |
 
 If the challenge-hash from the `AUTHCHALLENGE`-message did not match the
@@ -168,7 +166,7 @@ In case of no match, the responding `AUTHCHALLENGE`-message must
 contains 32 bytes of zeros.
 
 | Field Size | Description       | Data type | Comments                         |
-| ---------- | ----------------- | --------- | -------------------------------- |
+|------------|-------------------|-----------|----------------------------------|
 | 32bytes    | auth-propose-hash | hash      | <code>hash(encryption-session-ID |
 
 ## Post-Authentication Re-Keying
@@ -178,9 +176,8 @@ responding peer), both clients must re-key the symmetric encryption
 according to BIP151 while using **a slightly different re-key key
 derivation hash**.
 
-Both peers re-key with `hash(encryption-session-ID ||
-old_symmetric_cipher_key || requesting-peer-identity-public-key ||
-responding-peer-identity-public-key)`
+Both peers re-key with
+`hash(encryption-session-ID || old_symmetric_cipher_key || requesting-peer-identity-public-key || responding-peer-identity-public-key)`
 
 ## Identity-Addresses
 
@@ -223,9 +220,9 @@ Authentication
 ` AUTHCHALLENGE:`  
 `   [32 bytes, hash(encryption-session-ID || "i" || `<remote-peers-expected-identity-public-key>`)]`
 
-1.  Responding peer does create the same hash ` (encryption-session-ID
-    || "i" ||  `<remote-peers-expected-identity-public-key>`)` with its
-    local identity-public-key
+1.  Responding peer does create the same hash
+    `(encryption-session-ID || "i" || `<remote-peers-expected-identity-public-key>`)`
+    with its local identity-public-key
 2.  If the hash does not match, response with an `AUTHREPLY` message
     containing 64bytes of zeros.
 3.  In case of a match, response with an `AUTHREPLY` message
@@ -276,13 +273,13 @@ authorized peer identity-public-keys.
 
 ## References
 
-  - \[1\] [BIP 151: Peer-to-Peer Communication
-    Encryption](bip-0151.mediawiki "wikilink")
+- \[1\] [BIP 151: Peer-to-Peer Communication
+  Encryption](/151)
 
 ## Acknowledgements
 
-  - Gregory Maxwell and Pieter Wuille for most of the ideas in this BIP.
-  - Bryan Bishop for editing.
+- Gregory Maxwell and Pieter Wuille for most of the ideas in this BIP.
+- Bryan Bishop for editing.
 
 ## Copyright
 

@@ -14,17 +14,15 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0071.mediawiki"
 +++
 
-``` 
-  BIP: 71
-  Layer: Applications
-  Title: Payment Protocol MIME types
-  Author: Gavin Andresen <gavinandresen@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0071
-  Status: Final
-  Type: Standards Track
-  Created: 2013-07-29
-```
+      BIP: 71
+      Layer: Applications
+      Title: Payment Protocol MIME types
+      Author: Gavin Andresen <gavinandresen@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0071
+      Status: Final
+      Type: Standards Track
+      Created: 2013-07-29
 
 ## Abstract
 
@@ -43,7 +41,7 @@ The Media Type (Content-Type in HTML/email headers) for bitcoin protocol
 messages shall be:
 
 |                |                                    |
-| -------------- | ---------------------------------- |
+|----------------|------------------------------------|
 | Message        | Type/Subtype                       |
 | PaymentRequest | application/bitcoin-paymentrequest |
 | Payment        | application/bitcoin-payment        |

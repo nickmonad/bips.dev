@@ -14,18 +14,16 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki"
 +++
 
-``` 
-  BIP: 152
-  Layer: Peer Services
-  Title: Compact Block Relay
-  Author: Matt Corallo <bip152@bluematt.me>
-  Comments-Summary: Unanimously Recommended for implementation
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0152
-  Status: Final
-  Type: Standards Track
-  Created: 2016-04-27
-  License: PD
-```
+      BIP: 152
+      Layer: Peer Services
+      Title: Compact Block Relay
+      Author: Matt Corallo <bip152@bluematt.me>
+      Comments-Summary: Unanimously Recommended for implementation
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0152
+      Status: Final
+      Type: Standards Track
+      Created: 2016-04-27
+      License: PD
 
 ## Abstract
 
@@ -83,12 +81,12 @@ The "low-bandwidth" mode is enabled by setting the first boolean to 0 in
 a `sendcmpct` message. In this mode, peers send new block announcements
 with the usual inv/headers announcements (as per BIP130, and after fully
 validating the block). The receiving peer may then request the block
-using a MSG\_CMPCT\_BLOCK `getdata` request, which will receive a
-response of the header and short transaction IDs. In some cases no
-further round-trip is needed, and the receiver can reconstruct the block
-and process it as usual, taking the same 1.5\*RTT minimum time that
-nodes take today, though with significantly less bandwidth usage. When
-some transactions were not available from local sources (ie mempool), a
+using a MSG_CMPCT_BLOCK `getdata` request, which will receive a response
+of the header and short transaction IDs. In some cases no further
+round-trip is needed, and the receiver can reconstruct the block and
+process it as usual, taking the same 1.5\*RTT minimum time that nodes
+take today, though with significantly less bandwidth usage. When some
+transactions were not available from local sources (ie mempool), a
 `getblocktxn`/`blocktxn` roundtrip is necessary, bringing the latency to
 at least 2.5\*RTT in this case, again with significantly less bandwidth
 usage than today. Because TCP often exhibits worse transfer latency for
@@ -120,10 +118,10 @@ A PrefilledTransaction structure is used in HeaderAndShortIDs to provide
 a list of a few transactions explicitly.
 
 |            |             |            |                                                                                    |                                                       |
-| ---------- | ----------- | ---------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------- |
+|------------|-------------|------------|------------------------------------------------------------------------------------|-------------------------------------------------------|
 | Field Name | Type        | Size       | Encoding                                                                           | Purpose                                               |
 | index      | CompactSize | 1, 3 bytes | Compact Size, differentially encoded since the last PrefilledTransaction in a list | The index into the block at which this transaction is |
-| tx         | Transaction | variable   | As encoded in "tx" messages sent in response to getdata MSG\_TX                    | The transaction which is in the block at index index. |
+| tx         | Transaction | variable   | As encoded in "tx" messages sent in response to getdata MSG_TX                     | The transaction which is in the block at index index. |
 
 #### HeaderAndShortIDs
 
@@ -131,39 +129,39 @@ A HeaderAndShortIDs structure is used to relay a block header, the short
 transactions IDs used for matching already-available transactions, and a
 select few transactions which we expect a peer may be missing.
 
-|                      |                               |                                     |                                                                                 |                                                                                                               |
-| -------------------- | ----------------------------- | ----------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Field Name           | Type                          | Size                                | Encoding                                                                        | Purpose                                                                                                       |
-| header               | Block header                  | 80 bytes                            | First 80 bytes of the block as defined by the encoding used by "block" messages | The header of the block being provided                                                                        |
-| nonce                | uint64\_t                     | 8 bytes                             | Little Endian                                                                   | A nonce for use in short transaction ID calculations                                                          |
-| shortids\_length     | CompactSize                   | 1 or 3 bytes                        | As used to encode array lengths elsewhere                                       |                                                                                                               |
-| shortids             | List of 6-byte integers       | 6\*shortids\_length bytes           | Little Endian                                                                   | The short transaction IDs calculated from the transactions which were not provided explicitly in prefilledtxn |
-| prefilledtxn\_length | CompactSize                   | 1 or 3 bytes                        | As used to encode array lengths elsewhere                                       |                                                                                                               |
-| prefilledtxn         | List of PrefilledTransactions | variable size\*prefilledtxn\_length | As defined by PrefilledTransaction definition, above                            | Used to provide the coinbase transaction and a select few which we expect a peer may be missing               |
+|                     |                               |                                    |                                                                                 |                                                                                                               |
+|---------------------|-------------------------------|------------------------------------|---------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| Field Name          | Type                          | Size                               | Encoding                                                                        | Purpose                                                                                                       |
+| header              | Block header                  | 80 bytes                           | First 80 bytes of the block as defined by the encoding used by "block" messages | The header of the block being provided                                                                        |
+| nonce               | uint64_t                      | 8 bytes                            | Little Endian                                                                   | A nonce for use in short transaction ID calculations                                                          |
+| shortids_length     | CompactSize                   | 1 or 3 bytes                       | As used to encode array lengths elsewhere                                       |                                                                                                               |
+| shortids            | List of 6-byte integers       | 6\*shortids_length bytes           | Little Endian                                                                   | The short transaction IDs calculated from the transactions which were not provided explicitly in prefilledtxn |
+| prefilledtxn_length | CompactSize                   | 1 or 3 bytes                       | As used to encode array lengths elsewhere                                       |                                                                                                               |
+| prefilledtxn        | List of PrefilledTransactions | variable size\*prefilledtxn_length | As defined by PrefilledTransaction definition, above                            | Used to provide the coinbase transaction and a select few which we expect a peer may be missing               |
 
 #### BlockTransactionsRequest
 
 A BlockTransactionsRequest structure is used to list transaction indexes
 in a block being requested.
 
-|                 |                      |                               |                                                                        |                                                                          |
-| --------------- | -------------------- | ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Field Name      | Type                 | Size                          | Encoding                                                               | Purpose                                                                  |
-| blockhash       | Binary blob          | 32 bytes                      | The output from a double-SHA256 of the block header, as used elsewhere | The blockhash of the block which the transactions being requested are in |
-| indexes\_length | CompactSize          | 1 or 3 bytes                  | As used to encode array lengths elsewhere                              |                                                                          |
-| indexes         | List of CompactSizes | 1 or 3 bytes\*indexes\_length | Differentially encoded                                                 | The indexes of the transactions being requested in the block             |
+|                |                      |                              |                                                                        |                                                                          |
+|----------------|----------------------|------------------------------|------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| Field Name     | Type                 | Size                         | Encoding                                                               | Purpose                                                                  |
+| blockhash      | Binary blob          | 32 bytes                     | The output from a double-SHA256 of the block header, as used elsewhere | The blockhash of the block which the transactions being requested are in |
+| indexes_length | CompactSize          | 1 or 3 bytes                 | As used to encode array lengths elsewhere                              |                                                                          |
+| indexes        | List of CompactSizes | 1 or 3 bytes\*indexes_length | Differentially encoded                                                 | The indexes of the transactions being requested in the block             |
 
 #### BlockTransactions
 
 A BlockTransactions structure is used to provide some of the
 transactions in a block, as requested.
 
-|                      |                      |              |                                                                        |                                                                         |
-| -------------------- | -------------------- | ------------ | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Field Name           | Type                 | Size         | Encoding                                                               | Purpose                                                                 |
-| blockhash            | Binary blob          | 32 bytes     | The output from a double-SHA256 of the block header, as used elsewhere | The blockhash of the block which the transactions being provided are in |
-| transactions\_length | CompactSize          | 1 or 3 bytes | As used to encode array lengths elsewhere                              |                                                                         |
-| transactions         | List of Transactions | variable     | As encoded in "tx" messages in response to getdata MSG\_TX             | The transactions provided                                               |
+|                     |                      |              |                                                                        |                                                                         |
+|---------------------|----------------------|--------------|------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| Field Name          | Type                 | Size         | Encoding                                                               | Purpose                                                                 |
+| blockhash           | Binary blob          | 32 bytes     | The output from a double-SHA256 of the block header, as used elsewhere | The blockhash of the block which the transactions being provided are in |
+| transactions_length | CompactSize          | 1 or 3 bytes | As used to encode array lengths elsewhere                              |                                                                         |
+| transactions        | List of Transactions | variable     | As encoded in "tx" messages in response to getdata MSG_TX              | The transactions provided                                               |
 
 #### Short transaction IDs
 
@@ -180,8 +178,8 @@ sending a full 256-bit hash. They are calculated by:
 
 ### New messages
 
-A new inv type (MSG\_CMPCT\_BLOCK == 4) and several new protocol
-messages are added: sendcmpct, cmpctblock, getblocktxn, and blocktxn.
+A new inv type (MSG_CMPCT_BLOCK == 4) and several new protocol messages
+are added: sendcmpct, cmpctblock, getblocktxn, and blocktxn.
 
 #### sendcmpct
 
@@ -210,27 +208,27 @@ messages are added: sendcmpct, cmpctblock, getblocktxn, and blocktxn.
     the specifics of the version-negotiation mechanics.
 7.  Nodes SHOULD check for a protocol version of \>= 70014 before
     sending sendcmpct messages.
-8.  Nodes MUST NOT send a request for a MSG\_CMPCT\_BLOCK object to a
-    peer before having received a sendcmpct message from that peer.
-9.  Nodes MUST NOT request a MSG\_CMPCT\_BLOCK object before having sent
+8.  Nodes MUST NOT send a request for a MSG_CMPCT_BLOCK object to a peer
+    before having received a sendcmpct message from that peer.
+9.  Nodes MUST NOT request a MSG_CMPCT_BLOCK object before having sent
     all sendcmpct messages to that peer which they intend to send, as
     the peer cannot know what version protocol to use in the response.
 
-#### MSG\_CMPCT\_BLOCK
+#### MSG_CMPCT_BLOCK
 
-1.  getdata messages may now contain requests for MSG\_CMPCT\_BLOCK
+1.  getdata messages may now contain requests for MSG_CMPCT_BLOCK
     objects.
-2.  Upon receipt of a getdata containing a request for a
-    MSG\_CMPCT\_BLOCK object with the hash of a block which was recently
-    announced and is close to the tip of the best chain of the receiver
-    and after having sent the requesting peer a sendcmpct message, nodes
-    MUST respond with a cmpctblock message containing appropriate data
-    representing the block being requested.
-3.  Upon receipt of a getdata containing a request for a
-    MSG\_CMPCT\_BLOCK object for which a cmpctblock message is not sent
-    in response, a block message containing the requested block in
-    non-compact form MUST be sent.
-4.  MSG\_CMPCT\_BLOCK inv objects MUST NOT appear anywhere except for in
+2.  Upon receipt of a getdata containing a request for a MSG_CMPCT_BLOCK
+    object with the hash of a block which was recently announced and is
+    close to the tip of the best chain of the receiver and after having
+    sent the requesting peer a sendcmpct message, nodes MUST respond
+    with a cmpctblock message containing appropriate data representing
+    the block being requested.
+3.  Upon receipt of a getdata containing a request for a MSG_CMPCT_BLOCK
+    object for which a cmpctblock message is not sent in response, a
+    block message containing the requested block in non-compact form
+    MUST be sent.
+4.  MSG_CMPCT_BLOCK inv objects MUST NOT appear anywhere except for in
     getdata messages.
 
 #### cmpctblock
@@ -306,15 +304,15 @@ messages are added: sendcmpct, cmpctblock, getblocktxn, and blocktxn.
 4.  Nodes MUST NOT send a sendcmpct message which contains a version
     number other than the version number which has been negotiated for
     receiving cmpctblock/blocktxn messages after sending a request for a
-    MSG\_CMPCT\_BLOCK object, sending a cmpctblock, getblocktxn,
-    blocktxn, or pong message.
+    MSG_CMPCT_BLOCK object, sending a cmpctblock, getblocktxn, blocktxn,
+    or pong message.
 5.  As a node must send all sendcmpct messages which contain a novel
     version announcement before any other compact block-related
     messages, it is possible to determine which version of compact
     blocks will be used for each object received. It is, however, not
     possible to know which version will be used to encode the response
     to a request for a compact block object before any
-    MSG\_CMPCT\_BLOCK-containing getdata, cmpctblock, getblocktxn,
+    MSG_CMPCT_BLOCK-containing getdata, cmpctblock, getblocktxn,
     blocktxn, or ping/pong messages have been exchanged.
 6.  Thus, if a node wishes to determine exactly which version of compact
     blocks will be used before requesting a compact block object, it
@@ -364,7 +362,7 @@ segregated witness transactions (BIP 141 and BIP 144). The changes are:
 2.  Transactions inside cmpctblock messages (both those used as direct
     announcement and those in response to getdata) and in blocktxn
     should include witness data, using the same format as responses to
-    getdata MSG\_WITNESS\_TX, specified in BIP144.
+    getdata MSG_WITNESS_TX, specified in BIP144.
 3.  Short transaction IDs sent to us in cmpctblock messages, and sent by
     us in getblocktxn messages, are computed using the same process as
     in version 1, but using the wtxid as defined in BIP 141 instead of
@@ -372,13 +370,13 @@ segregated witness transactions (BIP 141 and BIP 144). The changes are:
     not include (ie must then include the short ID for) the coinbase
     transaction, it must be computed by encoding the transaction in
     witness format as defined by BIP 141.
-4.  Upon receipt of a getdata containing a request for a
-    MSG\_CMPCT\_BLOCK object for which a cmpctblock message is not sent
-    in response, the block message containing the requested block in
-    non-compact form MUST be encoded with witnesses (as is sent in reply
-    to a MSG\_WITNESS\_BLOCK getdata) if the protocol version used to
-    encode the cmpctblock message would have been 2, and encoded without
-    witnesses (as is sent in response to a MSG\_BLOCK getdata) if the
+4.  Upon receipt of a getdata containing a request for a MSG_CMPCT_BLOCK
+    object for which a cmpctblock message is not sent in response, the
+    block message containing the requested block in non-compact form
+    MUST be encoded with witnesses (as is sent in reply to a
+    MSG_WITNESS_BLOCK getdata) if the protocol version used to encode
+    the cmpctblock message would have been 2, and encoded without
+    witnesses (as is sent in response to a MSG_BLOCK getdata) if the
     protocol version used to encode the cmpctblock message would have
     been 1.
 
@@ -392,59 +390,59 @@ segregated witness transactions (BIP 141 and BIP 144). The changes are:
     N blocks the quickest), allowing nodes to receive blocks which come
     from those peers in only 0.5\*RTT.
 
-<!-- end list -->
+<!-- -->
 
 1.  Nodes MUST NOT send such sendcmpct messages to more than three
     peers, as it encourages wasting outbound bandwidth across the
     network.
 
-<!-- end list -->
+<!-- -->
 
 1.  All nodes SHOULD send a sendcmpct message to all appropriate peers.
     This will reduce their outbound bandwidth usage by allowing their
     peers to request compact blocks instead of full blocks.
 
-<!-- end list -->
+<!-- -->
 
 1.  Nodes with limited inbound bandwidth SHOULD request blocks using
-    MSG\_CMPCT\_BLOCK/getblocktxn requests, when possible. While this
+    MSG_CMPCT_BLOCK/getblocktxn requests, when possible. While this
     increases worst-case message round-trips, it is expected to reduce
     overall transfer latency as TCP is more likely to exhibit poor
     throughput on low-bandwidth nodes.
 
-<!-- end list -->
+<!-- -->
 
 1.  Nodes sending cmpctblock messages SHOULD limit prefilledtxn to 10KB
     of transactions. When in doubt, nodes SHOULD only include the
     coinbase transaction in prefilledtxn.
 
-<!-- end list -->
+<!-- -->
 
 1.  Nodes MAY pick one nonce per block they wish to send, and only build
     a cmpctblock message once for all peers which they wish to send a
     given block to. Nodes SHOULD NOT use the same nonce across multiple
     different blocks.
 
-<!-- end list -->
+<!-- -->
 
 1.  Nodes MAY impose additional requirements on when they announce new
     blocks by sending cmpctblock messages. For example, nodes with
     limited outbound bandwidth MAY choose to announce new blocks using
     inv/header messages (as per BIP130) to conserve outbound bandwidth.
 
-<!-- end list -->
+<!-- -->
 
-1.  Note that the MSG\_CMPCT\_BLOCK section does not require that nodes
-    respond to MSG\_CMPCT\_BLOCK getdata requests for blocks which they
+1.  Note that the MSG_CMPCT_BLOCK section does not require that nodes
+    respond to MSG_CMPCT_BLOCK getdata requests for blocks which they
     did not recently announce. This allows nodes to calculate cmpctblock
     messages at announce-time instead of at request-time. Blocks which
-    are requested with a MSG\_CMPCT\_BLOCK getdata, but which are not
+    are requested with a MSG_CMPCT_BLOCK getdata, but which are not
     responded to with a cmpctblock message MUST be responded to with a
     block message, allowing nodes to request all blocks using
-    MSG\_CMPCT\_BLOCK getdatas and rely on their peer to pick an
+    MSG_CMPCT_BLOCK getdatas and rely on their peer to pick an
     appropriate response.
 
-<!-- end list -->
+<!-- -->
 
 1.  While the current version sends transactions with the same encodings
     as are used in tx messages and elsewhere in the protocol, the
@@ -454,7 +452,7 @@ segregated witness transactions (BIP 141 and BIP 144). The changes are:
     prepared to take a different transaction encoding, if and when the
     version field in sendcmpct changes in a future BIP.
 
-<!-- end list -->
+<!-- -->
 
 1.  Any undefined behavior in this spec may cause failure to transfer
     block to, peer disconnection by, or self-destruction by the
@@ -473,7 +471,7 @@ segregated witness transactions (BIP 141 and BIP 144). The changes are:
     validation, and nodes SHOULD NOT announce a CMPCTBLOCK to a peer
     with a version number below 70015 before fully validating the block.
 
-<!-- end list -->
+<!-- -->
 
 1.  SPV nodes which implement this spec must consider the implications
     of accepting blocks which were not validated by the node which
@@ -481,7 +479,7 @@ segregated witness transactions (BIP 141 and BIP 144). The changes are:
     "trusted full node" to sync from may wish to avoid implementing this
     spec in high-bandwidth mode.
 
-<!-- end list -->
+<!-- -->
 
 1.  Note that this spec does not change the requirement that nodes only
     relay information about blocks which they have fully validated in
@@ -500,7 +498,7 @@ segregated witness transactions (BIP 141 and BIP 144). The changes are:
     processing for the associated peer. REJECT messages are not
     considered "responses" for the purpose of this section.
 
-<!-- end list -->
+<!-- -->
 
 1.  As a result of the above requirements, implementors may wish to
     consider the potential for the introduction of delays in responses
@@ -527,19 +525,19 @@ might allow blocks to be relayed between nodes in 0.5\*RTT instead of
 
 There are several design goals for the Short ID calculation:
 
-  - **Performance** The sender needs to compute short IDs for all block
-    transactions, and the receiver for all mempool transactions they are
-    being compared to. As we're easily talking about several thousand
-    transactions, sub-microsecond processing per-transactions is needed.
-  - **Space** cmpctblock messages are never optional in this protocol,
-    and contain a short ID for each non-prefilled transaction in the
-    block. Thus, the size of short IDs is directly proportional to the
-    maximum bandwidth savings possible.
-  - **Collision resistance** It should be hard for network participants
-    to create transactions that cause collisions. If an attacker were
-    able to cause such collisions, filling mempools (and, thus, blocks)
-    with them would cause poor network propagation of new (or
-    non-attacker, in the case of a miner) blocks.
+- **Performance** The sender needs to compute short IDs for all block
+  transactions, and the receiver for all mempool transactions they are
+  being compared to. As we're easily talking about several thousand
+  transactions, sub-microsecond processing per-transactions is needed.
+- **Space** cmpctblock messages are never optional in this protocol, and
+  contain a short ID for each non-prefilled transaction in the block.
+  Thus, the size of short IDs is directly proportional to the maximum
+  bandwidth savings possible.
+- **Collision resistance** It should be hard for network participants to
+  create transactions that cause collisions. If an attacker were able to
+  cause such collisions, filling mempools (and, thus, blocks) with them
+  would cause poor network propagation of new (or non-attacker, in the
+  case of a miner) blocks.
 
 SipHash is a secure, fast, and simple 64-bit MAC designed for network
 traffic authentication and collision-resistant hash tables. We truncate
@@ -552,7 +550,7 @@ block. We mix in a per-connection 64-bit nonce to obtain independent
 short IDs on every connection, so that even block creators cannot
 control where collisions occur, and random collisions only ever affect a
 small number of connections at any given time. The mixing is done using
-SHA256(block\_header || nonce), which is slow compared to SipHash, but
+SHA256(block_header \|\| nonce), which is slow compared to SipHash, but
 only done once per block. It also adds the ability for nodes to choose
 the nonce in a better than random way to minimize collisions, though
 that is not necessary for correct behaviour. Conversely, nodes can also
@@ -570,8 +568,8 @@ For each of the *t* block transactions, the receiver will compare its
 received short ID with that of a set of *m* mempool transactions. We
 assume that each of those *t* has a chance *r* to be included in that
 set of *m*. If we use *B* bits short IDs, for each comparison between a
-received short ID and a mempool transaction, there is a chance of *P = 1
-- 1 / 2^B* that a mismatch is detected as such.
+received short ID and a mempool transaction, there is a chance of *P =
+1 - 1 / 2^B* that a mismatch is detected as such.
 
 When comparing a given block transaction to the whole set of mempool
 transactions, there are 5 cases to distinguish:
@@ -592,9 +590,9 @@ In case 1, we're good. In cases 2, 3, or 4, we request the full
 transaction because we know we're uncertain. Only in case 5, we fail to
 reconstruct. The chance that case 5 does not occur in any of the *t*
 transactions in a block is *(1 - (1 - r) \* m \* (1 - P) \* P^(m -
-1))^t*. This expression is well approximated by *1 - (1 - r) \* m \* (1
-- P) \* t* = *1 - (1 - r) \* m \* t / 2^B*. Thus, if we want only one in
-F block transmissions between honest nodes to fail under the
+1))^t*. This expression is well approximated by *1 - (1 - r) \* m \*
+(1 - P) \* t* = *1 - (1 - r) \* m \* t / 2^B*. Thus, if we want only one
+in F block transmissions between honest nodes to fail under the
 conservative *r = 0* assumption, we need *log2(F \* m \* t)* bits hash
 functions.
 
@@ -609,7 +607,7 @@ failures (for example, network disconnection, node overloaded, ...).
 #### Separate version for segregated witness
 
 The changes to transaction and block relay in BIP 144 introduce separate
-MSG\_FILTERED\_ versions of messages in getdata, allowing a receiver to
+MSG_FILTERED\_ versions of messages in getdata, allowing a receiver to
 choose individually where witness data is wanted.
 
 This method is not useful for compact blocks because \`cmpctblock\`

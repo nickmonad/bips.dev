@@ -14,24 +14,22 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki"
 +++
 
-``` 
-  BIP: 65
-  Layer: Consensus (soft fork)
-  Title: OP_CHECKLOCKTIMEVERIFY
-  Author: Peter Todd <pete@petertodd.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0065
-  Status: Final
-  Type: Standards Track
-  Created: 2014-10-01
-  License: PD
-```
+      BIP: 65
+      Layer: Consensus (soft fork)
+      Title: OP_CHECKLOCKTIMEVERIFY
+      Author: Peter Todd <pete@petertodd.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0065
+      Status: Final
+      Type: Standards Track
+      Created: 2014-10-01
+      License: PD
 
 ## Abstract
 
-This BIP describes a new opcode (OP\_CHECKLOCKTIMEVERIFY) for the
-Bitcoin scripting system that allows a transaction output to be made
-unspendable until some point in the future.
+This BIP describes a new opcode (OP_CHECKLOCKTIMEVERIFY) for the Bitcoin
+scripting system that allows a transaction output to be made unspendable
+until some point in the future.
 
 ## Summary
 
@@ -39,13 +37,13 @@ CHECKLOCKTIMEVERIFY redefines the existing NOP2 opcode. When executed,
 if any of the following conditions are true, the script interpreter will
 terminate with an error:
 
-  - the stack is empty; or
-  - the top item on the stack is less than 0; or
-  - the lock-time type (height vs. timestamp) of the top stack item and
-    the nLockTime field are not the same; or
-  - the top stack item is greater than the transaction's nLockTime
-    field; or
-  - the nSequence field of the txin is 0xffffffff;
+- the stack is empty; or
+- the top item on the stack is less than 0; or
+- the lock-time type (height vs. timestamp) of the top stack item and
+  the nLockTime field are not the same; or
+- the top stack item is greater than the transaction's nLockTime field;
+  or
+- the nSequence field of the txin is 0xffffffff;
 
 Otherwise, script execution will continue as if a NOP had been executed.
 
@@ -121,7 +119,7 @@ scriptPubKey's such that one keypair is controlled by the user, and the
 other keypair is controlled by the service. To spend funds the user uses
 locally installed wallet software that generates one of the required
 signatures, and then uses a 2nd-factor authentication method to
-authorize the service to create the second SIGHASH\_NONE signature that
+authorize the service to create the second SIGHASH_NONE signature that
 is locked until some time in the future and sends the user that
 signature for storage. If the user needs to spend their funds and the
 service is not available, they wait until the nLockTime expires.
@@ -325,21 +323,21 @@ block height and time.
 
 PayPub
 
-  - <https://github.com/unsystem/paypub>
+- <https://github.com/unsystem/paypub>
 
 Jeremy Spilman Payment Channels
 
-  - <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html>
+- <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html>
 
 ## Implementations
 
 Python / python-bitcoinlib
 
-  - <https://github.com/petertodd/checklocktimeverify-demos>
+- <https://github.com/petertodd/checklocktimeverify-demos>
 
 JavaScript / Node.js / bitcore
 
-  - <https://github.com/mruddy/bip65-demos>
+- <https://github.com/mruddy/bip65-demos>
 
 ## Copyright
 

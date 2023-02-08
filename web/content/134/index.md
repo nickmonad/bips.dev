@@ -14,19 +14,17 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0134.mediawiki"
 +++
 
-``` 
-  BIP: 134
-  Layer: Consensus (hard fork)
-  Title: Flexible Transactions
-  Author: Tom Zander <tomz@freedommail.ch>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0134
-  Status: Rejected
-  Type: Standards Track
-  Created: 2016-07-27
-  License: CC-BY-SA-4.0
-           OPL
-```
+      BIP: 134
+      Layer: Consensus (hard fork)
+      Title: Flexible Transactions
+      Author: Tom Zander <tomz@freedommail.ch>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0134
+      Status: Rejected
+      Type: Standards Track
+      Created: 2016-07-27
+      License: CC-BY-SA-4.0
+               OPL
 
 ## Abstract
 
@@ -95,29 +93,27 @@ tx-id, which is great for future pruning features.
 
 ### Features
 
-  - Fixes malleability
-  - Linear scaling of signature checking
-  - Very flexible future extensibility
-  - Makes transactions smaller
-  - Supports the Lightning Network
+- Fixes malleability
+- Linear scaling of signature checking
+- Very flexible future extensibility
+- Makes transactions smaller
+- Supports the Lightning Network
 
 Additionally, in the v4 (flextrans) format we add the support for the
 following proofs;
 
-  - input amount. Including the amount means we sign this transaction
-    only if the amount we are spending is the one provided. Wallets that
-    do not have the full UTXO DB can safely sign knowing that if they
-    were lied to about the amount being spent, their signature is
-    useless.
-  - scriptBase is the combined script of input and output, without
-    signatures naturally. Providing this to a hardware wallet means it
-    knows what output it is spending and can respond properly. Including
-    it in the hash means its signature would be broken if we lied..
-  - Double spent-proof. Should a node detect a double spent he can
-    notify his peers about this fact. Instead of sending the entire
-    transactions, instead he sends only a proof. The node needs to send
-    two pairs of info that proves that in both transactions the CTxIn
-    are identical.
+- input amount. Including the amount means we sign this transaction only
+  if the amount we are spending is the one provided. Wallets that do not
+  have the full UTXO DB can safely sign knowing that if they were lied
+  to about the amount being spent, their signature is useless.
+- scriptBase is the combined script of input and output, without
+  signatures naturally. Providing this to a hardware wallet means it
+  knows what output it is spending and can respond properly. Including
+  it in the hash means its signature would be broken if we lied..
+- Double spent-proof. Should a node detect a double spent he can notify
+  his peers about this fact. Instead of sending the entire transactions,
+  instead he sends only a proof. The node needs to send two pairs of
+  info that proves that in both transactions the CTxIn are identical.
 
 ### Tokens
 
@@ -133,30 +129,30 @@ actual integer value (id, below) is equally important to the written
 name. If any token found that is not covered in the next table it will
 make the transaction that contains it invalid.
 
-| Name                      | id | Format    | Default Value | Description                                                                                                                  |
-| ------------------------- | -- | --------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| TxEnd                     | 0  | BoolTrue  | Required      | A marker that is the end of the transaction                                                                                  |
-| TxInPrevHash              | 1  | ByteArray | Required      | TxId we are spending                                                                                                         |
-| TxPrevIndex               | 2  | Integer   | 0             | Index in prev tx we are spending (applied to previous TxInPrevHash)                                                          |
-| TxInputStackItem          | 3  | ByteArray |               | A 'push' of the input script                                                                                                 |
-| TxInputStackItemContinued | 4  | ByteArray | \&nsbp;       | Another section for the same input                                                                                           |
-| TxOutValue                | 5  | Integer   | Required      | Amount of Satoshis to transfer                                                                                               |
-| TxOutScript               | 6  | ByteArray | Required      | The output script                                                                                                            |
-| TxRelativeBlockLock       | 7  | Integer   | Optional      | Part of the input stating the amount of blocks (max 0XFFFF) after that input was mined, it can be mined                      |
-| TxRelativeTimeLock        | 8  | Integer   | Optional      | Part of the input stating the amount of time (max 0XFFFF) after that input was mined, it can be mined. 1 Unit is 512 seconds |
-| CoinbaseMessage           | 9  | ByteArray | Optional      | A message and some data for a coinbase transaction. Can't be used in combination with any TxIn\\\* tags                      |
-| NOP\_1x                   | 1x |           | Optional      | Values that will be ignored by anyone parsing the transaction                                                                |
-|                           |    |           |               |                                                                                                                              |
+| Name                      | id  | Format    | Default Value | Description                                                                                                                  |
+|---------------------------|-----|-----------|---------------|------------------------------------------------------------------------------------------------------------------------------|
+| TxEnd                     | 0   | BoolTrue  | Required      | A marker that is the end of the transaction                                                                                  |
+| TxInPrevHash              | 1   | ByteArray | Required      | TxId we are spending                                                                                                         |
+| TxPrevIndex               | 2   | Integer   | 0             | Index in prev tx we are spending (applied to previous TxInPrevHash)                                                          |
+| TxInputStackItem          | 3   | ByteArray |               | A 'push' of the input script                                                                                                 |
+| TxInputStackItemContinued | 4   | ByteArray | &nsbp;        | Another section for the same input                                                                                           |
+| TxOutValue                | 5   | Integer   | Required      | Amount of Satoshis to transfer                                                                                               |
+| TxOutScript               | 6   | ByteArray | Required      | The output script                                                                                                            |
+| TxRelativeBlockLock       | 7   | Integer   | Optional      | Part of the input stating the amount of blocks (max 0XFFFF) after that input was mined, it can be mined                      |
+| TxRelativeTimeLock        | 8   | Integer   | Optional      | Part of the input stating the amount of time (max 0XFFFF) after that input was mined, it can be mined. 1 Unit is 512 seconds |
+| CoinbaseMessage           | 9   | ByteArray | Optional      | A message and some data for a coinbase transaction. Can't be used in combination with any TxIn\\\* tags                      |
+| NOP_1x                    | 1x  |           | Optional      | Values that will be ignored by anyone parsing the transaction                                                                |
+|                           |     |           |               |                                                                                                                              |
 
 ### Scripting changes
 
 In Bitcoin transactions version 1, checking of signatures is performed
-by various opcodes. The OP\_CHECKSIG, OP\_CHECKMULTISIG and their
+by various opcodes. The OP_CHECKSIG, OP_CHECKMULTISIG and their
 equivalents that immediately VERIFY. These are used to validate the
 cryptographic proofs that users have to provide in order to spend
 outputs.
 
-We additionally have some hashing-types in like SIGHASH\_SINGLE that all
+We additionally have some hashing-types in like SIGHASH_SINGLE that all
 specify slightly different subsections of what part of a transaction
 will be hashed in order to be signed.
 
@@ -192,10 +188,10 @@ followed by a number of TxInputStackItemContinued items.
 At a larger scope we define 3 sections of a transaction.
 
 | Segment     | Tags                                        | Description                           |
-| ----------- | ------------------------------------------- | ------------------------------------- |
+|-------------|---------------------------------------------|---------------------------------------|
 | Transaction | all not elsewhere used                      | This section is used to make the TxId |
 | Signatures  | TxInputStackItem, TxInputStackItemContinued | The input-proofs                      |
-| TxEnd       | TxEnd                                       |                                       |
+| TxEnd       | TxEnd                                       |                                       |
 
 The TxId is calculated by taking the serialized transaction without the
 Signatures and the TxEnd and hashing that.
@@ -224,7 +220,7 @@ that is built up from:
 
 ### Future extensibility
 
-The NOP\_1x wildcard used in the table explaining tokens is actually a
+The NOP_1x wildcard used in the table explaining tokens is actually a
 list of 10 values that currently are specified as NOP (no-operation)
 tags.
 

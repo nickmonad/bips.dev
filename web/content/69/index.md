@@ -14,19 +14,17 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0069.mediawiki"
 +++
 
-``` 
-  BIP: 69
-  Layer: Applications
-  Title: Lexicographical Indexing of Transaction Inputs and Outputs
-  Author: Kristov Atlas <kristov@openbitcoinprivacyproject.org>
-  Editor: Daniel Cousens <bips@dcousens.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0069
-  Status: Proposed
-  Type: Informational
-  Created: 2015-06-12
-  License: PD
-```
+      BIP: 69
+      Layer: Applications
+      Title: Lexicographical Indexing of Transaction Inputs and Outputs
+      Author: Kristov Atlas <kristov@openbitcoinprivacyproject.org>
+      Editor: Daniel Cousens <bips@dcousens.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0069
+      Status: Proposed
+      Type: Informational
+      Created: 2015-06-12
+      License: PD
 
 ## Abstract
 
@@ -98,20 +96,20 @@ it is a multi-party transaction, such as in the example of a CoinJoin.
 
 This BIP applies to any transaction for which the order of its inputs
 and outputs does not impact the transaction’s function. Currently, this
-refers to any transaction that employs the SIGHASH\_ALL signature hash
+refers to any transaction that employs the SIGHASH_ALL signature hash
 type, in which signatures commit to the exact order of inputs and
-outputs. Transactions that use SIGHASH\_ANYONECANPAY and/or
-SIGHASH\_NONE may include inputs and/or outputs that are not signed;
-however, compliant software should still emit transactions with
-lexicographically sorted inputs and outputs, even though they may later
-be modified by others.
+outputs. Transactions that use SIGHASH_ANYONECANPAY and/or SIGHASH_NONE
+may include inputs and/or outputs that are not signed; however,
+compliant software should still emit transactions with lexicographically
+sorted inputs and outputs, even though they may later be modified by
+others.
 
 In the event that future protocol upgrades introduce new signature hash
 types, compliant software should apply the lexicographical ordering
 principle analogously.
 
 While out of scope of this BIP, protocols that do require a specified
-order of inputs/outputs (e.g. due to use of SIGHASH\_SINGLE) should
+order of inputs/outputs (e.g. due to use of SIGHASH_SINGLE) should
 consider the goals of this BIP and how best to adapt them to the
 specific needs of those protocols.
 
@@ -124,10 +122,10 @@ dictionary order.
 
 Common implementations include:
 
-  - \`std::lexicographical\_compare\` in C++ \[5\]
-  - \`cmp\` in Python 2.7
-  - \`memcmp\` in C \[6\]
-  - \`Buffer.compare\` in Node.js \[7\]
+- \`std::lexicographical_compare\` in C++ \[5\]
+- \`cmp\` in Python 2.7
+- \`memcmp\` in C \[6\]
+- \`Buffer.compare\` in Node.js \[7\]
 
 For more information, see the wikipedia entry on Lexicographical order.
 \[8\]
@@ -221,42 +219,42 @@ Outputs:
 
 ## Discussion
 
-  - [\[Bitcoin-development\] Lexicographical Indexing of Transaction
-    Inputs and
-    Outputs](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008484.html "wikilink")
-  - [\[Bitcoin-development\] \[RFC\] Canonical input and output ordering
-    in
-    transactions](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008487.html "wikilink")
+- [\[Bitcoin-development\] Lexicographical Indexing of Transaction
+  Inputs and
+  Outputs](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008484.html "wikilink")
+- [\[Bitcoin-development\] \[RFC\] Canonical input and output ordering
+  in
+  transactions](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-June/008487.html "wikilink")
 
 ## References
 
-  - [1: Bitstamp Info
-    Leak](https://bitcoinmagazine.com/20273/bitstamp-exchange-activity-trackable-due-multisig-wallet-implementation/ "wikilink")
-  - [2: OBPP Random Indexing as
-    Countermeasure](https://github.com/OpenBitcoinPrivacyProject/wallet-ratings/blob/5a7e2e1555e91bb48edeca3aa710272777d98c2a/2015-1/criteria.md "wikilink")
-  - [3: Mastering
-    Bitcoin](https://github.com/aantonop/bitcoinbook/blob/develop/ch05.asciidoc "wikilink")
-  - [4: Bitcoin Wiki on
-    Script](https://en.bitcoin.it/wiki/Script "wikilink")
-  - [5:
-    std::lexicographical\_compare](http://www.cplusplus.com/reference/algorithm/lexicographical_compare "wikilink")
-  - [6:
-    memcmp](http://www.cplusplus.com/reference/cstring/memcmp "wikilink")
-  - [7:
-    Buffer.compare](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_compare_buf1_buf2 "wikilink")
-  - [8: Lexicographical
-    order](https://en.wikipedia.org/wiki/Lexicographical_order "wikilink")
+- [1: Bitstamp Info
+  Leak](https://bitcoinmagazine.com/20273/bitstamp-exchange-activity-trackable-due-multisig-wallet-implementation/ "wikilink")
+- [2: OBPP Random Indexing as
+  Countermeasure](https://github.com/OpenBitcoinPrivacyProject/wallet-ratings/blob/5a7e2e1555e91bb48edeca3aa710272777d98c2a/2015-1/criteria.md "wikilink")
+- [3: Mastering
+  Bitcoin](https://github.com/aantonop/bitcoinbook/blob/develop/ch05.asciidoc "wikilink")
+- [4: Bitcoin Wiki on
+  Script](https://en.bitcoin.it/wiki/Script "wikilink")
+- [5:
+  std::lexicographical_compare](http://www.cplusplus.com/reference/algorithm/lexicographical_compare "wikilink")
+- [6:
+  memcmp](http://www.cplusplus.com/reference/cstring/memcmp "wikilink")
+- [7:
+  Buffer.compare](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_compare_buf1_buf2 "wikilink")
+- [8: Lexicographical
+  order](https://en.wikipedia.org/wiki/Lexicographical_order "wikilink")
 
 ## Implementations
 
-  - [Electrum](https://github.com/spesmilo/electrum/blob/2af670ea2b92e835919b745d94afcb8b4ec32fda/lib/transaction.py#L648 "wikilink")
-  - [BitcoinJS](https://github.com/bitcoinjs/bip69/blob/master/index.js "wikilink")
-  - [BitcoinJS Test
-    Fixtures](https://github.com/bitcoinjs/bip69/blob/master/test/fixtures.json "wikilink")
-  - [NodeJS](https://www.npmjs.com/package/bip69 "wikilink")
-  - [Blockchain.info public
-    beta](https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/transaction.js#L120-L142 "wikilink")
-  - [Btcsuite](https://github.com/btcsuite/btcutil/blob/master/txsort/txsort.go "wikilink")
+- [Electrum](https://github.com/spesmilo/electrum/blob/2af670ea2b92e835919b745d94afcb8b4ec32fda/lib/transaction.py#L648 "wikilink")
+- [BitcoinJS](https://github.com/bitcoinjs/bip69/blob/master/index.js "wikilink")
+- [BitcoinJS Test
+  Fixtures](https://github.com/bitcoinjs/bip69/blob/master/test/fixtures.json "wikilink")
+- [NodeJS](https://www.npmjs.com/package/bip69 "wikilink")
+- [Blockchain.info public
+  beta](https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/transaction.js#L120-L142 "wikilink")
+- [Btcsuite](https://github.com/btcsuite/btcutil/blob/master/txsort/txsort.go "wikilink")
 
 ## Acknowledgements
 

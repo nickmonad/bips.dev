@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0326.mediawiki"
 +++
 
-``` 
-  BIP: 326
-  Layer: Applications
-  Title: Anti-fee-sniping in taproot transactions
-  Author: Chris Belcher <belcher@riseup.net>
-  Status: Draft
-  Type: Informational
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0326
-  Created: 2021-06-10
-  License: CC0-1.0
-  Post-History: 2021-6-10: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-June/019048.html
-```
+      BIP: 326
+      Layer: Applications
+      Title: Anti-fee-sniping in taproot transactions
+      Author: Chris Belcher <belcher@riseup.net>
+      Status: Draft
+      Type: Informational
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0326
+      Created: 2021-06-10
+      License: CC0-1.0
+      Post-History: 2021-6-10: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-June/019048.html
 
 ## Abstract
 
@@ -47,7 +45,7 @@ contract (for example a Lightning channel) is closed using a PTLC
 instead of an HTLC, then the blockchain will just see a regular taproot
 script instead of a hash value and preimage. However, if a contract is
 closed using the timelock path, then the blockchain will either see a
-OP\_CHECKSEQUENCEVERIFY opcode or a nSequence value in the transaction,
+OP_CHECKSEQUENCEVERIFY opcode or a nSequence value in the transaction,
 neither of which are very common today, and this would mark the closing
 transaction as something special and unusual.
 
@@ -101,7 +99,7 @@ prohibitively expensive by abusing node protections against attacks that
 can waste bandwidth, CPU, and memory. This can make fee management more
 difficult in multipart contract protocols (such as Lightning Network or
 CoinSwap). One possible way of solving the problem is to include a
-1-block relative timelock \`1 OP\_CSV\` to all spend paths, making it
+1-block relative timelock \`1 OP_CSV\` to all spend paths, making it
 impossible to spend the unconfirmed UTXO. Such a 1-block locktime can
 also be created with an nSequence value of 1. Many on-chain transactions
 in bitcoin spend inputs that were created just one or two blocks ago,

@@ -14,26 +14,24 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0149.mediawiki"
 +++
 
-``` 
-  BIP: 149
-  Layer: Consensus (soft fork)
-  Title: Segregated Witness (second deployment)
-  Author: Shaolin Fry <shaolinfry@protonmail.ch>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0149
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2017-04-14
-  License: BSD-3-Clause
-           CC0-1.0
-```
+      BIP: 149
+      Layer: Consensus (soft fork)
+      Title: Segregated Witness (second deployment)
+      Author: Shaolin Fry <shaolinfry@protonmail.ch>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0149
+      Status: Withdrawn
+      Type: Standards Track
+      Created: 2017-04-14
+      License: BSD-3-Clause
+               CC0-1.0
 
 ## Abstract
 
 This document specifies a user activated soft fork for
-[BIP141](bip-0141.mediawiki "wikilink"),
-[BIP143](bip-0143.mediawiki "wikilink") and
-[BIP147](bip-0147.mediawiki "wikilink") using versionbits with
+[BIP141](/141),
+[BIP143](/143) and
+[BIP147](/147) using versionbits with
 guaranteed lock-in.
 
 ## Motivation
@@ -57,7 +55,7 @@ then.
 
 ## Specification
 
-This deployment will set service bit (1\<\<5) as NODE\_UAWITNESS.
+This deployment will set service bit (1\<\<5) as NODE_UAWITNESS.
 
 ## Deployment
 
@@ -93,15 +91,15 @@ compatibility issues with old nodes.
 [Mailing list
 discussion](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-April/014234.html)
 
-[BIP8](bip-0008.mediawiki "wikilink")
+[BIP8](/8)
 
-[BIP9](bip-0009.mediawiki "wikilink")
+[BIP9](/9)
 
-[BIP141](bip-0141.mediawiki "wikilink")
+[BIP141](/141)
 
-[BIP143](bip-0143.mediawiki "wikilink")
+[BIP143](/143)
 
-[BIP147](bip-0147.mediawiki "wikilink")
+[BIP147](/147)
 
 ## Copyright
 

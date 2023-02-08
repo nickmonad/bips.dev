@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0386.mediawiki"
 +++
 
-``` 
-  BIP: 386
-  Layer: Applications
-  Title: tr() Output Script Descriptors
-  Author: Pieter Wuille <pieter@wuille.net>
-          Andrew Chow <andrew@achow101.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0386
-  Status: Draft
-  Type: Informational
-  Created: 2021-06-27
-  License: BSD-2-Clause
-```
+      BIP: 386
+      Layer: Applications
+      Title: tr() Output Script Descriptors
+      Author: Pieter Wuille <pieter@wuille.net>
+              Andrew Chow <andrew@achow101.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0386
+      Status: Draft
+      Type: Informational
+      Created: 2021-06-27
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -56,14 +54,14 @@ dependent on the higher level expressions.
 
 A Tree Expression is:
 
-  - Any Script Expression that is allowed at the level this Tree
-    Expression is in.
-  - A pair of Tree Expressions consisting of:
-      - An open brace `{`
-      - A Tree Expression
-      - A comma `,`
-      - A Tree Expression
-      - A closing brace `}`
+- Any Script Expression that is allowed at the level this Tree
+  Expression is in.
+- A pair of Tree Expressions consisting of:
+  - An open brace `{`
+  - A Tree Expression
+  - A comma `,`
+  - A Tree Expression
+  - A closing brace `}`
 
 ### `tr()`
 
@@ -74,7 +72,7 @@ create x-only public keys.
 `tr(KEY)` takes a single key expression as an argument and produces a
 P2TR output script which does not have a script path. Each key produced
 by the key expression is used as the internal key of a P2TR output as
-specified by [BIP 341](bip-0341.mediawiki#cite_ref-22-0 "wikilink").
+specified by [BIP 341](/341).
 Specifically, "If the spending conditions do not require a script path,
 the output key should commit to an unspendable script path instead of
 having no script path. This can be achieved by computing the output key
@@ -88,7 +86,7 @@ point as *Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G*."
 expression as the second argument and produces a P2TR output script
 which has a script path. The keys produced by the first key expression
 are used as the internal key as specified by [BIP
-341](bip-0341.mediawiki#Constructing_and_spending_Taproot_outputs "wikilink").
+341](/341).
 The Tree expression becomes the Taproot script tree as described in BIP
 341. A merkle root is computed from this tree and combined with the
 internal key to create the Taproot output key.
@@ -107,7 +105,7 @@ keys derived from extended keys must be serialized as x-only public
 keys. An additional key expression is defined only for use within a
 `tr()` descriptor:
 
-  - A 64 hex character string representing an x-only public key
+- A 64 hex character string representing an x-only public key
 
 ## Test Vectors
 
@@ -116,7 +114,7 @@ TBD
 ## Backwards Compatibility
 
 `tr()` descriptors use the format and general operation specified in
-[380](bip-0380.mediawiki "wikilink"). As these are a set of wholly new
+[380](/380). As these are a set of wholly new
 descriptors, they are not compatible with any implementation. However
 the scripts produced are standard scripts so existing software are
 likely to be familiar with them.

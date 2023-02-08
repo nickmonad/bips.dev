@@ -14,18 +14,16 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0137.mediawiki"
 +++
 
-``` 
-  BIP: 137
-  Layer: Applications
-  Title: Signatures of Messages using Private Keys
-  Author: Christopher Gilliard <christopher.gilliard@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0137
-  Status: Final
-  Type: Standards Track
-  Created: 2019-02-16
-  License: BSD-2-Clause
-```
+      BIP: 137
+      Layer: Applications
+      Title: Signatures of Messages using Private Keys
+      Author: Christopher Gilliard <christopher.gilliard@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0137
+      Status: Final
+      Type: Standards Track
+      Created: 2019-02-16
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -137,10 +135,10 @@ is 27. For P2PKH address using compressed public key this value is 31.
 For P2SH-P2WPKH this value is 35 and for P2WPKH (version 0 witness)
 address this value is 39. So, you have the following ranges:
 
-  - 27-30: P2PKH uncompressed
-  - 31-34: P2PKH compressed
-  - 35-38: Segwit P2SH
-  - 39-42: Segwit Bech32
+- 27-30: P2PKH uncompressed
+- 31-34: P2PKH compressed
+- 35-38: Segwit P2SH
+- 39-42: Segwit Bech32
 
 To verify a signature, the recId is obtained by subtracting this
 constant from the header value.
@@ -213,9 +211,9 @@ updated as new signature formats emerge.
 
 ## Acknowledgements
 
-  - Konstantin Bay - review
-  - Holly Casaletto - review
-  - James Bryrer - review
+- Konstantin Bay - review
+- Holly Casaletto - review
+- James Bryrer - review
 
 Note that the background on ECDSA signatures was taken from
 en.bitcoin.it and code sample modified from BitcoinJ.

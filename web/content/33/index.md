@@ -14,17 +14,15 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0033.mediawiki"
 +++
 
-``` 
-  BIP: 33
-  Layer: Peer Services
-  Title: Stratized Nodes
-  Author: Amir Taaki <genjix@riseup.net>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0033
-  Status: Rejected
-  Type: Standards Track
-  Created: 2012-05-15
-```
+      BIP: 33
+      Layer: Peer Services
+      Title: Stratized Nodes
+      Author: Amir Taaki <genjix@riseup.net>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0033
+      Status: Rejected
+      Type: Standards Track
+      Created: 2012-05-15
 
 ## Abstract
 
@@ -77,30 +75,30 @@ are purely incidental.
 During the initial handshake between Bitcoin nodes, a version packet is
 sent. version packets have a bitfield called services. Nodes can fill
 this field to tell the network how they behave and which services they
-support. NODE\_NETWORK (1) means a node can be asked for full blocks for
+support. NODE_NETWORK (1) means a node can be asked for full blocks for
 example.
 
-We propose two more values of NODE\_SERVICE (2) and NODE\_STRATIZED (4).
+We propose two more values of NODE_SERVICE (2) and NODE_STRATIZED (4).
 
-### NODE\_SERVICE
+### NODE_SERVICE
 
-  - A blockchain service which supports the additional messages
-    "getoutputs" and "getspends".
-  - Does not respond to "getdata" messages by itself (unless
-    NODE\_NETWORK is specified)
-  - If NODE\_NETWORK is specified, then "getdata" for transactions will
-    retrieve them not only from the memory pool but also check the
-    blockchain if necessary.
+- A blockchain service which supports the additional messages
+  "getoutputs" and "getspends".
+- Does not respond to "getdata" messages by itself (unless NODE_NETWORK
+  is specified)
+- If NODE_NETWORK is specified, then "getdata" for transactions will
+  retrieve them not only from the memory pool but also check the
+  blockchain if necessary.
 
-### NODE\_STRATIZED
+### NODE_STRATIZED
 
-  - A node which uses the stratized strategy specified in this document.
-  - NODE\_STRATIZED will relay inventories for accepted transactions.
-  - Does not support "getblocks" as stratized nodes do not contain the
-    entire blockchain.
+- A node which uses the stratized strategy specified in this document.
+- NODE_STRATIZED will relay inventories for accepted transactions.
+- Does not support "getblocks" as stratized nodes do not contain the
+  entire blockchain.
 
 Apart from the differences noted above, the nodes are otherwise
-unchanged in their behaviour from NODE\_NETWORK.
+unchanged in their behaviour from NODE_NETWORK.
 
 ## Specification
 
@@ -116,7 +114,7 @@ pseudocode.
         uint8_t payment_type;
         uint8_t address_hash[16];
     };
-    
+
     struct get_outputs
     {
         decoded_address dest;
@@ -129,7 +127,7 @@ pseudocode.
         uint8_t hash[32];
         uint32_t index;
     };
-    
+
     struct outputs
     {
         decoded_address dest;
@@ -200,14 +198,14 @@ level.
 
 ## Rationale
 
-NODE\_SERVICE does not respond to "getdata" requests by itself (unless
-used in conjunction with NODE\_NETWORK) to prevent starvation attacks.
-This allows a single trusted NODE\_SERVICE architecture (possibly acting
+NODE_SERVICE does not respond to "getdata" requests by itself (unless
+used in conjunction with NODE_NETWORK) to prevent starvation attacks.
+This allows a single trusted NODE_SERVICE architecture (possibly acting
 as a front-end to multiple backends) to service very many nodes while
 externalising the costs to the Bitcoin network.
 
-NODE\_STRATIZED tries its best to maintain the facade and help upkeep
-the Bitcoin network (see relaying), but cannot support "getblocks" as it
+NODE_STRATIZED tries its best to maintain the facade and help upkeep the
+Bitcoin network (see relaying), but cannot support "getblocks" as it
 does not have the entire blockchain.
 
 ## Backwards Compatibility

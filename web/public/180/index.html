@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,35 +46,29 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 180
-  Layer: Peer Services
-  Title: Block size/weight fraud proof
-  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0180
-  Status: Rejected
-  Type: Standards Track
-  Created: 2017-03-17
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 180
+</span><span>  Layer: Peer Services
+</span><span>  Title: Block size/weight fraud proof
+</span><span>  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0180
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-03-17
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>A fraud proof that enables light clients to detect oversized (or
 overweight) blocks.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2 id="definitions">Definitions</h2>
-<ul>
-<li>full tx size proof : SHA2 midstate and tail data proving the size of
-the full transaction data being hashed.<br />
-size component : Either a merkle link and height in the merkle tree
-thereof, or a full tx size proof.<br />
-full-size proof : The set of size components proving the lower-bound
-size of the block.<br />
-stripped-size proof : The set of size components proving the
-lower-bound size of the block when stripped of segwit witness data.</li>
-</ul>
-<h2 id="specification">Specification</h2>
-<h3 id="proof-format">Proof format</h3>
+<h2 id="Definitions">Definitions</h2>
+<p>full tx size proof : SHA2 midstate and tail data proving the size of the full transaction data being hashed.<br />
+size component : Either a merkle link and height in the merkle tree thereof, or a full tx size proof.<br />
+full-size proof : The set of size components proving the lower-bound size of the block.<br />
+stripped-size proof : The set of size components proving the lower-bound size of the block when stripped of segwit witness data.</p>
+<h2 id="Specification">Specification</h2>
+<h3 id="Proof_format">Proof format</h3>
 <ul>
 <li>varint: ceil(log2(number of transactions in block))</li>
 <li>varint: number of size components in stripped-size proof</li>
@@ -85,8 +79,7 @@ size-component)) + 1</li>
 <li>if zero:
 <ul>
 <li>(this indicates a full tx size proof)</li>
-<li>256-bit: SHA2 midstate up until just before the final SHA2
-chunk</li>
+<li>256-bit: SHA2 midstate up until just before the final SHA2 chunk</li>
 <li>varint: total size of tx</li>
 <li>uint8: size of final SHA2 chunk (0-55)</li>
 <li>0-55 bytes: final SHA2 chunk</li>
@@ -100,11 +93,11 @@ chunk</li>
 </li>
 </ul>
 </li>
-<li>varint: number of size components in full-size proof (zero in case
-of a size-exceeded proof; non-zero for a weight-exceeded proof)</li>
+<li>varint: number of size components in full-size proof (zero in case of
+a size-exceeded proof; non-zero for a weight-exceeded proof)</li>
 <li>foreach: (same as with stripped-size proof)</li>
 </ul>
-<h3 id="proof-verification">Proof verification</h3>
+<h3 id="Proof_verification">Proof verification</h3>
 <p>To verify an individual size proof:</p>
 <ol>
 <li>Check that at least one size component is a full tx size proof. (At
@@ -152,7 +145,7 @@ lower-bound block weight.</li>
 <li>Compare the lower-bound block weight to the applicable block weight
 limit.</li>
 </ol>
-<h3 id="network-protocol">Network protocol</h3>
+<h3 id="Network_protocol">Network protocol</h3>
 <p>If a light client detects that one or more of its peers do not consider
 the block it knows to have the most work as their best block, it should
 inquire with all those peers for a fraud proof by sending a new message
@@ -162,11 +155,11 @@ ignored).</p>
 <p>Compatible nodes will respond with a (new) <code>fraud</code> message, which has
 2-3 parameters:</p>
 <ul>
-<li>uint256: The hash of the most recent block in the locator (or a
-parent thereof) that it has checked. In the event of an invalid
-block, this should be the exact invalid block's hash (post-invalid
-blocks should be treated as unchecked, even if the node has
-independently checked them for some reason).</li>
+<li>uint256: The hash of the most recent block in the locator (or a parent
+thereof) that it has checked. In the event of an invalid block, this
+should be the exact invalid block's hash (post-invalid blocks should
+be treated as unchecked, even if the node has independently checked
+them for some reason).</li>
 <li>varint: Fraud proof type code
 <ul>
 <li>0 = Block is valid</li>
@@ -194,8 +187,8 @@ disconnecting and possibly banning the node providing it. However, if
 any change has been made to the size/weight limits, that should be taken
 into consideration (eg, if the limit increases, an innocent node may
 prove a size smaller than the limit).</p>
-<h2 id="information">Information</h2>
-<h3 id="creation-of-proofs">Creation of proofs</h3>
+<h2 id="Information">Information</h2>
+<h3 id="Creation_of_proofs">Creation of proofs</h3>
 <p>Proofs should ideally use the smallest amount of data required to prove
 excess of the limit. The most obvious mechanism in doing so, would be to
 include full tx size proofs for the largest transactions until the limit
@@ -205,7 +198,7 @@ by collapsing more merkle links.</p>
 required to implement it in any particular manner, so long as the proofs
 meet the requirements given above in <a href="https://bips.dev/180/#proof-verification" title="wikilink">Proof
 verification</a>.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Recently, there have been proposals for hardforks to increase the block
 size limit. While no consensus has been reached, proponents of these
 ideas often threaten and attempt to have miners force them through
@@ -214,7 +207,7 @@ blocks at all, and could be fooled into accepting an invalid chain
 created in such a manner. By supporting block size fraud proofs, light
 clients can protect their users from this form of unconsensual
 &quot;hardfork&quot; attempt.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>Why must a full tx size proof be included?</p>
 <ul>
 <li>This is necessary to establish that the claimed block transaction
@@ -225,21 +218,21 @@ size alone to exceed the limit.</li>
 <p>How does the full tx size proof actually prove the size?</p>
 <ul>
 <li>The first step of SHA2 hashing is to transform the input data into
-chunks (per
-<a href="https://tools.ietf.org/html/rfc4634#section-4.1">RFC 4634</a>). The
-final chunk is required to include the absolute length of the input
-data at the end of the final chunk. Therefore, by committing to the
-midstate prior to the final chunk, and replaying only the final
-chunk, we can confirm that the claimed size matches the full
-transaction data being hashed.</li>
+chunks (per <a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc4634#section-4.1">RFC
+4634</a>). The final
+chunk is required to include the absolute length of the input data at
+the end of the final chunk. Therefore, by committing to the midstate
+prior to the final chunk, and replaying only the final chunk, we can
+confirm that the claimed size matches the full transaction data being
+hashed.</li>
 </ul>
 <p>How does this prove the block weight?</p>
 <ul>
-<li>The block weight defined by <a href="https://bips.dev/180/bip-0141.mediawiki" title="wikilink">BIP 141</a>
+<li>The block weight defined by <a href="/141">BIP 141</a>
 is the size of the block stripped of its segwit signatures times 3,
-plus the full size of the block. By proving lower-bound sizes of
-both the stripped block and the full block, a lower-bound weight can
-also be calculated.</li>
+plus the full size of the block. By proving lower-bound sizes of both
+the stripped block and the full block, a lower-bound weight can also
+be calculated.</li>
 </ul>
 <p>Why is the number of transactions in the block represented as a log2?</p>
 <ul>
@@ -258,15 +251,15 @@ right-hand side of duplicate links.</li>
 <li>While it is currently believed to be impossible to prove all invalid
 (or rather, won't-be-part-of-the-main-chain) blocks, there are
 regularly active proposals of miners attacking with simply oversized
-blocks in an attempt to force a hardfork. This specific attack can
-be proven, and reliably so, since the proof cannot be broken without
-also breaking the attempted hardfork at the same time.</li>
+blocks in an attempt to force a hardfork. This specific attack can be
+proven, and reliably so, since the proof cannot be broken without also
+breaking the attempted hardfork at the same time.</li>
 </ul>
-<h2 id="backwards-compatibility">Backwards compatibility</h2>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>These fraud proofs protect only clients which use them. In non-attack
 scenarios, they are unnecessary and clients supporting them will
 otherwise behave as any other.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>TODO</p>
 
     </div>
@@ -275,7 +268,7 @@ otherwise behave as any other.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

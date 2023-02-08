@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,19 +46,19 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 125
-  Layer: Applications
-  Title: Opt-in Full Replace-by-Fee Signaling
-  Author: David A. Harding &lt;dave@dtrt.org&gt;
-          Peter Todd &lt;pete@petertodd.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0125
-  Status: Proposed
-  Type: Standards Track
-  Created: 2015-12-04
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 125
+</span><span>  Layer: Applications
+</span><span>  Title: Opt-in Full Replace-by-Fee Signaling
+</span><span>  Author: David A. Harding &lt;dave@dtrt.org&gt;
+</span><span>          Peter Todd &lt;pete@petertodd.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0125
+</span><span>  Status: Proposed
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-12-04
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>Many nodes today will not replace any transaction in their mempool with
 another transaction that spends the same inputs, making it difficult for
 spenders to adjust their previously-sent transactions to deal with
@@ -68,20 +68,20 @@ described here allows spenders to add a signal to a transaction
 indicating that they want to be able to replace that transaction in the
 future. In response to this signal,</p>
 <ul>
-<li>Nodes may allow transactions containing this signal to be replaced
-in their mempools.</li>
+<li>Nodes may allow transactions containing this signal to be replaced in
+their mempools.</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>The recipient or recipients of a transaction containing this signal
 may choose not to treat it as payment until it has been confirmed,
-eliminating the risk that the spender will use allowed replacements
-to defraud them.</li>
+eliminating the risk that the spender will use allowed replacements to
+defraud them.</li>
 </ul>
 <p>Nodes and recipients may continue to treat transactions without the
 signal the same way they treated them before, preserving the existing
 status quo.</p>
-<h2 id="summary">Summary</h2>
+<h2 id="Summary">Summary</h2>
 <p>This policy specifies two ways a transaction can signal that it is
 replaceable.</p>
 <ul>
@@ -89,14 +89,13 @@ replaceable.</p>
 to allowing replacement of itself if any of its inputs have an
 nSequence number less than (0xffffffff - 1).</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li><strong>Inherited signaling:</strong> Transactions that don't explicitly signal
 replaceability are replaceable under this policy for as long as any
-one of their ancestors signals replaceability and remains
-unconfirmed.</li>
+one of their ancestors signals replaceability and remains unconfirmed.</li>
 </ul>
-<h3 id="implementation-details">Implementation Details</h3>
+<h3 id="Implementation_Details">Implementation Details</h3>
 <p>The initial implementation expected in Bitcoin Core 0.12.0 uses the
 following rules:</p>
 <p>One or more transactions currently in the mempool (original
@@ -106,19 +105,19 @@ transaction) that spends one or more of the same inputs if,</p>
 <li>The original transactions signal replaceability explicitly or
 through inheritance as described in the above Summary section.</li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
 <li>The replacement transaction may only include an unconfirmed input if
 that input was included in one of the original transactions. (An
 unconfirmed input spends an output from a currently-unconfirmed
 transaction.)</li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
 <li>The replacement transaction pays an absolute fee of at least the sum
 paid by the original transactions.</li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
 <li>The replacement transaction must also pay for its own bandwidth at
 or above the rate set by the node's minimum relay fee setting. For
@@ -127,17 +126,17 @@ replacement transaction is 500 bytes total, then the replacement
 must pay a fee at least 500 satoshis higher than the sum of the
 originals.</li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
 <li>The number of original transactions to be replaced and their
 descendant transactions which will be evicted from the mempool must
 not exceed a total of 100 transactions.</li>
 </ol>
-<p>The initial implementation may be seen in <a href="https://github.com/bitcoin/bitcoin/pull/6871">Bitcoin Core
+<p>The initial implementation may be seen in <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/6871">Bitcoin Core
 PR#6871</a> and specifically
 the master branch commits from 5891f870d68d90408aa5ce5b597fb574f2d2cbca
 to 16a2f93629f75d182871f288f0396afe6cdc8504 (inclusive).</p>
-<h3 id="receiving-wallet-policy">Receiving wallet policy</h3>
+<h3 id="Receiving_wallet_policy">Receiving wallet policy</h3>
 <p>Wallets that display unconfirmed transactions to users or that provide
 data about unconfirmed transactions to automated systems should consider
 doing one of the following:</p>
@@ -145,7 +144,7 @@ doing one of the following:</p>
 <li>Conveying additional suspicion about opt-in full-RBF transactions to
 the user or data consumer.</li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
 <li>Ignoring the opt-in transaction until it has been confirmed.</li>
 </ol>
@@ -154,7 +153,7 @@ policy through inherited signaling, any method used to process opt-in
 full-RBF transactions should be inherited by any descendant transactions
 for as long as any ancestor opt-in full-RBF transactions remain
 unconfirmed.</p>
-<h3 id="spending-wallet-policy">Spending wallet policy</h3>
+<h3 id="Spending_wallet_policy">Spending wallet policy</h3>
 <p>Wallets that don't want to signal replaceability should use either a max
 sequence number (0xffffffff) or a sequence number of (0xffffffff-1) when
 they also want to use locktime; all known wallets currently do this.
@@ -164,7 +163,7 @@ wallets also currently do this by not spending any unconfirmed
 transactions except for those they created themselves.</p>
 <p>Wallets that do want to make replacements should use explicit signaling
 and meet the criteria described above in the Implementation Details
-section. A <a href="https://en.bitcoin.it/wiki/Transaction_replacement">Bitcoin Wiki
+section. A <a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Transaction_replacement">Bitcoin Wiki
 page</a> has been
 created to help wallet authors track deployed mempool policies relating
 to transaction replacement.</p>
@@ -174,9 +173,9 @@ replacements were initially accepted by their peers. Standard P2P
 lightweight client practice of sending to some peers while listening for
 relays from other peers should allow clients to determine whether the
 replacement has propagated.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Satoshi Nakamoto's original Bitcoin implementation provided the
-nSequence number field in each input to <a href="https://github.com/trottier/original-bitcoin/blob/master/src/main.cpp#L434">allow
+nSequence number field in each input to <a rel="noopener" target="_blank" href="https://github.com/trottier/original-bitcoin/blob/master/src/main.cpp#L434">allow
 replacement</a>
 of transactions containing that input within the mempool. When receiving
 replacements, nodes were supposed to replace transactions whose inputs
@@ -185,7 +184,7 @@ numbers.</p>
 <p>In that implementation, replacement transactions did not have to pay
 additional fees, so there was no direct incentive for miners to include
 the replacement and no built-in rate limiting that prevented overuse of
-relay node bandwidth. Nakamoto <a href="https://github.com/bitcoin/bitcoin/commit/05454818dc7ed92f577a1a1ef6798049f17a52e7#diff-118fcbaaba162ba17933c7893247df3aR522">removed
+relay node bandwidth. Nakamoto <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/commit/05454818dc7ed92f577a1a1ef6798049f17a52e7#diff-118fcbaaba162ba17933c7893247df3aR522">removed
 replacement</a>
 from Bitcoin version 0.3.12, leaving only the comment, &quot;Disable
 replacement feature for now&quot;.</p>
@@ -216,7 +215,7 @@ other uses of nSequence. Specifically, opt-in full-RBF is compatible
 with consensus-enforced locktime as provided in the Bitcoin 0.1
 implementation, draft BIP68 (Relative lock-time using consensus-enforced
 sequence numbers), and draft BIP112 (CHECKSEQUENCEVERIFY).</p>
-<h2 id="deployment">Deployment</h2>
+<h2 id="Deployment">Deployment</h2>
 <p>Now, and since Bitcoin's first release, 100% of the network hash rate
 mines transactions using opt-in full-RBF semantics (sequence less than
 (0xffffffff - 1)).</p>
@@ -231,35 +230,35 @@ satisfied:</p>
 replacements to go from spending wallets to miners controlling
 significant amounts of hash rate.</li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
 <li>Enough hash rate has upgraded to support replacement, allowing for
 reasonable probability that a replacement can be mined.</li>
 </ol>
-<h2 id="backwards-compatibility">Backwards compatibility</h2>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>At the time opt-in RBF support was added/proposed, no known wallet
 created transactions by default with nSequence set below (0xffffffff -
 1), so no known wallet explicitly signaled replaceability by default.
 Also no known popular wallet spent other users' unconfirmed transactions
 by default, so no known wallets signaled inherited replaceability.</p>
-<h2 id="see-also">See also</h2>
+<h2 id="See_also">See also</h2>
 <ol>
-<li><a href="https://en.bitcoin.it/wiki/Transaction_replacement">Transaction Replaceability on Bitcoin
+<li><a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Transaction_replacement">Transaction Replaceability on Bitcoin
 Wiki</a> targeted
 at helping wallet authors use RBF</li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
 <li>Tools for creating opt-in full-RBF transactions:
-<a href="https://github.com/petertodd/replace-by-fee-tools#replace-by-fee-tools">https://github.com/petertodd/replace-by-fee-tools#replace-by-fee-tools</a></li>
+<a rel="noopener" target="_blank" href="https://github.com/petertodd/replace-by-fee-tools#replace-by-fee-tools">https://github.com/petertodd/replace-by-fee-tools#replace-by-fee-tools</a></li>
 </ol>
-<!-- end list -->
+<!-- -->
 <ol>
-<li><a href="https://www.reddit.com/r/Bitcoin/comments/3urm8o/optin_rbf_is_misunderstood_ask_questions_about_it/">Reddit: Questions about opt-in
+<li><a rel="noopener" target="_blank" href="https://www.reddit.com/r/Bitcoin/comments/3urm8o/optin_rbf_is_misunderstood_ask_questions_about_it/">Reddit: Questions about opt-in
 RBF</a>
 targeted at helping community members understand opt-in full-RBF</li>
 </ol>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -268,7 +267,7 @@ targeted at helping community members understand opt-in full-RBF</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

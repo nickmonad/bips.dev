@@ -14,19 +14,17 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki"
 +++
 
-``` 
-  BIP: 125
-  Layer: Applications
-  Title: Opt-in Full Replace-by-Fee Signaling
-  Author: David A. Harding <dave@dtrt.org>
-          Peter Todd <pete@petertodd.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0125
-  Status: Proposed
-  Type: Standards Track
-  Created: 2015-12-04
-  License: PD
-```
+      BIP: 125
+      Layer: Applications
+      Title: Opt-in Full Replace-by-Fee Signaling
+      Author: David A. Harding <dave@dtrt.org>
+              Peter Todd <pete@petertodd.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0125
+      Status: Proposed
+      Type: Standards Track
+      Created: 2015-12-04
+      License: PD
 
 ## Abstract
 
@@ -40,15 +38,15 @@ described here allows spenders to add a signal to a transaction
 indicating that they want to be able to replace that transaction in the
 future. In response to this signal,
 
-  - Nodes may allow transactions containing this signal to be replaced
-    in their mempools.
+- Nodes may allow transactions containing this signal to be replaced in
+  their mempools.
 
-<!-- end list -->
+<!-- -->
 
-  - The recipient or recipients of a transaction containing this signal
-    may choose not to treat it as payment until it has been confirmed,
-    eliminating the risk that the spender will use allowed replacements
-    to defraud them.
+- The recipient or recipients of a transaction containing this signal
+  may choose not to treat it as payment until it has been confirmed,
+  eliminating the risk that the spender will use allowed replacements to
+  defraud them.
 
 Nodes and recipients may continue to treat transactions without the
 signal the same way they treated them before, preserving the existing
@@ -59,16 +57,15 @@ status quo.
 This policy specifies two ways a transaction can signal that it is
 replaceable.
 
-  - **Explicit signaling:** A transaction is considered to have opted in
-    to allowing replacement of itself if any of its inputs have an
-    nSequence number less than (0xffffffff - 1).
+- **Explicit signaling:** A transaction is considered to have opted in
+  to allowing replacement of itself if any of its inputs have an
+  nSequence number less than (0xffffffff - 1).
 
-<!-- end list -->
+<!-- -->
 
-  - **Inherited signaling:** Transactions that don't explicitly signal
-    replaceability are replaceable under this policy for as long as any
-    one of their ancestors signals replaceability and remains
-    unconfirmed.
+- **Inherited signaling:** Transactions that don't explicitly signal
+  replaceability are replaceable under this policy for as long as any
+  one of their ancestors signals replaceability and remains unconfirmed.
 
 ### Implementation Details
 
@@ -82,19 +79,19 @@ transaction) that spends one or more of the same inputs if,
 1.  The original transactions signal replaceability explicitly or
     through inheritance as described in the above Summary section.
 
-<!-- end list -->
+<!-- -->
 
 1.  The replacement transaction may only include an unconfirmed input if
     that input was included in one of the original transactions. (An
     unconfirmed input spends an output from a currently-unconfirmed
     transaction.)
 
-<!-- end list -->
+<!-- -->
 
 1.  The replacement transaction pays an absolute fee of at least the sum
     paid by the original transactions.
 
-<!-- end list -->
+<!-- -->
 
 1.  The replacement transaction must also pay for its own bandwidth at
     or above the rate set by the node's minimum relay fee setting. For
@@ -103,14 +100,14 @@ transaction) that spends one or more of the same inputs if,
     must pay a fee at least 500 satoshis higher than the sum of the
     originals.
 
-<!-- end list -->
+<!-- -->
 
 1.  The number of original transactions to be replaced and their
     descendant transactions which will be evicted from the mempool must
     not exceed a total of 100 transactions.
 
 The initial implementation may be seen in [Bitcoin Core
-PR\#6871](https://github.com/bitcoin/bitcoin/pull/6871) and specifically
+PR#6871](https://github.com/bitcoin/bitcoin/pull/6871) and specifically
 the master branch commits from 5891f870d68d90408aa5ce5b597fb574f2d2cbca
 to 16a2f93629f75d182871f288f0396afe6cdc8504 (inclusive).
 
@@ -123,7 +120,7 @@ doing one of the following:
 1.  Conveying additional suspicion about opt-in full-RBF transactions to
     the user or data consumer.
 
-<!-- end list -->
+<!-- -->
 
 1.  Ignoring the opt-in transaction until it has been confirmed.
 
@@ -224,7 +221,7 @@ satisfied:
     replacements to go from spending wallets to miners controlling
     significant amounts of hash rate.
 
-<!-- end list -->
+<!-- -->
 
 1.  Enough hash rate has upgraded to support replacement, allowing for
     reasonable probability that a replacement can be mined.
@@ -243,12 +240,12 @@ by default, so no known wallets signaled inherited replaceability.
     Wiki](https://en.bitcoin.it/wiki/Transaction_replacement) targeted
     at helping wallet authors use RBF
 
-<!-- end list -->
+<!-- -->
 
 1.  Tools for creating opt-in full-RBF transactions:
     <https://github.com/petertodd/replace-by-fee-tools#replace-by-fee-tools>
 
-<!-- end list -->
+<!-- -->
 
 1.  [Reddit: Questions about opt-in
     RBF](https://www.reddit.com/r/Bitcoin/comments/3urm8o/optin_rbf_is_misunderstood_ask_questions_about_it/)

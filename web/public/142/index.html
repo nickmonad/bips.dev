@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,25 +46,25 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 142
-  Layer: Applications
-  Title: Address Format for Segregated Witness
-  Author: Johnson Lau &lt;jl2012@xbt.hk&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0142
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2015-12-24
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 142
+</span><span>  Layer: Applications
+</span><span>  Title: Address Format for Segregated Witness
+</span><span>  Author: Johnson Lau &lt;jl2012@xbt.hk&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0142
+</span><span>  Status: Withdrawn
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-12-24
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes new types of Bitcoin address to support native
 segregated witness transactions with 20-byte and 32-byte program.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>To define standard payment address for native segregated witness
 (segwit) transactions to promote early adoption of the more efficient
 transaction method.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>The new Bitcoin address format defined is for the
 Pay-to-Witness-Public-Key-Hash (P2WPKH) and Pay-to-Witness-Script-Hash
 (P2WSH) transaction described in segregated witness soft fork (BIP141).
@@ -95,35 +95,34 @@ the serialization of the previous items.</p>
 with 36 digits for 20-byte and 53 digits for 32-byte. Different witness
 program versions will have a unique prefix, as shown in the following
 table:</p>
-<p>| rowspan=3 style=&quot;&quot;|Witness program version | colspan=4 style=&quot;&quot;|Hash size               |
-| ------------------------------------------ | ------------------------------------------ |
-| colspan=2 style=&quot;&quot;|20-byte (36 characters) | colspan=2 style=&quot;&quot;|32-byte (53 characters) |
-| Mainnet                                    | Testnet                                    |
-| 0                                          | p2                                         |
-| 1                                          | p4                                         |
-| 2                                          | p6                                         |
-| 3                                          | p7                                         |
-| 4                                          | pA                                         |
-| 5                                          | pB                                         |
-| 6                                          | pD                                         |
-| 7                                          | pF                                         |
-| 8                                          | pG                                         |
-| 9                                          | pJ                                         |
-| 10                                         | pL                                         |
-| 11                                         | pN                                         |
-| 12                                         | pQ                                         |
-| 13                                         | pS                                         |
-| 14                                         | pT                                         |
-| 15                                         | pV                                         |
-| 16                                         | pX                                         |
-|                                            |                                            |</p>
-<h2 id="rationale">Rationale</h2>
+<table><thead><tr><th>rowspan=3 style=&quot;&quot;|Witness program version</th><th>colspan=4 style=&quot;&quot;|Hash size</th></tr></thead><tbody>
+<tr><td>colspan=2 style=&quot;&quot;|20-byte (36 characters)</td><td>colspan=2 style=&quot;&quot;|32-byte (53 characters)</td></tr>
+<tr><td>Mainnet</td><td>Testnet</td></tr>
+<tr><td>0</td><td>p2</td></tr>
+<tr><td>1</td><td>p4</td></tr>
+<tr><td>2</td><td>p6</td></tr>
+<tr><td>3</td><td>p7</td></tr>
+<tr><td>4</td><td>pA</td></tr>
+<tr><td>5</td><td>pB</td></tr>
+<tr><td>6</td><td>pD</td></tr>
+<tr><td>7</td><td>pF</td></tr>
+<tr><td>8</td><td>pG</td></tr>
+<tr><td>9</td><td>pJ</td></tr>
+<tr><td>10</td><td>pL</td></tr>
+<tr><td>11</td><td>pN</td></tr>
+<tr><td>12</td><td>pQ</td></tr>
+<tr><td>13</td><td>pS</td></tr>
+<tr><td>14</td><td>pT</td></tr>
+<tr><td>15</td><td>pV</td></tr>
+<tr><td>16</td><td>pX</td></tr>
+<tr><td></td><td></td></tr>
+</tbody></table>
+<h2 id="Rationale">Rationale</h2>
 <p>BIP141 defines 2 ways of encoding a &quot;witness program&quot;, a data push of 2
 to 32 bytes:</p>
 <ul>
 <li>A native witness program output is a scriptPubKey with a push of
-version byte followed by a push of witness program, and nothing
-else;</li>
+version byte followed by a push of witness program, and nothing else;</li>
 <li>Segwit-in-P2SH is a BIP16 P2SH redeemScript with a push of version
 byte followed by a push of witness program, while the scriptPubKey
 looks like a normal P2SH output.</li>
@@ -152,13 +151,13 @@ capacity of the blockchain.</p>
 <p>While P2WPKH address is specific for simple payment to a single public
 key, P2WSH address allows arbitrarily complex segwit transactions,
 similar to the BIP13 P2SH address.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This proposal is not backward-compatible. However, an older
 implementation will report the new address type as invalid, and refuse
 to create a transaction.</p>
 <p>This proposal is forward-compatible with future versions of witness
 programs of 20 and 32 bytes.</p>
-<h2 id="example">Example</h2>
+<h2 id="Example">Example</h2>
 <p>The following public key,</p>
 <p><code>   0450863AD64A87AE8A2FE83C1AF1A8403CB53F53E486D8511DAD8A04887E5B23522CD470243453A299FA9E77237716103ABC11A1DF38855ED6F2EE187E9C582BA6</code></p>
 <p>when encoded as a P2PKH template, would become:</p>
@@ -170,17 +169,17 @@ programs of 20 and 32 bytes.</p>
 <p>Using 0x06 as address version, followed by 0x00 as witness program
 version, and a 0x00 padding, the equivalent P2WPKH address is:</p>
 <p><code>   p2xtZoXeX5X8BP8JfFhQK2nD3emtjch7UeFm</code></p>
-<h2 id="reference-implementation">Reference implementation</h2>
-<p><a href="https://github.com/theuni/bitcoin/commit/ede1b57058ac8efdefe61f67395affb48f2c0d80">https://github.com/theuni/bitcoin/commit/ede1b57058ac8efdefe61f67395affb48f2c0d80</a></p>
-<h2 id="references">References</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/theuni/bitcoin/commit/ede1b57058ac8efdefe61f67395affb48f2c0d80">https://github.com/theuni/bitcoin/commit/ede1b57058ac8efdefe61f67395affb48f2c0d80</a></p>
+<h2 id="References">References</h2>
 <ul>
-<li><a href="https://bips.dev/142/bip-0013.mediawiki" title="wikilink">BIP 13: Address Format for
+<li><a href="/13">BIP 13: Address Format for
 pay-to-script-hash</a></li>
-<li><a href="https://bips.dev/142/bip-0016.mediawiki" title="wikilink">BIP 16: Pay to Script Hash</a></li>
-<li><a href="https://bips.dev/142/bip-0070.mediawiki" title="wikilink">BIP 70: Payment Protocol</a></li>
-<li><a href="https://bips.dev/142/bip-0141.mediawiki" title="wikilink">BIP 141: Segregated Witness</a></li>
+<li><a href="/16">BIP 16: Pay to Script Hash</a></li>
+<li><a href="/70">BIP 70: Payment Protocol</a></li>
+<li><a href="/141">BIP 141: Segregated Witness</a></li>
 </ul>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This work is placed in the public domain.</p>
 
     </div>
@@ -189,7 +188,7 @@ pay-to-script-hash</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

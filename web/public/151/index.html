@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,22 +46,22 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 151
-  Layer: Peer Services
-  Title: Peer-to-Peer Communication Encryption
-  Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
-  Comments-Summary: Controversial; some recommendation, and some discouragement
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0151
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2016-03-23
-  License: PD
-  Superseded-By: 324
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 151
+</span><span>  Layer: Peer Services
+</span><span>  Title: Peer-to-Peer Communication Encryption
+</span><span>  Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
+</span><span>  Comments-Summary: Controversial; some recommendation, and some discouragement
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0151
+</span><span>  Status: Withdrawn
+</span><span>  Type: Standards Track
+</span><span>  Created: 2016-03-23
+</span><span>  License: PD
+</span><span>  Superseded-By: 324
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes an alternative way that a peer can encrypt their
 communication between a selective subset of remote peers.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The Bitcoin network does not encrypt communication between peers today.
 This opens up security issues (eg: traffic manipulation by others) and
 allows for mass surveillance / analysis of bitcoin users. Mostly this is
@@ -85,7 +85,7 @@ stunnel, curveCP or any other encryption mechanism on a deeper OSI
 level, however, most mechanisms are not practical for SPV or other
 DHCP/NAT environment and will require significant knowhow in how to
 setup such a secure channel.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>A peer that supports encryption must accept encryption requests from all
 peers.</p>
 <p>An independent ECDH negotiation for both communication directions is
@@ -96,21 +96,25 @@ negotiation in <em>both directions</em>.</p>
 <p>Encryption initialization must happen before sending any other messages
 to the responding peer (<code>encinit</code> message after a <code>version</code> message must
 be ignored).</p>
-<h3 id="symmetric-encryption-cipher-keys">Symmetric Encryption Cipher Keys</h3>
+<h3 id="Symmetric_Encryption_Cipher_Keys">Symmetric Encryption Cipher Keys</h3>
 <p>The symmetric encryption cipher keys will be calculated with ECDH/HKDF
 by sharing the pubkeys of an ephemeral key. Once the ECDH secret is
 calculated on each side, the symmetric encryption cipher keys must be
 derived with HKDF [2] after the following specification:</p>
-<p>1. HKDF extraction <code>PRK = HKDF_EXTRACT(hash=SHA256, salt=&quot;bitcoinecdh&quot;, ikm=ecdh_secret|cipher-type)</code>.</p>
-<p>2. Derive Key1 <code>K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK1&quot;, L=32)</code></p>
-<p>3. Derive Key2 <code>K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK2&quot;, L=32)</code></p>
+<p>1. HKDF extraction
+<code>PRK = HKDF_EXTRACT(hash=SHA256, salt=&quot;bitcoinecdh&quot;, ikm=ecdh_secret|cipher-type)</code>.</p>
+<p>2. Derive Key1
+<code>K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK1&quot;, L=32)</code></p>
+<p>3. Derive Key2
+<code>K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK2&quot;, L=32)</code></p>
 <p>It is important to include the cipher-type into the symmetric cipher key
 derivation to avoid weak-cipher-attacks.</p>
-<h3 id="session-id">Session ID</h3>
-<p>Both sides must also calculate the 256bit session-id using <code>SID = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinSessionID&quot;, L=32)</code>. The
-session-id can be used for linking the encryption-session to an identity
-check.</p>
-<h3 id="the-encinit-message-type">The <code>encinit</code> message type</h3>
+<h3 id="Session_ID">Session ID</h3>
+<p>Both sides must also calculate the 256bit session-id using
+<code>SID = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinSessionID&quot;, L=32)</code>.
+The session-id can be used for linking the encryption-session to an
+identity check.</p>
+<h3 id="The_encinit_message_type">The <code>encinit</code> message type</h3>
 <p>To request encrypted communication, the requesting peer generates an EC
 ephemeral-session-keypair and sends an <code>encinit</code> message to the
 responding peer and waits for an <code>encack</code> message. The responding node
@@ -124,7 +128,7 @@ communication direction.</p>
 <table><thead><tr><th>Number</th><th>symmetric key ciphers type</th></tr></thead><tbody>
 <tr><td>0</td><td>chacha20-poly1305@openssh.com</td></tr>
 </tbody></table>
-<h3 id="chacha20-poly1305-cipher-suite">ChaCha20-Poly1305 Cipher Suite</h3>
+<h3 id="ChaCha20-Poly1305_Cipher_Suite">ChaCha20-Poly1305 Cipher Suite</h3>
 <p>ChaCha20 is a stream cipher designed by Daniel Bernstein [3]. It
 operates by permuting 128 fixed bits, 128 or 256 bits of key, a 64 bit
 nonce and a 64 bit counter into 64 bytes of output. This output is used
@@ -146,7 +150,7 @@ cycles per byte then the current unencrypted p2p message format. A quick
 analysis by Pieter Wuille of the current <em>standard implementations</em> has
 shown that SHA256 requires more CPU cycles per byte then ChaCha20 &amp;
 Poly1304.</p>
-<h3 id="the-encack-message-type">The <code>encack</code> message type</h3>
+<h3 id="The_encack_message_type">The <code>encack</code> message type</h3>
 <p>The responding peer accepts the encryption request by sending an
 <code>encack</code> message.</p>
 <table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
@@ -159,12 +163,12 @@ an attacker knows at least one private key and the remote peer's public
 key.</p>
 <ul>
 <li><strong>The <code>encinit</code>/<code>encack</code> interaction must be done from both sides.</strong></li>
-<li>Each communication direction uses its own secret key for the
-symmetric cipher.</li>
+<li>Each communication direction uses its own secret key for the symmetric
+cipher.</li>
 <li>The second <code>encinit</code> request (from the responding peer) must use the
 same symmetric cipher type.</li>
-<li>All unencrypted messages before the second <code>encack</code> response (from
-the responding peer) must be ignored.</li>
+<li>All unencrypted messages before the second <code>encack</code> response (from the
+responding peer) must be ignored.</li>
 <li>After a successful <code>encinit</code>/<code>encack</code> interaction, the &quot;encrypted
 messages structure&quot; must be used. Non-encrypted messages from the
 requesting peer must lead to a connection termination.</li>
@@ -174,7 +178,7 @@ messages format must use the &quot;encrypted messages structure&quot;.
 Non-encrypted messages from the requesting peer must lead to a
 connection termination (can be detected by the 4 byte network magic in
 the unencrypted message structure).</p>
-<h3 id="encrypted-messages-structure">Encrypted Messages Structure</h3>
+<h3 id="Encrypted_Messages_Structure">Encrypted Messages Structure</h3>
 <table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
 <tr><td>4</td><td>length</td><td>uint32_t</td><td>Length of ciphertext payload in number of bytes</td></tr>
 <tr><td>?</td><td>ciphertext payload</td><td>?</td><td>One or many ciphertext command &amp; message data</td></tr>
@@ -198,7 +202,7 @@ messages:</p>
 </tbody></table>
 <p>If more data is present, another message must be deserialized. There is
 no explicit amount-of-messages integer.</p>
-<h3 id="re-keying">Re-Keying</h3>
+<h3 id="Re-Keying">Re-Keying</h3>
 <p>A responding peer can inform the requesting peer over a re-keying with
 an <code>encack</code> message containing 33byte of zeros to indicate that all
 encrypted message following after this <code>encack</code> message will be
@@ -209,34 +213,34 @@ encrypted with <em>the next symmetric cipher key</em>.</p>
 seconds.</p>
 <p>The Re-Keying must be done after every 1GB of data sent or received
 (recommended by RFC4253 SSH Transport).</p>
-<h3 id="risks">Risks</h3>
+<h3 id="Risks">Risks</h3>
 <p>The encryption does not include an identity authentication scheme. This
 BIP does not cover a proposal to avoid MITM attacks during the
 encryption initialization.</p>
 <p>Identity authentication will be covered in another BIP and will presume
 communication encryption after this BIP.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This proposal is backward compatible. Non-supporting peers will ignore
 the <code>encinit</code> messages.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
-<h2 id="references">References</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
+<h2 id="References">References</h2>
 <ul>
 <li>[1]
-<a href="https://e-collection.library.ethz.ch/eserv/eth:48205/eth-48205-01.pdf">https://e-collection.library.ethz.ch/eserv/eth:48205/eth-48205-01.pdf</a></li>
-<li>[2] HKDF (RFC 5869) <a href="https://tools.ietf.org/html/rfc5869">https://tools.ietf.org/html/rfc5869</a></li>
-<li>[3] ChaCha20 <a href="https://cr.yp.to/chacha/chacha-20080128.pdf">https://cr.yp.to/chacha/chacha-20080128.pdf</a></li>
-<li>[4] Poly1305 <a href="https://cr.yp.to/mac/poly1305-20050329.pdf">https://cr.yp.to/mac/poly1305-20050329.pdf</a></li>
+<a rel="noopener" target="_blank" href="https://e-collection.library.ethz.ch/eserv/eth:48205/eth-48205-01.pdf">https://e-collection.library.ethz.ch/eserv/eth:48205/eth-48205-01.pdf</a></li>
+<li>[2] HKDF (RFC 5869) <a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc5869">https://tools.ietf.org/html/rfc5869</a></li>
+<li>[3] ChaCha20 <a rel="noopener" target="_blank" href="https://cr.yp.to/chacha/chacha-20080128.pdf">https://cr.yp.to/chacha/chacha-20080128.pdf</a></li>
+<li>[4] Poly1305 <a rel="noopener" target="_blank" href="https://cr.yp.to/mac/poly1305-20050329.pdf">https://cr.yp.to/mac/poly1305-20050329.pdf</a></li>
 <li>[5]
-<a href="https://github.com/openssh/openssh-portable/blob/05855bf2ce7d5cd0a6db18bc0b4214ed5ef7516d/PROTOCOL.chacha20poly1305">https://github.com/openssh/openssh-portable/blob/05855bf2ce7d5cd0a6db18bc0b4214ed5ef7516d/PROTOCOL.chacha20poly1305</a></li>
+<a rel="noopener" target="_blank" href="https://github.com/openssh/openssh-portable/blob/05855bf2ce7d5cd0a6db18bc0b4214ed5ef7516d/PROTOCOL.chacha20poly1305">https://github.com/openssh/openssh-portable/blob/05855bf2ce7d5cd0a6db18bc0b4214ed5ef7516d/PROTOCOL.chacha20poly1305</a></li>
 <li>[6] &quot;ChaCha20 and Poly1305 based Cipher Suites for TLS&quot;, Adam
 Langley
-<a href="https://tools.ietf.org/html/draft-agl-tls-chacha20poly1305-03">https://tools.ietf.org/html/draft-agl-tls-chacha20poly1305-03</a></li>
+<a rel="noopener" target="_blank" href="https://tools.ietf.org/html/draft-agl-tls-chacha20poly1305-03">https://tools.ietf.org/html/draft-agl-tls-chacha20poly1305-03</a></li>
 </ul>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <ul>
 <li>Pieter Wuille and Gregory Maxwell for most of the ideas in this BIP.</li>
 </ul>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This work is placed in the public domain.</p>
 
     </div>
@@ -245,7 +249,7 @@ Langley
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

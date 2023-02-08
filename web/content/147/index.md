@@ -14,18 +14,16 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0147.mediawiki"
 +++
 
-``` 
-  BIP: 147
-  Layer: Consensus (soft fork)
-  Title: Dealing with dummy stack element malleability
-  Author: Johnson Lau <jl2012@xbt.hk>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0147
-  Status: Final
-  Type: Standards Track
-  Created: 2016-09-02
-  License: PD
-```
+      BIP: 147
+      Layer: Consensus (soft fork)
+      Title: Dealing with dummy stack element malleability
+      Author: Johnson Lau <jl2012@xbt.hk>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0147
+      Status: Final
+      Type: Standards Track
+      Created: 2016-09-02
+      License: PD
 
 ## Abstract
 

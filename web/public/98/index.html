@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,21 +46,21 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 98
-  Layer: Consensus (soft fork)
-  Title: Fast Merkle Trees
-  Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
-          Kalle Alm &lt;kalle.alm@gmail.com&gt;
-          BtcDrak &lt;btcdrak@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0098
-  Status: Draft
-  Type: Standards Track
-  Created: 2017-08-24
-  License: CC-BY-SA-4.0
-  License-Code: MIT
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 98
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: Fast Merkle Trees
+</span><span>  Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
+</span><span>          Kalle Alm &lt;kalle.alm@gmail.com&gt;
+</span><span>          BtcDrak &lt;btcdrak@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0098
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-08-24
+</span><span>  License: CC-BY-SA-4.0
+</span><span>  License-Code: MIT
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>In many applications it is useful to prove membership of a data element
 in a set without having to reveal the entire contents of that set. The
 Merkle hash-tree, where inner/non-leaf nodes are labeled with the hash
@@ -76,10 +76,10 @@ hash-tree construct that is not vulnerable to CVE-2012-2459 and achieves
 an approximate 55% decrease in hash-tree construction and validation
 times as compared with fully optimized implementations of the Satoshi
 Merkle hash-tree construct.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under a Creative Commons Attribution-ShareAlike
 license. All provided source code is licensed under the MIT license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>A Merkle hash-tree is a directed acyclic graph data structure where all
 non-terminal nodes are labeled with the hash of combined labels or
 values of the node(s) it is connected to. Bitcoin uses a unique Merkle
@@ -116,21 +116,14 @@ of the tree and not very flexible.</p>
 standard Merkle hash-tree structure for use in new protocols that fixes
 these issues. This BIP describes such a structure, and provides an
 example implementation.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>A Merkle hash-tree as defined by this BIP is an arbitrarily-balanced
 binary tree whose terminal/leaf nodes are labelled with the
 double-SHA256 hashes of data, whose format is outside the scope of this
 BIP, and inner nodes with labels constructed from the fast-SHA256 hash
 of its children's labels. The following image depicts an example
 unbalanced hash-tree:</p>
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    ![bip-0098/unbalanced-hash-tree.png](bip-0098/unbalanced-hash-tree.png
-    &quot;bip-0098/unbalanced-hash-tree.png&quot;)
-</code></pre>
+<p><img src="https://bips.dev/98/bip-0098/unbalanced-hash-tree.png" alt="" title="fig:bip-0098/unbalanced-hash-tree.png" /></p>
 <p><strong>A</strong>, <strong>B</strong>, and <strong>C</strong> are leaf labels, 32-byte double-SHA256 hashes of
 the data associated with the leaf. <strong>Node</strong> and <strong>Root</strong> are inner
 nodes, whose labels are fast-SHA256 (defined below) hashes of their
@@ -170,7 +163,7 @@ nor is any root hash defined for such a &quot;tree&quot;; and a Merkle tree with
 single value has a root hash label equal to that self-same value of the
 leaf branch, the only node in the tree (a passthrough operation with no
 hashing).</p>
-<h3 id="rationale">Rationale</h3>
+<h3 id="Rationale">Rationale</h3>
 <p>The fast-SHA256 hash function can be calculated 2.32x faster than a
 specialized double-SHA256 implementation[2], or three (3) times faster
 than an implementation applying a generic SHA-256 primitive twice, as
@@ -213,7 +206,7 @@ instead for one or more of the chained validations to use a &quot;NOP&quot; proo
 consisting of a zero-length path, thereby allowing, for example, a fixed
 series of four (4) chained validations to verify a length three (3) or
 shorter path.</p>
-<h2 id="inclusion-proofs">Inclusion Proofs</h2>
+<h2 id="Inclusion_Proofs">Inclusion Proofs</h2>
 <p>An important use of Merkle hash-trees is the ability to compactly prove
 membership with log-sized proofs. This section specifies a standard
 encoding for a multi-element inclusion proof.</p>
@@ -241,14 +234,7 @@ variable-length integer (VarInt), followed by the hashes themselves in
 the order previously traversed.</p>
 <p>There are eight possible configurations of internal nodes, as given in
 the following diagram:</p>
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    ![bip-0098/node-variants.png](bip-0098/node-variants.png
-    &quot;bip-0098/node-variants.png&quot;)
-</code></pre>
+<p><img src="https://bips.dev/98/bip-0098/node-variants.png" alt="" title="fig:bip-0098/node-variants.png" /></p>
 <p>In this diagram, DESCEND means the branch links to another internal
 node, as indicated by its child graph elements labeled &quot;...&quot;; SKIP means
 the branch contains a hash of an elided subtree or element, and the
@@ -283,16 +269,9 @@ within the proof.</p>
 <p>The single-hash proof has N=0 (the number of inner nodes), the tree
 structure is not serialized (as there are no inner nodes), and the
 number of SKIP hashes can be either 0 or 1.</p>
-<h3 id="example">Example</h3>
+<h3 id="Example">Example</h3>
 <p>Consider the following Merkle tree structure:</p>
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    ![bip-0098/traversal-example.png](bip-0098/traversal-example.png
-    &quot;bip-0098/traversal-example.png&quot;)
-</code></pre>
+<p><img src="https://bips.dev/98/bip-0098/traversal-example.png" alt="" title="fig:bip-0098/traversal-example.png" /></p>
 <p>There are six (6) internal nodes. The depth-first, left-to-right,
 pre-order traversal of the tree visits these nodes in the following
 order: A, B, D, F, C, then E. There are three (3) skipped hashes,
@@ -312,19 +291,12 @@ number of SKIP hashes is VarInt encoded, <code>0x03</code>, followed by the thre
 base64:.</p>
 <p><code>   Br2EQAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGZmZmZmZmZmZmZmZmZmZmZmZmZm</code><br />
 <code>   ZmZmZmZmZmZmZmZmREREREREREREREREREREREREREREREREREREREREREQ=</code></p>
-<h3 id="rationale-1">Rationale</h3>
+<h3 id="Rationale-1">Rationale</h3>
 <p>The 3-bit encoding for inner nodes allows encoding all relevant
 configurations of the nodes where the left and right branches can each
 be one of {DESCEND, SKIP, VERIFY}. The excluded 9th possibility would
 have both branches as SKIP:</p>
-<ul>
-<li></li>
-</ul>
-<pre style="background-color:#fafafa;">
-<code>  -   
-    ![bip-0098/skip-skip.png](bip-0098/skip-skip.png
-    &quot;bip-0098/skip-skip.png&quot;)
-</code></pre>
+<p><img src="https://bips.dev/98/bip-0098/skip-skip.png" alt="" title="fig:bip-0098/skip-skip.png" /></p>
 <p>This possibility is not allowed as for verification purposes it is
 entirely equivalent to the shorter proof where the branch to that node
 was SKIP'ed. Disallowing a node with two SKIP branches eliminates what
@@ -362,7 +334,7 @@ serialization, and the two values must match what is inferred from the
 tree structure for a proof to be valid. This makes deserialization
 trivial and defers tree construction until verification time, which has
 the additional benefit of enabling log-space verification algorithms.</p>
-<h2 id="fast-merkle-lists">Fast Merkle Lists</h2>
+<h2 id="Fast_Merkle_Lists">Fast Merkle Lists</h2>
 <p>Many applications use a Merkle tree to provide indexing of, or compact
 membership proofs about the elements in a list. This addendum specifies
 an algorithm that constructs a canonical balanced tree structure for
@@ -377,9 +349,9 @@ double-SHA256 hash.</li>
 <li>While the list has 2 or more elements,
 <ul>
 <li>Pass through the list combining adjacent entries with the
-fast-SHA256 hash. If the list has an odd number of elements,
-leave the last element as-is (this fixes [1]). This step
-reduces a list of N elements to ceil(N/2) entries.</li>
+fast-SHA256 hash. If the list has an odd number of elements, leave
+the last element as-is (this fixes [1]). This step reduces a
+list of N elements to ceil(N/2) entries.</li>
 </ul>
 </li>
 <li>The last remaining item in the list is the Merkle root.</li>
@@ -388,38 +360,38 @@ reduces a list of N elements to ceil(N/2) entries.</li>
 First, fast-SHA256 is used instead of double-SHA256 for inner node
 labels. Second, final entries on an odd-length list are not duplicated
 and hashed, which is the mistake that led to CVE-2012-2459[1].</p>
-<h2 id="implementation">Implementation</h2>
+<h2 id="Implementation">Implementation</h2>
 <p>An implementation of this BIP for extraction of Merkle branches and
 fast, log-space Merkle branch validation is available at the following
 Github repository:</p>
-<p><a href="https://github.com/maaku/bitcoin/tree/fast-merkle-tree">1</a></p>
+<p><a rel="noopener" target="_blank" href="https://github.com/maaku/bitcoin/tree/fast-merkle-tree">1</a></p>
 <p>Also included in this repo is a 'merklebranch' RPC for calculating root
 values and extracting inclusion proofs for both arbitrary trees and
 trees constructed from lists of values using the algorithm in this BIP,
 and a 'mergemerklebranch' RPC for unifying two or more fast Merkle tree
 inclusion proofs--replacing SKIP hashes in one proof with a subtree
 extracted from another.</p>
-<h2 id="deployment">Deployment</h2>
+<h2 id="Deployment">Deployment</h2>
 <p>This BIP is used by BIP116 (MERKLEBRANCHVERIFY)[4] to add Merkle
 inclusion proof verification to script by means of a soft-fork NOP
 expansion opcode. Deployment of MERKLEBRANCHVERIFY would make the
 contents of this BIP consensus critical. The deployment plan for BIP116
 is covered in the text of that BIP.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This BIP on its own does not cause any backwards incompatibility.</p>
-<h2 id="references">References</h2>
-<p>[1] <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2459">National Vulnerability Database:
+<h2 id="References">References</h2>
+<p>[1] <a rel="noopener" target="_blank" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2459">National Vulnerability Database:
 CVE-2012-2459</a></p>
-<p>[2]
-<a href="https://github.com/sipa/bitcoin/tree/201709_dsha256_64">github.com:sipa/bitcoin 201709_dsha256_64</a>
+<p>[2] <a rel="noopener" target="_blank" href="https://github.com/sipa/bitcoin/tree/201709_dsha256_64">github.com:sipa/bitcoin
+201709_dsha256_64</a>
 Pieter Wuille, September 2017, personal communication. By making use of
 knowledge that the inputs at each stage are fixed length, Mr. Wuille was
 able to achieve a 22.7% reduction in the time it takes to compute the
 double-SHA256 hash of 64 bytes of data, the hash aggregation function of
 the Satoshi Merkle tree construction.</p>
-<p>[3] <a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">Secure Hash
+<p>[3] <a rel="noopener" target="_blank" href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">Secure Hash
 Standard</a></p>
-<p>[4] <a href="https://github.com/bitcoin/bips/blob/master/bip-0116.mediawiki">BIP 116
+<p>[4] <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0116.mediawiki">BIP 116
 MERKLEBRANCHVERIFY</a></p>
 
     </div>
@@ -428,7 +400,7 @@ MERKLEBRANCHVERIFY</a></p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

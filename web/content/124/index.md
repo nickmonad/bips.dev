@@ -14,20 +14,18 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0124.mediawiki"
 +++
 
-``` 
-  BIP: 124
-  Layer: Applications
-  Title: Hierarchical Deterministic Script Templates
-  Author: Eric Lombrozo <eric@ciphrex.com>
-          William Swanson <swansontec@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0124
-  Status: Rejected
-  Type: Informational
-  Created: 2015-11-20
-  License: PD
-  Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-November/011795.html
-```
+      BIP: 124
+      Layer: Applications
+      Title: Hierarchical Deterministic Script Templates
+      Author: Eric Lombrozo <eric@ciphrex.com>
+              William Swanson <swansontec@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0124
+      Status: Rejected
+      Type: Informational
+      Created: 2015-11-20
+      License: PD
+      Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-November/011795.html
 
 ## Abstract
 
@@ -123,7 +121,7 @@ TODO
 
 The script template is defined by:
 
-*Script*(**X**) = 2 \[**X**\] 3 OP\_CHECKMULTISIG
+*Script*(**X**) = 2 \[**X**\] 3 OP_CHECKMULTISIG
 
 Letting **K**<sub>k</sub> = { **m**<sub>1</sub>/k, **m**<sub>2</sub>/k,
 **m**<sub>3</sub>/k }, the *k*th script for this key group is denoted by
@@ -134,12 +132,12 @@ Letting **K**<sub>k</sub> = { **m**<sub>1</sub>/k, **m**<sub>2</sub>/k,
 The script template is defined by:
 
 *Script*(**A**, **B**) =  
-        OP\_DUP \[**A**\] OP\_CHECKSIG  
-        OP\_NOTIF  
-                2 \[**B**\] 3 OP\_CHECKMULTISIGVERIFY  
-        OP\_NOTIF  
-        OP\_ENDIF  
-        OP\_TRUE  
+        OP_DUP \[**A**\] OP_CHECKSIG  
+        OP_NOTIF  
+                2 \[**B**\] 3 OP_CHECKMULTISIGVERIFY  
+        OP_NOTIF  
+        OP_ENDIF  
+        OP_TRUE  
 Let **M**<sub>k</sub> = **m**/k be a key of a superuser that can
 authorize all transactions and {**K**<sub>k</sub>} be a key group of
 three users that can only authorize transactions if at least two of them
@@ -158,27 +156,27 @@ spend the output.
 The script template is defined by:
 
 *Script*(**A**, **B**, **T**) =  
-        OP\_IF  
-                OP\_DUP OP\_HASH160 \[*Hash160*(**A**)\] OP\_EQUALVERIFY
-OP\_CHECKSIG  
-        OP\_ELSE  
-                \[**T**\] OP\_CHECKLOCKTIMEVERIFY OP\_DROP  
-                OP\_DUP OP\_HASH160 \[*Hash160*(**B**)\] OP\_EQUALVERIFY
-OP\_CHECKSIG  
-        OP\_ENDIF
+        OP_IF  
+                OP_DUP OP_HASH160 \[*Hash160*(**A**)\] OP_EQUALVERIFY
+OP_CHECKSIG  
+        OP_ELSE  
+                \[**T**\] OP_CHECKLOCKTIMEVERIFY OP_DROP  
+                OP_DUP OP_HASH160 \[*Hash160*(**B**)\] OP_EQUALVERIFY
+OP_CHECKSIG  
+        OP_ENDIF
 
 The *k*th script with timeout **t** is given by
 *Script*(**A**<sub>k</sub>, **B**<sub>k</sub>, **t**).
 
 ## References
 
-  - [BIP16 - Pay to Script Hash](bip-0016.mediawiki "wikilink")
-  - [BIP32 - Hierarchical Deterministic
-    Wallets](bip-0032.mediawiki "wikilink")
-  - [BIP65 - OP\_CHECKLOCKTIMEVERIFY](bip-0065.mediawiki "wikilink")
-  - [BIP112 - CHECKSEQUENCEVERIFY](bip-0112.mediawiki "wikilink")
-  - [Lightning Network
-    Whitepaper](https://lightning.network/lightning-network-paper.pdf "wikilink")
+- [BIP16 - Pay to Script Hash](/16)
+- [BIP32 - Hierarchical Deterministic
+  Wallets](/32)
+- [BIP65 - OP_CHECKLOCKTIMEVERIFY](/65)
+- [BIP112 - CHECKSEQUENCEVERIFY](/112)
+- [Lightning Network
+  Whitepaper](https://lightning.network/lightning-network-paper.pdf "wikilink")
 
 ## Copyright
 

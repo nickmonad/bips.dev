@@ -14,18 +14,16 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0109.mediawiki"
 +++
 
-``` 
-  BIP: 109
-  Layer: Consensus (hard fork)
-  Title: Two million byte size limit with sigop and sighash limits
-  Author: Gavin Andresen <gavinandresen@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0109
-  Status: Rejected
-  Type: Standards Track
-  Created: 2016-01-28
-  License: PD
-```
+      BIP: 109
+      Layer: Consensus (hard fork)
+      Title: Two million byte size limit with sigop and sighash limits
+      Author: Gavin Andresen <gavinandresen@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0109
+      Status: Rejected
+      Type: Standards Track
+      Created: 2016-01-28
+      License: PD
 
 ## Abstract
 
@@ -40,30 +38,29 @@ block from 1MB to 2MB, with limits on signature operations and hashing.
 
 ## Specification
 
-### MAX\_BLOCK\_SIZE increased to 2,000,000 bytes
+### MAX_BLOCK_SIZE increased to 2,000,000 bytes
 
 The maximum number of bytes in a canonically serialized block shall be
 increased from 1,000,000 bytes to 2,000,000 bytes.
 
 ### Switch to accurately-counted sigop limit of 20,000 per block
 
-The existing MAX\_SIGOPS limit of 20,000 signature operations per block
+The existing MAX_SIGOPS limit of 20,000 signature operations per block
 shall be retained, but only ECDSA verifications actually performed to
 validate the block shall be counted.
 
 In particular:
 
-  - The coinbase scriptSig is not counted
-  - Signature operations in un-executed branches of a Script are not
-    counted
-  - OP\_CHECKMULTISIG evaluations are counted accurately; if the
-    signature for a 1-of-20 OP\_CHECKMULTISIG is satisified by the
-    public key nearest the top of the execution stack, it is counted as
-    one signature operation. If it is satisfied by the public key
-    nearest the bottom of the execution stack, it is counted as twenty
-    signature operations.
-  - Signature operations involving invalidly encoded signatures or
-    public keys are not counted towards the limit
+- The coinbase scriptSig is not counted
+- Signature operations in un-executed branches of a Script are not
+  counted
+- OP_CHECKMULTISIG evaluations are counted accurately; if the signature
+  for a 1-of-20 OP_CHECKMULTISIG is satisified by the public key nearest
+  the top of the execution stack, it is counted as one signature
+  operation. If it is satisfied by the public key nearest the bottom of
+  the execution stack, it is counted as twenty signature operations.
+- Signature operations involving invalidly encoded signatures or public
+  keys are not counted towards the limit
 
 ### Add a new limit of 1,300,000,000 bytes hashed to compute transaction signatures per block
 
@@ -118,15 +115,14 @@ block, to minimize the impact on existing mining or wallet software.
 The choices of constants for the deployment scheme were motivated by
 prior experience with upgrades to the Bitcoin consensus rules:
 
-  - 0x10000000 was chosen to be compatible with the BIP 9 proposal for
-    parallel deployment of soft forks
-  - 75% was chosen instead of 95% to minimize the opportunity for a
-    single large mining pool or miner to be able to veto an increase,
-    either because of ideological opposition or threat of violence or
-    extortion.
-  - A four-week grace period after the voting period was chosen as a
-    balance between giving people sufficient time to upgrade and keeping
-    people's attention on the urgent need to upgrade.
+- 0x10000000 was chosen to be compatible with the BIP 9 proposal for
+  parallel deployment of soft forks
+- 75% was chosen instead of 95% to minimize the opportunity for a single
+  large mining pool or miner to be able to veto an increase, either
+  because of ideological opposition or threat of violence or extortion.
+- A four-week grace period after the voting period was chosen as a
+  balance between giving people sufficient time to upgrade and keeping
+  people's attention on the urgent need to upgrade.
 
 ## Implementation
 

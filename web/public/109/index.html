@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,31 +46,31 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 109
-  Layer: Consensus (hard fork)
-  Title: Two million byte size limit with sigop and sighash limits
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0109
-  Status: Rejected
-  Type: Standards Track
-  Created: 2016-01-28
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 109
+</span><span>  Layer: Consensus (hard fork)
+</span><span>  Title: Two million byte size limit with sigop and sighash limits
+</span><span>  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0109
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2016-01-28
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>One-time increase in total amount of transaction data permitted in a
 block from 1MB to 2MB, with limits on signature operations and hashing.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <ol>
 <li>Continue current economic policy.</li>
 <li>Exercise hard fork network upgrade.</li>
 <li>Mitigate potential CPU exhaustion attacks</li>
 </ol>
-<h2 id="specification">Specification</h2>
-<h3 id="max-block-size-increased-to-2-000-000-bytes">MAX_BLOCK_SIZE increased to 2,000,000 bytes</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="MAX_BLOCK_SIZE_increased_to_2,000,000_bytes">MAX_BLOCK_SIZE increased to 2,000,000 bytes</h3>
 <p>The maximum number of bytes in a canonically serialized block shall be
 increased from 1,000,000 bytes to 2,000,000 bytes.</p>
-<h3 id="switch-to-accurately-counted-sigop-limit-of-20-000-per-block">Switch to accurately-counted sigop limit of 20,000 per block</h3>
+<h3 id="Switch_to_accurately-counted_sigop_limit_of_20,000_per_block">Switch to accurately-counted sigop limit of 20,000 per block</h3>
 <p>The existing MAX_SIGOPS limit of 20,000 signature operations per block
 shall be retained, but only ECDSA verifications actually performed to
 validate the block shall be counted.</p>
@@ -79,20 +79,19 @@ validate the block shall be counted.</p>
 <li>The coinbase scriptSig is not counted</li>
 <li>Signature operations in un-executed branches of a Script are not
 counted</li>
-<li>OP_CHECKMULTISIG evaluations are counted accurately; if the
-signature for a 1-of-20 OP_CHECKMULTISIG is satisified by the
-public key nearest the top of the execution stack, it is counted as
-one signature operation. If it is satisfied by the public key
-nearest the bottom of the execution stack, it is counted as twenty
-signature operations.</li>
-<li>Signature operations involving invalidly encoded signatures or
-public keys are not counted towards the limit</li>
+<li>OP_CHECKMULTISIG evaluations are counted accurately; if the signature
+for a 1-of-20 OP_CHECKMULTISIG is satisified by the public key nearest
+the top of the execution stack, it is counted as one signature
+operation. If it is satisfied by the public key nearest the bottom of
+the execution stack, it is counted as twenty signature operations.</li>
+<li>Signature operations involving invalidly encoded signatures or public
+keys are not counted towards the limit</li>
 </ul>
-<h3 id="add-a-new-limit-of-1-300-000-000-bytes-hashed-to-compute-transaction-signatures-per-block">Add a new limit of 1,300,000,000 bytes hashed to compute transaction signatures per block</h3>
+<h3 id="Add_a_new_limit_of_1,300,000,000_bytes_hashed_to_compute_transaction_signatures_per_block">Add a new limit of 1,300,000,000 bytes hashed to compute transaction signatures per block</h3>
 <p>The amount of data hashed to compute signature hashes is limited to
 1,300,000,000 bytes per block. The same rules for counting are used as
 for counting signature operations.</p>
-<h3 id="activation-75-hashpower-support-trigger-followed-by-28-day-grace-period">Activation: 75% hashpower support trigger, followed by 28-day 'grace period'</h3>
+<h3 id="Activation:_75%_hashpower_support_trigger,_followed_by_28-day_'grace_period'">Activation: 75% hashpower support trigger, followed by 28-day 'grace period'</h3>
 <p>Solo miners or mining pool operators express their support for this BIP
 by setting the fourth-highest-bit in the block's 32-bit version number
 (0x10000000 in hex). The first block with that bit set, a timestamp less
@@ -104,19 +103,19 @@ than or equal to the triggering block's timestamp plus 28 days
 <p>As always, miners are expected to use their best judgement for what is
 best for the entire Bitcoin ecosystem when making decisions about what
 consensus-level changes to support.</p>
-<h3 id="expiration-1-jan-2018">Expiration: 1-Jan-2018</h3>
+<h3 id="Expiration:_1-Jan-2018">Expiration: 1-Jan-2018</h3>
 <p>If this BIP is not triggered before 1-Jan-2018 00:00:00 GMT it should be
 considered withdrawn.</p>
 <p>Miners that support this BIP should set bit 0x10000000 in the block
 version until 1-Jan-2018. After that date, that bit can be safely
 re-used for future consensus rule upgrades.</p>
-<h2 id="backward-compatibility">Backward compatibility</h2>
+<h2 id="Backward_compatibility">Backward compatibility</h2>
 <p>Fully validating older clients are not compatible with this change. The
 first block exceeding the old limits on block size or inaccurately
 counted signature operations will partition older clients off the new
 network.</p>
 <p>SPV (simple payment validation) wallets are compatible with this change.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>In the short term, an increase is needed to handle increasing
 transaction volume.</p>
 <p>The limits on signature operations and amount of signature hashing done
@@ -129,18 +128,17 @@ prior experience with upgrades to the Bitcoin consensus rules:</p>
 <ul>
 <li>0x10000000 was chosen to be compatible with the BIP 9 proposal for
 parallel deployment of soft forks</li>
-<li>75% was chosen instead of 95% to minimize the opportunity for a
-single large mining pool or miner to be able to veto an increase,
-either because of ideological opposition or threat of violence or
-extortion.</li>
+<li>75% was chosen instead of 95% to minimize the opportunity for a single
+large mining pool or miner to be able to veto an increase, either
+because of ideological opposition or threat of violence or extortion.</li>
 <li>A four-week grace period after the voting period was chosen as a
 balance between giving people sufficient time to upgrade and keeping
 people's attention on the urgent need to upgrade.</li>
 </ul>
-<h2 id="implementation">Implementation</h2>
-<p><a href="https://github.com/gavinandresen/bitcoin-git/tree/two_mb_bump">https://github.com/gavinandresen/bitcoin-git/tree/two_mb_bump</a></p>
-<p>See also <a href="http://gavinandresen.ninja/a-guided-tour-of-the-2mb-fork">http://gavinandresen.ninja/a-guided-tour-of-the-2mb-fork</a></p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Implementation">Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/gavinandresen/bitcoin-git/tree/two_mb_bump">https://github.com/gavinandresen/bitcoin-git/tree/two_mb_bump</a></p>
+<p>See also <a rel="noopener" target="_blank" href="http://gavinandresen.ninja/a-guided-tour-of-the-2mb-fork">http://gavinandresen.ninja/a-guided-tour-of-the-2mb-fork</a></p>
+<h2 id="Copyright">Copyright</h2>
 <p>This work is placed in the public domain.</p>
 
     </div>
@@ -149,7 +147,7 @@ people's attention on the urgent need to upgrade.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

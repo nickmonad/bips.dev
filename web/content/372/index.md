@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0372.mediawiki"
 +++
 
-``` 
-  BIP: 372
-  Layer: Applications
-  Title: Pay-to-contract tweak fields for PSBT
-  Author: Maxim Orlovsky <orlovsky@lnp-bp.org>
-  Discussions-To: <bitcoin-dev@lists.linuxfoundation.org>
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0372
-  Status: Draft
-  Type: Standards Track
-  Created: 2022-01-16
-  License: BSD-2-Clause
-  Requires: BIP-174
-```
+      BIP: 372
+      Layer: Applications
+      Title: Pay-to-contract tweak fields for PSBT
+      Author: Maxim Orlovsky <orlovsky@lnp-bp.org>
+      Discussions-To: <bitcoin-dev@lists.linuxfoundation.org>
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0372
+      Status: Draft
+      Type: Standards Track
+      Created: 2022-01-16
+      License: BSD-2-Clause
+      Requires: BIP-174
 
 ## Introduction
 
@@ -87,7 +85,7 @@ P2C-tweaked public keys are already exposed in the
 `PSBT_IN_TAP_INTERNAL_KEY` and `PSBT_IN_TAP_LEAF_SCRIPT` fields; the
 only information signer is needed to recognize which keys it should sign
 with is from which of the original keys they were generated. This is
-achieved by introducing new \`PSBT\_IN\_P2C\_TWEAK\` field which has the
+achieved by introducing new \`PSBT_IN_P2C_TWEAK\` field which has the
 original key as a field key and the tweak as a field value. The signer
 will recognize the keys which are available to it, apply the tweak to
 them and see in which scripts it was used -- and use this information to
@@ -98,16 +96,16 @@ signatures.
 
 The new per-input type is defined as follows:
 
-| Name          | <keytype>                  | <keydata> | <keydata> Description                                                                                                                                                                                                                     | <valuedata> | <valuedata> Description                                                                                                                                                                              | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion |
-| ------------- | -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------- | --------------------------- |
-| P2C Key Tweak | `PSBT_IN_P2C_TWEAK = 0x19` | <pubkey>  | 33 bytes of compact public key serialization specifying to which of keys the P2C tweak may be applied (i.e. this MUST be a value of a public key before the tweak is applied). BIP-340 keys are serialized by appending \`02\` byte.\[1\] | <tweak>     | The 32 byte value which MUST be added to a private key to produce correct ECDSA and/or Schnorr signature ("key tweak"). Signers SHOULD remove this field after `PSBT_IN_PARTIAL_SIG` is constructed. |                              |                              | 0, 2                        |
+| Name          | <keytype>                  | <keydata> | <keydata> Description                                                                                                                                                                                                                    | <valuedata> | <valuedata> Description                                                                                                                                                                              | Versions Requiring Inclusion | Versions Requiring Exclusion | Versions Allowing Inclusion |
+|---------------|----------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|------------------------------|-----------------------------|
+| P2C Key Tweak | `PSBT_IN_P2C_TWEAK = 0x19` | <pubkey>  | 33 bytes of compact public key serialization specifying to which of keys the P2C tweak may be applied (i.e. this MUST be a value of a public key before the tweak is applied). BIP-340 keys are serialized by appending \`02\` byte.[^1] | <tweak>     | The 32 byte value which MUST be added to a private key to produce correct ECDSA and/or Schnorr signature ("key tweak"). Signers SHOULD remove this field after `PSBT_IN_PARTIAL_SIG` is constructed. |                              |                              | 0, 2                        |
 
 ## Security considerations
 
 The scope of this proposal is deliberately kept narrow; it addresses
 only spending of transaction outputs containing P2C tweaks - and does
 not addresses construction of a new P2C commitments or transactions
-containing them in their outputs.\[2\]
+containing them in their outputs.[^2]
 
 ## Rationale
 
@@ -120,8 +118,8 @@ not require any of their modifications.
 
 The proposed P2C PSBT fields provides sufficient information for
 creating a valid signatures for spendings of the following output types
-containing tweaked public keys: - bare scripts, - P2PK, - P2PKH, - P2SH,
-- witness v0 P2WPKH and P2WSH, - nested witness v0 P2WPKH-P2SH and
+containing tweaked public keys: - bare scripts, - P2PK, - P2PKH, -
+P2SH, - witness v0 P2WPKH and P2WSH, - nested witness v0 P2WPKH-P2SH and
 P2WSH-P2SH,
 
 Post-0 witness versions, including taproot outputs and future witness
@@ -146,40 +144,41 @@ TBD
 
 \[1\] Ilja Gerhardt, Timo Hanke. Homomorphic Payment Addresses and the
 
-`   Pay-to-Contract Protocol. arXiv:1212.3257 `\[cs.CR\]  
-`   <`<https://arxiv.org/pdf/1212.3257.pdf>`>`
+`   Pay-to-Contract Protocol. arXiv:1212.3257 `$$cs.CR$$  
+`   <`[`https://arxiv.org/pdf/1212.3257.pdf`](https://arxiv.org/pdf/1212.3257.pdf)`>`
 
 \[2\] Eternity Wall's "sign-to-contract" article.
 
-`   <`<https://blog.eternitywall.com/2018/04/13/sign-to-contract/>`>`
+`   <`[`https://blog.eternitywall.com/2018/04/13/sign-to-contract/`](https://blog.eternitywall.com/2018/04/13/sign-to-contract/)`>`
 
 \[3\] Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed
 
 `   Timestamping with Bitcoin.`  
-`   <`<https://petertodd.org/2016/opentimestamps-announcement>`>`
+`   <`[`https://petertodd.org/2016/opentimestamps-announcement`](https://petertodd.org/2016/opentimestamps-announcement)`>`
 
 \[4\] Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain
 
 `   Innovations with Pegged Sidechains (commit5620e43). Appenxix A.`  
-`   <`<https://blockstream.com/sidechains.pdf>`>;.`
+`   <`[`https://blockstream.com/sidechains.pdf`](https://blockstream.com/sidechains.pdf)`>;.`
 
 \[5\] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. Key
 
 `   tweaking: collision- resistant elliptic curve-based commitments.`  
 `   LNPBP-1 Standard.`  
-`   <`<https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md>`>`
+`   <`[`https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md`](https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md)`>`
 
 \[6\] Peter Todd. Single-use-seals. LNPBP-8 Standard.
 
-`   <`<https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0008.md>`>`
+`   <`[`https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0008.md`](https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0008.md)`>`
 
-1.  **Why compressed public keys are not distinguished from BIP-340
+[^1]: **Why compressed public keys are not distinguished from BIP-340
     public keys**We follow the logic of BIP32 key derivation which does
     not performs that distinguishment. The type of the key is defined by
     the input type, and adding additional PSBT field type will just
     create the need for handling errors when the input type does not
     match the provided key type.
-2.  **Why only spending of P2C tweaked outputs is covered** P2C tweaks
+
+[^2]: **Why only spending of P2C tweaked outputs is covered** P2C tweaks
     commit to external data, some of which may represent certain value
     (like in some sidechains, single-use-seal applications like RGB
     etc). Creation of such outputs much allow hardware devices to

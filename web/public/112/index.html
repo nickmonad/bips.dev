@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,40 +46,39 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 112
-  Layer: Consensus (soft fork)
-  Title: CHECKSEQUENCEVERIFY
-  Author: BtcDrak &lt;btcdrak@gmail.com&gt;
-          Mark Friedenbach &lt;mark@friedenbach.org&gt;
-          Eric Lombrozo &lt;elombrozo@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0112
-  Status: Final
-  Type: Standards Track
-  Created: 2015-08-10
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 112
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: CHECKSEQUENCEVERIFY
+</span><span>  Author: BtcDrak &lt;btcdrak@gmail.com&gt;
+</span><span>          Mark Friedenbach &lt;mark@friedenbach.org&gt;
+</span><span>          Eric Lombrozo &lt;elombrozo@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0112
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-08-10
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a new opcode (CHECKSEQUENCEVERIFY) for the Bitcoin
 scripting system that in combination with BIP 68 allows execution
 pathways of a script to be restricted based on the age of the output
 being spent.</p>
-<h2 id="summary">Summary</h2>
+<h2 id="Summary">Summary</h2>
 <p>CHECKSEQUENCEVERIFY redefines the existing NOP3 opcode. When executed,
 if any of the following conditions are true, the script interpreter will
 terminate with an error:</p>
 <ul>
 <li>the stack is empty; or</li>
 <li>the top item on the stack is less than 0; or</li>
-<li>the top item on the stack has the disable flag (1 &lt;&lt; 31) unset;
-and
+<li>the top item on the stack has the disable flag (1 &lt;&lt; 31) unset; and
 <ul>
 <li>the transaction version is less than 2; or</li>
-<li>the transaction input sequence number disable flag (1 &lt;&lt; 31)
-is set; or</li>
+<li>the transaction input sequence number disable flag (1 &lt;&lt; 31) is
+set; or</li>
 <li>the relative lock-time type is not the same; or</li>
-<li>the top stack item is greater than the transaction input
-sequence (when masked according to the BIP68);</li>
+<li>the top stack item is greater than the transaction input sequence
+(when masked according to the BIP68);</li>
 </ul>
 </li>
 </ul>
@@ -92,7 +91,7 @@ indirectly verify a desired minimum age of the the output being spent;
 until that relative age has been reached any script execution pathway
 including the CHECKSEQUENCEVERIFY will fail to validate, causing the
 transaction not to be selected for inclusion in a block.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>BIP 68 repurposes the transaction nSequence field meaning by giving
 sequence numbers new consensus-enforced semantics as a relative
 lock-time. However, there is no way to build Bitcoin scripts to make
@@ -102,8 +101,8 @@ to construct code pathways that only become accessible some minimum time
 after proof-of-publication. This enables a wide variety of applications
 in phased protocols such as escrow, payment channels, or bidirectional
 pegs.</p>
-<h3 id="contracts-with-expiration-deadlines">Contracts With Expiration Deadlines</h3>
-<h4 id="escrow-with-timeout">Escrow with Timeout</h4>
+<h3 id="Contracts_With_Expiration_Deadlines">Contracts With Expiration Deadlines</h3>
+<h4 id="Escrow_with_Timeout">Escrow with Timeout</h4>
 <p>An escrow that times out automatically 30 days after being funded can be
 established in the following way. Alice, Bob and Escrow create a 2-of-3
 address with the following redeemscript.</p>
@@ -118,7 +117,7 @@ Bob or the Escrow.</p>
 <p>After 30 days Alice can sign alone.</p>
 <p>The clock does not start ticking until the payment to the escrow address
 confirms.</p>
-<h3 id="retroactive-invalidation">Retroactive Invalidation</h3>
+<h3 id="Retroactive_Invalidation">Retroactive Invalidation</h3>
 <p>In many instances, we would like to create contracts that can be revoked
 in case of some future event. However, given the immutable nature of the
 blockchain, it is practically impossible to retroactively invalidate a
@@ -138,7 +137,7 @@ in the first place. If the invalidation condition does not occur before
 the timeout, the delayed branch becomes spendable, honoring the original
 contract.</p>
 <p>Some more specific applications of this idea:</p>
-<h4 id="hash-time-locked-contracts">Hash Time-Locked Contracts</h4>
+<h4 id="Hash_Time-Locked_Contracts">Hash Time-Locked Contracts</h4>
 <p>Hash Time-Locked Contracts (HTLCs) provide a general mechanism for
 off-chain contract negotiation. An execution pathway can be made to
 require knowledge of a secret (a hash preimage) that can be presented
@@ -148,7 +147,7 @@ broadcast since this would allow the counterparty to claim the output
 immediately while one would have to wait for the time window to pass. If
 the secret has not been shared, the counterparty will be unable to use
 the instant pathway and the delayed pathway must be used instead.</p>
-<h4 id="bidirectional-payment-channels">Bidirectional Payment Channels</h4>
+<h4 id="Bidirectional_Payment_Channels">Bidirectional Payment Channels</h4>
 <p>Scriptable relative locktime provides a predictable amount of time to
 respond in the event a counterparty broadcasts a revoked transaction:
 Absolute locktime necessitates closing the channel and reopen it when
@@ -157,7 +156,7 @@ starts ticking the moment the transactions confirms in a block. It also
 provides a means to know exactly how long to wait (in number of blocks)
 before funds can be pulled out of the channel in the event of a
 noncooperative counterparty.</p>
-<h4 id="lightning-network">Lightning Network</h4>
+<h4 id="Lightning_Network">Lightning Network</h4>
 <p>The lightning network extends the bidirectional payment channel idea to
 allow for payments to be routed over multiple bidirectional payment
 channel hops.</p>
@@ -244,10 +243,10 @@ commitment transaction:</p>
 the final branch of above to ensure Bob cannot spend the output until
 after both the timeout is complete and Alice has had time to reveal the
 revocation secret.</p>
-<p>See the <a href="https://github.com/ElementsProject/lightning/blob/master/doc/deployable-lightning.pdf">Deployable
+<p>See the <a rel="noopener" target="_blank" href="https://github.com/ElementsProject/lightning/blob/master/doc/deployable-lightning.pdf">Deployable
 Lightning</a>
 paper.</p>
-<h4 id="2-way-pegged-sidechains">2-Way Pegged Sidechains</h4>
+<h4 id="2-Way_Pegged_Sidechains">2-Way Pegged Sidechains</h4>
 <p>The 2-way pegged sidechain requires a new REORGPROOFVERIFY opcode, the
 semantics of which are outside the scope of this BIP.
 CHECKSEQUENCEVERIFY is used to make sure that sufficient time has passed
@@ -257,115 +256,115 @@ since the return peg was posted to publish a reorg proof:</p>
 <code>   ELSE</code><br />
 <code>       withdrawLockTime CHECKSEQUENCEVERIFY DROP HASH160 p2shWithdrawDest EQUAL</code><br />
 <code>   ENDIF</code></p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>Refer to the reference implementation, reproduced below, for the precise
 semantics and detailed rationale for those semantics.</p>
-<pre style="background-color:#fafafa;">
-<code>/* Below flags apply in the context of BIP 68 */
-/* If this flag set, CTxIn::nSequence is NOT interpreted as a
- * relative lock-time. */
-static const uint32_t SEQUENCE_LOCKTIME_DISABLE_FLAG = (1 &lt;&lt; 31);
-
-/* If CTxIn::nSequence encodes a relative lock-time and this flag
- * is set, the relative lock-time has units of 512 seconds,
- * otherwise it specifies blocks with a granularity of 1. */
-static const uint32_t SEQUENCE_LOCKTIME_TYPE_FLAG = (1 &lt;&lt; 22);
-
-/* If CTxIn::nSequence encodes a relative lock-time, this mask is
- * applied to extract that lock-time from the sequence field. */
-static const uint32_t SEQUENCE_LOCKTIME_MASK = 0x0000ffff;
-   
-case OP_NOP3:
-{
-    if (!(flags &amp; SCRIPT_VERIFY_CHECKSEQUENCEVERIFY)) {
-        // not enabled; treat as a NOP3
-        if (flags &amp; SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS) {
-            return set_error(serror, SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS);
-        }
-        break;
-    }
-
-    if (stack.size() &lt; 1)
-       return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
-
-    // Note that elsewhere numeric opcodes are limited to
-    // operands in the range -2**31+1 to 2**31-1, however it is
-    // legal for opcodes to produce results exceeding that
-    // range. This limitation is implemented by CScriptNum's
-    // default 4-byte limit.
-    //
-    // Thus as a special case we tell CScriptNum to accept up
-    // to 5-byte bignums, which are good until 2**39-1, well
-    // beyond the 2**32-1 limit of the nSequence field itself.
-    const CScriptNum nSequence(stacktop(-1), fRequireMinimal, 5);
-
-    // In the rare event that the argument may be &lt; 0 due to
-    // some arithmetic being done first, you can always use
-    // 0 MAX CHECKSEQUENCEVERIFY.
-    if (nSequence &lt; 0)
-        return set_error(serror, SCRIPT_ERR_NEGATIVE_LOCKTIME);
-
-    // To provide for future soft-fork extensibility, if the
-    // operand has the disabled lock-time flag set,
-    // CHECKSEQUENCEVERIFY behaves as a NOP.
-    if ((nSequence &amp; CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG) != 0)
-        break;
-
-    // Compare the specified sequence number with the input.
-    if (!checker.CheckSequence(nSequence))
-        return set_error(serror, SCRIPT_ERR_UNSATISFIED_LOCKTIME);
-
-    break;
-}
-    
-bool TransactionSignatureChecker::CheckSequence(const CScriptNum&amp; nSequence) const
-{
-    // Relative lock times are supported by comparing the passed
-    // in operand to the sequence number of the input.
-    const int64_t txToSequence = (int64_t)txTo-&gt;vin[nIn].nSequence;
-
-    // Fail if the transaction's version number is not set high
-    // enough to trigger BIP 68 rules.
-    if (static_cast&lt;uint32_t&gt;(txTo-&gt;nVersion) &lt; 2)
-        return false;
-
-    // Sequence numbers with their most significant bit set are not
-    // consensus constrained. Testing that the transaction's sequence
-    // number do not have this bit set prevents using this property
-    // to get around a CHECKSEQUENCEVERIFY check.
-    if (txToSequence &amp; CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG)
-        return false;
-
-    // Mask off any bits that do not have consensus-enforced meaning
-    // before doing the integer comparisons
-    const uint32_t nLockTimeMask = CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG | CTxIn::SEQUENCE_LOCKTIME_MASK;
-    const int64_t txToSequenceMasked = txToSequence &amp; nLockTimeMask;
-    const CScriptNum nSequenceMasked = nSequence &amp; nLockTimeMask;
-
-    // There are two kinds of nSequence: lock-by-blockheight
-    // and lock-by-blocktime, distinguished by whether
-    // nSequenceMasked &lt; CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG.
-    //
-    // We want to compare apples to apples, so fail the script
-    // unless the type of nSequenceMasked being tested is the same as
-    // the nSequenceMasked in the transaction.
-    if (!(
-        (txToSequenceMasked &lt;  CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG &amp;&amp; nSequenceMasked &lt;  CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG) ||
-        (txToSequenceMasked &gt;= CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG &amp;&amp; nSequenceMasked &gt;= CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG)
-    ))
-        return false;
-
-    // Now that we know we're comparing apples-to-apples, the
-    // comparison is a simple numeric one.
-    if (nSequenceMasked &gt; txToSequenceMasked)
-        return false;
-
-    return true;
-}
-</code></pre><h2 id="reference-implementation">Reference Implementation</h2>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>/* Below flags apply in the context of BIP 68 */
+</span><span>/* If this flag set, CTxIn::nSequence is NOT interpreted as a
+</span><span> * relative lock-time. */
+</span><span>static const uint32_t SEQUENCE_LOCKTIME_DISABLE_FLAG = (1 &lt;&lt; 31);
+</span><span>
+</span><span>/* If CTxIn::nSequence encodes a relative lock-time and this flag
+</span><span> * is set, the relative lock-time has units of 512 seconds,
+</span><span> * otherwise it specifies blocks with a granularity of 1. */
+</span><span>static const uint32_t SEQUENCE_LOCKTIME_TYPE_FLAG = (1 &lt;&lt; 22);
+</span><span>
+</span><span>/* If CTxIn::nSequence encodes a relative lock-time, this mask is
+</span><span> * applied to extract that lock-time from the sequence field. */
+</span><span>static const uint32_t SEQUENCE_LOCKTIME_MASK = 0x0000ffff;
+</span><span>   
+</span><span>case OP_NOP3:
+</span><span>{
+</span><span>    if (!(flags &amp; SCRIPT_VERIFY_CHECKSEQUENCEVERIFY)) {
+</span><span>        // not enabled; treat as a NOP3
+</span><span>        if (flags &amp; SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS) {
+</span><span>            return set_error(serror, SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS);
+</span><span>        }
+</span><span>        break;
+</span><span>    }
+</span><span>
+</span><span>    if (stack.size() &lt; 1)
+</span><span>       return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
+</span><span>
+</span><span>    // Note that elsewhere numeric opcodes are limited to
+</span><span>    // operands in the range -2**31+1 to 2**31-1, however it is
+</span><span>    // legal for opcodes to produce results exceeding that
+</span><span>    // range. This limitation is implemented by CScriptNum&#39;s
+</span><span>    // default 4-byte limit.
+</span><span>    //
+</span><span>    // Thus as a special case we tell CScriptNum to accept up
+</span><span>    // to 5-byte bignums, which are good until 2**39-1, well
+</span><span>    // beyond the 2**32-1 limit of the nSequence field itself.
+</span><span>    const CScriptNum nSequence(stacktop(-1), fRequireMinimal, 5);
+</span><span>
+</span><span>    // In the rare event that the argument may be &lt; 0 due to
+</span><span>    // some arithmetic being done first, you can always use
+</span><span>    // 0 MAX CHECKSEQUENCEVERIFY.
+</span><span>    if (nSequence &lt; 0)
+</span><span>        return set_error(serror, SCRIPT_ERR_NEGATIVE_LOCKTIME);
+</span><span>
+</span><span>    // To provide for future soft-fork extensibility, if the
+</span><span>    // operand has the disabled lock-time flag set,
+</span><span>    // CHECKSEQUENCEVERIFY behaves as a NOP.
+</span><span>    if ((nSequence &amp; CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG) != 0)
+</span><span>        break;
+</span><span>
+</span><span>    // Compare the specified sequence number with the input.
+</span><span>    if (!checker.CheckSequence(nSequence))
+</span><span>        return set_error(serror, SCRIPT_ERR_UNSATISFIED_LOCKTIME);
+</span><span>
+</span><span>    break;
+</span><span>}
+</span><span>    
+</span><span>bool TransactionSignatureChecker::CheckSequence(const CScriptNum&amp; nSequence) const
+</span><span>{
+</span><span>    // Relative lock times are supported by comparing the passed
+</span><span>    // in operand to the sequence number of the input.
+</span><span>    const int64_t txToSequence = (int64_t)txTo-&gt;vin[nIn].nSequence;
+</span><span>
+</span><span>    // Fail if the transaction&#39;s version number is not set high
+</span><span>    // enough to trigger BIP 68 rules.
+</span><span>    if (static_cast&lt;uint32_t&gt;(txTo-&gt;nVersion) &lt; 2)
+</span><span>        return false;
+</span><span>
+</span><span>    // Sequence numbers with their most significant bit set are not
+</span><span>    // consensus constrained. Testing that the transaction&#39;s sequence
+</span><span>    // number do not have this bit set prevents using this property
+</span><span>    // to get around a CHECKSEQUENCEVERIFY check.
+</span><span>    if (txToSequence &amp; CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG)
+</span><span>        return false;
+</span><span>
+</span><span>    // Mask off any bits that do not have consensus-enforced meaning
+</span><span>    // before doing the integer comparisons
+</span><span>    const uint32_t nLockTimeMask = CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG | CTxIn::SEQUENCE_LOCKTIME_MASK;
+</span><span>    const int64_t txToSequenceMasked = txToSequence &amp; nLockTimeMask;
+</span><span>    const CScriptNum nSequenceMasked = nSequence &amp; nLockTimeMask;
+</span><span>
+</span><span>    // There are two kinds of nSequence: lock-by-blockheight
+</span><span>    // and lock-by-blocktime, distinguished by whether
+</span><span>    // nSequenceMasked &lt; CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG.
+</span><span>    //
+</span><span>    // We want to compare apples to apples, so fail the script
+</span><span>    // unless the type of nSequenceMasked being tested is the same as
+</span><span>    // the nSequenceMasked in the transaction.
+</span><span>    if (!(
+</span><span>        (txToSequenceMasked &lt;  CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG &amp;&amp; nSequenceMasked &lt;  CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG) ||
+</span><span>        (txToSequenceMasked &gt;= CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG &amp;&amp; nSequenceMasked &gt;= CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG)
+</span><span>    ))
+</span><span>        return false;
+</span><span>
+</span><span>    // Now that we know we&#39;re comparing apples-to-apples, the
+</span><span>    // comparison is a simple numeric one.
+</span><span>    if (nSequenceMasked &gt; txToSequenceMasked)
+</span><span>        return false;
+</span><span>
+</span><span>    return true;
+</span><span>}
+</span></code></pre>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
 <p>A reference implementation is provided by the following pull request:</p>
-<p><a href="https://github.com/bitcoin/bitcoin/pull/7524">https://github.com/bitcoin/bitcoin/pull/7524</a></p>
-<h2 id="deployment">Deployment</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/7524">https://github.com/bitcoin/bitcoin/pull/7524</a></p>
+<h2 id="Deployment">Deployment</h2>
 <p>This BIP is to be deployed by &quot;versionbits&quot; BIP9 using bit 0.</p>
 <p>For Bitcoin <strong>mainnet</strong>, the BIP9 <strong>starttime</strong> will be midnight 1st May
 2016 UTC (Epoch timestamp 1462060800) and BIP9 <strong>timeout</strong> will be
@@ -375,7 +374,7 @@ March 2016 UTC (Epoch timestamp 1456790400) and BIP9 <strong>timeout</strong> wi
 midnight 1st May 2017 UTC (Epoch timestamp 1493596800).</p>
 <p>This BIP must be deployed simultaneously with BIP68 and BIP113 using the
 same deployment mechanism.</p>
-<h2 id="credits">Credits</h2>
+<h2 id="Credits">Credits</h2>
 <p>Mark Friedenbach invented the application of sequence numbers to achieve
 relative lock-time, and wrote the reference implementation of
 CHECKSEQUENCEVERIFY.</p>
@@ -384,30 +383,31 @@ by Peter Todd for the closely related BIP 65.</p>
 <p>BtcDrak authored this BIP document.</p>
 <p>Thanks to Eric Lombrozo and Anthony Towns for contributing example use
 cases.</p>
-<h2 id="references">References</h2>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP 9</a>
+<h2 id="References">References</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP 9</a>
 Versionbits</p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki">BIP 68</a>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki">BIP 68</a>
 Relative lock-time through consensus-enforced sequence numbers</p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki">BIP 65</a>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki">BIP 65</a>
 OP_CHECKLOCKTIMEVERIFY</p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0113.mediawiki">BIP 113</a>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0113.mediawiki">BIP
+113</a>
 Median past block time for time-lock constraints</p>
-<p><a href="http://lists.linuxfoundation.org/pipermail/lightning-dev/2015-July/000021.html">HTLCs using OP_CHECKSEQUENCEVERIFY/OP_LOCKTIMEVERIFY and revocation
+<p><a rel="noopener" target="_blank" href="http://lists.linuxfoundation.org/pipermail/lightning-dev/2015-July/000021.html">HTLCs using OP_CHECKSEQUENCEVERIFY/OP_LOCKTIMEVERIFY and revocation
 hashes</a></p>
-<p><a href="http://lightning.network/lightning-network-paper.pdf">Lightning
+<p><a rel="noopener" target="_blank" href="http://lightning.network/lightning-network-paper.pdf">Lightning
 Network</a></p>
-<p><a href="https://github.com/ElementsProject/lightning/blob/master/doc/deployable-lightning.pdf">Deployable
+<p><a rel="noopener" target="_blank" href="https://github.com/ElementsProject/lightning/blob/master/doc/deployable-lightning.pdf">Deployable
 Lightning</a></p>
-<p><a href="http://diyhpl.us/diyhpluswiki/transcripts/sf-bitcoin-meetup/2015-02-23-scaling-bitcoin-to-billions-of-transactions-per-day/">Scaling Bitcoin to Billions of Transactions Per
+<p><a rel="noopener" target="_blank" href="http://diyhpl.us/diyhpluswiki/transcripts/sf-bitcoin-meetup/2015-02-23-scaling-bitcoin-to-billions-of-transactions-per-day/">Scaling Bitcoin to Billions of Transactions Per
 Day</a></p>
-<p><a href="http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010396.html">Softfork deployment
+<p><a rel="noopener" target="_blank" href="http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010396.html">Softfork deployment
 considerations</a></p>
-<p><a href="https://web.archive.org/web/20210925124425/https://gist.github.com/sipa/bf69659f43e763540550">Version
+<p><a rel="noopener" target="_blank" href="https://web.archive.org/web/20210925124425/https://gist.github.com/sipa/bf69659f43e763540550">Version
 bits</a></p>
-<p><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html">Jeremy Spilman Micropayment
+<p><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html">Jeremy Spilman Micropayment
 Channels</a></p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -416,7 +416,7 @@ Channels</a></p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

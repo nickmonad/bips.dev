@@ -14,18 +14,16 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0019.mediawiki"
 +++
 
-``` 
-  BIP: 19
-  Layer: Applications
-  Title: M-of-N Standard Transactions (Low SigOp)
-  Author: Luke Dashjr <luke+bip17@dashjr.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0019
-  Status: Rejected
-  Type: Standards Track
-  Created: 2012-01-30
-  License: BSD-2-Clause
-```
+      BIP: 19
+      Layer: Applications
+      Title: M-of-N Standard Transactions (Low SigOp)
+      Author: Luke Dashjr <luke+bip17@dashjr.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0019
+      Status: Rejected
+      Type: Standards Track
+      Created: 2012-01-30
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -44,35 +42,33 @@ redeeming funds requires more than a single signature.
 
 A couple of motivating use cases:
 
-  - A wallet secured by a "wallet protection service" (WPS). 2-of-2
-    signatures required transactions will be used, with one signature
-    coming from the (possibly compromised) computer with the wallet and
-    the second signature coming from the WPS. When sending protected
-    bitcoins, the user's bitcoin client will contact the WPS with the
-    proposed transaction and it can then contact the user for
-    confirmation that they initiated the transaction and that the
-    transaction details are correct. Details for how clients and WPS's
-    communicate are outside the scope of this BIP. Side note: customers
-    should insist that their wallet protection service provide them with
-    copies of the private key(s) used to secure their wallets that they
-    can safely store off-line, so that their coins can be spent even if
-    the WPS goes out of business.
+- A wallet secured by a "wallet protection service" (WPS). 2-of-2
+  signatures required transactions will be used, with one signature
+  coming from the (possibly compromised) computer with the wallet and
+  the second signature coming from the WPS. When sending protected
+  bitcoins, the user's bitcoin client will contact the WPS with the
+  proposed transaction and it can then contact the user for confirmation
+  that they initiated the transaction and that the transaction details
+  are correct. Details for how clients and WPS's communicate are outside
+  the scope of this BIP. Side note: customers should insist that their
+  wallet protection service provide them with copies of the private
+  key(s) used to secure their wallets that they can safely store
+  off-line, so that their coins can be spent even if the WPS goes out of
+  business.
 
-<!-- end list -->
+<!-- -->
 
-  - Three-party escrow (buyer, seller and trusted dispute agent). 2-of-3
-    signatures required transactions will be used. The buyer and seller
-    and agent will each provide a public key, and the buyer will then
-    send coins into a 2-of-3 CHECKMULTISIG transaction and send the
-    seller and the agent the transaction id. The seller will fulfill
-    their obligation and then ask the buyer to co-sign a transaction (
-    already signed by seller ) that sends the tied-up coins to him
-    (seller).  
-    If the buyer and seller cannot agree, then the agent can, with the
-    cooperation of either buyer or seller, decide what happens to the
-    tied-up coins. Details of how buyer, seller, and agent communicate
-    to gather signatures or public keys are outside the scope of this
-    BIP.
+- Three-party escrow (buyer, seller and trusted dispute agent). 2-of-3
+  signatures required transactions will be used. The buyer and seller
+  and agent will each provide a public key, and the buyer will then send
+  coins into a 2-of-3 CHECKMULTISIG transaction and send the seller and
+  the agent the transaction id. The seller will fulfill their obligation
+  and then ask the buyer to co-sign a transaction ( already signed by
+  seller ) that sends the tied-up coins to him (seller).  
+  If the buyer and seller cannot agree, then the agent can, with the
+  cooperation of either buyer or seller, decide what happens to the
+  tied-up coins. Details of how buyer, seller, and agent communicate to
+  gather signatures or public keys are outside the scope of this BIP.
 
 ## Specification
 
@@ -115,12 +111,12 @@ scriptSig:
 
 ## Rationale
 
-OP\_CHECKMULTISIG is already an enabled opcode, and is the most
+OP_CHECKMULTISIG is already an enabled opcode, and is the most
 straightforward way to support several important use cases. This is
-already specified in [BIP 0011](bip-0011.mediawiki "wikilink"). However,
-each OP\_CHECKMULTISIG counts toward the block limit as 20 sigops, which
+already specified in [BIP 0011](/11). However,
+each OP_CHECKMULTISIG counts toward the block limit as 20 sigops, which
 only allows 1000 total multisig transactions in a block. Using
-OP\_CHECKSIG only counts as 1 per signature, so can scale better.
+OP_CHECKSIG only counts as 1 per signature, so can scale better.
 
 ## Implementation
 

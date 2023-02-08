@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,22 +46,22 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 156
-  Layer: Peer Services
-  Title: Dandelion - Privacy Enhancing Routing
-  Author: Brad Denby &lt;bdenby@cmu.edu&gt;
-          Andrew Miller &lt;soc1024@illinois.edu&gt;
-          Giulia Fanti &lt;gfanti@andrew.cmu.edu&gt;
-          Surya Bakshi &lt;sbakshi3@illinois.edu&gt;
-          Shaileshh Bojja Venkatakrishnan &lt;shaileshh.bv@gmail.com&gt;
-          Pramod Viswanath &lt;pramodv@illinois.edu&gt;
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0156
-  Status: Rejected
-  Type: Standards Track
-  Created: 2017-06-09
-  License: CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 156
+</span><span>  Layer: Peer Services
+</span><span>  Title: Dandelion - Privacy Enhancing Routing
+</span><span>  Author: Brad Denby &lt;bdenby@cmu.edu&gt;
+</span><span>          Andrew Miller &lt;soc1024@illinois.edu&gt;
+</span><span>          Giulia Fanti &lt;gfanti@andrew.cmu.edu&gt;
+</span><span>          Surya Bakshi &lt;sbakshi3@illinois.edu&gt;
+</span><span>          Shaileshh Bojja Venkatakrishnan &lt;shaileshh.bv@gmail.com&gt;
+</span><span>          Pramod Viswanath &lt;pramodv@illinois.edu&gt;
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0156
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-06-09
+</span><span>  License: CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>Bitcoin's transaction spreading protocol is vulnerable to
 deanonymization attacks. Dandelion is a transaction routing mechanism
 that provides formal anonymity guarantees against these attacks. When a
@@ -75,7 +75,7 @@ path during the &quot;stem phase&quot; and are then diffused during the &quot;fl
 phase&quot; (hence Dandelion). We have shown that this routing protocol
 provides near-optimal anonymity guarantees among schemes that do not
 introduce additional encryption mechanisms.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Transaction diffusion in Bitcoin is vulnerable to deanonymization
 attacks. Because transactions are sent to peers with independent,
 exponential delays, messages spread through the network in a
@@ -95,7 +95,7 @@ Bitcoin network formal anonymity guarantees. While other privacy
 solutions aim to protect individual users, Dandelion protects anonymity
 by limiting the capability of adversaries to deanonymize the entire
 network.</p>
-<h2 id="how-dandelion-works">How Dandelion Works</h2>
+<h2 id="How_Dandelion_Works">How Dandelion Works</h2>
 <p>Dandelion enhances user privacy by sending transactions through an
 anonymity phase before diffusing them throughout the network. At a high
 level, Dandelion enhances privacy by (i) breaking the symmetry of
@@ -190,20 +190,20 @@ routing cannot be perfectly anonymous due to the fundamental lower
 bounds on precision and recall shown in the original Dandelion paper.
 Dandelion provides near-optimal anonymity guarantees among such
 solutions.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>Dandelion can be specified with a handful of features: Dandelion
 transaction support, Dandelion routing data and logic, periodic
 Dandelion route shuffling, memory pool logic, the fluff mechanism,
 transaction embargoes, and Dandelion transaction logic. Specification
 details are summarized below.</p>
-<h3 id="dandelion-transaction-support">Dandelion transaction support</h3>
+<h3 id="Dandelion_transaction_support">Dandelion transaction support</h3>
 <p>During the stem phase, transactions are &quot;Dandelion transactions.&quot; When a
 Dandelion transaction enters fluff phase, it becomes a typical Bitcoin
 transaction. Dandelion transactions and typical transactions differ only
 in their <code>NetMsgType</code>.</p>
 <p>Dandelion (stem phase) transactions MUST be differentiable from typical
 Bitcoin transactions.</p>
-<h3 id="dandelion-routing-data-and-logic">Dandelion routing data and logic</h3>
+<h3 id="Dandelion_routing_data_and_logic">Dandelion routing data and logic</h3>
 <p>Dandelion routing during the stem phase requires notions of inbound
 peers, outbound peers, Dandelion destinations, and Dandelion routes.
 Inbound peers consist of all currently connected peers that initiated
@@ -237,7 +237,7 @@ choosing a Dandelion destination for a given inbound connection, the
 destination MUST be selected uniformly at random from the set of
 Dandelion destinations with the least number of inbound connections
 mapped to them.</p>
-<h3 id="periodic-dandelion-route-shuffling">Periodic Dandelion route shuffling</h3>
+<h3 id="Periodic_Dandelion_route_shuffling">Periodic Dandelion route shuffling</h3>
 <p>The map of Dandelion routes is cleared and reconstructed every ten
 minutes on average. We have chosen the value of ten minutes
 heuristically in order to make privacy graph learning difficult for
@@ -246,7 +246,7 @@ shuffle time without splitting from the privacy graph.</p>
 <p>Dandelion routes MUST be cleared and reconstructed at random intervals.
 Dandelion routes SHOULD be cleared and reconstructed every ten minutes
 on average.</p>
-<h3 id="memory-pool-logic">Memory pool logic</h3>
+<h3 id="Memory_pool_logic">Memory pool logic</h3>
 <p>Dandelion transactions are segregated from typical transactions. The
 <code>mempool</code> remains unchanged. Another instance of the <code>CTxMemPool</code> class,
 called the <code>stempool</code>, is used for Dandelion transactions. Information
@@ -258,7 +258,7 @@ the stempool and MUST NOT be added to the mempool. When a typical
 Bitcoin transaction arrives, the transaction MUST be added to the
 mempool and MUST be added to the stempool. When a Dandelion transaction
 fluffs, the transaction MUST be added to the mempool.</p>
-<h3 id="the-fluff-mechanism">The fluff mechanism</h3>
+<h3 id="The_fluff_mechanism">The fluff mechanism</h3>
 <p>When relaying a Dandelion transaction along a Dandelion route, there is
 a 10% chance that the Dandelion transaction becomes a typical Bitcoin
 transaction and is therefore relayed via diffusion. In our testing, this
@@ -271,7 +271,7 @@ node MUST transmit the transaction to the appropriate Dandelion
 destination. Otherwise, the node MUST convert the Dandelion transaction
 into a typical Bitcoin transaction. A Dandelion transaction SHOULD fluff
 into a typical Bitcoin transaction with a 10% probability.</p>
-<h3 id="transaction-embargoes">Transaction embargoes</h3>
+<h3 id="Transaction_embargoes">Transaction embargoes</h3>
 <p>During the stem phase, transactions are relayed along a single path. If
 any node in this path were to receive the Dandelion transaction and go
 offline, then the transaction would cease to propagate. To increase
@@ -284,25 +284,25 @@ for a random time in the future. If the Dandelion transaction arrives as
 a typical Bitcoin transaction, the node MUST cancel the timer. If the
 timer expires before the Dandelion transaction is observed as a typical
 Bitcoin transaction, then the node MUST fluff the Dandelion transaction.</p>
-<h3 id="dandelion-transaction-logic">Dandelion transaction logic</h3>
+<h3 id="Dandelion_transaction_logic">Dandelion transaction logic</h3>
 <p>The following cases define a node's behavior when receiving network
 packets referencing Dandelion transactions.</p>
 <ul>
-<li>Receive INV for Dandelion TX: If the peer is inbound and the
-Dandelion transaction has not been received from this peer, then
-reply with GETDATA.</li>
+<li>Receive INV for Dandelion TX: If the peer is inbound and the Dandelion
+transaction has not been received from this peer, then reply with
+GETDATA.</li>
 <li>Receive GETDATA for Dandelion TX: If the peer is not inbound and the
 Dandelion transaction has been advertised to this peer, then reply
 with the Dandelion transaction.</li>
-<li>Receive Dandelion TX: If the peer is inbound, then relay the
-Dandelion TX to the appropriate Dandelion destination.</li>
+<li>Receive Dandelion TX: If the peer is inbound, then relay the Dandelion
+TX to the appropriate Dandelion destination.</li>
 </ul>
-<h2 id="implementation">Implementation</h2>
+<h2 id="Implementation">Implementation</h2>
 <p>A reference implementation is available at the following URL:
-<a href="https://github.com/dandelion-org/bitcoin/tree/dandelion-feature-commits">https://github.com/dandelion-org/bitcoin/tree/dandelion-feature-commits</a></p>
+<a rel="noopener" target="_blank" href="https://github.com/dandelion-org/bitcoin/tree/dandelion-feature-commits">https://github.com/dandelion-org/bitcoin/tree/dandelion-feature-commits</a></p>
 <p>All features have been compressed into a single commit at the following
-URL: <a href="https://github.com/dandelion-org/bitcoin/tree/dandelion">https://github.com/dandelion-org/bitcoin/tree/dandelion</a></p>
-<h2 id="compatibility">Compatibility</h2>
+URL: <a rel="noopener" target="_blank" href="https://github.com/dandelion-org/bitcoin/tree/dandelion">https://github.com/dandelion-org/bitcoin/tree/dandelion</a></p>
+<h2 id="Compatibility">Compatibility</h2>
 <p>Dandelion does not conflict with existing versions of Bitcoin. A Bitcoin
 node that supports Dandelion appears no differently to Bitcoin nodes
 running older software versions. Bitcoin nodes that support Dandelion
@@ -311,33 +311,33 @@ nodes are not capable of Dandelion routing. If a Bitcoin node supporting
 Dandelion has no peers that also support Dandelion, then its behavior
 naturally decays to that of a Bitcoin node without Dandelion support due
 to the Dandelion transaction embargoes.</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>We would like to thank the Bitcoin Core developers and Gregory Maxwell
 in particular for their insightful comments, which helped to inform this
 implementation and some of the follow-up work we conducted. We would
 also like to thank the Mimblewimble development community for coining
 the term &quot;stempool,&quot; which we happily adopted for this implementation.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <ol>
 <li>An Analysis of Anonymity in Bitcoin Using P2P Network Traffic
-<a href="http://fc14.ifca.ai/papers/fc14_submission_71.pdf">http://fc14.ifca.ai/papers/fc14_submission_71.pdf</a></li>
+<a rel="noopener" target="_blank" href="http://fc14.ifca.ai/papers/fc14_submission_71.pdf">http://fc14.ifca.ai/papers/fc14_submission_71.pdf</a></li>
 <li>Deanonymisation of clients in Bitcoin P2P network
-<a href="https://arxiv.org/abs/1405.7418">https://arxiv.org/abs/1405.7418</a></li>
+<a rel="noopener" target="_blank" href="https://arxiv.org/abs/1405.7418">https://arxiv.org/abs/1405.7418</a></li>
 <li>Discovering Bitcoin’s Public Topology and Influential Nodes
-<a href="https://cs.umd.edu/projects/coinscope/coinscope.pdf">https://cs.umd.edu/projects/coinscope/coinscope.pdf</a></li>
+<a rel="noopener" target="_blank" href="https://cs.umd.edu/projects/coinscope/coinscope.pdf">https://cs.umd.edu/projects/coinscope/coinscope.pdf</a></li>
 <li>(Sigmetrics 2017) Dandelion: Redesigning the Bitcoin Network for
-Anonymity <a href="https://arxiv.org/abs/1701.04439">https://arxiv.org/abs/1701.04439</a></li>
+Anonymity <a rel="noopener" target="_blank" href="https://arxiv.org/abs/1701.04439">https://arxiv.org/abs/1701.04439</a></li>
 <li>(Sigmetrics 2018) Dandelion++: Lightweight Cryptocurrency Networking
 with Formal Anonymity Guarantees
-<a href="https://arxiv.org/pdf/1805.11060.pdf">https://arxiv.org/pdf/1805.11060.pdf</a></li>
+<a rel="noopener" target="_blank" href="https://arxiv.org/pdf/1805.11060.pdf">https://arxiv.org/pdf/1805.11060.pdf</a></li>
 </ol>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>To the extent possible under law, the author(s) have dedicated all
 copyright and related and neighboring rights to this work to the public
 domain worldwide. This work is distributed without any warranty.</p>
 <p>You should have received a copy of the CC0 Public Domain Dedication with
 this work. If not, see
-<a href="https://creativecommons.org/publicdomain/zero/1.0/">https://creativecommons.org/publicdomain/zero/1.0/</a> .</p>
+<a rel="noopener" target="_blank" href="https://creativecommons.org/publicdomain/zero/1.0/">https://creativecommons.org/publicdomain/zero/1.0/</a> .</p>
 
     </div>
 
@@ -345,7 +345,7 @@ this work. If not, see
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

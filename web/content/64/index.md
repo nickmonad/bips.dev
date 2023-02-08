@@ -14,17 +14,15 @@ status = ["Obsolete"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki"
 +++
 
-``` 
-  BIP: 64
-  Layer: Peer Services
-  Title: getutxo message
-  Author: Mike Hearn <hearn@vinumeris.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0064
-  Status: Obsolete
-  Type: Standards Track
-  Created: 2014-06-10
-```
+      BIP: 64
+      Layer: Peer Services
+      Title: getutxo message
+      Author: Mike Hearn <hearn@vinumeris.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0064
+      Status: Obsolete
+      Type: Standards Track
+      Created: 2014-06-10
 
 ## Abstract
 
@@ -59,14 +57,14 @@ Two new messages are defined. The "getutxos" message has the following
 structure:
 
 | Field Size | Description   | Data type         | Comments                                                                                                                      |
-| ---------- | ------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+|------------|---------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------|
 | 1          | check mempool | bool              | Whether to apply mempool transactions during the calculation, thus exposing their UTXOs and removing outputs that they spend. |
 | ?          | outpoints     | vector<COutPoint> | The list of outpoints to be queried. Each outpoint is serialized in the same way it is in a tx message.                       |
 
 The response message "utxos" has the following structure:
 
 | Field Size | Description    | Data type  | Comments                                                                                                                                        |
-| ---------- | -------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+|------------|----------------|------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | 4          | chain height   | uint32     | The height of the chain at the moment the result was calculated.                                                                                |
 | 32         | chain tip hash | uint256    | Block hash of the top of the chain at the moment the result was calculated.                                                                     |
 | ?          | hit bitmap     | byte\[\]   | An array of bytes encoding one bit for each outpoint queried. Each bit indicates whether the queried outpoint was found in the UTXO set or not. |
@@ -75,7 +73,7 @@ The response message "utxos" has the following structure:
 The result object is defined as:
 
 | Field Size | Description | Data type | Comments                                                                                                |
-| ---------- | ----------- | --------- | ------------------------------------------------------------------------------------------------------- |
+|------------|-------------|-----------|---------------------------------------------------------------------------------------------------------|
 | 4          | tx version  | uint32    | The version number of the transaction the UTXO was found in.                                            |
 | 4          | height      | uint32    | The height of the block containing the defining transaction, or 0x7FFFFFFF if the tx is in the mempool. |
 | ?          | output      | CTxOut    | The output itself, serialized in the same way as in a tx message.                                       |
@@ -83,8 +81,8 @@ The result object is defined as:
 ## Backward compatibility
 
 Nodes indicate support by advertising a protocol version above 70003 and
-by setting a new NODE\_GETUTXO flag in their nServices field, which has
-a value of 2 (the second bit of the field).
+by setting a new NODE_GETUTXO flag in their nServices field, which has a
+value of 2 (the second bit of the field).
 
 ## Authentication
 
@@ -103,7 +101,7 @@ likely to also allow the value to be checked in this way. It does not
 show that the output is really unspent or was ever actually created in
 the block chain however. Additionally, the form of the provided
 scriptPubKey should be checked before execution to ensure the remote
-peer doesn't just set the script to OP\_TRUE.
+peer doesn't just set the script to OP_TRUE.
 
 If the requesting client has a mapping of chain heights to block hashes
 in the best chain e.g. obtained via getheaders, then they can obtain a

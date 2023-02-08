@@ -14,17 +14,15 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki"
 +++
 
-``` 
-  BIP: 13
-  Layer: Applications
-  Title: Address Format for pay-to-script-hash
-  Author: Gavin Andresen <gavinandresen@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0013
-  Status: Final
-  Type: Standards Track
-  Created: 2011-10-18
-```
+      BIP: 13
+      Layer: Applications
+      Title: Address Format for pay-to-script-hash
+      Author: Gavin Andresen <gavinandresen@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0013
+      Status: Final
+      Type: Standards Track
+      Created: 2011-10-18
 
 ## Abstract
 
@@ -103,9 +101,9 @@ See base58.cpp/base58.h at
 
 ## See Also
 
-  - [BIP 12: OP\_EVAL, the original P2SH
-    design](bip-0012.mediawiki "wikilink")
-  - [BIP 16: Pay to Script Hash (aka
-    "/P2SH/")](bip-0016.mediawiki "wikilink")
-  - [BIP 17: OP\_CHECKHASHVERIFY, another P2SH
-    design](bip-0017.mediawiki "wikilink")
+- [BIP 12: OP_EVAL, the original P2SH
+  design](/12)
+- [BIP 16: Pay to Script Hash (aka
+  "/P2SH/")](/16)
+- [BIP 17: OP_CHECKHASHVERIFY, another P2SH
+  design](/17)

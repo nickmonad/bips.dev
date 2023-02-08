@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,28 +46,28 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 16
-  Layer: Consensus (soft fork)
-  Title: Pay to Script Hash
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0016
-  Status: Final
-  Type: Standards Track
-  Created: 2012-01-03
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 16
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: Pay to Script Hash
+</span><span>  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0016
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2012-01-03
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a new &quot;standard&quot; transaction type for the Bitcoin
 scripting system, and defines additional validation rules that apply
 only to the new transactions.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The purpose of pay-to-script-hash is to move the responsibility for
 supplying the conditions to redeem a transaction from the sender of the
 funds to the redeemer.</p>
 <p>The benefit is allowing a sender to fund any arbitrary transaction, no
 matter how complicated, using a fixed-length 20-byte hash that is short
 enough to scan from a QR code or easily copied and pasted.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>A new standard transaction type that is relayed and included in mined
 blocks is defined:</p>
 <p><code>   OP_HASH160 [20-byte-hash-value] OP_EQUAL</code></p>
@@ -93,9 +93,9 @@ transaction is validated again using the popped stack and the
 deserialized script as the scriptPubKey.</li>
 </ol>
 <p>These new rules should only be applied when validating transactions in
-blocks with timestamps &gt;= 1333238400 (Apr 1 2012) [1]. There are
+blocks with timestamps &gt;= 1333238400 (Apr 1 2012) <sup class="footnote-reference"><a href="#1">1</a></sup>. There are
 transactions earlier than 1333238400 in the block chain that fail these
-new validation rules. [2]. Older transactions must be validated under
+new validation rules. <sup class="footnote-reference"><a href="#2">2</a></sup>. Older transactions must be validated under
 the old rules. (see the Backwards Compatibility section for details).</p>
 <p>For example, the scriptPubKey and corresponding scriptSig for a
 one-signature-required transaction is:</p>
@@ -106,20 +106,20 @@ maximum number allowed per block (20,000) as follows:</p>
 <ol>
 <li>OP_CHECKSIG and OP_CHECKSIGVERIFY count as 1 signature operation,
 whether or not they are evaluated.</li>
-<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded
-by OP_1 through OP_16 are counted as 1 to 16 signature operation,
+<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded by
+OP_1 through OP_16 are counted as 1 to 16 signature operation,
 whether or not they are evaluated.</li>
-<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted
-as 20 signature operations.</li>
+<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted as
+20 signature operations.</li>
 </ol>
 <p>Examples:</p>
 <p>+3 signature operations:</p>
 <p><code>   {2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG}</code></p>
 <p>+22 signature operations</p>
 <p><code>   {OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF}</code></p>
-<h2 id="rationale">Rationale</h2>
-<p>This BIP replaces BIP 12, which proposed a new Script opcode
-(&quot;OP_EVAL&quot;) to accomplish everything in this BIP and more.</p>
+<h2 id="Rationale">Rationale</h2>
+<p>This BIP replaces BIP 12, which proposed a new Script opcode (&quot;OP_EVAL&quot;)
+to accomplish everything in this BIP and more.</p>
 <p>The Motivation for this BIP (and BIP 13, the pay-to-script-hash address
 type) is somewhat controversial; several people feel that it is
 unnecessary, and complex/multisignature transaction types should be
@@ -159,7 +159,7 @@ network overwrites the attacker's invalid block.</p>
 that they know will be invalidated by the rest of the network. It is
 difficult because creating blocks is difficult and users should not
 accept 1-confirmation transactions for higher-value transactions.</p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>These transactions are non-standard to old implementations, which will
 (typically) not relay them or include them in blocks.</p>
 <p>Old implementations will validate that the {serialize script}'s hash
@@ -189,34 +189,37 @@ blocks are created in a week; 550 should, therefore, be approximately
 <p>If a majority of hashing power does not support the new validation
 rules, then rollout will be postponed (or rejected if it becomes clear
 that a majority will never be achieved).</p>
-<h3 id="520-byte-limitation-on-serialized-script-size">520-byte limitation on serialized script size</h3>
+<h3 id="520-byte_limitation_on_serialized_script_size">520-byte limitation on serialized script size</h3>
 <p>As a consequence of the requirement for backwards compatibility the
 serialized script is itself subject to the same rules as any other
 PUSHDATA operation, including the rule that no data greater than 520
 bytes may be pushed to the stack. Thus it is not possible to spend a
 P2SH output if the redemption script it refers to is &gt;520 bytes in
-length. For instance while the OP_CHECKMULTISIG opcode can itself
-accept up to 20 pubkeys, with 33-byte compressed pubkeys it is only
-possible to spend a P2SH output requiring a maximum of 15 pubkeys to
-redeem: 3 bytes + 15 pubkeys * 34 bytes/pubkey = 513 bytes.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
-<p><a href="https://gist.github.com/gavinandresen/3966071">https://gist.github.com/gavinandresen/3966071</a></p>
-<h2 id="see-also">See Also</h2>
+length. For instance while the OP_CHECKMULTISIG opcode can itself accept
+up to 20 pubkeys, with 33-byte compressed pubkeys it is only possible to
+spend a P2SH output requiring a maximum of 15 pubkeys to redeem: 3
+bytes + 15 pubkeys * 34 bytes/pubkey = 513 bytes.</p>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://gist.github.com/gavinandresen/3966071">https://gist.github.com/gavinandresen/3966071</a></p>
+<h2 id="See_Also">See Also</h2>
 <ul>
-<li><a href="https://bitcointalk.org/index.php?topic=46538">https://bitcointalk.org/index.php?topic=46538</a></li>
-<li>The <a href="https://bips.dev/16/bip-0013.mediawiki" title="wikilink">Address format for Pay to Script Hash
+<li><a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=46538">https://bitcointalk.org/index.php?topic=46538</a></li>
+<li>The <a href="/13">Address format for Pay to Script Hash
 BIP</a></li>
-<li>M-of-N Multisignature Transactions <a href="https://bips.dev/16/bip-0011.mediawiki" title="wikilink">BIP
+<li>M-of-N Multisignature Transactions <a href="/11">BIP
 11</a></li>
 <li><a href="bip-0016/qa.mediawiki" title="wikilink">Quality Assurance test checklist</a></li>
 </ul>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <references>
-<ol>
-<li><a href="https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff">Remove -bip16 and -paytoscripthashtime command-line
-arguments</a></li>
-<li><a href="https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192">Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192</a></li>
-</ol>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff">Remove -bip16 and -paytoscripthashtime command-line
+arguments</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a rel="noopener" target="_blank" href="https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192">Transaction
+6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192</a></p>
+</div>
 
     </div>
 
@@ -224,7 +227,7 @@ arguments</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,33 +46,31 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 144
-  Layer: Peer Services
-  Title: Segregated Witness (Peer Services)
-  Author: Eric Lombrozo &lt;elombrozo@gmail.com&gt;
-          Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0144
-  Status: Final
-  Type: Standards Track
-  Created: 2016-01-08
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 144
+</span><span>  Layer: Peer Services
+</span><span>  Title: Segregated Witness (Peer Services)
+</span><span>  Author: Eric Lombrozo &lt;elombrozo@gmail.com&gt;
+</span><span>          Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0144
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2016-01-08
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP defines new messages and serialization formats for propagation
 of transactions and blocks committing to segregated witness structures.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>In addition to defining witness structures and requiring commitments in
 future blocks
-(<a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a></p>
-<ul>
-<li>Consensus segwit BIP), new mechanisms must be defined to allow peers
-to advertise support for segregated witness and to relay the witness
+(<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a> -
+Consensus segwit BIP), new mechanisms must be defined to allow peers to
+advertise support for segregated witness and to relay the witness
 structures and request them from other peers without breaking
-compatibility with older nodes.</li>
-</ul>
-<h2 id="specification">Specification</h2>
-<h3 id="serialization">Serialization</h3>
+compatibility with older nodes.</p>
+<h2 id="Specification">Specification</h2>
+<h3 id="Serialization">Serialization</h3>
 <p>A new serialization format for tx messages is added to the peer-to-peer
 protocol.</p>
 <p>The serialization has the following structure:</p>
@@ -95,38 +93,37 @@ to succeed, such a transaction would contain no inputs and a single
 output.</p>
 <p>If the witness is empty, the old serialization format must be used.</p>
 <p>Currently, the only witness objects type supported are script witnesses
-which consist of a stack of byte arrays. It is encoded as a var_int
-item count followed by each item encoded as a var_int length followed
-by a string of bytes. Each txin has its own script witness. The number
-of script witnesses is not explicitly encoded as it is implied by
-txin_count. Empty script witnesses are encoded as a zero byte. The
-order of the script witnesses follows the same order as the associated
-txins.</p>
+which consist of a stack of byte arrays. It is encoded as a var_int item
+count followed by each item encoded as a var_int length followed by a
+string of bytes. Each txin has its own script witness. The number of
+script witnesses is not explicitly encoded as it is implied by
+txin_count. Empty script witnesses are encoded as a zero byte. The order
+of the script witnesses follows the same order as the associated txins.</p>
 <ul>
 <li><strong>Rationale for not having an independent message type with its own
 serialization</strong>: this would require separate &quot;tx&quot; and &quot;block&quot;
 messages, and all RPC calls operating on raw transactions would need
-to be duplicated, or need inefficient or nondeterministic guesswork
-to know which type is to be used.</li>
+to be duplicated, or need inefficient or nondeterministic guesswork to
+know which type is to be used.</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li><strong>Rationale for not using just a single 0x00 byte as marker</strong>: that
 would lead to empty transactions (no inputs, no outputs, which are
 used in some tests) to be interpreted as new serialized data.</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
-<li><strong>Rationale for the 0x01 flag byte in between</strong>: this will allow us
-to easily add more extra non-committed data to transactions (like
-txouts being spent, ...). It can be interpreted as a bitvector.</li>
+<li><strong>Rationale for the 0x01 flag byte in between</strong>: this will allow us to
+easily add more extra non-committed data to transactions (like txouts
+being spent, ...). It can be interpreted as a bitvector.</li>
 </ul>
-<h3 id="handshake">Handshake</h3>
+<h3 id="Handshake">Handshake</h3>
 <p>A node will signal that it can provide witnesses using the following
 service bit</p>
 <p><code>   NODE_WITNESS = (1 &lt;&lt; 3)</code><br />
 <code>   </code></p>
-<h3 id="hashes">Hashes</h3>
+<h3 id="Hashes">Hashes</h3>
 <p>Transaction hashes used in the transaction merkle tree and txin
 outpoints are always computed using the old non-witness serialization.</p>
 <p>Support for a new hash including the witness data is added that is
@@ -134,30 +131,30 @@ computed from the new witness serialization. (Note that transactions
 with an empty witness always use the old serialization, and therefore,
 they have witness hash equal to normal hash.)</p>
 <p><img src=bip-0144/witnesstx.png></img></p>
-<h3 id="relay">Relay</h3>
+<h3 id="Relay">Relay</h3>
 <p>New inv types MSG_WITNESS_TX (0x40000001, or (1&lt;&lt;30)+MSG_TX) and
-MSG_WITNESS_BLOCK (0x40000002, or (1&lt;&lt;30)+MSG_BLOCK) are added,
-only for use in getdata. Inventory messages themselves still use just
-MSG_TX and MSG_BLOCK, similar to MSG_FILTERED_BLOCK. A further inv
-type MSG_FILTERED_WITNESS_BLOCK (0x40000003, or
-(1&lt;&lt;30)+MSG_FILTERED_BLOCK) is reserved for future use.</p>
+MSG_WITNESS_BLOCK (0x40000002, or (1&lt;&lt;30)+MSG_BLOCK) are added, only
+for use in getdata. Inventory messages themselves still use just MSG_TX
+and MSG_BLOCK, similar to MSG_FILTERED_BLOCK. A further inv type
+MSG_FILTERED_WITNESS_BLOCK (0x40000003, or (1&lt;&lt;30)+MSG_FILTERED_BLOCK)
+is reserved for future use.</p>
 <ul>
-<li><strong>Rationale for not advertizing witnessness in invs</strong>: we don't
-always use invs anymore (with 'sendheaders' BIP 130), plus it's not
-useful: implicitly, every transaction and block have a witness, old
-ones just have empty ones.</li>
+<li><strong>Rationale for not advertizing witnessness in invs</strong>: we don't always
+use invs anymore (with 'sendheaders' BIP 130), plus it's not useful:
+implicitly, every transaction and block have a witness, old ones just
+have empty ones.</li>
 </ul>
 <p>MSG_WITNESS_TX getdata requests should use the non-witness serialized
 hash. The peer shall respond with a tx message, and if the witness
 structure is nonempty, the witness serialization shall be used.</p>
-<p>MSG_WITNESS_BLOCK requests will return a block message with
-transactions that have a witness using witness serialization.</p>
-<h2 id="credits">Credits</h2>
+<p>MSG_WITNESS_BLOCK requests will return a block message with transactions
+that have a witness using witness serialization.</p>
+<h2 id="Credits">Credits</h2>
 <p>Special thanks to Gregory Maxwell for originating many of the ideas in
 this BIP and Luke-Jr for figuring out how to deploy this as a soft fork.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
-<p><a href="https://github.com/bitcoin/bitcoin/pull/8149">https://github.com/bitcoin/bitcoin/pull/8149</a></p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/8149">https://github.com/bitcoin/bitcoin/pull/8149</a></p>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -166,7 +163,7 @@ this BIP and Luke-Jr for figuring out how to deploy this as a soft fork.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

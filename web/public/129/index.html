@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,29 +46,29 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 129
-  Layer: Applications
-  Title: Bitcoin Secure Multisig Setup (BSMS)
-  Author: Hugo Nguyen &lt;hugo@nunchuk.io&gt;
-          Peter Gray &lt;peter@coinkite.com&gt;
-          Marko Bencun &lt;marko@shiftcrypto.ch&gt;
-          Aaron Chen &lt;aarondongchen@gmail.com&gt;
-          Rodolfo Novak &lt;rodolfo@coinkite.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0129
-  Status: Proposed
-  Type: Standards Track
-  Created: 2020-11-10
-  License: BSD-2-Clause
-</span></code></pre><h2 id="introduction">Introduction</h2>
-<h3 id="abstract">Abstract</h3>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 129
+</span><span>  Layer: Applications
+</span><span>  Title: Bitcoin Secure Multisig Setup (BSMS)
+</span><span>  Author: Hugo Nguyen &lt;hugo@nunchuk.io&gt;
+</span><span>          Peter Gray &lt;peter@coinkite.com&gt;
+</span><span>          Marko Bencun &lt;marko@shiftcrypto.ch&gt;
+</span><span>          Aaron Chen &lt;aarondongchen@gmail.com&gt;
+</span><span>          Rodolfo Novak &lt;rodolfo@coinkite.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0129
+</span><span>  Status: Proposed
+</span><span>  Type: Standards Track
+</span><span>  Created: 2020-11-10
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Introduction">Introduction</h2>
+<h3 id="Abstract">Abstract</h3>
 <p>This document proposes a mechanism to set up multisig wallets securely.</p>
-<h3 id="copyright">Copyright</h3>
+<h3 id="Copyright">Copyright</h3>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h3 id="motivation">Motivation</h3>
+<h3 id="Motivation">Motivation</h3>
 <p>The Bitcoin multisig experience has been greatly streamlined under
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki">BIP-0174 (Partially Signed Bitcoin
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki">BIP-0174 (Partially Signed Bitcoin
 Transaction)</a>.
 However, what is still missing is a standardized process for setting up
 multisig wallets securely across different vendors.</p>
@@ -96,19 +96,19 @@ the risk of tampering during the initial setup phase, and to define an
 interoperable multisig configuration format.</p>
 <p>Concerns #4 and #5 should be handled by Signers and are out of scope
 of this proposal.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="prerequisites">Prerequisites</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Prerequisites">Prerequisites</h3>
 <p>This proposal assumes the parties in the multisig support
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki">BIP-0032</a>,
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki">BIP-0322</a>,
-<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/descriptors.md">the descriptor
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki">BIP-0032</a>,
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki">BIP-0322</a>,
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/master/doc/descriptors.md">the descriptor
 language</a>
-and <a href="https://tools.ietf.org/html/rfc3686">AES encryption</a>.</p>
-<h3 id="file-extensions">File Extensions</h3>
+and <a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc3686">AES encryption</a>.</p>
+<h3 id="File_Extensions">File Extensions</h3>
 <p>All descriptor and key records should have a <code>.bsms</code> file extension.
 Encrypted data should have a <code>.dat</code> extension.</p>
-<h3 id="roles">Roles</h3>
-<h4 id="coordinator">Coordinator</h4>
+<h3 id="Roles">Roles</h3>
+<h4 id="Coordinator">Coordinator</h4>
 <p>The Coordinator initiates the multisig setup. The Coordinator determines
 what type of multisig is used and the exact policy script. If encryption
 is enabled, the Coordinator also distributes a shared secret or shared
@@ -116,73 +116,73 @@ secrets to the parties involved for secure communication. The
 Coordinator gathers information from the Signers to generate a
 descriptor record. The Coordinator distributes the descriptor record
 back to the Signers.</p>
-<h4 id="signer">Signer</h4>
+<h4 id="Signer">Signer</h4>
 <p>The Signer is any software or hardware that controls the private keys
 and can sign using those keys. The Signer is a participating member in
 the multisig. Its responsibilities include providing its key record --
 which contains a public key or an Extended Public Key (XPUB) -- to the
 Coordinator, verifying that its <code>KEY</code> is included in the descriptor
 record and persisting the descriptor record in its storage.</p>
-<h3 id="setup-process">Setup Process</h3>
-<h4 id="round-1">Round 1</h4>
-<h5 id="coordinator-1">Coordinator</h5>
+<h3 id="Setup_Process">Setup Process</h3>
+<h4 id="Round_1">Round 1</h4>
+<h5 id="Coordinator-1">Coordinator</h5>
 <ul>
 <li>The Coordinator creates a new multisig wallet creation session. The
-Coordinator constructs the multisig script and its policy
-parameters, such as the required number of signatures and the total
-number of Signers (<code>M</code> and <code>N</code>).</li>
+Coordinator constructs the multisig script and its policy parameters,
+such as the required number of signatures and the total number of
+Signers (<code>M</code> and <code>N</code>).</li>
 <li>The session should expire after some time period determined by the
-Coordinator, e.g., 24 hours. The timeout allows the encryption key
-to have lower entropy.</li>
-<li>If encryption is enabled, the Coordinator distributes a secret
-<code>TOKEN</code> to each Signer over a secure channel. The Signer can use the
-<code>TOKEN</code> to derive an <code>ENCRYPTION_KEY</code>. Refer to the
+Coordinator, e.g., 24 hours. The timeout allows the encryption key to
+have lower entropy.</li>
+<li>If encryption is enabled, the Coordinator distributes a secret <code>TOKEN</code>
+to each Signer over a secure channel. The Signer can use the <code>TOKEN</code>
+to derive an <code>ENCRYPTION_KEY</code>. Refer to the
 <a href="https://bips.dev/129/#Encryption" title="wikilink">#Encryption</a> section below for details on
 the <code>TOKEN</code>, the key derivation function and the encryption scheme.
-Depending on the use case, the Coordinator can decide whether to
-share one common <code>TOKEN</code> for all Signers, or to have one per Signer.</li>
+Depending on the use case, the Coordinator can decide whether to share
+one common <code>TOKEN</code> for all Signers, or to have one per Signer.</li>
 <li>If encryption is disabled, the <code>TOKEN</code> is set to <code>0x00</code>, and all the
 encryption/decryption steps below can be skipped.</li>
 </ul>
-<h5 id="signer-1">Signer</h5>
+<h5 id="Signer-1">Signer</h5>
 <ul>
 <li>The Signer initiates the multisig wallet creation session by setting
-the <code>TOKEN</code>. The Signer derives an <code>ENCRYPTION_KEY</code> from the
-<code>TOKEN</code>. The Signer can keep the session open until a different
-value for the <code>TOKEN</code> is set.</li>
-<li>The Signer generates a key record by prompting the user for a
-multisig derivation path and retrieves the <code>KEY</code> at that derivation
-path. Alternatively, the Signer can choose a path on behalf of the
-user. If the Signer chooses the path, it should try to avoid reusing
-<code>KEY</code>s for different wallets.</li>
+the <code>TOKEN</code>. The Signer derives an <code>ENCRYPTION_KEY</code> from the <code>TOKEN</code>.
+The Signer can keep the session open until a different value for the
+<code>TOKEN</code> is set.</li>
+<li>The Signer generates a key record by prompting the user for a multisig
+derivation path and retrieves the <code>KEY</code> at that derivation path.
+Alternatively, the Signer can choose a path on behalf of the user. If
+the Signer chooses the path, it should try to avoid reusing <code>KEY</code>s for
+different wallets.</li>
 <li>The first line in the record must be the specification version
 (<code>BSMS 1.0</code> as of this writing). The second line must be the
-hex-encoded <code>TOKEN</code>. The third line must be the <code>KEY</code>. The <code>KEY</code> is
-a public key or an XPUB plus the key origin information, written in
-the descriptor-defined format, i.e.: <code>[{master key fingerprint}/{derivation path}]{KEY}</code>. The fourth line is a text
-description of the key, 80 characters maximum. The fifth line must
-be a <code>SIG</code>, whereas <code>SIG</code> is the signature generated by using the
-private key associated with the public key or XPUB to sign the first
-four lines. The signature should follow
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki">BIP-0322</a>,
+hex-encoded <code>TOKEN</code>. The third line must be the <code>KEY</code>. The <code>KEY</code> is a
+public key or an XPUB plus the key origin information, written in the
+descriptor-defined format, i.e.:
+<code>[{master key fingerprint}/{derivation path}]{KEY}</code>. The fourth line
+is a text description of the key, 80 characters maximum. The fifth
+line must be a <code>SIG</code>, whereas <code>SIG</code> is the signature generated by
+using the private key associated with the public key or XPUB to sign
+the first four lines. The signature should follow
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki">BIP-0322</a>,
 legacy format accepted.</li>
-<li>The Signer calculates the Message Authentication Code (<code>MAC</code>) for
-the record. The first 16 bytes of the <code>MAC</code> serves as the
-Initialization Vector (<code>IV</code>) for the encryption.</li>
-<li>The Signer encrypts the key record with the <code>ENCRYPTION_KEY</code> and
-<code>IV</code>.</li>
+<li>The Signer calculates the Message Authentication Code (<code>MAC</code>) for the
+record. The first 16 bytes of the <code>MAC</code> serves as the Initialization
+Vector (<code>IV</code>) for the encryption.</li>
+<li>The Signer encrypts the key record with the <code>ENCRYPTION_KEY</code> and <code>IV</code>.</li>
 <li>The Signer encodes the <code>MAC</code> and the ciphertext into hexadecimal
 format, then concatenates the results: <code>(MAC || ciphertext)</code>.</li>
 </ul>
-<h4 id="round-2">Round 2</h4>
-<h5 id="coordinator-2">Coordinator</h5>
+<h4 id="Round_2">Round 2</h4>
+<h5 id="Coordinator-2">Coordinator</h5>
 <ul>
 <li>The Coordinator gathers key records from all participating Signers.
-The Coordinator verifies that there are exactly <code>N</code> unique key
-records before the wallet setup session expires.</li>
-<li>For each key record, the Coordinator extracts the <code>MAC</code> from the
-data, sets <code>IV</code> to the first 16 bytes of the <code>MAC</code>, then decrypts
-the ciphertext using the <code>ENCRYPTION_KEY</code> and <code>IV</code>.</li>
+The Coordinator verifies that there are exactly <code>N</code> unique key records
+before the wallet setup session expires.</li>
+<li>For each key record, the Coordinator extracts the <code>MAC</code> from the data,
+sets <code>IV</code> to the first 16 bytes of the <code>MAC</code>, then decrypts the
+ciphertext using the <code>ENCRYPTION_KEY</code> and <code>IV</code>.</li>
 <li>The Coordinator verifies that the included <code>MAC</code> is valid given the
 plaintext.</li>
 <li>The Coordinator verifies that the key records have compatible
@@ -203,16 +203,16 @@ restrictions, use the first address from the first path restriction.</li>
 bytes of the <code>MAC</code> serves as the <code>IV</code> for the encryption..</li>
 <li>The Coordinator encrypts the descriptor record with the
 <code>ENCRYPTION_KEY</code> and <code>IV</code>.</li>
-<li>The Coordinator encodes the <code>MAC</code> and the ciphertext into
-hexadecimal format, then concatenates the results: <code>(MAC || ciphertext)</code>.</li>
+<li>The Coordinator encodes the <code>MAC</code> and the ciphertext into hexadecimal
+format, then concatenates the results: <code>(MAC || ciphertext)</code>.</li>
 <li>The Coordinator sends the encrypted descriptor record to all
 participating Signers.</li>
 </ul>
-<h5 id="signer-2">Signer</h5>
+<h5 id="Signer-2">Signer</h5>
 <ul>
 <li>The Signer imports the descriptor record.</li>
-<li>The Signer extracts the <code>MAC</code> from the data, sets <code>IV</code> to the first
-16 bytes of the <code>MAC</code>, then decrypts the ciphertext using the
+<li>The Signer extracts the <code>MAC</code> from the data, sets <code>IV</code> to the first 16
+bytes of the <code>MAC</code>, then decrypts the ciphertext using the
 <code>ENCRYPTION_KEY</code> (derived from the open session) and <code>IV</code>.</li>
 <li>The Signer verifies that the included <code>MAC</code> is valid given the
 plaintext.</li>
@@ -221,30 +221,29 @@ version.</li>
 <li>The Signer verifies that it can support the descriptor or descriptor
 template.</li>
 <li>The Signer checks that its <code>KEY</code> is included in the descriptor or
-descriptor template, using path and fingerprint information
-provided. The check must perform an exact match on the <code>KEY</code>s and
-not using shortcuts such as matching fingerprints, which is trivial
-to spoof.</li>
+descriptor template, using path and fingerprint information provided.
+The check must perform an exact match on the <code>KEY</code>s and not using
+shortcuts such as matching fingerprints, which is trivial to spoof.</li>
 <li>The Signer verifies that it is compatible with the derivation path
 restrictions.</li>
 <li>The Signer verifies that the wallet's first address is valid.</li>
 <li>For confirmation, the Signer must display to the user the wallet's
 first address and policy parameters, including, but not limited to:
-the derivation path restrictions, <code>M</code>, <code>N</code>, and the position(s) of
-the Signer's own <code>KEY</code> in the policy script. The total number of
-Signers, <code>N</code>, is important to prevent a <code>KEY</code> insertion attack. The
-position is important for scripts where <code>KEY</code> order matters. When
-applicable, all positions of the <code>KEY</code> must be displayed. The full
-descriptor or descriptor template must also be available for review
-upon user request.</li>
+the derivation path restrictions, <code>M</code>, <code>N</code>, and the position(s) of the
+Signer's own <code>KEY</code> in the policy script. The total number of Signers,
+<code>N</code>, is important to prevent a <code>KEY</code> insertion attack. The position is
+important for scripts where <code>KEY</code> order matters. When applicable, all
+positions of the <code>KEY</code> must be displayed. The full descriptor or
+descriptor template must also be available for review upon user
+request.</li>
 <li>Parties must check with each other that all Signers have the same
 confirmation (except for the <code>KEY</code> positions).</li>
 <li>If all checks pass, the Signer must persist the descriptor record in
 its storage.</li>
 </ul>
 <p>This completes the setup.</p>
-<h3 id="encryption">Encryption</h3>
-<h4 id="the-token">The Token</h4>
+<h3 id="Encryption">Encryption</h3>
+<h4 id="The_Token">The Token</h4>
 <p>We define three modes of encryption.</p>
 <ol>
 <li><code>NO_ENCRYPTION</code> : the <code>TOKEN</code> is set to <code>0x00</code>. Encryption is
@@ -254,21 +253,21 @@ disabled.</li>
 </ol>
 <p>The <code>TOKEN</code> can be converted to one of these formats:</p>
 <ul>
-<li>A decimal number (recommended). The number must not exceed the
-maximum value of the nonce.</li>
+<li>A decimal number (recommended). The number must not exceed the maximum
+value of the nonce.</li>
 <li>A mnemonic phrase using
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP-0039</a>
-word list. This would be 6 words in <code>STANDARD</code> mode. This encoding
-is not recommended in <code>EXTENDED</code> mode as it can result in potential
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP-0039</a>
+word list. This would be 6 words in <code>STANDARD</code> mode. This encoding is
+not recommended in <code>EXTENDED</code> mode as it can result in potential
 confusion between seed mnemonics and <code>TOKEN</code> mnemonics.</li>
 <li>A QR code.</li>
 <li>Other formats.</li>
 </ul>
 <p>The flexibility in the data format allows each Signer to customize the
 User Experience based on its respective capabilities.</p>
-<h4 id="key-derivation">Key Derivation</h4>
+<h4 id="Key_Derivation">Key Derivation</h4>
 <p>The key derivation function is
-<a href="https://tools.ietf.org/html/rfc2898">PBKDF2</a>, with PRF = SHA512.
+<a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc2898">PBKDF2</a>, with PRF = SHA512.
 Specifically:</p>
 <p><code>DKey = PBKDF2(PRF, Password, Salt, c, dkLen)</code></p>
 <p>Whereas:</p>
@@ -280,9 +279,9 @@ Specifically:</p>
 <li>dkLen = 256</li>
 <li>DKey = Derived <code>ENCRYPTION_KEY</code></li>
 </ul>
-<h4 id="encryption-scheme">Encryption Scheme</h4>
+<h4 id="Encryption_Scheme">Encryption Scheme</h4>
 <p>The encryption scheme is
-<a href="https://tools.ietf.org/html/rfc3686">AES-256-CTR</a>.</p>
+<a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc3686">AES-256-CTR</a>.</p>
 <p><code>MAC = HMAC-SHA256(HMAC_Key, hex-encoded TOKEN || Data)</code></p>
 <p><code>IV = First 16 bytes of MAC</code></p>
 <p><code>Ciphertext = AES-256-CTR-Encrypt(Plaintext, DKey, IV)</code></p>
@@ -297,9 +296,9 @@ entire descriptor record in round 2</li>
 <p>The <code>MAC</code> is to be sent along with the key and descriptor record, as
 specified above. Because it is a <code>MAC</code> over the entire plaintext, this
 is essentially an
-<a href="https://en.wikipedia.org/wiki/Authenticated_encryption#Encrypt-and-MAC_(E&amp;M)">Encrypt-and-MAC</a>
+<a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Authenticated_encryption#Encrypt-and-MAC_(E&amp;M)">Encrypt-and-MAC</a>
 form of authenticated encryption.</p>
-<h3 id="descriptor-template">Descriptor Template</h3>
+<h3 id="Descriptor_Template">Descriptor Template</h3>
 <p>The output descriptor language only supports one-dimensional lists. This
 proposal introduces a descriptor template to represent multi-dimensional
 lists:</p>
@@ -319,16 +318,16 @@ descriptors by replacing <code>/**</code> with the restrictions.</p>
 <li><code>wsh(sortedmulti(2,XPUB1/0/*,XPUB2/0/*))</code></li>
 <li><code>wsh(sortedmulti(2,XPUB1/1/*,XPUB2/1/*))</code></li>
 </ul>
-<h2 id="qr-codes">QR Codes</h2>
+<h2 id="QR_Codes">QR Codes</h2>
 <p>For signers that use QR codes to transmit data, key and descriptor
-records can be converted to QR codes, following <a href="https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md">the BCR
+records can be converted to QR codes, following <a rel="noopener" target="_blank" href="https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md">the BCR
 standard</a>.</p>
-<p>Also refer to <a href="https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-015-account.md">UR Type Definition for BIP44
+<p>Also refer to <a rel="noopener" target="_blank" href="https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-015-account.md">UR Type Definition for BIP44
 Accounts</a>
-and <a href="https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-010-output-desc.md">UR Type Definition for Bitcoin Output
+and <a rel="noopener" target="_blank" href="https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-010-output-desc.md">UR Type Definition for Bitcoin Output
 Descriptors</a>
 for more details.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This specification is not backwards compatible with existing multisig
 implementations.</p>
 <p>BSMS is opt-in, meaning existing multisig implementations can continue
@@ -339,7 +338,7 @@ described in the <a href="https://bips.dev/129/#Motivation" title="wikilink">#Mo
 descriptor record in its storage.</p>
 <p>To use BSMS for a multisig wallet, the user should wait until all
 participating Signers in the multisig have implemented BSMS.</p>
-<h2 id="security">Security</h2>
+<h2 id="Security">Security</h2>
 <p>This proposal introduces two layers of protection. The first one is a
 temporary, secret <code>TOKEN</code>. The second one is the confirmation of the
 wallet's first address.</p>
@@ -354,15 +353,15 @@ integrity of the multisig configuration. An attacker who tampers with
 the multisig configuration must also change the wallet's first address.
 Parties must check with each other that all Signers confirm to the same
 address and policy parameters to reduce the chance of tampering.</p>
-<h2 id="privacy">Privacy</h2>
+<h2 id="Privacy">Privacy</h2>
 <p>Encryption helps improve the privacy of the wallet by avoiding sharing
 keys and descriptors in plaintext.</p>
 <p>If the parties wish to have stronger privacy, it is recommended to use a
 higher number of bits for the <code>TOKEN</code>, and to completely erase knowledge
 of the <code>TOKEN</code> after the multisig wallet has been set up.</p>
-<h2 id="test-vectors">Test Vectors</h2>
-<h3 id="mode-no-encryption-with-public-keys">Mode: <code>NO_ENCRYPTION</code> with Public Keys</h3>
-<h4 id="round-1-1">ROUND 1</h4>
+<h2 id="Test_Vectors">Test Vectors</h2>
+<h3 id="Mode:_NO_ENCRYPTION_with_Public_Keys">Mode: <code>NO_ENCRYPTION</code> with Public Keys</h3>
+<h4 id="ROUND_1">ROUND 1</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -372,7 +371,7 @@ of the <code>TOKEN</code> after the multisig wallet has been set up.</p>
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Signer 1
 <ul>
@@ -386,14 +385,13 @@ L5TXU4SdD9e6QGgBjxeegJKxt4FgATLG1TCnFM8JLyEkFuyHEqNM</li>
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-00
-[59865f44/48'/0'/0'/2']026d15412460ba0d881c21837bb999233896085a9ed4e5445bd637c10e579768ba
-Signer 1 key
-H6DXgqkCb353BDPkzppMFpOcdJZlpur0WRetQhIBqSn6DFzoQWBtm+ibP5wERDRNi0bxxev9B+FIvyQWq0s6im4=
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>00
+</span><span>[59865f44/48&#39;/0&#39;/0&#39;/2&#39;]026d15412460ba0d881c21837bb999233896085a9ed4e5445bd637c10e579768ba
+</span><span>Signer 1 key
+</span><span>H6DXgqkCb353BDPkzppMFpOcdJZlpur0WRetQhIBqSn6DFzoQWBtm+ibP5wERDRNi0bxxev9B+FIvyQWq0s6im4=
+</span></code></pre>
 <ul>
 <li>Signer 2
 <ul>
@@ -407,14 +405,14 @@ KwT7BZDWjos4JAdfKi8NqF46Kj3rppTwN8KGhPbzmmugiZioFW3r</li>
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-00
-[b7044ca6/48'/0'/0'/2']030baf0497ab406ff50cb48b4013abac8a0338758d2fd54cd934927afa57cc2062
-Signer 2 key
-H08mGNGN+NxX/snt+6eX2Q1HjjfDkOtotglshHi7xdsBdIrTVMCQbgQ5SdACNZ0B2AJcifK11nJj43SvaitSemI=
-</code></pre><h4 id="round-2-1">ROUND 2</h4>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>00
+</span><span>[b7044ca6/48&#39;/0&#39;/0&#39;/2&#39;]030baf0497ab406ff50cb48b4013abac8a0338758d2fd54cd934927afa57cc2062
+</span><span>Signer 2 key
+</span><span>H08mGNGN+NxX/snt+6eX2Q1HjjfDkOtotglshHi7xdsBdIrTVMCQbgQ5SdACNZ0B2AJcifK11nJj43SvaitSemI=
+</span></code></pre>
+<h4 id="ROUND_2">ROUND 2</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -422,14 +420,14 @@ H08mGNGN+NxX/snt+6eX2Q1HjjfDkOtotglshHi7xdsBdIrTVMCQbgQ5SdACNZ0B2AJcifK11nJj43Sv
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-wsh(sortedmulti(1,[59865f44/48'/0'/0'/2']026d15412460ba0d881c21837bb999233896085a9ed4e5445bd637c10e579768ba,[b7044ca6/48'/0'/0'/2']030baf0497ab406ff50cb48b4013abac8a0338758d2fd54cd934927afa57cc2062))#rzx9dffd
-No path restrictions
-bc1quqy523xu3l8che3s8vja8n33qtg0uyugr9l5z092s3wa50p8t7rqy6zumf
-</code></pre><h3 id="mode-no-encryption">Mode: <code>NO_ENCRYPTION</code></h3>
-<h4 id="round-1-2">ROUND 1</h4>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>wsh(sortedmulti(1,[59865f44/48&#39;/0&#39;/0&#39;/2&#39;]026d15412460ba0d881c21837bb999233896085a9ed4e5445bd637c10e579768ba,[b7044ca6/48&#39;/0&#39;/0&#39;/2&#39;]030baf0497ab406ff50cb48b4013abac8a0338758d2fd54cd934927afa57cc2062))#rzx9dffd
+</span><span>No path restrictions
+</span><span>bc1quqy523xu3l8che3s8vja8n33qtg0uyugr9l5z092s3wa50p8t7rqy6zumf
+</span></code></pre>
+<h3 id="Mode:_NO_ENCRYPTION">Mode: <code>NO_ENCRYPTION</code></h3>
+<h4 id="ROUND_1-1">ROUND 1</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -439,7 +437,7 @@ bc1quqy523xu3l8che3s8vja8n33qtg0uyugr9l5z092s3wa50p8t7rqy6zumf
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Signer 1
 <ul>
@@ -453,14 +451,13 @@ xpub6FL8FhxNNUVnG64YurPd16AfGyvFLhh7S2uSsDqR3Qfcm6o9jtcMYwh6DvmcBF9qozxNQmTCVvWt
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-00
-[1cf0bf7e/48'/0'/0'/2']xpub6FL8FhxNNUVnG64YurPd16AfGyvFLhh7S2uSsDqR3Qfcm6o9jtcMYwh6DvmcBF9qozxNQmTCVvWtxLpKTnhVLN3Pgnu2D3pAoXYFgVyd8Yz
-Signer 1 key
-IB7v+qi1b+Xrwm/3bF+Rjl8QbIJ/FMQ40kUsOOQo1SqUWn5QlFWbBD8BKPRetfo1L1N7DmYjVscZNsmMrqRJGWw=
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>00
+</span><span>[1cf0bf7e/48&#39;/0&#39;/0&#39;/2&#39;]xpub6FL8FhxNNUVnG64YurPd16AfGyvFLhh7S2uSsDqR3Qfcm6o9jtcMYwh6DvmcBF9qozxNQmTCVvWtxLpKTnhVLN3Pgnu2D3pAoXYFgVyd8Yz
+</span><span>Signer 1 key
+</span><span>IB7v+qi1b+Xrwm/3bF+Rjl8QbIJ/FMQ40kUsOOQo1SqUWn5QlFWbBD8BKPRetfo1L1N7DmYjVscZNsmMrqRJGWw=
+</span></code></pre>
 <ul>
 <li>Signer 2
 <ul>
@@ -474,14 +471,14 @@ xpub6EebMbEps7ZcV3FYEnddRsvrFWDrt2tiPmCeM7pPXQEmphvq9ZfJ1LWFUDjf3vxCeBuPrfyGrMaz
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-00
-[4fc1dd4a/48'/0'/0'/2']xpub6EebMbEps7ZcV3FYEnddRsvrFWDrt2tiPmCeM7pPXQEmphvq9ZfJ1LWFUDjf3vxCeBuPrfyGrMazWUsYsetrnHatQZVLJH7LsgCjtMqdzgj
-Signer 2 key
-HzUa4Z76PFHMl54flIIF3XKiHZ+KbWjjxCEG5G3ZqZSqTd6OgTiFFLqq9PXJXdfYm6/cnL8IVWQgjFF9DQhIqQs=
-</code></pre><h4 id="round-2-2">ROUND 2</h4>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>00
+</span><span>[4fc1dd4a/48&#39;/0&#39;/0&#39;/2&#39;]xpub6EebMbEps7ZcV3FYEnddRsvrFWDrt2tiPmCeM7pPXQEmphvq9ZfJ1LWFUDjf3vxCeBuPrfyGrMazWUsYsetrnHatQZVLJH7LsgCjtMqdzgj
+</span><span>Signer 2 key
+</span><span>HzUa4Z76PFHMl54flIIF3XKiHZ+KbWjjxCEG5G3ZqZSqTd6OgTiFFLqq9PXJXdfYm6/cnL8IVWQgjFF9DQhIqQs=
+</span></code></pre>
+<h4 id="ROUND_2-1">ROUND 2</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -489,14 +486,14 @@ HzUa4Z76PFHMl54flIIF3XKiHZ+KbWjjxCEG5G3ZqZSqTd6OgTiFFLqq9PXJXdfYm6/cnL8IVWQgjFF9
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-wsh(sortedmulti(2,[1cf0bf7e/48'/0'/0'/2']xpub6FL8FhxNNUVnG64YurPd16AfGyvFLhh7S2uSsDqR3Qfcm6o9jtcMYwh6DvmcBF9qozxNQmTCVvWtxLpKTnhVLN3Pgnu2D3pAoXYFgVyd8Yz/**,[4fc1dd4a/48'/0'/0'/2']xpub6EebMbEps7ZcV3FYEnddRsvrFWDrt2tiPmCeM7pPXQEmphvq9ZfJ1LWFUDjf3vxCeBuPrfyGrMazWUsYsetrnHatQZVLJH7LsgCjtMqdzgj/**))
-/0/*,/1/*
-bc1qrgc6p3kylfztu06ysl752gwwuekhvtfh9vr7zg43jvu60mutamcsv948ej
-</code></pre><h3 id="mode-standard-encryption">Mode: <code>STANDARD</code> Encryption</h3>
-<h4 id="round-1-3">ROUND 1</h4>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>wsh(sortedmulti(2,[1cf0bf7e/48&#39;/0&#39;/0&#39;/2&#39;]xpub6FL8FhxNNUVnG64YurPd16AfGyvFLhh7S2uSsDqR3Qfcm6o9jtcMYwh6DvmcBF9qozxNQmTCVvWtxLpKTnhVLN3Pgnu2D3pAoXYFgVyd8Yz/**,[4fc1dd4a/48&#39;/0&#39;/0&#39;/2&#39;]xpub6EebMbEps7ZcV3FYEnddRsvrFWDrt2tiPmCeM7pPXQEmphvq9ZfJ1LWFUDjf3vxCeBuPrfyGrMazWUsYsetrnHatQZVLJH7LsgCjtMqdzgj/**))
+</span><span>/0/*,/1/*
+</span><span>bc1qrgc6p3kylfztu06ysl752gwwuekhvtfh9vr7zg43jvu60mutamcsv948ej
+</span></code></pre>
+<h3 id="Mode:_STANDARD_Encryption">Mode: <code>STANDARD</code> Encryption</h3>
+<h4 id="ROUND_1-2">ROUND 1</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -513,7 +510,7 @@ bc1qrgc6p3kylfztu06ysl752gwwuekhvtfh9vr7zg43jvu60mutamcsv948ej
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Signer 1
 <ul>
@@ -527,14 +524,13 @@ xpub6FA5rfxJc94K1kNtxRby1hoHwi7YDyTWwx1KUR3FwskaF6HzCbZMz3zQwGnCqdiFeMTPV3YneTGS
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-a54044308ceac9b7
-[b7868815/48'/0'/0'/2']xpub6FA5rfxJc94K1kNtxRby1hoHwi7YDyTWwx1KUR3FwskaF6HzCbZMz3zQwGnCqdiFeMTPV3YneTGS2YQPiuNYsSvtggWWMQpEJD4jXU7ZzEh
-Signer 1 key
-H8DYht5P6ko0bQqDV6MtUxpzBSK+aVHxbvMavA5byvLrOlCEGmO1WFR7k2wu42J6dxXD8vrmDQSnGq5MTMMbZ98=
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>a54044308ceac9b7
+</span><span>[b7868815/48&#39;/0&#39;/0&#39;/2&#39;]xpub6FA5rfxJc94K1kNtxRby1hoHwi7YDyTWwx1KUR3FwskaF6HzCbZMz3zQwGnCqdiFeMTPV3YneTGS2YQPiuNYsSvtggWWMQpEJD4jXU7ZzEh
+</span><span>Signer 1 key
+</span><span>H8DYht5P6ko0bQqDV6MtUxpzBSK+aVHxbvMavA5byvLrOlCEGmO1WFR7k2wu42J6dxXD8vrmDQSnGq5MTMMbZ98=
+</span></code></pre>
 <ul>
 <li>Signer 1 encryption
 <ul>
@@ -550,7 +546,7 @@ fbdbdb64e6a8231c342131d9f13dcd5a954b4c5021658fa5afcb3fc74dc8270653f491cfd1431c29
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Signer 2
 <ul>
@@ -564,14 +560,13 @@ xpub6EhJvMneoLWAf8cuyLBLQiKiwh89RAmqXEqYeFuaCEHdHwxSRfzLrUxKXEBap7nZSHAYP7Jfq6gZ
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-a54044308ceac9b7
-[eedff89a/48'/0'/0'/2']xpub6EhJvMneoLWAf8cuyLBLQiKiwh89RAmqXEqYeFuaCEHdHwxSRfzLrUxKXEBap7nZSHAYP7Jfq6gZmucotNzpMQ9Sb1nTqerqW8hrtmx6Y6o
-Signer 2 key
-H/IHW5dMGYsrRdYEz3ux+kKnkWBtxHzfYkREpnYbco38VnMvIxCbDuf7iu6960qDhBLR/RLjlb9UPtLmCMbczDE=
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>a54044308ceac9b7
+</span><span>[eedff89a/48&#39;/0&#39;/0&#39;/2&#39;]xpub6EhJvMneoLWAf8cuyLBLQiKiwh89RAmqXEqYeFuaCEHdHwxSRfzLrUxKXEBap7nZSHAYP7Jfq6gZmucotNzpMQ9Sb1nTqerqW8hrtmx6Y6o
+</span><span>Signer 2 key
+</span><span>H/IHW5dMGYsrRdYEz3ux+kKnkWBtxHzfYkREpnYbco38VnMvIxCbDuf7iu6960qDhBLR/RLjlb9UPtLmCMbczDE=
+</span></code></pre>
 <ul>
 <li>Signer 2 encryption
 <ul>
@@ -587,7 +582,7 @@ H/IHW5dMGYsrRdYEz3ux+kKnkWBtxHzfYkREpnYbco38VnMvIxCbDuf7iu6960qDhBLR/RLjlb9UPtLm
 </ul>
 </li>
 </ul>
-<h4 id="round-2-3">ROUND 2</h4>
+<h4 id="ROUND_2-2">ROUND 2</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -595,13 +590,12 @@ H/IHW5dMGYsrRdYEz3ux+kKnkWBtxHzfYkREpnYbco38VnMvIxCbDuf7iu6960qDhBLR/RLjlb9UPtLm
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-wsh(sortedmulti(2,[b7868815/48'/0'/0'/2']xpub6FA5rfxJc94K1kNtxRby1hoHwi7YDyTWwx1KUR3FwskaF6HzCbZMz3zQwGnCqdiFeMTPV3YneTGS2YQPiuNYsSvtggWWMQpEJD4jXU7ZzEh/**,[eedff89a/48'/0'/0'/2']xpub6EhJvMneoLWAf8cuyLBLQiKiwh89RAmqXEqYeFuaCEHdHwxSRfzLrUxKXEBap7nZSHAYP7Jfq6gZmucotNzpMQ9Sb1nTqerqW8hrtmx6Y6o/**))
-/0/*,/1/*
-bc1qhs4u273g4azq7kqqpe6vh5wfhasfmrq7nheyzsnq77humd7rwtkqagvakf
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>wsh(sortedmulti(2,[b7868815/48&#39;/0&#39;/0&#39;/2&#39;]xpub6FA5rfxJc94K1kNtxRby1hoHwi7YDyTWwx1KUR3FwskaF6HzCbZMz3zQwGnCqdiFeMTPV3YneTGS2YQPiuNYsSvtggWWMQpEJD4jXU7ZzEh/**,[eedff89a/48&#39;/0&#39;/0&#39;/2&#39;]xpub6EhJvMneoLWAf8cuyLBLQiKiwh89RAmqXEqYeFuaCEHdHwxSRfzLrUxKXEBap7nZSHAYP7Jfq6gZmucotNzpMQ9Sb1nTqerqW8hrtmx6Y6o/**))
+</span><span>/0/*,/1/*
+</span><span>bc1qhs4u273g4azq7kqqpe6vh5wfhasfmrq7nheyzsnq77humd7rwtkqagvakf
+</span></code></pre>
 <ul>
 <li>Coordinator encryption
 <ul>
@@ -617,8 +611,8 @@ bc1qhs4u273g4azq7kqqpe6vh5wfhasfmrq7nheyzsnq77humd7rwtkqagvakf
 </ul>
 </li>
 </ul>
-<h3 id="mode-extended-encryption">Mode: <code>EXTENDED</code> Encryption</h3>
-<h4 id="round-1-4">ROUND 1</h4>
+<h3 id="Mode:_EXTENDED_Encryption">Mode: <code>EXTENDED</code> Encryption</h3>
+<h4 id="ROUND_1-3">ROUND 1</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -648,7 +642,7 @@ bc1qhs4u273g4azq7kqqpe6vh5wfhasfmrq7nheyzsnq77humd7rwtkqagvakf
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Signer 1
 <ul>
@@ -662,14 +656,13 @@ xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC26ij1wYGC2SBKYrgt9yariSbn7HLRoZUvhUhmPf
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-108a2360adb302774eb521daebbeda5e
-[793cc70b/48'/0'/0'/1']xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC26ij1wYGC2SBKYrgt9yariSbn7HLRoZUvhUhmPfsRTPrdhhGFscpPZzmch6UTdmRP1aZUj
-Signer 1 key
-ILG47LpCtjoD9UxL87jo5QFqA90t8g9fDQp/KBojdKgPPGB1pMx2bf9hPdORNZIOdCc/2+Gs6AOs3BEK9ubIuBw=
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>108a2360adb302774eb521daebbeda5e
+</span><span>[793cc70b/48&#39;/0&#39;/0&#39;/1&#39;]xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC26ij1wYGC2SBKYrgt9yariSbn7HLRoZUvhUhmPfsRTPrdhhGFscpPZzmch6UTdmRP1aZUj
+</span><span>Signer 1 key
+</span><span>ILG47LpCtjoD9UxL87jo5QFqA90t8g9fDQp/KBojdKgPPGB1pMx2bf9hPdORNZIOdCc/2+Gs6AOs3BEK9ubIuBw=
+</span></code></pre>
 <ul>
 <li>Signer 1 encryption
 <ul>
@@ -685,7 +678,7 @@ ea12776c73de4bd5ea57c2d19eb8e0be856ac0d7f5651f7b74be4563d61ba5b1a36f34232bff47a8
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Signer 2
 <ul>
@@ -699,14 +692,13 @@ xpub6Du5Jn6eYZE96ccmAc1ZTFPzdnzrvqfG4mpamDun2qZYKywoiQJMCbS3kWWMr6U3XW6s125RLsaP
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-d3fabc873b98165254fe18a71b5335b0
-[b3118e52/48'/0'/0'/1']xpub6Du5Jn6eYZE96ccmAc1ZTFPzdnzrvqfG4mpamDun2qZYKywoiQJMCbS3kWWMr6U3XW6s125RLsaPABWgv2yA749ieaMe67FxkTjMsbcxCch
-Signer 2 key
-IDK4d/oO0pgfrwRu4Zb8vqlPEmJb9aKT1K2CCnI3RKepVAKs3fZsBrypcCdQfUy1TG/3O5vAR3gjldxcCA1Wzg8=
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>d3fabc873b98165254fe18a71b5335b0
+</span><span>[b3118e52/48&#39;/0&#39;/0&#39;/1&#39;]xpub6Du5Jn6eYZE96ccmAc1ZTFPzdnzrvqfG4mpamDun2qZYKywoiQJMCbS3kWWMr6U3XW6s125RLsaPABWgv2yA749ieaMe67FxkTjMsbcxCch
+</span><span>Signer 2 key
+</span><span>IDK4d/oO0pgfrwRu4Zb8vqlPEmJb9aKT1K2CCnI3RKepVAKs3fZsBrypcCdQfUy1TG/3O5vAR3gjldxcCA1Wzg8=
+</span></code></pre>
 <ul>
 <li>Signer 2 encryption
 <ul>
@@ -722,7 +714,7 @@ c8f4a6a6714eff90aa48cbefe6750c2ee3cc72182eb455e964f0ba59ada3ecd758c29f0fab7e33aa
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Signer 3
 <ul>
@@ -736,14 +728,13 @@ xpub6Ex81KopPkEt9hJiWHabYy8LNsSR4A7sUQoFBk9dR8XxHrr4p9HrYWN3NCf5uwfopHnQkCG7FYnZ
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-78a7d5e7549453d719150de5459c9ce5
-[842bd2ed/48'/0'/0'/1']xpub6Ex81KopPkEt9hJiWHabYy8LNsSR4A7sUQoFBk9dR8XxHrr4p9HrYWN3NCf5uwfopHnQkCG7FYnZMztKbtRtbh6tzZC4xtHPbmVVxRSN7ic
-Signer 3 key
-IL77mML0xo/O9dJn0T5EpQLuyRPPrdpgVJbtsdAugW5iX0MQ3Ci0f8jVnXu68Xm07CYjYGKX8af72jmkQKhNud0=
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>78a7d5e7549453d719150de5459c9ce5
+</span><span>[842bd2ed/48&#39;/0&#39;/0&#39;/1&#39;]xpub6Ex81KopPkEt9hJiWHabYy8LNsSR4A7sUQoFBk9dR8XxHrr4p9HrYWN3NCf5uwfopHnQkCG7FYnZMztKbtRtbh6tzZC4xtHPbmVVxRSN7ic
+</span><span>Signer 3 key
+</span><span>IL77mML0xo/O9dJn0T5EpQLuyRPPrdpgVJbtsdAugW5iX0MQ3Ci0f8jVnXu68Xm07CYjYGKX8af72jmkQKhNud0=
+</span></code></pre>
 <ul>
 <li>Signer 3 encryption
 <ul>
@@ -759,7 +750,7 @@ e82cfcccbd4bd4d3b76e28133eecd13f7362f4a8b4c4baa3e5f6ba2dfb4d69b8b44433f0b564ec35
 </ul>
 </li>
 </ul>
-<h4 id="round-2-4">ROUND 2</h4>
+<h4 id="ROUND_2-3">ROUND 2</h4>
 <ul>
 <li>Coordinator
 <ul>
@@ -767,13 +758,12 @@ e82cfcccbd4bd4d3b76e28133eecd13f7362f4a8b4c4baa3e5f6ba2dfb4d69b8b44433f0b564ec35
 </ul>
 </li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>BSMS 1.0
-sh(wsh(multi(2,[793cc70b/48'/0'/0'/1']xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC26ij1wYGC2SBKYrgt9yariSbn7HLRoZUvhUhmPfsRTPrdhhGFscpPZzmch6UTdmRP1aZUj/**,[b3118e52/48'/0'/0'/1']xpub6Du5Jn6eYZE96ccmAc1ZTFPzdnzrvqfG4mpamDun2qZYKywoiQJMCbS3kWWMr6U3XW6s125RLsaPABWgv2yA749ieaMe67FxkTjMsbcxCch/**,[842bd2ed/48'/0'/0'/1']xpub6Ex81KopPkEt9hJiWHabYy8LNsSR4A7sUQoFBk9dR8XxHrr4p9HrYWN3NCf5uwfopHnQkCG7FYnZMztKbtRtbh6tzZC4xtHPbmVVxRSN7ic/**)))
-/0/*,/1/*
-3GzMtFXahiu4TpGNGFc4bHMvAcvz5vVQrT
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>BSMS 1.0
+</span><span>sh(wsh(multi(2,[793cc70b/48&#39;/0&#39;/0&#39;/1&#39;]xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC26ij1wYGC2SBKYrgt9yariSbn7HLRoZUvhUhmPfsRTPrdhhGFscpPZzmch6UTdmRP1aZUj/**,[b3118e52/48&#39;/0&#39;/0&#39;/1&#39;]xpub6Du5Jn6eYZE96ccmAc1ZTFPzdnzrvqfG4mpamDun2qZYKywoiQJMCbS3kWWMr6U3XW6s125RLsaPABWgv2yA749ieaMe67FxkTjMsbcxCch/**,[842bd2ed/48&#39;/0&#39;/0&#39;/1&#39;]xpub6Ex81KopPkEt9hJiWHabYy8LNsSR4A7sUQoFBk9dR8XxHrr4p9HrYWN3NCf5uwfopHnQkCG7FYnZMztKbtRtbh6tzZC4xtHPbmVVxRSN7ic/**)))
+</span><span>/0/*,/1/*
+</span><span>3GzMtFXahiu4TpGNGFc4bHMvAcvz5vVQrT
+</span></code></pre>
 <ul>
 <li>Send to Signer 1:
 <ul>
@@ -789,7 +779,7 @@ sh(wsh(multi(2,[793cc70b/48'/0'/0'/1']xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC2
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Send to Signer 2:
 <ul>
@@ -805,7 +795,7 @@ sh(wsh(multi(2,[793cc70b/48'/0'/0'/1']xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC2
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Send to Signer 3:
 <ul>
@@ -821,16 +811,16 @@ bb3c93b67d758f244de7ee73e5e61261cea6dff5b3852df8faf265cdf1c73dae7ac33bd9719a3cef
 </ul>
 </li>
 </ul>
-<h2 id="acknowledgement">Acknowledgement</h2>
+<h2 id="Acknowledgement">Acknowledgement</h2>
 <p>Special thanks to Pavol Rusnak, Dmitry Petukhov, Christopher Allen,
 Craig Raw, Robert Spigler, Gregory Sanders, Ta Tat Tai, Michael Flaxman,
 Pieter Wuille, Salvatore Ingala, Andrew Chow and others for their
 feedback on the specification.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <p>Related mailing list threads:</p>
 <ul>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018385.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018385.html</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-April/018732.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-April/018732.html</a></li>
+<li><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018385.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018385.html</a></li>
+<li><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-April/018732.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-April/018732.html</a></li>
 </ul>
 
     </div>
@@ -839,7 +829,7 @@ feedback on the specification.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

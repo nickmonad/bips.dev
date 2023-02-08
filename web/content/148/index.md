@@ -14,19 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0148.mediawiki"
 +++
 
-``` 
-  BIP: 148
-  Layer: Consensus (soft fork)
-  Title: Mandatory activation of segwit deployment
-  Author: Shaolin Fry <shaolinfry@protonmail.ch>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0148
-  Status: Final
-  Type: Standards Track
-  Created: 2017-03-12
-  License: BSD-3-Clause
-           CC0-1.0
-```
+      BIP: 148
+      Layer: Consensus (soft fork)
+      Title: Mandatory activation of segwit deployment
+      Author: Shaolin Fry <shaolinfry@protonmail.ch>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0148
+      Status: Final
+      Type: Standards Track
+      Created: 2017-03-12
+      License: BSD-3-Clause
+               CC0-1.0
 
 ## Abstract
 
@@ -73,7 +71,7 @@ rejected.
         LOCK(cs_main);
         return (VersionBitsState(pindexPrev, params, Consensus::DEPLOYMENT_SEGWIT, versionbitscache) == THRESHOLD_LOCKED_IN);
     }
-    
+
     // BIP148 mandatory segwit signalling.
     int64_t nMedianTimePast = pindex->GetMedianTimePast();
     if ( (nMedianTimePast >= 1501545600) &&  // Tue 01 Aug 2017 00:00:00 UTC
@@ -108,21 +106,21 @@ deployment to activate without needing to release a new deployment.
 
 ## References
 
-  - [Mailing list
-    discussion](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-March/013714.html)
-  - [P2SH flag day
-    activation](https://github.com/bitcoin/bitcoin/blob/v0.6.0/src/main.cpp#L1281-L1283)
-  - [BIP9 Version bits with timeout and
-    delay](bip-0009.mediawiki "wikilink")
-  - [BIP16 Pay to Script Hash](bip-0016.mediawiki "wikilink")
-  - [BIP141 Segregated Witness (Consensus
-    layer)](bip-0141.mediawiki "wikilink")
-  - [BIP143 Transaction Signature Verification for Version 0 Witness
-    Program](bip-0143.mediawiki "wikilink")
-  - [BIP147 Dealing with dummy stack element
-    malleability](bip-0147.mediawiki "wikilink")
-  - [Segwit
-    benefits](https://bitcoincore.org/en/2016/01/26/segwit-benefits/)
+- [Mailing list
+  discussion](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-March/013714.html)
+- [P2SH flag day
+  activation](https://github.com/bitcoin/bitcoin/blob/v0.6.0/src/main.cpp#L1281-L1283)
+- [BIP9 Version bits with timeout and
+  delay](/9)
+- [BIP16 Pay to Script Hash](/16)
+- [BIP141 Segregated Witness (Consensus
+  layer)](/141)
+- [BIP143 Transaction Signature Verification for Version 0 Witness
+  Program](/143)
+- [BIP147 Dealing with dummy stack element
+  malleability](/147)
+- [Segwit
+  benefits](https://bitcoincore.org/en/2016/01/26/segwit-benefits/)
 
 ## Copyright
 

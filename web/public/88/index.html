@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,27 +46,27 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 88
-  Layer: Applications
-  Title: Hierarchical Deterministic Path Templates
-  Author: Dmitry Petukhov &lt;dp@simplexum.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0088
-  Status: Proposed
-  Type: Informational
-  Created: 2020-06-23
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 88
+</span><span>  Layer: Applications
+</span><span>  Title: Hierarchical Deterministic Path Templates
+</span><span>  Author: Dmitry Petukhov &lt;dp@simplexum.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0088
+</span><span>  Status: Proposed
+</span><span>  Type: Informational
+</span><span>  Created: 2020-06-23
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document describes a format for the representation of the templates
 that specify the constraints that can be imposed on BIP32 derivation
 paths.</p>
 <p>The constraints specified by the templates allow to easily discern
 'valid' paths, that match the constraints, and 'invalid' paths, that
 exceed the constraints.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>BIP32 derivation path format is universal, and a number of schemes for
 derivation were proposed in BIP43 and other documents, such as BIPs
 44,45,49,84. The flexibility of the format also allowed industry
@@ -78,9 +78,9 @@ vendors might have different considerations and priorities when making
 decisions about derivation paths. This creates friction for users, which
 might face problems when they try to access their coins using the wallet
 that derives addresses differently than the one they used before.</p>
-<h3 id="known-solutions">Known solutions</h3>
+<h3 id="Known_solutions">Known solutions</h3>
 <p>The problem is common enough to warrant the creation of a dedicated
-website (<a href="https://walletsrecovery.org/">walletsrecovery.org</a>) that
+website (<a rel="noopener" target="_blank" href="https://walletsrecovery.org/">walletsrecovery.org</a>) that
 tracks paths used by different wallets.</p>
 <p>At the time of writing, this website has used their own format to
 succintly describe multiple derivation paths. As far as author knows, it
@@ -97,7 +97,7 @@ easily read by humans at the same time. Humans can visually detect the
 'templated' parts of the path more easily than the use of <code>|</code> in the
 template could allow. Wider range of paths can be defined in a single
 template more succintly and unambiguously.</p>
-<h3 id="intended-use-and-advantages">Intended use and advantages</h3>
+<h3 id="Intended_use_and_advantages">Intended use and advantages</h3>
 <p>Wallet software authors can use the proposed format to describe the
 derivation paths that their software uses. This can improve user
 experience when switching to different wallet software, restoring access
@@ -130,7 +130,7 @@ example of such an approach might be for devices to allow
 application-specific profiles with path templates and possibly other
 custom parameters. Care must be taken to prevent the accidental
 installation of malicious or incorrect profiles, though.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>The format for the template was choosen to make it easy to read,
 convenient and visually unambigous.</p>
 <p>Template starts with optional prefix <code>m/</code>, and then one or more sections
@@ -143,8 +143,8 @@ hardened marker: either an apostrophe (<code>'</code>) or letter <code>h</code>.
 <li>An integer value from 0 to 2147483647 (&quot;Unit index template&quot;)</li>
 <li>A single <code>*</code> character, which denotes any value from 0 to 2147483647
 (&quot;Wildcard index template&quot;)</li>
-<li>The <code>{</code> character, followed by a number of <em>index ranges</em> delimited
-by commas (<code>,</code>), followed by <code>}</code> character (&quot;Ranged index template&quot;)</li>
+<li>The <code>{</code> character, followed by a number of <em>index ranges</em> delimited by
+commas (<code>,</code>), followed by <code>}</code> character (&quot;Ranged index template&quot;)</li>
 </ul>
 <p>Implementations MAY limit the maximum number of index ranges within the
 Ranged index template.</p>
@@ -154,13 +154,13 @@ increased by 2147483648 for the purposes of matching.</p>
 <p>Index range can be:</p>
 <ul>
 <li>An integer value from 0 to 2147483647 (&quot;Unit range&quot;)</li>
-<li>An integer value from 0 to 2147483647, followed by the <code>-</code>
-character, followed by another integer value from 0 to 2147483647
-(&quot;Non-unit range&quot;)</li>
+<li>An integer value from 0 to 2147483647, followed by the <code>-</code> character,
+followed by another integer value from 0 to 2147483647 (&quot;Non-unit
+range&quot;)</li>
 </ul>
 <p>For Non-unit range, value on the left side of the <code>-</code> character is the
-range_start, and the value on the right side of the <code>-</code> character is
-the range_end.</p>
+range_start, and the value on the right side of the <code>-</code> character is the
+range_end.</p>
 <p>For Unit range, we say that range_start is equal to range_end, even
 though there is no start/end in the Unit range.</p>
 <p>Unit index template contains a single index range, which is the Unit
@@ -179,8 +179,8 @@ be specified as Unit range.</li>
 and MUST be specified as Wildcard index template instead</li>
 <li>For Non-unit range, range_end MUST be larger than range_start.</li>
 <li>If there is more than one index range within the Ranged index
-template, range_start of the second and any subsequent range MUST
-be larger than the range_end of the preceeding range.</li>
+template, range_start of the second and any subsequent range MUST be
+larger than the range_end of the preceeding range.</li>
 <li>To avoid ambiguity, all representations of integer values larger
 than 0 MUST NOT start with character <code>0</code> (no leading zeroes
 allowed).</li>
@@ -200,13 +200,13 @@ compare templates for equality through a simple string equality check,
 without any parsing.</p>
 <p>To achieve this, two extra rules are needed:</p>
 <ul>
-<li>Within Ranged index template, subsequent range MUST NOT start with
-the value that is equal to the end of the previous range plus one.
-Thus, <code>{1,2,3-5}</code> is not allowed, and should be specified as <code>{1-5}</code>
+<li>Within Ranged index template, subsequent range MUST NOT start with the
+value that is equal to the end of the previous range plus one. Thus,
+<code>{1,2,3-5}</code> is not allowed, and should be specified as <code>{1-5}</code>
 instead. This rule might make templates less convenient for frequent
 edits, though.</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Only one type of hardened marker should be allowed (either <code>h</code> or
 <code>'</code>).</li>
@@ -214,7 +214,7 @@ edits, though.</li>
 <p>Instead of requiring the second extra rule, implementations can simply
 replace one type of marker with another in the template strings before
 comparing them.</p>
-<h2 id="full-and-partial-templates">Full and partial templates</h2>
+<h2 id="Full_and_partial_templates">Full and partial templates</h2>
 <p>If the template starts with <code>m/</code>, that means that this is the &quot;full&quot;
 template, that matches the whole path.</p>
 <p>If the template does not start with <code>m/</code>, that means that this is a
@@ -232,13 +232,13 @@ against full templates.</p>
 <p>Implementations MAY support parsing partial templates and matching
 portions of the paths against partial templates, as well as combining
 the templates.</p>
-<h2 id="parsing-result">Parsing result</h2>
+<h2 id="Parsing_result">Parsing result</h2>
 <p>The result of successful parsing of a valid path template can be
 represented by a list of sections, where each section is a list of index
 ranges, where index range is a tuple of (range_start, range_end). The
 length of the list of sections is also referred to as the &quot;length of the
 template&quot;.</p>
-<h2 id="matching">Matching</h2>
+<h2 id="Matching">Matching</h2>
 <p>The matching is to be performed against a list of integer values that
 represent a BIP32 path (or a portion of BIP32 path, for partial
 templates). The length of this list is referred to as the &quot;length of the
@@ -253,13 +253,13 @@ to 2147483647.</p>
 <code>           If for all index ranges within the section at position N in the template,</code><br />
 <code>           value V is either less than range_start, or greater than range_end, fail</code><br />
 <code>   3. Otherwise, succeed</code></p>
-<h2 id="formal-specification">Formal specification</h2>
+<h2 id="Formal_specification">Formal specification</h2>
 <p>The finite state machine (FSM) for the parser of the described template
 format, and the matching formula are specified in TLA+ specification
-language at <a href="https://github.com/dgpv/bip32_template_parse_tplaplus_spec">https://github.com/dgpv/bip32_template_parse_tplaplus_spec</a></p>
+language at <a rel="noopener" target="_blank" href="https://github.com/dgpv/bip32_template_parse_tplaplus_spec">https://github.com/dgpv/bip32_template_parse_tplaplus_spec</a></p>
 <p>The specification can be used with TLC checker and accompanying script
 to generate test data for the implementations.</p>
-<h2 id="implementations">Implementations</h2>
+<h2 id="Implementations">Implementations</h2>
 <p>While the formal specification specifies an FSM, which would be
 convenient for implementation without access to rich string handling
 facilities, when such facilities are available, the implementation might
@@ -275,23 +275,23 @@ implementation, and vise versa.</p>
 <p>At the moment, three implementations exist:</p>
 <ul>
 <li>FSM implementation in C:
-<a href="https://github.com/dgpv/bip32_template_c_implementation">https://github.com/dgpv/bip32_template_c_implementation</a></li>
+<a rel="noopener" target="_blank" href="https://github.com/dgpv/bip32_template_c_implementation">https://github.com/dgpv/bip32_template_c_implementation</a></li>
 <li>FSM implementation in Python (micropython compatible):
-<a href="https://github.com/dgpv/bip32_template_python_implementation">https://github.com/dgpv/bip32_template_python_implementation</a></li>
+<a rel="noopener" target="_blank" href="https://github.com/dgpv/bip32_template_python_implementation">https://github.com/dgpv/bip32_template_python_implementation</a></li>
 <li>non-FSM implementation in python: BIP32PathTemplate class in
 bitcointx.core.key module of python-bitcointx library
 (https://github.com/Simplexum/python-bitcointx)</li>
 </ul>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>The full path template that only contains Unit index templates
 represents a fully valid BIP32 path.</p>
 <p>There's no other path template standards that is known to the author
 currently.</p>
 <p>There is a discussion on path templating for bitcoin script descriptors
-at <a href="https://github.com/bitcoin/bitcoin/issues/17190">https://github.com/bitcoin/bitcoin/issues/17190</a>, which proposes the
+at <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/issues/17190">https://github.com/bitcoin/bitcoin/issues/17190</a>, which proposes the
 format <code>xpub...{0,1}/*</code>, of which the <code>{0,1}/*</code> part would correspond to
 the partial path template in the format of this BIP.</p>
-<h2 id="examples">Examples</h2>
+<h2 id="Examples">Examples</h2>
 <p><code>m/{44,49,84}'/0'/0'/{0-1}/{0-50000}</code> specifies a full template that
 matches both external and internal chains of BIP44, BIP49 and BIP84
 paths, with a constraint that the address index cannot be larger than
@@ -312,7 +312,7 @@ second index</p>
 followed by non-hardened index 0</p>
 <p>Its representation after parsing can be:</p>
 <p><code>   [[(2147483648, 4294967295)], [(0, 0)]]</code></p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>Special thanks to Peter D. Gray, Dr. Maxim Orlovsky, Robert Spigler and
 others for their feedback on the specification, and to Janine
 (github:@Enegnei) for the help in preparing the draft.</p>
@@ -323,7 +323,7 @@ others for their feedback on the specification, and to Janine
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

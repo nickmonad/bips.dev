@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,21 +46,21 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 178
-  Layer: Applications
-  Title: Version Extended WIF
-  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
-  Comments-Summary: Discouraged for implementation (one person)
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0178
-  Status: Draft
-  Type: Standards Track
-  Created: 2018-04-04
-  License: CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 178
+</span><span>  Layer: Applications
+</span><span>  Title: Version Extended WIF
+</span><span>  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
+</span><span>  Comments-Summary: Discouraged for implementation (one person)
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0178
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2018-04-04
+</span><span>  License: CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>An extension to the Wallet Import Format (WIF) to specify what kind of
 bitcoin address the private key corresponds to.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>There are several types of bitcoin addresses which can all be associated
 with a given private key: P2PKH (legacy <code>1...</code> format), P2SH-P2WPKH
 (SegWit public key inside P2SH), P2WPKH (bech32), etc.</p>
@@ -72,7 +72,7 @@ key, the wallet has to assume all kinds, and keep track of each possible
 alternative.</p>
 <p>By extending the suffix, we can specify what kind of bitcoin address was
 associated with a given private key.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>Currently, private keys are stored as a uint256 (private key data)
 followed by an optional uint8 (compressed flag). The latter is extended
 to specify the address types:</p>
@@ -85,15 +85,15 @@ to specify the address types:</p>
 </tbody></table>
 <p>When a wallet imports a private key, it will have two outcomes:</p>
 <ul>
-<li>the key is using one of the legacy types, in which case all types
-must be accounted for</li>
+<li>the key is using one of the legacy types, in which case all types must
+be accounted for</li>
 <li>the key is using one of the extended types, in which case the wallet
 need only track the specific corresponding address</li>
 </ul>
 <p>Note: the difference between `0x01` and `0x10` is that the former
 can correspond to any of the types above, whereas the latter *only*
 corresponds to a P2PKH (legacy non-segwit).</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This proposal is not backwards compatible, in that software that does
 not recognize the new types will not understand the compressed flag. It
 would be trivial to change this, by keeping the 'uncompressed' state as
@@ -103,23 +103,25 @@ opposed to 'the value 1'.</p>
 always understand the old WIF format, however. It will, as it does
 today, assume that any kind of bitcoin address is possible, and will
 have to track all of them, as it has to today.</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>This BIP is based on the initial proposal by Thomas Voegtlin (thomasv at
-electrum dot org) on the Bitcoin Dev mailing list[1] and the Electrum
-3.0 implementation[2]</p>
-<h2 id="reference-implementation">Reference implementation</h2>
+electrum dot org) on the Bitcoin Dev mailing list<sup class="footnote-reference"><a href="#1">1</a></sup> and the Electrum
+3.0 implementation<sup class="footnote-reference"><a href="#2">2</a></sup></p>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>There is a partial implementation which adds, but does not use, the
 types described in this BIP here:
-<a href="https://github.com/bitcoin/bitcoin/pull/12869">https://github.com/bitcoin/bitcoin/pull/12869</a></p>
-<h2 id="references">References</h2>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/12869">https://github.com/bitcoin/bitcoin/pull/12869</a></p>
+<h2 id="References">References</h2>
 <references/>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
-<ol>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html</a></li>
-<li><a href="https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108">https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108</a></li>
-</ol>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108">https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108</a></p>
+</div>
 
     </div>
 
@@ -127,7 +129,7 @@ license.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

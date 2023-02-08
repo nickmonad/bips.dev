@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -55,24 +55,24 @@ addition of I<sub>L</sub> (faster, easier implementation)</li>
 <li>(25 May 2013) Added test vectors</li>
 <li>(15 Jan 2014) Rename keys with index ≥ 0x80000000 to hardened keys,
 and add explicit conversion functions.</li>
-<li>(24 Feb 2017) Added test vectors for hardened derivation with
-leading zeros</li>
+<li>(24 Feb 2017) Added test vectors for hardened derivation with leading
+zeros</li>
 <li>(4 Nov 2020) Added new test vectors for hardened derivation with
 leading zeros</li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 32
-  Layer: Applications
-  Title: Hierarchical Deterministic Wallets
-  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0032
-  Status: Final
-  Type: Informational
-  Created: 2012-02-11
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 32
+</span><span>  Layer: Applications
+</span><span>  Title: Hierarchical Deterministic Wallets
+</span><span>  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0032
+</span><span>  Status: Final
+</span><span>  Type: Informational
+</span><span>  Created: 2012-02-11
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document describes hierarchical deterministic wallets (or &quot;HD
 Wallets&quot;): wallets which can be shared partially or entirely with
 different systems, each with or without the ability to spend coins.</p>
@@ -83,9 +83,9 @@ supporting clients.</p>
 <p>The specification consists of two parts. In a first part, a system for
 deriving a tree of keypairs from a single seed is presented. The second
 part demonstrates how to build a wallet structure on top of such a tree.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The Bitcoin reference client uses randomly generated keys. In order to
 avoid the necessity for a backup after every transaction, (by default)
 100 keys are cached in a pool of reserve keys. Still, these wallets are
@@ -110,8 +110,8 @@ receive customer's payments, and not for example the change addresses
 that are generated when the merchant spends money. Hierarchical
 deterministic wallets allow such selective sharing by supporting
 multiple keypair chains, derived from a single root.</p>
-<h2 id="specification-key-derivation">Specification: Key derivation</h2>
-<h3 id="conventions">Conventions</h3>
+<h2 id="Specification:_Key_derivation">Specification: Key derivation</h2>
+<h3 id="Conventions">Conventions</h3>
 <p>In the rest of this text we will assume the public key cryptography used
 in Bitcoin, namely elliptic curve cryptography using the field and curve
 parameters defined by secp256k1 (http://www.secg.org/sec2-v2.pdf).
@@ -127,20 +127,20 @@ byte sequence onto another.</p>
 <p>As standard conversion functions, we assume:</p>
 <ul>
 <li>point(p): returns the coordinate pair resulting from EC point
-multiplication (repeated application of the EC group operation) of
-the secp256k1 base point with the integer p.</li>
-<li>ser<sub>32</sub>(i): serialize a 32-bit unsigned integer i as a
-4-byte sequence, most significant byte first.</li>
-<li>ser<sub>256</sub>(p): serializes the integer p as a 32-byte
+multiplication (repeated application of the EC group operation) of the
+secp256k1 base point with the integer p.</li>
+<li>ser<sub>32</sub>(i): serialize a 32-bit unsigned integer i as a 4-byte
 sequence, most significant byte first.</li>
-<li>ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) as a
-byte sequence using SEC1's compressed form: (0x02 or 0x03) ||
+<li>ser<sub>256</sub>(p): serializes the integer p as a 32-byte sequence,
+most significant byte first.</li>
+<li>ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) as a byte
+sequence using SEC1's compressed form: (0x02 or 0x03) ||
 ser<sub>256</sub>(x), where the header byte depends on the parity of
 the omitted y coordinate.</li>
 <li>parse<sub>256</sub>(p): interprets a 32-byte sequence as a 256-bit
 number, most significant byte first.</li>
 </ul>
-<h3 id="extended-keys">Extended keys</h3>
+<h3 id="Extended_keys">Extended keys</h3>
 <p>In what follows, we will define a function that derives a number of
 child keys from a parent key. In order to prevent these from depending
 solely on the key itself, we extend both private and public keys first
@@ -156,13 +156,13 @@ index. The normal child keys use indices 0 through 2<sup>31</sup>-1. The
 hardened child keys use indices 2<sup>31</sup> through 2<sup>32</sup>-1.
 To ease notation for hardened key indices, a number i<sub>H</sub>
 represents i+2<sup>31</sup>.</p>
-<h3 id="child-key-derivation-ckd-functions">Child key derivation (CKD) functions</h3>
+<h3 id="Child_key_derivation_(CKD)_functions">Child key derivation (CKD) functions</h3>
 <p>Given a parent extended key and an index i, it is possible to compute
 the corresponding child extended key. The algorithm to do so depends on
 whether the child is a hardened key or not (or, equivalently, whether i
 ≥ 2<sup>31</sup>), and whether we're talking about private or public
 keys.</p>
-<h4 id="private-parent-key-private-child-key">Private parent key → private child key</h4>
+<h4 id="Private_parent_key_→_private_child_key">Private parent key → private child key</h4>
 <p>The function CKDpriv((k<sub>par</sub>, c<sub>par</sub>), i) →
 (k<sub>i</sub>, c<sub>i</sub>) computes a child extended private key
 from the parent extended private key:</p>
@@ -170,13 +170,13 @@ from the parent extended private key:</p>
 <li>Check whether i ≥ 2<sup>31</sup> (whether the child is a hardened
 key).
 <ul>
-<li>If so (hardened child): let I = HMAC-SHA512(Key =
-c<sub>par</sub>, Data = 0x00 ||
-ser<sub>256</sub>(k<sub>par</sub>) || ser<sub>32</sub>(i)).
-(Note: The 0x00 pads the private key to make it 33 bytes long.)</li>
-<li>If not (normal child): let I = HMAC-SHA512(Key =
-c<sub>par</sub>, Data = ser<sub>P</sub>(point(k<sub>par</sub>))
-|| ser<sub>32</sub>(i)).</li>
+<li>If so (hardened child): let I = HMAC-SHA512(Key = c<sub>par</sub>,
+Data = 0x00 || ser<sub>256</sub>(k<sub>par</sub>) ||
+ser<sub>32</sub>(i)). (Note: The 0x00 pads the private key to make
+it 33 bytes long.)</li>
+<li>If not (normal child): let I = HMAC-SHA512(Key = c<sub>par</sub>,
+Data = ser<sub>P</sub>(point(k<sub>par</sub>)) ||
+ser<sub>32</sub>(i)).</li>
 </ul>
 </li>
 <li>Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.</li>
@@ -188,9 +188,9 @@ the resulting key is invalid, and one should proceed with the next
 value for i. (Note: this has probability lower than 1 in
 2<sup>127</sup>.)</li>
 </ul>
-<p>The HMAC-SHA512 function is specified in
-<a href="http://tools.ietf.org/html/rfc4231">RFC 4231</a>.</p>
-<h4 id="public-parent-key-public-child-key">Public parent key → public child key</h4>
+<p>The HMAC-SHA512 function is specified in <a rel="noopener" target="_blank" href="http://tools.ietf.org/html/rfc4231">RFC
+4231</a>.</p>
+<h4 id="Public_parent_key_→_public_child_key">Public parent key → public child key</h4>
 <p>The function CKDpub((K<sub>par</sub>, c<sub>par</sub>), i) →
 (K<sub>i</sub>, c<sub>i</sub>) computes a child extended public key from
 the parent extended public key. It is only defined for non-hardened
@@ -200,20 +200,19 @@ child keys.</p>
 key).
 <ul>
 <li>If so (hardened child): return failure</li>
-<li>If not (normal child): let I = HMAC-SHA512(Key =
-c<sub>par</sub>, Data = ser<sub>P</sub>(K<sub>par</sub>) ||
-ser<sub>32</sub>(i)).</li>
+<li>If not (normal child): let I = HMAC-SHA512(Key = c<sub>par</sub>,
+Data = ser<sub>P</sub>(K<sub>par</sub>) || ser<sub>32</sub>(i)).</li>
 </ul>
 </li>
 <li>Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.</li>
 <li>The returned child key K<sub>i</sub> is
 point(parse<sub>256</sub>(I<sub>L</sub>)) + K<sub>par</sub>.</li>
 <li>The returned chain code c<sub>i</sub> is I<sub>R</sub>.</li>
-<li>In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or K<sub>i</sub> is
-the point at infinity, the resulting key is invalid, and one should
+<li>In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or K<sub>i</sub> is the
+point at infinity, the resulting key is invalid, and one should
 proceed with the next value for i.</li>
 </ul>
-<h4 id="private-parent-key-public-child-key">Private parent key → public child key</h4>
+<h4 id="Private_parent_key_→_public_child_key">Private parent key → public child key</h4>
 <p>The function N((k, c)) → (K, c) computes the extended public key
 corresponding to an extended private key (the &quot;neutered&quot; version, as it
 removes the ability to sign transactions).</p>
@@ -232,9 +231,9 @@ non-hardened child keys).</li>
 any private key), and also what distinguishes them from hardened keys.
 The reason for not always using non-hardened keys (which are more
 useful) is security; see further for more information.</p>
-<h4 id="public-parent-key-private-child-key">Public parent key → private child key</h4>
+<h4 id="Public_parent_key_→_private_child_key">Public parent key → private child key</h4>
 <p>This is not possible.</p>
-<h3 id="the-key-tree">The key tree</h3>
+<h3 id="The_key_tree">The key tree</h3>
 <p>The next step is cascading several CKD constructions to build a tree. We
 start with one root, the master extended key m. By evaluating
 CKDpriv(m,i) for several values of i, we get a number of level-1 derived
@@ -259,7 +258,7 @@ construction, knowing an extended private key allows reconstruction of
 all descendant private keys and public keys, and knowing an extended
 public key allows reconstruction of all descendant non-hardened public
 keys.</p>
-<h3 id="key-identifiers">Key identifiers</h3>
+<h3 id="Key_identifiers">Key identifiers</h3>
 <p>Extended keys can be identified by the Hash160 (RIPEMD160 after SHA256)
 of the serialized ECDSA public key K, ignoring the chain code. This
 corresponds exactly to the data used in traditional Bitcoin addresses.
@@ -267,11 +266,11 @@ It is not advised to represent this data in base58 format though, as it
 may be interpreted as an address that way (and wallet software is not
 required to accept payment to the chain key itself).</p>
 <p>The first 32 bits of the identifier are called the key fingerprint.</p>
-<h3 id="serialization-format">Serialization format</h3>
+<h3 id="Serialization_format">Serialization format</h3>
 <p>Extended public and private keys are serialized as follows:</p>
 <ul>
-<li>4 byte: version bytes (mainnet: 0x0488B21E public, 0x0488ADE4
-private; testnet: 0x043587CF public, 0x04358394 private)</li>
+<li>4 byte: version bytes (mainnet: 0x0488B21E public, 0x0488ADE4 private;
+testnet: 0x043587CF public, 0x04358394 private)</li>
 <li>1 byte: depth: 0x00 for master nodes, 0x01 for level-1 derived keys,
 ....</li>
 <li>4 bytes: the fingerprint of the parent's key (0x00000000 if master
@@ -296,7 +295,7 @@ be used.</p>
 <p>When importing a serialized extended public key, implementations must
 verify whether the X coordinate in the public key data corresponds to a
 point on the curve. If not, the extended public key is invalid.</p>
-<h3 id="master-key-generation">Master key generation</h3>
+<h3 id="Master_key_generation">Master key generation</h3>
 <p>The total number of possible extended keypairs is almost
 2<sup>512</sup>, but the produced keys are only 256 bits long, and offer
 about half of that in terms of security. Therefore, master keys are not
@@ -312,12 +311,12 @@ I<sub>R</sub> as master chain code.</li>
 <p>In case parse<sub>256</sub>(I<sub>L</sub>) is 0 or
 parse<sub>256</sub>(I<sub>L</sub>) ≥ n, the master key is invalid.</p>
 <p><img src=bip-0032/derivation.png></img></p>
-<h2 id="specification-wallet-structure">Specification: Wallet structure</h2>
+<h2 id="Specification:_Wallet_structure">Specification: Wallet structure</h2>
 <p>The previous sections specified key trees and their nodes. The next step
 is imposing a wallet structure on this tree. The layout defined in this
 section is a default only, though clients are encouraged to mimic it for
 compatibility, even if not all features are supported.</p>
-<h3 id="the-default-wallet-layout">The default wallet layout</h3>
+<h3 id="The_default_wallet_layout">The default wallet layout</h3>
 <p>An HDW is organized as several 'accounts'. Accounts are numbered, the
 default account (&quot;&quot;) being number 0. Clients are not required to support
 more than one account - if not, they only use the default account.</p>
@@ -333,8 +332,8 @@ chain of account number i of the HDW derived from master m.</li>
 <li>m/i<sub>H</sub>/1/k corresponds to the k'th keypair of the internal
 chain of account number i of the HDW derived from master m.</li>
 </ul>
-<h3 id="use-cases">Use cases</h3>
-<h4 id="full-wallet-sharing-m">Full wallet sharing: m</h4>
+<h3 id="Use_cases">Use cases</h3>
+<h4 id="Full_wallet_sharing:_m">Full wallet sharing: m</h4>
 <p>In cases where two systems need to access a single shared wallet, and
 both need to be able to perform spendings, one needs to share the master
 private extended key. Nodes can keep a pool of N look-ahead keys cached
@@ -344,25 +343,25 @@ An extra look-ahead could be active for the first unused account's
 chains - triggering the creation of a new account when used. Note that
 the name of the account will still need to be entered manually and
 cannot be synchronized via the block chain.</p>
-<h4 id="audits-n-m">Audits: N(m/*)</h4>
+<h4 id="Audits:_N(m/*)">Audits: N(m/*)</h4>
 <p>In case an auditor needs full access to the list of incoming and
 outgoing payments, one can share all account public extended keys. This
 will allow the auditor to see all transactions from and to the wallet,
 in all accounts, but not a single secret key.</p>
-<h4 id="per-office-balances-m-ih">Per-office balances: m/i<sub>H</sub></h4>
+<h4 id="Per-office_balances:_m/iH">Per-office balances: m/i<sub>H</sub></h4>
 <p>When a business has several independent offices, they can all use
 wallets derived from a single master. This will allow the headquarters
 to maintain a super-wallet that sees all incoming and outgoing
 transactions of all offices, and even permit moving money between the
 offices.</p>
-<h4 id="recurrent-business-to-business-transactions-n-m-ih-0">Recurrent business-to-business transactions: N(m/i<sub>H</sub>/0)</h4>
+<h4 id="Recurrent_business-to-business_transactions:_N(m/iH/0)">Recurrent business-to-business transactions: N(m/i<sub>H</sub>/0)</h4>
 <p>In case two business partners often transfer money, one can use the
 extended public key for the external chain of a specific account (M/i
 h/0) as a sort of &quot;super address&quot;, allowing frequent transactions that
 cannot (easily) be associated, but without needing to request a new
 address for each payment. Such a mechanism could also be used by mining
 pool operators as variable payout address.</p>
-<h4 id="unsecure-money-receiver-n-m-ih-0">Unsecure money receiver: N(m/i<sub>H</sub>/0)</h4>
+<h4 id="Unsecure_money_receiver:_N(m/iH/0)">Unsecure money receiver: N(m/i<sub>H</sub>/0)</h4>
 <p>When an unsecure webserver is used to run an e-commerce site, it needs
 to know public addresses that are used to receive payments. The
 webserver only needs to know the public extended key of the external
@@ -371,7 +370,7 @@ to the webserver can at most see all incoming payments but will not be
 able to steal the money, will not (trivially) be able to distinguish
 outgoing transactions, nor be able to see payments received by other
 webservers if there are several.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>To comply with this standard, a client must at least be able to import
 an extended public or private key, to give access to its direct
 descendants as wallet keys. The wallet structure
@@ -381,31 +380,29 @@ for easy compatibility - even when no separate accounts or distinction
 between internal and external chains is made. However, implementations
 may deviate from it for specific needs; more complex applications may
 call for a more complex tree structure.</p>
-<h2 id="security">Security</h2>
+<h2 id="Security">Security</h2>
 <p>In addition to the expectations from the EC public-key cryptography
 itself:</p>
 <ul>
 <li>Given a public key K, an attacker cannot find the corresponding
-private key more efficiently than by solving the EC discrete
-logarithm problem (assumed to require 2<sup>128</sup> group
-operations).</li>
+private key more efficiently than by solving the EC discrete logarithm
+problem (assumed to require 2<sup>128</sup> group operations).</li>
 </ul>
 <p>the intended security properties of this standard are:</p>
 <ul>
 <li>Given a child extended private key (k<sub>i</sub>,c<sub>i</sub>) and
 the integer i, an attacker cannot find the parent private key
-k<sub>par</sub> more efficiently than a 2<sup>256</sup> brute force
-of HMAC-SHA512.</li>
+k<sub>par</sub> more efficiently than a 2<sup>256</sup> brute force of
+HMAC-SHA512.</li>
 <li>Given any number (2 ≤ N ≤ 2<sup>32</sup>-1) of (index, extended
 private key) tuples
 (i<sub>j</sub>,(k<sub>i<sub>j</sub></sub>,c<sub>i<sub>j</sub></sub>)),
 with distinct i<sub>j</sub>'s, determining whether they are derived
-from a common parent extended private key (i.e., whether there
-exists a (k<sub>par</sub>,c<sub>par</sub>) such that for each j in
-(0..N-1)
+from a common parent extended private key (i.e., whether there exists
+a (k<sub>par</sub>,c<sub>par</sub>) such that for each j in (0..N-1)
 CKDpriv((k<sub>par</sub>,c<sub>par</sub>),i<sub>j</sub>)=(k<sub>i<sub>j</sub></sub>,c<sub>i<sub>j</sub></sub>)),
-cannot be done more efficiently than a 2<sup>256</sup> brute force
-of HMAC-SHA512.</li>
+cannot be done more efficiently than a 2<sup>256</sup> brute force of
+HMAC-SHA512.</li>
 </ul>
 <p>Note however that the following properties do not exist:</p>
 <ul>
@@ -415,7 +412,7 @@ and a child public key (K<sub>i</sub>), it is hard to find i.</li>
 and a non-hardened child private key (k<sub>i</sub>), it is hard to
 find k<sub>par</sub>.</li>
 </ul>
-<h3 id="implications">Implications</h3>
+<h3 id="Implications">Implications</h3>
 <p>Private and public keys must be kept safe as usual. Leaking a private
 key means access to coins - leaking a public key can mean loss of
 privacy.</p>
@@ -430,8 +427,8 @@ keys. It is also the reason for the existence of hardened keys, and why
 they are used for the account level in the tree. This way, a leak of
 account-specific (or below) private key never risks compromising the
 master or other accounts.</p>
-<h2 id="test-vectors">Test Vectors</h2>
-<h3 id="test-vector-1">Test vector 1</h3>
+<h2 id="Test_Vectors">Test Vectors</h2>
+<h3 id="Test_vector_1">Test vector 1</h3>
 <p>Seed (hex): 000102030405060708090a0b0c0d0e0f</p>
 <ul>
 <li>Chain m
@@ -483,7 +480,7 @@ xprvA41z7zogVVwxVSgdKUHDy1SKmdb533PjDz7J6N6mV6uS3ze1ai8FHa8kmHScGpWmj4WggLyQjgPi
 </ul>
 </li>
 </ul>
-<h3 id="test-vector-2">Test vector 2</h3>
+<h3 id="Test_vector_2">Test vector 2</h3>
 <p>Seed (hex):
 fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542</p>
 <ul>
@@ -536,11 +533,10 @@ xprvA2nrNbFZABcdryreWet9Ea4LvTJcGsqrMzxHx98MMrotbir7yrKCEXw7nadnHM8Dq38EGfSh6dqA
 </ul>
 </li>
 </ul>
-<h3 id="test-vector-3">Test vector 3</h3>
+<h3 id="Test_vector_3">Test vector 3</h3>
 <p>These vectors test for the retention of leading zeros. See
-<a href="https://github.com/bitpay/bitcore-lib/issues/47">bitpay/bitcore-lib#47</a>
-and
-<a href="https://github.com/iancoleman/bip39/issues/58">iancoleman/bip39#58</a>
+<a rel="noopener" target="_blank" href="https://github.com/bitpay/bitcore-lib/issues/47">bitpay/bitcore-lib#47</a>
+and <a rel="noopener" target="_blank" href="https://github.com/iancoleman/bip39/issues/58">iancoleman/bip39#58</a>
 for more information.</p>
 <p>Seed (hex):
 4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be</p>
@@ -562,9 +558,9 @@ xprv9uPDJpEQgRQfDcW7BkF7eTya6RPxXeJCqCJGHuCJ4GiRVLzkTXBAJMu2qaMWPrS7AANYqdq6vcBc
 </ul>
 </li>
 </ul>
-<h3 id="test-vector-4">Test vector 4</h3>
+<h3 id="Test_vector_4">Test vector 4</h3>
 <p>These vectors test for the retention of leading zeros. See
-<a href="https://github.com/btcsuite/btcutil/issues/172">btcsuite/btcutil#172</a>
+<a rel="noopener" target="_blank" href="https://github.com/btcsuite/btcutil/issues/172">btcsuite/btcutil#172</a>
 for more information.</p>
 <p>Seed (hex):
 3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678</p>
@@ -594,7 +590,7 @@ xprv9xJocDuwtYCMNAo3Zw76WENQeAS6WGXQ55RCy7tDJ8oALr4FWkuVoHJeHVAcAqiZLE7Je3vZJHxs
 </ul>
 </li>
 </ul>
-<h3 id="test-vector-5">Test vector 5</h3>
+<h3 id="Test_vector_5">Test vector 5</h3>
 <p>These vectors test that invalid extended keys are recognized as invalid.</p>
 <ul>
 <li>xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6LBpB85b3D2yc8sfvZU521AAwdZafEz7mnzBBsz4wKY5fTtTQBm
@@ -631,10 +627,10 @@ xprv9xJocDuwtYCMNAo3Zw76WENQeAS6WGXQ55RCy7tDJ8oALr4FWkuVoHJeHVAcAqiZLE7Je3vZJHxs
 <li>xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHL
 (invalid checksum)</li>
 </ul>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <ul>
-<li>Gregory Maxwell for the original idea of type-2 deterministic
-wallets, and many discussions about it.</li>
+<li>Gregory Maxwell for the original idea of type-2 deterministic wallets,
+and many discussions about it.</li>
 <li>Alan Reiner for the implementation of this scheme in Armory, and the
 suggestions that followed from that.</li>
 <li>Eric Lombrozo for reviewing and revising this BIP.</li>
@@ -648,7 +644,7 @@ Base58 strings.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,24 +46,24 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 325
-  Layer: Applications
-  Title: Signet
-  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
-          Anthony Towns &lt;aj@erisian.com.au&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0325
-  Status: Proposed
-  Type: Standards Track
-  Created: 2019-03-20
-  License: CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 325
+</span><span>  Layer: Applications
+</span><span>  Title: Signet
+</span><span>  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
+</span><span>          Anthony Towns &lt;aj@erisian.com.au&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0325
+</span><span>  Status: Proposed
+</span><span>  Type: Standards Track
+</span><span>  Created: 2019-03-20
+</span><span>  License: CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>A new type of test network where signatures are used in addition to
 proof of work for block progress, enabling much better coordination and
 robustness (be reliably unreliable), for persistent, longer-term testing
 scenarios involving multiple independent parties.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Testnet is a great place to try out new things without risking real
 money, but it is notoriously unreliable. Huge block reorgs, long gaps in
 between blocks being mined or sudden bursts of blocks in rapid
@@ -80,7 +80,7 @@ expected but rare events like a 6-block reorg. Regtest is not suitable
 for longer-term scenarios involving multiple independent parties because
 creating blocks costs nothing, so any party can completely control the
 test network.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>A new type of network (&quot;signet&quot;), which takes an additional consensus
 parameter called the challenge (scriptPubKey). The challenge can be a
 simple pubkey (P2PKH style), or a k-of-n multisig, or any other script
@@ -145,20 +145,19 @@ proof-of-work does not also require regenerating signatures. When
 grinding proof of work, the extended nonce cannot be used as it would
 invalidate the signature. Instead, simply resigning the same (or an
 updated) block will give a new search space.</p>
-<p>A block is considered fully validated only if the to_sign transaction
-is a valid spend of the to_spend transaction. It is recommended that
-this verification is done directly before or after the witness
-commitment verification, as the data required to do both is
-approximately the same.</p>
+<p>A block is considered fully validated only if the to_sign transaction is
+a valid spend of the to_spend transaction. It is recommended that this
+verification is done directly before or after the witness commitment
+verification, as the data required to do both is approximately the same.</p>
 <p>There is one other acceptable special case: if a block's challenge is
 e.g. `OP_TRUE` (`0x51`), where an empty solution would result in
 success, the block is also considered valid if the signet commitment is
 absent.</p>
-<h2 id="genesis-block-and-message-start">Genesis Block and Message Start</h2>
+<h2 id="Genesis_Block_and_Message_Start">Genesis Block and Message Start</h2>
 <p>The genesis block is the same for all signet networks, whereas the
 message start is defined as the first four bytes of the sha256d of the
 challenge script as a single data push (see below).</p>
-<h3 id="genesis-block">Genesis Block</h3>
+<h3 id="Genesis_Block">Genesis Block</h3>
 <ul>
 <li>Time stamp: 1598918400</li>
 <li>Nonce: 52613770</li>
@@ -169,7 +168,7 @@ challenge script as a single data push (see below).</p>
 00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6, and
 the block hex is
 0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a008f4d5fae77031e8ad222030101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000.</p>
-<h3 id="message-start">Message Start</h3>
+<h3 id="Message_Start">Message Start</h3>
 <p>The message start is defined as the first four bytes of the sha256d of
 the challenge script, as a single push (i.e. prefixed with the challenge
 script length). Example:</p>
@@ -180,7 +179,7 @@ script length). Example:</p>
 7ec653a59b1912f9db10da2c461ed827d48f9404d5ef0346a6c94aadd4203646</li>
 <li>First four bytes = the message start = 7ec653a5</li>
 </ul>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This specification is backwards compatible in the sense that existing
 software can use Signet out of the box.</p>
 <p>Simply by adding the network parameters for signet (magic number, etc),
@@ -196,15 +195,15 @@ inside the coinbase transaction, or connect to trusted peers.</p>
 will not use in production. This is adequate for non-production test
 purposes where the goal is to have a network behave as much like mainnet
 as possible.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
-<p>Pull request at <a href="https://github.com/bitcoin/bitcoin/pull/18267">https://github.com/bitcoin/bitcoin/pull/18267</a></p>
-<h2 id="references">References</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
+<p>Pull request at <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/18267">https://github.com/bitcoin/bitcoin/pull/18267</a></p>
+<h2 id="References">References</h2>
 <ol>
 <li>Original mailing list thread:
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-March/016734.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-March/016734.html</a></li>
-<li>Bitcoin Wiki entry: <a href="https://en.bitcoin.it/wiki/Signet">https://en.bitcoin.it/wiki/Signet</a></li>
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-March/016734.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-March/016734.html</a></li>
+<li>Bitcoin Wiki entry: <a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Signet">https://en.bitcoin.it/wiki/Signet</a></li>
 </ol>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
 
@@ -214,7 +213,7 @@ license.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

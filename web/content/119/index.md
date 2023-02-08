@@ -14,22 +14,20 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0119.mediawiki"
 +++
 
-``` 
-  BIP: 119
-  Layer: Consensus (soft fork)
-  Title: CHECKTEMPLATEVERIFY
-  Author: Jeremy Rubin <j@rubin.io>
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0119
-  Status: Draft
-  Type: Standards Track
-  Created: 2020-01-06
-  License: BSD-3-Clause
-```
+      BIP: 119
+      Layer: Consensus (soft fork)
+      Title: CHECKTEMPLATEVERIFY
+      Author: Jeremy Rubin <j@rubin.io>
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0119
+      Status: Draft
+      Type: Standards Track
+      Created: 2020-01-06
+      License: BSD-3-Clause
 
 ## Abstract
 
-This BIP proposes a new opcode, OP\_CHECKTEMPLATEVERIFY, to be activated
-as a change to the semantics of OP\_NOP4.
+This BIP proposes a new opcode, OP_CHECKTEMPLATEVERIFY, to be activated
+as a change to the semantics of OP_NOP4.
 
 The new opcode has applications for transaction congestion control and
 payment channel instantiation, among others, which are described in the
@@ -37,15 +35,15 @@ Motivation section of this BIP.
 
 ## Summary
 
-OP\_CHECKTEMPLATEVERIFY uses opcode OP\_NOP4 (0xb3) as a soft fork
+OP_CHECKTEMPLATEVERIFY uses opcode OP_NOP4 (0xb3) as a soft fork
 upgrade.
 
-OP\_CHECKTEMPLATEVERIFY does the following:
+OP_CHECKTEMPLATEVERIFY does the following:
 
-  - There is at least one element on the stack, fail otherwise
-  - The element on the stack is 32 bytes long, NOP otherwise
-  - The DefaultCheckTemplateVerifyHash of the transaction at the current
-    input index is equal to the element on the stack, fail otherwise
+- There is at least one element on the stack, fail otherwise
+- The element on the stack is 32 bytes long, NOP otherwise
+- The DefaultCheckTemplateVerifyHash of the transaction at the current
+  input index is equal to the element on the stack, fail otherwise
 
 The DefaultCheckTemplateVerifyHash commits to the serialized version,
 locktime, scriptSigs hash (if any non-null scriptSigs), number of
@@ -54,7 +52,7 @@ executing input index.
 
 The recommended standardness rules additionally:
 
-  - Reject non-32 byte as SCRIPT\_ERR\_DISCOURAGE\_UPGRADABLE\_NOPS.
+- Reject non-32 byte as SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS.
 
 ## Motivation
 
@@ -82,8 +80,8 @@ see the references.
 
 The below code is the main logic for verifying CHECKTEMPLATEVERIFY,
 described in pythonic pseduocode. The canonical specification for the
-semantics of OP\_CHECKTEMPLATEVERIFY as implemented in C++ in the
-context of Bitcoin Core can be seen in the reference implementation.
+semantics of OP_CHECKTEMPLATEVERIFY as implemented in C++ in the context
+of Bitcoin Core can be seen in the reference implementation.
 
 The execution of the opcode is as follows:
 
@@ -216,8 +214,8 @@ become favored by the wider Bitcoin comminity, that might be used
 instead.
 
 The start time and bit in the implementation are currently set to bit 5
-and NEVER\_ACTIVE/NO\_TIMEOUT, but this is subject to change while the
-BIP is a draft.
+and NEVER_ACTIVE/NO_TIMEOUT, but this is subject to change while the BIP
+is a draft.
 
 For the avoidance of unclarity, the parameters to be determined are:
 
@@ -228,10 +226,10 @@ For the avoidance of unclarity, the parameters to be determined are:
 `   consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].min_activation_height = 0;`
 
 Until BIP-119 reaches ACTIVE state and the
-SCRIPT\_VERIFY\_DEFAULT\_CHECK\_TEMPLATE\_VERIFY\_HASH flag is enforced,
-node implementations should (are recommended to) execute a NOP4 as
-SCRIPT\_ERR\_DISCOURAGE\_UPGRADABLE\_NOPS (to deny entry to the mempool)
-for policy and must evaluate as a NOP for consensus (during block
+SCRIPT_VERIFY_DEFAULT_CHECK_TEMPLATE_VERIFY_HASH flag is enforced, node
+implementations should (are recommended to) execute a NOP4 as
+SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS (to deny entry to the mempool) for
+policy and must evaluate as a NOP for consensus (during block
 validation).
 
 In order to facilitate using CHECKTEMPLATEVERIFY, the common case of a
@@ -309,7 +307,7 @@ set as segwit mandates that the scriptSig must be empty (to avoid
 malleability).
 
 We commit to the hash rather than the values themselves as this is
-already precomputed for each transaction to optimize SIGHASH\_ALL
+already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.
 
 Committing to the hash additionally makes it simpler to construct
@@ -339,7 +337,7 @@ a second output, pay Bob 2 BTC. If 24 hours lapses, then Alice may
 redeem her 1 BTC from the contract. Both input UTXOs may have the exact
 same Path B, or only one.
 
-The issue with these constructs is that there are N\! orders that the
+The issue with these constructs is that there are N! orders that the
 inputs can be ordered in and it's not generally possible to restrict the
 ordering.
 
@@ -353,25 +351,23 @@ commits to the number of inputs, making this field strictly redundant.
 However, separately committing to this number makes it easier to
 construct DefaultCheckTemplateVerifyHash from script.
 
-We treat the number of inputs as a \`uint32\_t\` because Bitcoin's
-consensus decoding logic limits vectors to \`MAX\_SIZE=33554432\` and
-that is larger than \`uint16\_t\` and smaller than \`uint32\_t\`. 32
-bits is also friendly for manipulation using Bitcoin's current math
-opcodes, should \`OP\_CAT\` be added. Note that the max inputs in a
-block is further restricted by the block size to around 25,000, which
-would fit into a \`uint16\_t\`, but that is an uneccessary abstraction
-leak.
+We treat the number of inputs as a \`uint32_t\` because Bitcoin's
+consensus decoding logic limits vectors to \`MAX_SIZE=33554432\` and
+that is larger than \`uint16_t\` and smaller than \`uint32_t\`. 32 bits
+is also friendly for manipulation using Bitcoin's current math opcodes,
+should \`OP_CAT\` be added. Note that the max inputs in a block is
+further restricted by the block size to around 25,000, which would fit
+into a \`uint16_t\`, but that is an uneccessary abstraction leak.
 
 ##### Committing to the Sequences Hash
 
 If we don't commit to the sequences, then the TXID can be malleated.
 This also allows us to enforce a relative sequence lock without an
-OP\_CSV. It is insufficient to just pair CHECKTEMPLATEVERIFY with
-OP\_CSV because OP\_CSV enforces a minimum nSequence value, not a
-literal value.
+OP_CSV. It is insufficient to just pair CHECKTEMPLATEVERIFY with OP_CSV
+because OP_CSV enforces a minimum nSequence value, not a literal value.
 
 We commit to the hash rather than the values themselves as this is
-already precomputed for each transaction to optimize SIGHASH\_ALL
+already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.
 
 Committing to the hash additionally makes it simpler to construct
@@ -384,12 +380,12 @@ to the number of outputs, making this field strictly redundant. However,
 separately committing to this number makes it easier to construct
 DefaultCheckTemplateVerifyHash from script.
 
-We treat the number of outputs as a \`uint32\_t\` because a
-\`COutpoint\` index is a \`uint32\_t\`. Further, Bitcoin's consensus
-decoding logic limits vectors to \`MAX\_SIZE=33554432\` and that is
-larger than \`uint16\_t\` and smaller than \`uint32\_t\`. 32 bits is
-also friendly for manipulation using Bitcoin's current math opcodes,
-should \`OP\_CAT\` be added.
+We treat the number of outputs as a \`uint32_t\` because a \`COutpoint\`
+index is a \`uint32_t\`. Further, Bitcoin's consensus decoding logic
+limits vectors to \`MAX_SIZE=33554432\` and that is larger than
+\`uint16_t\` and smaller than \`uint32_t\`. 32 bits is also friendly for
+manipulation using Bitcoin's current math opcodes, should \`OP_CAT\` be
+added.
 
 ##### Committing to the outputs hash
 
@@ -397,7 +393,7 @@ This ensures that spending the UTXO is guaranteed to create the exact
 outputs requested.
 
 We commit to the hash rather than the values themselves as this is
-already precomputed for each transaction to optimize SIGHASH\_ALL
+already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.
 
 Committing to the hash additionally makes it simpler to construct
@@ -418,9 +414,9 @@ without half-spend vulnerabilities.
 
 Committing to the current index doesn't prevent one from expressing a
 CHECKTEMPLATEVERIFY which can be spent at multiple indicies. In current
-script, the CHECKTEMPLATEVERIFY operation can be wrapped in an OP\_IF
-for each index (or Tapscript branches in the future). If OP\_CAT or
-OP\_SHA256STREAM are added to Bitcoin, the index may simply be passed in
+script, the CHECKTEMPLATEVERIFY operation can be wrapped in an OP_IF for
+each index (or Tapscript branches in the future). If OP_CAT or
+OP_SHA256STREAM are added to Bitcoin, the index may simply be passed in
 by the witness before hashing.
 
 ##### Committing to Values by Hash
@@ -430,7 +426,7 @@ construct a DefaultCheckTemplateVerifyHash from script. Fields which are
 not intended to be set may be committed to by hash without incurring
 O(n) overhead to re-hash.
 
-Furthermore, if OP\_SHA256STREAM is added in the future, it may be
+Furthermore, if OP_SHA256STREAM is added in the future, it may be
 possible to write a script which allows adding a single output to a list
 of outputs without incurring O(n) overhead by committing to a hash
 midstate in the script.
@@ -452,27 +448,27 @@ on transaction preimages.
 ##### Using Non-Tagged Hashes
 
 The Taproot/Schnorr BIPs use Tagged Hashes
-(\`SHA256(SHA256(tag)||SHA256(tag)||msg)\`) to prevent taproot leafs,
-branches, tweaks, and signatures from overlapping in a way that might
-introduce a security \[vulnerability
+(\`SHA256(SHA256(tag)\|\|SHA256(tag)\|\|msg)\`) to prevent taproot
+leafs, branches, tweaks, and signatures from overlapping in a way that
+might introduce a security \[vulnerability
 <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-June/016091.html>\].
 
-OP\_CHECKTEMPLATEVERIFY is not subject to this sort of vulnerability as
+OP_CHECKTEMPLATEVERIFY is not subject to this sort of vulnerability as
 the hashes are effectively tagged externally, that is, by
-OP\_CHECKTEMPLATEVERIFY itself and therefore cannot be confused for
+OP_CHECKTEMPLATEVERIFY itself and therefore cannot be confused for
 another hash.
 
 It would be a conservative design decisison to make it a tagged hash
 even if there was no obvious benefit and no cost. However, in the
-future, if OP\_CAT were to be introduced to Bitcoin, it would make
-programs which dynamically build OP\_CHECKTEMPLATEVERIFY hashes less
+future, if OP_CAT were to be introduced to Bitcoin, it would make
+programs which dynamically build OP_CHECKTEMPLATEVERIFY hashes less
 space-efficient. Therefore, bare untagged hashes are used in BIP-119.
 
 ##### The Ordering of Fields
 
 Strictly speaking, the ordering of fields is insignificant. However,
 with a carefully selected order, the efficiency of future scripts (e.g.,
-those using a OP\_CAT or OP\_SHA256STREAM) may be improved (as described
+those using a OP_CAT or OP_SHA256STREAM) may be improved (as described
 in the Future Upgrades section).
 
 In particular, the order is selected in order of least likely to change
@@ -480,7 +476,7 @@ to most.
 
 1.  nVersion
 2.  nLockTime
-3.  scriptSig hash (maybe\!)
+3.  scriptSig hash (maybe!)
 4.  input count
 5.  sequences hash
 6.  output count
@@ -575,7 +571,7 @@ vulnerability.
 The preimage argument passed to CHECKTEMPLATEVERIFY may be unknown or
 otherwise unsatisfiable. However, requiring knowledge that an address is
 spendable from is incompatible with sender's ability to spend to any
-address (especially, OP\_RETURN). If a sender needs to know the template
+address (especially, OP_RETURN). If a sender needs to know the template
 can be spent from before sending, they may request a signature of an
 provably non-transaction challenge string from the leafs of the
 CHECKTEMPLATEVERIFY tree.
@@ -607,7 +603,7 @@ CHECKTEMPLATEVERIFY. For example, atomic swap scripts are single use
 once the hash is revealed. Future Taproot scripts may contain many
 logical branches that would be unsafe for being spent to multiple times
 (e.g., a Hash Time Lock branch should be instantiated with unique hashes
-each time it is used). Keys which have signed a SIGHASH\_ANYPREVOUT
+each time it is used). Keys which have signed a SIGHASH_ANYPREVOUT
 transaction can similarly become reuse-unsafe.
 
 Because CHECKTEMPLATEVERIFY commits to the input index currently being
@@ -646,37 +642,36 @@ like fees rather than relying on child-pays-for-parent or other
 mechanisms. However, these features come at substantially increased
 complexity and room for unintended behavior.
 
-Alternatively, SIGHASH\_ANYPREVOUTANYSCRIPT based covenant designs can
+Alternatively, SIGHASH_ANYPREVOUTANYSCRIPT based covenant designs can
 implement something similar to templates, via a scriptPubKey like:
 
 `   <sig of desired TX with PK and fixed nonce R || SIGHASH_ANYPREVOUTANYSCRIPT `<PK with public SK>` OP_CHECKSIG`
 
-SIGHASH\_ANYPREVOUTANYSCRIPT bears additional technical and
+SIGHASH_ANYPREVOUTANYSCRIPT bears additional technical and
 implementation risks that may preclude its viability for inclusion in
 Bitcoin, but the capabilities above are similar to what
 CHECKTEMPLATEVERIFY offers. The key functional difference between
-SIGHASH\_ANYPREVOUTANYSCRIPT and OP\_CHECKTEMPLATEVERIFY is that
-OP\_CHECKTEMPLATEVERIFY restricts the number of additional inputs and
+SIGHASH_ANYPREVOUTANYSCRIPT and OP_CHECKTEMPLATEVERIFY is that
+OP_CHECKTEMPLATEVERIFY restricts the number of additional inputs and
 precludes dynamically determined change outputs while
-SIGHASH\_ANYPREVOUTANYSCRIPT can be combined with SIGHASH\_SINGLE or
-SIGHASH\_ANYONECANPAY. For the additional inputs,
-OP\_CHECKTEMPLATEVERIFY also commits to the scriptsig and sequence,
-which allows for specifying specific P2SH scripts (or segwit v0 P2SH)
-which have some use cases. Furthermore, CHECKTEMPLATEVERIFY has benefits
-in terms of script size (depending on choice of PK,
-SIGHASH\_ANYPREVOUTANYSCRIPT may use about 2x-3x the bytes) and
-verification speed, as OP\_CHECKTEMPLATEVERIFY requires only hash
-computation rather than signature operations. This can be significant
-when constructing large payment trees or programmatic compilations.
-CHECKTEMPLATEVERIFY also has a feature-wise benefit in that it provides
-a robust pathway for future template upgrades.
+SIGHASH_ANYPREVOUTANYSCRIPT can be combined with SIGHASH_SINGLE or
+SIGHASH_ANYONECANPAY. For the additional inputs, OP_CHECKTEMPLATEVERIFY
+also commits to the scriptsig and sequence, which allows for specifying
+specific P2SH scripts (or segwit v0 P2SH) which have some use cases.
+Furthermore, CHECKTEMPLATEVERIFY has benefits in terms of script size
+(depending on choice of PK, SIGHASH_ANYPREVOUTANYSCRIPT may use about
+2x-3x the bytes) and verification speed, as OP_CHECKTEMPLATEVERIFY
+requires only hash computation rather than signature operations. This
+can be significant when constructing large payment trees or programmatic
+compilations. CHECKTEMPLATEVERIFY also has a feature-wise benefit in
+that it provides a robust pathway for future template upgrades.
 
-OP\_CHECKSIGFROMSTACKVERIFY along with OP\_CAT may also be used to
-emulate CHECKTEMPLATEVERIFY. However such constructions are more
-complicated to use than CHECKTEMPLATEVERIFY, and encumbers additional
-verification overhead absent from CHECKTEMPLATEVERIFY. These types of
-covenants also bear similar potential recursion issues to OP\_COV which
-make it unlikely for inclusion in Bitcoin.
+OP_CHECKSIGFROMSTACKVERIFY along with OP_CAT may also be used to emulate
+CHECKTEMPLATEVERIFY. However such constructions are more complicated to
+use than CHECKTEMPLATEVERIFY, and encumbers additional verification
+overhead absent from CHECKTEMPLATEVERIFY. These types of covenants also
+bear similar potential recursion issues to OP_COV which make it unlikely
+for inclusion in Bitcoin.
 
 Given the simplicity of this approach to implement and analyze, and the
 benefits realizable by user applications, CHECKTEMPLATEVERIFY's template
@@ -684,44 +679,43 @@ based approach is proposed in lieu of more complete covenants system.
 
 #### Future Upgrades
 
-This section describes updates to OP\_CHECKTEMPLATEVERIFY that are
+This section describes updates to OP_CHECKTEMPLATEVERIFY that are
 possible in the future as well as synergies with other possible
 upgrades.
 
 ##### CHECKTEMPLATEVERIFY Versions
 
-OP\_CHECKTEMPLATEVERIFY currently only verifies properties of 32 byte
+OP_CHECKTEMPLATEVERIFY currently only verifies properties of 32 byte
 arguments. In the future, meaning could be ascribed to other length
 arguments. For example, a 33-byte argument could just the last byte as a
 control program. In that case, DefaultCheckTemplateVerifyHash could be
-computed when the flag byte is set to CTVHASH\_ALL. Other programs could
-be added similar to SIGHASH\_TYPEs. For example, CTVHASH\_GROUP could
-read data from the Taproot Annex for compatibility with SIGHASH\_GROUP
-type proposals and allow dynamic malleability of which indexes get
-hashed for bundling.
+computed when the flag byte is set to CTVHASH_ALL. Other programs could
+be added similar to SIGHASH_TYPEs. For example, CTVHASH_GROUP could read
+data from the Taproot Annex for compatibility with SIGHASH_GROUP type
+proposals and allow dynamic malleability of which indexes get hashed for
+bundling.
 
-##### Eltoo with OP\_CHECKSIGFROMSTACKVERIFY
+##### Eltoo with OP_CHECKSIGFROMSTACKVERIFY
 
-Were both OP\_CHECKTEMPLATEVERIFY and OP\_CHECKSIGFROMSTACKVERIFY to be
+Were both OP_CHECKTEMPLATEVERIFY and OP_CHECKSIGFROMSTACKVERIFY to be
 added to Bitcoin, it would be possible to implement a variant of Eltoo's
 floating transactions using the following script:
 
 `   witness(S+n): `<sig>` <H(tx with nLockTime S+n paying to program(S+n))>`  
 `   program(S): OP_CHECKTEMPLATEVERIFY <musig_key(pk_update_a, pk_update_b)> OP_CHECKSIGFROMSTACKVERIFY <S+1> OP_CHECKLOCKTIMEVERIFY`
 
-Compared to SIGHASH\_ANYPREVOUTANYSCRIPT, because
-OP\_CHECKTEMPLATEVERIFY does not allow something similar to
-SIGHASH\_ANYONECANPAY or SIGHASH\_SINGLE, protocol implementers might
-elect to sign multiple versions of transactions with CPFP Anchor Outputs
-or Inputs for paying fees or an alternative such as transaction sponsors
-might be considered.
+Compared to SIGHASH_ANYPREVOUTANYSCRIPT, because OP_CHECKTEMPLATEVERIFY
+does not allow something similar to SIGHASH_ANYONECANPAY or
+SIGHASH_SINGLE, protocol implementers might elect to sign multiple
+versions of transactions with CPFP Anchor Outputs or Inputs for paying
+fees or an alternative such as transaction sponsors might be considered.
 
-##### OP\_AMOUNTVERIFY
+##### OP_AMOUNTVERIFY
 
 An opcode which verifies the exact amount that is being spent in the
 transaction, the amount paid as fees, or made available in a given
-output could be used to make safer OP\_CHECKTEMPLATEVERIFY addressses.
-For instance, if the OP\_CHECKTEMPLATEVERIFY program P expects exactly S
+output could be used to make safer OP_CHECKTEMPLATEVERIFY addressses.
+For instance, if the OP_CHECKTEMPLATEVERIFY program P expects exactly S
 satoshis, sending S-1 satoshis would result in a frozen UTXO and sending
 S+n satoshis would result in n satoshis being paid to fee. A range check
 could restrict the program to only apply for expected values and default
@@ -729,9 +723,9 @@ to a keypath otherwise, e.g.:
 
 `   IF OP_AMOUNTVERIFY `<N>` OP_GREATER `<PK>` CHECKSIG ELSE `<H>` OP_CHECKTEMPLATEVERIFY`
 
-##### OP\_CAT/OP\_SHA256STREAM
+##### OP_CAT/OP_SHA256STREAM
 
-OP\_CHECKTEMPLATEVERIFY is (as described in the Ordering of Fields
+OP_CHECKTEMPLATEVERIFY is (as described in the Ordering of Fields
 section) efficient for building covenants dynamically should Bitcoin get
 enhanced string manipulation opcodes.
 
@@ -745,64 +739,63 @@ transaction.
 
 ## Backwards Compatibility
 
-OP\_CHECKTEMPLATEVERIFY replaces a OP\_NOP4 with stricter verification
+OP_CHECKTEMPLATEVERIFY replaces a OP_NOP4 with stricter verification
 semantics. Therefore, scripts which previously were valid will cease to
-be valid with this change. Stricter verification semantics for an
-OP\_NOP are a soft fork, so existing software will be fully functional
-without upgrade except for mining and block validation. Similar soft
-forks for OP\_CHECKSEQUENCEVERIFY and OP\_CHECKLOCKTIMEVERIFY (see
-BIP-0065 and BIP-0112) have similarly changed OP\_NOP semantics without
-introducing compatibility issues.
+be valid with this change. Stricter verification semantics for an OP_NOP
+are a soft fork, so existing software will be fully functional without
+upgrade except for mining and block validation. Similar soft forks for
+OP_CHECKSEQUENCEVERIFY and OP_CHECKLOCKTIMEVERIFY (see BIP-0065 and
+BIP-0112) have similarly changed OP_NOP semantics without introducing
+compatibility issues.
 
-In contrast to previous forks, OP\_CHECKTEMPLATEVERIFY's reference
+In contrast to previous forks, OP_CHECKTEMPLATEVERIFY's reference
 implementation does not allow transactions with spending scripts using
 it to be accepted to the mempool or relayed under standard policy until
 the new rule is active. Other implementations are recommended to follow
 this rule as well, but not required.
 
 Older wallet software will be able to accept spends from
-OP\_CHECKTEMPLATEVERIFY outputs, but will require an upgrade in order to
+OP_CHECKTEMPLATEVERIFY outputs, but will require an upgrade in order to
 treat PayToBareDefaultCheckTemplateVerifyHash chains with a confirmed
 ancestor as being "trusted" (i.e., eligible for spending before the
 transaction is confirmed).
 
-Backports of OP\_CHECKTEMPLATEVERIFY can be trivially prepared (see the
+Backports of OP_CHECKTEMPLATEVERIFY can be trivially prepared (see the
 reference implementation) for older node versions that can be patched
 but not upgraded to a newer major release.
 
 ## References
 
-  - [utxos.org informational site](https://utxos.org)
-  - [Sapio Bitcoin smart contract
-    language](https://learn.sapio-lang.org)
-  - [27 Blog Posts on building smart contracts with Sapio and CTV,
-    including examples described here.](https://rubin.io/advent21)
-  - [Scaling Bitcoin
-    Presentation](https://www.youtube.com/watch?v=YxsjdIl0034&t=2451)
-  - [Optech Newsletter Covering
-    OP\_CHECKOUTPUTSHASHVERIFY](https://bitcoinops.org/en/newsletters/2019/05/29/)
-  - [Structuring Multi Transaction Contracts in
-    Bitcoin](https://cyber.stanford.edu/sites/g/files/sbiybj9936/f/jeremyrubin.pdf)
-  - [Lazuli Notes (ECDSA based N-of-N Signatures for Certified
-    Post-Dated UTXOs)](https://github.com/jeremyrubin/lazuli)
-  - [Bitcoin Covenants](https://fc16.ifca.ai/bitcoin/papers/MES16.pdf)
-  - [CoinCovenants using SCIP signatures, an amusingly bad
-    idea.](https://bitcointalk.org/index.php?topic=278122.0)
-  - [Enhancing Bitcoin Transactions with
-    Covenants](https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf)
-  - [Simple CTV Vaults](https://github.com/jamesob/simple-ctv-vault)
-  - [Python Vaults](https://github.com/kanzure/python-vaults)
-  - [CTV Dramatically Improves
-    DLCs](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019808.html)
-  - [Calculus of
-    Covenants](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-April/020225.html)
-  - [Payment Pools with
-    CTV](https://rubin.io/bitcoin/2021/12/10/advent-13/)
-  - [Channels with CTV](https://rubin.io/bitcoin/2021/12/11/advent-14/)
-  - [Congestion Control with
-    CTV](https://rubin.io/bitcoin/2021/12/09/advent-12/)
-  - [Building Vaults on
-    Bitcoin](https://rubin.io/bitcoin/2021/12/07/advent-10/)
+- [utxos.org informational site](https://utxos.org)
+- [Sapio Bitcoin smart contract language](https://learn.sapio-lang.org)
+- [27 Blog Posts on building smart contracts with Sapio and CTV,
+  including examples described here.](https://rubin.io/advent21)
+- [Scaling Bitcoin
+  Presentation](https://www.youtube.com/watch?v=YxsjdIl0034&t=2451)
+- [Optech Newsletter Covering
+  OP_CHECKOUTPUTSHASHVERIFY](https://bitcoinops.org/en/newsletters/2019/05/29/)
+- [Structuring Multi Transaction Contracts in
+  Bitcoin](https://cyber.stanford.edu/sites/g/files/sbiybj9936/f/jeremyrubin.pdf)
+- [Lazuli Notes (ECDSA based N-of-N Signatures for Certified Post-Dated
+  UTXOs)](https://github.com/jeremyrubin/lazuli)
+- [Bitcoin Covenants](https://fc16.ifca.ai/bitcoin/papers/MES16.pdf)
+- [CoinCovenants using SCIP signatures, an amusingly bad
+  idea.](https://bitcointalk.org/index.php?topic=278122.0)
+- [Enhancing Bitcoin Transactions with
+  Covenants](https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf)
+- [Simple CTV Vaults](https://github.com/jamesob/simple-ctv-vault)
+- [Python Vaults](https://github.com/kanzure/python-vaults)
+- [CTV Dramatically Improves
+  DLCs](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019808.html)
+- [Calculus of
+  Covenants](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-April/020225.html)
+- [Payment Pools with
+  CTV](https://rubin.io/bitcoin/2021/12/10/advent-13/)
+- [Channels with CTV](https://rubin.io/bitcoin/2021/12/11/advent-14/)
+- [Congestion Control with
+  CTV](https://rubin.io/bitcoin/2021/12/09/advent-12/)
+- [Building Vaults on
+  Bitcoin](https://rubin.io/bitcoin/2021/12/07/advent-10/)
 
 ### Note on Similar Alternatives
 
@@ -816,7 +809,7 @@ CHECKTEMPLATEVERIFY has no dependency on Taproot, it is preferable to
 deploy it independently.
 
 CHECKTEMPLATEVERIFY has also been previously referred to as
-OP\_SECURETHEBAG, which is mentioned here to aid in searching and
+OP_SECURETHEBAG, which is mentioned here to aid in searching and
 referencing discussion on this BIP.
 
 ## Copyright

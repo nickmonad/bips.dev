@@ -14,20 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0136.mediawiki"
 +++
 
-``` 
-  BIP: 136
-  Layer: Applications
-  Title: Bech32 Encoded Tx Position References
-  Author: Велеслав <veleslav.bips@protonmail.com>
-          Jonas Schnelli <dev@jonasschnelli.ch>
-          Daniel Pape <dpape@dpape.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0136
-  Status: Draft
-  Type: Informational
-  Created: 2017-07-09
-  License: BSD-2-Clause
-```
+      BIP: 136
+      Layer: Applications
+      Title: Bech32 Encoded Tx Position References
+      Author: Велеслав <veleslav.bips@protonmail.com>
+              Jonas Schnelli <dev@jonasschnelli.ch>
+              Daniel Pape <dpape@dpape.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0136
+      Status: Draft
+      Type: Informational
+      Created: 2017-07-09
+      License: BSD-2-Clause
 
 ## Introduction
 
@@ -51,8 +49,8 @@ blocks.*
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in
-[RFC 2119](https://tools.ietf.org/html/rfc2119).
+document are to be interpreted as described in [RFC
+2119](https://tools.ietf.org/html/rfc2119).
 
 ### Copyright
 
@@ -66,10 +64,10 @@ transactions between users.
 
 However, for many use-cases they have practical limitations:
 
-  - **TxID**s are expensive for full nodes to lookup (requiring either a
-    linear scan of the blockchain, or an expensive **TxID** index).
-  - **TxID**s require third-party services for SPV wallets to lookup.
-  - **TxID**s are 64 character HEX encoded values.
+- **TxID**s are expensive for full nodes to lookup (requiring either a
+  linear scan of the blockchain, or an expensive **TxID** index).
+- **TxID**s require third-party services for SPV wallets to lookup.
+- **TxID**s are 64 character HEX encoded values.
 
 It is possible to reference transactions not only by their **TxID**, but
 by their location within the blockchain itself. Rather than use the 64
@@ -80,7 +78,7 @@ propose a standard for doing this.
 ### Examples
 
 | Block \# | Transaction \# | Outpoint \# | TxRef                      | TxID                                                             |
-| -------- | -------------- | ----------- | -------------------------- | ---------------------------------------------------------------- |
+|----------|----------------|-------------|----------------------------|------------------------------------------------------------------|
 | 0        | 0              | 0           | tx1:rqqq‑qqqq‑qwtv‑vjr     | 4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b |
 | 170      | 1              | 0           | tx1:r52q‑qqpq‑qpty‑cfg     | f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16 |
 | 456789   | 1234           | 1           | tx1:y29u‑mqjx‑ppqq‑sfp2‑tt | 6fb8960f70667dc9666329728a19917937896fc476dfc54a3e802e887ecb4e82 |
@@ -100,26 +98,26 @@ little-endian format.*
 It is possible for a **TxRef** to reference a transaction that doesn't
 really exist because:
 
-  - The specified block hasn't yet been mined.
-  - The transaction index is greater than the total number of
-    transactions included within the specified block.
-  - The optional outpoint index is greater than the total outpoints
-    contained within the transaction.
+- The specified block hasn't yet been mined.
+- The transaction index is greater than the total number of transactions
+  included within the specified block.
+- The optional outpoint index is greater than the total outpoints
+  contained within the transaction.
 
 Therefore, implementers must be careful not to display **TxRef**s to
 users prematurely:
 
-  - Applications MUST NOT display **TxRef**s for transactions with less
-    than 6 confirmations.
-  - Application MUST show a warning for **TxRef**s for transactions with
-    less than 100 confirmations.
-      - This warning SHOULD state that in the case of a large
-        reorganisation, the **TxRef**s displayed may point to a
-        different transaction, or to no transaction at all.
+- Applications MUST NOT display **TxRef**s for transactions with less
+  than 6 confirmations.
+- Application MUST show a warning for **TxRef**s for transactions with
+  less than 100 confirmations.
+  - This warning SHOULD state that in the case of a large
+    reorganisation, the **TxRef**s displayed may point to a different
+    transaction, or to no transaction at all.
 
 ### TxRef Format
 
-**TxRef** MUST use the **Bech32m**\[1\] encoding as defined in
+**TxRef** MUST use the **Bech32m**[^1] encoding as defined in
 [BIP-0173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki)
 and later refined in
 [BIP-0350](https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki).
@@ -130,9 +128,9 @@ The Bech32m encoding consists of:
 The **HRP** can be thought of as a label. We have chosen labels to
 distinguish between Main, Test, and Regtest networks:
 
-  - Mainnet: **"tx"**.
-  - Testnet: **"txtest"**.
-  - Regtest: **"txrt"**.
+- Mainnet: **"tx"**.
+- Testnet: **"txtest"**.
+- Regtest: **"txrt"**.
 
 #### Separator
 
@@ -154,9 +152,8 @@ they may choose to not include the HRP as specified here.*
 To increase portability and readability, additional separator characters
 SHOULD be added to the **TxRef**:
 
-  - A Colon\[2\] **":"** added after the separator character '1'.
-  - Hyphens\[3\] **"-"** added after every 4 characters beyond the
-    colon.
+- A Colon[^2] **":"** added after the separator character '1'.
+- Hyphens[^3] **"-"** added after every 4 characters beyond the colon.
 
 ### Encoding
 
@@ -228,18 +225,18 @@ Index</p></td>
 
 The magic code provides namespacing between chains:
 
-  - For Mainnet the magic code is: **0x3**, leading to an **"r"**
-    character when encoded.
-  - For Mainnet with Outpoint Encoded the magic code is: **0x4**,
-    leading to a **"y"** character when encoded.
-  - For Testnet the magic code is: **0x6**, leading to an **"x"**
-    character when encoded.
-  - For Testnet with Outpoint Encoded the magic code is: **0x7**,
-    leading to an **"8"** character when encoded.
-  - For Regtest the magic code is: **0x0**, leading to a **"q"**
-    character when encoded.
-  - For Regtest with Outpoint Encoded the magic code is: **0x1**,
-    leading to a **"p"** character when encoded.
+- For Mainnet the magic code is: **0x3**, leading to an **"r"**
+  character when encoded.
+- For Mainnet with Outpoint Encoded the magic code is: **0x4**, leading
+  to a **"y"** character when encoded.
+- For Testnet the magic code is: **0x6**, leading to an **"x"**
+  character when encoded.
+- For Testnet with Outpoint Encoded the magic code is: **0x7**, leading
+  to an **"8"** character when encoded.
+- For Regtest the magic code is: **0x0**, leading to a **"q"** character
+  when encoded.
+- For Regtest with Outpoint Encoded the magic code is: **0x1**, leading
+  to a **"p"** character when encoded.
 
 #### Encoding Example
 
@@ -284,9 +281,12 @@ Height</p></td>
 11111000<br />
 01010101</p></td>
 <td><p>24</p></td>
-<td><p>(bh23, bh22, bh21, bh20, bh19, bh18, bh17, bh16) = (0, 0, 0, 0, 0, 1, 1, 0)<br />
-(bh15, bh14, bh13, bh12, bh11, bh10, bh09, bh08) = (1, 1, 1, 1, 1, 0, 0, 0)<br />
-(bh07, bh06, bh05, bh04, bh03, bh02, bh01, bh00) = (0, 1, 0, 1, 0, 1, 0, 1)</p></td>
+<td><p>(bh23, bh22, bh21, bh20, bh19, bh18, bh17, bh16) = (0, 0, 0, 0,
+0, 1, 1, 0)<br />
+(bh15, bh14, bh13, bh12, bh11, bh10, bh09, bh08) = (1, 1, 1, 1, 1, 0, 0,
+0)<br />
+(bh07, bh06, bh05, bh04, bh03, bh02, bh01, bh00) = (0, 1, 0, 1, 0, 1, 0,
+1)</p></td>
 </tr>
 <tr class="even">
 <td><p>Transaction<br />
@@ -295,8 +295,10 @@ Index</p></td>
 <td><p>00000100<br />
 11010010</p></td>
 <td><p>15</p></td>
-<td><p>(ti14, ti13, ti12, ti11, ti10, ti09, ti08) = (0, 0, 0, 0, 1, 0, 0)<br />
-(ti07, ti06, ti05, ti04, ti03, ti02, ti01, ti00) = (1, 1, 0, 1, 0, 0, 1, 0)</p></td>
+<td><p>(ti14, ti13, ti12, ti11, ti10, ti09, ti08) = (0, 0, 0, 0, 1, 0,
+0)<br />
+(ti07, ti06, ti05, ti04, ti03, ti02, ti01, ti00) = (1, 1, 0, 1, 0, 0, 1,
+0)</p></td>
 </tr>
 </tbody>
 </table>
@@ -743,9 +745,9 @@ final **TxRef**. The final **TxRef** given is:
 
 TxRef character indexes and descriptions
 
-| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8  | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 |
-| ----- | - | - | - | - | - | - | - | - | -- | - | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| Char: | t | x | 1 | : | r | 2 | 9 | u | \- | m | q  | j  | x  | \- | p  | u  | t  | t  | \- | 3  | p  | 0  |
+| Index | 0   | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  | 11  | 12  | 13  | 14  | 15  | 16  | 17  | 18  | 19  | 20  | 21  |
+|-------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| Char: | t   | x   | 1   | :   | r   | 2   | 9   | u   | \-  | m   | q   | j   | x   | \-  | p   | u   | t   | t   | \-  | 3   | p   | 0   |
 
 #### Outpoint Index
 
@@ -786,8 +788,10 @@ Code</p></td>
 <td><p>1</p></td>
 <td><p>00000000 00000001</p></td>
 <td><p>15</p></td>
-<td><p>(op14, op13, op12, op11, op10, op09, op08) = (0, 0, 0, 0, 0, 0, 0)<br />
-(op07, op06, op05, op04, op03, op02, op01, op00) = (0, 0, 0, 0, 0, 0, 0, 1)</p></td>
+<td><p>(op14, op13, op12, op11, op10, op09, op08) = (0, 0, 0, 0, 0, 0,
+0)<br />
+(op07, op06, op05, op04, op03, op02, op01, op00) = (0, 0, 0, 0, 0, 0, 0,
+1)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1003,9 +1007,9 @@ table:
 
 TxRef character indexes and descriptions
 
-| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8  | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
-| ----- | - | - | - | - | - | - | - | - | -- | - | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| Char: | t | x | 1 | : | y | 2 | 9 | u | \- | m | q  | j  | x  | \- | p  | p  | q  | q  | \- | s  | f  | p  | 2  | \- | t  | t  |
+| Index | 0   | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  | 11  | 12  | 13  | 14  | 15  | 16  | 17  | 18  | 19  | 20  | 21  | 22  | 23  | 24  | 25  |
+|-------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| Char: | t   | x   | 1   | :   | y   | 2   | 9   | u   | \-  | m   | q   | j   | x   | \-  | p   | p   | q   | q   | \-  | s   | f   | p   | 2   | \-  | t   | t   |
 
 ### Decoding
 
@@ -1061,38 +1065,38 @@ output index.
 The following list gives properly encoded mainnet **TxRef**s and the
 decoded hex values (block height, transaction index)
 
-  - `tx1:rqqq-qqqq-qwtv-vjr`: `(0x0, 0x0)`
-  - `tx1:rqqq-qqll-lj68-7n2`: `(0x0, 0x7FFF)`
-  - `tx1:r7ll-llqq-qats-vx9`: `(0xFFFFFF, 0x0)`
-  - `tx1:r7ll-llll-lp6m-78v`: `(0xFFFFFF, 0x7FFF)`
+- `tx1:rqqq-qqqq-qwtv-vjr`: `(0x0, 0x0)`
+- `tx1:rqqq-qqll-lj68-7n2`: `(0x0, 0x7FFF)`
+- `tx1:r7ll-llqq-qats-vx9`: `(0xFFFFFF, 0x0)`
+- `tx1:r7ll-llll-lp6m-78v`: `(0xFFFFFF, 0x7FFF)`
 
 The following list gives properly encoded testnet **TxRef**s and the
 decoded hex values (block height, transaction index)
 
-  - `txtest1:xqqq-qqqq-qrrd-ksa`: `(0x0, 0x0)`
-  - `txtest1:xqqq-qqll-lljx-y35`: `(0x0, 0x7FFF)`
-  - `txtest1:x7ll-llqq-qsr3-kym`: `(0xFFFFFF, 0x0)`
-  - `txtest1:x7ll-llll-lvj6-y9j`: `(0xFFFFFF, 0x7FFF)`
+- `txtest1:xqqq-qqqq-qrrd-ksa`: `(0x0, 0x0)`
+- `txtest1:xqqq-qqll-lljx-y35`: `(0x0, 0x7FFF)`
+- `txtest1:x7ll-llqq-qsr3-kym`: `(0xFFFFFF, 0x0)`
+- `txtest1:x7ll-llll-lvj6-y9j`: `(0xFFFFFF, 0x7FFF)`
 
 The following list gives valid (sometimes strangely formatted)
 **TxRef**s and the decoded values (block height, transaction index)\*
 
-  - `tx1:r29u-mqjx-putt-3p0`: `(456789, 1234)`
-  - `TX1R29UMQJXPUTT3P0`: `(456789, 1234)`
-  - `tx1 r29u mqjx putt 3p0`: `(456789, 1234)`
-  - `tx1!r29u/mqj*x-putt^^3p0`: `(456789, 1234)`
+- `tx1:r29u-mqjx-putt-3p0`: `(456789, 1234)`
+- `TX1R29UMQJXPUTT3P0`: `(456789, 1234)`
+- `tx1 r29u mqjx putt 3p0`: `(456789, 1234)`
+- `tx1!r29u/mqj*x-putt^^3p0`: `(456789, 1234)`
 
 The following list gives invalid **TxRef**s and the reason for their
 invalidity.
 
-  - `tx1:t7ll-llll-lcq3-aj4`: Magic 0xB instead of 0x3.
-  - `tx1:rlll-llll-lu9m-00x`: Version 1 instead of 0.
-  - `tx1:r7ll-llll-lqfu-gss2`: Valid Bech32, but ten 5 bit unsigned
-    chars instead of nine.
-  - `tx1:r7ll-llll-rt5h-wz`: Valid Bech32, but eight 5 bit unsigned
-    chars instead of nine.
-  - `tx1:r7ll-LLLL-lp6m-78v`: Invalid Bech32 due to mixed case. Would
-    decode correctly otherwise.
+- `tx1:t7ll-llll-lcq3-aj4`: Magic 0xB instead of 0x3.
+- `tx1:rlll-llll-lu9m-00x`: Version 1 instead of 0.
+- `tx1:r7ll-llll-lqfu-gss2`: Valid Bech32, but ten 5 bit unsigned chars
+  instead of nine.
+- `tx1:r7ll-llll-rt5h-wz`: Valid Bech32, but eight 5 bit unsigned chars
+  instead of nine.
+- `tx1:r7ll-LLLL-lp6m-78v`: Invalid Bech32 due to mixed case. Would
+  decode correctly otherwise.
 
 #### TxRef with Outpoints
 
@@ -1100,41 +1104,41 @@ The following list gives properly encoded mainnet **TxRef**s with
 Outpoints and the decoded values (block height, transaction index,
 outpoint index)
 
-  - `tx1:yqqq-qqqq-qqqq-rvum-0c`: `(0x0, 0x0, 0x0)`
-  - `tx1:yqqq-qqll-lqqq-en8x-05`: `(0x0, 0x7FFF, 0x0)`
-  - `tx1:y7ll-llqq-qqqq-ggjg-w6`: `(0xFFFFFF, 0x0, 0x0)`
-  - `tx1:y7ll-llll-lqqq-jhf4-wk`: `(0xFFFFFF, 0x7FFF, 0x0)`
+- `tx1:yqqq-qqqq-qqqq-rvum-0c`: `(0x0, 0x0, 0x0)`
+- `tx1:yqqq-qqll-lqqq-en8x-05`: `(0x0, 0x7FFF, 0x0)`
+- `tx1:y7ll-llqq-qqqq-ggjg-w6`: `(0xFFFFFF, 0x0, 0x0)`
+- `tx1:y7ll-llll-lqqq-jhf4-wk`: `(0xFFFFFF, 0x7FFF, 0x0)`
 
-<!-- end list -->
+<!-- -->
 
-  - `tx1:yqqq-qqqq-qpqq-pw4v-kq`: `(0x0, 0x0, 0x1)`
-  - `tx1:yqqq-qqll-lpqq-m3w3-kv`: `(0x0, 0x7FFF, 0x1)`
-  - `tx1:y7ll-llqq-qpqq-22ml-hz`: `(0xFFFFFF, 0x0, 0x1)`
-  - `tx1:y7ll-llll-lpqq-s4qz-hw`: `(0xFFFFFF, 0x7FFF, 0x1)`
+- `tx1:yqqq-qqqq-qpqq-pw4v-kq`: `(0x0, 0x0, 0x1)`
+- `tx1:yqqq-qqll-lpqq-m3w3-kv`: `(0x0, 0x7FFF, 0x1)`
+- `tx1:y7ll-llqq-qpqq-22ml-hz`: `(0xFFFFFF, 0x0, 0x1)`
+- `tx1:y7ll-llll-lpqq-s4qz-hw`: `(0xFFFFFF, 0x7FFF, 0x1)`
 
-<!-- end list -->
+<!-- -->
 
-  - `tx1:y29u-mqjx-ppqq-sfp2-tt`: `(456789, 1234, 1)`
+- `tx1:y29u-mqjx-ppqq-sfp2-tt`: `(456789, 1234, 1)`
 
 The following list gives properly encoded testnet **TxRef**s with
 Outpoints and the decoded values (block height, transaction index,
 outpoint index)
 
-  - `txtest1:8qqq-qqqq-qqqq-d5ns-vl`: `(0x0, 0x0, 0x0)`
-  - `txtest1:8qqq-qqll-lqqq-htgd-vn`: `(0x0, 0x7FFF, 0x0)`
-  - `txtest1:87ll-llqq-qqqq-xsar-da`: `(0xFFFFFF, 0x0, 0x0)`
-  - `txtest1:87ll-llll-lqqq-u0x7-d3`: `(0xFFFFFF, 0x7FFF, 0x0)`
+- `txtest1:8qqq-qqqq-qqqq-d5ns-vl`: `(0x0, 0x0, 0x0)`
+- `txtest1:8qqq-qqll-lqqq-htgd-vn`: `(0x0, 0x7FFF, 0x0)`
+- `txtest1:87ll-llqq-qqqq-xsar-da`: `(0xFFFFFF, 0x0, 0x0)`
+- `txtest1:87ll-llll-lqqq-u0x7-d3`: `(0xFFFFFF, 0x7FFF, 0x0)`
 
-<!-- end list -->
+<!-- -->
 
-  - `txtest1:8qqq-qqqq-qpqq-0k68-48`: `(0x0, 0x0, 0x1)`
-  - `txtest1:8qqq-qqll-lpqq-4fp6-4t`: `(0x0, 0x7FFF, 0x1)`
-  - `txtest1:87ll-llqq-qpqq-yj55-59`: `(0xFFFFFF, 0x0, 0x1)`
-  - `txtest1:87ll-llll-lpqq-7d0f-5f`: `(0xFFFFFF, 0x7FFF, 0x1)`
+- `txtest1:8qqq-qqqq-qpqq-0k68-48`: `(0x0, 0x0, 0x1)`
+- `txtest1:8qqq-qqll-lpqq-4fp6-4t`: `(0x0, 0x7FFF, 0x1)`
+- `txtest1:87ll-llqq-qpqq-yj55-59`: `(0xFFFFFF, 0x0, 0x1)`
+- `txtest1:87ll-llll-lpqq-7d0f-5f`: `(0xFFFFFF, 0x7FFF, 0x1)`
 
-<!-- end list -->
+<!-- -->
 
-  - `txtest1:829u-mqjx-ppqq-73wp-gv`: `(456789, 1234, 1)`
+- `txtest1:829u-mqjx-ppqq-73wp-gv`: `(456789, 1234, 1)`
 
 ### TxRef Payload Value Choices:
 
@@ -1145,42 +1149,41 @@ the block height and transaction index.
 
 24 bits: value can be between 0, and 0xFFFFFF (16777216 blocks).
 
-  - In early April, 2021, there have been 677700 blocks
-  - There are roughly (365 days \* 24 hours \* 6 blocks / hour) = 52560
-    blocks every year, implying about (16777216 - 677700) / 52560 = 306
-    more years of addressable blocks.
-  - Some time before year 2327 this specification should be extended.
+- In early April, 2021, there have been 677700 blocks
+- There are roughly (365 days \* 24 hours \* 6 blocks / hour) = 52560
+  blocks every year, implying about (16777216 - 677700) / 52560 = 306
+  more years of addressable blocks.
+- Some time before year 2327 this specification should be extended.
 
 #### Tx Position Value:
 
 15 bits: value can be between 0x0, and 0x7FFF (32768 transactions).
 
-  - The *realistic* smallest Tx is 83 Bytes for maximum 12047 tx in a
-    block.
-      - 4B version + 1B tx\_in count + 36B previous\_output + 1B script
-        length + 0B signature script + 4B sequence + 1B tx\_out count +
-        8B amount + 1B script length + 23B pubkey script + 4B lock\_time
-        = 83B
-  - The *extreme* smallest Tx is 60 Bytes for maximum 16665 tx in a
-    block.
-      - 4B version + 1B tx\_in count + 36B previous\_output + 1B script
-        length + 0B signature script + 4B sequence + 1B tx\_out count +
-        8B amount + 1B script length + 0B pubkey script + 4B lock\_time
-        = 60B
+- The *realistic* smallest Tx is 83 Bytes for maximum 12047 tx in a
+  block.
+  - 4B version + 1B tx_in count + 36B previous_output + 1B script
+    length + 0B signature script + 4B sequence + 1B tx_out count + 8B
+    amount + 1B script length + 23B pubkey script + 4B lock_time = 83B
+- The *extreme* smallest Tx is 60 Bytes for maximum 16665 tx in a block.
+  - 4B version + 1B tx_in count + 36B previous_output + 1B script
+    length + 0B signature script + 4B sequence + 1B tx_out count + 8B
+    amount + 1B script length + 0B pubkey script + 4B lock_time = 60B
 
 ## Acknowledgements
 
 Special Thanks to Pieter Wuille and Greg Maxwell for Bech32, a wonderful
 user-facing data encoding.
 
-1.  **Why use Bech32 Encoding for Confirmed Transaction References?**
+[^1]: **Why use Bech32 Encoding for Confirmed Transaction References?**
     The error detection and correction properties of this encoding
     format make it very attractive. We expect that it will be reasonable
     for software to correct a maximum of two characters; however, we
     haven’t specified this yet.
-2.  **Why add a colon here?** This allows it to conform better with W3C
-    URN/URL standards.
-3.  **Why hyphens within the TxRef?** As **TxRef**s are short, we expect
-    that they will be quoted via voice or written by hand. The inclusion
-    of hyphens every 4 characters breaks up the string and means people
-    don't lose their place so easily.
+
+[^2]: **Why add a colon here?** This allows it to conform better with
+    W3C URN/URL standards.
+
+[^3]: **Why hyphens within the TxRef?** As **TxRef**s are short, we
+    expect that they will be quoted via voice or written by hand. The
+    inclusion of hyphens every 4 characters breaks up the string and
+    means people don't lose their place so easily.

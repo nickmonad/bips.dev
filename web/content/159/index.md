@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0159.mediawiki"
 +++
 
-``` 
-  BIP: 159
-  Layer: Peer Services
-  Title: NODE_NETWORK_LIMITED service bit
-  Author: Jonas Schnelli <dev@jonasschnelli.ch>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0159
-  Status: Draft
-  Type: Standards Track
-  Created: 2017-05-11
-  License: BSD-2-Clause
-```
+      BIP: 159
+      Layer: Peer Services
+      Title: NODE_NETWORK_LIMITED service bit
+      Author: Jonas Schnelli <dev@jonasschnelli.ch>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0159
+      Status: Draft
+      Type: Standards Track
+      Created: 2017-05-11
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -36,7 +34,7 @@ services
 
 Pruned peers can offer the same services as traditional peer except of
 serving all historical blocks. Bitcoin right now only offers the
-NODE\_NETWORK service bit which indicates that a peer can serve all
+NODE_NETWORK service bit which indicates that a peer can serve all
 historical blocks.
 
 1.  Pruned peers can relay blocks, headers, transactions, addresses and
@@ -52,9 +50,9 @@ historical blocks.
 
 This BIP proposes a new service bit
 
-|                        |                |                                                                                                  |
-| ---------------------- | -------------- | ------------------------------------------------------------------------------------------------ |
-| NODE\_NETWORK\_LIMITED | bit 10 (0x400) | If signaled, the peer <I>MUST</I> be capable of serving at least the last 288 blocks (\~2 days). |
+|                      |                |                                                                                                  |
+|----------------------|----------------|--------------------------------------------------------------------------------------------------|
+| NODE_NETWORK_LIMITED | bit 10 (0x400) | If signaled, the peer <I>MUST</I> be capable of serving at least the last 288 blocks (\~2 days). |
 
 A safety buffer of 144 blocks to handle chain reorganizations
 <I>SHOULD</I> be taken into account when connecting to a peer signaling
@@ -71,7 +69,7 @@ signaling `NODE_NETWORK_LIMITED`).
 Peers may have different prune depths (depending on the peers
 configuration, disk space, etc.) which can result in a fingerprinting
 weakness (finding the prune depth through getdata requests).
-NODE\_NETWORK\_LIMITED supporting peers <I>SHOULD</I> avoid leaking the
+NODE_NETWORK_LIMITED supporting peers <I>SHOULD</I> avoid leaking the
 prune depth and therefore not serve blocks deeper than the signaled
 `NODE_NETWORK_LIMITED` threshold (288 blocks).
 
@@ -93,9 +91,8 @@ This proposal is backward compatible.
 
 ## Reference implementation
 
-  - <https://github.com/bitcoin/bitcoin/pull/11740> (signaling)
-  - <https://github.com/bitcoin/bitcoin/pull/10387> (connection and
-    relay)
+- <https://github.com/bitcoin/bitcoin/pull/11740> (signaling)
+- <https://github.com/bitcoin/bitcoin/pull/10387> (connection and relay)
 
 ## Copyright
 

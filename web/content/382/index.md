@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0382.mediawiki"
 +++
 
-``` 
-  BIP: 382
-  Layer: Applications
-  Title: Segwit Output Script Descriptors
-  Author: Pieter Wuille <pieter@wuille.net>
-          Andrew Chow <andrew@achow101.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0382
-  Status: Draft
-  Type: Informational
-  Created: 2021-06-27
-  License: BSD-2-Clause
-```
+      BIP: 382
+      Layer: Applications
+      Title: Segwit Output Script Descriptors
+      Author: Pieter Wuille <pieter@wuille.net>
+              Andrew Chow <andrew@achow101.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0382
+      Status: Draft
+      Type: Informational
+      Created: 2021-06-27
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -81,7 +79,7 @@ TBD
 ## Backwards Compatibility
 
 `wpkh()`, and `wsh()` descriptors use the format and general operation
-specified in [380](bip-0380.mediawiki "wikilink"). As these are a wholly
+specified in [380](/380). As these are a wholly
 new descriptors, they are not compatible with any implementation.
 However the scripts produced are standard scripts so existing software
 are likely to be familiar with them.

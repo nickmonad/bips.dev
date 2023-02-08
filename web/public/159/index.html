@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,21 +46,21 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 159
-  Layer: Peer Services
-  Title: NODE_NETWORK_LIMITED service bit
-  Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0159
-  Status: Draft
-  Type: Standards Track
-  Created: 2017-05-11
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 159
+</span><span>  Layer: Peer Services
+</span><span>  Title: NODE_NETWORK_LIMITED service bit
+</span><span>  Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0159
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-05-11
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>Define a service bit that allow pruned peers to signal their limited
 services</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Pruned peers can offer the same services as traditional peer except of
 serving all historical blocks. Bitcoin right now only offers the
 NODE_NETWORK service bit which indicates that a peer can serve all
@@ -73,8 +73,8 @@ have a way how to announce their service(s)</li>
 some of its outbound connections to pruned peers to allow other
 peers to bootstrap from non-pruned peers</li>
 </ol>
-<h2 id="specification">Specification</h2>
-<h3 id="new-service-bit">New service bit</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="New_service_bit">New service bit</h3>
 <p>This BIP proposes a new service bit</p>
 <table><thead><tr><th></th><th></th><th></th></tr></thead><tbody>
 <tr><td>NODE_NETWORK_LIMITED</td><td>bit 10 (0x400)</td><td>If signaled, the peer <I>MUST</I> be capable of serving at least the last 288 blocks (~2 days).</td></tr>
@@ -82,18 +82,18 @@ peers to bootstrap from non-pruned peers</li>
 <p>A safety buffer of 144 blocks to handle chain reorganizations
 <I>SHOULD</I> be taken into account when connecting to a peer signaling
 the <code>NODE_NETWORK_LIMITED</code> service bit.</p>
-<h3 id="address-relay">Address relay</h3>
+<h3 id="Address_relay">Address relay</h3>
 <p>Full nodes following this BIP <I>SHOULD</I> relay address/services
 (<code>addr</code> message) from peers they would connect to (including peers
 signaling <code>NODE_NETWORK_LIMITED</code>).</p>
-<h3 id="counter-measures-for-peer-fingerprinting">Counter-measures for peer fingerprinting</h3>
+<h3 id="Counter-measures_for_peer_fingerprinting">Counter-measures for peer fingerprinting</h3>
 <p>Peers may have different prune depths (depending on the peers
 configuration, disk space, etc.) which can result in a fingerprinting
 weakness (finding the prune depth through getdata requests).
 NODE_NETWORK_LIMITED supporting peers <I>SHOULD</I> avoid leaking the
 prune depth and therefore not serve blocks deeper than the signaled
 <code>NODE_NETWORK_LIMITED</code> threshold (288 blocks).</p>
-<h3 id="risks">Risks</h3>
+<h3 id="Risks">Risks</h3>
 <p>Pruned peers following this BIP may consume more outbound bandwidth.</p>
 <p>Light clients (and such) who are not checking the <code>nServiceFlags</code>
 (service bits) from a relayed <code>addr</code>-message may unwillingly connect to
@@ -102,15 +102,14 @@ pruned depth. Light clients should therefore check the service bits (and
 eventually connect to peers signaling <code>NODE_NETWORK_LIMITED</code> if they
 require [filtered] blocks around the tip). Light clients obtaining
 peer IPs though DNS seed should use the DNS filtering option.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This proposal is backward compatible.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <ul>
-<li><a href="https://github.com/bitcoin/bitcoin/pull/11740">https://github.com/bitcoin/bitcoin/pull/11740</a> (signaling)</li>
-<li><a href="https://github.com/bitcoin/bitcoin/pull/10387">https://github.com/bitcoin/bitcoin/pull/10387</a> (connection and
-relay)</li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/11740">https://github.com/bitcoin/bitcoin/pull/11740</a> (signaling)</li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/10387">https://github.com/bitcoin/bitcoin/pull/10387</a> (connection and relay)</li>
 </ul>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
 
     </div>
@@ -119,7 +118,7 @@ relay)</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

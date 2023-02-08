@@ -14,17 +14,15 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0176.mediawiki"
 +++
 
-``` 
-  BIP: 176
-  Title: Bits Denomination
-  Author: Jimmy Song <jaejoon@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0176
-  Status: Draft
-  Type: Informational
-  Created: 2017-12-12
-  License: BSD-2-Clause
-```
+      BIP: 176
+      Title: Bits Denomination
+      Author: Jimmy Song <jaejoon@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0176
+      Status: Draft
+      Type: Informational
+      Created: 2017-12-12
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -34,16 +32,17 @@ satoshis or 1/1,000,000 (one one-millionth) of a bitcoin.
 ## Motivation
 
 The bitcoin price has grown over the years and once the price is past
-$10,000 USD or so, bitcoin amounts under $10 USD start having enough
+\$10,000 USD or so, bitcoin amounts under \$10 USD start having enough
 decimal places that it's difficult to tell whether the user is off by a
 factor of 10 or not. Switching the denomination to "bits" makes
-comprehension easier. For example, when BTC is $15,000 USD, $10.05 is a
-somewhat confusing 0.00067 BTC, versus 670 bits, which is a lot clearer.
+comprehension easier. For example, when BTC is \$15,000 USD, \$10.05 is
+a somewhat confusing 0.00067 BTC, versus 670 bits, which is a lot
+clearer.
 
-Additonally, reverse comparisons are easier as 59 bits being $1 is
-easier to comprehend for most people than 0.000059 BTC being $1. Similar
-comparisons can be made to other currencies: 1 yen being 0.8 bits, 1 won
-being 0.07 bits and so on.
+Additonally, reverse comparisons are easier as 59 bits being \$1 is
+easier to comprehend for most people than 0.000059 BTC being \$1.
+Similar comparisons can be made to other currencies: 1 yen being 0.8
+bits, 1 won being 0.07 bits and so on.
 
 Potential benefits of utilizing "bits" include:
 
@@ -90,11 +89,11 @@ to "bits."
 The term "bit" has many different definitions, but the ones of
 particular note are these:
 
-  - 1 bit = 1/8 dollar (e.g., that candy cost me 2 bits {or 1/4 dollar})
-  - bit meaning some amount of data (e.g., the first bit of the version
-    field is 0)
-  - bit meaning strength of a cryptographic algorithm (e.g., 256-bit
-    ECDSA is used in Bitcoin)
+- 1 bit = 1/8 dollar (e.g., that candy cost me 2 bits {or 1/4 dollar})
+- bit meaning some amount of data (e.g., the first bit of the version
+  field is 0)
+- bit meaning strength of a cryptographic algorithm (e.g., 256-bit ECDSA
+  is used in Bitcoin)
 
 The first is a bit dated and isn't likely to confuse people dealing with
 Bitcoin. The second and third are computer science terms and context

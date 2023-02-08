@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,23 +46,23 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 90
-  Title: Buried Deployments
-  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
-  Comments-Summary: Mostly Recommended for implementation, with some Discouragement
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0090
-  Status: Final
-  Type: Informational
-  Created: 2016-11-08
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 90
+</span><span>  Title: Buried Deployments
+</span><span>  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+</span><span>  Comments-Summary: Mostly Recommended for implementation, with some Discouragement
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0090
+</span><span>  Status: Final
+</span><span>  Type: Informational
+</span><span>  Created: 2016-11-08
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>Prior soft forks (BIP 34, BIP 65, and BIP 66) were activated via miner
 signaling in block version numbers. Now that the chain has long since
 passed the blocks at which those consensus rules have triggered, we can
 (as a simplification) replace the trigger mechanism by caching the block
 heights at which those consensus rules became enforced.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>BIPs 34, 65 and 66 were deployed on mainnet using miner signaling using
 block version numbers. In short, new consensus rules were proposed for
 use in blocks with a higher version number (N+1) than the prevailing
@@ -82,7 +82,8 @@ the previous 1000 blocks in the chain before it, which can be
 inefficient.</p>
 <p>In addition, this mechanism for code deployments have been deprecated in
 favor of BIP 9 deployments, which offer several advantages (please see
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP 9</a>).</p>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP
+9</a>).</p>
 <p>Thus we propose elimination of the logic implementing these kinds of
 deployments, by replacing the test which governs enforcement of BIP 34,
 BIP 65, and BIP 66 with simple height checks, which we choose to be the
@@ -90,7 +91,7 @@ block height triggering the 95% activation rule on mainnet for each of
 those deployments. This simplification of the consensus rules would
 reduce the technical debt associated with deployment of those consensus
 changes.</p>
-<h2 id="considerations">Considerations</h2>
+<h2 id="Considerations">Considerations</h2>
 <p>It is technically possible for this to be a non-backwards compatible
 change. For example, if an alternate chain were created in which BIP
 34's 95% activation triggered at a lower height (H') than it did on the
@@ -114,7 +115,7 @@ non-backwards compatible change.</p>
 split, it is extremely unlikely, and in particular any such
 circumstances would be sufficiently damaging to the Bitcoin network to
 dwarf any concerns about the effects of this proposed change.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>The BIP 34, 66, and 65 activation heights are set to 227931, 363725, and
 388381, respectively.</p>
 <p>The 1000-block lookback test, first described in BIP 34, is no longer
@@ -148,22 +149,22 @@ validated with the stored activation heights:</p>
 <code>       flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;</code><br />
 <code>   }</code></p>
 <p>Please see the implementation for additional details.</p>
-<h2 id="implementation">Implementation</h2>
-<p><a href="https://github.com/bitcoin/bitcoin/pull/8391">https://github.com/bitcoin/bitcoin/pull/8391</a>.</p>
-<h2 id="references">References</h2>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">BIP34 Block v2, Height in
+<h2 id="Implementation">Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/8391">https://github.com/bitcoin/bitcoin/pull/8391</a>.</p>
+<h2 id="References">References</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">BIP34 Block v2, Height in
 Coinbase</a></p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki">BIP66 Strict DER
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki">BIP66 Strict DER
 signatures</a></p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki">BIP65
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki">BIP65
 OP_CHECKLOCKTIMEVERIFY</a></p>
-<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP9 Version bits with timeout and
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki">BIP9 Version bits with timeout and
 delay</a></p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>Thanks to Nicolas Dorier for drafting an initial version of this BIP,
 and to Alex Morcos, Matt Corallo, and Greg Maxwell for suggestions and
 feedback.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -172,7 +173,7 @@ feedback.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

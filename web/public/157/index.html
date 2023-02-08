@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,25 +46,25 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 157
-  Layer: Peer Services
-  Title: Client Side Block Filtering
-  Author: Olaoluwa Osuntokun &lt;laolu32@gmail.com&gt;
-          Alex Akselrod &lt;alex@akselrod.org&gt;
-          Jim Posen &lt;jimpo@coinbase.com&gt;
-  Comments-Summary: None yet
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0157
-  Status: Draft
-  Type: Standards Track
-  Created: 2017-05-24
-  License: CC0-1.0
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 157
+</span><span>  Layer: Peer Services
+</span><span>  Title: Client Side Block Filtering
+</span><span>  Author: Olaoluwa Osuntokun &lt;laolu32@gmail.com&gt;
+</span><span>          Alex Akselrod &lt;alex@akselrod.org&gt;
+</span><span>          Jim Posen &lt;jimpo@coinbase.com&gt;
+</span><span>  Comments-Summary: None yet
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0157
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2017-05-24
+</span><span>  License: CC0-1.0
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a new light client protocol in Bitcoin that improves
 upon currently available options. The standard light client protocol in
-use today, defined in BIP 37[1], has known flaws that weaken the
+use today, defined in BIP 37<sup class="footnote-reference"><a href="#1">1</a></sup>, has known flaws that weaken the
 security and privacy of clients and allow denial-of-service attack
-vectors on full nodes[2]. The new protocol overcomes these issues by
+vectors on full nodes<sup class="footnote-reference"><a href="#2">2</a></sup>. The new protocol overcomes these issues by
 allowing light clients to obtain compact probabilistic filters of block
 content from full nodes and download full blocks if the filter matches
 relevant data.</p>
@@ -75,7 +75,7 @@ and provides the ability to efficiently detect malicious or faulty peers
 serving invalid filters. The resulting protocol guarantees that light
 clients with at least one honest peer are able to identify the correct
 block filters.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Bitcoin light clients allow applications to read relevant transactions
 from the blockchain without incurring the full cost of downloading and
 validating all data. Such applications seek to simultaneously minimize
@@ -99,7 +99,7 @@ The Bloom filters match data such as client addresses and unspent
 outputs, and the filter size must be carefully tuned to balance the
 false positive rate with the amount of information leaked to peer. It
 has been shown, however, that most implementations available offer
-virtually <em>zero privacy</em> to wallets and other applications[3][4].
+virtually <em>zero privacy</em> to wallets and other applications<sup class="footnote-reference"><a href="#3">3</a></sup><sup class="footnote-reference"><a href="#4">4</a></sup>.
 Additionally, malicious full nodes serving light clients can omit
 critical data with little risk of detection, which is unacceptable for
 some applications (such as Lightning Network clients) that must respond
@@ -107,7 +107,7 @@ to certain on-chain events. Finally, honest nodes servicing BIP 37 light
 clients may incur significant I/O and CPU resource usage due to
 maliciously crafted Bloom filters, creating a denial-of-service (DoS)
 vector and disincentizing node operators from supporting the
-protocol[5].</p>
+protocol<sup class="footnote-reference"><a href="#5">5</a></sup>.</p>
 <p>The alternative detailed in this document can be seen as the opposite of
 BIP 37: instead of the client sending a filter to a full node peer, full
 nodes generate deterministic filters on block data that are served to
@@ -124,8 +124,8 @@ improved because blocks can be downloaded from <em>any source</em>, so that no
 one peer gets complete information on the data required by a client.
 Extremely privacy conscious light clients may opt to anonymously fetch
 blocks using advanced techniques such a Private Information
-Retrieval[6].</p>
-<h2 id="definitions">Definitions</h2>
+Retrieval<sup class="footnote-reference"><a href="#6">6</a></sup>.</p>
+<h2 id="Definitions">Definitions</h2>
 <p><code>[]byte</code> represents a vector of bytes.</p>
 <p><code>[N]byte</code> represents a fixed-size byte array with length N.</p>
 <p><em>CompactSize</em> is a compact encoding of unsigned integers used in the
@@ -135,8 +135,8 @@ SHA-256: <code>double-SHA256(x) = SHA256(SHA256(x))</code>.</p>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
 document are to be interpreted as described in RFC 2119.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="filter-types">Filter Types</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Filter_Types">Filter Types</h3>
 <p>For the sake of future extensibility and reducing filter sizes, there
 are multiple <em>filter types</em> that determine which data is included in a
 block filter as well as the method of filter construction/querying. In
@@ -145,11 +145,11 @@ supported.</p>
 <p>Each type is identified by a one byte code, and specifies the contents
 and serialization format of the filter. A full node MAY signal support
 for particular filter types using service bits. The initial filter types
-are defined separately in <a href="https://bips.dev/157/bip-0158.mediawiki" title="wikilink">BIP 158</a>, and
+are defined separately in <a href="/158">BIP 158</a>, and
 one service bit is allocated to signal support for them.</p>
-<h3 id="filter-headers">Filter Headers</h3>
+<h3 id="Filter_Headers">Filter Headers</h3>
 <p>This proposal draws inspiration from the headers-first mechanism that
-Bitcoin nodes use to sync the block chain[7]. Similar to how block
+Bitcoin nodes use to sync the block chain<sup class="footnote-reference"><a href="#7">7</a></sup>. Similar to how block
 headers have a Merkle commitment to all transaction data in the block,
 we define filter headers that have commitments to the block filters.
 Also like block headers, filter headers each have a commitment to the
@@ -165,7 +165,7 @@ block filter. They are computed as the double-SHA256 of the
 concatenation of the filter hash with the previous filter header. The
 previous filter header used to calculate that of the genesis block is
 defined to be the 32-byte array of 0's.</p>
-<h3 id="new-messages">New Messages</h3>
+<h3 id="New_Messages">New Messages</h3>
 <h4 id="getcfilters">getcfilters</h4>
 <p><code>getcfilters</code> is used to request the compact filters of a particular
 type for a particular range of blocks. The message contains the
@@ -186,10 +186,7 @@ node that receives <code>getcfilters</code> with an unknown StopHash SHOULD NOT
 respond.</li>
 <li>The height of the block with hash StopHash MUST be greater than or
 equal to StartHeight, and the difference MUST be strictly less than
-<ol start="1000">
-<li></li>
-</ol>
-</li>
+1000.</li>
 <li>The receiving node MUST respond to valid requests by sending one
 <code>cfilter</code> message for each block in the requested range,
 sequentially in order by block height.</li>
@@ -291,7 +288,7 @@ chain terminating in StopHash, where the block height is a multiple
 of 1,000 greater than 0. The entries MUST be the filter headers of
 the given type for each such block, in ascending order by height.</li>
 </ol>
-<h3 id="node-operation">Node Operation</h3>
+<h3 id="Node_Operation">Node Operation</h3>
 <p>Full nodes MAY opt to support this BIP and generate filters for any of
 the specified filter types. Such nodes SHOULD treat the filters as an
 additional index of the blockchain. For each new block that is connected
@@ -308,7 +305,7 @@ I/O on the node to compute and serve, similar to attacks against BIP 37
 enabled nodes noted in BIP 111.</p>
 <p>Nodes MAY prune block data after generating and storing all filters for
 a block.</p>
-<h3 id="client-operation">Client Operation</h3>
+<h3 id="Client_Operation">Client Operation</h3>
 <p>This section provides recommendations for light clients to download
 filters with maximal security.</p>
 <p>Clients SHOULD first sync the entire block header chain from peers using
@@ -361,7 +358,7 @@ them as described above and ban any peers that send an invalid header.</p>
 downloaded from outbound peers at random to mitigate privacy loss due to
 transaction intersection analysis. Note that blocks may be downloaded
 from peers that do not support this BIP.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>The filter headers and checkpoints messages are defined to help clients
 identify the correct filter for a block when connected to peers sending
 conflicting information. An alternative solution is to require Bitcoin
@@ -375,39 +372,51 @@ that, given the current chain height and rate of growth, the size of a
 <code>cfcheckpt</code> message is not drastically different from a <code>cfheaders</code>
 message between two checkpoints. Also, 1,000 is a nice round number, at
 least to those of us who think in decimal.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This light client mode is not compatible with current node deployments
 and requires support for the new P2P messages. The node implementation
 of this proposal is not incompatible with the current P2P network rules
 (ie. doesn't affect network topology of full nodes). Light clients may
 adopt protocols based on this as an alternative to the existing BIP 37.
 Adoption of this BIP may result in reduced network support for BIP 37.</p>
-<h2 id="acknowledgments">Acknowledgments</h2>
+<h2 id="Acknowledgments">Acknowledgments</h2>
 <p>We would like to thank bfd (from the bitcoin-dev mailing list) for
 bringing the basis of this BIP to our attention, Joseph Poon for
 suggesting the filter header chain scheme, and Pedro Martelletto for
 writing the initial indexing code for <code>btcd</code>.</p>
 <p>We would also like to thank Dave Collins, JJ Jeffrey, Eric Lombrozo, and
 Matt Corallo for useful discussions.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
-<p>Light client: <a href="https://github.com/lightninglabs/neutrino">1</a></p>
-<p>Full-node indexing: <a href="https://github.com/Roasbeef/btcd/tree/segwit-cbf">https://github.com/Roasbeef/btcd/tree/segwit-cbf</a></p>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<p>Light client: <a rel="noopener" target="_blank" href="https://github.com/lightninglabs/neutrino">1</a></p>
+<p>Full-node indexing: <a rel="noopener" target="_blank" href="https://github.com/Roasbeef/btcd/tree/segwit-cbf">https://github.com/Roasbeef/btcd/tree/segwit-cbf</a></p>
 <p>Golomb-Rice Coded sets:
-<a href="https://github.com/Roasbeef/btcutil/tree/gcs/gcs">https://github.com/Roasbeef/btcutil/tree/gcs/gcs</a></p>
-<h2 id="references">References</h2>
+<a rel="noopener" target="_blank" href="https://github.com/Roasbeef/btcutil/tree/gcs/gcs">https://github.com/Roasbeef/btcutil/tree/gcs/gcs</a></p>
+<h2 id="References">References</h2>
 <references/>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
-<ol>
-<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html</a></li>
-<li><a href="https://eprint.iacr.org/2014/763.pdf">https://eprint.iacr.org/2014/763.pdf</a></li>
-<li><a href="https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/">https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/</a></li>
-<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Private_information_retrieval">https://en.wikipedia.org/wiki/Private_information_retrieval</a></li>
-<li><a href="https://bitcoin.org/en/developer-guide#headers-first">https://bitcoin.org/en/developer-guide#headers-first</a></li>
-</ol>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html</a></p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><a rel="noopener" target="_blank" href="https://eprint.iacr.org/2014/763.pdf">https://eprint.iacr.org/2014/763.pdf</a></p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><a rel="noopener" target="_blank" href="https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/">https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/</a></p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki</a></p>
+</div>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<p><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Private_information_retrieval">https://en.wikipedia.org/wiki/Private_information_retrieval</a></p>
+</div>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
+<p><a rel="noopener" target="_blank" href="https://bitcoin.org/en/developer-guide#headers-first">https://bitcoin.org/en/developer-guide#headers-first</a></p>
+</div>
 
     </div>
 
@@ -415,7 +424,7 @@ license.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

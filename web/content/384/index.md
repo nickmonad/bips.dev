@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0384.mediawiki"
 +++
 
-``` 
-  BIP: 384
-  Layer: Applications
-  Title: combo() Output Script Descriptors
-  Author: Pieter Wuille <pieter@wuille.net>
-          Andrew Chow <andrew@achow101.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0384
-  Status: Draft
-  Type: Informational
-  Created: 2021-06-27
-  License: BSD-2-Clause
-```
+      BIP: 384
+      Layer: Applications
+      Title: combo() Output Script Descriptors
+      Author: Pieter Wuille <pieter@wuille.net>
+              Andrew Chow <andrew@achow101.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0384
+      Status: Draft
+      Type: Informational
+      Created: 2021-06-27
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -63,7 +61,7 @@ TBD
 ## Backwards Compatibility
 
 `combo()` descriptors use the format and general operation specified in
-[380](bip-0380.mediawiki "wikilink"). As this is a wholly new
+[380](/380). As this is a wholly new
 descriptor, it is not compatible with any implementation. However the
 scripts produced are standard scripts so existing software are likely to
 be familiar with them.

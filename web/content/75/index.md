@@ -14,21 +14,19 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0075.mediawiki"
 +++
 
-``` 
-  BIP: 75
-  Layer: Applications
-  Title: Out of Band Address Exchange using Payment Protocol Encryption
-  Author: Justin Newton <justin@netki.com>
-          Matt David <mgd@mgddev.com>
-          Aaron Voisine <voisine@gmail.com>
-          James MacWhyte <macwhyte@gmail.com>
-  Comments-Summary: Recommended for implementation (one person)
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0075
-  Status: Final
-  Type: Standards Track
-  Created: 2015-11-20
-  License: CC-BY-4.0
-```
+      BIP: 75
+      Layer: Applications
+      Title: Out of Band Address Exchange using Payment Protocol Encryption
+      Author: Justin Newton <justin@netki.com>
+              Matt David <mgd@mgddev.com>
+              Aaron Voisine <voisine@gmail.com>
+              James MacWhyte <macwhyte@gmail.com>
+      Comments-Summary: Recommended for implementation (one person)
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0075
+      Status: Final
+      Type: Standards Track
+      Created: 2015-11-20
+      License: CC-BY-4.0
 
 ## Abstract
 
@@ -39,7 +37,7 @@ existing Payment Protocol.
     sign the original request and provide a certificate to allow the
     payee to know the identity of who they are transacting with.
 
-<!-- end list -->
+<!-- -->
 
 1.  It encrypts the PaymentRequest that is returned, before handing it
     off to the SSL/TLS layer to prevent man in the middle viewing of the
@@ -60,36 +58,36 @@ License](http://creativecommons.org/licenses/by/4.0/ "wikilink").
 ## Definitions
 
 |          |                                                    |
-| -------- | -------------------------------------------------- |
+|----------|----------------------------------------------------|
 | Sender   | Entity wishing to transfer value that they control |
 | Receiver | Entity receiving a value transfer                  |
 
 ## Motivation
 
 The motivation for defining this extension to the
-[BIP70](bip-0070.mediawiki "wikilink") Payment Protocol is to allow two
+[BIP70](/70) Payment Protocol is to allow two
 parties to exchange payment information in a permissioned and encrypted
 way, such that wallet address communication can become a more automated
 process. This extension also expands the types of PKI (public-key
 infrastructure) data that is supported, and allows it to be shared by
-both parties (with [BIP70](bip-0070.mediawiki "wikilink"), only the
+both parties (with [BIP70](/70), only the
 receiver could provide PKI information). This allows for automated
 creation of off-blockchain transaction logs that are human readable, now
 including information about the sender and not just the recipient.
 
 The motivation for this extension to
-[BIP70](bip-0070.mediawiki "wikilink") is threefold:
+[BIP70](/70) is threefold:
 
 1.  Ensure that the payment details can only be seen by the participants
     in the transaction, and not by any third party.
 
-<!-- end list -->
+<!-- -->
 
 1.  Enhance the Payment Protocol to allow for store and forward servers
     in order to allow, for example, mobile wallets to sign and serve
     Payment Requests.
 
-<!-- end list -->
+<!-- -->
 
 1.  Allow a sender of funds the option of sharing their identity with
     the receiver. This information could then be used to:
@@ -140,7 +138,7 @@ sending of funds to a "dead" address is prevented.
 A Bitcoin wallet developer would like to allow users to view a potential
 sending party's identifying information before deciding whether or not
 to share payment information with them. Currently,
-[BIP70](bip-0070.mediawiki "wikilink") shares the receiver’s payment
+[BIP70](/70) shares the receiver’s payment
 address and identity information with anyone who requests it.
 
 With this BIP, Bitcoin wallets could use the sender’s identifying
@@ -163,13 +161,13 @@ this case, a successful attack against a Store & Forward service would
 not be able to read or modify wallet address or payment information,
 only delete encrypted messages.
 
-## Modifying BIP70 pki\_type
+## Modifying BIP70 pki_type
 
-This BIP adds additional possible values for the pki\_type variable in
+This BIP adds additional possible values for the pki_type variable in
 the PaymentRequest message. The complete list is now as follows:
 
-| pki\_type    | Description                                                                                                                                                            |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pki_type     | Description                                                                                                                                                            |
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | x509+sha256  | A x.509 certificate, as described in BIP70                                                                                                                             |
 | pgp+sha256   | An [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP "wikilink") certificate                                                                         |
 | ecdsa+sha256 | A [secp256k1](https://en.bitcoin.it/wiki/Secp256k1 "wikilink") [ECDSA](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm "wikilink") public key |
@@ -205,15 +203,15 @@ PaymentRequest.
             optional bytes  signature = 7;
     }
 
-| Field Name          | Description                                                                                                                                      |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| sender\_public\_key | Sender's SEC-encoded EC public key                                                                                                               |
-| amount              | amount is integer-number-of-satoshis (default: 0)                                                                                                |
-| pki\_type           | none / x509+sha256 / pgp+sha256 / ecdsa+sha256 (default: "none")                                                                                 |
-| pki\_data           | Depends on pki\_type                                                                                                                             |
-| memo                | Human-readable description of invoice request for the receiver                                                                                   |
-| notification\_url   | Secure (usually TLS-protected HTTP) location where an [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink") SHOULD be sent when ready |
-| signature           | PKI-dependent signature                                                                                                                          |
+| Field Name        | Description                                                                                                                                      |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| sender_public_key | Sender's SEC-encoded EC public key                                                                                                               |
+| amount            | amount is integer-number-of-satoshis (default: 0)                                                                                                |
+| pki_type          | none / x509+sha256 / pgp+sha256 / ecdsa+sha256 (default: "none")                                                                                 |
+| pki_data          | Depends on pki_type                                                                                                                              |
+| memo              | Human-readable description of invoice request for the receiver                                                                                   |
+| notification_url  | Secure (usually TLS-protected HTTP) location where an [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink") SHOULD be sent when ready |
+| signature         | PKI-dependent signature                                                                                                                          |
 
 ### ProtocolMessageType Enum
 
@@ -249,14 +247,14 @@ protocol does not rely on transport-layer error handling.
         required bytes identifier = 6;
     }
 
-| Field Name          | Description                                                                                                                                                              |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| version             | Protocol version number (Currently 1)                                                                                                                                    |
-| status\_code        | Payment Protocol Status Code                                                                                                                                             |
-| message\_type       | Message Type of serialized\_message                                                                                                                                      |
-| serialized\_message | Serialized Payment Protocol Message                                                                                                                                      |
-| status\_message     | Human-readable Payment Protocol status message                                                                                                                           |
-| identifier          | Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String) |
+| Field Name         | Description                                                                                                                                                              |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| version            | Protocol version number (Currently 1)                                                                                                                                    |
+| status_code        | Payment Protocol Status Code                                                                                                                                             |
+| message_type       | Message Type of serialized_message                                                                                                                                       |
+| serialized_message | Serialized Payment Protocol Message                                                                                                                                      |
+| status_message     | Human-readable Payment Protocol status message                                                                                                                           |
+| identifier         | Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String) |
 
 ### Versioning
 
@@ -297,18 +295,18 @@ protocol does not rely on transport-layer error handling.
         optional bytes signature = 10;
     }
 
-| Field Name            | Description                                                                                                                                                              |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| version               | Protocol version number                                                                                                                                                  |
-| status\_code          | Payment Protocol Status Code                                                                                                                                             |
-| message\_type         | Message Type of Decrypted encrypted\_message                                                                                                                             |
-| encrypted\_message    | AES-256-GCM Encrypted (as defined in BIP75) Payment Protocol Message                                                                                                     |
-| receiver\_public\_key | Receiver's SEC-encoded EC Public Key                                                                                                                                     |
-| sender\_public\_key   | Sender's SEC-encoded EC Public Key                                                                                                                                       |
-| nonce                 | Microseconds since epoch                                                                                                                                                 |
-| identifier            | Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String) |
-| status\_message       | Human-readable Payment Protocol status message                                                                                                                           |
-| signature             | DER-encoded Signature over the full EncryptedProtocolMessage with EC Key Belonging to Sender / Receiver, respectively                                                    |
+| Field Name          | Description                                                                                                                                                              |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| version             | Protocol version number                                                                                                                                                  |
+| status_code         | Payment Protocol Status Code                                                                                                                                             |
+| message_type        | Message Type of Decrypted encrypted_message                                                                                                                              |
+| encrypted_message   | AES-256-GCM Encrypted (as defined in BIP75) Payment Protocol Message                                                                                                     |
+| receiver_public_key | Receiver's SEC-encoded EC Public Key                                                                                                                                     |
+| sender_public_key   | Sender's SEC-encoded EC Public Key                                                                                                                                       |
+| nonce               | Microseconds since epoch                                                                                                                                                 |
+| identifier          | Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String) |
+| status_message      | Human-readable Payment Protocol status message                                                                                                                           |
+| signature           | DER-encoded Signature over the full EncryptedProtocolMessage with EC Key Belonging to Sender / Receiver, respectively                                                    |
 
 ## Payment Protocol Process with InvoiceRequests
 
@@ -350,7 +348,7 @@ A standard exchange from start to finish would look like the following:
 8.  Sender validates PaymentRequest retrieved from the
     EncryptedProtocolMessage
 9.  The PaymentRequest is processed according to
-    [BIP70](bip-0070.mediawiki "wikilink"), including optional Payment
+    [BIP70](/70), including optional Payment
     and PaymentACK messages encapsulated in EncryptedProtocolMessage
     messages.
 
@@ -367,10 +365,10 @@ for possible options to retrieve Receiver's public key.
 When communicated via **HTTP**, the listed messages MUST be transmitted
 via TLS-protected HTTP using the appropriate Content-Type header as
 defined here per message:  
-{| class="wikitable" \! Message Type \!\! Content Type |- |
-ProtocolMessage || application/bitcoin-paymentprotocol-message |- |
-EncryptedProtocolMessage ||
-application/bitcoin-encrypted-paymentprotocol-message |}
+{\| class="wikitable" ! Message Type !! Content Type \|- \|
+ProtocolMessage \|\| application/bitcoin-paymentprotocol-message \|- \|
+EncryptedProtocolMessage \|\|
+application/bitcoin-encrypted-paymentprotocol-message \|}
 
 ### Payment Protocol Status Communication
 
@@ -382,17 +380,17 @@ even though there was no previous message). In the case of an error that
 causes the Payment Protocol process to be stopped or requires that
 message be retried, a ProtocolMessage or EncryptedProtocolMessage SHOULD
 be returned by the party generating the error. The content of the
-message MUST contain the same **serialized\_message** or
-**encrypted\_message** and identifier (if present) and MUST have the
-status\_code set appropriately.  
+message MUST contain the same **serialized_message** or
+**encrypted_message** and identifier (if present) and MUST have the
+status_code set appropriately.  
   
-The status\_message value SHOULD be set with a human readable
-explanation of the status code.
+The status_message value SHOULD be set with a human readable explanation
+of the status code.
 
 #### Payment Protocol Status Codes
 
 | Status Code | Description                                       |
-| ----------- | ------------------------------------------------- |
+|-------------|---------------------------------------------------|
 | 1           | OK                                                |
 | 2           | Cancel                                            |
 | 100         | General / Unknown Error                           |
@@ -410,7 +408,7 @@ explanation of the status code.
 | 304         | Certificate Not Well Rooted                       |
 |             |                                                   |
 
-\+==Canceling A Message==+ If a participant to a transaction would like
++==Canceling A Message==+ If a participant to a transaction would like
 to inform the other party that a previous message should be canceled,
 they can send the same message with a status code of 2 ("Cancel") and,
 where applicable, an updated nonce. How recipients make use of the
@@ -426,13 +424,13 @@ the message originated from the same user.
 Communication errors MUST be communicated to the party that initiated
 the communication via the communication layer's existing error messaging
 faciltiies. In the case of TLS-protected HTTP, this SHOULD be done
-through standard HTTP Status Code messaging ([RFC 7231
-Section 6](https://tools.ietf.org/html/rfc7231)).
+through standard HTTP Status Code messaging ([RFC 7231 Section
+6](https://tools.ietf.org/html/rfc7231)).
 
 ## Extended Payment Protocol Process Details
 
 This BIP extends the Payment Protocol as defined in
-[BIP70](bip-0070.mediawiki "wikilink").
+[BIP70](/70).
 
 For the following we assume the Sender already knows the Receiver's
 public key, and the exchange is being facilitated by a Store & Forward
@@ -447,71 +445,70 @@ never repeated.
 
 ### InvoiceRequest Message Creation
 
-  - Create an [InvoiceRequest](#InvoiceRequest "wikilink") message
-  - **sender\_public\_key** MUST be set to the public key of an EC
-    keypair
-  - **amount** is optional. If the amount is not specified by the
-    [InvoiceRequest](#InvoiceRequest "wikilink"), the Receiver MAY
-    specify the amount in the returned PaymentRequest. If an amount is
-    specified by the [InvoiceRequest](#InvoiceRequest "wikilink") and a
-    PaymentRequest cannot be generated for that amount, the
-    [InvoiceRequest](#InvoiceRequest "wikilink") SHOULD return the same
-    [InvoiceRequest](#InvoiceRequest "wikilink") in a
-    [ProtocolMessage](#ProtocolMessage "wikilink") or
-    [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")
-    with the status\_code and status\_message fields set appropriately.
-  - **memo** is optional. This MAY be set to a human readable
-    description of the InvoiceRequest
-  - Set **notification\_url** to URL that the Receiver will submit
-    completed PaymentRequest (encapsulated in an
-    [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")) to
-  - If NOT including certificate, set **pki\_type** to "none"
-  - If including certificate:
-      - Set **pki\_type** to "x509+sha256"
-      - Set **pki\_data** as it would be set in BIP-0070
-        ([Certificates](https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki#Certificates))
-      - Sign [InvoiceRequest](#InvoiceRequest "wikilink") with signature
-        = "" using the X509 Certificate's private key
-      - Set **signature** value to the computed signature
+- Create an [InvoiceRequest](#InvoiceRequest "wikilink") message
+- **sender_public_key** MUST be set to the public key of an EC keypair
+- **amount** is optional. If the amount is not specified by the
+  [InvoiceRequest](#InvoiceRequest "wikilink"), the Receiver MAY specify
+  the amount in the returned PaymentRequest. If an amount is specified
+  by the [InvoiceRequest](#InvoiceRequest "wikilink") and a
+  PaymentRequest cannot be generated for that amount, the
+  [InvoiceRequest](#InvoiceRequest "wikilink") SHOULD return the same
+  [InvoiceRequest](#InvoiceRequest "wikilink") in a
+  [ProtocolMessage](#ProtocolMessage "wikilink") or
+  [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink") with
+  the status_code and status_message fields set appropriately.
+- **memo** is optional. This MAY be set to a human readable description
+  of the InvoiceRequest
+- Set **notification_url** to URL that the Receiver will submit
+  completed PaymentRequest (encapsulated in an
+  [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")) to
+- If NOT including certificate, set **pki_type** to "none"
+- If including certificate:
+  - Set **pki_type** to "x509+sha256"
+  - Set **pki_data** as it would be set in BIP-0070
+    ([Certificates](https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki#Certificates))
+  - Sign [InvoiceRequest](#InvoiceRequest "wikilink") with signature =
+    "" using the X509 Certificate's private key
+  - Set **signature** value to the computed signature
 
 ### InvoiceRequest Validation
 
-  - Validate **sender\_public\_key** is a valid EC public key
-  - Validate **notification\_url**, if set, contains characters deemed
-    valid for a URL (avoiding XSS related characters, etc).
-  - If **pki\_type** is None,
-    [InvoiceRequest](#InvoiceRequest "wikilink") is VALID
-  - If **pki\_type** is x509+sha256 and **signature** is valid for the
-    serialized [InvoiceRequest](#InvoiceRequest "wikilink") where
-    signature is set to "", [InvoiceRequest](#InvoiceRequest "wikilink")
-    is VALID
+- Validate **sender_public_key** is a valid EC public key
+- Validate **notification_url**, if set, contains characters deemed
+  valid for a URL (avoiding XSS related characters, etc).
+- If **pki_type** is None, [InvoiceRequest](#InvoiceRequest "wikilink")
+  is VALID
+- If **pki_type** is x509+sha256 and **signature** is valid for the
+  serialized [InvoiceRequest](#InvoiceRequest "wikilink") where
+  signature is set to "", [InvoiceRequest](#InvoiceRequest "wikilink")
+  is VALID
 
 ### Sending Encrypted Payment Protocol Messages using EncryptedProtocolMessages
 
-  - Encrypt the serialized Payment Protocol message using AES-256-GCM
-    setup as described in [ECDH Point Generation and AES-256 (GCM Mode)
-    Setup](#ECDH_Point_Generation_and_AES256_GCM_Mode_Setup "wikilink")
-  - Create
-    [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")
-    message
-  - Set **encrypted\_message** to be the encrypted value of the Payment
-    Protocol message
-  - **version** SHOULD be set to the highest version number the client
-    understands (currently 1)
-  - **sender\_public\_key** MUST be set to the public key of the
-    Sender's EC keypair
-  - **receiver\_public\_key** MUST be set to the public key of the
-    Receiver's EC keypair
-  - **nonce** MUST be set to the nonce used in the AES-256-GCM
-    encryption operation
-  - Set **identifier** to the identifier value received in the
-    originating InvoiceRequest's ProtocolMessage or
-    EncryptedProtocolMessage wrapper message
-  - Set **signature** to ""
-  - Sign the serialized
-    [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")
-    message with the communicating party's EC public key
-  - Set **signature** to the result of the signature operation above
+- Encrypt the serialized Payment Protocol message using AES-256-GCM
+  setup as described in [ECDH Point Generation and AES-256 (GCM Mode)
+  Setup](#ECDH_Point_Generation_and_AES256_GCM_Mode_Setup "wikilink")
+- Create
+  [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")
+  message
+- Set **encrypted_message** to be the encrypted value of the Payment
+  Protocol message
+- **version** SHOULD be set to the highest version number the client
+  understands (currently 1)
+- **sender_public_key** MUST be set to the public key of the Sender's EC
+  keypair
+- **receiver_public_key** MUST be set to the public key of the
+  Receiver's EC keypair
+- **nonce** MUST be set to the nonce used in the AES-256-GCM encryption
+  operation
+- Set **identifier** to the identifier value received in the originating
+  InvoiceRequest's ProtocolMessage or EncryptedProtocolMessage wrapper
+  message
+- Set **signature** to ""
+- Sign the serialized
+  [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")
+  message with the communicating party's EC public key
+- Set **signature** to the result of the signature operation above
 
 **SIGNATURE NOTE:**
 [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink")
@@ -524,13 +521,13 @@ interaction to keep their identity anonymous.
 
 ### Validating and Decrypting Payment Protocol Messages using EncryptedProtocolMessages
 
-  - The **nonce** MUST not be repeated. The service receiving the
-    [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink") MAY
-    use whatever method to make sure that the nonce is never repeated.
-  - Decrypt the serialized Payment Protocol message using AES-256-GCM
-    setup as described in [ECDH Point Generation and AES-256 (GCM Mode)
-    Setup](#ECDH_Point_Generation_and_AES256_GCM_Mode_Setup "wikilink")
-  - Deserialize the serialized Payment Protocol message
+- The **nonce** MUST not be repeated. The service receiving the
+  [EncryptedProtocolMessage](#EncryptedProtocolMessage "wikilink") MAY
+  use whatever method to make sure that the nonce is never repeated.
+- Decrypt the serialized Payment Protocol message using AES-256-GCM
+  setup as described in [ECDH Point Generation and AES-256 (GCM Mode)
+  Setup](#ECDH_Point_Generation_and_AES256_GCM_Mode_Setup "wikilink")
+- Deserialize the serialized Payment Protocol message
 
 ### ECDH Point Generation and AES-256 (GCM Mode) Setup
 
@@ -538,24 +535,24 @@ interaction to keep their identity anonymous.
 encryption facilities, thus negating the need for a separate message
 hash for authentication.
 
-  - Generate the **secret point** using
-    [ECDH](https://en.wikipedia.org/wiki/Elliptic_curve_Diffie–Hellman)
-    using the local entity's private key and the remote entity's public
-    key as inputs
-  - Initialize
-    [HMAC\_DRBG](http://csrc.nist.gov/publications/nistpubs/800-90A/SP800-90A.pdf)
-      - Use **SHA512(secret point's X value in Big-Endian bytes)** for
-        Entropy
-      - Use the given message's **nonce** field for Nonce, converted to
-        byte string (Big Endian)
+- Generate the **secret point** using
+  [ECDH](https://en.wikipedia.org/wiki/Elliptic_curve_Diffie–Hellman)
+  using the local entity's private key and the remote entity's public
+  key as inputs
+- Initialize
+  [HMAC_DRBG](http://csrc.nist.gov/publications/nistpubs/800-90A/SP800-90A.pdf)
+  - Use **SHA512(secret point's X value in Big-Endian bytes)** for
+    Entropy
+  - Use the given message's **nonce** field for Nonce, converted to byte
+    string (Big Endian)
 
-<!-- end list -->
+<!-- -->
 
-  - Initialize AES-256 in GCM Mode
-      - Initialize HMAC\_DRBG with Security Strength of 256 bits
-      - Use HMAC\_DRBG.GENERATE(32) as the Encryption Key (256 bits)
-      - Use HMAC\_DRBG.GENERATE(12) as the Initialization Vector (IV)
-        (96 bits)
+- Initialize AES-256 in GCM Mode
+  - Initialize HMAC_DRBG with Security Strength of 256 bits
+  - Use HMAC_DRBG.GENERATE(32) as the Encryption Key (256 bits)
+  - Use HMAC_DRBG.GENERATE(12) as the Initialization Vector (IV) (96
+    bits)
 
 #### AES-256 GCM Authentication Tag Use
 
@@ -567,11 +564,11 @@ in the decrypt operation.
 
 #### AES-256 GCM Additional Authenticated Data
 
-When either **status\_code** OR **status\_message** are present, the
+When either **status_code** OR **status_message** are present, the
 AES-256 GCM authenticated data used in both the encrypt and decrypt
-operations MUST be: STRING(status\_code) || status\_message. Otherwise,
+operations MUST be: STRING(status_code) \|\| status_message. Otherwise,
 there is no additional authenticated data. This provides that, while not
-encrypted, the status\_code and status\_message are authenticated.
+encrypted, the status_code and status_message are authenticated.
 
 ### Initial Public Key Retrieval for InvoiceRequest Encryption
 
@@ -586,10 +583,10 @@ to, the following:
     TXT Record [RFC 5480](https://www.ietf.org/rfc/rfc5480.txt)
 2.  Key Server lookup - Key Server lookup (similar to PGP's pgp.mit.edu)
     based on key server identifier (i.e., e-mail address) returns Base64
-    encoded DER-formatted EC public key
-    [RFC 5480](https://www.ietf.org/rfc/rfc5480.txt)
-3.  QR Code - Use of QR-code to encode SEC-formatted EC public key
-    [RFC 5480](https://www.ietf.org/rfc/rfc5480.txt)
+    encoded DER-formatted EC public key [RFC
+    5480](https://www.ietf.org/rfc/rfc5480.txt)
+3.  QR Code - Use of QR-code to encode SEC-formatted EC public key [RFC
+    5480](https://www.ietf.org/rfc/rfc5480.txt)
 4.  Address Service Public Key Exposure
 
 ## Payment / PaymentACK Messages with a HTTP Store & Forward Server
@@ -598,16 +595,16 @@ If a Store & Forward server wishes to protect themselves from spam or
 abuse, they MAY enact whatever rules they deem fit, such as the
 following:
 
-  - Once an InvoiceRequest or PaymentRequest is received, all subsequent
-    messages using the same identifier must use the same Sender and
-    Receiver public keys.
-  - For each unique identifier, only one message each of type
-    InvoiceRequest, PaymentRequest, and PaymentACK may be submitted.
-    Payment messages may be submitted/overwritten multiple times. All
-    messages submitted after a PaymentACK is received will be rejected.
-  - Specific messages are only saved until they have been verifiably
-    received by the intended recipient or a certain amount of time has
-    passed, whichever comes first.
+- Once an InvoiceRequest or PaymentRequest is received, all subsequent
+  messages using the same identifier must use the same Sender and
+  Receiver public keys.
+- For each unique identifier, only one message each of type
+  InvoiceRequest, PaymentRequest, and PaymentACK may be submitted.
+  Payment messages may be submitted/overwritten multiple times. All
+  messages submitted after a PaymentACK is received will be rejected.
+- Specific messages are only saved until they have been verifiably
+  received by the intended recipient or a certain amount of time has
+  passed, whichever comes first.
 
   
   
@@ -619,20 +616,20 @@ paid twice.
 
 ## Public Key & Signature Encoding
 
-  - All x.509 certificates included in any message defined in this BIP
-    MUST be DER \[ITU.X690.1994\] encoded.
-  - All EC public keys (**sender\_public\_key**,
-    **receiver\_public\_key**) in any message defined in this BIP MUST
-    be [<http://www.secg.org/sec2-v2.pdf>](SECP256k1 "wikilink") ECDSA
-    Public Key ECPoints encoded using
-    [<http://www.secg.org/sec1-v2.pdf>](SEC_2.3.3_Encoding "wikilink").
-    Encoding MAY be compressed.
-  - All ECC signatures included in any message defined in this BIP MUST
-    use the SHA-256 hashing algorithm and MUST be DER \[ITU.X690.1994\]
-    encoded.
-  - All OpenPGP certificates must follow
-    [RFC4880](https://tools.ietf.org/html/rfc4880 "wikilink"), sections
-    5.5 and 12.1.
+- All x.509 certificates included in any message defined in this BIP
+  MUST be DER \[ITU.X690.1994\] encoded.
+- All EC public keys (**sender_public_key**, **receiver_public_key**) in
+  any message defined in this BIP MUST be
+  [<http://www.secg.org/sec2-v2.pdf>](SECP256k1 "wikilink") ECDSA Public
+  Key ECPoints encoded using
+  [<http://www.secg.org/sec1-v2.pdf>](SEC_2.3.3_Encoding "wikilink").
+  Encoding MAY be compressed.
+- All ECC signatures included in any message defined in this BIP MUST
+  use the SHA-256 hashing algorithm and MUST be DER \[ITU.X690.1994\]
+  encoded.
+- All OpenPGP certificates must follow
+  [RFC4880](https://tools.ietf.org/html/rfc4880 "wikilink"), sections
+  5.5 and 12.1.
 
 ## Implementation
 
@@ -650,9 +647,9 @@ Implementation](https://github.com/netkicorp/addressimo/blob/master/functest/fun
 ## BIP70 Extension
 
 The following flowchart is borrowed from
-[BIP70](bip-0070.mediawiki "wikilink") and expanded upon in order to
+[BIP70](/70) and expanded upon in order to
 visually describe how this BIP is an extension to
-[BIP70](bip-0070.mediawiki "wikilink").
+[BIP70](/70).
 
 <img src="bip-0075/bip70-extension.png" alt="Flowchart explaining how this BIP extends BIP 70">
 
@@ -685,13 +682,13 @@ the Sender submits the transaction to the Bitcoin network.
 
 ## References
 
-  - [BIP70 - Payment Protocol](bip-0070.mediawiki "wikilink")
-  - [ECDH](https://en.wikipedia.org/wiki/Elliptic_curve_Diffie–Hellman)
-  - [HMAC\_DRBG](http://csrc.nist.gov/publications/nistpubs/800-90A/SP800-90A.pdf)
-  - [NIST Special Publication 800-38D - Recommendation for Block Cipher
-    Modes of Operation: Galois/Counter Mode (GCM) and
-    GMAC](http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf)
-  - [RFC6979](https://tools.ietf.org/html/rfc6979)
-  - [Address Reuse](https://en.bitcoin.it/wiki/Address_reuse)
-  - [FIPS 180-4 (Secure Hash
-    Standard)](http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf)
+- [BIP70 - Payment Protocol](/70)
+- [ECDH](https://en.wikipedia.org/wiki/Elliptic_curve_Diffie–Hellman)
+- [HMAC_DRBG](http://csrc.nist.gov/publications/nistpubs/800-90A/SP800-90A.pdf)
+- [NIST Special Publication 800-38D - Recommendation for Block Cipher
+  Modes of Operation: Galois/Counter Mode (GCM) and
+  GMAC](http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf)
+- [RFC6979](https://tools.ietf.org/html/rfc6979)
+- [Address Reuse](https://en.bitcoin.it/wiki/Address_reuse)
+- [FIPS 180-4 (Secure Hash
+  Standard)](http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf)

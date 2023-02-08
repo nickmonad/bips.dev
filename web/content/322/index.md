@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki"
 +++
 
-``` 
-  BIP: 322
-  Layer: Applications
-  Title: Generic Signed Message Format
-  Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0322
-  Status: Draft
-  Type: Standards Track
-  Created: 2018-09-10
-  License: CC0-1.0
-```
+      BIP: 322
+      Layer: Applications
+      Title: Generic Signed Message Format
+      Author: Karl-Johan Alm <karljohan-alm@garage.co.jp>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0322
+      Status: Draft
+      Type: Standards Track
+      Created: 2018-09-10
+      License: CC0-1.0
 
 ## Abstract
 
@@ -77,12 +75,12 @@ vector of vectors of bytes, and base64-encoded. Validators should
 construct `to_spend` and `to_sign` as defined below, with default values
 for all fields except that
 
-  - `message_hash` is a BIP340-tagged hash of the message, as specified
-    below
-  - `message_challenge` in `to_spend` is set to the scriptPubKey being
-    signed with
-  - `message_signature` in `to_sign` is set to the provided simple
-    signature.
+- `message_hash` is a BIP340-tagged hash of the message, as specified
+  below
+- `message_challenge` in `to_spend` is set to the scriptPubKey being
+  signed with
+- `message_signature` in `to_sign` is set to the provided simple
+  signature.
 
 and then proceed as they would for a full signature.
 
@@ -106,7 +104,7 @@ The `to_spend` transaction is:
 `   vout[0].scriptPubKey = message_challenge`
 
 where `message_hash` is a BIP340-tagged hash of the message, i.e.
-sha256\_tag(m), where tag = `BIP0322-signed-message` and `m` is the
+sha256_tag(m), where tag = `BIP0322-signed-message` and `m` is the
 message as is without length prefix or null terminator, and
 `message_challenge` is the to be proven (public) key script.
 
@@ -130,12 +128,12 @@ A signer may construct a proof of funds, demonstrating control of a set
 of UTXOs, by constructing a full signature as above, with the following
 modifications.
 
-  - `message_challenge` is unused and shall be set to `OP_TRUE`
-  - Similarly, `message_signature` is then empty.
-  - All outputs that the signer wishes to demonstrate control of are
-    included as additional inputs of `to_sign`, and their witness and
-    scriptSig data should be set as though these outputs were actually
-    being spent.
+- `message_challenge` is unused and shall be set to `OP_TRUE`
+- Similarly, `message_signature` is then empty.
+- All outputs that the signer wishes to demonstrate control of are
+  included as additional inputs of `to_sign`, and their witness and
+  scriptSig data should be set as though these outputs were actually
+  being spent.
 
 Unlike an ordinary signature, validators of a proof of funds need access
 to the current UTXO set, to learn that the claimed inputs exist on the
@@ -154,10 +152,10 @@ A validator is given as input an address *A* (which may be omitted in a
 proof-of-funds), signature *s* and message *m*, and outputs one of three
 states
 
-  - *valid at time T and age S* indicates that the signature has set
-    timelocks but is otherwise valid
-  - *inconclusive* means the validator was unable to check the scripts
-  - *invalid* means that some check failed
+- *valid at time T and age S* indicates that the signature has set
+  timelocks but is otherwise valid
+- *inconclusive* means the validator was unable to check the scripts
+- *invalid* means that some check failed
 
 #### Verification Process
 
@@ -168,9 +166,9 @@ Validation consists of the following steps:
     2.  Decode *s* as the transaction `to_sign`
     3.  If *s* was a full transaction, confirm all fields are set as
         specified above; in particular that
-          - `to_sign` has at least one input and its first input spends
-            the output of </code>to\_spend</code>
-          - `to_sign` has exactly one output, as specified above
+        - `to_sign` has at least one input and its first input spends
+          the output of </code>to_spend</code>
+        - `to_sign` has exactly one output, as specified above
     4.  Confirm that the two transactions together satisfy all consensus
         rules, except for `to_spend`'s missing input, and except that
         *nSequence* of `to_sign`'s first input and *nLockTime* of
@@ -179,7 +177,7 @@ Validation consists of the following steps:
     it should check that it understands all scripts being satisfied. If
     not, it should stop here and output *inconclusive*.
 3.  Check the \*\*required rules\*\*:
-    1.  All signatures must use the SIGHASH\_ALL flag.
+    1.  All signatures must use the SIGHASH_ALL flag.
     2.  The use of `CODESEPARATOR` or `FindAndDelete` is forbidden.
     3.  `LOW_S`, `STRICTENC` and `NULLFAIL`: valid ECDSA signatures must
         be strictly DER-encoded and have a low-S value; invalid ECDSA
@@ -218,10 +216,10 @@ follows:
 They then encode their signature, choosing either *simple* or *full* as
 follows:
 
-  - If they added no inputs to `to_sign`, left nSequence and nLockTime
-    at 0, and *A* is a Segwit address (either pure or P2SH-wrapped),
-    then they may base64-encode `message_signature`
-  - Otherwise they must base64-encode `to_sign`.
+- If they added no inputs to `to_sign`, left nSequence and nLockTime at
+  0, and *A* is a Segwit address (either pure or P2SH-wrapped), then
+  they may base64-encode `message_signature`
+- Otherwise they must base64-encode `to_sign`.
 
 ## Compatibility
 
@@ -231,8 +229,8 @@ described above.
 
 ## Reference implementation
 
-  - Bitcoin Core pull request (basic support) at:
-    <https://github.com/bitcoin/bitcoin/pull/24058>
+- Bitcoin Core pull request (basic support) at:
+  <https://github.com/bitcoin/bitcoin/pull/24058>
 
 ## Acknowledgements
 
@@ -255,40 +253,40 @@ license.
 ### Message hashing
 
 Message hashes are BIP340-tagged hashes of a message, i.e.
-sha256\_tag(m), where tag = `BIP0322-signed-message`, and m is the
+sha256_tag(m), where tag = `BIP0322-signed-message`, and m is the
 message as is without length prefix or null terminator:
 
-  - Message = "" (empty string):
-    `c90c269c4f8fcbe6880f72a721ddfbf1914268a794cbb21cfafee13770ae19f1`
-  - Message = "Hello World":
-    `f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a`
+- Message = "" (empty string):
+  `c90c269c4f8fcbe6880f72a721ddfbf1914268a794cbb21cfafee13770ae19f1`
+- Message = "Hello World":
+  `f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a`
 
 ### Message signing
 
 Given below parameters:
 
-  - private key `L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k`
-  - corresponding address `bc1q9vza2e8x573nczrlzms0wvx3gsqjx7vavgkx0l`
+- private key `L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k`
+- corresponding address `bc1q9vza2e8x573nczrlzms0wvx3gsqjx7vavgkx0l`
 
 Produce signatures:
 
-  - Message = "" (empty string):
-    `AkcwRAIgM2gBAQqvZX15ZiysmKmQpDrG83avLIT492QBzLnQIxYCIBaTpOaD20qRlEylyxFSeEA2ba9YOixpX8z46TSDtS40ASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
-  - Message = "Hello World":
-    `AkcwRAIgZRfIY3p7/DoVTty6YZbWS71bc5Vct9p9Fia83eRmw2QCICK/ENGfwLtptFluMGs2KsqoNSk89pO7F29zJLUx9a/sASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
+- Message = "" (empty string):
+  `AkcwRAIgM2gBAQqvZX15ZiysmKmQpDrG83avLIT492QBzLnQIxYCIBaTpOaD20qRlEylyxFSeEA2ba9YOixpX8z46TSDtS40ASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
+- Message = "Hello World":
+  `AkcwRAIgZRfIY3p7/DoVTty6YZbWS71bc5Vct9p9Fia83eRmw2QCICK/ENGfwLtptFluMGs2KsqoNSk89pO7F29zJLUx9a/sASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=`
 
 ### Transaction Hashes
 
-to\_spend:
+to_spend:
 
-  - Message = "" (empty string):
-    `c5680aa69bb8d860bf82d4e9cd3504b55dde018de765a91bb566283c545a99a7`
-  - Message = "Hello World":
-    `b79d196740ad5217771c1098fc4a4b51e0535c32236c71f1ea4d61a2d603352b`
+- Message = "" (empty string):
+  `c5680aa69bb8d860bf82d4e9cd3504b55dde018de765a91bb566283c545a99a7`
+- Message = "Hello World":
+  `b79d196740ad5217771c1098fc4a4b51e0535c32236c71f1ea4d61a2d603352b`
 
-to\_sign:
+to_sign:
 
-  - Message = "" (empty string):
-    `1e9654e951a5ba44c8604c4de6c67fd78a27e81dcadcfe1edf638ba3aaebaed6`
-  - Message = "Hello World":
-    `88737ae86f2077145f93cc4b153ae9a1cb8d56afa511988c149c5c8c9d93bddf`
+- Message = "" (empty string):
+  `1e9654e951a5ba44c8604c4de6c67fd78a27e81dcadcfe1edf638ba3aaebaed6`
+- Message = "Hello World":
+  `88737ae86f2077145f93cc4b153ae9a1cb8d56afa511988c149c5c8c9d93bddf`

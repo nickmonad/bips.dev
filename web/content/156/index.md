@@ -14,22 +14,20 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0156.mediawiki"
 +++
 
-``` 
-  BIP: 156
-  Layer: Peer Services
-  Title: Dandelion - Privacy Enhancing Routing
-  Author: Brad Denby <bdenby@cmu.edu>
-          Andrew Miller <soc1024@illinois.edu>
-          Giulia Fanti <gfanti@andrew.cmu.edu>
-          Surya Bakshi <sbakshi3@illinois.edu>
-          Shaileshh Bojja Venkatakrishnan <shaileshh.bv@gmail.com>
-          Pramod Viswanath <pramodv@illinois.edu>
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0156
-  Status: Rejected
-  Type: Standards Track
-  Created: 2017-06-09
-  License: CC0-1.0
-```
+      BIP: 156
+      Layer: Peer Services
+      Title: Dandelion - Privacy Enhancing Routing
+      Author: Brad Denby <bdenby@cmu.edu>
+              Andrew Miller <soc1024@illinois.edu>
+              Giulia Fanti <gfanti@andrew.cmu.edu>
+              Surya Bakshi <sbakshi3@illinois.edu>
+              Shaileshh Bojja Venkatakrishnan <shaileshh.bv@gmail.com>
+              Pramod Viswanath <pramodv@illinois.edu>
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0156
+      Status: Rejected
+      Type: Standards Track
+      Created: 2017-06-09
+      License: CC0-1.0
 
 ## Abstract
 
@@ -88,7 +86,7 @@ this privacy graph during the "stem phase." Finally, messages are
 broadcast to the network during the "fluff phase" using the typical
 method of diffusion.
 
-[framed|center|alt=An illustration of Dandelion routing|Figure
+[framed\|center\|alt=An illustration of Dandelion routing\|Figure
 1](File:bip-0156/1-dandelion.png "wikilink") Figure 1
 
 In order to select the privacy graph in a decentralized manner, each
@@ -117,7 +115,7 @@ results in a fingerprint attack allowing network-level botnet
 adversaries to achieve total deanonymization of the P2P network after
 observing less than ten transactions per node.
 
-[framed|center|alt=An illustration of a fingerprint attack|Figure
+[framed\|center\|alt=An illustration of a fingerprint attack\|Figure
 2](File:bip-0156/2-attack.png "wikilink") Figure 2
 
 During a fingerprint attack, a botnet-style adversary with knowledge of
@@ -128,7 +126,7 @@ its spy nodes and matches these observations to the simulated
 fingerprints. Our simulations have shown that this attack results in
 devastating, network-wide deanonymization.
 
-[framed|center|alt=A plot illustrating total deanonymization|Figure
+[framed\|center\|alt=A plot illustrating total deanonymization\|Figure
 3](File:bip-0156/3-attack-plot.png "wikilink") Figure 3
 
 To avoid this issue, we suggest "per-inbound-edge" routing. Each inbound
@@ -149,7 +147,7 @@ one observed message rather than a rich profile of multiple transaction
 paths. Dandelion also breaks the symmetry of diffusion, making the
 source of the transaction difficult to infer.
 
-[framed|center|alt=A plot illustrating limited deanonymization|Figure
+[framed\|center\|alt=A plot illustrating limited deanonymization\|Figure
 4](File:bip-0156/4-dandelion-plot.png "wikilink") Figure 4
 
 After a transaction has traveled along a Dandelion stem for a random
@@ -304,14 +302,14 @@ Bitcoin transaction, then the node MUST fluff the Dandelion transaction.
 The following cases define a node's behavior when receiving network
 packets referencing Dandelion transactions.
 
-  - Receive INV for Dandelion TX: If the peer is inbound and the
-    Dandelion transaction has not been received from this peer, then
-    reply with GETDATA.
-  - Receive GETDATA for Dandelion TX: If the peer is not inbound and the
-    Dandelion transaction has been advertised to this peer, then reply
-    with the Dandelion transaction.
-  - Receive Dandelion TX: If the peer is inbound, then relay the
-    Dandelion TX to the appropriate Dandelion destination.
+- Receive INV for Dandelion TX: If the peer is inbound and the Dandelion
+  transaction has not been received from this peer, then reply with
+  GETDATA.
+- Receive GETDATA for Dandelion TX: If the peer is not inbound and the
+  Dandelion transaction has been advertised to this peer, then reply
+  with the Dandelion transaction.
+- Receive Dandelion TX: If the peer is inbound, then relay the Dandelion
+  TX to the appropriate Dandelion destination.
 
 ## Implementation
 

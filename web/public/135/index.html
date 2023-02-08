@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,21 +46,21 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 135
-  Title: Generalized version bits voting
-  Author: Sancho Panza &lt;sanch0panza@protonmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0135
-                https://bitco.in/forum/threads/bip9-generalized-version-bits-voting-bip-genvbvoting.1968/
-  Status: Rejected
-  Type: Informational
-  Created: 2017-03-29
-  License: CC0-1.0
-           GNU-All-Permissive
-  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-April/013969.html
-  Replaces: 9
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 135
+</span><span>  Title: Generalized version bits voting
+</span><span>  Author: Sancho Panza &lt;sanch0panza@protonmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0135
+</span><span>                https://bitco.in/forum/threads/bip9-generalized-version-bits-voting-bip-genvbvoting.1968/
+</span><span>  Status: Rejected
+</span><span>  Type: Informational
+</span><span>  Created: 2017-03-29
+</span><span>  License: CC0-1.0
+</span><span>           GNU-All-Permissive
+</span><span>  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-April/013969.html
+</span><span>  Replaces: 9
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>BIP9 introduced a mechanism for using the version bits to signal support
 for backwards-compatible changes (soft-forks) using a tally over the
 previous 2016 blocks computed at re-targeting intervals. It provided for
@@ -78,7 +78,7 @@ bit, starttime, timeout) are retained. Some state transition conditions
 are extended by additional parameters ('threshold', 'windowsize',
 'minlockedblocks', 'minlockedtime') to provide for fine-tuning of
 threshold and grace period.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The Bitcoin protocol requires a flexible scheme for finding consensus on
 protocol changes, to ensure that it can adapt to the needs of the market
 and remain competitive as an electronic payment system.</p>
@@ -87,12 +87,12 @@ are some shortcomings in its approach:</p>
 <ul>
 <li>it specifically applies only to backward-compatible changes</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>its fixed 95% threshold is not flexible enough to allow for a
 'spectrum of contentiousness' to be represented</li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>small minorities can veto proposed changes, which can lead to
 undesirable stagnation</li>
@@ -104,7 +104,7 @@ changes as well as more flexible activation thresholds and upgrade
 <p>The proposal should allow more freedom of choice in activation
 strategies while remaining backward compatible with respect to existing
 BIP9-based deployments.</p>
-<h2 id="terms-and-conventions">Terms and conventions</h2>
+<h2 id="Terms_and_conventions">Terms and conventions</h2>
 <p>The version bits used by this proposal for signaling deployment of forks
 are referred to as 'signaling bits' or shortened to 'bits' where
 unambiguous.</p>
@@ -118,8 +118,8 @@ block, i.e.</p>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
 document are to be interpreted as described in RFC 2119.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="backward-compatibility">Backward compatibility</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Backward_compatibility">Backward compatibility</h3>
 <p>This specification SHALL enable strict backward compatibility with
 existing BIP9-based deployments through suitable parameter
 configuration. Any part of the specification preventing full backward
@@ -128,7 +128,7 @@ compatibility SHALL be considered as erroneous and amended.</p>
 bits for each chain supported by an implementation. This permits each
 bit to be configured independently for each chain (mainnet, testnet,
 etc.)</p>
-<h3 id="signaling-bits">Signaling bits</h3>
+<h3 id="Signaling_bits">Signaling bits</h3>
 <p>The signaling bits SHALL comprise the 29 least significant bits of the
 nVersion block header field. nVersion is a 32-bit field which is treated
 as a little-endian integer.</p>
@@ -139,7 +139,7 @@ possible nVersion values between [0x20000000...0x3FFFFFFF], inclusive.</p>
 <p>If a block's nVersion does not have its top 3 bits set to 001, all its
 signaling bits MUST be treated as if they are 0 (see also: 'Tallying'
 section below).</p>
-<h3 id="deployment-states">Deployment states</h3>
+<h3 id="Deployment_states">Deployment states</h3>
 <p>With each block and fork, we associate a deployment state. The possible
 states are:</p>
 <ol>
@@ -147,16 +147,16 @@ states are:</p>
 genesis block for any chain SHALL by definition be in this state for
 each deployment.</li>
 <li><strong>STARTED</strong> for blocks past the starttime.</li>
-<li><strong>LOCKED_IN</strong> after STARTED, if at least threshold out of
-windowsize blocks have the associated bit set in nVersion, measured
-at next height that is evenly divisible by the windowsize.</li>
+<li><strong>LOCKED_IN</strong> after STARTED, if at least threshold out of windowsize
+blocks have the associated bit set in nVersion, measured at next
+height that is evenly divisible by the windowsize.</li>
 <li><strong>ACTIVE</strong> for all blocks after the grace period conditions have
 been met.</li>
 <li><strong>FAILED</strong> if past the timeout time and LOCKED_IN was not reached.</li>
 </ol>
 <p>In accordance with BIP9, a block's state SHALL never depend on its own
 nVersion; only on that of its ancestors.</p>
-<h3 id="fork-deployment-parameters">Fork deployment parameters</h3>
+<h3 id="Fork_deployment_parameters">Fork deployment parameters</h3>
 <p>Each fork deployment is specified by the following per-chain parameters:</p>
 <ol>
 <li>The <strong>name</strong> specifies a very brief description of the fork,
@@ -191,7 +191,7 @@ in the fork), then the fork becomes activated. Both minlockedtime
 and minlockedblocks (see above) must be satisfied before a fork can
 become active.</li>
 </ol>
-<h3 id="tallying">Tallying</h3>
+<h3 id="Tallying">Tallying</h3>
 <p>If a block's nVersion does not have its top 3 bits set to 001, all its
 signaling bits MUST be treated as if they are '0'.</p>
 <p>A signaling bit value of '1' SHALL indicate support of a fork and SHALL
@@ -200,7 +200,7 @@ count towards its tally on a chain.</p>
 and SHALL NOT count towards its tally on a chain.</p>
 <p>The signaling bits SHALL be tallied whenever the head of the active
 chain changes (including after reorganizations).</p>
-<h3 id="state-transitions">State transitions</h3>
+<h3 id="State_transitions">State transitions</h3>
 <p>The following diagram illustrates the generalized state machine:</p>
 <p><img src="bip-0135/bip-0135-states-small.png" align="middle"></img><br />
 <strong>NOTES:</strong></p>
@@ -215,8 +215,8 @@ received on that chain.</p>
 <p>A transition from the STARTED state to the LOCKED_IN state SHALL only
 occur when all of these are true:</p>
 <ul>
-<li>the height of the received block is an integer multiple of the
-window size</li>
+<li>the height of the received block is an integer multiple of the window
+size</li>
 <li>the MTP is below the timeout time</li>
 <li>at least threshold out of windowsize blocks have signaled support</li>
 </ul>
@@ -242,10 +242,10 @@ a multiple of the windowsize.</p>
 states once they are reached.</p>
 <p>Deployment states are maintained along block chain branches. They need
 re-computation when a reorganization happens.</p>
-<h3 id="new-consensus-rules">New consensus rules</h3>
+<h3 id="New_consensus_rules">New consensus rules</h3>
 <p>New consensus rules deployed by a fork SHALL be enforced for each block
 that has ACTIVE state.</p>
-<h3 id="optional-operator-notifications">Optional operator notifications</h3>
+<h3 id="Optional_operator_notifications">Optional operator notifications</h3>
 <p>An implementation SHOULD notify the operator when a deployment
 transitions to STARTED, LOCKED_IN, ACTIVE or FAILED states.</p>
 <p>It is RECOMMENDED that an implementation provide finer-grained
@@ -271,10 +271,10 @@ blocks)&quot;</li>
 that implementations allow the user to configure the emission of such
 notifications (e.g. suitable N and M parameters in the messages above,
 e.g. a best-guess window of 100 blocks).</p>
-<h3 id="getblocktemplate-changes">getblocktemplate changes</h3>
+<h3 id="getblocktemplate_changes">getblocktemplate changes</h3>
 <p>The getblocktemplate features introduced in BIP9 remain in effect
 unmodified.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>The timeout into FAILED state allows eventual reuse of bits if a fork
 was not successfully activated.</p>
 <p>A fallow period at the conclusion of a fork attempt allows some
@@ -287,8 +287,8 @@ months is RECOMMENDED.</p>
 independent deployments. By restricting the top 3 bits to 001 we we are
 left with 29 out of those for the purposes of this proposal, and support
 two future upgrades for different mechanisms (top bits 010 and 011).</p>
-<h2 id="guidelines">Guidelines</h2>
-<h3 id="parameter-selection-guidelines">Parameter selection guidelines</h3>
+<h2 id="Guidelines">Guidelines</h2>
+<h3 id="Parameter_selection_guidelines">Parameter selection guidelines</h3>
 <p>The following guidelines are suggested for selecting the parameters for
 a fork:</p>
 <ol>
@@ -334,7 +334,7 @@ multiple of the windowsize.</p>
 starttime is after the previous fork's timeout or activation, but it is
 discouraged until necessary, and even then recommended to have a pause
 in between to detect buggy software.</p>
-<h3 id="signaling-guidelines">Signaling guidelines</h3>
+<h3 id="Signaling_guidelines">Signaling guidelines</h3>
 <p>An implementation SHOULD signal '0' on a bit if one of the following
 holds true:</p>
 <ul>
@@ -359,7 +359,7 @@ deployment parameters' above).</p>
 support for a fork that is DEFINED in their software.</p>
 <p>It is NOT RECOMMENDED to signal '1' for bits where the meaning is
 undefined (i.e. bits which are unclaimed by proposals).</p>
-<h3 id="settings-for-bip9-compatibility">Settings for BIP9 compatibility</h3>
+<h3 id="Settings_for_BIP9_compatibility">Settings for BIP9 compatibility</h3>
 <p>This section lists parameter values which can be used to effect
 compatibility with the existing BIP9 versionbits state machine.</p>
 <p>The following table describes mainnet compatibility options (95%, 2016
@@ -388,7 +388,7 @@ blocks):</p>
 <tr><td>minlockedblocks</td></tr>
 <tr><td>minlockedtime</td></tr>
 </tbody></table>
-<h2 id="deployment">Deployment</h2>
+<h2 id="Deployment">Deployment</h2>
 <p>As this BIP is not itself consensus-relevant (Information like BIP9), it
 can be rolled out without the use of a BIP9 fork bit.</p>
 <p>Backward compatibility through judicious fork configuration parameters
@@ -396,24 +396,24 @@ should ensure that it does not interfere with existing known
 deployments.</p>
 <p>By way of design it does not interfere with unknown (undefined)
 deployments.</p>
-<h2 id="reference-implementation">Reference implementation</h2>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>A working reference implementation, including tests, can be found in
 these Pull Requests:</p>
 <ul>
-<li><a href="https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/458">https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/458</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/458">https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/458</a></li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
-<li><a href="https://github.com/bitcoin/bitcoin/pull/10437">https://github.com/bitcoin/bitcoin/pull/10437</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/10437">https://github.com/bitcoin/bitcoin/pull/10437</a></li>
 </ul>
 <p>Existing unit tests and regression tests have been left active to
 demonstrate backward compatibility of the default settings with BIP9.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <p>[1]
-<a href="http://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">http://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16</a></p>
-<p>[2] <a href="https://github.com/bitcoin/bips/blob/master/bip-0009/assignments.mediawiki" title="wikilink">List of existing BIP9 deployment
+<a rel="noopener" target="_blank" href="http://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">http://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16</a></p>
+<p>[2] <a rel="noopener" target="_blank" title="wikilink" href="https://github.com/bitcoin/bips/blob/master/bip-0009/assignments.mediawiki">List of existing BIP9 deployment
 proposals</a></p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is dual-licensed under the Creative Commons CC0 1.0 Universal
 and GNU All-Permissive licenses.</p>
 
@@ -423,7 +423,7 @@ and GNU All-Permissive licenses.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

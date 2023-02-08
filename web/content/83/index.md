@@ -14,18 +14,16 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0083.mediawiki"
 +++
 
-``` 
-  BIP: 83
-  Layer: Applications
-  Title: Dynamic Hierarchical Deterministic Key Trees
-  Author: Eric Lombrozo <eric@ciphrex.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0083
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-11-16
-  License: PD
-```
+      BIP: 83
+      Layer: Applications
+      Title: Dynamic Hierarchical Deterministic Key Trees
+      Author: Eric Lombrozo <eric@ciphrex.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0083
+      Status: Rejected
+      Type: Standards Track
+      Created: 2015-11-16
+      License: PD
 
 ## Abstract
 
@@ -62,8 +60,8 @@ the tree.
 
 At every level of the hierarchy, we reserve the child with index 0 to
 allow further nesting, and for signing key parent nodes use child
-indices 1 to MAX\_INDEX (2<sup>31</sup> - 1) for signing keys. We can
-use either hardened or nonhardened derivation.
+indices 1 to MAX_INDEX (2<sup>31</sup> - 1) for signing keys. We can use
+either hardened or nonhardened derivation.
 
 Let p denote a specific signing key parent node and k be an index
 greater than 0. The children signing keys are then:
@@ -109,7 +107,7 @@ derivation, we lose the ability to nest deeper levels into the
 hierarchy. While we could reserve any arbitrary index for nesting
 sublevels, reserving child 0 seems simplest to implement, leaving all
 indices \> 0 for contiguously indexed signing keys. We could also use
-MAX\_INDEX (2<sup>31</sup> - 1) for this purpose. However, we believe
+MAX_INDEX (2<sup>31</sup> - 1) for this purpose. However, we believe
 doing so introduces more ideosyncracies into the semantics and will
 present a problem if we ever decide to extend the scheme to use indices
 larger than 31 bits.
@@ -154,10 +152,10 @@ revealing a parent node used to derive all the children.
 
 ## References
 
-  - [BIP32 - Hierarchical Deterministic
-    Wallets](bip-0032.mediawiki "wikilink")
-  - [Lightning Network
-    Whitepaper](https://lightning.network/lightning-network-paper.pdf "wikilink")
+- [BIP32 - Hierarchical Deterministic
+  Wallets](/32)
+- [Lightning Network
+  Whitepaper](https://lightning.network/lightning-network-paper.pdf "wikilink")
 
 ## Copyright
 

@@ -14,19 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0014.mediawiki"
 +++
 
-``` 
-  BIP: 14
-  Layer: Peer Services
-  Title: Protocol Version and User Agent
-  Author: Amir Taaki <genjix@riseup.net>
-          Patrick Strateman <bitcoin-bips@covertinferno.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0014
-  Status: Final
-  Type: Standards Track
-  Created: 2011-11-10
-  Post-History: 2011-11-02
-```
+      BIP: 14
+      Layer: Peer Services
+      Title: Protocol Version and User Agent
+      Author: Amir Taaki <genjix@riseup.net>
+              Patrick Strateman <bitcoin-bips@covertinferno.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0014
+      Status: Final
+      Type: Standards Track
+      Created: 2011-11-10
+      Post-History: 2011-11-02
 
 In this document, bitcoin will be used to refer to the protocol while
 Satoshi will refer to the current client in order to prevent confusion.
@@ -87,10 +85,10 @@ lead to protocol fracturing.
 
 In short:
 
-  - Protocol version: way to distinguish between nodes and behave
-    different accordingly.
-  - User agent: simple informational tool. Protocol should not be
-    modified depending on user agent.
+- Protocol version: way to distinguish between nodes and behave
+  different accordingly.
+- User agent: simple informational tool. Protocol should not be modified
+  depending on user agent.
 
 ## Browser User-Agents
 
@@ -116,7 +114,7 @@ The version field in "version" and "getblocks" packets will become the
 protocol version number. The version number in the "blocks" reflects the
 protocol version from when that block was created.
 
-The currently unused sub\_version\_num field in "version" packets will
+The currently unused sub_version_num field in "version" packets will
 become the new user-agent string.
 
 Bitcoin user agents are a modified browser user agent with more
@@ -139,8 +137,8 @@ internal codebase they use are different versions of the same software.
 The version numbers are not defined to any strict format, although this
 guide recommends:
 
-  - Version numbers in the form of Major.Minor.Revision (2.6.41)
-  - Repository builds using a date in the format of YYYYMMDD (20110128)
+- Version numbers in the form of Major.Minor.Revision (2.6.41)
+- Repository builds using a date in the format of YYYYMMDD (20110128)
 
 For git repository builds, implementations are free to use the git
 commitish. However the issue lies in that it is not immediately obvious
@@ -167,9 +165,9 @@ Reserved symbols are therefore: / : ( )
 
 They should not be misused beyond what is specified in this section.
 
-  - / separates the code-stack
-  - : specifies the implementation version of the particular stack
-  - ( and ) delimits a comment which optionally separates data using ;
+- / separates the code-stack
+- : specifies the implementation version of the particular stack
+- ( and ) delimits a comment which optionally separates data using ;
 
 ## Timeline
 

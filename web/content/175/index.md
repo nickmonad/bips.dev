@@ -14,19 +14,17 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0175.mediawiki"
 +++
 
-``` 
-  BIP: 175
-  Layer: Applications
-  Title: Pay to Contract Protocol
-  Author: Omar Shibli <omar@commerceblock.com>
-          Nicholas Gregory <nicholas@commerceblock.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0175
-  Status: Rejected
-  Type: Informational
-  Created: 2017-07-17
-  License: BSD-2-Clause
-```
+      BIP: 175
+      Layer: Applications
+      Title: Pay to Contract Protocol
+      Author: Omar Shibli <omar@commerceblock.com>
+              Nicholas Gregory <nicholas@commerceblock.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0175
+      Status: Rejected
+      Type: Informational
+      Created: 2017-07-17
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -129,8 +127,8 @@ the hash function.
 
 ` hash_1,...,hash_n`
 
-3\. Prepend payment\_base and concatenate the sorted hashes and apply
-the hash function.
+3\. Prepend payment_base and concatenate the sorted hashes and apply the
+hash function.
 
 ` h(payment_base+hash_1+...+hash_n)`
 
@@ -139,7 +137,7 @@ defined in Hash to Partial Derivation Path Mapping procedure below.
 
 ` contract_hash`
 
-5\. Prepend `payment_base` to contract\_hash derivation path.
+5\. Prepend `payment_base` to contract_hash derivation path.
 
 ` payment_base / contract_hash`
 
@@ -266,7 +264,7 @@ document 1:
 
 ` baa5a0964d3320fbc0c6a922140453c8513ea24ab8fd0577034804a967248096`
 
-2\. Prepend payment\_base
+2\. Prepend payment_base
 
 ` xpub6B3JSEWjqm5GgfzcjPwBixxLPzi15pFM3jq4E4yCzXXUFS5MFdXiSdw7b5dbdPGHuc7c1V4zXbbFRtc9G1njMUt9ZvMdGVGYQSQsurD6HAWbaa5a0964d3320fbc0c6a922140453c8513ea24ab8fd0577034804a967248096`
 
@@ -278,7 +276,7 @@ document 1:
 
 ` 5338/54412/19213/962/30664/62597/11873/59874/56779/24089/54550/19585/28087/36422/18666/17562`
 
-4\. Prepend contract\_base<sub>pub</sub> to contract\_hash derivation
+4\. Prepend contract_base<sub>pub</sub> to contract_hash derivation
 path.
 
 ` contract_base_pub/5338/54412/19213/962/30664/62597/11873/59874/56779/24089/54550/19585/28087/36422/18666/17562`  
@@ -308,23 +306,23 @@ and generating the path requires significant modification to the wallet.
 
 ## Reference implementations
 
-  - Reference wallet implementation, based on Copay project :
-    <https://github.com/commerceblock/copay>
-    ([pull\_request](https://github.com/commerceblock/copay/pull/1 "wikilink"))
-  - Reference implementation to Hash to Partial Derivation Path Mapping
-    in javascript
-    ([<https://github.com/commerceblock/pay-to-contract-lib>](https://github.com/commerceblock/pay-to-contract-lib/blob/master/lib/contract.js "wikilink"))
+- Reference wallet implementation, based on Copay project :
+  <https://github.com/commerceblock/copay>
+  ([pull_request](https://github.com/commerceblock/copay/pull/1 "wikilink"))
+- Reference implementation to Hash to Partial Derivation Path Mapping in
+  javascript
+  ([<https://github.com/commerceblock/pay-to-contract-lib>](https://github.com/commerceblock/pay-to-contract-lib/blob/master/lib/contract.js "wikilink"))
 
 ## Reference
 
-  - [BIP32 - Hierarchical Deterministic
-    Wallets](bip-0032.mediawiki "wikilink")
-  - [BIP43 - Purpose Field for Deterministic
-    Wallets](bip-0043.mediawiki "wikilink")
-  - [BIP44 - Multi-Account Hierarchy for Deterministic
-    Wallets](bip-0044.mediawiki "wikilink")
-  - [Homomorphic Payment Addresses and the Pay-to-Contract
-    Protocol](https://arxiv.org/abs/1212.3257 "wikilink")
+- [BIP32 - Hierarchical Deterministic
+  Wallets](/32)
+- [BIP43 - Purpose Field for Deterministic
+  Wallets](/43)
+- [BIP44 - Multi-Account Hierarchy for Deterministic
+  Wallets](/44)
+- [Homomorphic Payment Addresses and the Pay-to-Contract
+  Protocol](https://arxiv.org/abs/1212.3257 "wikilink")
 
 ## Copyright
 

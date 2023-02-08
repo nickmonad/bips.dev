@@ -14,19 +14,17 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0045.mediawiki"
 +++
 
-``` 
-  BIP: 45
-  Layer: Applications
-  Title: Structure for Deterministic P2SH Multisignature Wallets
-  Author: Manuel Araoz <manu@bitpay.com>
-          Ryan X. Charles <ryan@bitpay.com>
-          Matias Alejo Garcia <matias@bitpay.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0045
-  Status: Proposed
-  Type: Standards Track
-  Created: 2014-04-25
-```
+      BIP: 45
+      Layer: Applications
+      Title: Structure for Deterministic P2SH Multisignature Wallets
+      Author: Manuel Araoz <manu@bitpay.com>
+              Ryan X. Charles <ryan@bitpay.com>
+              Matias Alejo Garcia <matias@bitpay.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0045
+      Status: Proposed
+      Type: Standards Track
+      Created: 2014-04-25
 
 ## Abstract
 
@@ -42,15 +40,15 @@ The structure proposed in this document allows for standard ways to
 create, use, import, and store HDPM wallets. It allows to handle
 multiple parties sharing an m-of-n wallet, on the following assumptions:
 
-  - n parties share an m-of-n wallet.
-  - Each party generates their master private keys independently.
-  - Multisig P2SH is used for all addresses.
-  - BIP32 is used to derive public keys, then create a multisig script,
-    and the corresponding P2SH address for that script.
-  - Address generation should not require communication between parties.
-    (Thus, all parties must be able to generate all public keys)
-  - Transaction creation and signing requires communication between
-    parties.
+- n parties share an m-of-n wallet.
+- Each party generates their master private keys independently.
+- Multisig P2SH is used for all addresses.
+- BIP32 is used to derive public keys, then create a multisig script,
+  and the corresponding P2SH address for that script.
+- Address generation should not require communication between parties.
+  (Thus, all parties must be able to generate all public keys)
+- Transaction creation and signing requires communication between
+  parties.
 
 This BIP will allow interoperability between various HDPM wallet
 implementations.
@@ -96,8 +94,8 @@ the following purpose public keys:
     03f76588e06c0d688617ef365d1e58a7f1aa84daa3801380b1e7f12acc9a69cd13
 
 it should use `m / 45 ' / 0 / *` for
-`039863fb5f07b667d9b1ca68773c6e6cdbcac0088ffba9af46f6f6acd153d44463`, `m
-/ 45 ' / 1 / *` for
+`039863fb5f07b667d9b1ca68773c6e6cdbcac0088ffba9af46f6f6acd153d44463`,
+`m / 45 ' / 1 / *` for
 `03a473275a750a20b7b71ebeadfec83130c014da4b53f1c4743fcf342af6589a38`,
 and `m / 45 ' / 2 / *` for
 `03f76588e06c0d688617ef365d1e58a7f1aa84daa3801380b1e7f12acc9a69cd13`, as
@@ -198,8 +196,8 @@ should start to discover the addresses in the following manner:
 
 1.  for each cosigner:
 2.  derive the cosigner's node (`m / 45' / cosigner_index`)
-3.  for both the external and internal chains on this node (`m / 45' /
-    cosigner_index / 0` and `m / 45' / cosigner_index / 1`):
+3.  for both the external and internal chains on this node
+    (`m / 45' / cosigner_index / 0` and `m / 45' / cosigner_index / 1`):
 4.  scan addresses of the chain; respect the gap limit described below
 
 Please note that the algorithm uses the transaction history, not address
@@ -230,26 +228,26 @@ payment, requested by the corresponding cosigner.
 
 ## Examples
 
-| cosigner\_index | change  | address\_index | path                |
-| --------------- | ------- | -------------- | ------------------- |
-| first           | receive | first          | m / 45' / 0 / 0 / 0 |
-| first           | receive | second         | m / 45' / 0 / 0 / 1 |
-| first           | receive | fifth          | m / 45' / 0 / 0 / 4 |
-| first           | change  | first          | m / 45' / 0 / 1 / 0 |
-| first           | change  | second         | m / 45' / 0 / 1 / 1 |
-| second          | receive | first          | m / 45' / 1 / 0 / 0 |
-| third           | change  | tenth          | m / 45' / 2 / 1 / 9 |
+| cosigner_index | change  | address_index | path                |
+|----------------|---------|---------------|---------------------|
+| first          | receive | first         | m / 45' / 0 / 0 / 0 |
+| first          | receive | second        | m / 45' / 0 / 0 / 1 |
+| first          | receive | fifth         | m / 45' / 0 / 0 / 4 |
+| first          | change  | first         | m / 45' / 0 / 1 / 0 |
+| first          | change  | second        | m / 45' / 0 / 1 / 1 |
+| second         | receive | first         | m / 45' / 1 / 0 / 0 |
+| third          | change  | tenth         | m / 45' / 2 / 1 / 9 |
 
 ## Compatible wallets
 
-  - [Copay wallet](https://copay.io "wikilink")
-    ([source](https://github.com/bitpay/copay "wikilink"))
+- [Copay wallet](https://copay.io "wikilink")
+  ([source](https://github.com/bitpay/copay "wikilink"))
 
 ## Reference
 
-  - [BIP32 - Hierarchical Deterministic
-    Wallets](bip-0032.mediawiki "wikilink")
-  - [BIP43 - Purpose Field for Deterministic
-    Wallets](bip-0043.mediawiki "wikilink")
-  - [Original mailing list
-    discussion](https://www.mail-archive.com/bitcoin-development@lists.sourceforge.net/msg05156.html "wikilink")
+- [BIP32 - Hierarchical Deterministic
+  Wallets](/32)
+- [BIP43 - Purpose Field for Deterministic
+  Wallets](/43)
+- [Original mailing list
+  discussion](https://www.mail-archive.com/bitcoin-development@lists.sourceforge.net/msg05156.html "wikilink")

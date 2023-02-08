@@ -14,18 +14,16 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0087.mediawiki"
 +++
 
-``` 
-  BIP: 87
-  Layer: Applications
-  Title: Hierarchy for Deterministic Multisig Wallets
-  Author: Robert Spigler <RobertSpigler@ProtonMail.ch>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0087
-  Status: Proposed
-  Type: Standards Track
-  Created: 2020-03-11
-  License: BSD-2-Clause
-```
+      BIP: 87
+      Layer: Applications
+      Title: Hierarchy for Deterministic Multisig Wallets
+      Author: Robert Spigler <RobertSpigler@ProtonMail.ch>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0087
+      Status: Proposed
+      Type: Standards Track
+      Created: 2020-03-11
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -85,7 +83,7 @@ The second multisignature "standard" in use is m/48', which specifies:
 
 Rather than following in BIP 44/49/84's path and having a separate BIP
 per script after P2SH (BIP45), vendors decided to insert `script_type'`
-into the derivation path (where P2SH-P2WSH=1, P2WSH=2, Future\_Script=3,
+into the derivation path (where P2SH-P2WSH=1, P2WSH=2, Future_Script=3,
 etc). As described previously, this is unnecessary, as the descriptor
 sets the script. While it attempts to reduce maintainence work by
 getting rid of new BIPs-per-script, it still requires maintaining an
@@ -95,7 +93,7 @@ The structure proposed later in this paper solves these issues and is
 quite comprehensive. It allows for the handling of multiple accounts,
 external and internal chains per account, and millions of addresses per
 chain, in a multi-party, multisignature, hierarchical deterministic
-wallet regardless of the script type \[1\].
+wallet regardless of the script type [^1].
 
 This paper was inspired from BIP44.
 
@@ -162,9 +160,9 @@ Hardened derivation is used at this level.
 It is crucial that this level is increased for each new wallet joined or
 private/public keys created; for both privacy and cryptographic
 purposes. For example, before sending a new key record to a coordinator,
-the wallet must increment the `account'` level. This prevents key reuse
-- across ECDSA and Schnorr signatures, across different script types,
-and inbetween the same wallet types.
+the wallet must increment the `account'` level. This prevents key
+reuse - across ECDSA and Schnorr signatures, across different script
+types, and inbetween the same wallet types.
 
 ### Change
 
@@ -243,7 +241,7 @@ error detection.
 ## Examples
 
 |         |         |          |         |                           |
-| ------- | ------- | -------- | ------- | ------------------------- |
+|---------|---------|----------|---------|---------------------------|
 | network | account | chain    | address | path                      |
 | mainnet | first   | external | first   | m / 87' / 0' / 0' / 0 / 0 |
 | mainnet | first   | external | second  | m / 87' / 0' / 0' / 0 / 1 |
@@ -275,25 +273,23 @@ specification.
 Original mailing list thread:
 <https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-March/018630.html>
 
-  - [BIP-0032 (Hierarchical Deterministic
-    Wallets)](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
-  - [BIP-0043 (Purpose Field for Deterministic
-    Wallets)](https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki)
-  - [BIP-0044 (Multi-Account Hierarchy for Deterministic
-    Wallets)](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
-  - [Output
-    Descriptors](https://github.com/bitcoin/bitcoin/blob/master/doc/descriptors.md)
-  - [BIP-0174 (Partially Signed Bitcoin Transaction
-    Format)](https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki)
-  - [BIP-0067 (Deterministic Pay-to-script-hash multi-signature
-    addresses through public key
-    sorting)](https://github.com/bitcoin/bips/blob/master/bip-0067.mediawiki)
-  - [BIP-0129 (Bitcoin Secure Multisig
-    Setup)](https://github.com/bitcoin/bips/blob/master/bip-0129.mediawiki)
+- [BIP-0032 (Hierarchical Deterministic
+  Wallets)](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+- [BIP-0043 (Purpose Field for Deterministic
+  Wallets)](https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki)
+- [BIP-0044 (Multi-Account Hierarchy for Deterministic
+  Wallets)](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
+- [Output
+  Descriptors](https://github.com/bitcoin/bitcoin/blob/master/doc/descriptors.md)
+- [BIP-0174 (Partially Signed Bitcoin Transaction
+  Format)](https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki)
+- [BIP-0067 (Deterministic Pay-to-script-hash multi-signature addresses
+  through public key
+  sorting)](https://github.com/bitcoin/bips/blob/master/bip-0067.mediawiki)
+- [BIP-0129 (Bitcoin Secure Multisig
+  Setup)](https://github.com/bitcoin/bips/blob/master/bip-0129.mediawiki)
 
-<!-- end list -->
-
-1.  **Why propose this structure only for multisignature wallets?**
+[^1]: **Why propose this structure only for multisignature wallets?**
     Currently, single-sig wallets are able to restore funds using just
     the master private key data (in the format of BIP39 usually). Even
     if the user doesn't recall the derivation used, the wallet

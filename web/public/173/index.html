@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,62 +46,62 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 173
-  Layer: Applications
-  Title: Base32 address format for native v0-16 witness outputs
-  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-          Greg Maxwell &lt;greg@xiph.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0173
-  Status: Final
-  Type: Informational
-  Created: 2017-03-20
-  License: BSD-2-Clause
-  Replaces: 142
-</span></code></pre><h2 id="introduction">Introduction</h2>
-<h3 id="abstract">Abstract</h3>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 173
+</span><span>  Layer: Applications
+</span><span>  Title: Base32 address format for native v0-16 witness outputs
+</span><span>  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+</span><span>          Greg Maxwell &lt;greg@xiph.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0173
+</span><span>  Status: Final
+</span><span>  Type: Informational
+</span><span>  Created: 2017-03-20
+</span><span>  License: BSD-2-Clause
+</span><span>  Replaces: 142
+</span></code></pre>
+<h2 id="Introduction">Introduction</h2>
+<h3 id="Abstract">Abstract</h3>
 <p>This document proposes a checksummed base32 format, &quot;Bech32&quot;, and a
 standard for native segregated witness output addresses using it.</p>
-<h3 id="copyright">Copyright</h3>
+<h3 id="Copyright">Copyright</h3>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h3 id="motivation">Motivation</h3>
+<h3 id="Motivation">Motivation</h3>
 <p>For most of its history, Bitcoin has relied on base58 addresses with a
 truncated double-SHA256 checksum. They were part of the original
 software and their scope was extended in
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki">BIP13</a>
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki">BIP13</a>
 for Pay-to-script-hash
-(<a href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki">P2SH</a>).
+(<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki">P2SH</a>).
 However, both the character set and the checksum algorithm have
 limitations:</p>
 <ul>
 <li>Base58 needs a lot of space in QR codes, as it cannot use the
 <em>alphanumeric mode</em>.</li>
-<li>The mixed case in base58 makes it inconvenient to reliably write
-down, type on mobile keyboards, or read out loud.</li>
+<li>The mixed case in base58 makes it inconvenient to reliably write down,
+type on mobile keyboards, or read out loud.</li>
 <li>The double SHA256 checksum is slow and has no error-detection
 guarantees.</li>
 <li>Most of the research on error-detecting codes only applies to
-character-set sizes that are a <a href="https://en.wikipedia.org/wiki/Prime_power">prime
+character-set sizes that are a <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Prime_power">prime
 power</a>, which 58 is not.</li>
 <li>Base58 decoding is complicated and relatively slow.</li>
 </ul>
 <p>Included in the Segregated Witness proposal are a new class of outputs
 (witness programs, see
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a>),
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a>),
 and two instances of it (&quot;P2WPKH&quot; and &quot;P2WSH&quot;, see
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki">BIP143</a>).
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki">BIP143</a>).
 Their functionality is available indirectly to older clients by
 embedding in P2SH outputs, but for optimal efficiency and security it is
 best to use it directly. In this document we propose a new address
 format for native witness outputs (current and future versions).</p>
 <p>This replaces
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0142.mediawiki">BIP142</a>,
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0142.mediawiki">BIP142</a>,
 and was previously discussed
-<a href="https://bitcoincore.org/logs/2016-05-zurich-meeting-notes.html#base32">here</a>
+<a rel="noopener" target="_blank" href="https://bitcoincore.org/logs/2016-05-zurich-meeting-notes.html#base32">here</a>
 (summarized
-<a href="https://bitcoincore.org/en/meetings/2016/05/20/#error-correcting-codes-for-future-address-types">here</a>).</p>
-<h3 id="examples">Examples</h3>
+<a rel="noopener" target="_blank" href="https://bitcoincore.org/en/meetings/2016/05/20/#error-correcting-codes-for-future-address-types">here</a>).</p>
+<h3 id="Examples">Examples</h3>
 <p>All examples use public key
 <code>0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</code>.
 The P2WSH examples use <code>key OP_CHECKSIG</code> as script.</p>
@@ -113,19 +113,19 @@ The P2WSH examples use <code>key OP_CHECKSIG</code> as script.</p>
 <li>Testnet P2WSH:
 <code>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</code></li>
 </ul>
-<h2 id="specification">Specification</h2>
-<p>We first describe the general checksummed base32[1] format called
+<h2 id="Specification">Specification</h2>
+<p>We first describe the general checksummed base32<sup class="footnote-reference"><a href="#1">1</a></sup> format called
 <em>Bech32</em> and then define Segregated Witness addresses using it.</p>
-<h3 id="bech32">Bech32</h3>
-<p>A Bech32[2] string is at most 90 characters long and consists of:</p>
+<h3 id="Bech32">Bech32</h3>
+<p>A Bech32<sup class="footnote-reference"><a href="#2">2</a></sup> string is at most 90 characters long and consists of:</p>
 <ul>
 <li>The <strong>human-readable part</strong>, which is intended to convey the type of
-data, or anything else that is relevant to the reader. This part
-MUST contain 1 to 83 US-ASCII characters, with each character having
-a value in the range [33-126]. HRP validity may be further
-restricted by specific applications.</li>
-<li>The <strong>separator</strong>, which is always &quot;1&quot;. In case &quot;1&quot; is allowed
-inside the human-readable part, the last one in the string is the
+data, or anything else that is relevant to the reader. This part MUST
+contain 1 to 83 US-ASCII characters, with each character having a
+value in the range [33-126]. HRP validity may be further restricted
+by specific applications.</li>
+<li>The <strong>separator</strong>, which is always &quot;1&quot;. In case &quot;1&quot; is allowed inside
+the human-readable part, the last one in the string is the
 separator<ref><strong>Why include a separator in addresses?</strong> That way the
 human-readable</li>
 </ul>
@@ -135,22 +135,25 @@ allows us to avoid having character-set restrictions on the
 human-readable part. The separator is <em>1</em> because using a
 non-alphanumeric character would complicate copy-pasting of addresses
 (with no double-click selection in several applications). Therefore an
-alphanumeric character outside the normal character set was
-chosen.</ref>.</p>
+alphanumeric character outside the normal character set was chosen.</p>
+</ref>
+<p>.</p>
 <ul>
 <li>The <strong>data part</strong>, which is at least 6 characters long and only
 consists of alphanumeric characters excluding &quot;1&quot;, &quot;b&quot;, &quot;i&quot;, and
 &quot;o&quot;<ref><strong>Why not use an existing character set like
-<a href="http://www.faqs.org/rfcs/rfc3548.html">RFC3548</a> or
-<a href="https://philzimmermann.com/docs/human-oriented-base-32-encoding.txt">z-base-32</a></strong>?</li>
+<a rel="noopener" target="_blank" href="http://www.faqs.org/rfcs/rfc3548.html">RFC3548</a> or
+<a rel="noopener" target="_blank" href="https://philzimmermann.com/docs/human-oriented-base-32-encoding.txt">z-base-32</a></strong>?</li>
 </ul>
 <p>The character set is chosen to minimize ambiguity according to
-<a href="https://hissa.nist.gov/%7Eblack/GTLD/">this</a> visual similarity data, and
+<a rel="noopener" target="_blank" href="https://hissa.nist.gov/~black/GTLD/">this</a> visual similarity data, and
 the ordering is chosen to minimize the number of pairs of similar
 characters (according to the same data) that differ in more than 1 bit.
 As the checksum is chosen to maximize detection capabilities for low
 numbers of bit errors, this choice improves its performance under some
-error models.</ref>.</p>
+error models.</p>
+</ref>
+<p>.</p>
 <table><thead><tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead><tbody>
 <tr><td>+0</td><td>q</td><td>p</td><td>z</td><td>r</td><td>y</td><td>9</td><td>x</td><td>8</td></tr>
 <tr><td>+8</td><td>g</td><td>f</td><td>2</td><td>t</td><td>v</td><td>d</td><td>w</td><td>0</td></tr>
@@ -167,41 +170,39 @@ must return true when its arguments are:</p>
 <li><code>data</code>: the data part as a list of integers representing the
 characters after conversion using the table above</li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>def bech32_polymod(values):
-  GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3]
-  chk = 1
-  for v in values:
-    b = (chk &gt;&gt; 25)
-    chk = (chk &amp; 0x1ffffff) &lt;&lt; 5 ^ v
-    for i in range(5):
-      chk ^= GEN[i] if ((b &gt;&gt; i) &amp; 1) else 0
-  return chk
-
-def bech32_hrp_expand(s):
-  return [ord(x) &gt;&gt; 5 for x in s] + [0] + [ord(x) &amp; 31 for x in s]
-
-def bech32_verify_checksum(hrp, data):
-  return bech32_polymod(bech32_hrp_expand(hrp) + data) == 1
-</code></pre>
-<p>This implements a <a href="https://en.wikipedia.org/wiki/BCH_code">BCH code</a>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>def bech32_polymod(values):
+</span><span>  GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3]
+</span><span>  chk = 1
+</span><span>  for v in values:
+</span><span>    b = (chk &gt;&gt; 25)
+</span><span>    chk = (chk &amp; 0x1ffffff) &lt;&lt; 5 ^ v
+</span><span>    for i in range(5):
+</span><span>      chk ^= GEN[i] if ((b &gt;&gt; i) &amp; 1) else 0
+</span><span>  return chk
+</span><span>
+</span><span>def bech32_hrp_expand(s):
+</span><span>  return [ord(x) &gt;&gt; 5 for x in s] + [0] + [ord(x) &amp; 31 for x in s]
+</span><span>
+</span><span>def bech32_verify_checksum(hrp, data):
+</span><span>  return bech32_polymod(bech32_hrp_expand(hrp) + data) == 1
+</span></code></pre>
+<p>This implements a <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/BCH_code">BCH code</a>
 that guarantees detection of <strong>any error affecting at most 4
 characters</strong> and has less than a 1 in 10<sup>9</sup> chance of failing
 to detect more errors. More details about the properties can be found in
 the Checksum Design appendix. The human-readable part is processed by
 first feeding the higher bits of each character's US-ASCII value into
 the checksum calculation followed by a zero and then the lower bits of
-each[3].</p>
+each<sup class="footnote-reference"><a href="#3">3</a></sup>.</p>
 <p>To construct a valid checksum given the human-readable part and
 (non-checksum) values of the data-part characters, the code below can be
 used:</p>
-<pre style="background-color:#fafafa;">
-<code>def bech32_create_checksum(hrp, data):
-  values = bech32_hrp_expand(hrp) + data
-  polymod = bech32_polymod(values + [0,0,0,0,0,0]) ^ 1
-  return [(polymod &gt;&gt; 5 * (5 - i)) &amp; 31 for i in range(6)]
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>def bech32_create_checksum(hrp, data):
+</span><span>  values = bech32_hrp_expand(hrp) + data
+</span><span>  polymod = bech32_polymod(values + [0,0,0,0,0,0]) ^ 1
+</span><span>  return [(polymod &gt;&gt; 5 * (5 - i)) &amp; 31 for i in range(6)]
+</span></code></pre>
 <p><strong>Error correction</strong></p>
 <p>One of the properties of these BCH codes is that they can be used for
 error correction. An unfortunate side effect of error correction is that
@@ -222,31 +223,33 @@ can be performed external to the encoding process.</p>
 <p>Decoders MUST NOT accept strings where some characters are uppercase and
 some are lowercase (such strings are referred to as mixed case strings).</p>
 <p>For presentation, lowercase is usually preferable, but inside QR codes
-uppercase SHOULD be used, as those permit the use of <em><a href="http://www.thonky.com/qr-code-tutorial/alphanumeric-mode-encoding">alphanumeric
+uppercase SHOULD be used, as those permit the use of <em><a rel="noopener" target="_blank" href="http://www.thonky.com/qr-code-tutorial/alphanumeric-mode-encoding">alphanumeric
 mode</a></em>,
-which is 45% more compact than the normal <em><a href="http://www.thonky.com/qr-code-tutorial/byte-mode-encoding">byte
+which is 45% more compact than the normal <em><a rel="noopener" target="_blank" href="http://www.thonky.com/qr-code-tutorial/byte-mode-encoding">byte
 mode</a></em>.</p>
-<h3 id="segwit-address-format">Segwit address format</h3>
-<p>A segwit address[4] is a Bech32 encoding of:</p>
+<h3 id="Segwit_address_format">Segwit address format</h3>
+<p>A segwit address<sup class="footnote-reference"><a href="#4">4</a></sup> is a Bech32 encoding of:</p>
 <ul>
-<li>The human-readable part &quot;bc&quot;[5] for mainnet, and &quot;tb&quot;<ref><strong>Why
-use 'tb' as human-readable part for testnet?</strong> It was chosen to</li>
+<li>The human-readable part &quot;bc&quot;<sup class="footnote-reference"><a href="#5">5</a></sup> for mainnet, and &quot;tb&quot;<ref><strong>Why use
+'tb' as human-readable part for testnet?</strong> It was chosen to</li>
 </ul>
 <p>be of the same length as the mainnet counterpart (to simplify
 implementations' assumptions about lengths), but still be visually
-distinct.</ref> for testnet.</p>
+distinct.</p>
+</ref>
+<p>for testnet.</p>
 <ul>
 <li>The data-part values:
 <ul>
 <li>1 character (representing 5 bits of data): the witness version</li>
 <li>A conversion of the 2-to-40-byte witness program (as defined by
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a>)
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP141</a>)
 to base32:
 <ul>
-<li>Start with the bits of the witness program, most significant
-bit per byte first.</li>
-<li>Re-arrange those bits into groups of 5, and pad with zeroes
-at the end if needed.</li>
+<li>Start with the bits of the witness program, most significant bit
+per byte first.</li>
+<li>Re-arrange those bits into groups of 5, and pad with zeroes at the
+end if needed.</li>
 <li>Translate those bits to characters using the table above.</li>
 </ul>
 </li>
@@ -256,18 +259,18 @@ at the end if needed.</li>
 <p><strong>Decoding</strong></p>
 <p>Software interpreting a segwit address:</p>
 <ul>
-<li>MUST verify that the human-readable part is &quot;bc&quot; for mainnet and
-&quot;tb&quot; for testnet.</li>
-<li>MUST verify that the first decoded data value (the witness version)
-is between 0 and 16, inclusive.</li>
+<li>MUST verify that the human-readable part is &quot;bc&quot; for mainnet and &quot;tb&quot;
+for testnet.</li>
+<li>MUST verify that the first decoded data value (the witness version) is
+between 0 and 16, inclusive.</li>
 <li>Convert the rest of the data to bytes:
 <ul>
 <li>Translate the values to 5 bits, most significant bit first.</li>
-<li>Re-arrange those bits into groups of 8 bits. Any incomplete
-group at the end MUST be 4 bits or less, MUST be all zeroes, and
-is discarded.</li>
-<li>There MUST be between 2 and 40 groups, which are interpreted as
-the bytes of the witness program.</li>
+<li>Re-arrange those bits into groups of 8 bits. Any incomplete group at
+the end MUST be 4 bits or less, MUST be all zeroes, and is
+discarded.</li>
+<li>There MUST be between 2 and 40 groups, which are interpreted as the
+bytes of the witness program.</li>
 </ul>
 </li>
 </ul>
@@ -280,51 +283,49 @@ Version 0 witness addresses are always 42 or 62 characters, but
 implementations MUST allow the use of any version.</p>
 <p>Implementations should take special care when converting the address to
 a scriptPubkey, where witness version <em>n</em> is stored as <em>OP_n</em>. OP_0 is
-encoded as 0x00, but OP_1 through OP_16 are encoded as 0x51 though
-0x60 (81 to 96 in decimal). If a bech32 address is converted to an
-incorrect scriptPubKey the result will likely be either unspendable or
-insecure.</p>
-<h3 id="compatibility">Compatibility</h3>
+encoded as 0x00, but OP_1 through OP_16 are encoded as 0x51 though 0x60
+(81 to 96 in decimal). If a bech32 address is converted to an incorrect
+scriptPubKey the result will likely be either unspendable or insecure.</p>
+<h3 id="Compatibility">Compatibility</h3>
 <p>Only new software will be able to use these addresses, and only for
 receivers with segwit-enabled new software. In all other cases, P2SH or
 P2PKH addresses can be used.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <references />
-<h2 id="reference-implementations">Reference implementations</h2>
+<h2 id="Reference_implementations">Reference implementations</h2>
 <ul>
 <li>Reference encoder and decoder:
 <ul>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/c">For C</a></li>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/c++">For C++</a></li>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/javascript">For
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/c">For C</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/c++">For C++</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/javascript">For
 JavaScript</a></li>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/go">For Go</a></li>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/python">For
-Python</a></li>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/haskell">For
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/go">For Go</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/python">For Python</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/haskell">For
 Haskell</a></li>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/ruby">For Ruby</a></li>
-<li><a href="https://github.com/sipa/bech32/tree/master/ref/rust">For Rust</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/ruby">For Ruby</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ref/rust">For Rust</a></li>
 </ul>
 </li>
 </ul>
-<!-- end list -->
+<!-- -->
 <ul>
 <li>Fancy decoder that localizes errors:
 <ul>
-<li><a href="https://github.com/sipa/bech32/tree/master/ecc/javascript">For
+<li><a rel="noopener" target="_blank" href="https://github.com/sipa/bech32/tree/master/ecc/javascript">For
 JavaScript</a>
-(<a href="http://bitcoin.sipa.be/bech32/demo/demo.html">demo website</a>)</li>
+(<a rel="noopener" target="_blank" href="http://bitcoin.sipa.be/bech32/demo/demo.html">demo website</a>)</li>
 </ul>
 </li>
 </ul>
-<h2 id="registered-human-readable-prefixes">Registered Human-readable Prefixes</h2>
+<h2 id="Registered_Human-readable_Prefixes">Registered Human-readable Prefixes</h2>
 <p>SatoshiLabs maintains a full list of registered human-readable parts for
 other cryptocurrencies:</p>
-<p><a href="https://github.com/satoshilabs/slips/blob/master/slip-0173.md">SLIP-0173 : Registered human-readable parts for
+<p><a rel="noopener" target="_blank" href="https://github.com/satoshilabs/slips/blob/master/slip-0173.md">SLIP-0173 : Registered human-readable parts for
 BIP-0173</a></p>
-<h2 id="appendices">Appendices</h2>
-<h3 id="test-vectors">Test vectors</h3>
+<h2 id="Appendices">Appendices</h2>
+<h3 id="Test_vectors">Test vectors</h3>
 <p>The following strings are valid Bech32:</p>
 <ul>
 <li><code>A12UEL5L</code></li>
@@ -334,14 +335,13 @@ BIP-0173</a></p>
 <li><code>11qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqc8247j</code></li>
 <li><code>split1checkupstagehandshakeupstreamerranterredcaperred2y9e3w</code></li>
 <li><code>?1ezyfcl</code> WARNING: During conversion to US-ASCII some encoders may
-set unmappable characters to a valid US-ASCII character, such as
-'?'. For example:</li>
+set unmappable characters to a valid US-ASCII character, such as '?'.
+For example:</li>
 </ul>
-<!-- end list -->
-<pre style="background-color:#fafafa;">
-<code>&gt;&gt;&gt; bech32_encode('\x80'.encode('ascii', 'replace').decode('ascii'), [])
-'?1ezyfcl'
-</code></pre>
+<!-- -->
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>&gt;&gt;&gt; bech32_encode(&#39;\x80&#39;.encode(&#39;ascii&#39;, &#39;replace&#39;).decode(&#39;ascii&#39;), [])
+</span><span>&#39;?1ezyfcl&#39;
+</span></code></pre>
 <p>The following string are not valid Bech32 (with reason for invalidity):</p>
 <ul>
 <li>0x20 + <code>1nwldj5</code>: HRP character out of range</li>
@@ -379,8 +379,7 @@ their invalidity.</p>
 <li><code>tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty</code>: Invalid human-readable
 part</li>
 <li><code>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5</code>: Invalid checksum</li>
-<li><code>BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2</code>: Invalid witness
-version</li>
+<li><code>BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2</code>: Invalid witness version</li>
 <li><code>bc1rw5uspcuh</code>: Invalid program length</li>
 <li><code>bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90</code>:
 Invalid program length</li>
@@ -394,15 +393,15 @@ bits</li>
 Non-zero padding in 8-to-5 conversion</li>
 <li><code>bc1gmk9yu</code>: Empty data section</li>
 </ul>
-<h3 id="checksum-design">Checksum design</h3>
+<h3 id="Checksum_design">Checksum design</h3>
 <p><strong>Design choices</strong></p>
 <p>BCH codes can be constructed over any prime-power alphabet and can be
 chosen to have a good trade-off between size and error-detection
 capabilities. While most work around BCH codes uses a binary alphabet,
 that is not a requirement. This makes them more appropriate for our use
-case than <a href="https://en.wikipedia.org/wiki/Cyclic_redundancy_check">CRC
+case than <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Cyclic_redundancy_check">CRC
 codes</a>. Unlike
-<a href="https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction">Reed-Solomon
+<a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction">Reed-Solomon
 codes</a>,
 they are not restricted in length to one less than the alphabet size.
 While they also support efficient error correction, the implementation
@@ -426,12 +425,12 @@ detect 3 or 4 errors up to length 93, 151, 165, 341, 1023, and 1057.</li>
 resulting in 28825 remaining codes.</li>
 <li>From those, choosing the codes with the best worst-case window for
 5-character errors, resulting in 310 remaining codes.</li>
-<li>From those, picking the code with the lowest chance for not
-detecting small numbers of <em>bit</em> errors.</li>
+<li>From those, picking the code with the lowest chance for not detecting
+small numbers of <em>bit</em> errors.</li>
 </ul>
 <p>As a naive search would require over 6.5 * 10<sup>19</sup> checksum
 evaluations, a collision-search approach was used for analysis. The code
-can be found <a href="https://github.com/sipa/ezbase32/">here</a>.</p>
+can be found <a rel="noopener" target="_blank" href="https://github.com/sipa/ezbase32/">here</a>.</p>
 <p><strong>Properties</strong></p>
 <p>The following table summarizes the chances for detection failure (as
 multiples of 1 in 10<sup>9</sup>).</p>
@@ -454,38 +453,46 @@ billion</em>. As the number of errors goes up, the chance converges towards
 <p>Even though the chosen code performs reasonably well up to 1023
 characters, other designs are preferable for lengths above 89 characters
 (excluding the separator).</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
-<p>This document is inspired by the <a href="https://rusty.ozlabs.org/?p=578">address
+<h2 id="Acknowledgements">Acknowledgements</h2>
+<p>This document is inspired by the <a rel="noopener" target="_blank" href="https://rusty.ozlabs.org/?p=578">address
 proposal</a> by Rusty Russell, the
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2014-February/004402.html">base32</a>
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2014-February/004402.html">base32</a>
 proposal by Mark Friedenbach, and had input from Luke Dashjr, Johnson
 Lau, Eric Lombrozo, Peter Todd, and various other reviewers.</p>
-<ol>
-<li><strong>Why use base32 at all?</strong> The lack of mixed case makes it more
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><strong>Why use base32 at all?</strong> The lack of mixed case makes it more
 efficient to read out loud or to put into QR codes. It does come
 with a 15% length increase, but that does not matter when
-copy-pasting addresses.</li>
-<li><strong>Why call it Bech32?</strong> &quot;Bech&quot; contains the characters BCH (the
-error detection algorithm used) and sounds a bit like &quot;base&quot;.</li>
-<li><strong>Why are the high bits of the human-readable part processed
+copy-pasting addresses.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><strong>Why call it Bech32?</strong> &quot;Bech&quot; contains the characters BCH (the
+error detection algorithm used) and sounds a bit like &quot;base&quot;.</p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><strong>Why are the high bits of the human-readable part processed
 first?</strong> This results in the actually checksummed data being <em>[high
 hrp] 0 [low hrp] [data]</em>. This means that under the assumption
 that errors to the human readable part only change the low 5 bits
 (like changing an alphabetical character into another), errors are
 restricted to the <em>[low hrp] [data]</em> part, which is at most 89
 characters, and thus all error detection properties (see appendix)
-remain applicable.</li>
-<li><strong>Why not make an address format that is generic for all
+remain applicable.</p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><strong>Why not make an address format that is generic for all
 scriptPubKeys?</strong> That would lead to confusion about addresses for
 existing scriptPubKey types. Furthermore, if addresses that do not
 have a one-to-one mapping with scriptPubKeys (such as ECDH-based
 addresses) are ever introduced, having a fully generic old address
 type available would permit reinterpreting the resulting
 scriptPubKeys using the old address format, with lost funds as a
-result if bitcoins are sent to them.</li>
-<li><strong>Why use 'bc' as human-readable part and not 'btc'?</strong> 'bc' is
-shorter.</li>
-</ol>
+result if bitcoins are sent to them.</p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><strong>Why use 'bc' as human-readable part and not 'btc'?</strong> 'bc' is
+shorter.</p>
+</div>
 
     </div>
 
@@ -493,7 +500,7 @@ shorter.</li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

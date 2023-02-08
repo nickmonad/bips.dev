@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,24 +46,24 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 103
-  Layer: Consensus (hard fork)
-  Title: Block size following technological growth
-  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0103
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2015-07-21
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 103
+</span><span>  Layer: Consensus (hard fork)
+</span><span>  Title: Block size following technological growth
+</span><span>  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0103
+</span><span>  Status: Withdrawn
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-07-21
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP proposes a block size growth intended to accommodate for
 hardware and other technological improvements for the foreseeable
 future.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Many people want to see Bitcoin scale over time, allowing an increasing
 number of transactions on the block chain. It would come at an increased
 cost for the ecosystem (bandwidth, processing, and storage for relay
@@ -111,7 +111,7 @@ expectation of low trust needed in the system in the longer term. As the
 block size debate has been controversial so far - for good or bad
 reasons - this BIP aims for gradual change and its effects start far
 enough in the future.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>The block size limitation is replaced by the function below, applied to
 the median of the timestamps of the previous 11 blocks, or in code
 terms: the block size limit for pindexBlock is
@@ -120,27 +120,27 @@ GetMaxBlockSize(pindexBlock-&gt;pprev-&gt;GetMedianTimePast()).</p>
 <p>It implements a series of block size steps, one every ~97 days, between
 January 2017 and July 2063, each increasing the maximum block size by
 4.4%. This allows an overall growth of 17.7% per year.</p>
-<pre style="background-color:#fafafa;">
-<code>uint32_t GetMaxBlockSize(int64_t nMedianTimePast) {
-    // The first step is on January 1st 2017.
-    if (nMedianTimePast &lt; 1483246800) {
-        return 1000000;
-    }
-    // After that, one step happens every 2^23 seconds.
-    int64_t step = (nMedianTimePast - 1483246800) &gt;&gt; 23;
-    // Don't do more than 11 doublings for now.
-    step = std::min&lt;int64_t&gt;(step, 175);
-    // Every step is a 2^(1/16) factor.
-    static const uint32_t bases[16] = {
-        // bases[i] == round(1000000 * pow(2.0, (i + 1) / 16.0))
-        1044274, 1090508, 1138789, 1189207,
-        1241858, 1296840, 1354256, 1414214,
-        1476826, 1542211, 1610490, 1681793,
-        1756252, 1834008, 1915207, 2000000
-    };
-    return bases[step &amp; 15] &lt;&lt; (step / 16);
-}
-</code></pre><h2 id="rationale">Rationale</h2>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>uint32_t GetMaxBlockSize(int64_t nMedianTimePast) {
+</span><span>    // The first step is on January 1st 2017.
+</span><span>    if (nMedianTimePast &lt; 1483246800) {
+</span><span>        return 1000000;
+</span><span>    }
+</span><span>    // After that, one step happens every 2^23 seconds.
+</span><span>    int64_t step = (nMedianTimePast - 1483246800) &gt;&gt; 23;
+</span><span>    // Don&#39;t do more than 11 doublings for now.
+</span><span>    step = std::min&lt;int64_t&gt;(step, 175);
+</span><span>    // Every step is a 2^(1/16) factor.
+</span><span>    static const uint32_t bases[16] = {
+</span><span>        // bases[i] == round(1000000 * pow(2.0, (i + 1) / 16.0))
+</span><span>        1044274, 1090508, 1138789, 1189207,
+</span><span>        1241858, 1296840, 1354256, 1414214,
+</span><span>        1476826, 1542211, 1610490, 1681793,
+</span><span>        1756252, 1834008, 1915207, 2000000
+</span><span>    };
+</span><span>    return bases[step &amp; 15] &lt;&lt; (step / 16);
+</span><span>}
+</span></code></pre>
+<h2 id="Rationale">Rationale</h2>
 <p>Waiting 1.5 years before the hard fork takes place should provide ample
 time to minimize the risk of a hard fork, if found uncontroversial.</p>
 <p>Because every increase (including the first) is only 4.4%, risk from
@@ -156,11 +156,11 @@ be increasing, according to Bitcoin's existing consensus rules. Using
 the &quot;median time past&quot; of the block before means we know in advance what
 the limit of each block will be, without depending on the actual block's
 timestamp.</p>
-<h2 id="compatibility">Compatibility</h2>
+<h2 id="Compatibility">Compatibility</h2>
 <p>This is a hard forking change, thus breaks compatibility with old
 fully-validating node. It should not be deployed without widespread
 consensus.</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <p>Thanks to Gregory Maxwell and Wladimir J. van der Laan for their
 suggestions.</p>
 
@@ -170,7 +170,7 @@ suggestions.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

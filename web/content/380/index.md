@@ -14,19 +14,17 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki"
 +++
 
-``` 
-  BIP: 380
-  Layer: Applications
-  Title: Output Script Descriptors General Operation
-  Author: Pieter Wuille <pieter@wuille.net>
-          Andrew Chow <andrew@achow101.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0380
-  Status: Draft
-  Type: Informational
-  Created: 2021-06-27
-  License: BSD-2-Clause
-```
+      BIP: 380
+      Layer: Applications
+      Title: Output Script Descriptors General Operation
+      Author: Pieter Wuille <pieter@wuille.net>
+              Andrew Chow <andrew@achow101.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0380
+      Status: Draft
+      Type: Informational
+      Created: 2021-06-27
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -106,31 +104,30 @@ expressions can only be used as arguments to script expressions.
 
 Key expressions consist of:
 
-  - Optionally, key origin information, consisting of:
-      - An open bracket `[`
-      - Exactly 8 hex characters for the fingerprint of the key where
-        the derivation starts (see BIP 32 for details)
-      - Followed by zero or more `/NUM` or `/NUMh` path elements to
-        indicate the unhardened or hardened derivation steps between the
-        fingerprint and the key that follows.
-      - A closing bracket `]`
-  - Followed by the actual key, which is either:
-      - A hex encoded public key, which depending the script expression,
-        may be either:
-          - 66 hex character string beginning with `02` or `03`
-            representing a compressed public key
-          - 130 hex character string beginning with `04` representing an
-            uncompressed public key
-      - A
-        [WIF](https://en.bitcoin.it/wiki/Wallet_import_format "wikilink")
-        encoded private key
-      - `xpub` encoded extended public key or `xprv` encoded extended
-        private key (as defined in BIP 32)
-          - Followed by zero or more `/NUM` or `/NUMh` path elements
-            indicating BIP 32 derivation steps to be taken after the
-            given extended key.
-          - Optionally followed by a single `/*` or `/*h` final step to
-            denote all direct unhardened or hardened children.
+- Optionally, key origin information, consisting of:
+  - An open bracket `[`
+  - Exactly 8 hex characters for the fingerprint of the key where the
+    derivation starts (see BIP 32 for details)
+  - Followed by zero or more `/NUM` or `/NUMh` path elements to indicate
+    the unhardened or hardened derivation steps between the fingerprint
+    and the key that follows.
+  - A closing bracket `]`
+- Followed by the actual key, which is either:
+  - A hex encoded public key, which depending the script expression, may
+    be either:
+    - 66 hex character string beginning with `02` or `03` representing a
+      compressed public key
+    - 130 hex character string beginning with `04` representing an
+      uncompressed public key
+  - A [WIF](https://en.bitcoin.it/wiki/Wallet_import_format "wikilink")
+    encoded private key
+  - `xpub` encoded extended public key or `xprv` encoded extended
+    private key (as defined in BIP 32)
+    - Followed by zero or more `/NUM` or `/NUMh` path elements
+      indicating BIP 32 derivation steps to be taken after the given
+      extended key.
+    - Optionally followed by a single `/*` or `/*h` final step to denote
+      all direct unhardened or hardened children.
 
 If the `KEY` is a BIP 32 extended key, before output scripts can be
 created, child keys must be derived using the derivation information
@@ -185,31 +182,31 @@ correcting checksum similar to bech32.
 
 The checksum has the following properties:
 
-  - Mistakes in a descriptor string are measured in "symbol errors". The
-    higher the number of symbol errors, the harder it is to detect:
-      - An error substituting a character from
-        `0123456789()[],'/*abcdefgh@:$%{}` for another in that set
-        always counts as 1 symbol error.
-          - Note that hex encoded keys are covered by these characters.
-            Extended keys (`xpub` and `xprv`) use other characters too,
-            but also have their own checksum mechanism.
-          - `SCRIPT` expression function names use other characters, but
-            mistakes in these would generally result in an unparsable
-            descriptor.
-      - A case error always counts as 1 symbol error.
-      - Any other 1 character substitution error counts as 1 or 2 symbol
-        errors.
-  - Any 1 symbol error is always detected.
-  - Any 2 or 3 symbol error in a descriptor of up to 49154 characters is
-    always detected.
-  - Any 4 symbol error in a descriptor of up to 507 characters is always
-    detected.
-  - Any 5 symbol error in a descriptor of up to 77 characters is always
-    detected.
-  - Is optimized to minimize the chance of a 5 symbol error in a
-    descriptor up to 387 characters is undetected
-  - Random errors have a chance of 1 in 2<super>40</super> of being
-    undetected.
+- Mistakes in a descriptor string are measured in "symbol errors". The
+  higher the number of symbol errors, the harder it is to detect:
+  - An error substituting a character from
+    `0123456789()[],'/*abcdefgh@:$%{}` for another in that set always
+    counts as 1 symbol error.
+    - Note that hex encoded keys are covered by these characters.
+      Extended keys (`xpub` and `xprv`) use other characters too, but
+      also have their own checksum mechanism.
+    - `SCRIPT` expression function names use other characters, but
+      mistakes in these would generally result in an unparsable
+      descriptor.
+  - A case error always counts as 1 symbol error.
+  - Any other 1 character substitution error counts as 1 or 2 symbol
+    errors.
+- Any 1 symbol error is always detected.
+- Any 2 or 3 symbol error in a descriptor of up to 49154 characters is
+  always detected.
+- Any 4 symbol error in a descriptor of up to 507 characters is always
+  detected.
+- Any 5 symbol error in a descriptor of up to 77 characters is always
+  detected.
+- Is optimized to minimize the chance of a 5 symbol error in a
+  descriptor up to 387 characters is undetected
+- Random errors have a chance of 1 in 2<super>40</super> of being
+  undetected.
 
 The checksum itself uses the same character set as bech32:
 `qpzry9x8gf2tvdw0s3jn54khce6mua7l`
@@ -222,7 +219,7 @@ consisting in the form `SCRIPT#CHECKSUM`.
     INPUT_CHARSET = "0123456789()[],'/*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&+-.;<=>?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\"\\ "
     CHECKSUM_CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
     GENERATOR = [0xf5dee51989, 0xa9fdca3312, 0x1bab10e32d, 0x3706b1677a, 0x644d626ffd]
-    
+
     def descsum_polymod(symbols):
         """Internal function that computes the descriptor checksum."""
         chk = 1
@@ -232,7 +229,7 @@ consisting in the form `SCRIPT#CHECKSUM`.
             for i in range(5):
                 chk ^= GENERATOR[i] if ((top >> i) & 1) else 0
         return chk
-    
+
     def descsum_expand(s):
         """Internal function that does the character to symbol expansion"""
         groups = []
@@ -251,7 +248,7 @@ consisting in the form `SCRIPT#CHECKSUM`.
         elif len(groups) == 2:
             symbols.append(groups[0] * 3 + groups[1])
         return symbols
-    
+
     def descsum_check(s):
         """Verify that the checksum is correct in a descriptor"""
         if s[-9] != '#':
@@ -298,10 +295,10 @@ Future BIPs may specify additional types of expressions. All available
 expression types are listed in this table.
 
 | Name   | Denoted As | BIP                                  |
-| ------ | ---------- | ------------------------------------ |
+|--------|------------|--------------------------------------|
 | Script | `SCRIPT`   | 380                                  |
 | Key    | `KEY`      | 380                                  |
-| Tree   | `TREE`     | [386](bip-0386.mediawiki "wikilink") |
+| Tree   | `TREE`     | [386](/386) |
 
 ## Appendix B: Index of Script Expressions
 
@@ -309,15 +306,15 @@ Script expressions will be specified in additional BIPs. This Table
 lists all available Script expressions and the BIPs specifying them.
 
 | Expression                        | BIP                                  |
-| --------------------------------- | ------------------------------------ |
-| `pk(KEY)`                         | [381](bip-0381.mediawiki "wikilink") |
-| `pkh(KEY)`                        | [381](bip-0381.mediawiki "wikilink") |
-| `sh(SCRIPT)`                      | [381](bip-0381.mediawiki "wikilink") |
-| `wpkh(KEY)`                       | [382](bip-0382.mediawiki "wikilink") |
-| `wsh(SCRIPT)`                     | [382](bip-0382.mediawiki "wikilink") |
-| `multi(NUM, KEY, ..., KEY)`       | [383](bip-0383.mediawiki "wikilink") |
-| `sortedmulti(NUM, KEY, ..., KEY)` | [383](bip-0383.mediawiki "wikilink") |
-| `combo(KEY)`                      | [384](bip-0384.mediawiki "wikilink") |
-| `raw(HEX)`                        | [385](bip-0385.mediawiki "wikilink") |
-| `addr(ADDR)`                      | [385](bip-0385.mediawiki "wikilink") |
-| `tr(KEY)`, `tr(KEY, TREE)`        | [386](bip-0386.mediawiki "wikilink") |
+|-----------------------------------|--------------------------------------|
+| `pk(KEY)`                         | [381](/381) |
+| `pkh(KEY)`                        | [381](/381) |
+| `sh(SCRIPT)`                      | [381](/381) |
+| `wpkh(KEY)`                       | [382](/382) |
+| `wsh(SCRIPT)`                     | [382](/382) |
+| `multi(NUM, KEY, ..., KEY)`       | [383](/383) |
+| `sortedmulti(NUM, KEY, ..., KEY)` | [383](/383) |
+| `combo(KEY)`                      | [384](/384) |
+| `raw(HEX)`                        | [385](/385) |
+| `addr(ADDR)`                      | [385](/385) |
+| `tr(KEY)`, `tr(KEY, TREE)`        | [386](/386) |

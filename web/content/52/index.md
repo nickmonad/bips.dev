@@ -14,20 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0052.mediawiki"
 +++
 
-``` 
-  BIP: 52
-  Layer: Consensus (hard fork)
-  Title: Durable, Low Energy Bitcoin PoW
-  Author: Michael Dubrovsky <mike+bip@powx.org>
-          Bogdan Penkovsky <bogdan+bip@powx.org>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0052
-  Status: Draft
-  Type: Standards Track
-  Created: 2021-05-13
-  License: BSD-2-Clause
-           OPL
-```
+      BIP: 52
+      Layer: Consensus (hard fork)
+      Title: Durable, Low Energy Bitcoin PoW
+      Author: Michael Dubrovsky <mike+bip@powx.org>
+              Bogdan Penkovsky <bogdan+bip@powx.org>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0052
+      Status: Draft
+      Type: Standards Track
+      Created: 2021-05-13
+      License: BSD-2-Clause
+               OPL
 
 ## Simple Summary
 
@@ -59,9 +57,9 @@ oPoW shifts the operating expenses of mining (OPEX), to capital expenses
 (CAPEX)--i.e. electricity to hardware. oPoW makes it possible for
 billions of new miners to enter the market simply by investing in a
 low-energy photonic miner. Shifting to a high-CAPEX PoW has the added
-benefit of making the hashrate resilient to Bitcoin's price fluctuations
-- once low-OPEX hardware is operating there is no reason to shut it down
-even if the value of mining rewards diminishes. oPoW is
+benefit of making the hashrate resilient to Bitcoin's price
+fluctuations - once low-OPEX hardware is operating there is no reason to
+shut it down even if the value of mining rewards diminishes. oPoW is
 hardware-compatible with GPUs, FPGAs, and ASICs meaning that a
 transitional period of optical and traditional hardware mining in
 parallel on the network is feasible
@@ -225,7 +223,7 @@ using the small feature sizes. The result is that access to silicon
 photonic wafer fabrication is readily available, in contrast to the
 notoriously difficult process of accessing advanced nodes. Moreover, the
 overall cost of entry is lower as lithography masks for silicon
-photonics processes are an order of magnitude cheaper ($500k vs. $5M).
+photonics processes are an order of magnitude cheaper (\$500k vs. \$5M).
 Examples of companies developing optical processors for AI, which will
 be hardware-compatible with oPoW include
 [Lightmatter](https://lightmatter.co/),
@@ -253,27 +251,27 @@ device.
 The algorithm’s pseudo-code:
 
     // M is a Matrix 64 x 64 of Unsigned 4 values
-    
+
     // 256-bitVector
     x1 <- keccak(input)
-    
+
     // Reshape the obtained bitvector
     // into a 64-vector of unsigned 4-bit values
     x2 <- reshape(x1, 64)
-    
+
     // Perform a matrix-vector multiplication.
     // The result is 64-vector of 14-bit unsigned. 
     x3 <- vector_matrix_mult(x2, M)
-    
+
     // Truncate all values to 4 most significant bits.
     // This is due to the specifics of analog
     // computing by the photonic accelerator.
     // Obtain a 64-vector of 4-bit unsigned.
     x4 <- truncate_to_msb(x3, 4)
-    
+
     // Interpret as a 256-bitvector
     x5 <- flatten(x4)
-    
+
     // 256-bitVector
     result <- keccak(xor(x5, x1))
 
@@ -284,17 +282,17 @@ Which in C can be implemented as:
         uint8_t hash_first[32] __attribute__((aligned(32)));
         uint8_t hash_second[32] __attribute__((aligned(32)));
         uint8_t hash_xored[32] __attribute__((aligned(32)));
-    
+
         uint16_t vector[64] __attribute__((aligned(64)));
         uint16_t product[64] __attribute__((aligned(64)));
-    
+
         sha3_256((uint8_t*) hash_first, 32, (const uint8_t*)pdata, pdata_len);
-    
+
         for (int i = 0; i < 32; ++i) {
             vector[2*i] = (hash_first[i] >> 4);
             vector[2*i+1] = hash_first[i] & 0xF;
         }
-    
+
         for (int i = 0; i < 64; ++i) {
             uint16_t sum = 0;
             for (int j = 0; j < 64; ++j) {
@@ -302,11 +300,11 @@ Which in C can be implemented as:
             }
             product[i] = (sum >> 10);
         }
-    
+
         for (int i = 0; i < 32; ++i) {
             hash_second[i] = (product[2*i] << 4) | (product[2*i+1]);
         }
-    
+
         for (int i = 0; i < 32; ++i) {
             hash_xored[i] = hash_first[i] ^ hash_second[i];
         }
@@ -335,21 +333,21 @@ An example code to obtain the matrix M:
             }
         } while (!is_full_rank(matrix));
     }
-    
+
     static inline uint64_t xoshiro_gen(struct xoshiro_state *state) {
         const uint64_t result = rotl64(state->s[0] + state->s[3], 23) + state->s[0];
-    
+
         const uint64_t t = state->s[1] << 17;
-    
+
         state->s[2] ^= state->s[0];
         state->s[3] ^= state->s[1];
         state->s[1] ^= state->s[2];
         state->s[0] ^= state->s[3];
-    
+
         state->s[2] ^= t;
-    
+
         state->s[3] = rotl64(state->s[3], 45);
-    
+
         return result;
     }
 

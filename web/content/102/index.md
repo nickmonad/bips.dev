@@ -14,17 +14,15 @@ status = ["Rejected"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0102.mediawiki"
 +++
 
-``` 
-  BIP: 102
-  Layer: Consensus (hard fork)
-  Title: Block size increase to 2MB
-  Author: Jeff Garzik <jgarzik@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0102
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-06-23
-```
+      BIP: 102
+      Layer: Consensus (hard fork)
+      Title: Block size increase to 2MB
+      Author: Jeff Garzik <jgarzik@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0102
+      Status: Rejected
+      Type: Standards Track
+      Created: 2015-06-23
 
 ## Abstract
 
@@ -38,7 +36,7 @@ in a block from 1MB to 2MB.
 
 ## Specification
 
-1.  MAX\_BLOCK\_SIZE increased to 2,000,000 bytes at trigger point.
+1.  MAX_BLOCK_SIZE increased to 2,000,000 bytes at trigger point.
 2.  Increase maximum block sigops by similar factor, preserving SIZE/50
     formula.
 3.  Trigger: (1) Block time 00:00:00 on flag day, AND (2) 95% of the

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,36 +46,35 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 111
-  Layer: Peer Services
-  Title: NODE_BLOOM service bit
-  Author: Matt Corallo &lt;bip111@bluematt.me&gt;
-          Peter Todd &lt;pete@petertodd.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0111
-  Status: Proposed
-  Type: Standards Track
-  Created: 2015-08-20
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 111
+</span><span>  Layer: Peer Services
+</span><span>  Title: NODE_BLOOM service bit
+</span><span>  Author: Matt Corallo &lt;bip111@bluematt.me&gt;
+</span><span>          Peter Todd &lt;pete@petertodd.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0111
+</span><span>  Status: Proposed
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-08-20
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP extends BIP 37, Connection Bloom filtering, by defining a
 service bit to allow peers to advertise that they support bloom filters
 explicitly. It also bumps the protocol version to allow peers to
 identify old nodes which allow bloom filtering of the connection despite
 lacking the new service bit.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>BIP 37 did not specify a service bit for the bloom filter service, thus
 implicitly assuming that all nodes that serve peers data support it.
 However, the connection filtering algorithm proposed in BIP 37, and
 implemented in several clients today, has been shown to provide little
-to no privacy[1], as well as being a large DoS risk on some
-nodes[2]. Thus, allowing node operators to disable connection bloom
-filtering is a much-needed feature.</p>
-<h2 id="specification">Specification</h2>
+to no privacy<sup class="footnote-reference"><a href="#1">1</a></sup>, as well as being a large DoS risk on some nodes<sup class="footnote-reference"><a href="#2">2</a></sup>.
+Thus, allowing node operators to disable connection bloom filtering is a
+much-needed feature.</p>
+<h2 id="Specification">Specification</h2>
 <p>The following protocol bit is added:</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">    NODE_BLOOM = (1 &lt;&lt; 2)
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    NODE_BLOOM = (1 &lt;&lt; 2)
 </span></code></pre>
 <p>Nodes which support bloom filters should set that protocol bit.
 Otherwise it should remain unset. In addition the protocol version is
@@ -85,8 +84,8 @@ often the case that nodes which have a protocol version smaller than
 the NODE_BLOOM bit set, however clients which require bloom filtered
 connections should avoid making this assumption.</p>
 <p>NODE_BLOOM is distinct from NODE_NETWORK, and it is legal to advertise
-NODE_BLOOM but not NODE_NETWORK (though there is little reason to do
-so now, some proposals may make this more useful in the future)</p>
+NODE_BLOOM but not NODE_NETWORK (though there is little reason to do so
+now, some proposals may make this more useful in the future)</p>
 <p>If a node does not support bloom filters but receives a &quot;filterload&quot;,
 &quot;filteradd&quot;, or &quot;filterclear&quot; message from a peer the node should
 disconnect that peer immediately. For backwards compatibility, in
@@ -96,28 +95,29 @@ have the new protocol version set and attempt to send a filter command.</p>
 other peer discovery mechanisms support the ability to specify the
 services required; current implementations simply check only that
 NODE_NETWORK is set.</p>
-<h2 id="design-rational">Design rational</h2>
+<h2 id="Design_rational">Design rational</h2>
 <p>A service bit was chosen as applying a bloom filter is a service.</p>
 <p>The increase in protocol version is for backwards compatibility. In
-initial implementations, old nodes which are not yet aware of
-NODE_BLOOM and use a protocol version &lt; 70011 may still send filter
-messages to a node without NODE_BLOOM. This feature may be removed
-after there are sufficient NODE_BLOOM nodes available and SPV clients
-have upgraded, allowing node operators to fully close the bloom-related
-DoS vectors.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
-<p><a href="https://github.com/bitcoin/bitcoin/pull/6579">https://github.com/bitcoin/bitcoin/pull/6579</a></p>
-<h2 id="copyright">Copyright</h2>
+initial implementations, old nodes which are not yet aware of NODE_BLOOM
+and use a protocol version &lt; 70011 may still send filter messages to a
+node without NODE_BLOOM. This feature may be removed after there are
+sufficient NODE_BLOOM nodes available and SPV clients have upgraded,
+allowing node operators to fully close the bloom-related DoS vectors.</p>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/6579">https://github.com/bitcoin/bitcoin/pull/6579</a></p>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <references>
-<ol>
-<li><a href="http://eprint.iacr.org/2014/763">http://eprint.iacr.org/2014/763</a></li>
-<li><a href="http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-July/003044.html">1</a>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a rel="noopener" target="_blank" href="http://eprint.iacr.org/2014/763">http://eprint.iacr.org/2014/763</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a rel="noopener" target="_blank" href="http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-July/003044.html">1</a>
 is one example where the issues were found, though others
 independently discovered issues as well. Sample DoS exploit code
-available at <a href="https://github.com/petertodd/bloom-io-attack">https://github.com/petertodd/bloom-io-attack</a>.</li>
-</ol>
+available at <a rel="noopener" target="_blank" href="https://github.com/petertodd/bloom-io-attack">https://github.com/petertodd/bloom-io-attack</a>.</p>
+</div>
 
     </div>
 
@@ -125,7 +125,7 @@ available at <a href="https://github.com/petertodd/bloom-io-attack">https://gith
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

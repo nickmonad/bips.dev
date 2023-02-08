@@ -14,18 +14,16 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki"
 +++
 
-``` 
-  BIP: 329
-  Layer: Applications
-  Title: Wallet Labels Export Format
-  Author: Craig Raw <craig@sparrowwallet.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0329
-  Status: Draft
-  Type: Informational
-  Created: 2022-08-23
-  License: BSD-2-Clause
-```
+      BIP: 329
+      Layer: Applications
+      Title: Wallet Labels Export Format
+      Author: Craig Raw <craig@sparrowwallet.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0329
+      Status: Draft
+      Type: Informational
+      Created: 2022-08-23
+      License: BSD-2-Clause
 
 ## Abstract
 
@@ -56,7 +54,7 @@ do not experience lock-in to a particular wallet application.
 ## Rationale
 
 While there is currently no widely accepted format for exporting and
-importing labels, there are existing formats in use. SLIP-0015\[1\]
+importing labels, there are existing formats in use. SLIP-0015[^1]
 defines a format for exporting address and output labels, but requires
 encryption using a private key associated with the wallet seed, and thus
 cannot be used independently by coordinator wallets which cannot access
@@ -69,7 +67,7 @@ type identification difficult.
 
 In order to be lightweight, human readable and well structured, this BIP
 uses a JSON format. Further, the JSON Lines format is used (also called
-newline-delimited JSON)\[2\]. This allows a document to be split,
+newline-delimited JSON)[^2]. This allows a document to be split,
 streamed, or incrementally added to, and limits the potential for
 formatting errors to invalidate an entire import. It is also a
 convenient format for command-line processing, which is often
@@ -82,7 +80,7 @@ Multiline values are not permitted. Each JSON object must contain 3
 key/value pairs, defined as follows:
 
 | Key     | Description                                                                             |
-| ------- | --------------------------------------------------------------------------------------- |
+|---------|-----------------------------------------------------------------------------------------|
 | `type`  | One of `tx`, `addr`, `pubkey`, `input`, `output` or `xpub`                              |
 | `ref`   | Reference to the transaction, address, public key, input, output or extended public key |
 | `label` | The label applied to the reference                                                      |
@@ -90,7 +88,7 @@ key/value pairs, defined as follows:
 The reference is defined for each `type` as follows:
 
 | Type     | Description                                          | Example                                                              |
-| -------- | ---------------------------------------------------- | -------------------------------------------------------------------- |
+|----------|------------------------------------------------------|----------------------------------------------------------------------|
 | `tx`     | Transaction id in hexadecimal format                 | `f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd`   |
 | `addr`   | Address in base58 or bech32 format                   | `bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c`                         |
 | `pubkey` | 32, 33 or 65 byte public key in hexadecimal format   | `0283409659355b6d1cc3c32decd5d561abaac86c37a353b52895a5e6c196d6f448` |
@@ -106,12 +104,12 @@ reasons no private key types are defined.
 
 ## Importing
 
-  - An importing wallet may ignore records it does not store, and
-    truncate labels if necessary.
-  - Wallets importing public key records may derive addresses from them
-    to match against known wallet addresses.
-  - Wallets importing extended public keys may match them against
-    signers, for example in a multisig setup.
+- An importing wallet may ignore records it does not store, and truncate
+  labels if necessary.
+- Wallets importing public key records may derive addresses from them to
+  match against known wallet addresses.
+- Wallets importing extended public keys may match them against signers,
+  for example in a multisig setup.
 
 ## Backwards Compatibility
 
@@ -138,5 +136,6 @@ TBD
 
 <references />
 
-1.  [SLIP-0015](https://github.com/satoshilabs/slips/blob/master/slip-0015.md)
-2.  [jsonlines.org](https://jsonlines.org/)
+[^1]: [SLIP-0015](https://github.com/satoshilabs/slips/blob/master/slip-0015.md)
+
+[^2]: [jsonlines.org](https://jsonlines.org/)

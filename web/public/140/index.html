@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,18 +46,18 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 140
-  Layer: Consensus (soft fork)
-  Title: Normalized TXID
-  Author: Christian Decker &lt;decker.christian@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0140
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-10-14
-  License: PD
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 140
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: Normalized TXID
+</span><span>  Author: Christian Decker &lt;decker.christian@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0140
+</span><span>  Status: Rejected
+</span><span>  Type: Standards Track
+</span><span>  Created: 2015-10-14
+</span><span>  License: PD
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes the use of normalized transaction IDs (NTXIDs) in
 order to eliminate transaction malleability, both in the third-party
 modification scenario as well as the participant modification scenario.
@@ -65,7 +65,7 @@ The transaction ID is normalized by removing the signature scripts from
 transactions before computing its hash. The normalized transaction
 hashes are then used during the signature creation and signature
 verification of dependent transactions.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Transaction malleability refers to the fact that transactions can be
 modified, either by one of the signers by re-signing the transaction or
 a third-party by modifying the signature representation. This is a
@@ -75,13 +75,13 @@ transaction to reference the funds that are being transferred. If a
 transaction is modified and later confirmed by ending up in the
 blockchain all transactions that depended on the original transaction
 are no longer valid, and thus orphaned.</p>
-<p>BIPs 62[1] and 66[2] alleviate the problem of third-party
-modification by defining a canonical representation of the signatures.
-However, checking the canonical representation is complex and may not
-eliminate all sources of third-party malleability. Furthermore, these
-BIPs do not address modifications by one of the signers, i.e.,
-re-signing the transaction, because signers can produce any number of
-signatures due to the random parameter in ECDSA.</p>
+<p>BIPs 62<sup class="footnote-reference"><a href="#1">1</a></sup> and 66<sup class="footnote-reference"><a href="#2">2</a></sup> alleviate the problem of third-party modification
+by defining a canonical representation of the signatures. However,
+checking the canonical representation is complex and may not eliminate
+all sources of third-party malleability. Furthermore, these BIPs do not
+address modifications by one of the signers, i.e., re-signing the
+transaction, because signers can produce any number of signatures due to
+the random parameter in ECDSA.</p>
 <p>This proposal eliminates malleability by removing the malleable
 signatures from the hash used to reference the outputs spent by a
 transaction. The new hash used to reference an output is called the
@@ -96,7 +96,7 @@ unsigned template transaction to be used as a basis for a sequence of
 transaction and only once the sequence matches the signers' expectations
 they provide the necessary signatures for the template to become valid,
 thus opting in to the sequence.</p>
-<h2 id="specification">Specification</h2>
+<h2 id="Specification">Specification</h2>
 <p>The use of normalized transaction IDs is introduced as a softfork. The
 specification is divided into three parts:</p>
 <ul>
@@ -106,12 +106,12 @@ enable softfork deployment</li>
 <li>Changes to the UTXO tracking to enable normalized transaction ID
 lookup</li>
 </ul>
-<h3 id="normalized-transaction-id-computation">Normalized Transaction ID computation</h3>
+<h3 id="Normalized_Transaction_ID_computation">Normalized Transaction ID computation</h3>
 <p>In order to calculate the normalized transaction ID, the signature
 script is stripped from each input of the transaction of non-coinbase
 transactions and each input is normalized. Stripping the signature
 script is achieved by setting the script's length to 0 and removing the
-<code>uchar[]</code> array from the <code>TxIn</code>.[3] Inputs are then normalized by
+<code>uchar[]</code> array from the <code>TxIn</code>.<sup class="footnote-reference"><a href="#3">3</a></sup> Inputs are then normalized by
 replacing the hash of each previous transaction with its normalized
 version if available, i.e., the normalized hash of the previous
 transaction that created the output being spent in the current
@@ -127,7 +127,7 @@ class of semantically identical transactions. In the following we use
 transaction including signatures. Normalized transaction IDs for
 coinbase transactions are computed with the signature script in the
 coinbase input, in order to avoid hash collisions.</p>
-<h3 id="op-checksigex">OP_CHECKSIGEX</h3>
+<h3 id="OP_CHECKSIGEX">OP_CHECKSIGEX</h3>
 <p>This BIP introduces a new opcode <code>OP_CHECKSIGEX</code> which replaces
 <code>OP_NOP4</code>. <code>OP_CHECKSIGEX</code> subsumes <code>OP_CHECKSIGVERIFY</code> and
 <code>OP_CHECKMULTISIGVERIFY</code>, and extends them by accepting a new <code>VERSION</code>
@@ -139,7 +139,7 @@ performs the signature check according to the specified version. If the
 verifying client does not support the specified version, i.e., the
 version was defined after the release of the client, the client must
 treat the <code>OP_CHECKSIGEX</code> as an <code>OP_NOP</code>.</p>
-<h4 id="version-1">Version 1</h4>
+<h4 id="Version_1">Version 1</h4>
 <p>The first version of <code>OP_CHECKSIGEX</code> (<code>VERSION=1</code>) implements normalized
 transaction IDs and uses Schnorr signatures instead of the current ECDSA
 signatures.</p>
@@ -147,12 +147,12 @@ signatures.</p>
 <p><code>   m {pubkey}...{pubkey} n v OP_CHECKSIGEX</code></p>
 <p>with matching scriptSig format:</p>
 <p><code>   {signature}...{signature}</code></p>
-<p>This is the standard <em>m-of-n</em> script defined in
-<a href="https://github.com/bitcoin/bips/blob/master/bip-0011.mediawiki">BIP 11</a>
-with an additional version parameter <code>v</code> and the new opcode. Singlesig
+<p>This is the standard <em>m-of-n</em> script defined in <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0011.mediawiki">BIP
+11</a> with
+an additional version parameter <code>v</code> and the new opcode. Singlesig
 transactions are encoded as <em>1-of-1</em> transactions.</p>
 <p>The existing <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> have a
-bug[4] that pops one argument too many from the stack. This bug is not
+bug<sup class="footnote-reference"><a href="#4">4</a></sup> that pops one argument too many from the stack. This bug is not
 reproduced in the implementation of OP_CHECKSIGEX, so the canonical
 solution of pushing a dummy value onto the stack is not necessary.</p>
 <p>The normalization is achieved by normalizing the transaction before
@@ -162,7 +162,7 @@ inputs by their normalized variants and stripping the signature scripts.
 The normalized transction IDs are computed as described in the previous
 section. This normalization step is performed both when creating the
 signatures as well as when checking the signatures.</p>
-<h3 id="tracking-normalized-transaction-ids">Tracking Normalized Transaction IDs</h3>
+<h3 id="Tracking_Normalized_Transaction_IDs">Tracking Normalized Transaction IDs</h3>
 <p>The transaction version is bumped to 2. The new version signals to
 clients receiving the transaction that they should track the normalized
 transaction ID along with the transaction instance ID in the unspent
@@ -178,8 +178,8 @@ instance IDs, not the normalized transaction IDs.</p>
 <p>Outputs created by version 1 transactions are not annotated with the
 normalized transaction ID, and when normalizing the hashes in
 transaction inputs referencing version 1 outputs are not modified.</p>
-<h2 id="rationale">Rationale</h2>
-<h3 id="normalization">Normalization</h3>
+<h2 id="Rationale">Rationale</h2>
+<h3 id="Normalization">Normalization</h3>
 <p>Normalized transaction IDs are provably non-malleable since no data is
 included in the signaturehash whose integrity is not also proven in the
 signature, thus any modification causing the hash to change will also
@@ -190,31 +190,30 @@ computationally infeasible to cause a hash collision between
 transactions.</p>
 <p>There are a number of advantages to using normalized transaction IDs:</p>
 <ul>
-<li>Like BIP 62 and BIP 66 it solves the problem of third-parties
-picking transactions out of the network, modifying them and
-reinjecting them.</li>
+<li>Like BIP 62 and BIP 66 it solves the problem of third-parties picking
+transactions out of the network, modifying them and reinjecting them.</li>
 <li><em>m-of-n</em> multisig outputs are often used in higher level
-protocols[5]<ref>[[<a href="http://lightning.network/lightning-network-paper.pdf%7CThe">http://lightning.network/lightning-network-paper.pdf|The</a>
+protocols<sup class="footnote-reference"><a href="#5">5</a></sup><ref>[[<a rel="noopener" target="_blank" href="http://lightning.network/lightning-network-paper.pdf%7CThe">http://lightning.network/lightning-network-paper.pdf%7CThe</a>
 Bitcoin Lightning Network:</li>
 </ul>
-<p>Scalable Off-Chain Instant Payments]]</ref> in which several parties
-sign a transaction. Without normalized transaction IDs it is trivial for
-one party to re-sign a transaction, hence changing the transaction hash
-and invalidating any transaction built on top of its outputs. Normalized
-transaction IDs force the ID not to change, even if a party replaces its
-signature.</p>
+<p>Scalable Off-Chain Instant Payments]]</p>
+</ref>
+<p>in which several parties sign a transaction. Without normalized
+transaction IDs it is trivial for one party to re-sign a transaction,
+hence changing the transaction hash and invalidating any transaction
+built on top of its outputs. Normalized transaction IDs force the ID not
+to change, even if a party replaces its signature.</p>
 <ul>
-<li>Many higher level protocols build structures of transactions on top
-of multisig outputs that are not completely signed. This is
-currently not possible without one party holding a fully signed
-transaction and then calculating the ID. It is desirable to be able
-to build successive transactions without one party collecting all
-signatures, and thus possibly lock in funds unilaterally. Normalized
-transaction IDs allow the use of transaction templates, i.e.,
-completely unsigned transactions upon which further transactions can
-be built, and only once every party is assured the structure matches
-its expectations it signs the template, thus validating the
-template.</li>
+<li>Many higher level protocols build structures of transactions on top of
+multisig outputs that are not completely signed. This is currently not
+possible without one party holding a fully signed transaction and then
+calculating the ID. It is desirable to be able to build successive
+transactions without one party collecting all signatures, and thus
+possibly lock in funds unilaterally. Normalized transaction IDs allow
+the use of transaction templates, i.e., completely unsigned
+transactions upon which further transactions can be built, and only
+once every party is assured the structure matches its expectations it
+signs the template, thus validating the template.</li>
 </ul>
 <p>The only occurrence in which transactions can still be modified
 unilaterally is in the case <code>SIGHASH_NONE</code>, <code>SIGHASH_SINGLE</code> or
@@ -239,12 +238,12 @@ spent, which at 7,000,000 transactions with unspent outputs amounts to
 224MB additional storage on disk.</p>
 <p>The coinbase transactions have been checked for hash-collisions and no
 collisions were found except for the coinbase transactions in blocks at
-heights 91842 and 91880, which are known to be identical[6], and
-motivated the introduction of BIP 34.[7] Since coinbase transactions
+heights 91842 and 91880, which are known to be identical<sup class="footnote-reference"><a href="#6">6</a></sup>, and
+motivated the introduction of BIP 34.<sup class="footnote-reference"><a href="#7">7</a></sup> Since coinbase transactions
 are invalid if transmitted outside of a block it is not possible to
 modify them on the fly and since they only mature after being included
 for a long time in the blockchain they are considered safe.</p>
-<h3 id="op-checksigex-1">OP_CHECKSIGEX</h3>
+<h3 id="OP_CHECKSIGEX-1">OP_CHECKSIGEX</h3>
 <p>The new opcode <code>OP_CHECKSIGEX</code> was introduced in order to allow the use
 of normalized transaction IDs as a softfork and in order to keep the
 number of <code>OP_NOP</code>s needed to a bare minimum, while enabling future
@@ -267,7 +266,7 @@ top-most element before <code>OP_CHECKSIGEX</code> is non-zero. This is necessar
 to guarantee that non-upgraded clients, which interpret <code>OP_CHECKSIGEX</code>
 as <code>OP_NOP4</code>, do not end up with a zero value on top of the stack after
 execution, which would be interpreted as script failure.</p>
-<h3 id="impact">Impact</h3>
+<h3 id="Impact">Impact</h3>
 <p>This is a softfork which replaces <code>OP_NOP4</code> with the new implementation
 of <code>OP_CHECKSIGEX</code>, as such the impact on the network is minimal.
 Wallets that do not implement this opcode will not be able to verify the
@@ -279,32 +278,44 @@ hence non-upgraded wallets can still lookup the outputs and mark them as
 spent. Furthermore, clients that do not implement this BIP are unable to
 identify outputs using this script as their own, however upgrading and
 rescanning the blockchain will make them available.</p>
-<h2 id="see-also">See also</h2>
+<h2 id="See_also">See also</h2>
 <ul>
-<li><a href="https://bips.dev/140/bip-0062.mediawiki" title="wikilink">BIP 62: Dealing with malleability</a></li>
-<li><a href="https://bips.dev/140/bip-0066.mediawiki" title="wikilink">BIP 66: Strict DER Signatures</a></li>
+<li><a href="/62">BIP 62: Dealing with malleability</a></li>
+<li><a href="/66">BIP 66: Strict DER Signatures</a></li>
 </ul>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <references>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
-<ol>
-<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki" title="wikilink">BIP 62 - Dealing with
-malleability</a></li>
-<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki" title="wikilink">BIP 66 - Strict DER
-signatures</a></li>
-<li><a href="https://en.bitcoin.it/wiki/Protocol_Specification#tx" title="wikilink">Protocol Specification:
-TX</a></li>
-<li><a href="https://bitcoin.org/en/developer-guide#multisig" title="wikilink">Developer Documentation -
-Multisig</a></li>
-<li><a href="http://www.tik.ee.ethz.ch/file/716b955c130e6c703fac336ea17b1670/duplex-micropayment-channels.pdf" title="wikilink">A Fast and Scalable Payment Network with Bitcoin Duplex
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki">BIP 62 - Dealing with
+malleability</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki">BIP 66 - Strict DER
+signatures</a></p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><a rel="noopener" target="_blank" title="wikilink" href="https://en.bitcoin.it/wiki/Protocol_Specification#tx">Protocol Specification:
+TX</a></p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><a rel="noopener" target="_blank" title="wikilink" href="https://bitcoin.org/en/developer-guide#multisig">Developer Documentation -
+Multisig</a></p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><a rel="noopener" target="_blank" title="wikilink" href="http://www.tik.ee.ethz.ch/file/716b955c130e6c703fac336ea17b1670/duplex-micropayment-channels.pdf">A Fast and Scalable Payment Network with Bitcoin Duplex
 Micropayment Channels
-</a></li>
-<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki" title="wikilink">BIP 30 - Duplicate
-transactions</a></li>
-<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki" title="wikilink">Block v2, Height in
-Coinbase</a></li>
-</ol>
+</a></p>
+</div>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<p><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">BIP 30 - Duplicate
+transactions</a></p>
+</div>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
+<p><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">Block v2, Height in
+Coinbase</a></p>
+</div>
 
     </div>
 
@@ -312,7 +323,7 @@ Coinbase</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

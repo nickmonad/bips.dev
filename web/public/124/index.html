@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,24 +46,24 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 124
-  Layer: Applications
-  Title: Hierarchical Deterministic Script Templates
-  Author: Eric Lombrozo &lt;eric@ciphrex.com&gt;
-          William Swanson &lt;swansontec@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0124
-  Status: Rejected
-  Type: Informational
-  Created: 2015-11-20
-  License: PD
-  Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-November/011795.html
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 124
+</span><span>  Layer: Applications
+</span><span>  Title: Hierarchical Deterministic Script Templates
+</span><span>  Author: Eric Lombrozo &lt;eric@ciphrex.com&gt;
+</span><span>          William Swanson &lt;swansontec@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0124
+</span><span>  Status: Rejected
+</span><span>  Type: Informational
+</span><span>  Created: 2015-11-20
+</span><span>  License: PD
+</span><span>  Post-History: http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-November/011795.html
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP defines a script template format that can be used by wallets to
 deterministically generate scripts with specific authorization policies
 using the key derivation mechanism defined in BIP32.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Currently existing wallets typically issue scripts in only a tiny
 handful of widely used formats. The most popular formats are
 pay-to-pubkey-hash and m-of-n pay-to-script-hash (BIP16). However,
@@ -79,12 +79,12 @@ generalized templates to allow for rapidly evolving script designs.</p>
 <p>This BIP provides a generalized format for constructing a script
 template that guarantees that different wallets will all produce the
 same scripts for a given set of derivation paths according to BIP32.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="keys">Keys</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Keys">Keys</h3>
 <p>An individual key is determined by a BIP32 derivation path and an index.
 For convenience, we introduce the following notation:</p>
 <p><strong>A</strong><sub>k</sub> = (derivation path for A)/k</p>
-<h3 id="key-groups">Key Groups</h3>
+<h3 id="Key_Groups">Key Groups</h3>
 <p>Let <strong>m</strong><sub>i</sub> denote distinct BIP32 derivation paths. We define
 a key group of n keys as a set of key derivation paths with a free index
 k:</p>
@@ -94,12 +94,12 @@ k:</p>
 set of keys. Scripts are symmetric in a set of keys if the semantics of
 the script is unaffected by permutations of the keys. Key groups enforce
 a canonical form and can improve privacy.</p>
-<h3 id="sorting">Sorting</h3>
+<h3 id="Sorting">Sorting</h3>
 <p>We define a lexicographic sorting of the keys. (TODO: specification of
 sorting conventions - compressed pubkeys, encoding, etc...)</p>
 <p>Define {<strong>K</strong><sub>k</sub>}<sub>j</sub> to be the jth element of the
 sorted keys for derivation index k.</p>
-<h3 id="script-templates">Script Templates</h3>
+<h3 id="Script_Templates">Script Templates</h3>
 <p>We construct script templates by inserting placeholders for data into a
 script. To denote a placeholder, we use the following notation:</p>
 <p><em>Script</em>(<strong>A</strong>) = opcodes [<strong>A</strong>] opcodes</p>
@@ -110,22 +110,22 @@ script. To denote a placeholder, we use the following notation:</p>
 <p>[{<strong>K</strong><sub>k</sub>}] = [{<strong>K</strong><sub>k</sub>}<sub>1</sub>]
 [{<strong>K</strong><sub>k</sub>}<sub>2</sub>] ...
 [{<strong>K</strong><sub>k</sub>}<sub>n</sub>]</p>
-<h3 id="operations-on-keys">Operations on Keys</h3>
+<h3 id="Operations_on_Keys">Operations on Keys</h3>
 <p>In some applications, we might want to insert the result of some
 operation performed on a key rather than the key itself into the script.
 For example, we might want to insert a Hash160 of key <strong>A</strong><sub>k</sub>.
 We can use the following notation:</p>
 <p>[<em>Hash160</em>(<strong>A</strong><sub>k</sub>)]</p>
-<h3 id="encoding">Encoding</h3>
+<h3 id="Encoding">Encoding</h3>
 <p>TODO</p>
-<h2 id="examples">Examples</h2>
-<h3 id="2-of-3-multisig">2-of-3 Multisig</h3>
+<h2 id="Examples">Examples</h2>
+<h3 id="2-of-3_Multisig">2-of-3 Multisig</h3>
 <p>The script template is defined by:</p>
 <p><em>Script</em>(<strong>X</strong>) = 2 [<strong>X</strong>] 3 OP_CHECKMULTISIG</p>
 <p>Letting <strong>K</strong><sub>k</sub> = { <strong>m</strong><sub>1</sub>/k, <strong>m</strong><sub>2</sub>/k,
 <strong>m</strong><sub>3</sub>/k }, the <em>k</em>th script for this key group is denoted by
 <em>Script</em>({<strong>K</strong><sub>k</sub>}).</p>
-<h3 id="1-of-1-or-2-of-3">1-of-1 or 2-of-3</h3>
+<h3 id="1-of-1_or_2-of-3">1-of-1 or 2-of-3</h3>
 <p>The script template is defined by:</p>
 <p><em>Script</em>(<strong>A</strong>, <strong>B</strong>) =<br />
         OP_DUP [<strong>A</strong>] OP_CHECKSIG<br />
@@ -140,7 +140,7 @@ three users that can only authorize transactions if at least two of them
 agree.</p>
 <p>The <em>k</em>th script is given by <em>Script</em>(<strong>M</strong><sub>k</sub>,
 {<strong>K</strong><sub>k</sub>}).</p>
-<h3 id="timelocked-contract">Timelocked Contract</h3>
+<h3 id="Timelocked_Contract">Timelocked Contract</h3>
 <p>The output is payable to Alice immediately if she knows the private key
 for <strong>A</strong><sub>k</sub>. Bob must know the private key for
 <strong>B</strong><sub>k</sub> and also wait for a timeout <strong>t</strong> before being able to
@@ -157,17 +157,17 @@ OP_CHECKSIG<br />
         OP_ENDIF</p>
 <p>The <em>k</em>th script with timeout <strong>t</strong> is given by
 <em>Script</em>(<strong>A</strong><sub>k</sub>, <strong>B</strong><sub>k</sub>, <strong>t</strong>).</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <ul>
-<li><a href="https://bips.dev/124/bip-0016.mediawiki" title="wikilink">BIP16 - Pay to Script Hash</a></li>
-<li><a href="https://bips.dev/124/bip-0032.mediawiki" title="wikilink">BIP32 - Hierarchical Deterministic
+<li><a href="/16">BIP16 - Pay to Script Hash</a></li>
+<li><a href="/32">BIP32 - Hierarchical Deterministic
 Wallets</a></li>
-<li><a href="https://bips.dev/124/bip-0065.mediawiki" title="wikilink">BIP65 - OP_CHECKLOCKTIMEVERIFY</a></li>
-<li><a href="https://bips.dev/124/bip-0112.mediawiki" title="wikilink">BIP112 - CHECKSEQUENCEVERIFY</a></li>
-<li><a href="https://lightning.network/lightning-network-paper.pdf" title="wikilink">Lightning Network
+<li><a href="/65">BIP65 - OP_CHECKLOCKTIMEVERIFY</a></li>
+<li><a href="/112">BIP112 - CHECKSEQUENCEVERIFY</a></li>
+<li><a rel="noopener" target="_blank" title="wikilink" href="https://lightning.network/lightning-network-paper.pdf">Lightning Network
 Whitepaper</a></li>
 </ul>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
 
     </div>
@@ -176,7 +176,7 @@ Whitepaper</a></li>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

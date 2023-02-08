@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,18 +46,18 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 137
-  Layer: Applications
-  Title: Signatures of Messages using Private Keys
-  Author: Christopher Gilliard &lt;christopher.gilliard@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0137
-  Status: Final
-  Type: Standards Track
-  Created: 2019-02-16
-  License: BSD-2-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 137
+</span><span>  Layer: Applications
+</span><span>  Title: Signatures of Messages using Private Keys
+</span><span>  Author: Christopher Gilliard &lt;christopher.gilliard@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0137
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2019-02-16
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This document describes a signature format for signing messages with
 Bitcoin private keys.</p>
 <p>The specification is intended to describe the standard for signatures of
@@ -71,9 +71,9 @@ types of Bitcoin addresses and without introducing specific standards it
 is unclear which type of address format is being used. See [2]. This
 BIP will attempt to address these issues and define a clear and concise
 format for Bitcoin signatures.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Since Bitcoin private keys can not only be used to sign Bitcoin
 transactions, but also any other message, it has become customary to use
 them to sign various messages for differing purposes. Some applications
@@ -86,8 +86,8 @@ introduction of Segwit (both in the form of P2SH and bech32) addresses,
 it is unclear how to distinguish a P2PKH, P2SH, or bech32 address from
 one another. This BIP proposes a standard signature format that will
 allow clients to distinguish between the different address formats.</p>
-<h2 id="specification">Specification</h2>
-<h3 id="background-on-ecdsa-signatures">Background on ECDSA Signatures</h3>
+<h2 id="Specification">Specification</h2>
+<h3 id="Background_on_ECDSA_Signatures">Background on ECDSA Signatures</h3>
 <p>(For readers who already understand how ECDSA signatures work, you can
 skip this section as this is only intended as background information.)
 Elliptic Curve Digital Signature Algorithm or ECDSA is a cryptographic
@@ -120,7 +120,7 @@ Signatures are either 73, 72, or 71 bytes long, with probabilities
 approximately 25%, 50% and 25% respectively, although sizes even smaller
 than that are possible with exponentially decreasing probability. Source
 [3].</p>
-<h3 id="conventions-with-signatures-used-in-bitcoin">Conventions with signatures used in Bitcoin</h3>
+<h3 id="Conventions_with_signatures_used_in_Bitcoin">Conventions with signatures used in Bitcoin</h3>
 <p>Bitcoin signatures have the r and s values mentioned above, and a
 header. The header is a single byte and the r and s are each 32 bytes so
 a signature's size is 65 bytes. The header is used to specify
@@ -135,7 +135,7 @@ of the header. If the header is between a value of 31 and 34, this
 indicates that it is a compressed address. If the header value is
 between 35 and 38 inclusive, it is a p2sh segwit address. If the header
 value is between 39 and 42, it is a bech32 address.</p>
-<h3 id="procedure-for-signing-verifying-a-signature">Procedure for signing/verifying a signature</h3>
+<h3 id="Procedure_for_signing/verifying_a_signature">Procedure for signing/verifying a signature</h3>
 <p>As noted above the signature is composed of three components, the
 header, r and s values. r/s can be computed with standard ECDSA library
 functions. Part of the header includes something called a recId. This is
@@ -154,7 +154,7 @@ address this value is 39. So, you have the following ranges:</p>
 </ul>
 <p>To verify a signature, the recId is obtained by subtracting this
 constant from the header value.</p>
-<h3 id="sample-code-for-processing-a-signature">Sample Code for processing a signature</h3>
+<h3 id="Sample_Code_for_processing_a_signature">Sample Code for processing a signature</h3>
 <p>Note: this code is a modification of the BitcoinJ code which is written
 in java.</p>
 <p><code>   public static ECKey signedMessageToKey(String message, String signatureBase64) throws SignatureException {</code><br />
@@ -202,18 +202,18 @@ in java.</p>
 <code>           throw new SignatureException(&quot;Could not recover public key from signature&quot;);</code><br />
 <code>       return key;</code><br />
 <code>   }</code></p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>Since this format includes P2PKH keys, it is backwards compatible, but
 keep in mind some software has checks for ranges of headers and will
 report the newer segwit header types as errors.</p>
-<h2 id="implications">Implications</h2>
+<h2 id="Implications">Implications</h2>
 <p>Message signing is an important use case and potentially underused due
 to the fact that, up until now, there has not been a formal
 specification for how wallets can sign messages using Bitcoin private
 keys. Bitcoin wallets should be interoperable and use the same
 conventions for determing a signature's validity. This BIP can also be
 updated as new signature formats emerge.</p>
-<h2 id="acknowledgements">Acknowledgements</h2>
+<h2 id="Acknowledgements">Acknowledgements</h2>
 <ul>
 <li>Konstantin Bay - review</li>
 <li>Holly Casaletto - review</li>
@@ -221,11 +221,11 @@ updated as new signature formats emerge.</p>
 </ul>
 <p>Note that the background on ECDSA signatures was taken from
 en.bitcoin.it and code sample modified from BitcoinJ.</p>
-<h2 id="references">References</h2>
-<p>[1] - <a href="https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki</a></p>
-<p>[2] - <a href="https://github.com/bitcoin/bitcoin/issues/10542">https://github.com/bitcoin/bitcoin/issues/10542</a></p>
+<h2 id="References">References</h2>
+<p>[1] - <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki</a></p>
+<p>[2] - <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/issues/10542">https://github.com/bitcoin/bitcoin/issues/10542</a></p>
 <p>[3] -
-<a href="https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm">https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm</a></p>
+<a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm">https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm</a></p>
 
     </div>
 
@@ -233,7 +233,7 @@ en.bitcoin.it and code sample modified from BitcoinJ.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

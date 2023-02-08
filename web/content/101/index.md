@@ -14,17 +14,15 @@ status = ["Withdrawn"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0101.mediawiki"
 +++
 
-``` 
-  BIP: 101
-  Layer: Consensus (hard fork)
-  Title: Increase maximum block size
-  Author: Gavin Andresen <gavinandresen@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0101
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2015-06-22
-```
+      BIP: 101
+      Layer: Consensus (hard fork)
+      Title: Increase maximum block size
+      Author: Gavin Andresen <gavinandresen@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0101
+      Status: Withdrawn
+      Type: Standards Track
+      Created: 2015-06-22
 
 ## Abstract
 
@@ -52,7 +50,7 @@ will increase linearly based on the block's timestamp. The maximum size
 of blocks after 2036-01-06 00:00:00 UTC shall be 8,192,000,000 bytes.
 
 Expressed in pseudo-code, using integer math, assuming that
-block\_timestamp is after the activation time (as described in the
+block_timestamp is after the activation time (as described in the
 Deployment section below):
 
 `   function max_block_size(block_timestamp):`

@@ -14,20 +14,18 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0343.mediawiki"
 +++
 
-``` 
-  BIP: 343
-  Layer: Consensus (soft fork)
-  Title: Mandatory activation of taproot deployment
-  Author: Shinobius <quantumedusa@gmail.com>
-          Michael Folkson <michaelfolkson@gmail.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0343
-  Status: Proposed
-  Type: Standards Track
-  Created: 2021-04-25
-  License: BSD-3-Clause
-           CC0-1.0
-```
+      BIP: 343
+      Layer: Consensus (soft fork)
+      Title: Mandatory activation of taproot deployment
+      Author: Shinobius <quantumedusa@gmail.com>
+              Michael Folkson <michaelfolkson@gmail.com>
+      Comments-Summary: No comments yet.
+      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0343
+      Status: Proposed
+      Type: Standards Track
+      Created: 2021-04-25
+      License: BSD-3-Clause
+               CC0-1.0
 
 ## Abstract
 
@@ -60,7 +58,7 @@ active when taproot is locked in.
 
 ## Reference implementation
 
-  - [https://github.com/BitcoinActivation/bitcoin](https://github.com/BitcoinActivation/bitcoin "wikilink")
+- <https://github.com/BitcoinActivation/bitcoin>
 
 ## Backward Compatibility
 
@@ -108,17 +106,16 @@ which were important prerequisites for this proposal.
 
 ## References
 
-  - [BIP8 Version bits with lock-in by
-    height](bip-0008.mediawiki "wikilink")
-  - [BIP148 Mandatory activation of segwit
-    deployment](bip-0148.mediawiki "wikilink")
-  - [BIP340 Schnorr Signatures for
-    secp256k1](bip-0340.mediawiki "wikilink")
-  - [BIP341 Taproot: SegWit version 1 spending
-    rules](bip-0341.mediawiki "wikilink")
-  - [BIP342 Validation of Taproot
-    Scripts](bip-0342.mediawiki "wikilink")
-  - [Taproot benefits](https://taproot.works/taproot-faq/)
+- [BIP8 Version bits with lock-in by
+  height](/8)
+- [BIP148 Mandatory activation of segwit
+  deployment](/148)
+- [BIP340 Schnorr Signatures for
+  secp256k1](/340)
+- [BIP341 Taproot: SegWit version 1 spending
+  rules](/341)
+- [BIP342 Validation of Taproot Scripts](/342)
+- [Taproot benefits](https://taproot.works/taproot-faq/)
 
 ## Copyright
 

@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,23 +46,23 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 119
-  Layer: Consensus (soft fork)
-  Title: CHECKTEMPLATEVERIFY
-  Author: Jeremy Rubin &lt;j@rubin.io&gt;
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0119
-  Status: Draft
-  Type: Standards Track
-  Created: 2020-01-06
-  License: BSD-3-Clause
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 119
+</span><span>  Layer: Consensus (soft fork)
+</span><span>  Title: CHECKTEMPLATEVERIFY
+</span><span>  Author: Jeremy Rubin &lt;j@rubin.io&gt;
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0119
+</span><span>  Status: Draft
+</span><span>  Type: Standards Track
+</span><span>  Created: 2020-01-06
+</span><span>  License: BSD-3-Clause
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP proposes a new opcode, OP_CHECKTEMPLATEVERIFY, to be activated
 as a change to the semantics of OP_NOP4.</p>
 <p>The new opcode has applications for transaction congestion control and
 payment channel instantiation, among others, which are described in the
 Motivation section of this BIP.</p>
-<h2 id="summary">Summary</h2>
+<h2 id="Summary">Summary</h2>
 <p>OP_CHECKTEMPLATEVERIFY uses opcode OP_NOP4 (0xb3) as a soft fork
 upgrade.</p>
 <p>OP_CHECKTEMPLATEVERIFY does the following:</p>
@@ -80,7 +80,7 @@ executing input index.</p>
 <ul>
 <li>Reject non-32 byte as SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS.</li>
 </ul>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>Covenants are restrictions on how a coin may be spent beyond key
 ownership. This is a general definition based on the legal definition
 which even simple scripts using CSV would satisfy. Covenants in Bitcoin
@@ -99,45 +99,44 @@ non-interactive payment channel creation, congestion controlled
 batching, efficient to construct discreet log contracts, and payment
 pools, among many others. For more details on these applications, please
 see the references.</p>
-<h2 id="detailed-specification">Detailed Specification</h2>
+<h2 id="Detailed_Specification">Detailed Specification</h2>
 <p>The below code is the main logic for verifying CHECKTEMPLATEVERIFY,
 described in pythonic pseduocode. The canonical specification for the
-semantics of OP_CHECKTEMPLATEVERIFY as implemented in C++ in the
-context of Bitcoin Core can be seen in the reference implementation.</p>
+semantics of OP_CHECKTEMPLATEVERIFY as implemented in C++ in the context
+of Bitcoin Core can be seen in the reference implementation.</p>
 <p>The execution of the opcode is as follows:</p>
-<pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">execute_bip_119</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">self</span><span style="color:#61676c;">):
-    </span><span style="font-style:italic;color:#abb0b6;"># Before soft-fork activation / failed activation
-    # continue to treat as NOP4
-    </span><span style="color:#fa6e32;">if </span><span style="color:#ed9366;">not </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">flags</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">script_verify_default_check_template_verify_hash:
-        </span><span style="font-style:italic;color:#abb0b6;"># Potentially set for node-local policy to discourage premature use
-        </span><span style="color:#fa6e32;">if </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">flags</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">script_verify_discourage_upgradable_nops:
-            </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span style="color:#61676c;">(errors</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">script_err_discourage_upgradable_nops)
-        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">return_as_nop</span><span style="color:#61676c;">()
-
-    </span><span style="font-style:italic;color:#abb0b6;"># CTV always requires at least one stack argument
-    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">len</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack) </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">:
-        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span style="color:#61676c;">(errors</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">script_err_invalid_stack_operation)
-
-    </span><span style="font-style:italic;color:#abb0b6;"># CTV only verifies the hash against a 32 byte argument
-    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">len</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">stack[</span><span style="color:#ed9366;">-</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">]) </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">:
-        </span><span style="font-style:italic;color:#abb0b6;"># Ensure the precomputed data required for anti-DoS is available,
-        # or cache it on first use
-        </span><span style="color:#fa6e32;">if </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">context</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">precomputed_ctv_data </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">None</span><span style="color:#61676c;">:
-            </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">context</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">precomputed_ctv_data </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">context</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">tx</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">get_default_check_template_precomputed_data</span><span style="color:#61676c;">()
-
-        </span><span style="font-style:italic;color:#abb0b6;"># If the hashes do not match, return error
-        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">stack[</span><span style="color:#ed9366;">-</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">] </span><span style="color:#ed9366;">!= </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">context</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">tx</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">get_default_check_template_hash</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">context</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">nIn</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">context</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">precomputed_ctv_data)
-            </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span style="color:#61676c;">(errors</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">script_err_template_mismatch)
-
-        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">return_as_nop</span><span style="color:#61676c;">()
-
-    </span><span style="font-style:italic;color:#abb0b6;"># future upgrade can add semantics for this opcode with different length args
-    # so discourage use when applicable
-    </span><span style="color:#fa6e32;">if </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">flags</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">script_verify_discourage_upgradable_nops:
-        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span style="color:#61676c;">(errors</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">script_err_discourage_upgradable_nops)
-    </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;">:
-        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">return_as_nop</span><span style="color:#61676c;">()
+<pre data-lang="python" style="background-color:#fafafa;color:#61676c;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#fa6e32;">def </span><span style="color:#f29718;">execute_bip_119</span><span>(</span><span style="color:#ff8f40;">self</span><span>):
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># Before soft-fork activation / failed activation
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># continue to treat as NOP4
+</span><span>    </span><span style="color:#fa6e32;">if </span><span style="color:#ed9366;">not </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>flags</span><span style="color:#ed9366;">.</span><span>script_verify_default_check_template_verify_hash:
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># Potentially set for node-local policy to discourage premature use
+</span><span>        </span><span style="color:#fa6e32;">if </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>flags</span><span style="color:#ed9366;">.</span><span>script_verify_discourage_upgradable_nops:
+</span><span>            </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span>(errors</span><span style="color:#ed9366;">.</span><span>script_err_discourage_upgradable_nops)
+</span><span>        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">return_as_nop</span><span>()
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># CTV always requires at least one stack argument
+</span><span>    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">len</span><span>(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>stack) </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">1</span><span>:
+</span><span>        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span>(errors</span><span style="color:#ed9366;">.</span><span>script_err_invalid_stack_operation)
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># CTV only verifies the hash against a 32 byte argument
+</span><span>    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">len</span><span>(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>stack[</span><span style="color:#ed9366;">-</span><span style="color:#ff8f40;">1</span><span>]) </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">32</span><span>:
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># Ensure the precomputed data required for anti-DoS is available,
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># or cache it on first use
+</span><span>        </span><span style="color:#fa6e32;">if </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>context</span><span style="color:#ed9366;">.</span><span>precomputed_ctv_data </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">None</span><span>:
+</span><span>            </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>context</span><span style="color:#ed9366;">.</span><span>precomputed_ctv_data </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>context</span><span style="color:#ed9366;">.</span><span>tx</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">get_default_check_template_precomputed_data</span><span>()
+</span><span>
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># If the hashes do not match, return error
+</span><span>        </span><span style="color:#fa6e32;">if </span><span>stack[</span><span style="color:#ed9366;">-</span><span style="color:#ff8f40;">1</span><span>] </span><span style="color:#ed9366;">!= </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>context</span><span style="color:#ed9366;">.</span><span>tx</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">get_default_check_template_hash</span><span>(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>context</span><span style="color:#ed9366;">.</span><span>nIn</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>context</span><span style="color:#ed9366;">.</span><span>precomputed_ctv_data)
+</span><span>            </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span>(errors</span><span style="color:#ed9366;">.</span><span>script_err_template_mismatch)
+</span><span>
+</span><span>        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">return_as_nop</span><span>()
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># future upgrade can add semantics for this opcode with different length args
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># so discourage use when applicable
+</span><span>    </span><span style="color:#fa6e32;">if </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>flags</span><span style="color:#ed9366;">.</span><span>script_verify_discourage_upgradable_nops:
+</span><span>        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">errors_with</span><span>(errors</span><span style="color:#ed9366;">.</span><span>script_err_discourage_upgradable_nops)
+</span><span>    </span><span style="color:#fa6e32;">else</span><span>:
+</span><span>        </span><span style="color:#fa6e32;">return </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">return_as_nop</span><span>()
 </span></code></pre>
 <p>The computation of this hash can be implemented as specified below
 (where self is the transaction type). Care must be taken that in any
@@ -147,78 +146,77 @@ of the hash computation to avoid quadratic hashing DoS. All variable
 length computations must be precomputed including hashes of the
 scriptsigs, sequences, and outputs. See the section &quot;Denial of Service
 and Validation Costs&quot; below. This is not a performance optimization.</p>
-<pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="color:#61676c;">
-</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">ser_compact_size</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">l</span><span style="color:#61676c;">):
-    r </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">l </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">253</span><span style="color:#61676c;">:
-        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char
-        </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;B&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">l)
-    </span><span style="color:#fa6e32;">elif </span><span style="color:#61676c;">l </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0x10000</span><span style="color:#61676c;">:
-        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char 253 followed by unsigned 2 byte integer (little endian)
-        </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;BH&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">253</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">l)
-    </span><span style="color:#fa6e32;">elif </span><span style="color:#61676c;">l </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0x100000000</span><span style="color:#61676c;">:
-        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char 254 followed by unsigned 4 byte integer (little endian)
-        </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;BI&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">254</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">l)
-    </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;">:
-        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char 255 followed by unsigned 8 byte integer (little endian)
-        </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;BQ&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">255</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">l)
-    </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">r
-
-</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">ser_string</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">s</span><span style="color:#61676c;">):
-    </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">ser_compact_size</span><span style="color:#61676c;">(</span><span style="color:#f07171;">len</span><span style="color:#61676c;">(s)) </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">s
-
-</span><span style="color:#fa6e32;">class </span><span style="color:#399ee6;">CTxOut</span><span style="color:#61676c;">:
-    </span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">serialize</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">self</span><span style="color:#61676c;">):
-        r </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;
-        </span><span style="font-style:italic;color:#abb0b6;"># serialize as signed 8 byte integer (little endian)
-        </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;q&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">nValue)
-        r </span><span style="color:#ed9366;">+= </span><span style="color:#f29718;">ser_string</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">scriptPubKey)
-        </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">r
-
-</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">get_default_check_template_precomputed_data</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">self</span><span style="color:#61676c;">):
-    result </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">{}
-    </span><span style="font-style:italic;color:#abb0b6;"># If there are no scriptSigs we do not need to precompute a hash
-    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">any</span><span style="color:#61676c;">(inp</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">scriptSig </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">inp </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">vin):
-        result[</span><span style="color:#86b300;">&quot;scriptSigs&quot;</span><span style="color:#61676c;">] </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">sha256</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">join</span><span style="color:#61676c;">(</span><span style="color:#f29718;">ser_string</span><span style="color:#61676c;">(inp</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">scriptSig) </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">inp </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">vin))
-    </span><span style="font-style:italic;color:#abb0b6;"># The same value is also pre-computed for and defined in BIP-341 and can be shared.
-    # each nSequence is packed as 4 byte unsigned integer (little endian)
-    </span><span style="color:#61676c;">result[</span><span style="color:#86b300;">&quot;sequences&quot;</span><span style="color:#61676c;">] </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">sha256</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">join</span><span style="color:#61676c;">(struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">inp</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">nSequence) </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">inp </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">vin))
-    </span><span style="font-style:italic;color:#abb0b6;"># The same value is also pre-computed for and defined in BIP-341 and can be shared
-    # See class CTxOut above for details.
-    </span><span style="color:#61676c;">result[</span><span style="color:#86b300;">&quot;outputs&quot;</span><span style="color:#61676c;">] </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">sha256</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">join</span><span style="color:#61676c;">(out</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">serialize</span><span style="color:#61676c;">() </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">out </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">vout))
-    </span><span style="color:#fa6e32;">return </span><span style="color:#61676c;">result
-
+<pre data-lang="python" style="background-color:#fafafa;color:#61676c;" class="language-python "><code class="language-python" data-lang="python"><span>
+</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">ser_compact_size</span><span>(</span><span style="color:#ff8f40;">l</span><span>):
+</span><span>    r </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>l </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">253</span><span>:
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char
+</span><span>        r </span><span style="color:#ed9366;">= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;B&quot;</span><span style="color:#61676ccc;">, </span><span>l)
+</span><span>    </span><span style="color:#fa6e32;">elif </span><span>l </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0x10000</span><span>:
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char 253 followed by unsigned 2 byte integer (little endian)
+</span><span>        r </span><span style="color:#ed9366;">= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;BH&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">253</span><span style="color:#61676ccc;">, </span><span>l)
+</span><span>    </span><span style="color:#fa6e32;">elif </span><span>l </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0x100000000</span><span>:
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char 254 followed by unsigned 4 byte integer (little endian)
+</span><span>        r </span><span style="color:#ed9366;">= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;BI&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">254</span><span style="color:#61676ccc;">, </span><span>l)
+</span><span>    </span><span style="color:#fa6e32;">else</span><span>:
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># Serialize as unsigned char 255 followed by unsigned 8 byte integer (little endian)
+</span><span>        r </span><span style="color:#ed9366;">= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;BQ&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">255</span><span style="color:#61676ccc;">, </span><span>l)
+</span><span>    </span><span style="color:#fa6e32;">return </span><span>r
+</span><span>
+</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">ser_string</span><span>(</span><span style="color:#ff8f40;">s</span><span>):
+</span><span>    </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">ser_compact_size</span><span>(</span><span style="color:#f07171;">len</span><span>(s)) </span><span style="color:#ed9366;">+ </span><span>s
+</span><span>
+</span><span style="color:#fa6e32;">class </span><span style="color:#399ee6;">CTxOut</span><span>:
+</span><span>    </span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">serialize</span><span>(</span><span style="color:#ff8f40;">self</span><span>):
+</span><span>        r </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;
+</span><span>        </span><span style="font-style:italic;color:#abb0b6;"># serialize as signed 8 byte integer (little endian)
+</span><span>        r </span><span style="color:#ed9366;">+= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;q&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>nValue)
+</span><span>        r </span><span style="color:#ed9366;">+= </span><span style="color:#f29718;">ser_string</span><span>(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>scriptPubKey)
+</span><span>        </span><span style="color:#fa6e32;">return </span><span>r
+</span><span>
+</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">get_default_check_template_precomputed_data</span><span>(</span><span style="color:#ff8f40;">self</span><span>):
+</span><span>    result </span><span style="color:#ed9366;">= </span><span>{}
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># If there are no scriptSigs we do not need to precompute a hash
+</span><span>    </span><span style="color:#fa6e32;">if </span><span style="color:#f07171;">any</span><span>(inp</span><span style="color:#ed9366;">.</span><span>scriptSig </span><span style="color:#fa6e32;">for </span><span>inp </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>vin):
+</span><span>        result[</span><span style="color:#86b300;">&quot;scriptSigs&quot;</span><span>] </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">sha256</span><span>(</span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">join</span><span>(</span><span style="color:#f29718;">ser_string</span><span>(inp</span><span style="color:#ed9366;">.</span><span>scriptSig) </span><span style="color:#fa6e32;">for </span><span>inp </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>vin))
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># The same value is also pre-computed for and defined in BIP-341 and can be shared.
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># each nSequence is packed as 4 byte unsigned integer (little endian)
+</span><span>    result[</span><span style="color:#86b300;">&quot;sequences&quot;</span><span>] </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">sha256</span><span>(</span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">join</span><span>(struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span>inp</span><span style="color:#ed9366;">.</span><span>nSequence) </span><span style="color:#fa6e32;">for </span><span>inp </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>vin))
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># The same value is also pre-computed for and defined in BIP-341 and can be shared
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># See class CTxOut above for details.
+</span><span>    result[</span><span style="color:#86b300;">&quot;outputs&quot;</span><span>] </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">sha256</span><span>(</span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">join</span><span>(out</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">serialize</span><span>() </span><span style="color:#fa6e32;">for </span><span>out </span><span style="color:#fa6e32;">in </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>vout))
+</span><span>    </span><span style="color:#fa6e32;">return </span><span>result
+</span><span>
 </span><span style="font-style:italic;color:#abb0b6;"># parameter precomputed must be passed in for DoS resistance
-</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">get_default_check_template_hash</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">self</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">nIn</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">precomputed </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">None</span><span style="color:#61676c;">):
-    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">precomputed </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">None</span><span style="color:#61676c;">:
-        precomputed </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">get_default_check_template_precomputed_data</span><span style="color:#61676c;">()
-    r </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;
-    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte signed integer (little endian)
-    </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;i&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">nVersion)
-    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
-    </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">nLockTime)
-    </span><span style="font-style:italic;color:#abb0b6;"># we do not include the hash in the case where there is no
-    # scriptSigs
-    </span><span style="color:#fa6e32;">if </span><span style="color:#86b300;">&quot;scriptSigs&quot; </span><span style="color:#ed9366;">in </span><span style="color:#61676c;">precomputed:
-        r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">precomputed[</span><span style="color:#86b300;">&quot;scriptSigs&quot;</span><span style="color:#61676c;">]
-    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
-    </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#f07171;">len</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">vin))
-    r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">precomputed[</span><span style="color:#86b300;">&quot;sequences&quot;</span><span style="color:#61676c;">]
-    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
-    </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#f07171;">len</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">vout))
-    r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">precomputed[</span><span style="color:#86b300;">&quot;outputs&quot;</span><span style="color:#61676c;">]
-    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
-    </span><span style="color:#61676c;">r </span><span style="color:#ed9366;">+= </span><span style="color:#61676c;">struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">nIn)
-    </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">sha256</span><span style="color:#61676c;">(r)
+</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">get_default_check_template_hash</span><span>(</span><span style="color:#ff8f40;">self</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">nIn</span><span style="color:#61676ccc;">, </span><span style="color:#ff8f40;">precomputed </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">None</span><span>):
+</span><span>    </span><span style="color:#fa6e32;">if </span><span>precomputed </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">None</span><span>:
+</span><span>        precomputed </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">get_default_check_template_precomputed_data</span><span>()
+</span><span>    r </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">b</span><span style="color:#86b300;">&quot;&quot;
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte signed integer (little endian)
+</span><span>    r </span><span style="color:#ed9366;">+= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;i&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>nVersion)
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
+</span><span>    r </span><span style="color:#ed9366;">+= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>nLockTime)
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># we do not include the hash in the case where there is no
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># scriptSigs
+</span><span>    </span><span style="color:#fa6e32;">if </span><span style="color:#86b300;">&quot;scriptSigs&quot; </span><span style="color:#ed9366;">in </span><span>precomputed:
+</span><span>        r </span><span style="color:#ed9366;">+= </span><span>precomputed[</span><span style="color:#86b300;">&quot;scriptSigs&quot;</span><span>]
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
+</span><span>    r </span><span style="color:#ed9366;">+= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#f07171;">len</span><span>(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>vin))
+</span><span>    r </span><span style="color:#ed9366;">+= </span><span>precomputed[</span><span style="color:#86b300;">&quot;sequences&quot;</span><span>]
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
+</span><span>    r </span><span style="color:#ed9366;">+= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#f07171;">len</span><span>(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#ed9366;">.</span><span>vout))
+</span><span>    r </span><span style="color:#ed9366;">+= </span><span>precomputed[</span><span style="color:#86b300;">&quot;outputs&quot;</span><span>]
+</span><span>    </span><span style="font-style:italic;color:#abb0b6;"># Serialize as 4 byte unsigned integer (little endian)
+</span><span>    r </span><span style="color:#ed9366;">+= </span><span>struct</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">pack</span><span>(</span><span style="color:#86b300;">&quot;&lt;I&quot;</span><span style="color:#61676ccc;">, </span><span>nIn)
+</span><span>    </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">sha256</span><span>(r)
 </span></code></pre>
 <p>A PayToBareDefaultCheckTemplateVerifyHash output matches the following
 template:</p>
-<pre style="background-color:#fafafa;">
-<code class="language-python" data-lang="python"><span style="font-style:italic;color:#abb0b6;"># Extra-fast test for pay-to-basic-standard-template CScripts:
-</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">is_pay_to_bare_default_check_template_verify_hash</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">self</span><span style="color:#61676c;">):
-    </span><span style="color:#fa6e32;">return </span><span style="color:#f07171;">len</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">34 </span><span style="color:#ed9366;">and </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">] </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0x20 </span><span style="color:#ed9366;">and </span><span style="font-style:italic;color:#55b4d4;">self</span><span style="color:#61676c;">[</span><span style="color:#ed9366;">-</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">] </span><span style="color:#ed9366;">== </span><span style="color:#61676c;">OP_CHECKTEMPLATEVERIFY
-</span></code></pre><h2 id="deployment">Deployment</h2>
+<pre data-lang="python" style="background-color:#fafafa;color:#61676c;" class="language-python "><code class="language-python" data-lang="python"><span style="font-style:italic;color:#abb0b6;"># Extra-fast test for pay-to-basic-standard-template CScripts:
+</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">is_pay_to_bare_default_check_template_verify_hash</span><span>(</span><span style="color:#ff8f40;">self</span><span>):
+</span><span>    </span><span style="color:#fa6e32;">return </span><span style="color:#f07171;">len</span><span>(</span><span style="font-style:italic;color:#55b4d4;">self</span><span>) </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">34 </span><span style="color:#ed9366;">and </span><span style="font-style:italic;color:#55b4d4;">self</span><span>[</span><span style="color:#ff8f40;">0</span><span>] </span><span style="color:#ed9366;">== </span><span style="color:#ff8f40;">0x20 </span><span style="color:#ed9366;">and </span><span style="font-style:italic;color:#55b4d4;">self</span><span>[</span><span style="color:#ed9366;">-</span><span style="color:#ff8f40;">1</span><span>] </span><span style="color:#ed9366;">== </span><span>OP_CHECKTEMPLATEVERIFY
+</span></code></pre>
+<h2 id="Deployment">Deployment</h2>
 <p>Deployment could be done via BIP 9 VersionBits deployed through Speedy
 Trial. The Bitcoin Core reference implementation includes the below
 parameters, configured to match Speedy Trial, as that is the current
@@ -226,8 +224,8 @@ activation mechanism implemented in Bitcoin Core. Should another method
 become favored by the wider Bitcoin comminity, that might be used
 instead.</p>
 <p>The start time and bit in the implementation are currently set to bit 5
-and NEVER_ACTIVE/NO_TIMEOUT, but this is subject to change while the
-BIP is a draft.</p>
+and NEVER_ACTIVE/NO_TIMEOUT, but this is subject to change while the BIP
+is a draft.</p>
 <p>For the avoidance of unclarity, the parameters to be determined are:</p>
 <p><code>   // Deployment of CTV (BIP 119)</code><br />
 <code>   consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].bit = 5;</code><br />
@@ -235,35 +233,35 @@ BIP is a draft.</p>
 <code>   consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;</code><br />
 <code>   consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].min_activation_height = 0;</code></p>
 <p>Until BIP-119 reaches ACTIVE state and the
-SCRIPT_VERIFY_DEFAULT_CHECK_TEMPLATE_VERIFY_HASH flag is enforced,
-node implementations should (are recommended to) execute a NOP4 as
-SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS (to deny entry to the mempool)
-for policy and must evaluate as a NOP for consensus (during block
+SCRIPT_VERIFY_DEFAULT_CHECK_TEMPLATE_VERIFY_HASH flag is enforced, node
+implementations should (are recommended to) execute a NOP4 as
+SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS (to deny entry to the mempool) for
+policy and must evaluate as a NOP for consensus (during block
 validation).</p>
 <p>In order to facilitate using CHECKTEMPLATEVERIFY, the common case of a
 PayToBareDefaultCheckTemplateVerifyHash with no scriptSig data may (is
 recommended to) be made standard to permit relaying. Future template
 types may be standardized later as policy changes at the preference of
 the implementor.</p>
-<h2 id="reference-implementation">Reference Implementation</h2>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
 <p>A reference implementation and tests are available here in the PR to
-Bitcoin Core <a href="https://github.com/bitcoin/bitcoin/pull/21702">https://github.com/bitcoin/bitcoin/pull/21702</a>.</p>
+Bitcoin Core <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/21702">https://github.com/bitcoin/bitcoin/pull/21702</a>.</p>
 <p>It is not ideal to link to a PR, as it may be rebased and changed, but
 it is the best place to find the current implementation and review
 comments of others. A recent commit hash in that PR including tests and
 vectors can be found here
-<a href="https://github.com/jeremyrubin/bitcoin/commit/3109df5616796282786706738994a5b97b8a5a38">https://github.com/jeremyrubin/bitcoin/commit/3109df5616796282786706738994a5b97b8a5a38</a>.
+<a rel="noopener" target="_blank" href="https://github.com/jeremyrubin/bitcoin/commit/3109df5616796282786706738994a5b97b8a5a38">https://github.com/jeremyrubin/bitcoin/commit/3109df5616796282786706738994a5b97b8a5a38</a>.
 Once the PR is merged, this BIP should be updated to point to the
 specific code released.</p>
 <p>Test vectors are available in [/bip-0119/vectors the bip-0119/vectors
 directory] for checking compatibility with the refrence implementation
 and BIP.</p>
-<h2 id="rationale">Rationale</h2>
+<h2 id="Rationale">Rationale</h2>
 <p>The goal of CHECKTEMPLATEVERIFY is to be minimal impact on the existing
 codebase -- in the future, as we become aware of more complex but shown
 to be safe use cases new template types can be added.</p>
 <p>Below we'll discuss the rules one-by-one:</p>
-<h4 id="the-defaultchecktemplateverifyhash-of-the-transaction-at-the-current-input-index-matches-the-top-of-the-stack">The DefaultCheckTemplateVerifyHash of the transaction at the current input index matches the top of the stack</h4>
+<h4 id="The_DefaultCheckTemplateVerifyHash_of_the_transaction_at_the_current_input_index_matches_the_top_of_the_stack">The DefaultCheckTemplateVerifyHash of the transaction at the current input index matches the top of the stack</h4>
 <p>The set of data committed to is a superset of data which can impact the
 TXID of the transaction, other than the inputs. This ensures that for a
 given known input, the TXIDs can also be known ahead of time. Otherwise,
@@ -274,14 +272,14 @@ Eltoo-like protocol. Note that there may be other types of pre-signed
 contracts that may or may not be able to use Eltoo-like constructs,
 therefore making TXIDs predictable makes CTV more composable with
 arbitrary sub-protocols.</p>
-<h5 id="committing-to-the-version-and-locktime">Committing to the version and locktime</h5>
+<h5 id="Committing_to_the_version_and_locktime">Committing to the version and locktime</h5>
 <p>Were these values not committed, it would be possible to delay the
 spending of an output arbitrarily as well as possible to change the
 TXID.</p>
 <p>Committing these values, rather than restricting them to specific
 values, is more flexible as it permits users of CHECKTEMPLATEVERIFY the
 set the version and locktime as they please.</p>
-<h5 id="committing-to-the-scriptsigs-hash">Committing to the ScriptSigs Hash</h5>
+<h5 id="Committing_to_the_ScriptSigs_Hash">Committing to the ScriptSigs Hash</h5>
 <p>The scriptsig in a segwit transaction must be exactly empty, unless it
 is a P2SH segwit transaction in which case it must be only the exact
 redeemscript. P2SH is incompatible (unless the P2SH hash is broken) with
@@ -302,7 +300,7 @@ already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.</p>
 <p>Committing to the hash additionally makes it simpler to construct
 DefaultCheckTemplateVerifyHash safely and unambiguously from script.</p>
-<h5 id="committing-to-the-number-of-inputs">Committing to the number of inputs</h5>
+<h5 id="Committing_to_the_number_of_inputs">Committing to the number of inputs</h5>
 <p>If we allow more than one input to be spent in the transaction then it
 would be possible for two outputs to request payment to the same set of
 outputs, resulting in half the intended payments being discarded, the
@@ -332,35 +330,33 @@ However, separately committing to this number makes it easier to
 construct DefaultCheckTemplateVerifyHash from script.</p>
 <p>We treat the number of inputs as a `uint32_t` because Bitcoin's
 consensus decoding logic limits vectors to `MAX_SIZE=33554432` and
-that is larger than `uint16_t` and smaller than `uint32_t`. 32
-bits is also friendly for manipulation using Bitcoin's current math
-opcodes, should `OP_CAT` be added. Note that the max inputs in a
-block is further restricted by the block size to around 25,000, which
-would fit into a `uint16_t`, but that is an uneccessary abstraction
-leak.</p>
-<h5 id="committing-to-the-sequences-hash">Committing to the Sequences Hash</h5>
+that is larger than `uint16_t` and smaller than `uint32_t`. 32 bits
+is also friendly for manipulation using Bitcoin's current math opcodes,
+should `OP_CAT` be added. Note that the max inputs in a block is
+further restricted by the block size to around 25,000, which would fit
+into a `uint16_t`, but that is an uneccessary abstraction leak.</p>
+<h5 id="Committing_to_the_Sequences_Hash">Committing to the Sequences Hash</h5>
 <p>If we don't commit to the sequences, then the TXID can be malleated.
 This also allows us to enforce a relative sequence lock without an
-OP_CSV. It is insufficient to just pair CHECKTEMPLATEVERIFY with
-OP_CSV because OP_CSV enforces a minimum nSequence value, not a
-literal value.</p>
+OP_CSV. It is insufficient to just pair CHECKTEMPLATEVERIFY with OP_CSV
+because OP_CSV enforces a minimum nSequence value, not a literal value.</p>
 <p>We commit to the hash rather than the values themselves as this is
 already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.</p>
 <p>Committing to the hash additionally makes it simpler to construct
 DefaultCheckTemplateVerifyHash safely and unambiguously from script.</p>
-<h5 id="committing-to-the-number-of-outputs">Committing to the Number of Outputs</h5>
+<h5 id="Committing_to_the_Number_of_Outputs">Committing to the Number of Outputs</h5>
 <p>In principle, committing to the Outputs Hash (below) implicitly commits
 to the number of outputs, making this field strictly redundant. However,
 separately committing to this number makes it easier to construct
 DefaultCheckTemplateVerifyHash from script.</p>
-<p>We treat the number of outputs as a `uint32_t` because a
-`COutpoint` index is a `uint32_t`. Further, Bitcoin's consensus
-decoding logic limits vectors to `MAX_SIZE=33554432` and that is
-larger than `uint16_t` and smaller than `uint32_t`. 32 bits is
-also friendly for manipulation using Bitcoin's current math opcodes,
-should `OP_CAT` be added.</p>
-<h5 id="committing-to-the-outputs-hash">Committing to the outputs hash</h5>
+<p>We treat the number of outputs as a `uint32_t` because a `COutpoint`
+index is a `uint32_t`. Further, Bitcoin's consensus decoding logic
+limits vectors to `MAX_SIZE=33554432` and that is larger than
+`uint16_t` and smaller than `uint32_t`. 32 bits is also friendly for
+manipulation using Bitcoin's current math opcodes, should `OP_CAT` be
+added.</p>
+<h5 id="Committing_to_the_outputs_hash">Committing to the outputs hash</h5>
 <p>This ensures that spending the UTXO is guaranteed to create the exact
 outputs requested.</p>
 <p>We commit to the hash rather than the values themselves as this is
@@ -368,7 +364,7 @@ already precomputed for each transaction to optimize SIGHASH_ALL
 signatures.</p>
 <p>Committing to the hash additionally makes it simpler to construct
 DefaultCheckTemplateVerifyHash safely and unambiguously from script.</p>
-<h5 id="committing-to-the-current-input-s-index">Committing to the current input's index</h5>
+<h5 id="Committing_to_the_current_input's_index">Committing to the current input's index</h5>
 <p>Committing to the currently executing input's index is not strictly
 needed for anti-malleability, however it does restrict the input
 orderings eliminating a source of malleability for protocol designers.</p>
@@ -380,11 +376,11 @@ same transaction. This makes it safer to design wallet vault contracts
 without half-spend vulnerabilities.</p>
 <p>Committing to the current index doesn't prevent one from expressing a
 CHECKTEMPLATEVERIFY which can be spent at multiple indicies. In current
-script, the CHECKTEMPLATEVERIFY operation can be wrapped in an OP_IF
-for each index (or Tapscript branches in the future). If OP_CAT or
+script, the CHECKTEMPLATEVERIFY operation can be wrapped in an OP_IF for
+each index (or Tapscript branches in the future). If OP_CAT or
 OP_SHA256STREAM are added to Bitcoin, the index may simply be passed in
 by the witness before hashing.</p>
-<h5 id="committing-to-values-by-hash">Committing to Values by Hash</h5>
+<h5 id="Committing_to_Values_by_Hash">Committing to Values by Hash</h5>
 <p>Committing to values by hash makes it easier and more efficient to
 construct a DefaultCheckTemplateVerifyHash from script. Fields which are
 not intended to be set may be committed to by hash without incurring
@@ -393,7 +389,7 @@ O(n) overhead to re-hash.</p>
 possible to write a script which allows adding a single output to a list
 of outputs without incurring O(n) overhead by committing to a hash
 midstate in the script.</p>
-<h5 id="using-sha256">Using SHA256</h5>
+<h5 id="Using_SHA256">Using SHA256</h5>
 <p>SHA256 is a 32 byte hash which meets Bitcoin's security standards and is
 available already inside of Bitcoin Script for programmatic creation of
 template programs.</p>
@@ -402,14 +398,14 @@ and has some benefits. For fee efficiency, RIPEMD160 saves 12 bytes.
 However, RIPEMD160 was not chosen for BIP-119 because it introduces
 risks around the verification of programs created by third parties to be
 subject to a [birthday-attack
-<a href="https://bitcoin.stackexchange.com/questions/54841/birthday-attack-on-p2sh">https://bitcoin.stackexchange.com/questions/54841/birthday-attack-on-p2sh</a>]
+<a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/54841/birthday-attack-on-p2sh">https://bitcoin.stackexchange.com/questions/54841/birthday-attack-on-p2sh</a>]
 on transaction preimages.</p>
-<h5 id="using-non-tagged-hashes">Using Non-Tagged Hashes</h5>
+<h5 id="Using_Non-Tagged_Hashes">Using Non-Tagged Hashes</h5>
 <p>The Taproot/Schnorr BIPs use Tagged Hashes
-(`SHA256(SHA256(tag)||SHA256(tag)||msg)`) to prevent taproot leafs,
-branches, tweaks, and signatures from overlapping in a way that might
-introduce a security [vulnerability
-<a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-June/016091.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-June/016091.html</a>].</p>
+(`SHA256(SHA256(tag)||SHA256(tag)||msg)`) to prevent taproot
+leafs, branches, tweaks, and signatures from overlapping in a way that
+might introduce a security [vulnerability
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-June/016091.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-June/016091.html</a>].</p>
 <p>OP_CHECKTEMPLATEVERIFY is not subject to this sort of vulnerability as
 the hashes are effectively tagged externally, that is, by
 OP_CHECKTEMPLATEVERIFY itself and therefore cannot be confused for
@@ -419,7 +415,7 @@ even if there was no obvious benefit and no cost. However, in the
 future, if OP_CAT were to be introduced to Bitcoin, it would make
 programs which dynamically build OP_CHECKTEMPLATEVERIFY hashes less
 space-efficient. Therefore, bare untagged hashes are used in BIP-119.</p>
-<h5 id="the-ordering-of-fields">The Ordering of Fields</h5>
+<h5 id="The_Ordering_of_Fields">The Ordering of Fields</h5>
 <p>Strictly speaking, the ordering of fields is insignificant. However,
 with a carefully selected order, the efficiency of future scripts (e.g.,
 those using a OP_CAT or OP_SHA256STREAM) may be improved (as described
@@ -452,7 +448,7 @@ which would suggest that it does not make sense for input index to be
 the last field. However, given the desirability of being able to express
 a &quot;don't care&quot; index easily (e.g., for decentralized kickstarter-type
 transactions), this value is placed last.</p>
-<h3 id="design-tradeoffs-and-risks">Design Tradeoffs and Risks</h3>
+<h3 id="Design_Tradeoffs_and_Risks">Design Tradeoffs and Risks</h3>
 <p>Covenants have historically been controversial given their potential for
 fungibility risks -- coins could be minted which have a permanent
 restriction on how they may or may not be spent or required to propagate
@@ -468,7 +464,7 @@ create all the inputs directly in this regard.</p>
 of inputs only, preventing unintentional introduction of the 'half
 spend' problem.</p>
 <p>Templates, as restricted as they are, bear some risks.</p>
-<h4 id="denial-of-service-and-validation-costs">Denial of Service and Validation Costs</h4>
+<h4 id="Denial_of_Service_and_Validation_Costs">Denial of Service and Validation Costs</h4>
 <p>CTV is designed to be able to be validated very cheaply without
 introducing DoS, either by checking a precomputed hash or computing a
 hash of fixed length arguments (some of which may be cached from more
@@ -501,7 +497,7 @@ expense of flexibility. For example, if CTV allowed the hashing only
 select outputs by a bitmask, caching of all combinations of outputs
 would not be possible and would cause a quadratic hashing DoS
 vulnerability.</p>
-<h4 id="permanently-unspendable-outputs">Permanently Unspendable Outputs</h4>
+<h4 id="Permanently_Unspendable_Outputs">Permanently Unspendable Outputs</h4>
 <p>The preimage argument passed to CHECKTEMPLATEVERIFY may be unknown or
 otherwise unsatisfiable. However, requiring knowledge that an address is
 spendable from is incompatible with sender's ability to spend to any
@@ -509,7 +505,7 @@ address (especially, OP_RETURN). If a sender needs to know the template
 can be spent from before sending, they may request a signature of an
 provably non-transaction challenge string from the leafs of the
 CHECKTEMPLATEVERIFY tree.</p>
-<h4 id="forwarding-addresses">Forwarding Addresses</h4>
+<h4 id="Forwarding_Addresses">Forwarding Addresses</h4>
 <p>Key-reuse with CHECKTEMPLATEVERIFY may be used as a form of &quot;forwarding
 address contract&quot;. A forwarding address is an address which can
 automatically execute in a predefined way. For example, a exchange's hot
@@ -538,7 +534,7 @@ transaction can similarly become reuse-unsafe.</p>
 <p>Because CHECKTEMPLATEVERIFY commits to the input index currently being
 spent, reused-keys are guaranteed to execute in separate transactions
 which reduces the risk of &quot;half-spend&quot; type issues.</p>
-<h4 id="nop-default-and-recommended-standardness-rules">NOP-Default and Recommended Standardness Rules</h4>
+<h4 id="NOP-Default_and_Recommended_Standardness_Rules">NOP-Default and Recommended Standardness Rules</h4>
 <p>If the argument length is not exactly 32, CHECKTEMPLATEVERIFY treats it
 as a NOP during consensus validation. Implementations are recommended to
 fail in such circumstances during non-consensus relaying and mempool
@@ -552,7 +548,7 @@ during consensus. Should that developer submit a transaction directly to
 the network relying on standardness rejection, an standardness-invalid
 but consensus-valid transaction may be caused, leading to a potential
 loss of funds.</p>
-<h4 id="feature-redundancy">Feature Redundancy</h4>
+<h4 id="Feature_Redundancy">Feature Redundancy</h4>
 <p>CHECKTEMPLATEVERIFY templates are substantially less risky than other
 covenant systems. If implemented, other covenant systems could make the
 CHECKTEMPLATEVERIFY's functionality redundant. However, given
@@ -575,53 +571,51 @@ SIGHASH_ANYPREVOUTANYSCRIPT and OP_CHECKTEMPLATEVERIFY is that
 OP_CHECKTEMPLATEVERIFY restricts the number of additional inputs and
 precludes dynamically determined change outputs while
 SIGHASH_ANYPREVOUTANYSCRIPT can be combined with SIGHASH_SINGLE or
-SIGHASH_ANYONECANPAY. For the additional inputs,
-OP_CHECKTEMPLATEVERIFY also commits to the scriptsig and sequence,
-which allows for specifying specific P2SH scripts (or segwit v0 P2SH)
-which have some use cases. Furthermore, CHECKTEMPLATEVERIFY has benefits
-in terms of script size (depending on choice of PK,
-SIGHASH_ANYPREVOUTANYSCRIPT may use about 2x-3x the bytes) and
-verification speed, as OP_CHECKTEMPLATEVERIFY requires only hash
-computation rather than signature operations. This can be significant
-when constructing large payment trees or programmatic compilations.
-CHECKTEMPLATEVERIFY also has a feature-wise benefit in that it provides
-a robust pathway for future template upgrades.</p>
-<p>OP_CHECKSIGFROMSTACKVERIFY along with OP_CAT may also be used to
-emulate CHECKTEMPLATEVERIFY. However such constructions are more
-complicated to use than CHECKTEMPLATEVERIFY, and encumbers additional
-verification overhead absent from CHECKTEMPLATEVERIFY. These types of
-covenants also bear similar potential recursion issues to OP_COV which
-make it unlikely for inclusion in Bitcoin.</p>
+SIGHASH_ANYONECANPAY. For the additional inputs, OP_CHECKTEMPLATEVERIFY
+also commits to the scriptsig and sequence, which allows for specifying
+specific P2SH scripts (or segwit v0 P2SH) which have some use cases.
+Furthermore, CHECKTEMPLATEVERIFY has benefits in terms of script size
+(depending on choice of PK, SIGHASH_ANYPREVOUTANYSCRIPT may use about
+2x-3x the bytes) and verification speed, as OP_CHECKTEMPLATEVERIFY
+requires only hash computation rather than signature operations. This
+can be significant when constructing large payment trees or programmatic
+compilations. CHECKTEMPLATEVERIFY also has a feature-wise benefit in
+that it provides a robust pathway for future template upgrades.</p>
+<p>OP_CHECKSIGFROMSTACKVERIFY along with OP_CAT may also be used to emulate
+CHECKTEMPLATEVERIFY. However such constructions are more complicated to
+use than CHECKTEMPLATEVERIFY, and encumbers additional verification
+overhead absent from CHECKTEMPLATEVERIFY. These types of covenants also
+bear similar potential recursion issues to OP_COV which make it unlikely
+for inclusion in Bitcoin.</p>
 <p>Given the simplicity of this approach to implement and analyze, and the
 benefits realizable by user applications, CHECKTEMPLATEVERIFY's template
 based approach is proposed in lieu of more complete covenants system.</p>
-<h4 id="future-upgrades">Future Upgrades</h4>
+<h4 id="Future_Upgrades">Future Upgrades</h4>
 <p>This section describes updates to OP_CHECKTEMPLATEVERIFY that are
 possible in the future as well as synergies with other possible
 upgrades.</p>
-<h5 id="checktemplateverify-versions">CHECKTEMPLATEVERIFY Versions</h5>
+<h5 id="CHECKTEMPLATEVERIFY_Versions">CHECKTEMPLATEVERIFY Versions</h5>
 <p>OP_CHECKTEMPLATEVERIFY currently only verifies properties of 32 byte
 arguments. In the future, meaning could be ascribed to other length
 arguments. For example, a 33-byte argument could just the last byte as a
 control program. In that case, DefaultCheckTemplateVerifyHash could be
 computed when the flag byte is set to CTVHASH_ALL. Other programs could
-be added similar to SIGHASH_TYPEs. For example, CTVHASH_GROUP could
-read data from the Taproot Annex for compatibility with SIGHASH_GROUP
-type proposals and allow dynamic malleability of which indexes get
-hashed for bundling.</p>
-<h5 id="eltoo-with-op-checksigfromstackverify">Eltoo with OP_CHECKSIGFROMSTACKVERIFY</h5>
+be added similar to SIGHASH_TYPEs. For example, CTVHASH_GROUP could read
+data from the Taproot Annex for compatibility with SIGHASH_GROUP type
+proposals and allow dynamic malleability of which indexes get hashed for
+bundling.</p>
+<h5 id="Eltoo_with_OP_CHECKSIGFROMSTACKVERIFY">Eltoo with OP_CHECKSIGFROMSTACKVERIFY</h5>
 <p>Were both OP_CHECKTEMPLATEVERIFY and OP_CHECKSIGFROMSTACKVERIFY to be
 added to Bitcoin, it would be possible to implement a variant of Eltoo's
 floating transactions using the following script:</p>
 <p><code>   witness(S+n): </code><sig><code> &lt;H(tx with nLockTime S+n paying to program(S+n))&gt;</code><br />
 <code>   program(S): OP_CHECKTEMPLATEVERIFY &lt;musig_key(pk_update_a, pk_update_b)&gt; OP_CHECKSIGFROMSTACKVERIFY &lt;S+1&gt; OP_CHECKLOCKTIMEVERIFY</code></p>
-<p>Compared to SIGHASH_ANYPREVOUTANYSCRIPT, because
-OP_CHECKTEMPLATEVERIFY does not allow something similar to
-SIGHASH_ANYONECANPAY or SIGHASH_SINGLE, protocol implementers might
-elect to sign multiple versions of transactions with CPFP Anchor Outputs
-or Inputs for paying fees or an alternative such as transaction sponsors
-might be considered.</p>
-<h5 id="op-amountverify">OP_AMOUNTVERIFY</h5>
+<p>Compared to SIGHASH_ANYPREVOUTANYSCRIPT, because OP_CHECKTEMPLATEVERIFY
+does not allow something similar to SIGHASH_ANYONECANPAY or
+SIGHASH_SINGLE, protocol implementers might elect to sign multiple
+versions of transactions with CPFP Anchor Outputs or Inputs for paying
+fees or an alternative such as transaction sponsors might be considered.</p>
+<h5 id="OP_AMOUNTVERIFY">OP_AMOUNTVERIFY</h5>
 <p>An opcode which verifies the exact amount that is being spent in the
 transaction, the amount paid as fees, or made available in a given
 output could be used to make safer OP_CHECKTEMPLATEVERIFY addressses.
@@ -631,7 +625,7 @@ S+n satoshis would result in n satoshis being paid to fee. A range check
 could restrict the program to only apply for expected values and default
 to a keypath otherwise, e.g.:</p>
 <p><code>   IF OP_AMOUNTVERIFY </code><N><code> OP_GREATER </code><PK><code> CHECKSIG ELSE </code><H><code> OP_CHECKTEMPLATEVERIFY</code></p>
-<h5 id="op-cat-op-sha256stream">OP_CAT/OP_SHA256STREAM</h5>
+<h5 id="OP_CAT/OP_SHA256STREAM">OP_CAT/OP_SHA256STREAM</h5>
 <p>OP_CHECKTEMPLATEVERIFY is (as described in the Ordering of Fields
 section) efficient for building covenants dynamically should Bitcoin get
 enhanced string manipulation opcodes.</p>
@@ -641,15 +635,15 @@ transaction.</p>
 <p><code>   OP_SIZE 4 OP_EQUALVERIF</code><br />
 <code>   &lt;nVersion || nLockTime || input count || sequences hash || output count || outputs hash&gt;</code><br />
 <code>   OP_SWAP OP_CAT OP_SHA256 OP_CHECKTEMPLATEVERIFY</code></p>
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>OP_CHECKTEMPLATEVERIFY replaces a OP_NOP4 with stricter verification
 semantics. Therefore, scripts which previously were valid will cease to
-be valid with this change. Stricter verification semantics for an
-OP_NOP are a soft fork, so existing software will be fully functional
-without upgrade except for mining and block validation. Similar soft
-forks for OP_CHECKSEQUENCEVERIFY and OP_CHECKLOCKTIMEVERIFY (see
-BIP-0065 and BIP-0112) have similarly changed OP_NOP semantics without
-introducing compatibility issues.</p>
+be valid with this change. Stricter verification semantics for an OP_NOP
+are a soft fork, so existing software will be fully functional without
+upgrade except for mining and block validation. Similar soft forks for
+OP_CHECKSEQUENCEVERIFY and OP_CHECKLOCKTIMEVERIFY (see BIP-0065 and
+BIP-0112) have similarly changed OP_NOP semantics without introducing
+compatibility issues.</p>
 <p>In contrast to previous forks, OP_CHECKTEMPLATEVERIFY's reference
 implementation does not allow transactions with spending scripts using
 it to be accepted to the mempool or relayed under standard policy until
@@ -663,41 +657,40 @@ transaction is confirmed).</p>
 <p>Backports of OP_CHECKTEMPLATEVERIFY can be trivially prepared (see the
 reference implementation) for older node versions that can be patched
 but not upgraded to a newer major release.</p>
-<h2 id="references">References</h2>
+<h2 id="References">References</h2>
 <ul>
-<li><a href="https://utxos.org">utxos.org informational site</a></li>
-<li><a href="https://learn.sapio-lang.org">Sapio Bitcoin smart contract
-language</a></li>
-<li><a href="https://rubin.io/advent21">27 Blog Posts on building smart contracts with Sapio and CTV,
+<li><a rel="noopener" target="_blank" href="https://utxos.org">utxos.org informational site</a></li>
+<li><a rel="noopener" target="_blank" href="https://learn.sapio-lang.org">Sapio Bitcoin smart contract language</a></li>
+<li><a rel="noopener" target="_blank" href="https://rubin.io/advent21">27 Blog Posts on building smart contracts with Sapio and CTV,
 including examples described here.</a></li>
-<li><a href="https://www.youtube.com/watch?v=YxsjdIl0034&amp;t=2451">Scaling Bitcoin
+<li><a rel="noopener" target="_blank" href="https://www.youtube.com/watch?v=YxsjdIl0034&amp;t=2451">Scaling Bitcoin
 Presentation</a></li>
-<li><a href="https://bitcoinops.org/en/newsletters/2019/05/29/">Optech Newsletter Covering
+<li><a rel="noopener" target="_blank" href="https://bitcoinops.org/en/newsletters/2019/05/29/">Optech Newsletter Covering
 OP_CHECKOUTPUTSHASHVERIFY</a></li>
-<li><a href="https://cyber.stanford.edu/sites/g/files/sbiybj9936/f/jeremyrubin.pdf">Structuring Multi Transaction Contracts in
+<li><a rel="noopener" target="_blank" href="https://cyber.stanford.edu/sites/g/files/sbiybj9936/f/jeremyrubin.pdf">Structuring Multi Transaction Contracts in
 Bitcoin</a></li>
-<li><a href="https://github.com/jeremyrubin/lazuli">Lazuli Notes (ECDSA based N-of-N Signatures for Certified
-Post-Dated UTXOs)</a></li>
-<li><a href="https://fc16.ifca.ai/bitcoin/papers/MES16.pdf">Bitcoin Covenants</a></li>
-<li><a href="https://bitcointalk.org/index.php?topic=278122.0">CoinCovenants using SCIP signatures, an amusingly bad
+<li><a rel="noopener" target="_blank" href="https://github.com/jeremyrubin/lazuli">Lazuli Notes (ECDSA based N-of-N Signatures for Certified Post-Dated
+UTXOs)</a></li>
+<li><a rel="noopener" target="_blank" href="https://fc16.ifca.ai/bitcoin/papers/MES16.pdf">Bitcoin Covenants</a></li>
+<li><a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=278122.0">CoinCovenants using SCIP signatures, an amusingly bad
 idea.</a></li>
-<li><a href="https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf">Enhancing Bitcoin Transactions with
+<li><a rel="noopener" target="_blank" href="https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf">Enhancing Bitcoin Transactions with
 Covenants</a></li>
-<li><a href="https://github.com/jamesob/simple-ctv-vault">Simple CTV Vaults</a></li>
-<li><a href="https://github.com/kanzure/python-vaults">Python Vaults</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019808.html">CTV Dramatically Improves
+<li><a rel="noopener" target="_blank" href="https://github.com/jamesob/simple-ctv-vault">Simple CTV Vaults</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/kanzure/python-vaults">Python Vaults</a></li>
+<li><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019808.html">CTV Dramatically Improves
 DLCs</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-April/020225.html">Calculus of
+<li><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-April/020225.html">Calculus of
 Covenants</a></li>
-<li><a href="https://rubin.io/bitcoin/2021/12/10/advent-13/">Payment Pools with
+<li><a rel="noopener" target="_blank" href="https://rubin.io/bitcoin/2021/12/10/advent-13/">Payment Pools with
 CTV</a></li>
-<li><a href="https://rubin.io/bitcoin/2021/12/11/advent-14/">Channels with CTV</a></li>
-<li><a href="https://rubin.io/bitcoin/2021/12/09/advent-12/">Congestion Control with
+<li><a rel="noopener" target="_blank" href="https://rubin.io/bitcoin/2021/12/11/advent-14/">Channels with CTV</a></li>
+<li><a rel="noopener" target="_blank" href="https://rubin.io/bitcoin/2021/12/09/advent-12/">Congestion Control with
 CTV</a></li>
-<li><a href="https://rubin.io/bitcoin/2021/12/07/advent-10/">Building Vaults on
+<li><a rel="noopener" target="_blank" href="https://rubin.io/bitcoin/2021/12/07/advent-10/">Building Vaults on
 Bitcoin</a></li>
 </ul>
-<h3 id="note-on-similar-alternatives">Note on Similar Alternatives</h3>
+<h3 id="Note_on_Similar_Alternatives">Note on Similar Alternatives</h3>
 <p>An earlier version of CHECKTEMPLATEVERIFY, CHECKOUTPUTSHASHVERIFY, is
 withdrawn in favor of CHECKTEMPLATEVERIFY. CHECKOUTPUTSHASHVERIFY did
 not commit to the version or lock time and was thus insecure.</p>
@@ -708,7 +701,7 @@ deploy it independently.</p>
 <p>CHECKTEMPLATEVERIFY has also been previously referred to as
 OP_SECURETHEBAG, which is mentioned here to aid in searching and
 referencing discussion on this BIP.</p>
-<h2 id="copyright">Copyright</h2>
+<h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the 3-clause BSD license.</p>
 
     </div>
@@ -717,7 +710,7 @@ referencing discussion on this BIP.</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>

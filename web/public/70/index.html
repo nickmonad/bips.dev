@@ -19,7 +19,7 @@
     <div class="level">
         <div class="level-left">
             <div class="level-item">
-                <a href="/"><img src="https:&#x2F;&#x2F;bips.dev&#x2F;processed_images&#x2F;60f6621b1d56808300.png" /></a>
+                <a href="/"><img src="[object]" /></a>
             </div>
         </div>
         <div class="level-right">
@@ -46,22 +46,22 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">  BIP: 70
-  Layer: Applications
-  Title: Payment Protocol
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-          Mike Hearn &lt;mhearn@bitcoinfoundation.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0070
-  Status: Final
-  Type: Standards Track
-  Created: 2013-07-29
-</span></code></pre><h2 id="abstract">Abstract</h2>
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 70
+</span><span>  Layer: Applications
+</span><span>  Title: Payment Protocol
+</span><span>  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+</span><span>          Mike Hearn &lt;mhearn@bitcoinfoundation.org&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0070
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2013-07-29
+</span></code></pre>
+<h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a protocol for communication between a merchant and
 their customer, enabling both a better customer experience and better
 security against man-in-the-middle attacks on the payment process.</p>
-<h2 id="motivation">Motivation</h2>
+<h2 id="Motivation">Motivation</h2>
 <p>The current, minimal Bitcoin payment protocol operates as follows:</p>
 <ol>
 <li>Customer adds items to an online shopping basket, and decides to pay
@@ -94,7 +94,7 @@ customer's wallet software, so merchants do not have to contact
 customers before refunding overpayments or orders that cannot be
 fulfilled for some reason.</li>
 </ol>
-<h2 id="protocol">Protocol</h2>
+<h2 id="Protocol">Protocol</h2>
 <p>This BIP describes payment protocol messages encoded using Google's
 Protocol Buffers, authenticated using X.509 certificates, and
 communicated over http/https. Future BIPs might extend this payment
@@ -104,39 +104,39 @@ Payment, and PaymentACK, and begins with the customer somehow indicating
 that they are ready to pay and the merchant's server responding with a
 PaymentRequest message:</p>
 <p><img src=bip-0070/Protocol_Sequence.png></img></p>
-<h2 id="messages">Messages</h2>
+<h2 id="Messages">Messages</h2>
 <p>The Protocol Buffers messages are defined in
 <a href="bip-0070/paymentrequest.proto" title="wikilink">paymentrequest.proto</a>.</p>
-<h3 id="output">Output</h3>
+<h3 id="Output">Output</h3>
 <p>Outputs are used in PaymentRequest messages to specify where a payment
 (or part of a payment) should be sent. They are also used in Payment
 messages to specify where a refund should be sent.</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">    message Output {
-    optional uint64 amount = 1 [default = 0];
-        optional bytes script = 2;
-    }
-</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    message Output {
+</span><span>    optional uint64 amount = 1 [default = 0];
+</span><span>        optional bytes script = 2;
+</span><span>    }
+</span></code></pre>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>amount</td><td>Number of satoshis (0.00000001 BTC) to be paid</td></tr>
 <tr><td>script</td><td>a &quot;TxOut&quot; script where payment should be sent. This will normally be one of the standard Bitcoin transaction scripts (e.g. pubkey OP_CHECKSIG). This is optional to enable future extensions to this protocol that derive Outputs from a master public key and the PaymentRequest data itself.</td></tr>
 </tbody></table>
-<h3 id="paymentdetails-paymentrequest">PaymentDetails/PaymentRequest</h3>
+<h3 id="PaymentDetails/PaymentRequest">PaymentDetails/PaymentRequest</h3>
 <p>Payment requests are split into two messages to support future
 extensibility. The bulk of the information is contained in the
 PaymentDetails message. It is wrapped inside a PaymentRequest message,
 which contains meta-information about the merchant and a digital
 signature.</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">    message PaymentDetails {
-        optional string network = 1 [default = &quot;main&quot;];
-        repeated Output outputs = 2;
-        required uint64 time = 3;
-        optional uint64 expires = 4;
-        optional string memo = 5;
-        optional string payment_url = 6;
-        optional bytes merchant_data = 7;
-    }
-</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    message PaymentDetails {
+</span><span>        optional string network = 1 [default = &quot;main&quot;];
+</span><span>        repeated Output outputs = 2;
+</span><span>        required uint64 time = 3;
+</span><span>        optional uint64 expires = 4;
+</span><span>        optional string memo = 5;
+</span><span>        optional string payment_url = 6;
+</span><span>        optional bytes merchant_data = 7;
+</span><span>    }
+</span></code></pre>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>network</td><td>either &quot;main&quot; for payments on the production Bitcoin network, or &quot;test&quot; for payments on test network. If a client receives a PaymentRequest for a network it does not support it must reject the request.</td></tr>
 <tr><td>outputs</td><td>one or more outputs where Bitcoins are to be sent. If the sum of outputs.amount is zero, the customer will be asked how much to pay, and the bitcoin client may choose any or all of the Outputs (if there are more than one) for payment. If the sum of outputs.amount is non-zero, then the customer will be asked to pay the sum, and the payment shall be split among the Outputs with non-zero amounts (if there are more than one; Outputs with zero amounts shall be ignored).</td></tr>
 <tr><td>time</td><td>Unix timestamp (seconds since 1-Jan-1970 UTC) when the PaymentRequest was created.</td></tr>
@@ -154,15 +154,15 @@ that the merchant's server can record mis-payments in order to refund
 the payment.</p>
 <p>A PaymentRequest is PaymentDetails optionally tied to a merchant's
 identity:</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">    message PaymentRequest {
-        optional uint32 payment_details_version = 1 [default = 1];
-        optional string pki_type = 2 [default = &quot;none&quot;];
-        optional bytes pki_data = 3;
-        required bytes serialized_payment_details = 4;
-        optional bytes signature = 5;
-    }
-</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    message PaymentRequest {
+</span><span>        optional uint32 payment_details_version = 1 [default = 1];
+</span><span>        optional string pki_type = 2 [default = &quot;none&quot;];
+</span><span>        optional bytes pki_data = 3;
+</span><span>        required bytes serialized_payment_details = 4;
+</span><span>        optional bytes signature = 5;
+</span><span>    }
+</span></code></pre>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>payment_details_version</td><td>See below for a discussion of versioning/upgrading.</td></tr>
 <tr><td>pki_type</td><td>public-key infrastructure (PKI) system being used to identify the merchant. All implementation should support &quot;none&quot;, &quot;x509+sha256&quot; and &quot;x509+sha1&quot;.</td></tr>
 <tr><td>pki_data</td><td>PKI-system data that identifies the merchant and can be used to create a digital signature. In the case of X.509 certificates, pki_data contains one or more X.509 certificates (see Certificates section below).</td></tr>
@@ -183,16 +183,16 @@ X.509 certificate).</li>
 </ol>
 <p>PaymentRequest messages larger than 50,000 bytes should be rejected by
 the wallet application, to mitigate denial-of-service attacks.</p>
-<h3 id="payment">Payment</h3>
+<h3 id="Payment">Payment</h3>
 <p>Payment messages are sent after the customer has authorized payment:</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">    message Payment {
-        optional bytes merchant_data = 1;
-        repeated bytes transactions = 2;
-        repeated Output refund_to = 3;
-        optional string memo = 4;
-    }
-</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    message Payment {
+</span><span>        optional bytes merchant_data = 1;
+</span><span>        repeated bytes transactions = 2;
+</span><span>        repeated Output refund_to = 3;
+</span><span>        optional string memo = 4;
+</span><span>    }
+</span></code></pre>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>merchant_data</td><td>copied from PaymentDetails.merchant_data. Merchants may use invoice numbers or any other data they require to match Payments to PaymentRequests. Note that malicious clients may modify the merchant_data, so should be authenticated in some way (for example, signed with a merchant-only key).</td></tr>
 <tr><td>transactions</td><td>One or more valid, signed Bitcoin transactions that fully pay the PaymentRequest</td></tr>
 <tr><td>refund_to</td><td>One or more outputs where the merchant may return funds, if necessary. The merchant may return funds using these outputs for up to 2 months after the time of the payment request. After that time has expired, parties must negotiate if returning of funds becomes necessary.</td></tr>
@@ -224,26 +224,25 @@ attacks that might alter Payment.refund_to (if using HTTP, it must be
 TLS-protected).</p>
 <p>Wallet software sending Payment messages via HTTP must set appropriate
 Content-Type and Accept headers, as specified in BIP 71:</p>
-<pre style="background-color:#fafafa;">
-<code>Content-Type: application/bitcoin-payment
-Accept: application/bitcoin-paymentack
-</code></pre>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>Content-Type: application/bitcoin-payment
+</span><span>Accept: application/bitcoin-paymentack
+</span></code></pre>
 <p>When the merchant's server receives the Payment message, it must
 determine whether or not the transactions satisfy conditions of payment.
 If and only if they do, it should broadcast the transaction(s) on the
 Bitcoin p2p network.</p>
 <p>Payment messages larger than 50,000 bytes should be rejected by the
 merchant's server, to mitigate denial-of-service attacks.</p>
-<h3 id="paymentack">PaymentACK</h3>
+<h3 id="PaymentACK">PaymentACK</h3>
 <p>PaymentACK is the final message in the payment protocol; it is sent from
 the merchant's server to the bitcoin wallet in response to a Payment
 message:</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">    message PaymentACK {
-        required Payment payment = 1;
-        optional string memo = 2;
-    }
-</span></code></pre><table><thead><tr><th></th><th></th></tr></thead><tbody>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    message PaymentACK {
+</span><span>        required Payment payment = 1;
+</span><span>        optional string memo = 2;
+</span><span>    }
+</span></code></pre>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>payment</td><td>Copy of the Payment message that triggered this PaymentACK. Clients may ignore this if they implement another way of associating Payments with PaymentACKs.</td></tr>
 <tr><td>memo</td><td>UTF-8 encoded note that should be displayed to the customer giving the status of the transaction (e.g. &quot;Payment of 1 BTC for eleven tribbles accepted for processing.&quot;)</td></tr>
 </tbody></table>
@@ -251,26 +250,25 @@ message:</p>
 wallet application, to mitigate denial-of-service attacks. This is
 larger than the limits on Payment and PaymentRequest messages as
 PaymentACK contains a full Payment message within it.</p>
-<h2 id="localization">Localization</h2>
+<h2 id="Localization">Localization</h2>
 <p>Merchants that support multiple languages should generate
 language-specific PaymentRequests, and either associate the language
-with the request or embed a language tag in the request's
-merchant_data. They should also generate a language-specific PaymentACK
-based on the original request.</p>
+with the request or embed a language tag in the request's merchant_data.
+They should also generate a language-specific PaymentACK based on the
+original request.</p>
 <p>For example: A greek-speaking customer browsing the Greek version of a
 merchant's website clicks on a &quot;Αγορά τώρα&quot; link, which generates a
 PaymentRequest with merchant_data set to &quot;lang=el&amp;basketId=11252&quot;. The
 customer pays, their bitcoin client sends a Payment message, and the
 merchant's website responds with PaymentACK.message &quot;σας ευχαριστούμε&quot;.</p>
-<h2 id="certificates">Certificates</h2>
+<h2 id="Certificates">Certificates</h2>
 <p>The default PKI system is X.509 certificates (the same system used to
 authenticate web servers). The format of pki_data when pki_type is
 &quot;x509+sha256&quot; or &quot;x509+sha1&quot; is a protocol-buffer-encoded certificate
 chain:</p>
-<pre style="background-color:#fafafa;">
-<code><span style="color:#61676c;">    message X509Certificates {
-        repeated bytes certificate = 1;
-    }
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    message X509Certificates {
+</span><span>        repeated bytes certificate = 1;
+</span><span>    }
 </span></code></pre>
 <p>If pki_type is &quot;x509+sha256&quot;, then the PaymentRequest message is hashed
 using the SHA256 algorithm to produce the message digest that is signed.
@@ -285,11 +283,11 @@ included. The recipient must verify the certificate chain according to
 [RFC5280] and reject the PaymentRequest if any validation failure
 occurs.</p>
 <p>Trusted root certificates may be obtained from the operating system; if
-validation is done on a device without an operating system, the <a href="http://www.mozilla.org/projects/security/certs/included/index.html">Mozilla
+validation is done on a device without an operating system, the <a rel="noopener" target="_blank" href="http://www.mozilla.org/projects/security/certs/included/index.html">Mozilla
 root
 store</a>
 is recommended.</p>
-<h2 id="extensibility">Extensibility</h2>
+<h2 id="Extensibility">Extensibility</h2>
 <p>The protocol buffers serialization format is designed to be extensible.
 In particular, new, optional fields can be added to a message and will
 be ignored (but saved/re-transmitted) by old implementations.</p>
@@ -308,28 +306,28 @@ PaymentDetails message.</p>
 use tags starting at 1000, and shall update the <a href="bip-0070/extensions.mediawiki" title="wikilink">extensions
 page</a> via pull-req to avoid
 conflicts with other extensions.</p>
-<h2 id="references">References</h2>
-<p><a href="https://bips.dev/70/bip-0071.mediawiki" title="wikilink">BIP 0071</a> : Payment Protocol mime types</p>
-<p><a href="https://bips.dev/70/bip-0072.mediawiki" title="wikilink">BIP 0072</a> : Payment Protocol bitcoin:
+<h2 id="References">References</h2>
+<p><a href="/71">BIP 0071</a> : Payment Protocol mime types</p>
+<p><a href="/72">BIP 0072</a> : Payment Protocol bitcoin:
 URI extensions</p>
 <p>Public-Key Infrastructure (X.509) working group :
-<a href="http://datatracker.ietf.org/wg/pkix/charter/">http://datatracker.ietf.org/wg/pkix/charter/</a></p>
-<p>Protocol Buffers : <a href="https://developers.google.com/protocol-buffers/">https://developers.google.com/protocol-buffers/</a></p>
-<h2 id="reference-implementation">Reference implementation</h2>
+<a rel="noopener" target="_blank" href="http://datatracker.ietf.org/wg/pkix/charter/">http://datatracker.ietf.org/wg/pkix/charter/</a></p>
+<p>Protocol Buffers : <a rel="noopener" target="_blank" href="https://developers.google.com/protocol-buffers/">https://developers.google.com/protocol-buffers/</a></p>
+<h2 id="Reference_implementation">Reference implementation</h2>
 <p>Create Payment Request generator :
-<a href="https://bitcoincore.org/%7Egavin/createpaymentrequest.php">https://bitcoincore.org/~gavin/createpaymentrequest.php</a>
-(<a href="https://github.com/gavinandresen/paymentrequest" title="wikilink">source</a>)</p>
-<p>BitcoinJ : <a href="https://bitcoinj.github.io/payment-protocol#introduction">https://bitcoinj.github.io/payment-protocol#introduction</a></p>
-<h2 id="see-also">See Also</h2>
+<a rel="noopener" target="_blank" href="https://bitcoincore.org/~gavin/createpaymentrequest.php">https://bitcoincore.org/~gavin/createpaymentrequest.php</a>
+(<a rel="noopener" target="_blank" title="wikilink" href="https://github.com/gavinandresen/paymentrequest">source</a>)</p>
+<p>BitcoinJ : <a rel="noopener" target="_blank" href="https://bitcoinj.github.io/payment-protocol#introduction">https://bitcoinj.github.io/payment-protocol#introduction</a></p>
+<h2 id="See_Also">See Also</h2>
 <p>Javascript Object Signing and Encryption working group :
-<a href="http://datatracker.ietf.org/wg/jose/">http://datatracker.ietf.org/wg/jose/</a></p>
-<p>Wikipedia's page on Invoices: <a href="http://en.wikipedia.org/wiki/Invoice">http://en.wikipedia.org/wiki/Invoice</a>
+<a rel="noopener" target="_blank" href="http://datatracker.ietf.org/wg/jose/">http://datatracker.ietf.org/wg/jose/</a></p>
+<p>Wikipedia's page on Invoices: <a rel="noopener" target="_blank" href="http://en.wikipedia.org/wiki/Invoice">http://en.wikipedia.org/wiki/Invoice</a>
 especially the list of Electronic Invoice standards</p>
-<p>sipa's payment protocol proposal: <a href="https://gist.github.com/sipa/1237788">https://gist.github.com/sipa/1237788</a></p>
+<p>sipa's payment protocol proposal: <a rel="noopener" target="_blank" href="https://gist.github.com/sipa/1237788">https://gist.github.com/sipa/1237788</a></p>
 <p>ThomasV's &quot;Signed Aliases&quot; proposal :
-<a href="http://ecdsa.org/bitcoin_URIs.html">http://ecdsa.org/bitcoin_URIs.html</a></p>
+<a rel="noopener" target="_blank" href="http://ecdsa.org/bitcoin_URIs.html">http://ecdsa.org/bitcoin_URIs.html</a></p>
 <p>Homomorphic Payment Addresses and the Pay-to-Contract Protocol :
-<a href="http://arxiv.org/abs/1212.3257">http://arxiv.org/abs/1212.3257</a></p>
+<a rel="noopener" target="_blank" href="http://arxiv.org/abs/1212.3257">http://arxiv.org/abs/1212.3257</a></p>
 
     </div>
 
@@ -337,7 +335,7 @@ especially the list of Electronic Invoice standards</p>
     </section>
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-01-19</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2023-02-07</span></p>
             <p>bips.dev - Made with &#x2615; by <a href="https://twitter.com/nickmonad">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. &#x20bf;</p>
