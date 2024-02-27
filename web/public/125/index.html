@@ -68,15 +68,15 @@ described here allows spenders to add a signal to a transaction
 indicating that they want to be able to replace that transaction in the
 future. In response to this signal,</p>
 <ul>
-<li>Nodes may allow transactions containing this signal to be replaced in
-their mempools.</li>
+<li>Nodes may allow transactions containing this signal to be replaced
+in their mempools.</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li>The recipient or recipients of a transaction containing this signal
 may choose not to treat it as payment until it has been confirmed,
-eliminating the risk that the spender will use allowed replacements to
-defraud them.</li>
+eliminating the risk that the spender will use allowed replacements
+to defraud them.</li>
 </ul>
 <p>Nodes and recipients may continue to treat transactions without the
 signal the same way they treated them before, preserving the existing
@@ -89,11 +89,12 @@ replaceable.</p>
 to allowing replacement of itself if any of its inputs have an
 nSequence number less than (0xffffffff - 1).</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><strong>Inherited signaling:</strong> Transactions that don't explicitly signal
 replaceability are replaceable under this policy for as long as any
-one of their ancestors signals replaceability and remains unconfirmed.</li>
+one of their ancestors signals replaceability and remains
+unconfirmed.</li>
 </ul>
 <h3 id="Implementation_Details">Implementation Details</h3>
 <p>The initial implementation expected in Bitcoin Core 0.12.0 uses the
@@ -105,19 +106,19 @@ transaction) that spends one or more of the same inputs if,</p>
 <li>The original transactions signal replaceability explicitly or
 through inheritance as described in the above Summary section.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>The replacement transaction may only include an unconfirmed input if
 that input was included in one of the original transactions. (An
 unconfirmed input spends an output from a currently-unconfirmed
 transaction.)</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>The replacement transaction pays an absolute fee of at least the sum
 paid by the original transactions.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>The replacement transaction must also pay for its own bandwidth at
 or above the rate set by the node's minimum relay fee setting. For
@@ -126,7 +127,7 @@ replacement transaction is 500 bytes total, then the replacement
 must pay a fee at least 500 satoshis higher than the sum of the
 originals.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>The number of original transactions to be replaced and their
 descendant transactions which will be evicted from the mempool must
@@ -144,7 +145,7 @@ doing one of the following:</p>
 <li>Conveying additional suspicion about opt-in full-RBF transactions to
 the user or data consumer.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Ignoring the opt-in transaction until it has been confirmed.</li>
 </ol>
@@ -230,7 +231,7 @@ satisfied:</p>
 replacements to go from spending wallets to miners controlling
 significant amounts of hash rate.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Enough hash rate has upgraded to support replacement, allowing for
 reasonable probability that a replacement can be mined.</li>
@@ -247,12 +248,12 @@ by default, so no known wallets signaled inherited replaceability.</p>
 Wiki</a> targeted
 at helping wallet authors use RBF</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Tools for creating opt-in full-RBF transactions:
 <a rel="noopener" target="_blank" href="https://github.com/petertodd/replace-by-fee-tools#replace-by-fee-tools">https://github.com/petertodd/replace-by-fee-tools#replace-by-fee-tools</a></li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li><a rel="noopener" target="_blank" href="https://www.reddit.com/r/Bitcoin/comments/3urm8o/optin_rbf_is_misunderstood_ask_questions_about_it/">Reddit: Questions about opt-in
 RBF</a>

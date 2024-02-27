@@ -90,16 +90,17 @@ empty;</li>
 </li>
 <li>the top-most element of the main stack evaluates as true when
 interpreted as a bool; and</li>
-<li>the top-most element is not a single byte or is outside the inclusive
-range of <code>0x51</code> to <code>0x60</code>,</li>
+<li>the top-most element is not a single byte or is outside the
+inclusive range of <code>0x51</code> to <code>0x60</code>,</li>
 </ul>
 <p>then that top-most element of the main stack is popped and interpreted
 as a serialized script and executed, while the remaining elements of
 both stacks remain in place as inputs.</p>
 <p>If the above conditions hold except for the last one, such that:</p>
 <ul>
-<li>the top-most element <em>is</em> a single byte within the inclusive range of
-<code>0x51</code> (<code>OP_1</code>, meaning N=2) to <code>0x60</code> (<code>OP_16</code>, meaning N=17); and</li>
+<li>the top-most element <em>is</em> a single byte within the inclusive range
+of <code>0x51</code> (<code>OP_1</code>, meaning N=2) to <code>0x60</code> (<code>OP_16</code>, meaning N=17);
+and</li>
 <li>other than this top-most element there are at least N additional
 elements on the main stack and alt stack combined,</li>
 </ul>
@@ -110,8 +111,8 @@ concatenated together in reverse order to form a serialized script,
 which is then executed with the remaining elements of both stacks
 remaining in place as inputs.</p>
 <p>The presence of CHECKSIG or CHECKMULTISIG within the subscript do not
-count towards the global MAX_BLOCK_SIGOPS_COST limit, and the number of
-non-push opcodes executed in the subscript is not limited by
+count towards the global MAX_BLOCK_SIGOPS_COST limit, and the number
+of non-push opcodes executed in the subscript is not limited by
 MAX_OPS_PER_SCRIPT. Execution state, other than the above exceptions,
 carries over into the subscript, and termination of the subscript
 terminates execution of the script as a whole. This is known as

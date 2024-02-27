@@ -109,8 +109,8 @@ deployment is considered failed on all descendants of the block.</li>
 <li>The <strong>threshold</strong> specifies the minimum number of block per retarget
 period which indicate lock-in of the soft fork during the subsequent
 period.</li>
-<li>The <strong>minimum_activation_height</strong> specifies the height of the first
-block at which the soft fork is allowed to become active.</li>
+<li>The <strong>minimum_activation_height</strong> specifies the height of the
+first block at which the soft fork is allowed to become active.</li>
 <li>The <strong>lockinontimeout</strong> boolean if set to true, blocks are required
 to signal in the final period, ensuring the soft fork has locked in
 by timeoutheight.</li>
@@ -131,11 +131,11 @@ the same bit. The bit chosen should not overlap with active usage
 <strong>startheight</strong> should be set to a height when a majority of
 economic activity is expected to have upgraded to software including
 the activation parameters. Some allowance should be made for
-potential release delays. If <strong>minimum_activation_height</strong> is going
-to be set, then <strong>startheight</strong> can be set to be soon after software
-with parameters is expected to be released. This shifts the time for
-upgrading from before signaling begins to during the LOCKED_IN
-state.</li>
+potential release delays. If <strong>minimum_activation_height</strong> is
+going to be set, then <strong>startheight</strong> can be set to be soon after
+software with parameters is expected to be released. This shifts the
+time for upgrading from before signaling begins to during the
+LOCKED_IN state.</li>
 <li><strong>timeoutheight</strong> should be set to a block height when it is
 considered reasonable to expect the entire economy to have upgraded
 by, probably at least 1 year, or 52416 blocks (26 retarget
@@ -177,8 +177,8 @@ LOCKED_IN was not reached and <strong>lockinontimeout</strong> is true.</li>
 <li><strong>LOCKED_IN</strong> for at least one retarget period after the first
 retarget period with STARTED (or MUST_SIGNAL) blocks of which at
 least threshold have the associated bit set in nVersion. A soft fork
-remains in LOCKED_IN until at least <strong>minimum_activation_height</strong> is
-reached.</li>
+remains in LOCKED_IN until at least <strong>minimum_activation_height</strong>
+is reached.</li>
 <li><strong>ACTIVE</strong> for all blocks after the LOCKED_IN state.</li>
 <li><strong>FAILED</strong> for all blocks after the timeoutheight if LOCKED_IN is
 not reached.</li>
@@ -289,8 +289,8 @@ completely determined by its ancestry before the current retarget period
 efficiently and safely by caching the resulting state of every
 multiple-of-2016 block, indexed by its parent.</p>
 <h3 id="Mandatory_signalling">Mandatory signalling</h3>
-<p>Blocks received while in the MUST_SIGNAL phase must be checked to ensure
-that they signal as required. For example:</p>
+<p>Blocks received while in the MUST_SIGNAL phase must be checked to
+ensure that they signal as required. For example:</p>
 <p><code>   if (GetStateForBlock(block) == MUST_SIGNAL) {</code><br />
 <code>       int nonsignal = 0;</code><br />
 <code>       walk = block;</code><br />
@@ -356,8 +356,8 @@ included as a bit in &quot;vbrequired&quot;. Servers MUST set bits in &quot;vbre
 for deployments in MUST_SIGNAL state, to ensure blocks produced are
 valid.</p>
 <p>Softfork deployment names listed in &quot;rules&quot; or as keys in &quot;vbavailable&quot;
-may be prefixed by a '!' character. Without this prefix, GBT clients may
-assume the rule will not impact usage of the template as-is; typical
+may be prefixed by a '!' character. Without this prefix, GBT clients
+may assume the rule will not impact usage of the template as-is; typical
 examples of this would be when previously valid transactions cease to be
 valid, such as BIPs 16, 65, 66, 68, 112, and 113. If a client does not
 understand a rule without the prefix, it may use it unmodified for
@@ -374,8 +374,8 @@ attempt to use it for mining even unmodified.</p>
 <ul>
 <li>The <strong>lockinontimeout</strong> flag is added, providing a way to guarantee
 transition to LOCKED_IN.</li>
-<li>Block heights are used for the deployment monotonic clock, rather than
-median-time-past.</li>
+<li>Block heights are used for the deployment monotonic clock, rather
+than median-time-past.</li>
 </ul>
 <h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>BIP8 and BIP9 deployments should not share concurrent active deployment

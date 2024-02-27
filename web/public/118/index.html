@@ -79,10 +79,10 @@ on-chain, but because the input signatures in the response transaction
 commit to the exact transaction that is being reacted to, this means a
 new signature must be created for every possible transaction one wishes
 to be able to react to.</p>
-<p>This proposal introduces a new public key type<sup class="footnote-reference"><a href="#1">1</a></sup> that modifies the
+<p>This proposal introduces a new public key type[1] that modifies the
 behavior of the transaction digest algorithm used in the signature
 creation and verification, by excluding the commitment to the previous
-output (and, optionally, the witness script<sup class="footnote-reference"><a href="#2">2</a></sup> and value <sup class="footnote-reference"><a href="#3">3</a></sup>).
+output (and, optionally, the witness script[2] and value [3]).
 Removing this commitment allows dynamic rebinding of a signed
 transaction to another previous output that requires authorisation by
 the same key.</p>
@@ -94,11 +94,11 @@ using different nSequence values in the spending transaction, or using
 the codeseparator opcode to commit to the position in the script.</p>
 <h2 id="Specification">Specification</h2>
 <p>This BIP modifies the behaviour of the <a href="/342">BIP
-342</a> signature opcodes<sup class="footnote-reference"><a href="#4">4</a></sup> (<code>CHECKSIG</code>,
+342</a> signature opcodes[4] (<code>CHECKSIG</code>,
 <code>CHECKSIGVERIFY</code>, and <code>CHECKSIGADD</code>) for public keys that have a length
 of 33 bytes and a first byte of <code>0x01</code> or the public key which is
-precisely the single byte vector <code>0x01</code><sup class="footnote-reference"><a href="#5">5</a></sup>. These keys are termed <strong>BIP
-118 public keys</strong>.</p>
+precisely the single byte vector <code>0x01</code>[5]. These keys are termed
+<strong>BIP 118 public keys</strong>.</p>
 <h4 id="Rules_for_signature_opcodes">Rules for signature opcodes</h4>
 <p>The <a href="/342">BIP 342</a> rules for signature opcodes
 are modified by removing keys with the first byte <code>0x01</code> and length of
@@ -110,10 +110,11 @@ types:</p>
 33 bytes and the first byte of the public key is <code>0x01</code>, it is
 considered to be a BIP 118 public key:
 <ul>
-<li>If the signature is not the empty vector, the signature is validated
-according to the <a href="/341">BIP 341</a> signing
-validation rules with the public key, allowable <code>hash_type</code> values,
-and transaction digest modified as defined below.</li>
+<li>If the signature is not the empty vector, the signature is
+validated according to the <a href="/341">BIP
+341</a> signing validation rules
+with the public key, allowable <code>hash_type</code> values, and
+transaction digest modified as defined below.</li>
 </ul>
 </li>
 </ul>
@@ -139,16 +140,16 @@ also valid for BIP 118 public keys.</p>
 <p>The following restrictions apply and cause validation failure if
 violated:</p>
 <ul>
-<li>Using any undefined <em>hash_type</em> (not <em>0x00</em>, <em>0x01</em>, <em>0x02</em>, <em>0x03</em>,
-<em>0x41</em>, <em>0x42</em>, <em>0x43</em>, <em>0x81</em>, <em>0x82</em>, <em>0x83</em>, <em>0xc1</em>, <em>0xc2</em>, or
-<em>0xc3</em>).</li>
+<li>Using any undefined <em>hash_type</em> (not <em>0x00</em>, <em>0x01</em>, <em>0x02</em>,
+<em>0x03</em>, <em>0x41</em>, <em>0x42</em>, <em>0x43</em>, <em>0x81</em>, <em>0x82</em>, <em>0x83</em>, <em>0xc1</em>,
+<em>0xc2</em>, or <em>0xc3</em>).</li>
 <li>Using <code>SIGHASH_SINGLE</code> without a &quot;corresponding output&quot; (an output
 with the same index as the input being verified).</li>
 </ul>
-<p>If these restrictions are not violated, <em>Msg118(hash_type)</em> evaluates as
-follows.</p>
-<p>If <em>hash_type &amp; 0x40 == 0</em>, then <em>Msg118(hash_type) = SigMsg(hash_type,
-1)</em>, where <em>SigMsg</em> is as defined in <a href="/341">BIP
+<p>If these restrictions are not violated, <em>Msg118(hash_type)</em> evaluates
+as follows.</p>
+<p>If <em>hash_type &amp; 0x40 == 0</em>, then <em>Msg118(hash_type) =
+SigMsg(hash_type, 1)</em>, where <em>SigMsg</em> is as defined in <a href="/341">BIP
 341</a>.</p>
 <p>If <em>hash_type &amp; 0x40 != 0</em>, then <em>Msg118(hash_type)</em> is the
 concatenation of the following data, in order (with byte size of each
@@ -167,30 +168,32 @@ are encoded in little-endian.</p>
 <li>If <em>hash_type &amp; 3</em> does not equal <code>SIGHASH_NONE</code> or
 <code>SIGHASH_SINGLE</code>:
 <ul>
-<li><em>sha_outputs</em> (32): the SHA256 of the serialization of all outputs
-in <code>CTxOut</code> format.</li>
+<li><em>sha_outputs</em> (32): the SHA256 of the serialization of all
+outputs in <code>CTxOut</code> format.</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>Data about this input:
 <ul>
-<li><em>spend_type</em> (1): equal to 2 if no annex is present, or 3 otherwise
-(the original witness stack has two or more witness elements, and
-the first byte of the last element is <em>0x50</em>)</li>
+<li><em>spend_type</em> (1): equal to 2 if no annex is present, or 3
+otherwise (the original witness stack has two or more witness
+elements, and the first byte of the last element is <em>0x50</em>)</li>
 <li>If <em>hash_type &amp; 0xc0</em> is <code>SIGHASH_ANYPREVOUT</code>:
 <ul>
-<li><em>amount</em> (8): value of the previous output spent by this input.</li>
-<li><em>scriptPubKey</em> (35): <em>scriptPubKey</em> of the previous output spent
-by this input, serialized as script inside <code>CTxOut</code>. Its size is
-always 35 bytes.</li>
+<li><em>amount</em> (8): value of the previous output spent by this
+input.</li>
+<li><em>scriptPubKey</em> (35): <em>scriptPubKey</em> of the previous output
+spent by this input, serialized as script inside <code>CTxOut</code>.
+Its size is always 35 bytes.</li>
 </ul>
 </li>
 <li><em>nSequence</em> (4): <em>nSequence</em> of this input.</li>
 <li>If an annex is present (the lowest bit of <em>spend_type</em> is set):
 <ul>
-<li><em>sha_annex</em> (32): the SHA256 of <em>(compact_size(size of annex) ||
-annex)</em>, where <em>annex</em> includes the mandatory <em>0x50</em> prefix.</li>
+<li><em>sha_annex</em> (32): the SHA256 of <em>(compact_size(size of
+annex) || annex)</em>, where <em>annex</em> includes the mandatory
+<em>0x50</em> prefix.</li>
 </ul>
 </li>
 </ul>
@@ -199,8 +202,8 @@ annex)</em>, where <em>annex</em> includes the mandatory <em>0x50</em> prefix.</
 <ul>
 <li>If <em>hash_type &amp; 3</em> equals <code>SIGHASH_SINGLE</code>:
 <ul>
-<li><em>sha_single_output</em> (32): the SHA256 of the corresponding output
-in <code>CTxOut</code> format.</li>
+<li><em>sha_single_output</em> (32): the SHA256 of the corresponding
+output in <code>CTxOut</code> format.</li>
 </ul>
 </li>
 </ul>
@@ -217,14 +220,14 @@ following data, in order:</p>
 341</a></li>
 </ul>
 </li>
-<li><em>key_version</em> (1): a constant value <em>0x01</em> representing that this is
-a signature for a BIP 118 public key.</li>
+<li><em>key_version</em> (1): a constant value <em>0x01</em> representing that
+this is a signature for a BIP 118 public key.</li>
 <li><em>codesep_pos</em> (4): the opcode position of the last executed
-<code>OP_CODESEPARATOR</code> before the currently executed signature opcode,
-with the value in little endian (or <em>0xffffffff</em> if none executed).
-The first opcode in a script has a position of 0. A multi-byte push
-opcode is counted as one opcode, regardless of the size of data
-being pushed.</li>
+<code>OP_CODESEPARATOR</code> before the currently executed signature
+opcode, with the value in little endian (or <em>0xffffffff</em> if none
+executed). The first opcode in a script has a position of 0. A
+multi-byte push opcode is counted as one opcode, regardless of
+the size of data being pushed.</li>
 </ul>
 </li>
 </ul>
@@ -233,8 +236,8 @@ being pushed.</li>
 <li>If the <em>sig</em> is 64 bytes long, return <em>Verify(p,
 hash<sub>TapSigHash</sub>(0x00 || Msg118(0x00) || Ext118(0x00)),
 sig)</em></li>
-<li>If the <em>sig</em> is 65 bytes long, return <em>sig[64] ≠ 0x00 and Verify(p,
-hash<sub>TapSighash</sub>(0x00 || Msg118(sig[64]) ||
+<li>If the <em>sig</em> is 65 bytes long, return <em>sig[64] ≠ 0x00 and
+Verify(p, hash<sub>TapSighash</sub>(0x00 || Msg118(sig[64]) ||
 Ext118(sig[64])), sig[0:64])</em>.</li>
 <li>Otherwise, fail.</li>
 </ul>
@@ -243,7 +246,7 @@ Ext118(sig[64])), sig[0:64])</em>.</li>
 signature verification are:</p>
 <ul>
 <li>In all cases, <code>key_version</code> is set to the constant value <code>0x01</code>
-instead of <code>0x00</code>.<sup class="footnote-reference"><a href="#6">6</a></sup></li>
+instead of <code>0x00</code>.[6]</li>
 <li>If <code>SIGHASH_ANYPREVOUT</code> is set, the digest is calculated as if
 <code>SIGHASH_ANYONECANPAY</code> was set, except <code>outpoint</code> is not included in
 the digest.</li>
@@ -364,28 +367,27 @@ addresses must opt-in to the ability to be spent by a
 <code>SIGHASH_ANYPREVOUT</code> or <code>SIGHASH_ANYPREVOUTANYSCRIPT</code> signature by
 including an appropriate tapscript path when the address is created.</li>
 <li>NOINPUT signatures do not commit to the output's spending conditions
-either via <code>scriptPubKey</code> or the redeem/witness script. This behaviour
-is preserved when <code>SIGHASH_ANYPREVOUTANYSCRIPT</code> is used, but when
-<code>SIGHASH_ANYPREVOUT</code> is used, the signature now commits to
+either via <code>scriptPubKey</code> or the redeem/witness script. This
+behaviour is preserved when <code>SIGHASH_ANYPREVOUTANYSCRIPT</code> is used,
+but when <code>SIGHASH_ANYPREVOUT</code> is used, the signature now commits to
 <code>scriptPubKey</code> and the tapscript.</li>
-<li>NOINPUT signatures did commit to the input's amount. This behaviour is
-preserved when <code>SIGHASH_ANYPREVOUT</code> is used, but not when
+<li>NOINPUT signatures did commit to the input's amount. This behaviour
+is preserved when <code>SIGHASH_ANYPREVOUT</code> is used, but not when
 <code>SIGHASH_ANYPREVOUTANYSCRIPT</code> is used.</li>
-<li><code>OP_CODESEPARATOR</code> in script will affect both <code>SIGHASH_ANYPREVOUT</code> and
-<code>SIGHASH_ANYPREVOUTANYSCRIPT</code> signatures, whereas it would not have in
-the previous draft.</li>
+<li><code>OP_CODESEPARATOR</code> in script will affect both <code>SIGHASH_ANYPREVOUT</code>
+and <code>SIGHASH_ANYPREVOUTANYSCRIPT</code> signatures, whereas it would not
+have in the previous draft.</li>
 </ul>
 <h2 id="Acknowledgements">Acknowledgements</h2>
 <p>The <code>SIGHASH_NOINPUT</code> flag was first proposed by Joseph Poon in
-<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-February/012460.html">February
-2016</a>,
+<a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-February/012460.html">February 2016</a>,
 after being mentioned in the original <a rel="noopener" target="_blank" href="http://lightning.network/lightning-network-paper.pdf">Lightning
 paper</a> by Joseph
 Poon and Thaddeus Dryja. This document is the result of discussions with
 many people and had direct input from Greg Maxwell, Jonas Nick, Pieter
 Wuille and others.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><strong>Why a new public key type?</strong> New public key types for tapscript
+<ol>
+<li><strong>Why a new public key type?</strong> New public key types for tapscript
 can be introduced in a soft fork by specifying new rules for
 <em>unknown public key types</em> as specified in <a href="/342">BIP
 342</a>, as this only requires adding
@@ -398,10 +400,8 @@ are more complicated, and are better reserved for other upgrades
 where the additional flexibility is actually needed. In this case,
 we specify a new transaction digest, but retain the same elliptic
 curve and signature algorithm (ie, secp256k1 and <a href="/340">BIP
-340</a>).</p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><strong>Why (and why not) commit to the witness script?</strong> The
+340</a>).</li>
+<li><strong>Why (and why not) commit to the witness script?</strong> The
 <a rel="noopener" target="_blank" href="https://blockstream.com/eltoo.pdf">eltoo</a> paper provides an example
 of why committing to the witness script is not always appropriate.
 It uses script and the transaction <code>nLockTime</code> to make signatures
@@ -419,10 +419,8 @@ you to have a signature for an update transaction that can be
 applied to any prior update, and a signature for a settlement
 transaction that applies only to the corresponding update
 transaction, while using the same key for both, which in turn allows
-for a more compact script.</p>
-</div>
-<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p><strong>Why (and why not) commit to the input value?</strong> Committing to the
+for a more compact script.</li>
+<li><strong>Why (and why not) commit to the input value?</strong> Committing to the
 input value may provide additional safety that a signature can't be
 maliciously reused to claim funds that the signer does not intend to
 spend, so by default it seems sensible to commit to it. However,
@@ -430,10 +428,8 @@ doing so prevents being able to use a single signature to
 consolidate a group of UTXOs with the same spending condition into a
 single UTXO which may be useful for some protocols, such as the
 proposal for <a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-January/002448.html">layered commitments with
-eltoo</a>.</p>
-</div>
-<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
-<p><strong>What about key path spends?</strong> This proposal only supports
+eltoo</a>.</li>
+<li><strong>What about key path spends?</strong> This proposal only supports
 ANYPREVOUT signatures via script path spends, and does not support
 ANYPREVOUT signatures for key path spends. This is for two reasons:
 first, not supporting key path spends allows this proposal to be
@@ -441,25 +437,21 @@ independent of the core changes included in <a href="/341">BIP
 341</a> and <a href="/342">BIP
 342</a>; second, it allows addresses to
 opt-in or opt-out of ANYPREVOUT support while remaining
-indistinguishable prior to being spent.</p>
-</div>
-<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
-<p><strong>Use of 0x01 public key type</strong> Because <code>OP_0</code> leaves an empty
+indistinguishable prior to being spent.</li>
+<li><strong>Use of 0x01 public key type</strong> Because <code>OP_0</code> leaves an empty
 vector on the stack it would not satisfy <a href="/342">BIP
 342</a>'s rules for unknown public key
 types. As such, it is convenient to use one of <code>OP_1..OP_16</code> or
 <code>OP_1NEGATE</code> as a way to reference the taproot internal key. To keep
 things as simple as possible, we use the first of these, and add the
 same byte as a prefix to allow ANYPREVOUT signatures for explicitly
-specified keys.</p>
-</div>
-<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
-<p><strong>Why change key_version?</strong> Changing <code>key_version</code> ensures that if
+specified keys.</li>
+<li><strong>Why change key_version?</strong> Changing <code>key_version</code> ensures that if
 the same private key is used to generate both a <a href="/342">BIP
 342</a> key and a BIP 118 public key,
 that a signature for the <a href="/342">BIP 342</a>
-key is not also valid for the BIP 118 public key (and vice-versa).</p>
-</div>
+key is not also valid for the BIP 118 public key (and vice-versa).</li>
+</ol>
 
     </div>
 

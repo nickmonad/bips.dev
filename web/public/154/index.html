@@ -64,17 +64,18 @@ perform proof of work.</p>
 <ul>
 <li><strong>POW</strong> : a proof of work using some arbitrary algorithm, such as
 SHA256</li>
-<li><strong>challenge</strong> : a problem in the form of a POW specification and other
-data</li>
+<li><strong>challenge</strong> : a problem in the form of a POW specification and
+other data</li>
 <li><strong>solution</strong> : a set of inputs which solve a given challenge</li>
 <li><strong>free connection slot</strong> : an inbound connection slot that does not
 require POW</li>
-<li><strong>POW connection slot</strong> : an inbound connection slot that requires POW</li>
+<li><strong>POW connection slot</strong> : an inbound connection slot that requires
+POW</li>
 <li><strong>SPH</strong> : Special Purpose Hardware, such as an ASIC chip</li>
 <li><strong>GPH</strong> : General Purpose Hardware, such as a desktop computer</li>
-<li><strong>Work</strong> : A measurement of optimized average resources (clock cycles,
-memory, ...) required to perform a single attempt at solving a given
-POW algorithm on GPH</li>
+<li><strong>Work</strong> : A measurement of optimized average resources (clock
+cycles, memory, ...) required to perform a single attempt at solving
+a given POW algorithm on GPH</li>
 </ul>
 <h2 id="Motivation">Motivation</h2>
 <p>The Bitcoin network has a maximum number of inbound and outbound
@@ -116,10 +117,10 @@ facilitate the exchange of challenges and/or solutions:</p>
 <code>version</code></li>
 <li>if it does, and
 <ul>
-<li>the solution satisfies the local node, it is given a connection, but
-if</li>
-<li>the solution does not satisfy the local node (unknown, wrong, ...),
-a new <code>challenge</code> is sent and the connection is closed</li>
+<li>the solution satisfies the local node, it is given a connection,
+but if</li>
+<li>the solution does not satisfy the local node (unknown, wrong,
+...), a new <code>challenge</code> is sent and the connection is closed</li>
 </ul>
 </li>
 <li>if it does not, and it is marked as needing to do POW, a <code>challenge</code>
@@ -174,8 +175,8 @@ to another algorithm.</li>
 <ul>
 <li>The initial nonce value (when present) for finding a suitable digest
 should be randomized, or a challenger may deliberately pick a
-challenge with &quot;poor&quot; outcomes to fool a node into spending more than
-predicted time solving.</li>
+challenge with &quot;poor&quot; outcomes to fool a node into spending more
+than predicted time solving.</li>
 </ul>
 <h4 id="cuckoo-cycle">cuckoo-cycle</h4>
 <p>Properties:</p>
@@ -199,9 +200,9 @@ predicted time solving.</li>
 <p>Additional notes:</p>
 <ul>
 <li>The initial nonce value used for finding a graph with a suitable
-solution should be randomized, or a challenger may deliberately pick a
-challenge with &quot;poor&quot; outcomes to fool a node into spending more than
-predicted time solving.</li>
+solution should be randomized, or a challenger may deliberately pick
+a challenge with &quot;poor&quot; outcomes to fool a node into spending more
+than predicted time solving.</li>
 <li>Further information on the recommended challenge parameters can be
 found here: <a rel="noopener" target="_blank" href="http://bc-2.jp/cuckoo-profile.pdf">http://bc-2.jp/cuckoo-profile.pdf</a></li>
 </ul>
@@ -242,12 +243,11 @@ POW parameters.</p>
 algorithm</li>
 <li>The purpose identifier specifies the purpose of the challenge (see
 Purpose Identifiers)</li>
-<li>The expiration date is a UNIX timestamp indicating when the challenge
-expires</li>
+<li>The expiration date is a UNIX timestamp indicating when the
+challenge expires</li>
 <li>The signed content should contain a signature of the hash
-<code>SHA256(SHA256(pow-count || pow-id || pow-params || ... || purpose-id || expiration))</code>,
-i.e. the hash of the entire challenge except for the signature length
-and data.</li>
+<code>SHA256(SHA256(pow-count || pow-id || pow-params || ... || purpose-id || expiration))</code>, i.e. the hash of the entire challenge
+except for the signature length and data.</li>
 </ul>
 <table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Description</th></tr></thead><tbody>
 <tr><td>1 byte</td><td>pow-count</td><td>uint8</td><td>Number of POW algorithms in the range [1..255]</td></tr>
@@ -301,7 +301,8 @@ solution is found, then
 </li>
 </ul>
 </li>
-<li>Otherwise loop back and increase nonce and continue finding solutions</li>
+<li>Otherwise loop back and increase nonce and continue finding
+solutions</li>
 </ul>
 <h3 id="The_solution_message_type">The <code>solution</code> message type</h3>
 <p>A solution consists of two parts: the entire challenge, and solution
@@ -309,8 +310,8 @@ parameters:</p>
 <ul>
 <li>The challenge must match the given challenge up to and including the
 signature bytes</li>
-<li>The solution parameters must form a valid solution to each POW step in
-the challenge</li>
+<li>The solution parameters must form a valid solution to each POW step
+in the challenge</li>
 </ul>
 <table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Description</th></tr></thead><tbody>
 <tr><td>1 byte</td><td>pow-count</td><td>uint8</td><td>Number of POW algorithms in the range [1..255]</td></tr>
@@ -331,9 +332,8 @@ the output of the successor. Example solution:</p>
 <tr><td>1..4</td><td>nonce32</td><td>0x12345</td><td>The nonce used as input is 0x12345</td></tr>
 </tbody></table>
 <p>The above example will provide a single nonce for the inner POW. For the
-SHA256(SHA256(challenge data || nonce32)) case, the solution would
-claim that SHA256(SHA256(challenge data || 0x00012345)) solves the
-challenge.</p>
+SHA256(SHA256(challenge data || nonce32)) case, the solution would claim
+that SHA256(SHA256(challenge data || 0x00012345)) solves the challenge.</p>
 <h2 id="Signing_and_Verifying_Challenges">Signing and Verifying Challenges</h2>
 <p>Below is a suggestion for how to sign a challenge. The implementation
 generates a new, random key-pair at launch and uses that to sign all
@@ -392,8 +392,7 @@ solution given the algorithm <code>alg</code> succeeds</li>
 <li>If <code>date() + eta &gt;= expiration</code>, discard challenge</li>
 <li>If <code>eta &gt; t</code>, discard challenge</li>
 </ol>
-<p>Example:
-<code>SHA256(cuckoo-cycle(...)) &lt; 0x7fffff0000000000000000000000000000000000000000000000000000000000</code></p>
+<p>Example: <code>SHA256(cuckoo-cycle(...)) &lt; 0x7fffff0000000000000000000000000000000000000000000000000000000000</code></p>
 <ol>
 <li><code>p(cuckoo-cycle) = 1</code>, <code>p(sha256, 0x7fffff000...) ~= (1/2)^1 = 1/2</code></li>
 <li><code>w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)</code>,
@@ -401,8 +400,7 @@ solution given the algorithm <code>alg</code> succeeds</li>
 <li><code>Wc = 0, Wm = 1, Wi = 1</code>
 <ol>
 <li><code>p = p(cuckoo-cycle) = 1, w = w(cuckoo-cycle) = (1.5e11 cycles, 5e7 ram)</code></li>
-<li><code>Wc = 0 + 1.5e11 = 1.5e11</code>, <code>Wi = 1 * 1 = 1</code>,
-<code>Wm = 1 + 5e7 = 5e7</code></li>
+<li><code>Wc = 0 + 1.5e11 = 1.5e11</code>, <code>Wi = 1 * 1 = 1</code>, <code>Wm = 1 + 5e7 = 5e7</code></li>
 <li><code>p = p(sha256) = 1/2, w = w(sha256) = (11e3 cycles)</code></li>
 <li><code>Wc = 1.5e11 + 11e3 ~= 1.5e11, Wi = 1 * 2 = 2, Wm = 5e7 + 0 = 5e7</code></li>
 </ol>

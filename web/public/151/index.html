@@ -52,7 +52,7 @@
 </span><span>  Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
 </span><span>  Comments-Summary: Controversial; some recommendation, and some discouragement
 </span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0151
-</span><span>  Status: Withdrawn
+</span><span>  Status: Replaced
 </span><span>  Type: Standards Track
 </span><span>  Created: 2016-03-23
 </span><span>  License: PD
@@ -101,19 +101,15 @@ be ignored).</p>
 by sharing the pubkeys of an ephemeral key. Once the ECDH secret is
 calculated on each side, the symmetric encryption cipher keys must be
 derived with HKDF [2] after the following specification:</p>
-<p>1. HKDF extraction
-<code>PRK = HKDF_EXTRACT(hash=SHA256, salt=&quot;bitcoinecdh&quot;, ikm=ecdh_secret|cipher-type)</code>.</p>
-<p>2. Derive Key1
-<code>K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK1&quot;, L=32)</code></p>
-<p>3. Derive Key2
-<code>K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK2&quot;, L=32)</code></p>
+<p>1. HKDF extraction <code>PRK = HKDF_EXTRACT(hash=SHA256, salt=&quot;bitcoinecdh&quot;, ikm=ecdh_secret|cipher-type)</code>.</p>
+<p>2. Derive Key1 <code>K_1 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK1&quot;, L=32)</code></p>
+<p>3. Derive Key2 <code>K_2 = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinK2&quot;, L=32)</code></p>
 <p>It is important to include the cipher-type into the symmetric cipher key
 derivation to avoid weak-cipher-attacks.</p>
 <h3 id="Session_ID">Session ID</h3>
-<p>Both sides must also calculate the 256bit session-id using
-<code>SID = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinSessionID&quot;, L=32)</code>.
-The session-id can be used for linking the encryption-session to an
-identity check.</p>
+<p>Both sides must also calculate the 256bit session-id using <code>SID = HKDF_EXPAND(prk=PRK, hash=SHA256, info=&quot;BitcoinSessionID&quot;, L=32)</code>. The
+session-id can be used for linking the encryption-session to an identity
+check.</p>
 <h3 id="The_encinit_message_type">The <code>encinit</code> message type</h3>
 <p>To request encrypted communication, the requesting peer generates an EC
 ephemeral-session-keypair and sends an <code>encinit</code> message to the
@@ -163,12 +159,12 @@ an attacker knows at least one private key and the remote peer's public
 key.</p>
 <ul>
 <li><strong>The <code>encinit</code>/<code>encack</code> interaction must be done from both sides.</strong></li>
-<li>Each communication direction uses its own secret key for the symmetric
-cipher.</li>
+<li>Each communication direction uses its own secret key for the
+symmetric cipher.</li>
 <li>The second <code>encinit</code> request (from the responding peer) must use the
 same symmetric cipher type.</li>
-<li>All unencrypted messages before the second <code>encack</code> response (from the
-responding peer) must be ignored.</li>
+<li>All unencrypted messages before the second <code>encack</code> response (from
+the responding peer) must be ignored.</li>
 <li>After a successful <code>encinit</code>/<code>encack</code> interaction, the &quot;encrypted
 messages structure&quot; must be used. Non-encrypted messages from the
 requesting peer must lead to a connection termination.</li>

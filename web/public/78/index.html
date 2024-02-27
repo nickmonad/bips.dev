@@ -72,11 +72,11 @@ it on the network.</p>
 <p>This simple model gave birth to several heuristics impacting the privacy
 of the parties and of the network as a whole.</p>
 <ul>
-<li>Common input ownership heuristic: In most transactions, all the inputs
-belong to the same party.</li>
+<li>Common input ownership heuristic: In most transactions, all the
+inputs belong to the same party.</li>
 <li>Change identification from scriptPubKey type: If all inputs are
-spending UTXOs of a certain scriptPubKey type, then the change output
-is likely to have the same scriptPubKey type, too.</li>
+spending UTXOs of a certain scriptPubKey type, then the change
+output is likely to have the same scriptPubKey type, too.</li>
 <li>Change identification from round amount: If an output in the
 transaction has a round amount, it is likely an output belonging to
 the receiver.</li>
@@ -105,8 +105,8 @@ unreliable to the network as a whole.</p>
 Bustapay</a>.</p>
 <p>We decided to deviate from it for several reasons:</p>
 <ul>
-<li>It was not using PSBT, so if the receiver wanted to bump the fee, they
-would need the full UTXO set.</li>
+<li>It was not using PSBT, so if the receiver wanted to bump the fee,
+they would need the full UTXO set.</li>
 <li>Inability to change the payment output to match scriptPubKey type.</li>
 <li>Lack of basic versioning negotiation if the protocol evolves.</li>
 <li>No standardization of error condition for proper feedback to the
@@ -121,15 +121,16 @@ sender.</li>
 URI</a> to the sender with a parameter
 <code>pj=</code> describing a payjoin endpoint.</li>
 <li>The sender creates a signed, finalized PSBT with witness UTXO or
-previous transactions of the inputs. We call this PSBT the <code>original</code>.</li>
-<li>The receiver replies back with a signed PSBT containing his own signed
-inputs/outputs and those of the sender. We call this PSBT
+previous transactions of the inputs. We call this PSBT the
+<code>original</code>.</li>
+<li>The receiver replies back with a signed PSBT containing his own
+signed inputs/outputs and those of the sender. We call this PSBT
 <code>Payjoin proposal</code>.</li>
 <li>The sender verifies the proposal, re-signs his inputs and broadcasts
 the transaction to the Bitcoin network. We call this transaction
 <code>Payjoin transaction</code>.</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <pre style="background-color:#fafafa;color:#61676c;"><code><span>+----------+                        +--------+         +-----------------+
 </span><span>| Receiver |                        | Sender |         | Bitcoin Network |
 </span><span>+----+-----+                        +---+----+         +-------+---------+
@@ -165,7 +166,8 @@ already been communicated via a TLS connection. Senders SHOULD NOT
 accept a url representing an unencrypted or unauthenticated connection.</p>
 <p>The original PSBT MUST:</p>
 <ul>
-<li>Have all the <code>witnessUTXO</code> or <code>nonWitnessUTXO</code> information filled in.</li>
+<li>Have all the <code>witnessUTXO</code> or <code>nonWitnessUTXO</code> information filled
+in.</li>
 <li>Be finalized.</li>
 <li>Not include fields unneeded for the receiver such as global xpubs or
 keypath information.</li>
@@ -201,9 +203,9 @@ URI</a> parameters:</p>
 <ul>
 <li><code>pj=</code>: Represents an http(s) endpoint which the sender can POST the
 original PSBT.</li>
-<li><code>pjos=0</code>: Signal to the sender that they MUST disallow <a href="https://bips.dev/78/#output-substitution" title="wikilink">payment output
-substitution</a>. (See <a href="https://bips.dev/78/#unsecured-payjoin" title="wikilink">Unsecured
-payjoin server</a>)</li>
+<li><code>pjos=0</code>: Signal to the sender that they MUST disallow <a href="https://bips.dev/78/#output-substitution" title="wikilink">payment
+output substitution</a>. (See
+<a href="https://bips.dev/78/#unsecured-payjoin" title="wikilink">Unsecured payjoin server</a>)</li>
 </ul>
 <h3 id="Optional_parameters"><span id="optional-params"></span>Optional parameters</h3>
 <p>When the payjoin sender posts the original PSBT to the receiver, he can
@@ -226,8 +228,8 @@ send an error with the list of supported versions:</p>
 </span></code></pre>
 <ul>
 <li><code>additionalfeeoutputindex=</code>, if the sender is willing to pay for
-increased fee, this indicate output can have its value substracted to
-pay for it.</li>
+increased fee, this indicate output can have its value substracted
+to pay for it.</li>
 </ul>
 <p>If the <code>additionalfeeoutputindex</code> is out of bounds or pointing to the
 payment output meant for the receiver, the receiver should ignore the
@@ -235,11 +237,11 @@ parameter. See <a href="https://bips.dev/78/#fee-output" title="wikilink">fee ou
 information.</p>
 <ul>
 <li><code>maxadditionalfeecontribution=</code>, if the sender is willing to pay for
-increased fee, an integer defining the maximum amount in satoshis that
-the sender is willing to contribute towards fees for the additional
-inputs. <code>maxadditionalfeecontribution</code> must be ignored if set to less
-than zero. See <a href="https://bips.dev/78/#fee-output" title="wikilink">fee output</a> for more
-information.</li>
+increased fee, an integer defining the maximum amount in satoshis
+that the sender is willing to contribute towards fees for the
+additional inputs. <code>maxadditionalfeecontribution</code> must be ignored if
+set to less than zero. See <a href="https://bips.dev/78/#fee-output" title="wikilink">fee output</a> for
+more information.</li>
 </ul>
 <p>Note that both <code>maxadditionalfeecontribution=</code> and
 <code>additionalfeeoutputindex=</code> must be specified and valid for the receiver
@@ -247,15 +249,16 @@ to be allowed to decrease an output belonging to the sender. This fee
 contribution can't be used to pay for anything else than additional
 input's weight.</p>
 <ul>
-<li><code>minfeerate=</code>, a decimal in satoshi per vbyte that the sender can use
-to constraint the receiver to not drop the minimum fee rate too much.</li>
+<li><code>minfeerate=</code>, a decimal in satoshi per vbyte that the sender can
+use to constraint the receiver to not drop the minimum fee rate too
+much.</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li><code>disableoutputsubstitution=</code>, a boolean indicating if the sender
-forbids the receiver to substitute the receiver's output, see <a href="https://bips.dev/78/#output-substitution" title="wikilink">payment
-output substitution</a>. (default to
-<code>false</code>)</li>
+forbids the receiver to substitute the receiver's output, see
+<a href="https://bips.dev/78/#output-substitution" title="wikilink">payment output substitution</a>.
+(default to <code>false</code>)</li>
 </ul>
 <h3 id="Receiver's_well_known_errors">Receiver's well known errors</h3>
 <p>If for some reason the receiver is unable to create a payjoin proposal,
@@ -331,8 +334,8 @@ proceeding:</p>
 that the original PSBT is broadcastable. <code>*</code></li>
 <li>If the sender included inputs in the original PSBT owned by the
 receiver, the receiver must either return error
-<code>original-psbt-rejected</code> or make sure they do not sign those inputs in
-the payjoin proposal.</li>
+<code>original-psbt-rejected</code> or make sure they do not sign those inputs
+in the payjoin proposal.</li>
 <li>If the sender's inputs are all from the same scriptPubKey type, the
 receiver must match the same type. If the receiver can't match the
 type, they must return error <code>unavailable</code>.</li>
@@ -341,7 +344,8 @@ never been seen before.
 <ul>
 <li>This prevent <a href="https://bips.dev/78/#probing-attack" title="wikilink">probing attacks</a>.</li>
 <li>This prevent reentrant payjoin, where a sender attempts to use
-payjoin transaction as a new original transaction for a new payjoin.</li>
+payjoin transaction as a new original transaction for a new
+payjoin.</li>
 </ul>
 </li>
 </ul>
@@ -356,7 +360,8 @@ prevent a malicious receiver from stealing money.</p>
 higher than the original PSBT.</li>
 <li>If the receiver's BIP21 signalled <code>pjos=0</code>, disable payment output
 substitution.</li>
-<li>Verify that the transaction version, and the nLockTime are unchanged.</li>
+<li>Verify that the transaction version, and the nLockTime are
+unchanged.</li>
 <li>Check that the sender's inputs' sequence numbers are unchanged.</li>
 <li>For each inputs in the proposal:
 <ul>
@@ -373,15 +378,16 @@ specified.</li>
 <li>If it is one of the receiver's input
 <ul>
 <li>Verify the PSBT input is finalized</li>
-<li>Verify that <code>non_witness_utxo</code> or <code>witness_utxo</code> are filled in.</li>
+<li>Verify that <code>non_witness_utxo</code> or <code>witness_utxo</code> are filled
+in.</li>
 </ul>
 </li>
-<li>Verify that the payjoin proposal did not introduced mixed input's
-sequence.</li>
-<li>Verify that the payjoin proposal did not introduced mixed input's
-type.</li>
-<li>Verify that all of sender's inputs from the original PSBT are in the
-proposal.</li>
+<li>Verify that the payjoin proposal did not introduced mixed
+input's sequence.</li>
+<li>Verify that the payjoin proposal did not introduced mixed
+input's type.</li>
+<li>Verify that all of sender's inputs from the original PSBT are in
+the proposal.</li>
 </ul>
 </li>
 <li>For each outputs in the proposal:
@@ -389,21 +395,21 @@ proposal.</li>
 <li>Verify that no keypaths is in the PSBT output</li>
 <li>If the output is the <a href="https://bips.dev/78/#fee-output" title="wikilink">fee output</a>:
 <ul>
-<li>The amount that was substracted from the output's value is less
-than or equal to <code>maxadditionalfeecontribution</code>. Let's call this
-amount <code>actual contribution</code>.</li>
+<li>The amount that was substracted from the output's value is
+less than or equal to <code>maxadditionalfeecontribution</code>. Let's
+call this amount <code>actual contribution</code>.</li>
 <li>Make sure the actual contribution is only paying fee: The
-<code>actual contribution</code> is less than or equals to the difference of
-absolute fee between the payjoin proposal and the original PSBT.</li>
-<li>Make sure the actual contribution is only paying for fee incurred
-by additional inputs: <code>actual contribution</code> is less than or equals
-to
-<code>originalPSBTFeeRate * vsize(sender_input_type) * (count(payjoin_proposal_inputs) - count(original_psbt_inputs))</code>.
-(see <a href="https://bips.dev/78/#fee-output" title="wikilink">Fee output</a> section)</li>
+<code>actual contribution</code> is less than or equals to the
+difference of absolute fee between the payjoin proposal and
+the original PSBT.</li>
+<li>Make sure the actual contribution is only paying for fee
+incurred by additional inputs: <code>actual contribution</code> is less
+than or equals to <code>originalPSBTFeeRate * vsize(sender_input_type) * (count(payjoin_proposal_inputs) - count(original_psbt_inputs))</code>. (see <a href="https://bips.dev/78/#fee-output" title="wikilink">Fee
+output</a> section)</li>
 </ul>
 </li>
-<li>If the output is the payment output and payment output substitution
-is allowed.
+<li>If the output is the payment output and payment output
+substitution is allowed.
 <ul>
 <li>Do not make any check</li>
 </ul>
@@ -413,13 +419,14 @@ is allowed.
 <li>Make sure the output's value did not decrease.</li>
 </ul>
 </li>
-<li>Verify that all sender's outputs (ie, all outputs except the output
-actually paid to the receiver) from the original PSBT are in the
-proposal.</li>
+<li>Verify that all sender's outputs (ie, all outputs except the
+output actually paid to the receiver) from the original PSBT are
+in the proposal.</li>
 </ul>
 </li>
-<li>Once the proposal is signed, if <code>minfeerate</code> was specified, check that
-the fee rate of the payjoin transaction is not less than this value.</li>
+<li>Once the proposal is signed, if <code>minfeerate</code> was specified, check
+that the fee rate of the payjoin transaction is not less than this
+value.</li>
 </ul>
 <p>The sender must be careful to only sign the inputs that were present in
 the original PSBT and nothing else.</p>
@@ -431,9 +438,9 @@ the receiver's outputs must not be removed or decreased in value)</li>
 <li>The sender should allow the receiver to not add any inputs. This is
 useful for the receiver to change the paymout output scriptPubKey
 type.</li>
-<li>If no input have been added, the sender's wallet implementation should
-accept the payjoin proposal, but not mark the transaction as an actual
-payjoin in the user interface.</li>
+<li>If no input have been added, the sender's wallet implementation
+should accept the payjoin proposal, but not mark the transaction as
+an actual payjoin in the user interface.</li>
 </ul>
 <p>Our method of checking the fee allows the receiver and the sender to
 batch payments in the payjoin transaction. It also allows the receiver
@@ -556,10 +563,10 @@ proposal.</p>
 <p>While we cannot prevent this type of attack entirely, we implemented the
 following mitigations:</p>
 <ul>
-<li>When the receiver detects an original transaction being broadcast, or
-if the receiver detects that the original transaction has been double
-spent, then they will reuse the UTXO that was exposed for the next
-payjoin.</li>
+<li>When the receiver detects an original transaction being broadcast,
+or if the receiver detects that the original transaction has been
+double spent, then they will reuse the UTXO that was exposed for the
+next payjoin.</li>
 <li>While the exposed UTXO will be reused in priority to not leak other
 UTXOs, there is no strong guarantee about it. This prevents the
 attacker from detecting with certainty the next payjoin of the
@@ -839,8 +846,9 @@ in the process of implementing the protocol.</li>
 <li><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/btcpayserver/btcpayserver">BTCPay
 Server</a> has
 implemented sender and receiver side of this protocol.</li>
-<li><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/zkSNACKs/WalletWasabi/">Wasabi Wallet</a>
-has merged sender's support.</li>
+<li><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/zkSNACKs/WalletWasabi/">Wasabi
+Wallet</a> has
+merged sender's support.</li>
 <li><a rel="noopener" target="_blank" title="wikilink" href="https://github.com/JoinMarket-Org/joinmarket-clientserver">Join
 Market</a>
 has implemented sender and receiver side of this protocol.</li>

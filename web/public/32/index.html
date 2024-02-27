@@ -55,12 +55,12 @@ addition of I<sub>L</sub> (faster, easier implementation)</li>
 <li>(25 May 2013) Added test vectors</li>
 <li>(15 Jan 2014) Rename keys with index ≥ 0x80000000 to hardened keys,
 and add explicit conversion functions.</li>
-<li>(24 Feb 2017) Added test vectors for hardened derivation with leading
-zeros</li>
+<li>(24 Feb 2017) Added test vectors for hardened derivation with
+leading zeros</li>
 <li>(4 Nov 2020) Added new test vectors for hardened derivation with
 leading zeros</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 32
 </span><span>  Layer: Applications
 </span><span>  Title: Hierarchical Deterministic Wallets
@@ -127,14 +127,14 @@ byte sequence onto another.</p>
 <p>As standard conversion functions, we assume:</p>
 <ul>
 <li>point(p): returns the coordinate pair resulting from EC point
-multiplication (repeated application of the EC group operation) of the
-secp256k1 base point with the integer p.</li>
-<li>ser<sub>32</sub>(i): serialize a 32-bit unsigned integer i as a 4-byte
+multiplication (repeated application of the EC group operation) of
+the secp256k1 base point with the integer p.</li>
+<li>ser<sub>32</sub>(i): serialize a 32-bit unsigned integer i as a
+4-byte sequence, most significant byte first.</li>
+<li>ser<sub>256</sub>(p): serializes the integer p as a 32-byte
 sequence, most significant byte first.</li>
-<li>ser<sub>256</sub>(p): serializes the integer p as a 32-byte sequence,
-most significant byte first.</li>
-<li>ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) as a byte
-sequence using SEC1's compressed form: (0x02 or 0x03) ||
+<li>ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) as a
+byte sequence using SEC1's compressed form: (0x02 or 0x03) ||
 ser<sub>256</sub>(x), where the header byte depends on the parity of
 the omitted y coordinate.</li>
 <li>parse<sub>256</sub>(p): interprets a 32-byte sequence as a 256-bit
@@ -170,13 +170,13 @@ from the parent extended private key:</p>
 <li>Check whether i ≥ 2<sup>31</sup> (whether the child is a hardened
 key).
 <ul>
-<li>If so (hardened child): let I = HMAC-SHA512(Key = c<sub>par</sub>,
-Data = 0x00 || ser<sub>256</sub>(k<sub>par</sub>) ||
-ser<sub>32</sub>(i)). (Note: The 0x00 pads the private key to make
-it 33 bytes long.)</li>
-<li>If not (normal child): let I = HMAC-SHA512(Key = c<sub>par</sub>,
-Data = ser<sub>P</sub>(point(k<sub>par</sub>)) ||
-ser<sub>32</sub>(i)).</li>
+<li>If so (hardened child): let I = HMAC-SHA512(Key =
+c<sub>par</sub>, Data = 0x00 ||
+ser<sub>256</sub>(k<sub>par</sub>) || ser<sub>32</sub>(i)).
+(Note: The 0x00 pads the private key to make it 33 bytes long.)</li>
+<li>If not (normal child): let I = HMAC-SHA512(Key =
+c<sub>par</sub>, Data = ser<sub>P</sub>(point(k<sub>par</sub>))
+|| ser<sub>32</sub>(i)).</li>
 </ul>
 </li>
 <li>Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.</li>
@@ -188,8 +188,8 @@ the resulting key is invalid, and one should proceed with the next
 value for i. (Note: this has probability lower than 1 in
 2<sup>127</sup>.)</li>
 </ul>
-<p>The HMAC-SHA512 function is specified in <a rel="noopener" target="_blank" href="http://tools.ietf.org/html/rfc4231">RFC
-4231</a>.</p>
+<p>The HMAC-SHA512 function is specified in
+<a rel="noopener" target="_blank" href="http://tools.ietf.org/html/rfc4231">RFC 4231</a>.</p>
 <h4 id="Public_parent_key_→_public_child_key">Public parent key → public child key</h4>
 <p>The function CKDpub((K<sub>par</sub>, c<sub>par</sub>), i) →
 (K<sub>i</sub>, c<sub>i</sub>) computes a child extended public key from
@@ -200,16 +200,17 @@ child keys.</p>
 key).
 <ul>
 <li>If so (hardened child): return failure</li>
-<li>If not (normal child): let I = HMAC-SHA512(Key = c<sub>par</sub>,
-Data = ser<sub>P</sub>(K<sub>par</sub>) || ser<sub>32</sub>(i)).</li>
+<li>If not (normal child): let I = HMAC-SHA512(Key =
+c<sub>par</sub>, Data = ser<sub>P</sub>(K<sub>par</sub>) ||
+ser<sub>32</sub>(i)).</li>
 </ul>
 </li>
 <li>Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.</li>
 <li>The returned child key K<sub>i</sub> is
 point(parse<sub>256</sub>(I<sub>L</sub>)) + K<sub>par</sub>.</li>
 <li>The returned chain code c<sub>i</sub> is I<sub>R</sub>.</li>
-<li>In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or K<sub>i</sub> is the
-point at infinity, the resulting key is invalid, and one should
+<li>In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or K<sub>i</sub> is
+the point at infinity, the resulting key is invalid, and one should
 proceed with the next value for i.</li>
 </ul>
 <h4 id="Private_parent_key_→_public_child_key">Private parent key → public child key</h4>
@@ -269,8 +270,8 @@ required to accept payment to the chain key itself).</p>
 <h3 id="Serialization_format">Serialization format</h3>
 <p>Extended public and private keys are serialized as follows:</p>
 <ul>
-<li>4 byte: version bytes (mainnet: 0x0488B21E public, 0x0488ADE4 private;
-testnet: 0x043587CF public, 0x04358394 private)</li>
+<li>4 byte: version bytes (mainnet: 0x0488B21E public, 0x0488ADE4
+private; testnet: 0x043587CF public, 0x04358394 private)</li>
 <li>1 byte: depth: 0x00 for master nodes, 0x01 for level-1 derived keys,
 ....</li>
 <li>4 bytes: the fingerprint of the parent's key (0x00000000 if master
@@ -385,24 +386,26 @@ call for a more complex tree structure.</p>
 itself:</p>
 <ul>
 <li>Given a public key K, an attacker cannot find the corresponding
-private key more efficiently than by solving the EC discrete logarithm
-problem (assumed to require 2<sup>128</sup> group operations).</li>
+private key more efficiently than by solving the EC discrete
+logarithm problem (assumed to require 2<sup>128</sup> group
+operations).</li>
 </ul>
 <p>the intended security properties of this standard are:</p>
 <ul>
 <li>Given a child extended private key (k<sub>i</sub>,c<sub>i</sub>) and
 the integer i, an attacker cannot find the parent private key
-k<sub>par</sub> more efficiently than a 2<sup>256</sup> brute force of
-HMAC-SHA512.</li>
+k<sub>par</sub> more efficiently than a 2<sup>256</sup> brute force
+of HMAC-SHA512.</li>
 <li>Given any number (2 ≤ N ≤ 2<sup>32</sup>-1) of (index, extended
 private key) tuples
 (i<sub>j</sub>,(k<sub>i<sub>j</sub></sub>,c<sub>i<sub>j</sub></sub>)),
 with distinct i<sub>j</sub>'s, determining whether they are derived
-from a common parent extended private key (i.e., whether there exists
-a (k<sub>par</sub>,c<sub>par</sub>) such that for each j in (0..N-1)
+from a common parent extended private key (i.e., whether there
+exists a (k<sub>par</sub>,c<sub>par</sub>) such that for each j in
+(0..N-1)
 CKDpriv((k<sub>par</sub>,c<sub>par</sub>),i<sub>j</sub>)=(k<sub>i<sub>j</sub></sub>,c<sub>i<sub>j</sub></sub>)),
-cannot be done more efficiently than a 2<sup>256</sup> brute force of
-HMAC-SHA512.</li>
+cannot be done more efficiently than a 2<sup>256</sup> brute force
+of HMAC-SHA512.</li>
 </ul>
 <p>Note however that the following properties do not exist:</p>
 <ul>
@@ -536,7 +539,8 @@ xprvA2nrNbFZABcdryreWet9Ea4LvTJcGsqrMzxHx98MMrotbir7yrKCEXw7nadnHM8Dq38EGfSh6dqA
 <h3 id="Test_vector_3">Test vector 3</h3>
 <p>These vectors test for the retention of leading zeros. See
 <a rel="noopener" target="_blank" href="https://github.com/bitpay/bitcore-lib/issues/47">bitpay/bitcore-lib#47</a>
-and <a rel="noopener" target="_blank" href="https://github.com/iancoleman/bip39/issues/58">iancoleman/bip39#58</a>
+and
+<a rel="noopener" target="_blank" href="https://github.com/iancoleman/bip39/issues/58">iancoleman/bip39#58</a>
 for more information.</p>
 <p>Seed (hex):
 4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be</p>
@@ -629,8 +633,8 @@ xprv9xJocDuwtYCMNAo3Zw76WENQeAS6WGXQ55RCy7tDJ8oALr4FWkuVoHJeHVAcAqiZLE7Je3vZJHxs
 </ul>
 <h2 id="Acknowledgements">Acknowledgements</h2>
 <ul>
-<li>Gregory Maxwell for the original idea of type-2 deterministic wallets,
-and many discussions about it.</li>
+<li>Gregory Maxwell for the original idea of type-2 deterministic
+wallets, and many discussions about it.</li>
 <li>Alan Reiner for the implementation of this scheme in Armory, and the
 suggestions that followed from that.</li>
 <li>Eric Lombrozo for reviewing and revising this BIP.</li>

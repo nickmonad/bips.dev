@@ -143,8 +143,8 @@ hardened marker: either an apostrophe (<code>'</code>) or letter <code>h</code>.
 <li>An integer value from 0 to 2147483647 (&quot;Unit index template&quot;)</li>
 <li>A single <code>*</code> character, which denotes any value from 0 to 2147483647
 (&quot;Wildcard index template&quot;)</li>
-<li>The <code>{</code> character, followed by a number of <em>index ranges</em> delimited by
-commas (<code>,</code>), followed by <code>}</code> character (&quot;Ranged index template&quot;)</li>
+<li>The <code>{</code> character, followed by a number of <em>index ranges</em> delimited
+by commas (<code>,</code>), followed by <code>}</code> character (&quot;Ranged index template&quot;)</li>
 </ul>
 <p>Implementations MAY limit the maximum number of index ranges within the
 Ranged index template.</p>
@@ -154,13 +154,13 @@ increased by 2147483648 for the purposes of matching.</p>
 <p>Index range can be:</p>
 <ul>
 <li>An integer value from 0 to 2147483647 (&quot;Unit range&quot;)</li>
-<li>An integer value from 0 to 2147483647, followed by the <code>-</code> character,
-followed by another integer value from 0 to 2147483647 (&quot;Non-unit
-range&quot;)</li>
+<li>An integer value from 0 to 2147483647, followed by the <code>-</code>
+character, followed by another integer value from 0 to 2147483647
+(&quot;Non-unit range&quot;)</li>
 </ul>
 <p>For Non-unit range, value on the left side of the <code>-</code> character is the
-range_start, and the value on the right side of the <code>-</code> character is the
-range_end.</p>
+range_start, and the value on the right side of the <code>-</code> character is
+the range_end.</p>
 <p>For Unit range, we say that range_start is equal to range_end, even
 though there is no start/end in the Unit range.</p>
 <p>Unit index template contains a single index range, which is the Unit
@@ -179,8 +179,8 @@ be specified as Unit range.</li>
 and MUST be specified as Wildcard index template instead</li>
 <li>For Non-unit range, range_end MUST be larger than range_start.</li>
 <li>If there is more than one index range within the Ranged index
-template, range_start of the second and any subsequent range MUST be
-larger than the range_end of the preceeding range.</li>
+template, range_start of the second and any subsequent range MUST
+be larger than the range_end of the preceeding range.</li>
 <li>To avoid ambiguity, all representations of integer values larger
 than 0 MUST NOT start with character <code>0</code> (no leading zeroes
 allowed).</li>
@@ -200,13 +200,13 @@ compare templates for equality through a simple string equality check,
 without any parsing.</p>
 <p>To achieve this, two extra rules are needed:</p>
 <ul>
-<li>Within Ranged index template, subsequent range MUST NOT start with the
-value that is equal to the end of the previous range plus one. Thus,
-<code>{1,2,3-5}</code> is not allowed, and should be specified as <code>{1-5}</code>
+<li>Within Ranged index template, subsequent range MUST NOT start with
+the value that is equal to the end of the previous range plus one.
+Thus, <code>{1,2,3-5}</code> is not allowed, and should be specified as <code>{1-5}</code>
 instead. This rule might make templates less convenient for frequent
 edits, though.</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li>Only one type of hardened marker should be allowed (either <code>h</code> or
 <code>'</code>).</li>

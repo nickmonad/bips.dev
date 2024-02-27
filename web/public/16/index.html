@@ -93,9 +93,9 @@ transaction is validated again using the popped stack and the
 deserialized script as the scriptPubKey.</li>
 </ol>
 <p>These new rules should only be applied when validating transactions in
-blocks with timestamps &gt;= 1333238400 (Apr 1 2012) <sup class="footnote-reference"><a href="#1">1</a></sup>. There are
+blocks with timestamps &gt;= 1333238400 (Apr 1 2012) [1]. There are
 transactions earlier than 1333238400 in the block chain that fail these
-new validation rules. <sup class="footnote-reference"><a href="#2">2</a></sup>. Older transactions must be validated under
+new validation rules. [2]. Older transactions must be validated under
 the old rules. (see the Backwards Compatibility section for details).</p>
 <p>For example, the scriptPubKey and corresponding scriptSig for a
 one-signature-required transaction is:</p>
@@ -106,11 +106,11 @@ maximum number allowed per block (20,000) as follows:</p>
 <ol>
 <li>OP_CHECKSIG and OP_CHECKSIGVERIFY count as 1 signature operation,
 whether or not they are evaluated.</li>
-<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded by
-OP_1 through OP_16 are counted as 1 to 16 signature operation,
+<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded
+by OP_1 through OP_16 are counted as 1 to 16 signature operation,
 whether or not they are evaluated.</li>
-<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted as
-20 signature operations.</li>
+<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted
+as 20 signature operations.</li>
 </ol>
 <p>Examples:</p>
 <p>+3 signature operations:</p>
@@ -118,8 +118,8 @@ whether or not they are evaluated.</li>
 <p>+22 signature operations</p>
 <p><code>   {OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF}</code></p>
 <h2 id="Rationale">Rationale</h2>
-<p>This BIP replaces BIP 12, which proposed a new Script opcode (&quot;OP_EVAL&quot;)
-to accomplish everything in this BIP and more.</p>
+<p>This BIP replaces BIP 12, which proposed a new Script opcode
+(&quot;OP_EVAL&quot;) to accomplish everything in this BIP and more.</p>
 <p>The Motivation for this BIP (and BIP 13, the pay-to-script-hash address
 type) is somewhat controversial; several people feel that it is
 unnecessary, and complex/multisignature transaction types should be
@@ -195,10 +195,10 @@ serialized script is itself subject to the same rules as any other
 PUSHDATA operation, including the rule that no data greater than 520
 bytes may be pushed to the stack. Thus it is not possible to spend a
 P2SH output if the redemption script it refers to is &gt;520 bytes in
-length. For instance while the OP_CHECKMULTISIG opcode can itself accept
-up to 20 pubkeys, with 33-byte compressed pubkeys it is only possible to
-spend a P2SH output requiring a maximum of 15 pubkeys to redeem: 3
-bytes + 15 pubkeys * 34 bytes/pubkey = 513 bytes.</p>
+length. For instance while the OP_CHECKMULTISIG opcode can itself
+accept up to 20 pubkeys, with 33-byte compressed pubkeys it is only
+possible to spend a P2SH output requiring a maximum of 15 pubkeys to
+redeem: 3 bytes + 15 pubkeys * 34 bytes/pubkey = 513 bytes.</p>
 <h2 id="Reference_Implementation">Reference Implementation</h2>
 <p><a rel="noopener" target="_blank" href="https://gist.github.com/gavinandresen/3966071">https://gist.github.com/gavinandresen/3966071</a></p>
 <h2 id="See_Also">See Also</h2>
@@ -212,14 +212,11 @@ BIP</a></li>
 </ul>
 <h2 id="References">References</h2>
 <references>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff">Remove -bip16 and -paytoscripthashtime command-line
-arguments</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a rel="noopener" target="_blank" href="https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192">Transaction
-6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192</a></p>
-</div>
+<ol>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff">Remove -bip16 and -paytoscripthashtime command-line
+arguments</a></li>
+<li><a rel="noopener" target="_blank" href="https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192">Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192</a></li>
+</ol>
 
     </div>
 

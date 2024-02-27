@@ -83,8 +83,8 @@ addresses.</p>
 <ul>
 <li>dataSig is included in place of scriptSig in transaction inputs, and
 contains multiple serialized data elements</li>
-<li>scriptCheck is the final element of dataSig, and is executed with the
-preceding dataSig elements preloaded onto the stack (the element
+<li>scriptCheck is the final element of dataSig, and is executed with
+the preceding dataSig elements preloaded onto the stack (the element
 immediately before scriptCheck is the top of the stack)</li>
 <li>hashScriptCheck is included in place of scriptPubKey in transaction
 outputs, to specify the hash of the scriptCheck allowed to redeem it</li>
@@ -101,15 +101,16 @@ MUST proceed in backward-compatibility mode, using
 scriptSig+scriptPubKey rather than dataSig+scriptCheck+hashScriptCheck.</p>
 <p>A hashScriptCheck-compliant input is valid only if:</p>
 <ul>
-<li>dataSig MUST NOT contain any operations other than &quot;push data&quot; (it is
-data, not a script; no mixing scriptSig with hashScriptCheck)</li>
+<li>dataSig MUST NOT contain any operations other than &quot;push data&quot; (it
+is data, not a script; no mixing scriptSig with hashScriptCheck)</li>
 <li>scriptCheck MUST hash (using Bitcoin's Hash160 algorithm) to the
 output's hashScriptCheck.</li>
 <li>scriptCheck MUST be executed with the dataSig-based stack specified
 above (ie, not including scriptCheck itself) to perform validation
 (this does not imply clients are required to validate transactions).</li>
-<li>scriptCheck must not abort, and must leave a true value on the top of
-the stack. This is the current behaviour for scriptSig+scriptPubKey.</li>
+<li>scriptCheck must not abort, and must leave a true value on the top
+of the stack. This is the current behaviour for
+scriptSig+scriptPubKey.</li>
 </ul>
 <p>The new scriptCheck SHOULD be checked against &quot;standard transaction&quot;
 templates by miners.</p>
@@ -125,11 +126,11 @@ contribute to the maximum number allowed per block (20,000) as follows:</p>
 <ol>
 <li>OP_CHECKSIG and OP_CHECKSIGVERIFY count as 1 signature operation,
 whether or not they are evaluated.</li>
-<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded by
-OP_1 through OP_16 are counted as 1 to 16 signature operation,
+<li>OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY immediately preceded
+by OP_1 through OP_16 are counted as 1 to 16 signature operation,
 whether or not they are evaluated.</li>
-<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted as
-20 signature operations.</li>
+<li>All other OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY are counted
+as 20 signature operations.</li>
 </ol>
 <p>Examples:</p>
 <p>+3 signature operations:</p>

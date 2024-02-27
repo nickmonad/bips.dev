@@ -72,20 +72,20 @@ funds to the redeemer.</p>
 matter how complicated, using a fixed-length 20-byte hash that is short
 enough to scan from a QR code or easily copied and pasted.</p>
 <h2 id="Specification">Specification</h2>
-<p>OP_CHECKHASHVERIFY will re-define the existing OP_NOP2 opcode, and will
-function as follows when executed:</p>
+<p>OP_CHECKHASHVERIFY will re-define the existing OP_NOP2 opcode, and
+will function as follows when executed:</p>
 <ul>
 <li>First, hash the end of the prior script (in the general case,
-scriptSig; if no prior script, a null string is hashed) beginning from
-the last evaluated OP_CODESEPARATOR onward (or from the beginning of
-the script, if no OP_CODESEPARATOR was present)</li>
-<li>Then, compare this with the item on the top of the stack (if there is
-none, the script fails immediately)</li>
-<li>If the hashes match, do nothing, proceed as if an OP_NOP; if they do
-not match, the script fails immediately.</li>
-<li>Note that in the case of a matched hash, the top stack item (the hash
-being compared with) is <u>not</u> popped off the stack. This is for
-backward compatibility.</li>
+scriptSig; if no prior script, a null string is hashed) beginning
+from the last evaluated OP_CODESEPARATOR onward (or from the
+beginning of the script, if no OP_CODESEPARATOR was present)</li>
+<li>Then, compare this with the item on the top of the stack (if there
+is none, the script fails immediately)</li>
+<li>If the hashes match, do nothing, proceed as if an OP_NOP; if they
+do not match, the script fails immediately.</li>
+<li>Note that in the case of a matched hash, the top stack item (the
+hash being compared with) is <u>not</u> popped off the stack. This
+is for backward compatibility.</li>
 </ul>
 <p>This opcode reassignment shall be applied when validating transactions
 in blocks only with timestamps after February 23, 2012 (see the
@@ -98,8 +98,8 @@ blocks is defined:</p>
 <p>This new transaction type is redeemed by a standard scriptSig:</p>
 <p><code>   ...signatures... OP_CODESEPARATOR {script}</code></p>
 <p>Transactions that redeem these pay-to-script outpoints are only
-considered standard if they contain exactly one OP_CODESEPARATOR and the
-appended <em>script</em> is, itself, one of the other standard transaction
+considered standard if they contain exactly one OP_CODESEPARATOR and
+the appended <em>script</em> is, itself, one of the other standard transaction
 types.</p>
 <h2 id="Example">Example</h2>
 <p>For example, the scriptPubKey and corresponding scriptSig for a
@@ -167,13 +167,13 @@ pay-to-script-hash transactions validated.</p>
 <p>If a majority of hashing power does not support the new validation
 rules, then rollout will be postponed (or rejected if it becomes clear
 that a majority will never be achieved).</p>
-<p>OP_NOP2 is used, so existing OP_EVAL (BIP 12) transactions in the block
-chain can still be redeemed.</p>
+<p>OP_NOP2 is used, so existing OP_EVAL (BIP 12) transactions in the
+block chain can still be redeemed.</p>
 <h2 id="Reference_Implementation">Reference Implementation</h2>
 <p><a rel="noopener" target="_blank" href="https://gitorious.org/~Luke-Jr/bitcoin/luke-jr-bitcoin/commits/checkhashverify">Validation, sending, and receiving for bitcoind git
 master</a></p>
-<p><a rel="noopener" target="_blank" href="https://gitorious.org/~Luke-Jr/bitcoin/luke-jr-bitcoin/commits/checkhashverify_backport">Validation only for
-0.3.19+</a></p>
+<p><a rel="noopener" target="_blank" href="https://gitorious.org/~Luke-Jr/bitcoin/luke-jr-bitcoin/commits/checkhashverify_backport">Validation only
+for 0.3.19+</a></p>
 <h2 id="See_Also">See Also</h2>
 <ul>
 <li>The <a href="/13">Address format for Pay to Script Hash

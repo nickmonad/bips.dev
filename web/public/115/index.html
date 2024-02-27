@@ -68,17 +68,17 @@ are valid only on specific blockchains.</p>
 <p>When this opcode is executed:</p>
 <ul>
 <li>If the stack has fewer than 2 elements, the script fails.</li>
-<li>If the top item on the stack cannot be interpreted as a minimal-length
-32-bit CScriptNum, the script fails.</li>
+<li>If the top item on the stack cannot be interpreted as a
+minimal-length 32-bit CScriptNum, the script fails.</li>
 <li>The top item on the stack is interpreted as a block height
 (ParamHeight).</li>
 <li>If the blockchain (in the context of the execution) does not have
 ParamHeight blocks prior to the one including this transaction, the
 script fails (this failure must not be cached across blocks; it is
 equivalent to non-final status).</li>
-<li>If ParamHeight specifies a block deeper than 52596 blocks in the chain
-(including negative values), the opcode completes successfully and
-script continues as normal.</li>
+<li>If ParamHeight specifies a block deeper than 52596 blocks in the
+chain (including negative values), the opcode completes successfully
+and script continues as normal.</li>
 <li>The second-to-top item on the stack is interpreted as a block hash
 (ParamBlockHash).</li>
 <li>If ParamBlockHash is longer than 28 bytes, the script fails.</li>
@@ -133,36 +133,36 @@ bytes.</p>
 <p>How is this different from the transaction's lock-time?</p>
 <ul>
 <li>The lock-time specifies a time or block height before a transaction
-becomes valid. <code>OP_CHECKBLOCKATHEIGHT</code>, on the other hand, specifies a
-specific block's hash.</li>
+becomes valid. <code>OP_CHECKBLOCKATHEIGHT</code>, on the other hand, specifies
+a specific block's hash.</li>
 </ul>
 <p>Why are block heights required to be absolute, rather than relative?</p>
 <ul>
-<li>A relative block height would allow for creation of transactions which
-are valid at block N, but not N+1. This is carefully avoided by
-Bitcoin to ensure that if any given block is reorganised out,
+<li>A relative block height would allow for creation of transactions
+which are valid at block N, but not N+1. This is carefully avoided
+by Bitcoin to ensure that if any given block is reorganised out,
 non-malicious transactions can be simply re-confirmed in a later
 block.</li>
 </ul>
 <p>Why are blocks older than 52596 deep in the chain not verified?</p>
 <ul>
 <li>This is to avoid creating an infinite storage requirement from all
-full nodes which would be necessary to maintain all the block headers
-indefinitely. 52596 block headers requires a fixed size of
+full nodes which would be necessary to maintain all the block
+headers indefinitely. 52596 block headers requires a fixed size of
 approximately 4 MB.</li>
 <li>In any case where you might want to specify a deeper block, you can
 also just as well specify a more recent one that descends from it.</li>
 <li>It is assumed that 1 year is sufficient time to double-spend any
 common UTXOs on all blockchains of interest.</li>
-<li>If a deeper check is needed, it can be softforked in. Making the check
-more shallow, on the other hand, is a hardfork.</li>
+<li>If a deeper check is needed, it can be softforked in. Making the
+check more shallow, on the other hand, is a hardfork.</li>
 </ul>
 <p>Why is ParamBlockHash allowed to match less than the full block hash?</p>
 <ul>
-<li>In a chain split, it is sufficient to check only a few bytes to avoid
-replay.</li>
-<li>In all scenarios, it is likely sufficient to check only a minority of
-the full hash to avoid any realistic chance of replay.</li>
+<li>In a chain split, it is sufficient to check only a few bytes to
+avoid replay.</li>
+<li>In all scenarios, it is likely sufficient to check only a minority
+of the full hash to avoid any realistic chance of replay.</li>
 <li>Allowing less than the full hash to be specified saves space in
 transaction data.</li>
 <li>Using a single byte can be combined with other opcodes (such as
@@ -181,8 +181,8 @@ ParamBlockHash may not be larger than 28 bytes.</li>
 previous block?</p>
 <ul>
 <li>This should only be used when necessary (ie, the deeper block is not
-sufficient), and when the wallet can actively issue updates should the
-blockchain reorganise.</li>
+sufficient), and when the wallet can actively issue updates should
+the blockchain reorganise.</li>
 <li>While this allows intentionally creating a transaction which may be
 invalid in a reorganization, the same can already be accomplished by
 creating double spends.</li>

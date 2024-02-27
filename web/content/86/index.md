@@ -5,7 +5,7 @@ weight = 86
 in_search_index = true
 
 [taxonomies]
-authors = ["Andrew Chow"]
+authors = ["Ava Chow"]
 status = ["Draft"]
 
 [extra]
@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0086.mediawiki"
 +++
 
-      BIP: 86
-      Layer: Applications
-      Title: Key Derivation for Single Key P2TR Outputs
-      Author: Andrew Chow <andrew@achow101.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0086
-      Status: Draft
-      Type: Standards Track
-      Created: 2021-06-22
-      License: BSD-2-Clause
+``` 
+  BIP: 86
+  Layer: Applications
+  Title: Key Derivation for Single Key P2TR Outputs
+  Author: Ava Chow <me@achow101.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0086
+  Status: Draft
+  Type: Standards Track
+  Created: 2021-06-22
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -103,11 +105,11 @@ should not be difficult to implement.
     mnemonic = abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
     rootpriv = xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu
     rootpub  = xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8
-
+    
     // Account 0, root = m/86'/0'/0'
     xprv = xprv9xgqHN7yz9MwCkxsBPN5qetuNdQSUttZNKw1dcYTV4mkaAFiBVGQziHs3NRSWMkCzvgjEe3n9xV8oYywvM8at9yRqyaZVz6TYYhX98VjsUk
     xpub = xpub6BgBgsespWvERF3LHQu6CnqdvfEvtMcQjYrcRzx53QJjSxarj2afYWcLteoGVky7D3UKDP9QyrLprQ3VCECoY49yfdDEHGCtMMj92pReUsQ
-
+    
     // Account 0, first receiving address = m/86'/0'/0'/0/0
     xprv         = xprvA449goEeU9okwCzzZaxiy475EQGQzBkc65su82nXEvcwzfSskb2hAt2WymrjyRL6kpbVTGL3cKtp9herYXSjjQ1j4stsXXiRF7kXkCacK3T
     xpub         = xpub6H3W6JmYJXN49h5TfcVjLC3onS6uPeUTTJoVvRC8oG9vsTn2J8LwigLzq5tHbrwAzH9DGo6ThGUdWsqce8dGfwHVBxSbixjDADGGdzF7t2B
@@ -115,7 +117,7 @@ should not be difficult to implement.
     output_key   = a60869f0dbcf1dc659c9cecbaf8050135ea9e8cdc487053f1dc6880949dc684c
     scriptPubKey = 5120a60869f0dbcf1dc659c9cecbaf8050135ea9e8cdc487053f1dc6880949dc684c
     address      = bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr
-
+    
     // Account 0, second receiving address = m/86'/0'/0'/0/1
     xprv         = xprvA449goEeU9okyiF1LmKiDaTgeXvmh87DVyRd35VPbsSop8n8uALpbtrUhUXByPFKK7C2yuqrB1FrhiDkEMC4RGmA5KTwsE1aB5jRu9zHsuQ
     xpub         = xpub6H3W6JmYJXN4CCKUSnriaiQRCZmG6aq4sCMDqTu1ACyngw7HShf59hAxYjXgKDuuHThVEUzdHrc3aXCr9kfvQvZPit5dnD3K9xVRBzjK3rX
@@ -123,7 +125,7 @@ should not be difficult to implement.
     output_key   = a82f29944d65b86ae6b5e5cc75e294ead6c59391a1edc5e016e3498c67fc7bbb
     scriptPubKey = 5120a82f29944d65b86ae6b5e5cc75e294ead6c59391a1edc5e016e3498c67fc7bbb
     address      = bc1p4qhjn9zdvkux4e44uhx8tc55attvtyu358kutcqkudyccelu0was9fqzwh
-
+    
     // Account 0, first change address = m/86'/0'/0'/1/0
     xprv         = xprvA3Ln3Gt3aphvUgzgEDT8vE2cYqb4PjFfpmbiFKphxLg1FjXQpkAk5M1ZKDY15bmCAHA35jTiawbFuwGtbDZogKF1WfjwxML4gK7WfYW5JRP
     xpub         = xpub6GL8SnQwRCGDhB59LEz9HMyM6sRYoByXBzXK3iEKWgCz8XrZNHUzd9L3AUBELW5NzA7dEFvMas1F84TuPH3xqdUA5tumaGWFgihJzWytXe3
@@ -134,15 +136,15 @@ should not be difficult to implement.
 
 ## Reference
 
-- [BIP32 - Hierarchical Deterministic
-  Wallets](/32)
-- [BIP43 - Purpose Field for Deterministic
-  Wallets](/43)
-- [BIP44 - Multi-Account Hierarchy for Deterministic
-  Wallets](/44)
-- [BIP49 - Derivation scheme for P2WPKH-nested-in-P2SH based
-  accounts](/49)
-- [BIP84 - Derivation scheme for P2WPKH based
-  accounts](/84)
-- [BIP341 - Taproot: SegWit version 1 spending
-  rules](/341)
+  - [BIP32 - Hierarchical Deterministic
+    Wallets](/32)
+  - [BIP43 - Purpose Field for Deterministic
+    Wallets](/43)
+  - [BIP44 - Multi-Account Hierarchy for Deterministic
+    Wallets](/44)
+  - [BIP49 - Derivation scheme for P2WPKH-nested-in-P2SH based
+    accounts](/49)
+  - [BIP84 - Derivation scheme for P2WPKH based
+    accounts](/84)
+  - [BIP341 - Taproot: SegWit version 1 spending
+    rules](/341)

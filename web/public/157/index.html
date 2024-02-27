@@ -62,9 +62,9 @@
 <h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a new light client protocol in Bitcoin that improves
 upon currently available options. The standard light client protocol in
-use today, defined in BIP 37<sup class="footnote-reference"><a href="#1">1</a></sup>, has known flaws that weaken the
+use today, defined in BIP 37[1], has known flaws that weaken the
 security and privacy of clients and allow denial-of-service attack
-vectors on full nodes<sup class="footnote-reference"><a href="#2">2</a></sup>. The new protocol overcomes these issues by
+vectors on full nodes[2]. The new protocol overcomes these issues by
 allowing light clients to obtain compact probabilistic filters of block
 content from full nodes and download full blocks if the filter matches
 relevant data.</p>
@@ -99,7 +99,7 @@ The Bloom filters match data such as client addresses and unspent
 outputs, and the filter size must be carefully tuned to balance the
 false positive rate with the amount of information leaked to peer. It
 has been shown, however, that most implementations available offer
-virtually <em>zero privacy</em> to wallets and other applications<sup class="footnote-reference"><a href="#3">3</a></sup><sup class="footnote-reference"><a href="#4">4</a></sup>.
+virtually <em>zero privacy</em> to wallets and other applications[3][4].
 Additionally, malicious full nodes serving light clients can omit
 critical data with little risk of detection, which is unacceptable for
 some applications (such as Lightning Network clients) that must respond
@@ -107,7 +107,7 @@ to certain on-chain events. Finally, honest nodes servicing BIP 37 light
 clients may incur significant I/O and CPU resource usage due to
 maliciously crafted Bloom filters, creating a denial-of-service (DoS)
 vector and disincentizing node operators from supporting the
-protocol<sup class="footnote-reference"><a href="#5">5</a></sup>.</p>
+protocol[5].</p>
 <p>The alternative detailed in this document can be seen as the opposite of
 BIP 37: instead of the client sending a filter to a full node peer, full
 nodes generate deterministic filters on block data that are served to
@@ -124,7 +124,7 @@ improved because blocks can be downloaded from <em>any source</em>, so that no
 one peer gets complete information on the data required by a client.
 Extremely privacy conscious light clients may opt to anonymously fetch
 blocks using advanced techniques such a Private Information
-Retrieval<sup class="footnote-reference"><a href="#6">6</a></sup>.</p>
+Retrieval[6].</p>
 <h2 id="Definitions">Definitions</h2>
 <p><code>[]byte</code> represents a vector of bytes.</p>
 <p><code>[N]byte</code> represents a fixed-size byte array with length N.</p>
@@ -149,7 +149,7 @@ are defined separately in <a href="/158">BIP 158</a>, and
 one service bit is allocated to signal support for them.</p>
 <h3 id="Filter_Headers">Filter Headers</h3>
 <p>This proposal draws inspiration from the headers-first mechanism that
-Bitcoin nodes use to sync the block chain<sup class="footnote-reference"><a href="#7">7</a></sup>. Similar to how block
+Bitcoin nodes use to sync the block chain[7]. Similar to how block
 headers have a Merkle commitment to all transaction data in the block,
 we define filter headers that have commitments to the block filters.
 Also like block headers, filter headers each have a commitment to the
@@ -396,27 +396,15 @@ Matt Corallo for useful discussions.</p>
 <h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html</a></p>
-</div>
-<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p><a rel="noopener" target="_blank" href="https://eprint.iacr.org/2014/763.pdf">https://eprint.iacr.org/2014/763.pdf</a></p>
-</div>
-<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
-<p><a rel="noopener" target="_blank" href="https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/">https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/</a></p>
-</div>
-<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
-<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki</a></p>
-</div>
-<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
-<p><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Private_information_retrieval">https://en.wikipedia.org/wiki/Private_information_retrieval</a></p>
-</div>
-<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
-<p><a rel="noopener" target="_blank" href="https://bitcoin.org/en/developer-guide#headers-first">https://bitcoin.org/en/developer-guide#headers-first</a></p>
-</div>
+<ol>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki</a></li>
+<li><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html</a></li>
+<li><a rel="noopener" target="_blank" href="https://eprint.iacr.org/2014/763.pdf">https://eprint.iacr.org/2014/763.pdf</a></li>
+<li><a rel="noopener" target="_blank" href="https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/">https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki</a></li>
+<li><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Private_information_retrieval">https://en.wikipedia.org/wiki/Private_information_retrieval</a></li>
+<li><a rel="noopener" target="_blank" href="https://bitcoin.org/en/developer-guide#headers-first">https://bitcoin.org/en/developer-guide#headers-first</a></li>
+</ol>
 
     </div>
 

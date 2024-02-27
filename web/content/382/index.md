@@ -5,7 +5,7 @@ weight = 382
 in_search_index = true
 
 [taxonomies]
-authors = ["Pieter Wuille", "Andrew Chow"]
+authors = ["Pieter Wuille", "Ava Chow"]
 status = ["Draft"]
 
 [extra]
@@ -14,17 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0382.mediawiki"
 +++
 
-      BIP: 382
-      Layer: Applications
-      Title: Segwit Output Script Descriptors
-      Author: Pieter Wuille <pieter@wuille.net>
-              Andrew Chow <andrew@achow101.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0382
-      Status: Draft
-      Type: Informational
-      Created: 2021-06-27
-      License: BSD-2-Clause
+``` 
+  BIP: 382
+  Layer: Applications
+  Title: Segwit Output Script Descriptors
+  Author: Pieter Wuille <pieter@wuille.net>
+          Ava Chow <me@achow101.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0382
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -74,7 +76,65 @@ The output script produced is:
 
 ## Test Vectors
 
-TBD
+Valid descriptors followed by the scripts they produce. Descriptors
+involving derived child keys will have the 0th, 1st, and 2nd scripts
+listed.
+
+  - `wpkh(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1)`
+      - `00149a1c78a507689f6f54b847ad1cef1e614ee23f1e`
+  - `wpkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd)`
+      - `00149a1c78a507689f6f54b847ad1cef1e614ee23f1e`
+  - `wpkh([ffffffff/13']xprv9vHkqa6EV4sPZHYqZznhT2NPtPCjKuDKGY38FBWLvgaDx45zo9WQRUT3dKYnjwih2yJD9mkrocEZXo1ex8G81dwSM1fwqWpWkeS3v86pgKt/1/2/0)`
+      - `0014326b2249e3a25d5dc60935f044ee835d090ba859`
+  - `wpkh([ffffffff/13']xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/1/2/*)`
+      - `0014326b2249e3a25d5dc60935f044ee835d090ba859`
+      - `0014af0bd98abc2f2cae66e36896a39ffe2d32984fb7`
+      - `00141fa798efd1cbf95cebf912c031b8a4a6e9fb9f27`
+  - `sh(wpkh(xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi/10/20/30/40/*'))`
+      - `a9149a4d9901d6af519b2a23d4a2f51650fcba87ce7b87`
+      - `a914bed59fc0024fae941d6e20a3b44a109ae740129287`
+      - `a9148483aa1116eb9c05c482a72bada4b1db24af654387`
+  - `sh(wpkh(xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8/10/20/30/40/*h))`
+      - `a9149a4d9901d6af519b2a23d4a2f51650fcba87ce7b87`
+      - `a914bed59fc0024fae941d6e20a3b44a109ae740129287`
+      - `a9148483aa1116eb9c05c482a72bada4b1db24af654387`
+  - `wsh(pkh(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1))`
+      - `0020338e023079b91c58571b20e602d7805fb808c22473cbc391a41b1bd3a192e75b`
+  - `wsh(pkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))`
+      - `0020338e023079b91c58571b20e602d7805fb808c22473cbc391a41b1bd3a192e75b`
+  - `wsh(pk(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1))`
+      - `00202e271faa2325c199d25d22e1ead982e45b64eeb4f31e73dbdf41bd4b5fec23fa`
+  - `wsh(pk(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))`
+      - `00202e271faa2325c199d25d22e1ead982e45b64eeb4f31e73dbdf41bd4b5fec23fa`
+  - `sh(wsh(pkh(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1)))`
+      - `a914b61b92e2ca21bac1e72a3ab859a742982bea960a87`
+  - `sh(wsh(pkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd)))`
+      - `a914b61b92e2ca21bac1e72a3ab859a742982bea960a87`
+
+Invalid descriptors with descriptions
+
+  - Uncompressed public key in `wpkh()`:
+    `wpkh(5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss)`
+  - Uncompressed public key in `wpkh()`:
+    `sh(wpkh(5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss))`
+  - Uncompressed public key in `wpkh()`:
+    `wpkh(04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235)`
+  - Uncompressed public key in `wpkh()`:
+    `sh(wpkh(04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235))`
+  - Uncompressed public keys under `wsh()`:
+    `wsh(pk(5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss))`
+  - Uncompressed public keys under `wsh()`:
+    `wsh(pk(04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235))`
+  - `wpkh()` nested in `wsh()`:
+    `wsh(wpkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))`
+  - `wsh()` nested in `wsh()`:
+    `wsh(wsh(pkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd)))`
+  - `wsh()` nested in `wsh()`:
+    `sh(wsh(wsh(pkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))))`
+  - Script in `wpkh()`:
+    `wpkh(wsh(pkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd)))`
+  - Key in `wsh()`:
+    `wsh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd)`
 
 ## Backwards Compatibility
 

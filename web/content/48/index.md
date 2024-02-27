@@ -14,16 +14,18 @@ status = ["Proposed"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0048.mediawiki"
 +++
 
-      BIP: 48
-      Layer: Applications
-      Title: Multi-Script Hierarchy for Multi-Sig Wallets
-      Author: Fontaine <dentondevelopment@protonmail.com>
-      Comments-Summary: No comments
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0048
-      Status: Proposed
-      Type: Standards Track
-      Created: 2020-12-16
-      License: MIT
+``` 
+  BIP: 48
+  Layer: Applications
+  Title: Multi-Script Hierarchy for Multi-Sig Wallets
+  Author: Fontaine <dentondevelopment@protonmail.com>
+  Comments-Summary: No comments
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0048
+  Status: Proposed
+  Type: Standards Track
+  Created: 2020-12-16
+  License: MIT
+```
 
 ## Abstract
 
@@ -157,7 +159,7 @@ Public derivation is used at this level.
 ## Examples
 
 |         |         |            |          |         |                                |
-|---------|---------|------------|----------|---------|--------------------------------|
+| ------- | ------- | ---------- | -------- | ------- | ------------------------------ |
 | network | account | script     | chain    | address | path                           |
 | mainnet | first   | p2wsh      | external | first   | m / 48' / 0' / 0' / 2' / 0 / 0 |
 | mainnet | first   | p2wsh      | external | second  | m / 48' / 0' / 0' / 2' / 0 / 1 |
@@ -176,11 +178,11 @@ Public derivation is used at this level.
 
 ## Reference
 
-- [BIP67 - Deterministic Pay-to-script-hash multi-signature addresses
-  through public key sorting](/67)
-- [BIP32 - Hierarchical Deterministic
-  Wallets](/32)
-- [BIP43 - Purpose Field for Deterministic
-  Wallets](/43)
-- [BIP44 - Multi-Account Hierarchy for Deterministic
-  Wallets](/44)
+  - [BIP67 - Deterministic Pay-to-script-hash multi-signature addresses
+    through public key sorting](/67)
+  - [BIP32 - Hierarchical Deterministic
+    Wallets](/32)
+  - [BIP43 - Purpose Field for Deterministic
+    Wallets](/43)
+  - [BIP44 - Multi-Account Hierarchy for Deterministic
+    Wallets](/44)

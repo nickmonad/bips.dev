@@ -68,7 +68,7 @@ existing Payment Protocol.</p>
 sign the original request and provide a certificate to allow the
 payee to know the identity of who they are transacting with.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>It encrypts the PaymentRequest that is returned, before handing it
 off to the SSL/TLS layer to prevent man in the middle viewing of the
@@ -104,13 +104,13 @@ including information about the sender and not just the recipient.</p>
 <li>Ensure that the payment details can only be seen by the participants
 in the transaction, and not by any third party.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Enhance the Payment Protocol to allow for store and forward servers
 in order to allow, for example, mobile wallets to sign and serve
 Payment Requests.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Allow a sender of funds the option of sharing their identity with
 the receiver. This information could then be used to:</li>
@@ -359,8 +359,8 @@ be returned by the party generating the error. The content of the
 message MUST contain the same <strong>serialized_message</strong> or
 <strong>encrypted_message</strong> and identifier (if present) and MUST have the
 status_code set appropriately.</p>
-<p>The status_message value SHOULD be set with a human readable explanation
-of the status code.</p>
+<p>The status_message value SHOULD be set with a human readable
+explanation of the status code.</p>
 <h4 id="Payment_Protocol_Status_Codes">Payment Protocol Status Codes</h4>
 <table><thead><tr><th>Status Code</th><th>Description</th></tr></thead><tbody>
 <tr><td>1</td><td>OK</td></tr>
@@ -394,8 +394,8 @@ the message originated from the same user.</p>
 <p>Communication errors MUST be communicated to the party that initiated
 the communication via the communication layer's existing error messaging
 faciltiies. In the case of TLS-protected HTTP, this SHOULD be done
-through standard HTTP Status Code messaging (<a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc7231">RFC 7231 Section
-6</a>).</p>
+through standard HTTP Status Code messaging (<a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc7231">RFC 7231
+Section 6</a>).</p>
 <h2 id="Extended_Payment_Protocol_Process_Details">Extended Payment Protocol Process Details</h2>
 <p>This BIP extends the Payment Protocol as defined in
 <a href="/70">BIP70</a>.</p>
@@ -411,19 +411,20 @@ never repeated.</p>
 <h3 id="InvoiceRequest_Message_Creation">InvoiceRequest Message Creation</h3>
 <ul>
 <li>Create an <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> message</li>
-<li><strong>sender_public_key</strong> MUST be set to the public key of an EC keypair</li>
+<li><strong>sender_public_key</strong> MUST be set to the public key of an EC
+keypair</li>
 <li><strong>amount</strong> is optional. If the amount is not specified by the
-<a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a>, the Receiver MAY specify
-the amount in the returned PaymentRequest. If an amount is specified
-by the <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> and a
+<a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a>, the Receiver MAY
+specify the amount in the returned PaymentRequest. If an amount is
+specified by the <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> and a
 PaymentRequest cannot be generated for that amount, the
 <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> SHOULD return the same
 <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> in a
 <a href="https://bips.dev/75/#ProtocolMessage" title="wikilink">ProtocolMessage</a> or
-<a href="https://bips.dev/75/#EncryptedProtocolMessage" title="wikilink">EncryptedProtocolMessage</a> with
-the status_code and status_message fields set appropriately.</li>
-<li><strong>memo</strong> is optional. This MAY be set to a human readable description
-of the InvoiceRequest</li>
+<a href="https://bips.dev/75/#EncryptedProtocolMessage" title="wikilink">EncryptedProtocolMessage</a>
+with the status_code and status_message fields set appropriately.</li>
+<li><strong>memo</strong> is optional. This MAY be set to a human readable
+description of the InvoiceRequest</li>
 <li>Set <strong>notification_url</strong> to URL that the Receiver will submit
 completed PaymentRequest (encapsulated in an
 <a href="https://bips.dev/75/#EncryptedProtocolMessage" title="wikilink">EncryptedProtocolMessage</a>) to</li>
@@ -433,8 +434,8 @@ completed PaymentRequest (encapsulated in an
 <li>Set <strong>pki_type</strong> to &quot;x509+sha256&quot;</li>
 <li>Set <strong>pki_data</strong> as it would be set in BIP-0070
 (<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki#Certificates">Certificates</a>)</li>
-<li>Sign <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> with signature =
-&quot;&quot; using the X509 Certificate's private key</li>
+<li>Sign <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> with signature
+= &quot;&quot; using the X509 Certificate's private key</li>
 <li>Set <strong>signature</strong> value to the computed signature</li>
 </ul>
 </li>
@@ -444,8 +445,8 @@ completed PaymentRequest (encapsulated in an
 <li>Validate <strong>sender_public_key</strong> is a valid EC public key</li>
 <li>Validate <strong>notification_url</strong>, if set, contains characters deemed
 valid for a URL (avoiding XSS related characters, etc).</li>
-<li>If <strong>pki_type</strong> is None, <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a>
-is VALID</li>
+<li>If <strong>pki_type</strong> is None,
+<a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> is VALID</li>
 <li>If <strong>pki_type</strong> is x509+sha256 and <strong>signature</strong> is valid for the
 serialized <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a> where
 signature is set to &quot;&quot;, <a href="https://bips.dev/75/#InvoiceRequest" title="wikilink">InvoiceRequest</a>
@@ -463,15 +464,15 @@ message</li>
 Protocol message</li>
 <li><strong>version</strong> SHOULD be set to the highest version number the client
 understands (currently 1)</li>
-<li><strong>sender_public_key</strong> MUST be set to the public key of the Sender's EC
-keypair</li>
+<li><strong>sender_public_key</strong> MUST be set to the public key of the
+Sender's EC keypair</li>
 <li><strong>receiver_public_key</strong> MUST be set to the public key of the
 Receiver's EC keypair</li>
-<li><strong>nonce</strong> MUST be set to the nonce used in the AES-256-GCM encryption
-operation</li>
-<li>Set <strong>identifier</strong> to the identifier value received in the originating
-InvoiceRequest's ProtocolMessage or EncryptedProtocolMessage wrapper
-message</li>
+<li><strong>nonce</strong> MUST be set to the nonce used in the AES-256-GCM
+encryption operation</li>
+<li>Set <strong>identifier</strong> to the identifier value received in the
+originating InvoiceRequest's ProtocolMessage or
+EncryptedProtocolMessage wrapper message</li>
 <li>Set <strong>signature</strong> to &quot;&quot;</li>
 <li>Sign the serialized
 <a href="https://bips.dev/75/#EncryptedProtocolMessage" title="wikilink">EncryptedProtocolMessage</a>
@@ -510,19 +511,19 @@ key as inputs</li>
 <ul>
 <li>Use <strong>SHA512(secret point's X value in Big-Endian bytes)</strong> for
 Entropy</li>
-<li>Use the given message's <strong>nonce</strong> field for Nonce, converted to byte
-string (Big Endian)</li>
+<li>Use the given message's <strong>nonce</strong> field for Nonce, converted to
+byte string (Big Endian)</li>
 </ul>
 </li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
 <li>Initialize AES-256 in GCM Mode
 <ul>
 <li>Initialize HMAC_DRBG with Security Strength of 256 bits</li>
 <li>Use HMAC_DRBG.GENERATE(32) as the Encryption Key (256 bits)</li>
-<li>Use HMAC_DRBG.GENERATE(12) as the Initialization Vector (IV) (96
-bits)</li>
+<li>Use HMAC_DRBG.GENERATE(12) as the Initialization Vector (IV)
+(96 bits)</li>
 </ul>
 </li>
 </ul>
@@ -550,10 +551,10 @@ resolution returns Base64 encoded DER-formatted EC public key via
 TXT Record <a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc5480.txt">RFC 5480</a></li>
 <li>Key Server lookup - Key Server lookup (similar to PGP's pgp.mit.edu)
 based on key server identifier (i.e., e-mail address) returns Base64
-encoded DER-formatted EC public key <a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc5480.txt">RFC
-5480</a></li>
-<li>QR Code - Use of QR-code to encode SEC-formatted EC public key <a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc5480.txt">RFC
-5480</a></li>
+encoded DER-formatted EC public key
+<a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc5480.txt">RFC 5480</a></li>
+<li>QR Code - Use of QR-code to encode SEC-formatted EC public key
+<a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc5480.txt">RFC 5480</a></li>
 <li>Address Service Public Key Exposure</li>
 </ol>
 <h2 id="Payment_/_PaymentACK_Messages_with_a_HTTP_Store_&amp;_Forward_Server">Payment / PaymentACK Messages with a HTTP Store &amp; Forward Server</h2>
@@ -581,10 +582,10 @@ paid twice.</p>
 <ul>
 <li>All x.509 certificates included in any message defined in this BIP
 MUST be DER [ITU.X690.1994] encoded.</li>
-<li>All EC public keys (<strong>sender_public_key</strong>, <strong>receiver_public_key</strong>) in
-any message defined in this BIP MUST be
-<a href="SECP256k1" title="wikilink"><a rel="noopener" target="_blank" href="http://www.secg.org/sec2-v2.pdf">http://www.secg.org/sec2-v2.pdf</a></a> ECDSA Public
-Key ECPoints encoded using
+<li>All EC public keys (<strong>sender_public_key</strong>,
+<strong>receiver_public_key</strong>) in any message defined in this BIP MUST
+be <a href="SECP256k1" title="wikilink"><a rel="noopener" target="_blank" href="http://www.secg.org/sec2-v2.pdf">http://www.secg.org/sec2-v2.pdf</a></a> ECDSA
+Public Key ECPoints encoded using
 <a href="SEC_2.3.3_Encoding" title="wikilink"><a rel="noopener" target="_blank" href="http://www.secg.org/sec1-v2.pdf">http://www.secg.org/sec1-v2.pdf</a></a>.
 Encoding MAY be compressed.</li>
 <li>All ECC signatures included in any message defined in this BIP MUST

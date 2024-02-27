@@ -14,15 +14,17 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0073.mediawiki"
 +++
 
-      BIP: 73
-      Layer: Applications
-      Title: Use "Accept" header for response type negotiation with Payment Request URLs
-      Author: Stephen Pair <stephen@bitpay.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0073
-      Status: Final
-      Type: Standards Track
-      Created: 2013-08-27
+``` 
+  BIP: 73
+  Layer: Applications
+  Title: Use "Accept" header for response type negotiation with Payment Request URLs
+  Author: Stephen Pair <stephen@bitpay.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0073
+  Status: Final
+  Type: Standards Track
+  Created: 2013-08-27
+```
 
 ## Abstract
 

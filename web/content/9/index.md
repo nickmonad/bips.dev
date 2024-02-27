@@ -14,18 +14,20 @@ status = ["Final"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki"
 +++
 
-      BIP: 9
-      Title: Version bits with timeout and delay
-      Author: Pieter Wuille <pieter.wuille@gmail.com>
-              Peter Todd <pete@petertodd.org>
-              Greg Maxwell <greg@xiph.org>
-              Rusty Russell <rusty@rustcorp.com.au>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0009
-      Status: Final
-      Type: Informational
-      Created: 2015-10-04
-      License: PD
+``` 
+  BIP: 9
+  Title: Version bits with timeout and delay
+  Author: Pieter Wuille <pieter.wuille@gmail.com>
+          Peter Todd <pete@petertodd.org>
+          Greg Maxwell <greg@xiph.org>
+          Rusty Russell <rusty@rustcorp.com.au>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0009
+  Status: Final
+  Type: Informational
+  Created: 2015-10-04
+  License: PD
+```
 
 ## Abstract
 
@@ -108,12 +110,12 @@ possible states are:
     The genesis block is by definition in this state for each
     deployment.
 2.  **STARTED** for blocks past the starttime.
-3.  **LOCKED_IN** for one retarget period after the first retarget
+3.  **LOCKED\_IN** for one retarget period after the first retarget
     period with STARTED blocks of which at least threshold have the
     associated bit set in nVersion.
-4.  **ACTIVE** for all blocks after the LOCKED_IN retarget period.
+4.  **ACTIVE** for all blocks after the LOCKED\_IN retarget period.
 5.  **FAILED** for one retarget period past the timeout time, if
-    LOCKED_IN was not reached.
+    LOCKED\_IN was not reached.
 
 ### Bit flags
 
@@ -134,7 +136,7 @@ future upgrades for different mechanisms (top bits 010 and 011). When a
 block nVersion does not have top bits 001, it is treated as if all bits
 are 0 for the purposes of deployments.
 
-Miners should continue setting the bit in LOCKED_IN phase so uptake is
+Miners should continue setting the bit in LOCKED\_IN phase so uptake is
 visible, though this has no effect on consensus rules.
 
 ### New consensus rules
@@ -182,12 +184,12 @@ above, and is treated as a monotonic clock defined by the chain.
 
 After a period in the STARTED state, if we're past the timeout, we
 switch to FAILED. If not, we tally the bits set, and transition to
-LOCKED_IN if a sufficient number of blocks in the past period set the
+LOCKED\_IN if a sufficient number of blocks in the past period set the
 deployment bit in their version numbers. The threshold is ≥1916 blocks
 (95% of 2016), or ≥1512 for testnet (75% of 2016). The transition to
 FAILED takes precedence, as otherwise an ambiguity can arise. There
 could be two non-overlapping deployments on the same bit, where the
-first one transitions to LOCKED_IN while the other one simultaneously
+first one transitions to LOCKED\_IN while the other one simultaneously
 transitions to STARTED, which would mean both would demand setting the
 bit.
 
@@ -211,7 +213,7 @@ that of its ancestors.
 `           }`  
 `           return STARTED;`
 
-After a retarget period of LOCKED_IN, we automatically transition to
+After a retarget period of LOCKED\_IN, we automatically transition to
 ACTIVE.
 
 `       case LOCKED_IN:`  
@@ -242,9 +244,9 @@ multiple-of-2016 block, indexed by its parent.
 ### Warning mechanism
 
 To support upgrade warnings, an extra "unknown upgrade" is tracked,
-using the "implicit bit" mask = (block.nVersion & \~expectedVersion) !=
+using the "implicit bit" mask = (block.nVersion & \~expectedVersion) \!=
 0. Mask will be non-zero whenever an unexpected bit is set in nVersion.
-Whenever LOCKED_IN for the unknown upgrade is detected, the software
+Whenever LOCKED\_IN for the unknown upgrade is detected, the software
 should warn loudly about the upcoming soft fork. It should warn even
 more loudly after the next retarget period (when the unknown upgrade is
 in the ACTIVE state).
@@ -254,14 +256,14 @@ in the ACTIVE state).
 The template request Object is extended to include a new item:
 
 | template request |
-|------------------|
+| ---------------- |
 | Key              |
 | rules            |
 
 The template Object is also extended:
 
 | template    |
-|-------------|
+| ----------- |
 | Key         |
 | rules       |
 | vbavailable |
@@ -276,8 +278,8 @@ among the template's "vbavailable" and (when clearing is desired) NOT
 included as a bit in "vbrequired".
 
 Softfork deployment names listed in "rules" or as keys in "vbavailable"
-may be prefixed by a '!' character. Without this prefix, GBT clients may
-assume the rule will not impact usage of the template as-is; typical
+may be prefixed by a '\!' character. Without this prefix, GBT clients
+may assume the rule will not impact usage of the template as-is; typical
 examples of this would be when previously valid transactions cease to be
 valid, such as BIPs [16](/16),
 [65](/65),
@@ -291,7 +293,7 @@ to the block structure or generation transaction; examples of this would
 be [BIP 34](/34) (because it modifies coinbase
 construction) and [141](/141) (since it
 modifies the txid hashing and adds a commitment to the generation
-transaction). A client that does not understand a rule prefixed by '!'
+transaction). A client that does not understand a rule prefixed by '\!'
 must not attempt to process the template, and must not attempt to use it
 for mining even unmodified.
 

@@ -60,7 +60,7 @@
 </span></code></pre>
 <h2 id="Abstract">Abstract</h2>
 <p>This BIP describes a structure for compact filters on block data, for
-use in the BIP 157 light client protocol<sup class="footnote-reference"><a href="#1">1</a></sup>. The filter construction
+use in the BIP 157 light client protocol[1]. The filter construction
 proposed is an alternative to Bloom filters, as used in BIP 37, that
 minimizes filter size by using Golomb-Rice coding for compression. This
 document specifies one initial filter type based on this construction
@@ -89,11 +89,11 @@ from <code>vector</code></li>
 <li><code>write_bit(stream, b)</code> appends the bit <code>b</code> to the end of the stream</li>
 <li><code>read_bit(stream)</code> reads the next available bit from the stream</li>
 <li><code>write_bits_big_endian(stream, n, k)</code> appends the <code>k</code> least
-significant bits of integer <code>n</code> to the end of the stream in big-endian
-bit order</li>
+significant bits of integer <code>n</code> to the end of the stream in
+big-endian bit order</li>
 <li><code>read_bits_big_endian(stream, k)</code> reads the next available <code>k</code> bits
-from the stream and interprets them as the least significant bits of a
-big-endian integer</li>
+from the stream and interprets them as the least significant bits of
+a big-endian integer</li>
 </ul>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
@@ -119,9 +119,9 @@ coding</li>
 <p>The following sections describe each step in greater detail.</p>
 <h4 id="Hashing_Data_Objects">Hashing Data Objects</h4>
 <p>The first step in the filter construction is hashing the variable-sized
-raw items in the set to the range <code>[0, F)</code>, where <code>F = N * M</code>.
+raw items in the set to the range <code>[0, F)</code>, where <code>F = N *</code> <code>M</code>.
 Customarily, <code>M</code> is set to <code>2^P</code>. However, if one is able to select both
-Parameters independently, then more optimal values can be selected<sup class="footnote-reference"><a href="#2">2</a></sup>.
+Parameters independently, then more optimal values can be selected[2].
 Set membership queries against the hash outputs will have a false
 positive rate of <code>M</code>. To avoid integer overflow, the number of items <code>N</code>
 MUST be &lt;2^32 and <code>M</code> MUST be &lt;2^32.</p>
@@ -132,7 +132,7 @@ MUST use the SipHash parameters <code>c = 2</code> and <code>d = 4</code>.</p>
 <p>The 64-bit SipHash outputs are then mapped uniformly over the desired
 range by multiplying with F and taking the top 64 bits of the 128-bit
 result. This algorithm is a faster alternative to modulo reduction, as
-it avoids the expensive division operation<sup class="footnote-reference"><a href="#3">3</a></sup>. Note that care must be
+it avoids the expensive division operation[3]. Note that care must be
 taken when implementing this reduction to ensure the upper 64 bits of
 the integer multiplication are not truncated; certain architectures and
 high level languages may require code that decomposes the 64-bit
@@ -158,7 +158,7 @@ result.</p>
 greater compression is achieved by only writing the differences between
 successive items in sorted order. Since the items are distributed
 uniformly, it can be shown that the differences resemble a geometric
-distribution<sup class="footnote-reference"><a href="#4">4</a></sup>. <em>Golomb-Rice</em> <em>coding</em><sup class="footnote-reference"><a href="#5">5</a></sup> is a technique that
+distribution[4]. <em>Golomb-Rice</em> <em>coding</em>[5] is a technique that
 optimally compresses geometrically distributed values.</p>
 <p>With Golomb-Rice, a value is split into a quotient and remainder modulo
 <code>2^P</code>, which are encoded separately. The quotient <code>q</code> is encoded as
@@ -283,20 +283,17 @@ needs to sync a regular Bitcoin wallet. A basic filter MUST contain
 exactly the following items for each transaction in a block:</p>
 <ul>
 <li>The previous output script (the script being spent) for each input,
-except</li>
+except for the coinbase transaction.</li>
+<li>The scriptPubKey of each output, aside from all <code>OP_RETURN</code> output
+scripts.</li>
 </ul>
-<p><code> for the coinbase transaction.</code></p>
-<ul>
-<li>The scriptPubKey of each output, aside from all <code>OP_RETURN</code> output</li>
-</ul>
-<p><code> scripts.</code></p>
 <p>Any &quot;nil&quot; items MUST NOT be included into the final set of filter
 elements.</p>
 <p>We exclude all outputs that start with <code>OP_RETURN</code> in order to allow
 filters to easily be committed to in the future via a soft-fork. A
 likely area for future commitments is an additional <code>OP_RETURN</code> output
 in the coinbase transaction similar to the current witness commitment
-<sup class="footnote-reference"><a href="#6">6</a></sup>. By excluding all <code>OP_RETURN</code> outputs we avoid a circular
+[6]. By excluding all <code>OP_RETURN</code> outputs we avoid a circular
 dependency between the commitment, and the item being committed to.</p>
 <h4 id="Construction">Construction</h4>
 <p>The basic type is constructed as Golomb-coded sets with the following
@@ -304,7 +301,7 @@ parameters.</p>
 <p>The parameter <code>P</code> MUST be set to <code>19</code>, and the parameter <code>M</code> MUST be set
 to <code>784931</code>. Analysis has shown that if one is able to select <code>P</code> and
 <code>M</code> independently, then setting <code>M=1.497137 * 2^P</code> is close to optimal
-<sup class="footnote-reference"><a href="#7">7</a></sup>.</p>
+[7].</p>
 <p>Empirical analysis also shows that these parameters minimize the
 bandwidth utilized, considering both the expected number of blocks
 downloaded due to false positives and the size of the filters
@@ -353,7 +350,7 @@ protocol with BIP 37. The size of a Bloom filter is larger than the
 expected size of a GCS with the same false positive rate, which is the
 main reason the option was rejected.</p>
 <h4 id="Cryptographic_Accumulators">Cryptographic Accumulators</h4>
-<p>Cryptographic accumulators<sup class="footnote-reference"><a href="#8">8</a></sup> are a cryptographic data structures that
+<p>Cryptographic accumulators[8] are a cryptographic data structures that
 enable (amongst other operations) a one way membership test. One
 advantage of accumulators are that they are constant size, independent
 of the number of elements inserted into the accumulator. However,
@@ -363,7 +360,7 @@ Assumption require mapping set items to prime representatives in the
 associated group which can be preemptively expensive.</p>
 <h4 id="Matrix_Based_Probabilistic_Set_Data_Structures">Matrix Based Probabilistic Set Data Structures</h4>
 <p>There exist data structures based on matrix solving which are even more
-space efficient compared to Bloom filters<sup class="footnote-reference"><a href="#9">9</a></sup>. We instead opted for our
+space efficient compared to Bloom filters[9]. We instead opted for our
 GCS-based filters as they have a much lower implementation complexity
 and are easier to understand.</p>
 <h2 id="Appendix_B:_Pseudocode">Appendix B: Pseudocode</h2>
@@ -420,33 +417,17 @@ can be found <a href="bip-0158/gentestvectors.go" title="wikilink">here</a>.</p>
 <h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal
 license.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>bip-0157.mediawiki</p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a rel="noopener" target="_blank" href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></p>
-</div>
-<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p><a rel="noopener" target="_blank" href="https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/">https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/</a></p>
-</div>
-<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
-<p><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Geometric_distribution">https://en.wikipedia.org/wiki/Geometric_distribution</a></p>
-</div>
-<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
-<p><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding">https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding</a></p>
-</div>
-<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
-<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki</a></p>
-</div>
-<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
-<p><a rel="noopener" target="_blank" href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></p>
-</div>
-<div class="footnote-definition" id="8"><sup class="footnote-definition-label">8</sup>
-<p><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Accumulator_(cryptography)">https://en.wikipedia.org/wiki/Accumulator_(cryptography)</a></p>
-</div>
-<div class="footnote-definition" id="9"><sup class="footnote-definition-label">9</sup>
-<p><a rel="noopener" target="_blank" href="https://arxiv.org/pdf/0804.1845.pdf">https://arxiv.org/pdf/0804.1845.pdf</a></p>
-</div>
+<ol>
+<li>bip-0157.mediawiki</li>
+<li><a rel="noopener" target="_blank" href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></li>
+<li><a rel="noopener" target="_blank" href="https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/">https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/</a></li>
+<li><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Geometric_distribution">https://en.wikipedia.org/wiki/Geometric_distribution</a></li>
+<li><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding">https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki</a></li>
+<li><a rel="noopener" target="_blank" href="https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845">https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</a></li>
+<li><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Accumulator_(cryptography)">https://en.wikipedia.org/wiki/Accumulator_(cryptography)</a></li>
+<li><a rel="noopener" target="_blank" href="https://arxiv.org/pdf/0804.1845.pdf">https://arxiv.org/pdf/0804.1845.pdf</a></li>
+</ol>
 
     </div>
 

@@ -72,7 +72,8 @@ without invalidating it, but without access to the relevant private
 keys.</p>
 <p>This is a problem for multiple reasons:</p>
 <ul>
-<li>The sender may not recognize his own transaction after being modified.</li>
+<li>The sender may not recognize his own transaction after being
+modified.</li>
 <li>The sender may create transactions that spend change created by the
 original transaction. In case the modified transaction gets mined,
 this becomes invalid.</li>
@@ -94,8 +95,8 @@ transaction with the same validity.</li>
 <li><strong>Push operations in scriptSig of non-standard size type</strong> The
 Bitcoin scripting language has several push operators (OP_0,
 single-byte pushes, data pushes of up to 75 bytes, OP_PUSHDATA1,
-OP_PUSHDATA2, OP_PUSHDATA4). As the later ones have the same result
-as the former ones, they result in additional possibilities.</li>
+OP_PUSHDATA2, OP_PUSHDATA4). As the later ones have the same
+result as the former ones, they result in additional possibilities.</li>
 <li><strong>Zero-padded number pushes</strong> In cases where scriptPubKey opcodes
 use inputs that are interpreted as numbers, they can be zero padded.</li>
 <li><strong>Inherent ECDSA signature malleability</strong> ECDSA signatures
@@ -127,12 +128,12 @@ sources of malleability listed above:</p>
 <ol>
 <li><strong>Canonically encoded ECDSA signatures</strong> An ECDSA signature passed
 to OP_CHECKSIG, OP_CHECKSIGVERIFY, OP_CHECKMULTISIG or
-OP_CHECKMULTISIGVERIFY must be encoded using strict DER encoding. To
-provide a compact way to deliberately create an invalid signature
-for OP_CHECKSIG and OP_CHECKMULTISIG, an empty byte array (i.e., the
-result of OP_0) is also allowed. Doing a verification with a non-DER
-signature makes the entire script evaluate to False (not just the
-signature verification). See reference: <a href="https://bips.dev/62/#der-encoding" title="wikilink">DER
+OP_CHECKMULTISIGVERIFY must be encoded using strict DER encoding.
+To provide a compact way to deliberately create an invalid signature
+for OP_CHECKSIG and OP_CHECKMULTISIG, an empty byte array (i.e.,
+the result of OP_0) is also allowed. Doing a verification with a
+non-DER signature makes the entire script evaluate to False (not
+just the signature verification). See reference: <a href="https://bips.dev/62/#der-encoding" title="wikilink">DER
 encoding</a>.</li>
 <li><strong>Non-push operations in scriptSig</strong> Only data pushes are allowed in
 scriptSig. Evaluating any other operation makes the script evaluate
@@ -156,8 +157,8 @@ signatures</a>.</li>
 required to result in a single non-zero value. If any extra data
 elements remain on the stack, the script evaluates to false.</li>
 <li><strong>Inputs ignored by scripts</strong> The (unnecessary) extra stack element
-consumed by OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY must be the
-empty byte array (the result of OP_0). Anything else makes the
+consumed by OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY must be
+the empty byte array (the result of OP_0). Anything else makes the
 script evaluate to false.</li>
 </ol>
 <h3 id="Block_validity">Block validity</h3>
@@ -169,8 +170,8 @@ treated identically to v1 transactions. The same mechanism as in BIP
 are v3, a new consensus rule is activated:</p>
 <ul>
 <li>All transactions in v3 blocks are required to follow rules #1-#2.</li>
-<li>v3 (and higher) transactions in v3 blocks are required to follow rules
-#3-#7 as well.</li>
+<li>v3 (and higher) transactions in v3 blocks are required to follow
+rules #3-#7 as well.</li>
 </ul>
 <p>When 95% of the past 1000 blocks are v3 or higher, v2 blocks become
 invalid entirely. Note however that v1 (and v2) transactions remain
@@ -200,13 +201,13 @@ AF48A03B BFD25E8C D0364140 (inclusive).</p>
 excluding the sighash byte.</li>
 <li>R-length: 1-byte length descriptor of the R value that follows.</li>
 <li>R: arbitrary-length big-endian encoded R value. It cannot start with
-any 0x00 bytes, unless the first byte that follows is 0x80 or higher,
-in which case a single 0x00 is required.</li>
+any 0x00 bytes, unless the first byte that follows is 0x80 or
+higher, in which case a single 0x00 is required.</li>
 <li>S-length: 1-byte length descriptor of the S value that follows.</li>
 <li>S: arbitrary-length big-endian encoded S value. The same rules apply
 as for R.</li>
-<li>sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81, 0x82
-and 0x83 are allowed).</li>
+<li>sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81,
+0x82 and 0x83 are allowed).</li>
 </ul>
 <p>This is already enforced by the reference client as of version 0.8.0
 (only as relay policy, not as a consensus rule).</p>
@@ -219,8 +220,8 @@ signature size being at most 72 bytes (and on average 71.494 bytes).</p>
 <li>Pushing a 1-byte sequence of byte 0x01 through 0x10 must use OP_n.</li>
 <li>Pushing the byte 0x81 must use OP_1NEGATE.</li>
 <li>Pushing any other byte sequence up to 75 bytes must use the normal
-data push (opcode byte n, with n the number of bytes, followed n bytes
-of data being pushed).</li>
+data push (opcode byte n, with n the number of bytes, followed n
+bytes of data being pushed).</li>
 <li>Pushing 76 to 255 bytes must use OP_PUSHDATA1.</li>
 <li>Pushing 256 to 520 bytes must use OP_PUSHDATA2.</li>
 <li>OP_PUSHDATA4 can never be used, as pushes over 520 bytes are not
@@ -239,13 +240,13 @@ given in hex between ()).</p>
 <li>-1: OP_1NEGATE; (79)</li>
 <li>-127..-2 and 17..127: normal 1-byte data push; (01 FF)..(01 82) and
 (01 11)..(01 7F)</li>
-<li>-32767..-128 and 128..32767: normal 2-byte data push; (02 FF FF)..(02
-80 80) and (02 80 00)..(02 FF 7F)</li>
-<li>-8388607..-32768 and 32768..8388607: normal 3-byte data push; (03 FF
-FF FF)..(03 00 80 80) and (03 00 80 00)..(03 FF FF 7F)</li>
+<li>-32767..-128 and 128..32767: normal 2-byte data push; (02 FF
+FF)..(02 80 80) and (02 80 00)..(02 FF 7F)</li>
+<li>-8388607..-32768 and 32768..8388607: normal 3-byte data push; (03
+FF FF FF)..(03 00 80 80) and (03 00 80 00)..(03 FF FF 7F)</li>
 <li>-2147483647..-8388608 and 8388608..2147483647: normal 4-byte data
-push; (04 FF FF FF FF)..(04 00 00 80 80) and (04 00 00 80 00)..(04 FF
-FF FF 7F)</li>
+push; (04 FF FF FF FF)..(04 00 00 80 80) and (04 00 00 80 00)..(04
+FF FF FF 7F)</li>
 <li>Any other numbers cannot be encoded.</li>
 </ul>
 <p>In particular, note that zero could be encoded as (01 80) (negative

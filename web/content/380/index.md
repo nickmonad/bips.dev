@@ -5,7 +5,7 @@ weight = 380
 in_search_index = true
 
 [taxonomies]
-authors = ["Pieter Wuille", "Andrew Chow"]
+authors = ["Pieter Wuille", "Ava Chow"]
 status = ["Draft"]
 
 [extra]
@@ -14,17 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki"
 +++
 
-      BIP: 380
-      Layer: Applications
-      Title: Output Script Descriptors General Operation
-      Author: Pieter Wuille <pieter@wuille.net>
-              Andrew Chow <andrew@achow101.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0380
-      Status: Draft
-      Type: Informational
-      Created: 2021-06-27
-      License: BSD-2-Clause
+``` 
+  BIP: 380
+  Layer: Applications
+  Title: Output Script Descriptors General Operation
+  Author: Pieter Wuille <pieter@wuille.net>
+          Ava Chow <me@achow101.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0380
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -79,7 +81,8 @@ results can be understood at a glance.
 Descriptors consist of several types of expressions. The top level
 expression is a `SCRIPT`. This expression may be followed by
 `#CHECKSUM`, where `CHECKSUM` is an 8 character alphanumeric descriptor
-checksum.
+checksum. Although the checksum is optional for parsing, applications
+may choose to reject descriptors that do not contain a checksum.
 
 ### Script Expressions
 
@@ -104,30 +107,31 @@ expressions can only be used as arguments to script expressions.
 
 Key expressions consist of:
 
-- Optionally, key origin information, consisting of:
-  - An open bracket `[`
-  - Exactly 8 hex characters for the fingerprint of the key where the
-    derivation starts (see BIP 32 for details)
-  - Followed by zero or more `/NUM` or `/NUMh` path elements to indicate
-    the unhardened or hardened derivation steps between the fingerprint
-    and the key that follows.
-  - A closing bracket `]`
-- Followed by the actual key, which is either:
-  - A hex encoded public key, which depending the script expression, may
-    be either:
-    - 66 hex character string beginning with `02` or `03` representing a
-      compressed public key
-    - 130 hex character string beginning with `04` representing an
-      uncompressed public key
-  - A [WIF](https://en.bitcoin.it/wiki/Wallet_import_format "wikilink")
-    encoded private key
-  - `xpub` encoded extended public key or `xprv` encoded extended
-    private key (as defined in BIP 32)
-    - Followed by zero or more `/NUM` or `/NUMh` path elements
-      indicating BIP 32 derivation steps to be taken after the given
-      extended key.
-    - Optionally followed by a single `/*` or `/*h` final step to denote
-      all direct unhardened or hardened children.
+  - Optionally, key origin information, consisting of:
+      - An open bracket `[`
+      - Exactly 8 hex characters for the fingerprint of the key where
+        the derivation starts (see BIP 32 for details)
+      - Followed by zero or more `/NUM` or `/NUMh` path elements to
+        indicate the unhardened or hardened derivation steps between the
+        fingerprint and the key that follows.
+      - A closing bracket `]`
+  - Followed by the actual key, which is either:
+      - A hex encoded public key, which depending the script expression,
+        may be either:
+          - 66 hex character string beginning with `02` or `03`
+            representing a compressed public key
+          - 130 hex character string beginning with `04` representing an
+            uncompressed public key
+      - A
+        [WIF](https://en.bitcoin.it/wiki/Wallet_import_format "wikilink")
+        encoded private key
+      - `xpub` encoded extended public key or `xprv` encoded extended
+        private key (as defined in BIP 32)
+          - Followed by zero or more `/NUM` or `/NUMh` path elements
+            indicating BIP 32 derivation steps to be taken after the
+            given extended key.
+          - Optionally followed by a single `/*` or `/*h` final step to
+            denote all direct unhardened or hardened children.
 
 If the `KEY` is a BIP 32 extended key, before output scripts can be
 created, child keys must be derived using the derivation information
@@ -182,31 +186,31 @@ correcting checksum similar to bech32.
 
 The checksum has the following properties:
 
-- Mistakes in a descriptor string are measured in "symbol errors". The
-  higher the number of symbol errors, the harder it is to detect:
-  - An error substituting a character from
-    `0123456789()[],'/*abcdefgh@:$%{}` for another in that set always
-    counts as 1 symbol error.
-    - Note that hex encoded keys are covered by these characters.
-      Extended keys (`xpub` and `xprv`) use other characters too, but
-      also have their own checksum mechanism.
-    - `SCRIPT` expression function names use other characters, but
-      mistakes in these would generally result in an unparsable
-      descriptor.
-  - A case error always counts as 1 symbol error.
-  - Any other 1 character substitution error counts as 1 or 2 symbol
-    errors.
-- Any 1 symbol error is always detected.
-- Any 2 or 3 symbol error in a descriptor of up to 49154 characters is
-  always detected.
-- Any 4 symbol error in a descriptor of up to 507 characters is always
-  detected.
-- Any 5 symbol error in a descriptor of up to 77 characters is always
-  detected.
-- Is optimized to minimize the chance of a 5 symbol error in a
-  descriptor up to 387 characters is undetected
-- Random errors have a chance of 1 in 2<super>40</super> of being
-  undetected.
+  - Mistakes in a descriptor string are measured in "symbol errors". The
+    higher the number of symbol errors, the harder it is to detect:
+      - An error substituting a character from
+        `0123456789()[],'/*abcdefgh@:$%{}` for another in that set
+        always counts as 1 symbol error.
+          - Note that hex encoded keys are covered by these characters.
+            Extended keys (`xpub` and `xprv`) use other characters too,
+            but also have their own checksum mechanism.
+          - `SCRIPT` expression function names use other characters, but
+            mistakes in these would generally result in an unparsable
+            descriptor.
+      - A case error always counts as 1 symbol error.
+      - Any other 1 character substitution error counts as 1 or 2 symbol
+        errors.
+  - Any 1 symbol error is always detected.
+  - Any 2 or 3 symbol error in a descriptor of up to 49154 characters is
+    always detected.
+  - Any 4 symbol error in a descriptor of up to 507 characters is always
+    detected.
+  - Any 5 symbol error in a descriptor of up to 77 characters is always
+    detected.
+  - Is optimized to minimize the chance of a 5 symbol error in a
+    descriptor up to 387 characters is undetected
+  - Random errors have a chance of 1 in 2<super>40</super> of being
+    undetected.
 
 The checksum itself uses the same character set as bech32:
 `qpzry9x8gf2tvdw0s3jn54khce6mua7l`
@@ -219,7 +223,7 @@ consisting in the form `SCRIPT#CHECKSUM`.
     INPUT_CHARSET = "0123456789()[],'/*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&+-.;<=>?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\"\\ "
     CHECKSUM_CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
     GENERATOR = [0xf5dee51989, 0xa9fdca3312, 0x1bab10e32d, 0x3706b1677a, 0x644d626ffd]
-
+    
     def descsum_polymod(symbols):
         """Internal function that computes the descriptor checksum."""
         chk = 1
@@ -229,7 +233,7 @@ consisting in the form `SCRIPT#CHECKSUM`.
             for i in range(5):
                 chk ^= GENERATOR[i] if ((top >> i) & 1) else 0
         return chk
-
+    
     def descsum_expand(s):
         """Internal function that does the character to symbol expansion"""
         groups = []
@@ -248,7 +252,7 @@ consisting in the form `SCRIPT#CHECKSUM`.
         elif len(groups) == 2:
             symbols.append(groups[0] * 3 + groups[1])
         return symbols
-
+    
     def descsum_check(s):
         """Verify that the checksum is correct in a descriptor"""
         if s[-9] != '#':
@@ -275,6 +279,104 @@ can be used:
         checksum = descsum_polymod(symbols) ^ 1
         return s + '#' + ''.join(CHECKSUM_CHARSET[(checksum >> (5 * (7 - i))) & 31] for i in range(8))
 
+## Test Vectors
+
+The following tests cover the checksum and character set:
+
+  - Valid checksum: `raw(deadbeef)#89f8spxm`
+  - No checksum: `raw(deadbeef)`
+  - Missing checksum: `raw(deadbeef)#`
+  - Too long checksum (9 chars): `raw(deadbeef)#89f8spxmx`
+  - Too short checksum (7 chars): `raw(deadbeef)#89f8spx`
+  - Error in payload: `raw(deedbeef)#89f8spxm`
+  - Error in checksum: `raw(deedbeef)##9f8spxm`
+  - Invalid characters in payload: `raw(Ü)#00000000`
+
+The following tests cover key expressions:
+
+Valid expressions:
+
+  - Compressed public key:
+    `0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Uncompressed public key:
+    `04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235`
+  - Public key with key origin:
+    `[deadbeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Public key with key origin (`'` as hardened indicator):
+    `[deadbeef/0'/0'/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Public key with key origin (mixed hardened indicator):
+    `[deadbeef/0'/0h/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - WIF uncompressed private key
+    `5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss`
+  - WIF compressed private key
+    `L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1`
+  - Extended public key:
+    `xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL`
+  - Extended public key with key origin:
+    `[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL`
+  - Extended public key with derivation:
+    `[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5`
+  - Extended public key with derivation and children:
+    `[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5/*`
+  - Extended public key with hardened derivation and unhardened
+    children:
+    `xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*`
+  - Extended public key with hardened derivation and children:
+    `xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h`
+  - Extended public key with key origin, hardened derivation and
+    children:
+    `[deadbeef/0h/1h/2]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h`
+  - Extended private key:
+    `xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc`
+  - Extended private key with key origin:
+    `[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc`
+  - Extended private key with derivation:
+    `[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5`
+  - Extended private key with derivation and children:
+    `[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5/*`
+  - Extended private key with hardened derivation and unhardened
+    children:
+    `xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*`
+  - Extended private key with hardened derivation and children:
+    `xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h`
+  - Extended private key with key origin, hardened derivation and
+    children:
+    `[deadbeef/0h/1h/2]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h`
+
+Invalid expressiosn:
+
+  - Children indicator in key origin:
+    `[deadbeef/0h/0h/0h/*]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Trailing slash in key origin:
+    `[deadbeef/0h/0h/0h/]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Too short fingerprint:
+    `[deadbef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Too long fingerprint:
+    `[deadbeeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Invalid hardened indicators:
+    `[deadbeef/0f/0f/0f]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Invalid hardened indicators:
+    `[deadbeef/0H/0H/0H]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Invalid hardened indicators:
+    `[deadbeef/-0/-0/-0]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+  - Private key with derivation:
+    `L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/0`
+  - Private key with derivation children:
+    `L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/*`
+  - Derivation index out of range:
+    `xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483648)",
+    "pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/2147483648`
+  - Invalid derivation index:
+    `xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/1aa)",
+    "pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/1aa`
+  - Multiple key origins:
+    `[aaaaaaaa][aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0`
+  - Missing key origin start:
+    `aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0`
+  - Non hex fingerprint:
+    `[gaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0`
+  - Key origin with no public key: `[deadbeef]`
+
 ## Backwards Compatibility
 
 Output script descriptors are an entirely new language which is not
@@ -295,7 +397,7 @@ Future BIPs may specify additional types of expressions. All available
 expression types are listed in this table.
 
 | Name   | Denoted As | BIP                                  |
-|--------|------------|--------------------------------------|
+| ------ | ---------- | ------------------------------------ |
 | Script | `SCRIPT`   | 380                                  |
 | Key    | `KEY`      | 380                                  |
 | Tree   | `TREE`     | [386](/386) |
@@ -306,7 +408,7 @@ Script expressions will be specified in additional BIPs. This Table
 lists all available Script expressions and the BIPs specifying them.
 
 | Expression                        | BIP                                  |
-|-----------------------------------|--------------------------------------|
+| --------------------------------- | ------------------------------------ |
 | `pk(KEY)`                         | [381](/381) |
 | `pkh(KEY)`                        | [381](/381) |
 | `sh(SCRIPT)`                      | [381](/381) |

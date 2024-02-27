@@ -102,12 +102,12 @@ with significantly less bandwidth usage.</p>
 a <code>sendcmpct</code> message. In this mode, peers send new block announcements
 with the usual inv/headers announcements (as per BIP130, and after fully
 validating the block). The receiving peer may then request the block
-using a MSG_CMPCT_BLOCK <code>getdata</code> request, which will receive a response
-of the header and short transaction IDs. In some cases no further
-round-trip is needed, and the receiver can reconstruct the block and
-process it as usual, taking the same 1.5*RTT minimum time that nodes
-take today, though with significantly less bandwidth usage. When some
-transactions were not available from local sources (ie mempool), a
+using a MSG_CMPCT_BLOCK <code>getdata</code> request, which will receive a
+response of the header and short transaction IDs. In some cases no
+further round-trip is needed, and the receiver can reconstruct the block
+and process it as usual, taking the same 1.5*RTT minimum time that
+nodes take today, though with significantly less bandwidth usage. When
+some transactions were not available from local sources (ie mempool), a
 <code>getblocktxn</code>/<code>blocktxn</code> roundtrip is necessary, bringing the latency to
 at least 2.5*RTT in this case, again with significantly less bandwidth
 usage than today. Because TCP often exhibits worse transfer latency for
@@ -180,8 +180,8 @@ the above hash, respectively.</li>
 make it 6 bytes.</li>
 </ol>
 <h3 id="New_messages">New messages</h3>
-<p>A new inv type (MSG_CMPCT_BLOCK == 4) and several new protocol messages
-are added: sendcmpct, cmpctblock, getblocktxn, and blocktxn.</p>
+<p>A new inv type (MSG_CMPCT_BLOCK == 4) and several new protocol
+messages are added: sendcmpct, cmpctblock, getblocktxn, and blocktxn.</p>
 <h4 id="sendcmpct">sendcmpct</h4>
 <ol>
 <li>The sendcmpct message is defined as a message containing a 1-byte
@@ -209,8 +209,8 @@ versions. See Protocol Versioning section, below, for more info on
 the specifics of the version-negotiation mechanics.</li>
 <li>Nodes SHOULD check for a protocol version of &gt;= 70014 before
 sending sendcmpct messages.</li>
-<li>Nodes MUST NOT send a request for a MSG_CMPCT_BLOCK object to a peer
-before having received a sendcmpct message from that peer.</li>
+<li>Nodes MUST NOT send a request for a MSG_CMPCT_BLOCK object to a
+peer before having received a sendcmpct message from that peer.</li>
 <li>Nodes MUST NOT request a MSG_CMPCT_BLOCK object before having sent
 all sendcmpct messages to that peer which they intend to send, as
 the peer cannot know what version protocol to use in the response.</li>
@@ -219,16 +219,16 @@ the peer cannot know what version protocol to use in the response.</li>
 <ol>
 <li>getdata messages may now contain requests for MSG_CMPCT_BLOCK
 objects.</li>
-<li>Upon receipt of a getdata containing a request for a MSG_CMPCT_BLOCK
-object with the hash of a block which was recently announced and is
-close to the tip of the best chain of the receiver and after having
-sent the requesting peer a sendcmpct message, nodes MUST respond
-with a cmpctblock message containing appropriate data representing
-the block being requested.</li>
-<li>Upon receipt of a getdata containing a request for a MSG_CMPCT_BLOCK
-object for which a cmpctblock message is not sent in response, a
-block message containing the requested block in non-compact form
-MUST be sent.</li>
+<li>Upon receipt of a getdata containing a request for a
+MSG_CMPCT_BLOCK object with the hash of a block which was recently
+announced and is close to the tip of the best chain of the receiver
+and after having sent the requesting peer a sendcmpct message, nodes
+MUST respond with a cmpctblock message containing appropriate data
+representing the block being requested.</li>
+<li>Upon receipt of a getdata containing a request for a
+MSG_CMPCT_BLOCK object for which a cmpctblock message is not sent
+in response, a block message containing the requested block in
+non-compact form MUST be sent.</li>
 <li>MSG_CMPCT_BLOCK inv objects MUST NOT appear anywhere except for in
 getdata messages.</li>
 </ol>
@@ -308,8 +308,8 @@ sendcmpct message with the same version number was sent.</li>
 <li>Nodes MUST NOT send a sendcmpct message which contains a version
 number other than the version number which has been negotiated for
 receiving cmpctblock/blocktxn messages after sending a request for a
-MSG_CMPCT_BLOCK object, sending a cmpctblock, getblocktxn, blocktxn,
-or pong message.</li>
+MSG_CMPCT_BLOCK object, sending a cmpctblock, getblocktxn,
+blocktxn, or pong message.</li>
 <li>As a node must send all sendcmpct messages which contain a novel
 version announcement before any other compact block-related
 messages, it is possible to determine which version of compact
@@ -373,12 +373,12 @@ the txid. Note that, though a node normally SHOULD, if a node does
 not include (ie must then include the short ID for) the coinbase
 transaction, it must be computed by encoding the transaction in
 witness format as defined by BIP 141.</li>
-<li>Upon receipt of a getdata containing a request for a MSG_CMPCT_BLOCK
-object for which a cmpctblock message is not sent in response, the
-block message containing the requested block in non-compact form
-MUST be encoded with witnesses (as is sent in reply to a
-MSG_WITNESS_BLOCK getdata) if the protocol version used to encode
-the cmpctblock message would have been 2, and encoded without
+<li>Upon receipt of a getdata containing a request for a
+MSG_CMPCT_BLOCK object for which a cmpctblock message is not sent
+in response, the block message containing the requested block in
+non-compact form MUST be encoded with witnesses (as is sent in reply
+to a MSG_WITNESS_BLOCK getdata) if the protocol version used to
+encode the cmpctblock message would have been 2, and encoded without
 witnesses (as is sent in response to a MSG_BLOCK getdata) if the
 protocol version used to encode the cmpctblock message would have
 been 1.</li>
@@ -393,19 +393,19 @@ selected based on their past performance in providing blocks quickly
 N blocks the quickest), allowing nodes to receive blocks which come
 from those peers in only 0.5*RTT.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes MUST NOT send such sendcmpct messages to more than three
 peers, as it encourages wasting outbound bandwidth across the
 network.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>All nodes SHOULD send a sendcmpct message to all appropriate peers.
 This will reduce their outbound bandwidth usage by allowing their
 peers to request compact blocks instead of full blocks.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes with limited inbound bandwidth SHOULD request blocks using
 MSG_CMPCT_BLOCK/getblocktxn requests, when possible. While this
@@ -413,27 +413,27 @@ increases worst-case message round-trips, it is expected to reduce
 overall transfer latency as TCP is more likely to exhibit poor
 throughput on low-bandwidth nodes.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes sending cmpctblock messages SHOULD limit prefilledtxn to 10KB
 of transactions. When in doubt, nodes SHOULD only include the
 coinbase transaction in prefilledtxn.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes MAY pick one nonce per block they wish to send, and only build
 a cmpctblock message once for all peers which they wish to send a
 given block to. Nodes SHOULD NOT use the same nonce across multiple
 different blocks.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Nodes MAY impose additional requirements on when they announce new
 blocks by sending cmpctblock messages. For example, nodes with
 limited outbound bandwidth MAY choose to announce new blocks using
 inv/header messages (as per BIP130) to conserve outbound bandwidth.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Note that the MSG_CMPCT_BLOCK section does not require that nodes
 respond to MSG_CMPCT_BLOCK getdata requests for blocks which they
@@ -445,7 +445,7 @@ block message, allowing nodes to request all blocks using
 MSG_CMPCT_BLOCK getdatas and rely on their peer to pick an
 appropriate response.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>While the current version sends transactions with the same encodings
 as are used in tx messages and elsewhere in the protocol, the
@@ -455,7 +455,7 @@ decode PrefilledTransaction and BlockTransactions messages be
 prepared to take a different transaction encoding, if and when the
 version field in sendcmpct changes in a future BIP.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Any undefined behavior in this spec may cause failure to transfer
 block to, peer disconnection by, or self-destruction by the
@@ -474,7 +474,7 @@ or punish a peer for announcing compact blocks prior to full
 validation, and nodes SHOULD NOT announce a CMPCTBLOCK to a peer
 with a version number below 70015 before fully validating the block.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>SPV nodes which implement this spec must consider the implications
 of accepting blocks which were not validated by the node which
@@ -482,7 +482,7 @@ provided them. Especially SPV nodes which allow users to select a
 &quot;trusted full node&quot; to sync from may wish to avoid implementing this
 spec in high-bandwidth mode.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>Note that this spec does not change the requirement that nodes only
 relay information about blocks which they have fully validated in
@@ -501,7 +501,7 @@ the block until validation has completed, stalling all message
 processing for the associated peer. REJECT messages are not
 considered &quot;responses&quot; for the purpose of this section.</li>
 </ol>
-<!-- -->
+<!-- end list -->
 <ol>
 <li>As a result of the above requirements, implementors may wish to
 consider the potential for the introduction of delays in responses
@@ -528,15 +528,15 @@ might allow blocks to be relayed between nodes in 0.5*RTT instead of
 transactions, and the receiver for all mempool transactions they are
 being compared to. As we're easily talking about several thousand
 transactions, sub-microsecond processing per-transactions is needed.</li>
-<li><strong>Space</strong> cmpctblock messages are never optional in this protocol, and
-contain a short ID for each non-prefilled transaction in the block.
-Thus, the size of short IDs is directly proportional to the maximum
-bandwidth savings possible.</li>
-<li><strong>Collision resistance</strong> It should be hard for network participants to
-create transactions that cause collisions. If an attacker were able to
-cause such collisions, filling mempools (and, thus, blocks) with them
-would cause poor network propagation of new (or non-attacker, in the
-case of a miner) blocks.</li>
+<li><strong>Space</strong> cmpctblock messages are never optional in this protocol,
+and contain a short ID for each non-prefilled transaction in the
+block. Thus, the size of short IDs is directly proportional to the
+maximum bandwidth savings possible.</li>
+<li><strong>Collision resistance</strong> It should be hard for network participants
+to create transactions that cause collisions. If an attacker were
+able to cause such collisions, filling mempools (and, thus, blocks)
+with them would cause poor network propagation of new (or
+non-attacker, in the case of a miner) blocks.</li>
 </ul>
 <p>SipHash is a secure, fast, and simple 64-bit MAC designed for network
 traffic authentication and collision-resistant hash tables. We truncate
@@ -564,8 +564,10 @@ only collisions on links between honest nodes are random ones.</p>
 received short ID with that of a set of <em>m</em> mempool transactions. We
 assume that each of those <em>t</em> has a chance <em>r</em> to be included in that
 set of <em>m</em>. If we use <em>B</em> bits short IDs, for each comparison between a
-received short ID and a mempool transaction, there is a chance of <em>P =
-1 - 1 / 2^B</em> that a mismatch is detected as such.</p>
+received short ID and a mempool transaction, there is a chance of *P = 1</p>
+<ul>
+<li>1 / 2^B* that a mismatch is detected as such.</li>
+</ul>
 <p>When comparing a given block transaction to the whole set of mempool
 transactions, there are 5 cases to distinguish:</p>
 <ol>
@@ -584,11 +586,13 @@ chance <em>(1 - r) * m * (1 - P) * P^(m - 1)</em>.</li>
 transaction because we know we're uncertain. Only in case 5, we fail to
 reconstruct. The chance that case 5 does not occur in any of the <em>t</em>
 transactions in a block is <em>(1 - (1 - r) * m * (1 - P) * P^(m -
-1))^t</em>. This expression is well approximated by <em>1 - (1 - r) * m *
-(1 - P) * t</em> = <em>1 - (1 - r) * m * t / 2^B</em>. Thus, if we want only one
-in F block transmissions between honest nodes to fail under the
+1))^t</em>. This expression is well approximated by *1 - (1 - r) * m * (1</p>
+<ul>
+<li>P) * t* = <em>1 - (1 - r) * m * t / 2^B</em>. Thus, if we want only one in
+F block transmissions between honest nodes to fail under the
 conservative <em>r = 0</em> assumption, we need <em>log2(F * m * t)</em> bits hash
-functions.</p>
+functions.</li>
+</ul>
 <p>This means that <em>B = 48</em> bits short IDs suffice for blocks with up to <em>t
 = 10000</em> transactions, mempools up to <em>m = 100000</em> transactions, with
 failure to reconstruct at most one in <em>F = 281474</em> blocks. Since failure

@@ -122,18 +122,20 @@ tx-id, which is great for future pruning features.</p>
 <p>Additionally, in the v4 (flextrans) format we add the support for the
 following proofs;</p>
 <ul>
-<li>input amount. Including the amount means we sign this transaction only
-if the amount we are spending is the one provided. Wallets that do not
-have the full UTXO DB can safely sign knowing that if they were lied
-to about the amount being spent, their signature is useless.</li>
+<li>input amount. Including the amount means we sign this transaction
+only if the amount we are spending is the one provided. Wallets that
+do not have the full UTXO DB can safely sign knowing that if they
+were lied to about the amount being spent, their signature is
+useless.</li>
 <li>scriptBase is the combined script of input and output, without
 signatures naturally. Providing this to a hardware wallet means it
 knows what output it is spending and can respond properly. Including
 it in the hash means its signature would be broken if we lied..</li>
-<li>Double spent-proof. Should a node detect a double spent he can notify
-his peers about this fact. Instead of sending the entire transactions,
-instead he sends only a proof. The node needs to send two pairs of
-info that proves that in both transactions the CTxIn are identical.</li>
+<li>Double spent-proof. Should a node detect a double spent he can
+notify his peers about this fact. Instead of sending the entire
+transactions, instead he sends only a proof. The node needs to send
+two pairs of info that proves that in both transactions the CTxIn
+are identical.</li>
 </ul>
 <h3 id="Tokens">Tokens</h3>
 <p>In the compact message format we define tokens and in this specification
@@ -150,14 +152,14 @@ make the transaction that contains it invalid.</p>
 <tr><td>TxEnd</td><td>0</td><td>BoolTrue</td><td>Required</td><td>A marker that is the end of the transaction</td></tr>
 <tr><td>TxInPrevHash</td><td>1</td><td>ByteArray</td><td>Required</td><td>TxId we are spending</td></tr>
 <tr><td>TxPrevIndex</td><td>2</td><td>Integer</td><td>0</td><td>Index in prev tx we are spending (applied to previous TxInPrevHash)</td></tr>
-<tr><td>TxInputStackItem</td><td>3</td><td>ByteArray</td><td> </td><td>A 'push' of the input script</td></tr>
+<tr><td>TxInputStackItem</td><td>3</td><td>ByteArray</td><td></td><td>A 'push' of the input script</td></tr>
 <tr><td>TxInputStackItemContinued</td><td>4</td><td>ByteArray</td><td>&amp;nsbp;</td><td>Another section for the same input</td></tr>
 <tr><td>TxOutValue</td><td>5</td><td>Integer</td><td>Required</td><td>Amount of Satoshis to transfer</td></tr>
 <tr><td>TxOutScript</td><td>6</td><td>ByteArray</td><td>Required</td><td>The output script</td></tr>
 <tr><td>TxRelativeBlockLock</td><td>7</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of blocks (max 0XFFFF) after that input was mined, it can be mined</td></tr>
 <tr><td>TxRelativeTimeLock</td><td>8</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of time (max 0XFFFF) after that input was mined, it can be mined. 1 Unit is 512 seconds</td></tr>
 <tr><td>CoinbaseMessage</td><td>9</td><td>ByteArray</td><td>Optional</td><td>A message and some data for a coinbase transaction. Can't be used in combination with any TxIn\* tags</td></tr>
-<tr><td>NOP_1x</td><td>1x</td><td> </td><td>Optional</td><td>Values that will be ignored by anyone parsing the transaction</td></tr>
+<tr><td>NOP_1x</td><td>1x</td><td></td><td>Optional</td><td>Values that will be ignored by anyone parsing the transaction</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
 </tbody></table>
 <h3 id="Scripting_changes">Scripting changes</h3>
@@ -198,7 +200,7 @@ followed by a number of TxInputStackItemContinued items.</p>
 <table><thead><tr><th>Segment</th><th>Tags</th><th>Description</th></tr></thead><tbody>
 <tr><td>Transaction</td><td>all not elsewhere used</td><td>This section is used to make the TxId</td></tr>
 <tr><td>Signatures</td><td>TxInputStackItem, TxInputStackItemContinued</td><td>The input-proofs</td></tr>
-<tr><td>TxEnd</td><td>TxEnd</td><td> </td></tr>
+<tr><td>TxEnd</td><td>TxEnd</td><td></td></tr>
 </tbody></table>
 <p>The TxId is calculated by taking the serialized transaction without the
 Signatures and the TxEnd and hashing that.</p>

@@ -105,7 +105,8 @@ below.</p>
 <p>Erlay allows us to:</p>
 <ul>
 <li>save a significant portion of the bandwidth consumed by a node</li>
-<li>increase network connectivity for almost no bandwidth or latency cost</li>
+<li>increase network connectivity for almost no bandwidth or latency
+cost</li>
 <li>keep transaction propagation latency at the same level</li>
 </ul>
 <p>This document proposes a P2P-layer extension which is required to enable
@@ -127,10 +128,10 @@ details how they are exchanged.</li>
 salt<sub>2</sub>)</em>, where the two salts are encoded in 64-bit
 little-endian byte order, and TaggedHash is specified by
 <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP-340</a>.</li>
-<li>Let <em>k<sub>0</sub></em> be the 64-bit integer obtained by interpreting the
-first 8 bytes of <em>h</em> in little-endian byte order.</li>
-<li>Let <em>k<sub>1</sub></em> be the 64-bit integer obtained by interpreting the
-second 8 bytes of <em>h</em> in little-endian byte order.</li>
+<li>Let <em>k<sub>0</sub></em> be the 64-bit integer obtained by interpreting
+the first 8 bytes of <em>h</em> in little-endian byte order.</li>
+<li>Let <em>k<sub>1</sub></em> be the 64-bit integer obtained by interpreting
+the second 8 bytes of <em>h</em> in little-endian byte order.</li>
 <li>Let <em>s = SipHash-2-4((k<sub>0</sub>,k<sub>1</sub>),wtxid)</em>, where
 <em>wtxid</em> is the transaction hash including witness data as defined by
 BIP141.</li>
@@ -164,11 +165,12 @@ over <em>GF(2)</em> modulo <em>x<sup>32</sup>7</sup> + x<sup>3</sup> +
 x<sup>2</sup> + 1</em>. To map integers to finite field elements, simply
 treat each bit <em>i</em> (with value <em>2<sup>i</sup></em>) in the integer as the
 coefficient of <em>x<sup>i</sup></em> in the polynomial representation. For
-example the integer <em>101 = 2<sup>6</sup> + 2<sup>5</sup> +
-2<sup>2</sup> + 1</em> is mapped to field element <em>x<sup>6</sup> +
-x<sup>5</sup> + x<sup>2</sup> + 1</em>. These field elements can be added
-and multiplied together, but the specifics of that are out of scope for
-this document.</p>
+example the integer *101 = 2<sup>6</sup> + 2<sup>5</sup> + 2<sup>2</sup></p>
+<ul>
+<li>1* is mapped to field element <em>x<sup>6</sup> + x<sup>5</sup> +
+x<sup>2</sup> + 1</em>. These field elements can be added and multiplied
+together, but the specifics of that are out of scope for this document.</li>
+</ul>
 <p>A short ID sketch with capacity <em>c</em> consists of a sequence of <em>c</em> field
 elements. The first is the sum of all short IDs in the set, the second
 is the sum of the 3rd powers of all short IDs, the third is the sum of
@@ -260,10 +262,10 @@ role of reconciliation responder (will respond to &quot;reqrecon&quot; messages)
 </tbody></table>
 <p>Upon receipt of a &quot;reqrecon&quot; message, the receiver:</p>
 <ul>
-<li>Constructs and sends a &quot;sketch&quot; message (see below), with a sketch of
-certain <em>capacity=f(set_size, local_set_size, q)</em> (the exact function
-is suggested below), where <em>local_set_size</em> represents size of the
-receiver's reconciliation set.</li>
+<li>Constructs and sends a &quot;sketch&quot; message (see below), with a sketch
+of certain <em>capacity=f(set_size, local_set_size, q)</em> (the exact
+function is suggested below), where <em>local_set_size</em> represents
+size of the receiver's reconciliation set.</li>
 <li>Makes a snapshot of their current reconciliation set, and clears the
 set itself. The snapshot is kept until a &quot;reconcildiff&quot; message is
 received by the node.</li>
@@ -287,7 +289,8 @@ sketch by sending a &quot;reqsketchext&quot; message. Alternatively, the node
 may terminate the reconciliation right away by sending a
 &quot;reconcildiff&quot; message is sent with the failure flag set
 (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
+<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with
+success=true.</li>
 </ul>
 <p>The receiver also makes snapshot of their current reconciliation set,
 and clears the set itself. The snapshot is kept until a &quot;reconcildiff&quot;
@@ -300,9 +303,10 @@ corresponding reconciliation set snapshot. The receiving node then tries
 to decode the extended difference sketch and based on the result:</p>
 <ul>
 <li>If the decoding failed, the receiving node terminates the
-reconciliation right away by sending a &quot;reconcildiff&quot; message is sent
-with the failure flag set (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
+reconciliation right away by sending a &quot;reconcildiff&quot; message is
+sent with the failure flag set (success=false).</li>
+<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with
+success=true.</li>
 </ul>
 <p>In either cases, a &quot;reconcildiff&quot; with success=false should also be
 accompanied with announcing all transactions from the reconciliation set
@@ -377,9 +381,9 @@ local_set_size| + q * min(set_size, local_set_size) + c</em>.</p>
 are, the lower optimal <em>q</em> is. Per the Erlay paper, <em>q</em> should be
 derived as an optimal <em>q</em> value for the previous reconciliation with a
 given peer, once the actual set sizes and set difference are known. For
-example, if in previous round <em>set_size=30</em> and <em>local_set_size=20</em>, and
-the *actual* difference was <em>12</em>, then a node should compute <em>q</em> as
-following: <em>q=(12 - |30-20|) / min(30, 20)=0.1</em></p>
+example, if in previous round <em>set_size=30</em> and <em>local_set_size=20</em>,
+and the *actual* difference was <em>12</em>, then a node should compute <em>q</em>
+as following: <em>q=(12 - |30-20|) / min(30, 20)=0.1</em></p>
 <p>The derivation of <em>q</em> can be changed according to the version of the
 protocol. For example, a static value could be chosen for simplicity.
 However, we suggest that <em>q</em> remains a parameter sent in every

@@ -50,7 +50,7 @@
 </span><span>  Layer: Applications
 </span><span>  Title: raw() and addr() Output Script Descriptors
 </span><span>  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
-</span><span>          Andrew Chow &lt;andrew@achow101.com&gt;
+</span><span>          Ava Chow &lt;me@achow101.com&gt;
 </span><span>  Comments-Summary: No comments yet.
 </span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0385
 </span><span>  Status: Draft
@@ -80,7 +80,40 @@ output script produced by this descriptor is the script represented by
 It takes an address as its single argument. The output script produced
 by this descriptor is the output script produced by the address <code>ADDR</code>.</p>
 <h2 id="Test_Vectors">Test Vectors</h2>
-<p>TBD</p>
+<p>Valid descriptors followed by the scripts they produce.</p>
+<ul>
+<li><code>raw(deadbeef)</code>
+<ul>
+<li><code>deadbeef</code></li>
+</ul>
+</li>
+<li><code>raw(512103a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd4104a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea23552ae)</code>
+<ul>
+<li><code>512103a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd4104a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea23552ae</code></li>
+</ul>
+</li>
+<li><code>raw(a9149a4d9901d6af519b2a23d4a2f51650fcba87ce7b87)</code>
+<ul>
+<li><code>a9149a4d9901d6af519b2a23d4a2f51650fcba87ce7b87</code></li>
+</ul>
+</li>
+<li><code>addr(3PUNyaW7M55oKWJ3kDukwk9bsKvryra15j)</code>
+<ul>
+<li><code>a914eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee87</code></li>
+</ul>
+</li>
+</ul>
+<p>Invalid descriptors</p>
+<ul>
+<li>Non-hex script: <code>raw(asdf)</code></li>
+<li>Invalid address: <code>addr(asdf)</code></li>
+<li><code>raw</code> nested in <code>sh</code>: <code>sh(raw(deadbeef))</code></li>
+<li><code>raw</code> nested in <code>wsh</code>: <code>wsh(raw(deadbeef))</code></li>
+<li><code>addr</code> nested in <code>sh</code>:
+<code>sh(addr(3PUNyaW7M55oKWJ3kDukwk9bsKvryra15j))</code></li>
+<li><code>addr</code> nested in <code>wsh</code>:
+<code>wsh(addr(3PUNyaW7M55oKWJ3kDukwk9bsKvryra15j))</code></li>
+</ul>
 <h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p><code>raw()</code> and <code>addr()</code> descriptors use the format and general operation
 specified in <a href="/380">380</a>. As this is a wholly

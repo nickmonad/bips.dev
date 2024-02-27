@@ -85,19 +85,21 @@ canonical, despite the fact that this caused them to sacrifice
 significant amounts of money.</li>
 <li>Deposits to the major exchanges and payments via BitPay were also
 suspended (and then un-suspended) very quickly.</li>
-<li>Fortunately, the only attack on a merchant was done by someone who was
-not intending to actually steal money.</li>
+<li>Fortunately, the only attack on a merchant was done by someone who
+was not intending to actually steal money.</li>
 </ul>
 <h2 id="Root_cause">Root cause</h2>
 <p>Bitcoin versions prior to 0.8 configure an insufficient number of
 Berkeley DB locks to process large but otherwise valid blocks. Berkeley
 DB locks have to be manually configured by API users depending on
 anticipated load. The manual says this:</p>
-<p>The recommended algorithm for selecting the maximum number of locks,
+<ul>
+<li>The recommended algorithm for selecting the maximum number of locks,
 lockers, and lock objects is to run the application under stressful
-conditions and then review the lock system's statistics to determine the
-maximum number of locks, lockers, and lock objects that were used. Then,
-double these values for safety.</p>
+conditions and then review the lock system's statistics to determine
+the maximum number of locks, lockers, and lock objects that were
+used. Then, double these values for safety.</li>
+</ul>
 <p>With the insufficiently high BDB lock configuration, it implicitly had
 become a network consensus rule determining block validity (albeit an
 inconsistent and unsafe rule, since the lock usage could vary from node

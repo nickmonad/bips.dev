@@ -88,8 +88,8 @@ superior to the canonical signature approach
 scripts, as long as all inputs are signed (with at least one
 CHECKSIG or CHECKMULTISIG operation)</li>
 <li>In the case of an m-of-n CHECKMULTISIG script, a transaction is
-malleable only with agreement of m private key holders (as opposed
-to only 1 private key holder with BIP62)</li>
+malleable only with agreement of m private key holders (as
+opposed to only 1 private key holder with BIP62)</li>
 <li>It prevents involuntary transaction malleability due to unknown
 ECDSA signature malleability</li>
 <li>It allows creation of unconfirmed transaction dependency chains
@@ -106,14 +106,15 @@ more transactions using the same bandwidth.</li>
 part of the transaction data to a structure unknown to current
 protocol, for example:
 <ul>
-<li>Size of witness could be ignored / discounted when calculating the
-block size, effectively increasing the block size to some extent</li>
+<li>Size of witness could be ignored / discounted when calculating
+the block size, effectively increasing the block size to some
+extent</li>
 <li>Hard coded constants, such as maximum data push size (520 bytes)
 or sigops limit could be reevaluated or removed</li>
-<li>New script system could be introduced without any limitation from
-the existing script semantic. For example, a new transaction
-digest algorithm for transaction signature verification is
-described in
+<li>New script system could be introduced without any limitation
+from the existing script semantic. For example, a new
+transaction digest algorithm for transaction signature
+verification is described in
 <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki">BIP143</a></li>
 </ul>
 </li>
@@ -189,37 +190,38 @@ be exactly a push of the BIP16 <code>redeemScript</code> or validation fails.
 program.</li>
 <li>The witness must consist of exactly 2 items (≤ 520 bytes each). The
 first one a signature, and the second one a public key.</li>
-<li>The HASH160 of the public key must match the 20-byte witness program.</li>
-<li>After normal script evaluation, the signature is verified against the
-public key with CHECKSIG operation. The verification must result in a
-single TRUE on the stack.</li>
+<li>The HASH160 of the public key must match the 20-byte witness
+program.</li>
+<li>After normal script evaluation, the signature is verified against
+the public key with CHECKSIG operation. The verification must result
+in a single TRUE on the stack.</li>
 </ul>
 <p>If the version byte is 0, and the witness program is 32 bytes:</p>
 <ul>
 <li>It is interpreted as a pay-to-witness-script-hash (P2WSH) program.</li>
 <li>The witness must consist of an input stack to feed to the script,
 followed by a serialized script (<code>witnessScript</code>).</li>
-<li>The <code>witnessScript</code> (≤ 10,000 bytes) is popped off the initial witness
-stack. SHA256 of the <code>witnessScript</code> must match the 32-byte witness
-program.</li>
-<li>The <code>witnessScript</code> is deserialized, and executed after normal script
-evaluation with the remaining witness stack (≤ 520 bytes for each
-stack item).</li>
+<li>The <code>witnessScript</code> (≤ 10,000 bytes) is popped off the initial
+witness stack. SHA256 of the <code>witnessScript</code> must match the 32-byte
+witness program.</li>
+<li>The <code>witnessScript</code> is deserialized, and executed after normal
+script evaluation with the remaining witness stack (≤ 520 bytes for
+each stack item).</li>
 <li>The script must not fail, and result in exactly a single TRUE on the
 stack.</li>
 </ul>
 <p>If the version byte is 0, but the witness program is neither 20 nor 32
-bytes, the script must fail.<sup class="footnote-reference"><a href="#1">1</a></sup></p>
+bytes, the script must fail.[1]</p>
 <p>If the version byte is 1 to 16, no further interpretation of the witness
 program or witness stack happens, and there is no size restriction for
 the witness stack. These versions are reserved for future
-extensions.<sup class="footnote-reference"><a href="#2">2</a></sup></p>
+extensions.[2]</p>
 <h3 id="Other_consensus_critical_limits">Other consensus critical limits</h3>
 <h4 id="Block_size">Block size</h4>
 <p>Blocks are currently limited to 1,000,000 bytes (1MB) total size. We
 change this restriction as follows:</p>
 <p><em>Block weight</em> is defined as <em>Base size</em> * 3 + <em>Total size</em>.
-(rationale<sup class="footnote-reference"><a href="#3">3</a></sup>)</p>
+(rationale[3])</p>
 <p><em>Base size</em> is the block size in bytes with the original transaction
 serialization without any witness-related data, as seen by a
 non-upgraded node.</p>
@@ -275,7 +277,7 @@ semantics carefully:</p>
 <ol>
 <li>Only compressed public keys are accepted in P2WPKH and P2WSH (See
 <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki#Restrictions_on_public_key_type">BIP143</a>)</li>
-<li>The argument of OP_IF/NOTIF in P2WSH must be minimal<sup class="footnote-reference"><a href="#4">4</a></sup></li>
+<li>The argument of OP_IF/NOTIF in P2WSH must be minimal[4]</li>
 <li>Signature(s) must be null vector(s) if an OP_CHECKSIG or
 OP_CHECKMULTISIG is failed (for both pre-segregated witness script
 and P2WSH. See
@@ -355,18 +357,14 @@ example.</p>
 smaller (with reduced security) while witness is the same. However, it
 also requires 35 bytes in scriptSig.</p>
 <h3 id="Extensible_commitment_structure">Extensible commitment structure</h3>
-<p>The new commitment in coinbase transaction is a hash of the
-<code>witness root hash</code> and a <code>witness reserved value</code>. The
-<code>witness reserved value</code> currently has no consensus meaning, but in the
-future allows new commitment values for future softforks. For example,
-if a new consensus-critical commitment is required in the future, the
-commitment in coinbase becomes:</p>
+<p>The new commitment in coinbase transaction is a hash of the <code>witness root hash</code> and a <code>witness reserved value</code>. The <code>witness reserved value</code>
+currently has no consensus meaning, but in the future allows new
+commitment values for future softforks. For example, if a new
+consensus-critical commitment is required in the future, the commitment
+in coinbase becomes:</p>
 <p><code> Double-SHA256(Witness root hash|Hash(new commitment|witness reserved value))</code></p>
-<p>For backward compatibility, the
-<code>Hash(new commitment|witness reserved value)</code> will go to the coinbase
-witness, and the <code>witness reserved value</code> will be recorded in another
-location specified by the future softfork. Any number of new commitment
-could be added in this way.</p>
+<p>For backward compatibility, the <code>Hash(new commitment|witness reserved value)</code> will go to the coinbase witness, and the <code>witness reserved value</code> will be recorded in another location specified by the future
+softfork. Any number of new commitment could be added in this way.</p>
 <p>Any commitments that are not consensus-critical to Bitcoin, such as
 merge-mining, MUST NOT use the <code>witness reserved value</code> to preserve the
 ability to do upgrades of the Bitcoin consensus protocol.</p>
@@ -473,8 +471,9 @@ the new features.</p>
 <p><strong>What a non-upgraded wallet can do</strong></p>
 <ul>
 <li>Receiving bitcoin from non-upgraded and upgraded wallets</li>
-<li>Sending bitcoin to non-upgraded and upgraded wallets with traditional
-P2PKH address (without any benefit of segregated witness)</li>
+<li>Sending bitcoin to non-upgraded and upgraded wallets with
+traditional P2PKH address (without any benefit of segregated
+witness)</li>
 <li>Sending bitcoin to upgraded wallets using a P2SH address</li>
 <li>Sending bitcoin to upgraded wallets using a native witness program
 through
@@ -514,20 +513,16 @@ outputs</a></li>
 </ul>
 <h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>For example, a scriptPubKey with OP_0 followed by a 40-byte
+<ol>
+<li>For example, a scriptPubKey with OP_0 followed by a 40-byte
 non-zero data push will fail due to incorrect program size. However,
 a scriptPubKey with OP_0 followed by a 41-byte non-zero data push
-will pass, since it is not considered to be a witness program</p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p>For backward compatibility, for any version byte from 0 to 16, the
+will pass, since it is not considered to be a witness program</li>
+<li>For backward compatibility, for any version byte from 0 to 16, the
 script must fail if the witness program has a <code>CastToBool</code> value of
 zero. However, having a hash like this is a successful preimage
-attack against the hash function, and the risk is negligible.</p>
-</div>
-<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p>Rationale of using a single composite constraint, instead of two
+attack against the hash function, and the risk is negligible.</li>
+<li>Rationale of using a single composite constraint, instead of two
 separate limits such as 1MB base data and 3MB witness data: Using
 two separate limits would make mining and fee estimation nearly
 impossible. Miners would need to solve a complex non-linear
@@ -539,11 +534,9 @@ transactions in. Another problem with such an approach is
 freeloading. Once a set of transactions hit the base data 1MB
 constraint, up to 3MB extra data could be added to the witness by
 just minimally increasing the fee. The marginal cost for extra
-witness space effectively becomes zero in that case.</p>
-</div>
-<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
-<p><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html</a></p>
-</div>
+witness space effectively becomes zero in that case.</li>
+<li><a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html</a></li>
+</ol>
 
     </div>
 

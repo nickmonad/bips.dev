@@ -191,8 +191,8 @@ They *must* verify:</p>
 <ul>
 <li>All template transaction inputs are in the partial transaction (but
 perhaps different order) and have the same sequence numbers.</li>
-<li>The partial transaction contains at least one new (and signed) segwit
-input (owned by the receiver)</li>
+<li>The partial transaction contains at least one new (and signed)
+segwit input (owned by the receiver)</li>
 <li>All outputs from the template transaction exist in the partial
 transaction, except they are allowed to be reordered and have their
 amounts increased (but *never* decreased)</li>
@@ -224,25 +224,25 @@ for receivers:</p>
 <ul>
 <li>A transaction can easily be checked if it's suitable for the mempool
 with testmempoolaccept in bitcoin core 0.17+</li>
-<li>Tracking transactions by txid is precarious. To keep your sanity make
-sure all inputs are segwit. But remember segwit does not prevent txid
-malleability unless you validate the transaction. So really make sure
-you're using testmempoolaccept at the very least</li>
+<li>Tracking transactions by txid is precarious. To keep your sanity
+make sure all inputs are segwit. But remember segwit does not
+prevent txid malleability unless you validate the transaction. So
+really make sure you're using testmempoolaccept at the very least</li>
 <li>Bustapay could be abused by a malicious party to query if you own a
 deposit address or not. So never accept a bustapay transaction that
 pays an already used deposit address</li>
-<li>You will need to keep a mapping of which utxos people have showed you
-and which you revealed. So if you see them again, you can reveal the
-same one of your own</li>
-<li>Check if the transaction was already sorted according to BIP69, if so
-ensure the result stays that way. Otherwise probably just shuffle the
-inputs/outputs</li>
+<li>You will need to keep a mapping of which utxos people have showed
+you and which you revealed. So if you see them again, you can reveal
+the same one of your own</li>
+<li>Check if the transaction was already sorted according to BIP69, if
+so ensure the result stays that way. Otherwise probably just shuffle
+the inputs/outputs</li>
 <li>A reference implementation is maintained at
 <a rel="noopener" target="_blank" href="https://github.com/rhavar/bustapay">https://github.com/rhavar/bustapay</a> which functions as a wrapper
 around some RPC calls to bitcoin core's wallet.</li>
 <li>The sender must be careful of an attack where the receiver tries to
-add additional inputs that are controlled by the sender, with the hope
-that the sender blindly signs it.</li>
+add additional inputs that are controlled by the sender, with the
+hope that the sender blindly signs it.</li>
 </ul>
 <h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>Bustapay is an optional payment protocol and therefore has no backwards

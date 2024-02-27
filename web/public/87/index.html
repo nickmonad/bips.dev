@@ -112,7 +112,7 @@ updated, redundant, <code>script_type</code> list.</p>
 quite comprehensive. It allows for the handling of multiple accounts,
 external and internal chains per account, and millions of addresses per
 chain, in a multi-party, multisignature, hierarchical deterministic
-wallet regardless of the script type <sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
+wallet regardless of the script type [1].</p>
 <p>This paper was inspired from BIP44.</p>
 <h2 id="Specification">Specification</h2>
 <h3 id="Key_sorting">Key sorting</h3>
@@ -156,9 +156,11 @@ This number is used as child index in BIP32 derivation.</p>
 <p>It is crucial that this level is increased for each new wallet joined or
 private/public keys created; for both privacy and cryptographic
 purposes. For example, before sending a new key record to a coordinator,
-the wallet must increment the <code>account'</code> level. This prevents key
-reuse - across ECDSA and Schnorr signatures, across different script
-types, and inbetween the same wallet types.</p>
+the wallet must increment the <code>account'</code> level. This prevents key reuse</p>
+<ul>
+<li>across ECDSA and Schnorr signatures, across different script types,
+and inbetween the same wallet types.</li>
+</ul>
 <h3 id="Change">Change</h3>
 <p>Constant <code>0</code> is used for external chain and constant <code>1</code> for internal
 chain (also known as change addresses). External chain is used for
@@ -246,14 +248,15 @@ Wallets)</a></li>
 Descriptors</a></li>
 <li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki">BIP-0174 (Partially Signed Bitcoin Transaction
 Format)</a></li>
-<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0067.mediawiki">BIP-0067 (Deterministic Pay-to-script-hash multi-signature addresses
-through public key
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0067.mediawiki">BIP-0067 (Deterministic Pay-to-script-hash multi-signature
+addresses through public key
 sorting)</a></li>
 <li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0129.mediawiki">BIP-0129 (Bitcoin Secure Multisig
 Setup)</a></li>
 </ul>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><strong>Why propose this structure only for multisignature wallets?</strong>
+<!-- end list -->
+<ol>
+<li><strong>Why propose this structure only for multisignature wallets?</strong>
 Currently, single-sig wallets are able to restore funds using just
 the master private key data (in the format of BIP39 usually). Even
 if the user doesn't recall the derivation used, the wallet
@@ -264,8 +267,8 @@ attempt all script types for every account level when restoring.
 Because of this, even though the descriptor language handles the
 signature type just like it does the script type, it is best to
 restrict this script-agnostic hierarchy to multisignature wallets
-only.</p>
-</div>
+only.</li>
+</ol>
 
     </div>
 

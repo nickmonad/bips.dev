@@ -70,28 +70,30 @@ signatures required transactions will be used, with one signature
 coming from the (possibly compromised) computer with the wallet and
 the second signature coming from the WPS. When sending protected
 bitcoins, the user's bitcoin client will contact the WPS with the
-proposed transaction and it can then contact the user for confirmation
-that they initiated the transaction and that the transaction details
-are correct. Details for how clients and WPS's communicate are outside
-the scope of this BIP. Side note: customers should insist that their
-wallet protection service provide them with copies of the private
-key(s) used to secure their wallets that they can safely store
-off-line, so that their coins can be spent even if the WPS goes out of
-business.</li>
+proposed transaction and it can then contact the user for
+confirmation that they initiated the transaction and that the
+transaction details are correct. Details for how clients and WPS's
+communicate are outside the scope of this BIP. Side note: customers
+should insist that their wallet protection service provide them with
+copies of the private key(s) used to secure their wallets that they
+can safely store off-line, so that their coins can be spent even if
+the WPS goes out of business.</li>
 </ul>
-<!-- -->
+<!-- end list -->
 <ul>
-<li>Three-party escrow (buyer, seller, and trusted dispute agent). 2-of-3
-signatures required transactions will be used. The buyer and seller
-and agent will each provide a public key, and the buyer will then send
-coins into a 2-of-3 CHECKMULTISIG transaction and send the seller and
-the agent the transaction id. The seller will fulfill their obligation
-and then ask the buyer to co-sign a transaction ( already signed by
-seller ) that sends the tied-up coins to him (seller).<br />
+<li>Three-party escrow (buyer, seller, and trusted dispute agent).
+2-of-3 signatures required transactions will be used. The buyer and
+seller and agent will each provide a public key, and the buyer will
+then send coins into a 2-of-3 CHECKMULTISIG transaction and send the
+seller and the agent the transaction id. The seller will fulfill
+their obligation and then ask the buyer to co-sign a transaction (
+already signed by seller ) that sends the tied-up coins to him
+(seller).<br />
 If the buyer and seller cannot agree, then the agent can, with the
 cooperation of either buyer or seller, decide what happens to the
-tied-up coins. Details of how buyer, seller, and agent communicate to
-gather signatures or public keys are outside the scope of this BIP.</li>
+tied-up coins. Details of how buyer, seller, and agent communicate
+to gather signatures or public keys are outside the scope of this
+BIP.</li>
 </ul>
 <h2 id="Specification">Specification</h2>
 <p>A new standard transaction type (scriptPubKey) that is relayed by
@@ -100,9 +102,9 @@ clients and included in mined blocks:</p>
 <p>But only for n less than or equal to 3.</p>
 <p>OP_CHECKMULTISIG transactions are redeemed using a standard scriptSig:</p>
 <p><code>   OP_0 ...signatures...</code></p>
-<p>(OP_0 is required because of a bug in OP_CHECKMULTISIG; it pops one too
-many items off the execution stack, so a dummy value must be placed on
-the stack).</p>
+<p>(OP_0 is required because of a bug in OP_CHECKMULTISIG; it pops one
+too many items off the execution stack, so a dummy value must be placed
+on the stack).</p>
 <p>The current Satoshi bitcoin client does not relay or mine transactions
 with scriptSigs larger than 200 bytes; to accommodate 3-signature
 transactions, this will be increased to 500 bytes.</p>
@@ -116,16 +118,16 @@ sigops per block-- meaning a maximum of 1,000 multisig transactions per
 block. Creating multisig transactions using multiple OP_CHECKSIG
 operations allows more of them per block.</p>
 <p>The counter-argument is that these new multi-signature transactions will
-be used in combination with OP_EVAL (see the OP_EVAL BIP), and <strong>will</strong>
-be counted accurately. And in any case, as transaction volume rises the
-hard-coded maximum block size will have to be addressed, and the rules
-for counting number-of-signature-operations-in-a-block can be addressed
-at that time.</p>
-<p>A weaker argument is OP_CHECKMULTISIG should not be used because it pops
-one too many items off the stack during validation. Adding an extra OP_0
-placeholder to the scriptSig adds only 1 byte to the transaction, and
-any alternative that avoids OP_CHECKMULTISIG adds at least several bytes
-of opcodes.</p>
+be used in combination with OP_EVAL (see the OP_EVAL BIP), and
+<strong>will</strong> be counted accurately. And in any case, as transaction volume
+rises the hard-coded maximum block size will have to be addressed, and
+the rules for counting number-of-signature-operations-in-a-block can be
+addressed at that time.</p>
+<p>A weaker argument is OP_CHECKMULTISIG should not be used because it
+pops one too many items off the stack during validation. Adding an extra
+OP_0 placeholder to the scriptSig adds only 1 byte to the transaction,
+and any alternative that avoids OP_CHECKMULTISIG adds at least several
+bytes of opcodes.</p>
 <h2 id="Implementation">Implementation</h2>
 <p>OP_CHECKMULTISIG is already supported by old clients and miners as a
 non-standard transaction type.</p>

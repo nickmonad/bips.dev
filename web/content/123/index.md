@@ -14,16 +14,18 @@ status = ["Active"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0123.mediawiki"
 +++
 
-      BIP: 123
-      Title: BIP Classification
-      Author: Eric Lombrozo <elombrozo@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0123
-      Status: Active
-      Type: Process
-      Created: 2015-08-26
-      License: CC0-1.0
-               GNU-All-Permissive
+``` 
+  BIP: 123
+  Title: BIP Classification
+  Author: Eric Lombrozo <elombrozo@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0123
+  Status: Active
+  Type: Process
+  Created: 2015-08-26
+  License: CC0-1.0
+           GNU-All-Permissive
+```
 
 ## Abstract
 
@@ -63,7 +65,7 @@ Standards BIPs are placed in one of four layers:
 
 Non-standards BIPs may be placed in these layers, or none at all.
 
-### 1. Consensus Layer
+### 1\. Consensus Layer
 
 The consensus layer defines cryptographic commitment structures. Its
 purpose is ensuring that anyone can locally evaluate whether a
@@ -89,7 +91,7 @@ the old rules continue to be invalid under the new rules.
 In a hard fork, structures that were invalid under the old rules become
 valid under the new rules.
 
-### 2. Peer Services Layer
+### 2\. Peer Services Layer
 
 The peer services layer specifies how nodes find each other and
 propagate messages.
@@ -102,7 +104,7 @@ with existing services, then gradually deprecate older services. In this
 manner, the entire network can be upgraded without serious risks of
 service disruption.
 
-### 3. API/RPC Layer
+### 3\. API/RPC Layer
 
 The API/RPC layer specifies higher level calls accessible to
 applications. Support for these BIPs is not required for basic network
@@ -111,7 +113,7 @@ interoperability but might be expected by some client applications.
 There's room at this layer to allow for competing standards without
 breaking basic network interoperability.
 
-### 4. Applications Layer
+### 4\. Applications Layer
 
 The applications layer specifies high level structures, abstractions,
 and conventions that allow different applications to support similar
@@ -120,18 +122,18 @@ features and share data.
 ## Classification of existing BIPs
 
 | Number                               | Layer                 | Title                                                                                 | Owner                                                    | Type          | Status    |
-|--------------------------------------|-----------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------|---------------|-----------|
+| ------------------------------------ | --------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------- | --------- |
 | [1](/1)   |                       | BIP Purpose and Guidelines                                                            | Amir Taaki                                               | Process       | Active    |
 | [2](/2)   |                       | BIP process, revised                                                                  | Luke Dashjr                                              | Process       | Draft     |
 | [9](/9)   |                       | Version bits with timeout and delay                                                   | Pieter Wuille, Peter Todd, Greg Maxwell, Rusty Russell   | Informational | Final     |
 | [10](/10)  | Applications          | Multi-Sig Transaction Distribution                                                    | Alan Reiner                                              | Informational | Withdrawn |
 | [11](/11)  | Applications          | M-of-N Standard Transactions                                                          | Gavin Andresen                                           | Standard      | Final     |
-| [12](/12)  | Consensus (soft fork) | OP_EVAL                                                                               | Gavin Andresen                                           | Standard      | Withdrawn |
+| [12](/12)  | Consensus (soft fork) | OP\_EVAL                                                                              | Gavin Andresen                                           | Standard      | Withdrawn |
 | [13](/13)  | Applications          | Address Format for pay-to-script-hash                                                 | Gavin Andresen                                           | Standard      | Final     |
 | [14](/14)  | Peer Services         | Protocol Version and User Agent                                                       | Amir Taaki, Patrick Strateman                            | Standard      | Final     |
 | [15](/15)  | Applications          | Aliases                                                                               | Amir Taaki                                               | Standard      | Deferred  |
 | [16](/16)  | Consensus (soft fork) | Pay to Script Hash                                                                    | Gavin Andresen                                           | Standard      | Final     |
-| [17](/17)  | Consensus (soft fork) | OP_CHECKHASHVERIFY (CHV)                                                              | Luke Dashjr                                              | Standard      | Withdrawn |
+| [17](/17)  | Consensus (soft fork) | OP\_CHECKHASHVERIFY (CHV)                                                             | Luke Dashjr                                              | Standard      | Withdrawn |
 | [18](/18)  | Consensus (soft fork) | hashScriptCheck                                                                       | Luke Dashjr                                              | Standard      | Accepted  |
 | [19](/19)  | Applications          | M-of-N Standard Transactions (Low SigOp)                                              | Luke Dashjr                                              | Standard      | Draft     |
 | [20](/20)  | Applications          | URI Scheme                                                                            | Luke Dashjr                                              | Standard      | Replaced  |
@@ -159,7 +161,7 @@ features and share data.
 | [61](/61)  | Peer Services         | Reject P2P message                                                                    | Gavin Andresen                                           | Standard      | Final     |
 | [62](/62)  | Consensus (soft fork) | Dealing with malleability                                                             | Pieter Wuille                                            | Standard      | Withdrawn |
 | [64](/64)  | Peer Services         | getutxo message                                                                       | Mike Hearn                                               | Standard      | Draft     |
-| [65](/65)  | Consensus (soft fork) | OP_CHECKLOCKTIMEVERIFY                                                                | Peter Todd                                               | Standard      | Final     |
+| [65](/65)  | Consensus (soft fork) | OP\_CHECKLOCKTIMEVERIFY                                                               | Peter Todd                                               | Standard      | Final     |
 | [66](/66)  | Consensus (soft fork) | Strict DER signatures                                                                 | Pieter Wuille                                            | Standard      | Final     |
 | [67](/67)  | Applications          | Deterministic Pay-to-script-hash multi-signature addresses through public key sorting | Thomas Kerin, Jean-Pierre Rupp, Ruben de Vries           | Standard      | Accepted  |
 | [68](/68)  | Consensus (soft fork) | Relative lock-time using consensus-enforced sequence numbers                          | Mark Friedenbach, BtcDrak, Nicolas Dorier, kinoshitajona | Standard      | Final     |
@@ -168,7 +170,7 @@ features and share data.
 | [71](/71)  | Applications          | Payment Protocol MIME types                                                           | Gavin Andresen                                           | Standard      | Final     |
 | [72](/72)  | Applications          | bitcoin: uri extensions for Payment Protocol                                          | Gavin Andresen                                           | Standard      | Final     |
 | [73](/73)  | Applications          | Use "Accept" header for response type negotiation with Payment Request URLs           | Stephen Pair                                             | Standard      | Final     |
-| [74](/74)  | Applications          | Allow zero value OP_RETURN in Payment Protocol                                        | Toby Padilla                                             | Standard      | Draft     |
+| [74](/74)  | Applications          | Allow zero value OP\_RETURN in Payment Protocol                                       | Toby Padilla                                             | Standard      | Draft     |
 | [75](/75)  | Applications          | Out of Band Address Exchange using Payment Protocol Encryption                        | Justin Newton, Matt David, Aaron Voisine, James MacWhyte | Standard      | Draft     |
 | [80](/80)  |                       | Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets                  | Justus Ranvier, Jimmy Song                               | Informational | Deferred  |
 | [81](/81)  |                       | Hierarchy for Colored Voting Pool Deterministic Multisig Wallets                      | Justus Ranvier, Jimmy Song                               | Informational | Deferred  |
@@ -181,7 +183,7 @@ features and share data.
 | [106](/106) | Consensus (hard fork) | Dynamically Controlled Bitcoin Block Size Max Cap                                     | Upal Chakraborty                                         | Standard      | Draft     |
 | [107](/107) | Consensus (hard fork) | Dynamic limit on the block size                                                       | Washington Y. Sanchez                                    | Standard      | Draft     |
 | [109](/109) | Consensus (hard fork) | Two million byte size limit with sigop and sighash limits                             | Gavin Andresen                                           | Standard      | Draft     |
-| [111](/111) | Peer Services         | NODE_BLOOM service bit                                                                | Matt Corallo, Peter Todd                                 | Standard      | Accepted  |
+| [111](/111) | Peer Services         | NODE\_BLOOM service bit                                                               | Matt Corallo, Peter Todd                                 | Standard      | Accepted  |
 | [112](/112) | Consensus (soft fork) | CHECKSEQUENCEVERIFY                                                                   | BtcDrak, Mark Friedenbach, Eric Lombrozo                 | Standard      | Final     |
 | [113](/113) | Consensus (soft fork) | Median time-past as endpoint for lock-time calculations                               | Thomas Kerin, Mark Friedenbach                           | Standard      | Final     |
 | [114](/114) | Consensus (soft fork) | Merkelized Abstract Syntax Tree                                                       | Johnson Lau                                              | Standard      | Draft     |

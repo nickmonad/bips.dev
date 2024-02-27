@@ -96,16 +96,16 @@ approach for the following reasons:</p>
 <ul>
 <li>Privacy: Because Bloom filters are probabilistic, with the false
 positive rate chosen by the client, nodes can trade off precision vs
-bandwidth usage. A node with access to lots of bandwidth may choose to
-have a high FP rate, meaning the remote peer cannot accurately know
-which transactions belong to the client and which don't. A node with
-very little bandwidth may choose to use a very accurate filter meaning
-that they only get sent transactions actually relevant to their
-wallet, but remote peers may be able to correlate transactions with IP
-addresses (and each other).</li>
-<li>Bloom filters are compact and testing membership in them is fast. This
-results in satisfying performance characteristics with minimal risk of
-opening up potential for DoS attacks.</li>
+bandwidth usage. A node with access to lots of bandwidth may choose
+to have a high FP rate, meaning the remote peer cannot accurately
+know which transactions belong to the client and which don't. A node
+with very little bandwidth may choose to use a very accurate filter
+meaning that they only get sent transactions actually relevant to
+their wallet, but remote peers may be able to correlate transactions
+with IP addresses (and each other).</li>
+<li>Bloom filters are compact and testing membership in them is fast.
+This results in satisfying performance characteristics with minimal
+risk of opening up potential for DoS attacks.</li>
 </ul>
 <h2 id="Specification">Specification</h2>
 <h3 id="New_messages">New messages</h3>
@@ -247,15 +247,15 @@ pause between the node processing the first and second blocks.</p>
 <p>The nFlags field of the filter controls the nodes precise update
 behaviour and is a bit field.</p>
 <ul>
-<li><code>BLOOM_UPDATE_NONE (0)</code> means the filter is not adjusted when a match
-is found.</li>
-<li><code>BLOOM_UPDATE_ALL (1)</code> means if the filter matches any data element in
-a scriptPubKey the outpoint is serialized and inserted into the
+<li><code>BLOOM_UPDATE_NONE (0)</code> means the filter is not adjusted when a
+match is found.</li>
+<li><code>BLOOM_UPDATE_ALL (1)</code> means if the filter matches any data element
+in a scriptPubKey the outpoint is serialized and inserted into the
 filter.</li>
 <li><code>BLOOM_UPDATE_P2PUBKEY_ONLY (2)</code> means the outpoint is inserted into
-the filter only if a data element in the scriptPubKey is matched, and
-that script is of the standard &quot;pay to pubkey&quot; or &quot;pay to multisig&quot;
-forms.</li>
+the filter only if a data element in the scriptPubKey is matched,
+and that script is of the standard &quot;pay to pubkey&quot; or &quot;pay to
+multisig&quot; forms.</li>
 </ul>
 <p>These distinctions are useful to avoid too-rapid degradation of the
 filter due to an increasing false positive rate. We can observe that a
@@ -264,10 +264,10 @@ pay-to-address form doesn't need automatic filter updates because any
 transaction that spends one of its own outputs has a predictable data
 element in the input (the pubkey that hashes to the address). If a
 wallet might receive pay-to-address outputs and also pay-to-pubkey or
-pay-to-multisig outputs then BLOOM_UPDATE_P2PUBKEY_ONLY is appropriate,
-as it avoids unnecessary expansions of the filter for the most common
-types of output but still ensures correct behaviour with payments that
-explicitly specify keys.</p>
+pay-to-multisig outputs then BLOOM_UPDATE_P2PUBKEY_ONLY is
+appropriate, as it avoids unnecessary expansions of the filter for the
+most common types of output but still ensures correct behaviour with
+payments that explicitly specify keys.</p>
 <p>Obviously, nFlags == 1 or nFlags == 2 mean that the filter will get
 dirtier as more of the chain is scanned. Clients should monitor the
 observed false positive rate and periodically refresh the filter with a
@@ -283,8 +283,8 @@ was indeed in the block when it was being mined, but the size of the
 proof is much smaller than the size of the original block.</p>
 <h4 id="Constructing_a_partial_merkle_tree_object">Constructing a partial merkle tree object</h4>
 <ul>
-<li>Traverse the merkle tree from the root down, and for each encountered
-node:
+<li>Traverse the merkle tree from the root down, and for each
+encountered node:
 <ul>
 <li>Check whether this node corresponds to a leaf node (transaction)
 that is to be included OR any parent thereof:
@@ -298,10 +298,10 @@ parent of an included leaf node:
 <ul>
 <li>If so:
 <ul>
-<li>Descend into its left child node, and process the subtree
-beneath it entirely (depth-first).</li>
-<li>If this node has a right child node too, descend into it as
-well.</li>
+<li>Descend into its left child node, and process the
+subtree beneath it entirely (depth-first).</li>
+<li>If this node has a right child node too, descend into it
+as well.</li>
 </ul>
 </li>
 <li>Otherwise: append this node's hash to the hash list.</li>
@@ -319,23 +319,24 @@ traverse this tree, computing traversed node's hashes along the way:</p>
 <ul>
 <li>If it is '0':
 <ul>
-<li>Read a hash from the hashes list, and return it as this node's
-hash.</li>
+<li>Read a hash from the hashes list, and return it as this
+node's hash.</li>
 </ul>
 </li>
 <li>If it is '1' and this is a leaf node:
 <ul>
-<li>Read a hash from the hashes list, store it as a matched txid, and
-return it as this node's hash.</li>
+<li>Read a hash from the hashes list, store it as a matched
+txid, and return it as this node's hash.</li>
 </ul>
 </li>
 <li>If it is '1' and this is an internal node:
 <ul>
-<li>Descend into its left child tree, and store its computed hash as
-L.</li>
+<li>Descend into its left child tree, and store its computed
+hash as L.</li>
 <li>If this node has a right child as well:
 <ul>
-<li>Descend into its right child, and store its computed hash as R.</li>
+<li>Descend into its right child, and store its computed
+hash as R.</li>
 <li>If L == R, the partial merkle tree object is invalid.</li>
 <li>Return Hash(L || R).</li>
 </ul>
@@ -351,11 +352,11 @@ L.</li>
 <li>All hashes in the hash list were consumed and no more.</li>
 <li>All bits in the flag bits list were consumed (except padding to make
 it into a full byte), and no more.</li>
-<li>The hash computed for the root node matches the block header's merkle
-root.</li>
+<li>The hash computed for the root node matches the block header's
+merkle root.</li>
 <li>The block header is valid, and matches its claimed proof of work.</li>
-<li>In two-child nodes, the hash of the left and right branches was never
-equal.</li>
+<li>In two-child nodes, the hash of the left and right branches was
+never equal.</li>
 </ul>
 <h3 id="Bloom_filter_format">Bloom filter format</h3>
 <p>A Bloom filter is a bit-field in which bits are set based on feeding the
@@ -374,11 +375,13 @@ parameters you can use the following formulas:</p>
 <p>Let N be the number of elements you wish to insert into the set and P be
 the probability of a false positive, where 1.0 is &quot;match everything&quot; and
 zero is unachievable.</p>
-<p>The size S of the filter in bytes is given by
-<code>(-1 / pow(log(2), 2) * N * log(P)) / 8</code>. Of course you must ensure it
-does not go over the maximum size (36,000: selected as it represents a
-filter of 20,000 items with false positive rate of &lt; 0.1% or 10,000
-items and a false positive rate of &lt; 0.0001%).</p>
+<p>The size S of the filter in bytes is given by `(-1 / pow(log(2), 2) * N</p>
+<ul>
+<li>log(P)) / 8`. Of course you must ensure it does not go over the
+maximum size (36,000: selected as it represents a filter of 20,000 items
+with false positive rate of &lt; 0.1% or 10,000 items and a false positive
+rate of &lt; 0.0001%).</li>
+</ul>
 <p>The number of hash functions required is given by <code>S * 8 / N * log(2)</code>.</p>
 <h2 id="Copyright">Copyright</h2>
 <p>This document is placed in the public domain.</p>

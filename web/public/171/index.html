@@ -85,20 +85,20 @@ alphanumerics and the hyphen, underscore, period, and tilde symbols).</p>
 <ul>
 <li>All ISO 4217 codes are valid currency codes.</li>
 <li>XBT is defined as 100000000 satoshis (commonly known as 1 BTC).</li>
-<li>Strings longer than 3 characters may be used for currencies without an
-applicable code. (If a shorter code is desired despite this, it may be
-padded with space(s) to the left until it is 4 characters. Software
-MAY strip these spaces.)</li>
+<li>Strings longer than 3 characters may be used for currencies without
+an applicable code. (If a shorter code is desired despite this, it
+may be padded with space(s) to the left until it is 4 characters.
+Software MAY strip these spaces.)</li>
 </ul>
 <p>Rate is defined as the amount of quote-currency to be exchanged for one
-unit of the base-currency. In other words,
-<code>1 baseCurrency = rate quoteCurrency</code>.</p>
+unit of the base-currency. In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
 <h3 id="Enumerating_supported_currency-pair_tokens">Enumerating supported currency-pair tokens</h3>
 <p>Parameters:</p>
 <ul>
 <li><em>mode</em> - Always &quot;list&quot; for this request.</li>
 <li><em>quote</em> - If provided, the server MAY limit the results to only
-currency-pairs describing a currency with the given currency code(s).</li>
+currency-pairs describing a currency with the given currency
+code(s).</li>
 <li><em>base</em> - If provided, the server MAY limit the results to only
 currency-pairs describing currency rates compared to the given
 currency code(s).</li>
@@ -115,11 +115,12 @@ the following information:</p>
 locale.</li>
 <li><em>desc</em> - Optional description. For example, it could be &quot;Based on
 Florida BTM prices.&quot; or any other short String that provides
-information useful to the user. SHOULD be shorter than 45 characters.</li>
+information useful to the user. SHOULD be shorter than 45
+characters.</li>
 <li><em>signature</em> - Optional. May be used for Linked Data Signatures.</li>
 </ul>
 <p>Example:</p>
-<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB"><code>http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB</code></a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB">http://api.example.tld/?mode=list&amp;quote=USD&amp;base=XBT&amp;locale=en_US,en_GB</a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Smoothed averages&quot;}</code><br />
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Updated per-trade&quot;}</code><br />
@@ -140,31 +141,32 @@ the following information:</p>
 locale.</li>
 <li><em>desc</em> - Optional description. For example, it could be &quot;Based on
 Florida BTM prices.&quot; or any other short String that provides
-information useful to the user. SHOULD be shorter than 45 characters.</li>
+information useful to the user. SHOULD be shorter than 45
+characters.</li>
 <li><em>longdesc</em> - Optional description, but may be longer and include
 newlines.</li>
-<li><em>symbol</em> - An Array of prefix and suffix for the quote currency. Each
-may be either a fixed String, an Array of two Strings (negative and
-positive), or null. Any positive or negative symbols must be included
-in this prefix/suffix; it MUST NOT be implied otherwise.</li>
-<li><em>digits</em> - The type of digits to use for the quote currency's numbers.
-&quot;arabic&quot; should be used for common 0-9 digits.</li>
+<li><em>symbol</em> - An Array of prefix and suffix for the quote currency.
+Each may be either a fixed String, an Array of two Strings (negative
+and positive), or null. Any positive or negative symbols must be
+included in this prefix/suffix; it MUST NOT be implied otherwise.</li>
+<li><em>digits</em> - The type of digits to use for the quote currency's
+numbers. &quot;arabic&quot; should be used for common 0-9 digits.</li>
 <li><em>grouping</em> - An Array alternating between Numbers representing a
 series of digits, and Strings used as delimiters. If terminated by a
 zero, the final grouping is to be repeated continually. For example,
 the common US locale thousands grouping would be <code>[3, &quot;,&quot;, 0]</code></li>
 <li><em>fraction_sep</em> - A String to be placed between whole numbers and a
 fractional amount.</li>
-<li><em>fraction_digits</em> - Array of absolute minimum (even for whole numbers)
-number of fractional digits, minimum fractional digits when a fraction
-exists, and maximum number of fractional digits when absolute
-precision is not demanded (below which is to be rounded in an
-implementation-dependent manner).</li>
+<li><em>fraction_digits</em> - Array of absolute minimum (even for whole
+numbers) number of fractional digits, minimum fractional digits when
+a fraction exists, and maximum number of fractional digits when
+absolute precision is not demanded (below which is to be rounded in
+an implementation-dependent manner).</li>
 <li><em>minpoll</em> - A Number of seconds indicating a minimum time between
 polls to the server. Clients should be prudent about not polling too
 often, even if this number is low.</li>
-<li><em>longpoll</em> - If provided and true, indicates longpolling is supported
-by the server.</li>
+<li><em>longpoll</em> - If provided and true, indicates longpolling is
+supported by the server.</li>
 <li><em>history</em> - If provided, indicates the server has historical records
 going back no earlier than the POSIX timestamp provided as a value.</li>
 <li><em>archive</em> - If provided, indicates the server no longer has current
@@ -173,7 +175,7 @@ timestamp provided as a value.</li>
 <li><em>signature</em> - Optional. May be used for Linked Data Signatures.</li>
 </ul>
 <p>Example:</p>
-<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2"><code>http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2</code></a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2">http://api.example.tld/?mode=info&amp;cp=XBTUSD-ver4,2</a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Smoothed averages&quot;, &quot;longdesc&quot;: &quot;USD price quotes as compared to Bitcoin value\n\nRecommended for casual usage&quot;, &quot;symbol&quot;: [[&quot;-$&quot;, &quot;$&quot;], null], &quot;digits&quot;: &quot;arabic&quot;, &quot;grouping&quot;: [3, &quot;,&quot;, 0], &quot;fraction_sep&quot;: &quot;.&quot;, &quot;fraction_digits&quot;: [0, 2, 2], &quot;minpoll&quot;: 300, &quot;longpoll&quot;: true, &quot;history&quot;: 1457231416}</code><br />
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;quote&quot;:&quot;USD&quot;, &quot;base&quot;: &quot;XBT&quot;, &quot;locale&quot;: &quot;en_US&quot;, &quot;desc&quot;: &quot;Updated per-trade&quot;, &quot;longdesc&quot;: &quot;Maximum precision USD price quotes as compared to Bitcoin value&quot;, &quot;symbol&quot;: [[&quot;-$&quot;, &quot;$&quot;], null], &quot;digits&quot;: &quot;arabic&quot;, &quot;grouping&quot;: [3, &quot;,&quot;, 0], &quot;fraction_sep&quot;: &quot;.&quot;, &quot;fraction_digits&quot;: [0, 2, 2], &quot;minpoll&quot;: 3600, &quot;longpoll&quot;: false, &quot;history&quot;: 1467458333.1225}</code></p>
@@ -183,11 +185,11 @@ timestamp provided as a value.</li>
 <li><em>mode</em> - Always &quot;rate&quot; for this request.</li>
 <li><em>cp</em> - Currency pair(s) for which rate is requested.</li>
 <li><em>type</em> - Type of exchange rate data being requested. May be &quot;high&quot;,
-&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If omitted,
-the server may provide any rates it deems appropriate.</li>
+&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If
+omitted, the server may provide any rates it deems appropriate.</li>
 <li><em>minrate</em>, <em>maxrate</em> - If specified, indicates this request is a
-longpoll. The server should not send a response until the rate(s) fall
-below or above (respectively) the provided value.</li>
+longpoll. The server should not send a response until the rate(s)
+fall below or above (respectively) the provided value.</li>
 <li><em>nonce</em> - If specified, the server SHOULD return it in each result.</li>
 </ul>
 <p>Each currency-pair receives a separate result (a JSON Object) with all
@@ -203,7 +205,7 @@ include it here as a JSON String.</li>
 <li><em>signature</em> - Optional. May be used for Linked Data Signatures.</li>
 </ul>
 <p>Example:</p>
-<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high"><code>http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high</code></a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high">http://api.example.tld/?mode=rate&amp;cp=XBTUSD-ver4,2&amp;type=typical,high</a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;time&quot;: 1488767410.5463133, &quot;rates&quot;: {&quot;typical&quot;: 1349.332215, &quot;high&quot;: 1351.2}}</code><br />
 <code>     {&quot;cp&quot;:&quot;2&quot;, &quot;time&quot;: 1488767410, &quot;rates&quot;: {&quot;typical&quot;: 1350.111332}}</code></p>
@@ -213,8 +215,8 @@ include it here as a JSON String.</li>
 <li><em>mode</em> - Always &quot;history&quot; for this request.</li>
 <li><em>cp</em> - Currency pair(s) for which rate is requested.</li>
 <li><em>type</em> - Type of exchange rate data being requested. May be &quot;high&quot;,
-&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If omitted,
-the server may provide any rates it deems appropriate.</li>
+&quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If
+omitted, the server may provide any rates it deems appropriate.</li>
 <li><em>from</em> - POSIX timestamp the results should begin with.</li>
 <li><em>to</em> - POSIX timestamp the results should end with. If omitted, the
 present time shall be used.</li>
@@ -238,7 +240,7 @@ included. This is not necessary when only the nearest record is
 requested, or when &quot;to&quot; is omitted (ie, ending at the most recent
 record).</p>
 <p>Example:</p>
-<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090"><code>http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090</code></a><br />
+<p><code>   Request: </code><a rel="noopener" target="_blank" href="http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090">http://api.example.tld/?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090</a><br />
 <code>   Result:</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;time&quot;: 1488760000, &quot;rates&quot;: {&quot;typical&quot;: 1300}}</code><br />
 <code>     {&quot;cp&quot;:&quot;XBTUSD-ver4&quot;, &quot;time&quot;: 1488760010, &quot;rates&quot;: {&quot;typical&quot;: 1301.1}}</code><br />
@@ -276,13 +278,13 @@ JSON Array?</p>
 <li>Clients ought to cache historical data, and using a line-feed format
 allows them to simply append to a cache file.</li>
 <li>Parsing JSON typically requires the entire data parsed together as a
-single memory object. Using simple lines to separate results, however,
-allows parsing a single result at a time.</li>
+single memory object. Using simple lines to separate results,
+however, allows parsing a single result at a time.</li>
 </ul>
 <p>What if long descriptions require line and paragraph breaks?</p>
 <ul>
-<li>Clients should word-wrap long lines, and JSON escapes newlines as &quot;\n&quot;
-which can be used doubly (&quot;\n\n&quot;) for paragraph breaks.</li>
+<li>Clients should word-wrap long lines, and JSON escapes newlines as
+&quot;\n&quot; which can be used doubly (&quot;\n\n&quot;) for paragraph breaks.</li>
 </ul>
 <h2 id="Backwards_compatibility">Backwards compatibility</h2>
 <p>While this new standard is adopted, software and providers can continue

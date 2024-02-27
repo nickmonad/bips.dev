@@ -5,7 +5,7 @@ weight = 386
 in_search_index = true
 
 [taxonomies]
-authors = ["Pieter Wuille", "Andrew Chow"]
+authors = ["Pieter Wuille", "Ava Chow"]
 status = ["Draft"]
 
 [extra]
@@ -14,17 +14,19 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0386.mediawiki"
 +++
 
-      BIP: 386
-      Layer: Applications
-      Title: tr() Output Script Descriptors
-      Author: Pieter Wuille <pieter@wuille.net>
-              Andrew Chow <andrew@achow101.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0386
-      Status: Draft
-      Type: Informational
-      Created: 2021-06-27
-      License: BSD-2-Clause
+``` 
+  BIP: 386
+  Layer: Applications
+  Title: tr() Output Script Descriptors
+  Author: Pieter Wuille <pieter@wuille.net>
+          Ava Chow <me@achow101.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0386
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+```
 
 ## Abstract
 
@@ -54,14 +56,14 @@ dependent on the higher level expressions.
 
 A Tree Expression is:
 
-- Any Script Expression that is allowed at the level this Tree
-  Expression is in.
-- A pair of Tree Expressions consisting of:
-  - An open brace `{`
-  - A Tree Expression
-  - A comma `,`
-  - A Tree Expression
-  - A closing brace `}`
+  - Any Script Expression that is allowed at the level this Tree
+    Expression is in.
+  - A pair of Tree Expressions consisting of:
+      - An open brace `{`
+      - A Tree Expression
+      - A comma `,`
+      - A Tree Expression
+      - A closing brace `}`
 
 ### `tr()`
 
@@ -105,11 +107,40 @@ keys derived from extended keys must be serialized as x-only public
 keys. An additional key expression is defined only for use within a
 `tr()` descriptor:
 
-- A 64 hex character string representing an x-only public key
+  - A 64 hex character string representing an x-only public key
 
 ## Test Vectors
 
-TBD
+Valid descriptors followed by the scripts they produce. Descriptors
+involving derived child keys will have the 0th, 1st, and 2nd scripts
+listed.
+
+  - `tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd)`
+      - `512077aab6e066f8a7419c5ab714c12c67d25007ed55a43cadcacb4d7a970a093f11`
+  - `tr(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1)`
+      - `512077aab6e066f8a7419c5ab714c12c67d25007ed55a43cadcacb4d7a970a093f11`
+  - `tr(xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/0/*,pk(xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/1/*))`
+      - `512078bc707124daa551b65af74de2ec128b7525e10f374dc67b64e00ce0ab8b3e12`
+      - `512001f0a02a17808c20134b78faab80ef93ffba82261ccef0a2314f5d62b6438f11`
+      - `512021024954fcec88237a9386fce80ef2ced5f1e91b422b26c59ccfc174c8d1ad25`
+  - `tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd,pk(669b8afcec803a0d323e9a17f3ea8e68e8abe5a278020a929adbec52421adbd0))`
+      - `512017cf18db381d836d8923b1bdb246cfcd818da1a9f0e6e7907f187f0b2f937754`
+  - `tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd,{pk(xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334/0),``)`
+      - `512071fff39599a7b78bc02623cbe814efebf1a404f5d8ad34ea80f213bd8943f574`
+
+Invalid Descriptors
+
+  - Uncompressed private key:
+    `tr(5kyzdueo39z3fprtux2qbbwgnnp5ztd7yyr2sc1j299sbcnwjss)`
+  - Uncompressed public key:
+    `tr(04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235)`
+  - `tr()` nested in `wsh`:
+    `wsh(tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))`
+  - `tr()` nested in `sh`:
+    `sh(tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))`
+  - `pkh()` nested in `tr`:
+    `tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd,
+    pkh(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1))`
 
 ## Backwards Compatibility
 

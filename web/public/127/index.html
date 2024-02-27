@@ -89,7 +89,7 @@ and for users.</p>
 <p>The proof-of-reserve construction described in this document has some
 known shortcomings, mostly with regards to its privacy properties. While
 there exists research about improved proof-of-reserves mechanisms that
-have much better privacy properties<sup class="footnote-reference"><a href="#1">1</a></sup>, this BIP intentionally only
+have much better privacy properties[1], this BIP intentionally only
 formalizes the de-facto existing method.</p>
 <h2 id="Specification">Specification</h2>
 <p>Our specification consists of two parts:</p>
@@ -99,15 +99,16 @@ formalizes the de-facto existing method.</p>
 </ol>
 <p>The final construction should have the following properties:</p>
 <ul>
-<li>flexible proof construction to support complex wallet infrastructures</li>
+<li>flexible proof construction to support complex wallet
+infrastructures</li>
 <li>easy integration with existing wallet solutions (both hardware and
 software wallets)</li>
 <li>support for verification via a standard procedure, regardless of
 publisher of the proof</li>
 <li>proof prevents reuse of proofs by other parties by committing to a
 message</li>
-<li>allow validating that the issuer had the funds under his control at a
-certain block, regardless of what happened after that block</li>
+<li>allow validating that the issuer had the funds under his control at
+a certain block, regardless of what happened after that block</li>
 </ul>
 <h3 id="Proof_Format">Proof Format</h3>
 <p>To allow for maximal compatibility with existing systems, proofs are
@@ -123,20 +124,20 @@ characteristics:</p>
 <ul>
 <li>The first input (the &quot;commitment input&quot;)
 <ul>
-<li>MUST have the txid part of the previous outpoint set to the SHA-256
-hash of the commitment message prefixed with &quot;Proof-of-Reserves:
-&quot;<sup class="footnote-reference"><a href="#2">2</a></sup> and index 0.</li>
+<li>MUST have the txid part of the previous outpoint set to the
+SHA-256 hash of the commitment message prefixed with
+&quot;Proof-of-Reserves: &quot;[2] and index 0.</li>
 </ul>
 </li>
 <li>The remaining inputs
 <ul>
-<li>MUST have signatures that commit to the commitment input (e.g. using
-<code>SIGHASH_ALL</code>).</li>
+<li>MUST have signatures that commit to the commitment input (e.g.
+using <code>SIGHASH_ALL</code>).</li>
 </ul>
 </li>
-<li>The transaction MUST have a single output that is the exact sum of all
-the inputs, assuming the commitment input to have 0 value; this means
-the transaction has no miner fee.</li>
+<li>The transaction MUST have a single output that is the exact sum of
+all the inputs, assuming the commitment input to have 0 value; this
+means the transaction has no miner fee.</li>
 </ul>
 <p>The existence of the first input (which is just a commitment hash)
 ensures that this transaction is invalid and can never be confirmed.</p>
@@ -145,37 +146,37 @@ ensures that this transaction is invalid and can never be confirmed.</p>
 minimum viable standard. However, there are a number of motivations to
 extend the standard with an extra layer of metadata:</p>
 <ol>
-<li>
-<p>constructing and combining multiple proofs</p>
-<p>Having thousands of UTXOs spread across different offline and online
-wallets could make it difficult to construct a single proof
-transaction with all UTXOs. Allowing multiple proof transactions
-with the same commitment message and block number gives extra
-flexibility to custodians with complex wallet infrastructure without
-making the combined proof less secure.</p>
+<li><h2 id="constructing_and_combining_multiple_proofs">constructing and combining multiple proofs</h2>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>Having thousands of UTXOs spread across different offline and
+</span><span>online wallets could make it difficult to construct a single
+</span><span>proof transaction with all UTXOs. Allowing multiple proof
+</span><span>transactions with the same commitment message and block number
+</span><span>gives extra flexibility to custodians with complex wallet
+</span><span>infrastructure without making the combined proof less secure.
+</span></code></pre>
 </li>
-<li>
-<p>metadata for verification</p>
-<p>Not all systems that will be used for verification have access to a
-full index of all transactions. However, proofs should be easily
-verifiable even after some of the UTXOs used in the proof are no
-longer unspent. Metadata present in the proof allows for relatively
-efficient verification of proofs even if no transaction index is
-available.</p>
+<li><h2 id="metadata_for_verification">metadata for verification</h2>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>Not all systems that will be used for verification have access
+</span><span>to a full index of all transactions. However, proofs should be
+</span><span>easily verifiable even after some of the UTXOs used in the proof
+</span><span>are no longer unspent. Metadata present in the proof allows for
+</span><span>relatively efficient verification of proofs even if no
+</span><span>transaction index is available.
+</span></code></pre>
 </li>
-<li>
-<p>potential future improvements</p>
-<p>The extensible metadata format allows for amending the standard in
-the future. One potential improvement would be having UTXO set
-commitments. These would allow the proofs-of-reserves to come with
-accompanying proofs-of-inclusion of all used UTXOs in the UTXO set
-at the block of proof construction (making validation even more
-efficient).</p>
+<li><h2 id="potential_future_improvements">potential future improvements</h2>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>The extensible metadata format allows for amending the standard
+</span><span>in the future. One potential improvement would be having UTXO
+</span><span>set commitments. These would allow the proofs-of-reserves to
+</span><span>come with accompanying proofs-of-inclusion of all used UTXOs in
+</span><span>the UTXO set at the block of proof construction (making
+</span><span>validation even more efficient).
+</span></code></pre>
 </li>
 </ol>
 <p>The proposed proof-file format provides a standard way of combining
 multiple proofs and associated metadata. The specification of the format
-is in the Protocol Buffers<sup class="footnote-reference"><a href="#3">3</a></sup> format.</p>
+is in the Protocol Buffers[3] format.</p>
 <pre style="background-color:#fafafa;color:#61676c;"><code><span>syntax = &quot;proto3&quot;;
 </span><span>import &quot;google/protobuf/any.proto&quot;;
 </span><span>
@@ -268,12 +269,13 @@ proof-of-reserves.
 </ul>
 <p>Wallets processing an input that has this field set</p>
 <ul>
-<li>MUST make sure the txid of the previous outpoint is set to the SHA-256
-hash of the prefixed commitment message string, as detailed above;</li>
+<li>MUST make sure the txid of the previous outpoint is set to the
+SHA-256 hash of the prefixed commitment message string, as detailed
+above;</li>
 <li>MUST assume the input value to be 0 (without requiring the previous
 output or transaction to be provided);</li>
-<li>SHOULD display the commitment message to ask the user for confirmation
-before signing any inputs;</li>
+<li>SHOULD display the commitment message to ask the user for
+confirmation before signing any inputs;</li>
 <li>SHOULD only provide signatures with a signature hash that commits to
 this input;</li>
 <li>SHOULD accept an empty <code>scriptSig</code> for this input (as if the
@@ -293,21 +295,20 @@ be found in the <code>psbt-por</code> branch here:
 <p>A work-in-progress implementation of a tool that produces and verifies
 proofs in the described format can be found here:
 <a rel="noopener" target="_blank" href="https://github.com/stevenroose/reserves">https://github.com/stevenroose/reserves</a></p>
+<p>An implementation of the custom proof PSBTs is part of the
+<a rel="noopener" target="_blank" href="https://bitcoindevkit.org/">BDK</a>, and can be found here:
+<a rel="noopener" target="_blank" href="https://crates.io/crates/bdk-reserves">https://crates.io/crates/bdk-reserves</a></p>
 <h2 id="Footnotes">Footnotes</h2>
 <references />
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>Dagher, Gaby G., Benedikt Bünz, Joseph Bonneau, Jeremy Clark, and
+<ol>
+<li>Dagher, Gaby G., Benedikt Bünz, Joseph Bonneau, Jeremy Clark, and
 Dan Boneh. &quot;Provisions: Privacy-preserving proofs of solvency for
-Bitcoin exchanges.&quot; (2015).</p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p>If the message is &quot;Some Message&quot;, the txid part should be
+Bitcoin exchanges.&quot; (2015).</li>
+<li>If the message is &quot;Some Message&quot;, the txid part should be
 <code>SHA-256(&quot;Proof-of-Reserves: Some Message&quot;)</code> with the string encoded
-as UTF-8.</p>
-</div>
-<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p><a rel="noopener" target="_blank" href="https://github.com/protocolbuffers/protobuf/">https://github.com/protocolbuffers/protobuf/</a></p>
-</div>
+as UTF-8.</li>
+<li><a rel="noopener" target="_blank" href="https://github.com/protocolbuffers/protobuf/">https://github.com/protocolbuffers/protobuf/</a></li>
+</ol>
 
     </div>
 

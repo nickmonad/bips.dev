@@ -14,16 +14,18 @@ status = ["Draft"]
 github = "https://github.com/bitcoin/bips/blob/master/bip-0320.mediawiki"
 +++
 
-      BIP: 320
-      Title: nVersion bits for general purpose use
-      Author: BtcDrak <btcdrak@gmail.com>
-      Comments-Summary: No comments yet.
-      Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0320
-      Status: Draft
-      Type: Standards Track
-      Created: 2018-03-01
-      License: BSD-3-Clause
-               CC0-1.0
+``` 
+  BIP: 320
+  Title: nVersion bits for general purpose use
+  Author: BtcDrak <btcdrak@gmail.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0320
+  Status: Draft
+  Type: Standards Track
+  Created: 2018-03-01
+  License: BSD-3-Clause
+           CC0-1.0
+```
 
 ## Abstract
 
