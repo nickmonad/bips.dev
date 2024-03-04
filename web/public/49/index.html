@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 49</title>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 49: Derivation scheme for P2WPKH-nested-in-P2SH based accounts
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2016-05-19</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0049.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 49
+</span><span>  Layer: Applications
+</span><span>  Title: Derivation scheme for P2WPKH-nested-in-P2SH based accounts
+</span><span>  Author: Daniel Weigl &lt;DanielWeigl@gmx.at&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0049
+</span><span>  Status: Final
+</span><span>  Type: Informational
+</span><span>  Created: 2016-05-19
+</span><span>  License: PD
+</span></code></pre>
+<h2>Abstract</h2>
+<p>This BIP defines the derivation scheme for HD wallets using the P2WPKH-nested-in-P2SH (<a href="/141" target="_blank">BIP 141</a>) serialization format for segregated witness transactions.</p>
+<h2>Motivation</h2>
+<p>With the usage of P2WPKH-nested-in-P2SH (<a href="/141" target="_blank">BIP 141</a>) transactions it is necessary to have a common derivation scheme.
+It allows the user to use different HD wallets with the same masterseed and/or a single account seamlessly.</p>
+<p>Thus the user needs to create dedicated segregated witness accounts, which ensures that only wallets compatible with this BIP
+will detect the accounts and handle them appropriately.</p>
+<h3>Considerations</h3>
+<p>Two generally different approaches are possible for current BIP44 capable wallets:</p>
+<ol>
+<li>Allow the user to use the same account(s) that they already use, but add segregated witness encoded addresses to it.</li>
+</ol>
+<p>1.1) Use the same public keys as defined in BIP44, but in addition to the normal P2PKH address also derive the P2SH address from it.</p>
+<p>1.2) Use the same account root, but branch off and derive different external and internal chain roots to derive dedicated public keys for the segregated witness addresses.</p>
+<ol start="2">
+<li>Create dedicated accounts used only for segregated witness addresses.</li>
+</ol>
+<p>The solutions from point 1 have a common disadvantage: if a user imports/recovers a BIP49-compatible wallet masterseed into/in a non-BIP49-compatible wallet, the account might show up but also it might miss some UTXOs.</p>
+<p>Therefore this BIP uses solution 2, which fails in a more visible way. Either the account shows up or not at all. The user does not have to check his balance after using the same seed in different wallets.</p>
+<h2>Specifications</h2>
+<p>This BIP defines the two needed steps to derive multiple deterministic addresses based on a <a href="/32" target="_blank">BIP 32</a> root account.</p>
+<h3>Public key derivation</h3>
+<p>To derive a public key from the root account, this BIP uses the same account-structure as defined in
+<a href="/44" target="_blank">BIP 44</a>, but only uses a different purpose value to indicate the different transaction
+serialization method.</p>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>m / purpose&#39; / coin_type&#39; / account&#39; / change / address_index
+</span></code></pre>
+<p>For the <code>purpose</code>-path level it uses <code>49'</code>. The rest of the levels are used as defined in BIP44.</p>
+<h3>Address derivation</h3>
+<p>To derive the P2SH address from the above calculated public key, we use the encapsulation defined in <a href="/141" target="_blank">BIP 141</a>:</p>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>    witness:      &lt;signature&gt; &lt;pubkey&gt;
+</span><span>    scriptSig:    &lt;0 &lt;20-byte-key-hash&gt;&gt;
+</span><span>                  (0x160014{20-byte-key-hash})
+</span><span>    scriptPubKey: HASH160 &lt;20-byte-script-hash&gt; EQUAL
+</span><span>                  (0xA914{20-byte-script-hash}87)
+</span></code></pre>
+<h3>Extended Key Version</h3>
+<p>When serializing extended keys, this scheme uses alternate version bytes. Extended public keys use <code>0x049d7cb2</code> to produce a &quot;ypub&quot; prefix, and private keys use <code>0x049d7878</code> to produce a &quot;yprv&quot; prefix. Testnet uses <code>0x044a5262</code> &quot;upub&quot; and <code>0x044a4e28</code> &quot;uprv.&quot;</p>
+<p>Additional registered version bytes are listed in <a href="https://github.com/satoshilabs/slips/blob/master/slip-0132.md" target="_blank">SLIP-0132</a>.</p>
+<h2>Backwards Compatibility</h2>
+<p>This BIP is not backwards compatible by design as described under <a href="#considerations" target="_blank">considerations</a>. An incompatible wallet will not discover accounts at all and the user will notice that something is wrong.</p>
+<h2>Test vectors</h2>
+<pre style="background-color:#fafafa;color:#61676c;"><code><span>  masterseedWords = abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+</span><span>  masterseed = uprv8tXDerPXZ1QsVNjUJWTurs9kA1KGfKUAts74GCkcXtU8GwnH33GDRbNJpEqTvipfCyycARtQJhmdfWf8oKt41X9LL1zeD2pLsWmxEk3VAwd (testnet)
+</span><span>
+</span><span>  // Account 0, root = m/49&#39;/1&#39;/0&#39;
+</span><span>  account0Xpriv = uprv91G7gZkzehuMVxDJTYE6tLivdF8e4rvzSu1LFfKw3b2Qx1Aj8vpoFnHdfUZ3hmi9jsvPifmZ24RTN2KhwB8BfMLTVqaBReibyaFFcTP1s9n (testnet)
+</span><span>  account0Xpub = upub5EFU65HtV5TeiSHmZZm7FUffBGy8UKeqp7vw43jYbvZPpoVsgU93oac7Wk3u6moKegAEWtGNF8DehrnHtv21XXEMYRUocHqguyjknFHYfgY (testnet)
+</span><span>
+</span><span>  // Account 0, first receiving private key = m/49&#39;/1&#39;/0&#39;/0/0
+</span><span>  account0recvPrivateKey = cULrpoZGXiuC19Uhvykx7NugygA3k86b3hmdCeyvHYQZSxojGyXJ
+</span><span>  account0recvPrivateKeyHex = 0xc9bdb49cfbaedca21c4b1f3a7803c34636b1d7dc55a717132443fc3f4c5867e8
+</span><span>  account0recvPublickKeyHex = 0x03a1af804ac108a8a51782198c2d034b28bf90c8803f5a53f76276fa69a4eae77f
+</span><span>
+</span><span>  // Address derivation
+</span><span>  keyhash = HASH160(account0recvPublickKeyHex) = 0x38971f73930f6c141d977ac4fd4a727c854935b3
+</span><span>  scriptSig = &lt;0 &lt;keyhash&gt;&gt; = 0x001438971f73930f6c141d977ac4fd4a727c854935b3
+</span><span>  addressBytes = HASH160(scriptSig) = 0x336caa13e08b96080a32b5d818d59b4ab3b36742
+</span><span>
+</span><span>  // addressBytes base58check encoded for testnet
+</span><span>  address = base58check(prefix | addressBytes) = 2Mww8dCYPUpKHofjgcXcBCEGmniw9CoaiD2 (testnet)
+</span></code></pre>
+<h2>Reference</h2>
+<ul>
+<li><a href="/16" target="_blank">BIP16 - Pay to Script Hash</a></li>
+<li><a href="/32" target="_blank">BIP32 - Hierarchical Deterministic Wallets</a></li>
+<li><a href="/43" target="_blank">BIP43 - Purpose Field for Deterministic Wallets</a></li>
+<li><a href="/44" target="_blank">BIP44 - Multi-Account Hierarchy for Deterministic Wallets</a></li>
+<li><a href="/141" target="_blank">BIP141 - Segregated Witness (Consensus layer)</a></li>
+</ul>
+<h2> Copyright </h2>
+<p>This document is placed in the public domain.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. ₿</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

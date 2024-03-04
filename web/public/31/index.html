@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 31</title>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 31: Pong message
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2012-04-11</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0031.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 31
+</span><span>  Layer: Peer Services
+</span><span>  Title: Pong message
+</span><span>  Author: Mike Hearn &lt;hearn@google.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0031
+</span><span>  Status: Final
+</span><span>  Type: Standards Track
+</span><span>  Created: 2012-04-11
+</span></code></pre>
+<h2>Abstract</h2>
+<p>This document describes a trivial protocol extension that makes it easier for clients to detect dead peer connections.</p>
+<h2>Motivation</h2>
+<p>Today there are a few network related problems that can degrade the Bitcoin user experience:</p>
+<ol>
+<li>
+<p>Some Bitcoin clients run on platforms that can go to sleep and essentially stop running at any time without warning. Notably, this is very common on both mobiles and laptops (shut the lid). When the system comes back, TCP connections that existed before the sleep still exist but may no longer function correctly, eg, because the IP address has changed, or because the remote peer went away or the connection was timed out by some other system. Currently it can often take a while to notice this has happened.</p>
+</li>
+<li>
+<p>The reference Satoshi client is largely single threaded and when placed under heavy load (e.g., because it is downloading the block chain) becomes very slow to respond to network messages. There's no easy way to detect this has occurred, especially if you are just passively waiting for broadcasts from that peer. A way to detect overloaded remote peers and avoid them would both help balance load and provide a better, more responsive system.</p>
+</li>
+<li>
+<p>When downloading large data structures like the block chain it is efficient to choose a peer that is near to you network-wise, in order to reduce load on often congested trans-national links and ensure lower latency. Currently it is difficult to measure the latency to a remote peer so clients don't bother, and instead just select a random peer to download from.</p>
+</li>
+</ol>
+<p>All of these can be solved by a backwards compatible protocol modification.</p>
+<h2>Specification</h2>
+<p>When the protocol version as negotiated in the &quot;ver&quot; message is greater than 60000, the &quot;ping&quot; message must contain a uint64 field called &quot;nonce&quot;. A peer sending &quot;ping&quot; should set the nonce to a random value, and it is then echoed back by the recipient in a new &quot;pong&quot; message that also contains a single uint64 field.</p>
+<p>In this way, the client can send a ping and measure the time taken to receive the corresponding pong. If a client sends two pings before hearing back the first pong, the responses can be distinguished using the nonce. If the client chooses to never overlap pings in this way it should simply set the nonce value to zero.</p>
+<h2>Backward compatibility</h2>
+<p>Clients must opt-in to the new feature by advertising a protocol version &gt; 60000. Clients with older protocol versions are not expected to provide a nonce in the ping message and will not be sent a pong.</p>
+<h2>Implementation</h2>
+<p>https://github.com/bitcoin/bitcoin/pull/932/files</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. ₿</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

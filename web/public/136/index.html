@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 136</title>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 136: Bech32 Encoded Tx Position References
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-07-09</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0136.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 136
+</span><span>  Layer: Applications
+</span><span>  Title: Bech32 Encoded Tx Position References
+</span><span>  Author: Велеслав &lt;veleslav.bips@protonmail.com&gt;
+</span><span>          Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
+</span><span>          Daniel Pape &lt;dpape@dpape.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0136
+</span><span>  Status: Draft
+</span><span>  Type: Informational
+</span><span>  Created: 2017-07-09
+</span><span>  License: BSD-2-Clause
+</span></code></pre>
+<h2> Introduction </h2>
+<h3> Abstract </h3>
+<p>This document proposes a convenient, human usable encoding to refer to a <strong>confirmed transaction position</strong> within the Bitcoin blockchain--known as <strong>&quot;TxRef&quot;</strong>. The primary purpose of this encoding is to allow users to refer to a confirmed transaction (and optionally, a particular outpoint index within the transaction) in a standard, reliable, and concise way.</p>
+<p><em>Please note: Unlike a transaction ID, <strong>&quot;TxID&quot;</strong>, where there is a strong cryptographic link between the ID and the actual transaction, a <strong>TxRef</strong> only provides a weak link to a particular transaction. A <strong>TxRef</strong> locates an offset within a blockchain for a transaction, that may - or may not - point to an actual transaction, which in fact may change with reorganisations. We recommend that <strong>TxRef</strong>s should be not used for positions within the blockchain having a maturity less than 100 blocks.</em></p>
+<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <a href="https://tools.ietf.org/html/rfc2119" target="_blank">RFC 2119</a>.</p>
+<h3> Copyright </h3>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+<h3> Motivation </h3>
+<p>Since the first version of Bitcoin, <strong>TxID</strong>s have been a core part of the consensus protocol and are routinely used to identify individual transactions between users.</p>
+<p>However, for many use-cases they have practical limitations:</p>
+<ul>
+<li><strong>TxID</strong>s are expensive for full nodes to lookup (requiring either a linear scan of the blockchain, or an expensive <strong>TxID</strong> index).</li>
+<li><strong>TxID</strong>s require third-party services for SPV wallets to lookup.</li>
+<li><strong>TxID</strong>s are 64 character HEX encoded values.</li>
+</ul>
+<p>It is possible to reference transactions not only by their <strong>TxID</strong>, but by their location within the blockchain itself. Rather than use the 64 character <strong>TxID</strong>, an encoding of the position coordinates can be made friendly for occasional human transcription. In this document, we propose a standard for doing this.</p>
+<h3> Examples </h3>
+<table><thead><tr><th>Block #</th><th>Transaction #</th><th>Outpoint #</th><th>TxRef</th><th>TxID</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>tx1:rqqq‑qqqq‑qwtv‑vjr</td><td>4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b</td></tr>
+<tr><td>170</td><td>1</td><td>0</td><td>tx1:r52q‑qqpq‑qpty‑cfg</td><td>f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16</td></tr>
+<tr><td>456789</td><td>1234</td><td>1</td><td>tx1:y29u‑mqjx‑ppqq‑sfp2‑tt</td><td>6fb8960f70667dc9666329728a19917937896fc476dfc54a3e802e887ecb4e82</td></tr>
+</tbody></table>
+<h2> Specification </h2>
+<p>A <strong>confirmed transaction position reference</strong>, or <strong>TxRef</strong>, is a reference to a particular location within the blockchain, specified by the block height and a transaction index within the block, and optionally, an outpoint index within the transaction.</p>
+<p><em>Please Note: All values in this specification are encoded in little-endian format.</em></p>
+<h3> TxRef Considerations </h3>
+<p>It is possible for a <strong>TxRef</strong> to reference a transaction that doesn't really exist because:</p>
+<ul>
+<li>The specified block hasn't yet been mined.</li>
+<li>The transaction index is greater than the total number of transactions included within the specified block.</li>
+<li>The optional outpoint index is greater than the total outpoints contained within the transaction.</li>
+</ul>
+<p>Therefore, implementers must be careful not to display <strong>TxRef</strong>s to users prematurely:</p>
+<ul>
+<li>Applications MUST NOT display <strong>TxRef</strong>s for transactions with less than 6 confirmations.</li>
+<li>Application MUST show a warning for <strong>TxRef</strong>s for transactions with less than 100 confirmations.
+<ul>
+<li>This warning SHOULD state that in the case of a large reorganisation, the <strong>TxRef</strong>s displayed may point to a different transaction, or to no transaction at all.</li>
+</ul>
+</li>
+</ul>
+<h3> TxRef Format </h3>
+<p><strong>TxRef</strong> MUST use the <strong>Bech32m</strong><ref><strong>Why use Bech32 Encoding for Confirmed Transaction References?</strong> The error detection and correction properties of this encoding format make it very attractive. We expect that it will be reasonable for software to correct a maximum of two characters; however, we haven’t specified this yet.</ref> encoding as defined in <a href="/173" target="_blank">BIP-0173</a> and later refined in <a href="/350" target="_blank">BIP-0350</a>. The Bech32m encoding consists of:</p>
+<h4> Human-Readable Part </h4>
+<p>The <strong>HRP</strong> can be thought of as a label. We have chosen labels to distinguish between Main, Test, and Regtest networks:</p>
+<ul>
+<li>Mainnet: <strong>&quot;tx&quot;</strong>.</li>
+<li>Testnet: <strong>&quot;txtest&quot;</strong>.</li>
+<li>Regtest: <strong>&quot;txrt&quot;</strong>.</li>
+</ul>
+<h4> Separator </h4>
+<p>The separator is the character <strong>&quot;1&quot;</strong>.</p>
+<h4> Data Part </h4>
+<p>The data part for a <strong>TxRef</strong> consists of the transaction's block height, transaction index within the block, and optionally, an outpoint index. Specific encoding details for the data are given below.</p>
+<p><em>Please note: other specifications, such as <a href="https://w3c-ccg.github.io/did-spec/" target="_blank">the Decentralized Identifiers spec</a>, have implicitly encoded the information contained within the HRP elsewhere. In this case they may choose to not include the HRP as specified here.</em></p>
+<h4> Readability </h4>
+<p>To increase portability and readability, additional separator characters SHOULD be added to the <strong>TxRef</strong>:</p>
+<ul>
+<li>A Colon<ref><strong>Why add a colon here?</strong> This allows it to conform better with W3C URN/URL standards.</ref> <strong>&quot;:&quot;</strong>  added after the separator character '1'.</li>
+<li>Hyphens<ref><strong>Why hyphens within the TxRef?</strong> As <strong>TxRef</strong>s are short, we expect that they will be quoted via voice or written by hand. The inclusion of hyphens every 4 characters breaks up the string and means people don't lose their place so easily.</ref> <strong>&quot;-&quot;</strong> added after every 4 characters beyond the colon.</li>
+</ul>
+<h3> Encoding </h3>
+<p>Encoding a <strong>TxRef</strong> requires 4 or 5 pieces of data: a magic code denoting which network is being used; a version number (currently always 0); the block height of the block containing the transaction; the index of the transaction within the block; and optionally, the index of the outpoint within the transaction. Only a certain number of bits are supported for each of these values, see the following table for details.</p>
+<table><thead><tr><th></th></tr></thead><tbody>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td></tr>
+</tbody></table>
+<h4> Magic Notes </h4>
+<p>The magic code provides namespacing between chains:</p>
+<ul>
+<li>For Mainnet the magic code is: <strong>0x3</strong>, leading to an <strong>&quot;r&quot;</strong> character when encoded.</li>
+<li>For Mainnet with Outpoint Encoded the magic code is: <strong>0x4</strong>, leading to a <strong>&quot;y&quot;</strong> character when encoded.</li>
+<li>For Testnet the magic code is: <strong>0x6</strong>, leading to an <strong>&quot;x&quot;</strong> character when encoded.</li>
+<li>For Testnet with Outpoint Encoded the magic code is: <strong>0x7</strong>, leading to an <strong>&quot;8&quot;</strong> character when encoded.</li>
+<li>For Regtest the magic code is: <strong>0x0</strong>, leading to a <strong>&quot;q&quot;</strong> character when encoded.</li>
+<li>For Regtest with Outpoint Encoded the magic code is: <strong>0x1</strong>, leading to a <strong>&quot;p&quot;</strong> character when encoded.</li>
+</ul>
+<h4> Encoding Example </h4>
+<p>We want to encode a <strong>TxRef</strong> that refers to Transaction #1234 of Block #456789 on the Mainnet chain. We use this data in preparation for the Bech32 encoding algorithm:</p>
+<table><thead><tr><th></th></tr></thead><tbody>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td></tr>
+</tbody></table>
+<p>As shown in the last column, we take the necessary bits of each binary value and copy them into nine unsigned chars illustrated in the next table. We only set the lower five bits of each unsigned char as the bech32 algorithm only uses those bits.</p>
+<table><thead><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[0]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc01</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[1]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh01</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td><td>v0</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[2]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh08</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh07</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh06</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh05</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[3]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh13</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh11</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh09</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[4]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh18</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh17</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[5]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh23</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh22</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh21</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh20</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>bh19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[6]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti01</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[7]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti09</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti08</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti07</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti06</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti05</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[8]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti13</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti11</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>ti10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<p>The Bech32 algorithm encodes the nine unsigned chars above and computes a checksum of those chars and encodes that as well--this gives a six character checksum (in this case, <strong>utt3p0</strong>) which is appended to the final <strong>TxRef</strong>. The final <strong>TxRef</strong> given is: <strong>tx1:r29u-mqjx-putt-3p0</strong> and is illustrated in the following table:</p>
+<p>TxRef character indexes and descriptions</p>
+<table><thead><tr><th></th></tr></thead><tbody>
+<tr><td>style=&quot;background: #BBCCEE; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #BBCCEE; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #FFCCCC; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+</tbody></table>
+<h4> Outpoint Index </h4>
+<p>Some uses of <strong>TxRef</strong> may want to refer to a specific outpoint of the transaction. In the previous example, since we did not specify the outpoint index, the <strong>TxRef</strong> <strong>tx1:r29u-mqjx-putt-3p0</strong> implicitly references the first (index 0) outpoint of the 1234th transaction in the 456789th block in the blockchain.</p>
+<p>If instead, for example, we want to reference the second (index 1) outpoint, we need to change the magic code from <strong>3</strong> to <strong>4</strong> and would include the following in the data to be encoded:</p>
+<table><thead><tr><th></th></tr></thead><tbody>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td></tr>
+</tbody></table>
+<table><thead><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[0]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc01</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>mc00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[9]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op01</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[10]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op09</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op08</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op07</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op06</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op05</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>data[11]</td><td>Index</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op13</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op11</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>op10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<p>After Bech32 encoding all twelve unsigned chars above, we get the checksum: <strong>sfp2tt</strong>. The final <strong>TxRef</strong> given is: <strong>tx1:y29u-mqjx-ppqq-sfp2-tt</strong> and is illustrated in the following table:</p>
+<p>TxRef character indexes and descriptions</p>
+<table><thead><tr><th></th></tr></thead><tbody>
+<tr><td>style=&quot;background: #BBCCEE; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #BBCCEE; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #FFCCCC; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #CCDDAA; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+<tr><td>style=&quot;background: #EEEEBB; color: black; text-align : center;&quot;</td></tr>
+</tbody></table>
+<h3> Decoding </h3>
+<p>The Bech32 spec defines 32 valid characters as its &quot;alphabet&quot;. All non-Bech32-alphabet characters present in a <strong>TxRef</strong> after the Bech32 separator character MUST be ignored/removed when parsing (except for terminating characters). We do not wish to expect the users to keep their <strong>TxRef</strong>s in good form and <strong>TxRef</strong>s may contains hyphens, colons, invisible spaces, uppercase or random characters. We expect users to copy, paste, write by-hand, write in a mix of character sets, etc. Parsers SHOULD attempt to correct for these and other common errors, reporting to the user any <strong>TxRef</strong>s that violate a proper Bech32 encoding.</p>
+<p>As of early 2021, <strong>TxRef</strong> has been in limited use for a couple of years and it is possible that there are some <strong>TxRef</strong>s in use which were created with the original specification of Bech32 before the Bech32m refinement was codified. Due to this possibility, a <strong>TxRef</strong> parser SHOULD be able to decode both Bech32m and Bech32 encoded <strong>TxRef</strong>s. In such a case, a <strong>TxRef</strong> parser SHOULD display or somehow notify the user that they are using an obsolete <strong>TxRef</strong> and that they should upgrade it to the Bech32m version. Additionally, the parser MAY also display the Bech32m version.</p>
+<h2> Rationale </h2>
+<references />
+<h2> Reference implementations </h2>
+<p>C Reference Implementation (supports magic codes 0x3 and 0x6): https://github.com/jonasschnelli/bitcoin_txref_code</p>
+<p>Go Reference Implementation (supports magic codes 0x3 and 0x6): https://github.com/kulpreet/txref</p>
+<p>C++ Reference Implementation (supports magic codes 0x3, 0x4, 0x6, 0x7, 0x0 and 0x1): https://github.com/dcdpr/libtxref/</p>
+<p>Java Reference Implementation (supports magic codes 0x3, 0x4, 0x6, 0x7, 0x0 and 0x1): https://github.com/dcdpr/libtxref-java/</p>
+<h2> Appendices </h2>
+<h3> Test Examples </h3>
+<p>The following examples show values for various combinations on mainnet and testnet; encoding block height, transaction index, and an optional output index.</p>
+<h4> TxRef </h4>
+<p>The following list gives properly encoded mainnet <strong>TxRef</strong>s and the decoded hex values (block height, transaction index)</p>
+<ul>
+<li><tt>tx1:rqqq-qqqq-qwtv-vjr</tt>: <tt>(0x0, 0x0)</tt></li>
+<li><tt>tx1:rqqq-qqll-lj68-7n2</tt>: <tt>(0x0, 0x7FFF)</tt></li>
+<li><tt>tx1:r7ll-llqq-qats-vx9</tt>: <tt>(0xFFFFFF, 0x0)</tt></li>
+<li><tt>tx1:r7ll-llll-lp6m-78v</tt>: <tt>(0xFFFFFF, 0x7FFF)</tt></li>
+</ul>
+<p>The following list gives properly encoded testnet <strong>TxRef</strong>s and the decoded hex values (block height, transaction index)</p>
+<ul>
+<li><tt>txtest1:xqqq-qqqq-qrrd-ksa</tt>: <tt>(0x0, 0x0)</tt></li>
+<li><tt>txtest1:xqqq-qqll-lljx-y35</tt>: <tt>(0x0, 0x7FFF)</tt></li>
+<li><tt>txtest1:x7ll-llqq-qsr3-kym</tt>: <tt>(0xFFFFFF, 0x0)</tt></li>
+<li><tt>txtest1:x7ll-llll-lvj6-y9j</tt>: <tt>(0xFFFFFF, 0x7FFF)</tt></li>
+</ul>
+<p>The following list gives valid (sometimes strangely formatted) <strong>TxRef</strong>s and the decoded values (block height, transaction index)*</p>
+<ul>
+<li><tt>tx1:r29u-mqjx-putt-3p0</tt>: <tt>(456789, 1234)</tt></li>
+<li><tt>TX1R29UMQJXPUTT3P0</tt>: <tt>(456789, 1234)</tt></li>
+<li><tt>tx1 r29u mqjx putt 3p0</tt>: <tt>(456789, 1234)</tt></li>
+<li><tt>tx1!r29u/mqj*x-putt^^3p0</tt>: <tt>(456789, 1234)</tt></li>
+</ul>
+<p>The following list gives invalid <strong>TxRef</strong>s and the reason for their invalidity.</p>
+<ul>
+<li><tt>tx1:t7ll-llll-lcq3-aj4</tt>: Magic 0xB instead of 0x3.</li>
+<li><tt>tx1:rlll-llll-lu9m-00x</tt>: Version 1 instead of 0.</li>
+<li><tt>tx1:r7ll-llll-lqfu-gss2</tt>: Valid Bech32, but ten 5 bit unsigned chars instead of nine.</li>
+<li><tt>tx1:r7ll-llll-rt5h-wz</tt>: Valid Bech32, but eight 5 bit unsigned chars instead of nine.</li>
+<li><tt>tx1:r7ll-LLLL-lp6m-78v</tt>: Invalid Bech32 due to mixed case. Would decode correctly otherwise.</li>
+</ul>
+<h4> TxRef with Outpoints </h4>
+<p>The following list gives properly encoded mainnet <strong>TxRef</strong>s with Outpoints and the decoded values (block height, transaction index, outpoint index)</p>
+<ul>
+<li>
+<p><tt>tx1:yqqq-qqqq-qqqq-rvum-0c</tt>: <tt>(0x0, 0x0, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>tx1:yqqq-qqll-lqqq-en8x-05</tt>: <tt>(0x0, 0x7FFF, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>tx1:y7ll-llqq-qqqq-ggjg-w6</tt>: <tt>(0xFFFFFF, 0x0, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>tx1:y7ll-llll-lqqq-jhf4-wk</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>tx1:yqqq-qqqq-qpqq-pw4v-kq</tt>: <tt>(0x0, 0x0, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>tx1:yqqq-qqll-lpqq-m3w3-kv</tt>: <tt>(0x0, 0x7FFF, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>tx1:y7ll-llqq-qpqq-22ml-hz</tt>: <tt>(0xFFFFFF, 0x0, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>tx1:y7ll-llll-lpqq-s4qz-hw</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>tx1:y29u-mqjx-ppqq-sfp2-tt</tt>: <tt>(456789, 1234, 1)</tt></p>
+</li>
+</ul>
+<p>The following list gives properly encoded testnet <strong>TxRef</strong>s with Outpoints and the decoded values (block height, transaction index, outpoint index)</p>
+<ul>
+<li>
+<p><tt>txtest1:8qqq-qqqq-qqqq-d5ns-vl</tt>: <tt>(0x0, 0x0, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:8qqq-qqll-lqqq-htgd-vn</tt>: <tt>(0x0, 0x7FFF, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:87ll-llqq-qqqq-xsar-da</tt>: <tt>(0xFFFFFF, 0x0, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:87ll-llll-lqqq-u0x7-d3</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x0)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:8qqq-qqqq-qpqq-0k68-48</tt>: <tt>(0x0, 0x0, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:8qqq-qqll-lpqq-4fp6-4t</tt>: <tt>(0x0, 0x7FFF, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:87ll-llqq-qpqq-yj55-59</tt>: <tt>(0xFFFFFF, 0x0, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:87ll-llll-lpqq-7d0f-5f</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x1)</tt></p>
+</li>
+<li>
+<p><tt>txtest1:829u-mqjx-ppqq-73wp-gv</tt>: <tt>(456789, 1234, 1)</tt></p>
+</li>
+</ul>
+<h3> TxRef Payload Value Choices: </h3>
+<p>Some calculations showing why we chose these particular bit-length of the block height and transaction index.</p>
+<h4> Block Height Value: </h4>
+<p>24 bits: value can be between 0, and 0xFFFFFF (16777216 blocks).</p>
+<ul>
+<li>In early April, 2021, there have been 677700 blocks</li>
+<li>There are roughly (365 days * 24 hours * 6 blocks / hour) = 52560 blocks every year, implying about (16777216 - 677700) / 52560 = 306 more years of addressable blocks.</li>
+<li>Some time before year 2327 this specification should be extended.</li>
+</ul>
+<h4> Tx Position Value: </h4>
+<p>15 bits: value can be between 0x0, and 0x7FFF (32768 transactions).</p>
+<ul>
+<li>The <em>realistic</em> smallest Tx is 83 Bytes for maximum 12047 tx in a block.
+<ul>
+<li>4B version + 1B tx_in count + 36B previous_output + 1B script length + 0B signature script + 4B sequence + 1B tx_out count + 8B amount + 1B script length + 23B pubkey script + 4B lock_time = 83B</li>
+</ul>
+</li>
+<li>The <em>extreme</em> smallest Tx is 60 Bytes for maximum 16665 tx in a block.
+<ul>
+<li>4B version + 1B tx_in count + 36B previous_output + 1B script length + 0B signature script + 4B sequence + 1B tx_out count + 8B amount + 1B script length + 0B pubkey script + 4B lock_time = 60B</li>
+</ul>
+</li>
+</ul>
+<h2> Acknowledgements </h2>
+<p>Special Thanks to Pieter Wuille and Greg Maxwell for Bech32, a wonderful user-facing data encoding.</p>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. ₿</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>

@@ -1,286 +1,469 @@
+use lazy_static::lazy_static;
 use parse_wiki_text_2 as wiki;
+use regex::Regex;
 use std::collections::{HashMap, HashSet};
+use std::convert::Infallible;
 use std::fs::{self, File};
 use std::io;
 use std::io::prelude::*;
+use std::path::Path;
 
-struct RenderContext {
-    file: File,
-    pre: bool,
+lazy_static! {
+    static ref BIP_FILE: Regex = Regex::new(r"^bip-([0-9]+)/.*").expect("error parsing regex");
+    static ref BIP_NUMBER: Regex =
+        Regex::new(r"bip-([0-9]+)\.mediawiki").expect("error parsing regex");
 }
 
-impl RenderContext {
-    fn new(file: File) -> Self {
-        Self { file, pre: false }
-    }
+enum RenderContext {
+    None,
+    PreTag,
+    PreFormatted,
+    UnorderedList,
+    OrderedList,
+    Table(bool),
 }
 
-fn render(
-    ctx: &mut RenderContext,
-    node: &wiki::Node,
-    parent: Option<&wiki::Node>,
-) -> io::Result<()> {
-    match node {
-        wiki::Node::Heading { level, nodes, .. } => render_heading(ctx, node, *level, nodes),
-        wiki::Node::ParagraphBreak { .. } => render_paragraph_break(ctx),
-        wiki::Node::Text { value, .. } => render_text(ctx, parent, value),
-        wiki::Node::OrderedList { items, .. } => render_ordered_list(ctx, node, items),
-        wiki::Node::UnorderedList { items, .. } => render_unordered_list(ctx, node, items),
-        wiki::Node::Preformatted { nodes, .. } => render_preformatted(ctx, node, nodes),
-        wiki::Node::StartTag { name, .. } => render_start_tag(ctx, name.as_ref()),
-        wiki::Node::EndTag { name, .. } => render_end_tag(ctx, name.as_ref()),
-        wiki::Node::ExternalLink { nodes, .. } => render_external_link(ctx, node, nodes),
-        wiki::Node::Link { text, .. } => render_link(ctx, node, text),
-        _ => Ok(()),
-    }
-}
-
-fn render_link(ctx: &mut RenderContext, this: &wiki::Node, nodes: &[wiki::Node]) -> io::Result<()> {
-    for node in nodes {
-        render(ctx, node, Some(this))?;
-    }
-
-    Ok(())
-}
-
-fn render_external_link(
-    ctx: &mut RenderContext,
-    this: &wiki::Node,
-    nodes: &[wiki::Node],
-) -> io::Result<()> {
-    for node in nodes {
-        render(ctx, node, Some(this))?;
-    }
-
-    Ok(())
-}
-
-fn render_preformatted(
-    ctx: &mut RenderContext,
-    this: &wiki::Node,
-    nodes: &[wiki::Node],
-) -> io::Result<()> {
-    // not in <pre> tag, but actual wiki::Node
-    if !ctx.pre {
-        write!(ctx.file, "\n\n```\n")?;
-    }
-
-    for node in nodes {
-        render(ctx, node, Some(this))?;
-    }
-
-    if !ctx.pre {
-        write!(ctx.file, "```\n\n")?;
-    }
-
-    Ok(())
-}
-
-fn render_start_tag(ctx: &mut RenderContext, name: &str) -> io::Result<()> {
-    if name == "pre" {
-        ctx.pre = true;
-    }
-
-    write!(ctx.file, "<{}>", name)?;
-    Ok(())
-}
-
-fn render_end_tag(ctx: &mut RenderContext, name: &str) -> io::Result<()> {
-    if name == "pre" {
-        ctx.pre = false;
-    }
-
-    write!(ctx.file, "</{}>", name)?;
-    Ok(())
-}
-
-fn render_heading(
-    ctx: &mut RenderContext,
-    this: &wiki::Node,
-    level: u8,
-    nodes: &[wiki::Node],
-) -> io::Result<()> {
-    write!(ctx.file, "\n\n<h{}>", level)?;
-    for node in nodes {
-        render(ctx, node, Some(this))?;
-    }
-
-    write!(ctx.file, "</h{}>\n\n", level)?;
-    Ok(())
-}
-
-fn render_text(
-    ctx: &mut RenderContext,
-    parent: Option<&wiki::Node>,
-    value: &str,
-) -> io::Result<()> {
-    // build link, if needed
-    let out = if value.starts_with("http") {
-        if let Some(wiki::Node::ExternalLink { .. }) = parent {
-            if let Some((link, display)) = value.split_once(" ") {
-                format!(
-                    "<a href=\"{}\" target=\"_blank\" rel=\"noopener noreferrer\">{}</a>",
-                    link, display
-                )
-            } else {
-                format!(
-                    "<a href=\"{}\" target=\"_blank\" rel=\"noopener noreferrer\">{}</a>",
-                    value, value
-                )
+fn render(context: &mut RenderContext, file: &mut File, line: &str) -> io::Result<()> {
+    match context {
+        RenderContext::None => {
+            // preformatted, tag
+            // NOTE: see source for BIP 10 for a case where "</pre>" actually _starts_ preformatted
+            if line == "<pre>" || line == "</pre>" || line.starts_with("<source") {
+                *context = RenderContext::PreTag;
+                return write!(file, "```\n");
             }
-        } else {
-            format!(
-                "<a href=\"{}\" target=\"_blank\" rel=\"noopener noreferrer\">{}</a>",
-                value, value
+
+            // preformatted, space
+            if line.starts_with(" ") {
+                write!(file, "```\n")?;
+                *context = RenderContext::PreFormatted;
+                return render(context, file, line);
+            }
+
+            // empty line, write new line
+            if line == "" {
+                return write!(file, "\n");
+            }
+
+            // heading
+            if line.starts_with("=") {
+                return write!(file, "{}\n\n", render_heading(line));
+            }
+
+            // ordered list
+            if line.starts_with("#") {
+                *context = RenderContext::OrderedList;
+                return render(context, file, line);
+            }
+
+            // unordered list
+            if line.starts_with("*") {
+                *context = RenderContext::UnorderedList;
+                return render(context, file, line);
+            }
+
+            // table
+            if line.starts_with("{|") {
+                *context = RenderContext::Table(false);
+                // edge case, sometimes authors don't include a new line between
+                // the last line and the start of the table
+                writeln!(file)?;
+
+                return Ok(());
+            }
+
+            // definition list? or indentation? ignore....
+            if line.starts_with(":") {
+                render(
+                    context,
+                    file,
+                    line.trim_start_matches(":").trim_start_matches(" "),
+                )?;
+
+                return writeln!(file);
+            }
+
+            write!(file, "{}\n", render_line(line).unwrap())
+        }
+        RenderContext::PreFormatted => {
+            // end preformatted
+            if line == "" || line.starts_with(char::is_alphanumeric) {
+                // close out
+                *context = RenderContext::None;
+                write!(file, "```\n")?;
+                return render(context, file, line);
+            }
+
+            // write as is, no modification
+            write!(file, "{}\n", line)
+        }
+        RenderContext::PreTag => {
+            // end preformatted
+            if line == "</pre>" || line == "</source>" {
+                // close out
+                *context = RenderContext::None;
+                return write!(file, "```\n");
+            }
+
+            // write as is, no modification
+            write!(file, "{}\n", line)
+        }
+        RenderContext::OrderedList => {
+            // end ordered list
+            if !line.starts_with("#") {
+                *context = RenderContext::None;
+                writeln!(file)?;
+
+                return render(context, file, line);
+            }
+
+            // edge case, see BIP 36
+            if line.starts_with("#*") {
+                return write!(
+                    file,
+                    "{}* {}\n",
+                    " ".repeat(4),
+                    render_line(&line["#*".len()..line.len()]).unwrap()
+                );
+            }
+
+            // check for the list level (*, **, etc)
+            let level: usize = line
+                .chars()
+                .map_while(|c| if c == '#' { Some(1) } else { None })
+                .sum();
+
+            let indent = " ".repeat(if level > 1 {
+                usize::pow(2, level as u32)
+            } else {
+                0
+            });
+
+            let trimmed = line.trim_start_matches("#");
+            write!(file, "{}1. {}\n", indent, render_line(trimmed).unwrap())
+        }
+        RenderContext::UnorderedList => {
+            if !line.starts_with("*") {
+                *context = RenderContext::None;
+                writeln!(file)?;
+
+                return render(context, file, line);
+            }
+
+            // edge case, BIP 107
+            let clean = line.replace("#", " ");
+
+            // check for the list level (*, **, etc)
+            let level: usize = clean
+                .chars()
+                .map_while(|c| if c == '*' { Some(1) } else { None })
+                .sum();
+
+            let indent = " ".repeat(if level > 1 {
+                usize::pow(2, level as u32)
+            } else {
+                0
+            });
+
+            // sometimes, an unordered list is written without any space after the '*' in the
+            // source document. The zola markdown to html rendering doesn't like that, so we have
+            // to "push out" all unordered lists by one space, so they render correctly
+            write!(
+                file,
+                "{}\n",
+                format!(
+                    "{}* {}",
+                    indent,
+                    render_line(&clean[level..line.len()]).unwrap()
+                ),
             )
         }
-    } else {
-        // img pass through
-        if value.starts_with("<img") {
-            return write!(ctx.file, "{}", value);
+        RenderContext::Table(header) => {
+            if line.starts_with("|}") {
+                *context = RenderContext::None;
+                return Ok(());
+            }
+
+            if line.contains("colspan") {
+                // ignore for now
+                return Ok(());
+            }
+
+            // table header
+            // convert to markdown format
+            if line.starts_with("! ") {
+                let header: Vec<String> = line["! ".len()..line.len()] // note the space
+                    .split("!!")
+                    .map(|s| s.trim())
+                    .map(|s| render_line(s).unwrap())
+                    .collect();
+
+                write!(file, "|{}|\n", header.join("|"))?;
+                write!(file, "|{}\n", "-|".repeat(header.len()))?;
+
+                *context = RenderContext::Table(true);
+                return Ok(());
+            }
+
+            // table row
+            if line.starts_with("| ") {
+                if !*header {
+                    let width = line.split("||").collect::<Vec<_>>().len();
+                    write!(file, "|{}\n", "|".repeat(width))?;
+                    write!(file, "|{}\n", "-|".repeat(width))?;
+
+                    *context = RenderContext::Table(true);
+                }
+
+                let row: Vec<String> = line["| ".len()..line.len()] // note the space
+                    .split("||")
+                    .map(|s| s.trim())
+                    .map(|s| render_line(s).unwrap())
+                    .collect();
+
+                return write!(file, "|{}|\n", row.join("|"));
+            }
+
+            Ok(())
+        }
+    }
+}
+
+fn render_heading(line: &str) -> String {
+    let heading = line.replace("=", "");
+    let level: u8 = line
+        .chars()
+        .map_while(|c| if c == '=' { Some(1) } else { None })
+        .sum();
+
+    format!("<h{}>{}</h{}>", level, heading, level)
+}
+
+fn render_line(line: &str) -> Result<String, Infallible> {
+    let buffer = line.into();
+    replace_internal_links(buffer)
+        .and_then(replace_external_links)
+        .and_then(replace_bold)
+        .and_then(replace_italic)
+        .and_then(replace_code_tag)
+}
+
+fn replace_code_tag(line: String) -> Result<String, Infallible> {
+    Ok(line.replace("<code>", "`").replace("</code>", "`"))
+}
+
+fn replace_bold(line: String) -> Result<String, Infallible> {
+    let mut buffer = String::new();
+    let bold: Vec<(usize, &str)> = line.match_indices("'''").collect();
+
+    let mut ptr = 0;
+    for (i, _) in bold {
+        buffer.push_str(&line[ptr..i]);
+        buffer.push_str("**");
+
+        ptr = i + "'''".len();
+    }
+
+    buffer.push_str(&line[ptr..line.len()]);
+    Ok(buffer)
+}
+
+fn replace_italic(line: String) -> Result<String, Infallible> {
+    let mut buffer = String::new();
+    let bold: Vec<(usize, &str)> = line.match_indices("''").collect();
+
+    let mut ptr = 0;
+    for (i, _) in bold {
+        buffer.push_str(&line[ptr..i]);
+        buffer.push_str("_");
+
+        ptr = i + "''".len();
+    }
+
+    buffer.push_str(&line[ptr..line.len()]);
+    Ok(buffer)
+}
+
+// internal links "[[ ... ]]"
+fn replace_internal_links(line: String) -> Result<String, Infallible> {
+    let mut buffer = String::new();
+    let internal: Vec<((usize, &str), (usize, &str))> = line
+        .match_indices("[[")
+        .zip(line.match_indices("]]"))
+        .collect();
+
+    // edge case
+    // BIP 140, author split link across multiple lines... need to fix
+    if internal.len() == 0 {
+        return Ok(line);
+    }
+
+    let mut ptr: usize = 0;
+    for ((start, _), (end, _)) in internal {
+        let content = &line[(start + "[[".len())..end]; // after [[, and up to ]]
+        let components: Vec<&str> = content.split("|").collect();
+
+        let tag = if components[0].starts_with("File:") {
+            // is file link? assume image
+            let image = components[0].split(":").collect::<Vec<&str>>()[1];
+            format!("<img src=\"{}\" />", image)
+        } else {
+            // actual link
+            let (link, name): (String, String) = if let Some(bip) = bip_link(components[0]) {
+                if components.len() == 2 {
+                    (format!("/{}", bip), components[1].into())
+                } else {
+                    (format!("/{}", bip), components[0].into())
+                }
+            } else {
+                if bip_file(components[0]) {
+                    let github = "https://github.com/bitcoin/bips/blob/master";
+                    if components.len() == 2 {
+                        (
+                            format!("{}/{}", github, components[0]),
+                            format!("{}", components[1]),
+                        )
+                    } else {
+                        (
+                            format!("{}/{}", github, components[0]),
+                            format!("{}", components[0]),
+                        )
+                    }
+                } else {
+                    if components.len() == 2 {
+                        (format!("{}", components[0]), format!("{}", components[1]))
+                    } else {
+                        (format!("{}", components[0]), format!("{}", components[0]))
+                    }
+                }
+            };
+
+            format!("<a href=\"{}\" target=\"_blank\">{}</a>", link, name,)
+        };
+
+        buffer.push_str(&line[ptr..start]);
+        buffer.push_str(&tag);
+
+        ptr = end + "]]".len();
+    }
+
+    buffer.push_str(&line[ptr..line.len()]);
+    Ok(buffer)
+}
+
+fn bip_link(link: &str) -> Option<u32> {
+    BIP_NUMBER
+        .captures(link)?
+        .get(1)?
+        .as_str()
+        .parse::<u32>()
+        .ok()
+}
+
+fn bip_file(link: &str) -> bool {
+    BIP_FILE.is_match(link)
+}
+
+// external links => [ ... ]
+fn replace_external_links(line: String) -> Result<String, Infallible> {
+    let mut buffer = String::new();
+    let mut external: Vec<(usize, usize)> = vec![];
+    let mut open: u32 = 0;
+    let mut start: Option<usize> = None;
+    for (i, c) in line.char_indices() {
+        if c == '[' {
+            if open == 0 {
+                start = Some(i);
+            }
+
+            open += 1;
+            continue;
         }
 
-        format!("{}", value)
-    };
+        if c == ']' {
+            if open > 0 {
+                open -= 1;
+            }
 
-    let out = if ctx.pre {
-        format!(
-            "<span>{}</span>\n",
-            out.replace("\n", "")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-        )
-    } else {
-        out
-    };
-
-    if let Some(parent) = parent {
-        match parent {
-            wiki::Node::Heading { .. } => write!(ctx.file, "{}", out),
-            wiki::Node::OrderedList { .. } => write!(ctx.file, "{}", out),
-            wiki::Node::UnorderedList { .. } => {
-                if ctx.pre {
-                    write!(ctx.file, "* {}", out)
-                } else {
-                    write!(ctx.file, "{}", out)
+            if open == 0 {
+                let end = i;
+                if let Some(start) = start {
+                    external.push((start, end));
                 }
             }
-            wiki::Node::Preformatted { .. } => write!(ctx.file, "{}", out),
-            wiki::Node::ExternalLink { .. } => write!(ctx.file, "{}", out),
-            wiki::Node::Link { .. } => write!(ctx.file, "{}", out),
-            _ => Ok(()),
+
+            continue;
         }
-    } else {
-        // no parent, root level
-        write!(ctx.file, "{}", out.replace("\n", " "))
     }
-}
 
-fn render_paragraph_break(ctx: &mut RenderContext) -> io::Result<()> {
-    write!(ctx.file, "\n\n")
-}
-
-fn render_ordered_list(
-    ctx: &mut RenderContext,
-    this: &wiki::Node,
-    items: &[wiki::ListItem],
-) -> io::Result<()> {
-    if ctx.pre {
-        // render children as-is
-        for item in items {
-            for node in &item.nodes {
-                render(ctx, node, Some(this))?;
+    let mut ptr: usize = 0;
+    for (start, end) in external {
+        let content = &line[(start + 1)..end]; // after [, and up to ]
+        let components = content.split_once(" ");
+        let anchor = if let Some((link, name)) = components {
+            if let Some(bip) = bip_link(link) {
+                a_href(&format!("/{}", bip), name)
+            } else {
+                a_href(link, name)
             }
-        }
+        } else {
+            // not a link! write the whole thing
+            format!("{}", &line[start..end + "]".len()])
+        };
 
-        return Ok(());
+        buffer.push_str(&line[ptr..start]);
+        buffer.push_str(&anchor);
+
+        ptr = end + "]".len();
     }
 
-    write!(ctx.file, "<ol>")?;
-
-    for item in items {
-        write!(ctx.file, "<li>")?;
-
-        for node in &item.nodes {
-            render(ctx, node, Some(this))?;
-        }
-
-        write!(ctx.file, "</li>")?;
-    }
-
-    write!(ctx.file, "</ol>")
+    buffer.push_str(&line[ptr..line.len()]);
+    Ok(buffer)
 }
 
-fn render_unordered_list(
-    ctx: &mut RenderContext,
-    this: &wiki::Node,
-    items: &[wiki::ListItem],
-) -> io::Result<()> {
-    if ctx.pre {
-        // render children as-is
-        for item in items {
-            for node in &item.nodes {
-                render(ctx, node, Some(this))?;
-            }
-        }
-
-        return Ok(());
-    }
-
-    write!(ctx.file, "<ul>")?;
-
-    for item in items {
-        write!(ctx.file, "<li>")?;
-
-        for node in &item.nodes {
-            render(ctx, node, Some(this))?;
-        }
-
-        write!(ctx.file, "</li>")?;
-    }
-
-    write!(ctx.file, "</ul>")
-}
-
-fn render_front_matter(ctx: &mut RenderContext, node: Option<&wiki::Node>) -> io::Result<()> {
+fn render_front_matter(f: &mut File, nodes: Vec<wiki::Node>) -> io::Result<()> {
     let mut front = FrontMatter::default();
 
-    if let Some(wiki::Node::Preformatted { nodes, .. }) = node {
-        let mut nodes = nodes.iter().peekable();
-        while let Some(node) = nodes.next() {
-            if let wiki::Node::Text { value, .. } = node {
-                let split = value.trim().splitn(2, ':').collect::<Vec<&str>>();
-                if split.len() < 2 {
-                    continue;
-                }
-
-                let (k, v) = (&split[0][..], split[1].trim());
-                match k {
-                    "BIP" => front.bip = v.parse::<u32>().unwrap(),
-                    "Title" => front.title = v.to_string(),
-                    "Created" => front.created = v.to_string(),
-                    "Status" => front.status = vec![format!("{}", v)],
-                    "Author" => {
-                        let mut authors = vec![clean_author(v)];
-                        loop {
-                            if let Some(n) = nodes.peek() {
-                                if is_new_section(n) {
-                                    break;
-                                }
-                            }
-
-                            if let Some(n) = nodes.next() {
-                                if let wiki::Node::Text { value, .. } = n {
-                                    authors.push(clean_author(value))
-                                }
-                            }
-                        }
-
-                        front.authors = authors;
+    for node in nodes {
+        if let wiki::Node::Preformatted { nodes, .. } = node {
+            let mut nodes = nodes.iter().peekable();
+            while let Some(node) = nodes.next() {
+                if let wiki::Node::Text { value, .. } = node {
+                    let split = value.trim().splitn(2, ':').collect::<Vec<&str>>();
+                    if split.len() < 2 {
+                        continue;
                     }
-                    _ => {}
+
+                    let (k, v) = (&split[0][..], split[1].trim());
+                    match k {
+                        "BIP" => front.bip = v.parse::<u32>().unwrap(),
+                        "Title" => front.title = v.to_string(),
+                        "Created" => front.created = v.to_string(),
+                        "Status" => front.status = vec![format!("{}", v)],
+                        "Author" => {
+                            let mut authors = vec![clean_author(v)];
+                            loop {
+                                if let Some(n) = nodes.peek() {
+                                    if is_new_section(n) {
+                                        break;
+                                    }
+                                }
+
+                                if let Some(n) = nodes.next() {
+                                    if let wiki::Node::Text { value, .. } = n {
+                                        authors.push(clean_author(value))
+                                    }
+                                }
+                            }
+
+                            front.authors = authors;
+                        }
+                        _ => {}
+                    }
                 }
             }
+
+            break;
         }
     }
 
@@ -293,7 +476,7 @@ fn render_front_matter(ctx: &mut RenderContext, node: Option<&wiki::Node>) -> io
     // yes, this format is wonky...
     // need to prevent leading whitespace from each line
     write!(
-        ctx.file,
+        f,
         r#"
 +++
 title = "{title}"
@@ -312,7 +495,7 @@ note = "THIS FILE IS AUTOMATICALLY GENERATED - NOT MEANT FOR EDITING"
 +++
 
 "#,
-        title = front.title,
+        title = front.title.replace("\"", "\\\""),
         created = front.created,
         bip = front.bip,
         authors = front.authors,
@@ -345,21 +528,30 @@ pub fn generate(bip: u32, path: &str) -> io::Result<()> {
         _ => {}
     }
 
-    let file = File::create(generated)?;
+    let mut file = File::create(generated)?;
     // render mediawiki content as html
     let wikitext = wiki::Configuration::default().parse(&content);
-    let mut ctx = RenderContext::new(file);
+    let mut ctx = RenderContext::None;
 
-    // NOTE: we assume the "front matter" <pre> tag is always first, so render that
-    let nodes = wikitext.nodes.iter();
-    render_front_matter(&mut ctx, nodes.clone().skip(1).next())?;
+    // start by parsing out front matter for zola
+    render_front_matter(&mut file, wikitext.nodes)?;
 
-    // render the rest of the document...
-    for node in nodes {
-        render(&mut ctx, &node, None)?;
+    // render the rest of the document, line by line
+    if let Ok(lines) = read_lines(path) {
+        for line in lines.flatten() {
+            render(&mut ctx, &mut file, &line)?;
+        }
     }
 
     Ok(())
+}
+
+fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+where
+    P: AsRef<Path>,
+{
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
 }
 
 /// Recursively find all wiki::Node elements in the given bip, by file path
@@ -618,4 +810,118 @@ fn is_new_section(node: &wiki::Node) -> bool {
     }
 
     false
+}
+
+fn a_href(target: &str, link: &str) -> String {
+    format!("<a href=\"{target}\" target=\"_blank\">{link}</a>")
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    // render_line
+
+    #[test]
+    fn render_line_no_change() {
+        assert_eq!(
+            render_line("this line will stay the same").unwrap(),
+            "this line will stay the same".to_string(),
+        )
+    }
+
+    #[test]
+    fn render_line_bold_and_italic() {
+        assert_eq!(
+            render_line("this is some '''bold''' and ''italic'' text").unwrap(),
+            "this is some **bold** and _italic_ text".to_string(),
+        )
+    }
+
+    // bold
+
+    #[test]
+    fn bold() {
+        assert_eq!(
+            render_line("this is some '''bold''' text").unwrap(),
+            "this is some **bold** text".to_string(),
+        )
+    }
+
+    // italic
+
+    #[test]
+    fn italic() {
+        assert_eq!(
+            render_line("this is some ''italic'' text").unwrap(),
+            "this is some _italic_ text".to_string(),
+        )
+    }
+
+    // internal links
+
+    #[test]
+    fn internal_link_bip() {
+        assert_eq!(
+            replace_internal_links("[[bip-0001.mediawiki|BIP 1]]".into()).unwrap(),
+            a_href("/1", "BIP 1"),
+        )
+    }
+
+    // external links
+
+    #[test]
+    fn external_link_simple() {
+        assert_eq!(
+            replace_external_links("[https://test.com test]".into()).unwrap(),
+            a_href("https://test.com", "test"),
+        )
+    }
+
+    #[test]
+    fn external_link_multiple() {
+        assert_eq!(
+            replace_external_links(
+                "[https://test.com test] hello [https://test.com another]".into()
+            )
+            .unwrap(),
+            format!(
+                "{} hello {}",
+                a_href("https://test.com", "test"),
+                a_href("https://test.com", "another")
+            ),
+        )
+    }
+
+    #[test]
+    fn external_link_no_space() {
+        assert_eq!(
+            replace_external_links("[https://test.com test][https://test.com another]".into())
+                .unwrap(),
+            format!(
+                "{}{}",
+                a_href("https://test.com", "test"),
+                a_href("https://test.com", "another")
+            ),
+        )
+    }
+
+    #[test]
+    fn external_link_nested_bracket() {
+        assert_eq!(
+            replace_external_links("[https://test.com [lol] yep]".into()).unwrap(),
+            a_href("https://test.com", "[lol] yep")
+        )
+    }
+
+    #[test]
+    fn external_link_bip() {
+        assert_eq!(
+            replace_external_links(
+                "[https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki BIP-65]".into()
+            )
+            .unwrap(),
+            a_href("/65", "BIP-65")
+        )
+    }
 }

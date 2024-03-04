@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>bips.dev - BIP 123</title>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 123: BIP Classification
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2015-08-26</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0123.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 123
+</span><span>  Title: BIP Classification
+</span><span>  Author: Eric Lombrozo &lt;elombrozo@gmail.com&gt;
+</span><span>  Comments-Summary: No comments yet.
+</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0123
+</span><span>  Status: Active
+</span><span>  Type: Process
+</span><span>  Created: 2015-08-26
+</span><span>  License: CC0-1.0
+</span><span>           GNU-All-Permissive
+</span></code></pre>
+<h2>Abstract</h2>
+<p>This document describes a classification scheme for BIPs.</p>
+<p>BIPs are classified by system layers with lower numbered layers involving more intricate interoperability requirements.</p>
+<p>The specification defines the layers and sets forth specific criteria for deciding to which layer a particular standards BIP belongs.</p>
+<h2>Copyright</h2>
+<p>This BIP is dual-licensed under the Creative Commons CC0 1.0 Universal and GNU All-Permissive licenses.</p>
+<h2>Motivation</h2>
+<p>Bitcoin is a system involving a number of different standards. Some standards are absolute requirements for interoperability while others can be considered optional, giving implementors a choice of whether to support them.</p>
+<p>In order to have a BIP process which more closely reflects the interoperability requirements, it is necessary to categorize BIPs accordingly. Lower layers present considerably greater challenges in getting standards accepted and deployed.</p>
+<h2>Specification</h2>
+<p>Standards BIPs are placed in one of four layers:</p>
+<ol>
+<li>Consensus</li>
+<li>Peer Services</li>
+<li>API/RPC</li>
+<li>Applications</li>
+</ol>
+<p>Non-standards BIPs may be placed in these layers, or none at all.</p>
+<h3>1. Consensus Layer</h3>
+<p>The consensus layer defines cryptographic commitment structures. Its purpose is ensuring that anyone can locally evaluate whether a particular state and history is valid, providing settlement guarantees, and assuring eventual convergence.</p>
+<p>The consensus layer is not concerned with how messages are propagated on a network.</p>
+<p>Disagreements over the consensus layer can result in network partitioning, or forks, where different nodes might end up accepting different incompatible histories. We further subdivide consensus layer changes into soft forks and hard forks.</p>
+<h4>Soft Forks</h4>
+<p>In a soft fork, some structures that were valid under the old rules are no longer valid under the new rules. Structures that were invalid under the old rules continue to be invalid under the new rules.</p>
+<h4>Hard Forks</h4>
+<p>In a hard fork, structures that were invalid under the old rules become valid under the new rules.</p>
+<h3>2. Peer Services Layer</h3>
+<p>The peer services layer specifies how nodes find each other and propagate messages.</p>
+<p>Only a subset of all specified peer services are required for basic node interoperability. Nodes can support further optional extensions.</p>
+<p>It is always possible to add new services without breaking compatibility with existing services, then gradually deprecate older services. In this manner, the entire network can be upgraded without serious risks of service disruption.</p>
+<h3>3. API/RPC Layer</h3>
+<p>The API/RPC layer specifies higher level calls accessible to applications. Support for these BIPs is not required for basic network interoperability but might be expected by some client applications.</p>
+<p>There's room at this layer to allow for competing standards without breaking basic network interoperability.</p>
+<h3>4. Applications Layer</h3>
+<p>The applications layer specifies high level structures, abstractions, and conventions that allow different applications to support similar features and share data. </p>
+<h2>Classification of existing BIPs</h2>
+<table><thead><tr><th></th></tr></thead><tbody>
+<tr><td><a href="/1" target="_blank">1</a></td></tr>
+<tr><td>BIP Purpose and Guidelines</td></tr>
+<tr><td>Amir Taaki</td></tr>
+<tr><td>Process</td></tr>
+<tr><td>Active</td></tr>
+<tr><td><a href="/2" target="_blank">2</a></td></tr>
+<tr><td>BIP process, revised</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Process</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/9" target="_blank">9</a></td></tr>
+<tr><td>Version bits with timeout and delay</td></tr>
+<tr><td>Pieter Wuille, Peter Todd, Greg Maxwell, Rusty Russell</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/10" target="_blank">10</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Multi-Sig Transaction Distribution</td></tr>
+<tr><td>Alan Reiner</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Withdrawn</td></tr>
+<tr><td><a href="/11" target="_blank">11</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>M-of-N Standard Transactions</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/12" target="_blank">12</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>OP_EVAL</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Withdrawn</td></tr>
+<tr><td><a href="/13" target="_blank">13</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Address Format for pay-to-script-hash</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/14" target="_blank">14</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Protocol Version and User Agent</td></tr>
+<tr><td>Amir Taaki, Patrick Strateman</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/15" target="_blank">15</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Aliases</td></tr>
+<tr><td>Amir Taaki</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Deferred</td></tr>
+<tr><td><a href="/16" target="_blank">16</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Pay to Script Hash</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/17" target="_blank">17</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>OP_CHECKHASHVERIFY (CHV)</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Withdrawn</td></tr>
+<tr><td><a href="/18" target="_blank">18</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>hashScriptCheck</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/19" target="_blank">19</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>M-of-N Standard Transactions (Low SigOp)</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/20" target="_blank">20</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>URI Scheme</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Replaced</td></tr>
+<tr><td><a href="/21" target="_blank">21</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>URI Scheme</td></tr>
+<tr><td>Nils Schneider, Matt Corallo</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/22" target="_blank">22</a></td></tr>
+<tr><td>API/RPC</td></tr>
+<tr><td>getblocktemplate - Fundamentals</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/23" target="_blank">23</a></td></tr>
+<tr><td>API/RPC</td></tr>
+<tr><td>getblocktemplate - Pooled Mining</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/30" target="_blank">30</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Duplicate transactions</td></tr>
+<tr><td>Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/31" target="_blank">31</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Pong message</td></tr>
+<tr><td>Mike Hearn</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/32" target="_blank">32</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Hierarchical Deterministic Wallets</td></tr>
+<tr><td>Pieter Wuille</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/33" target="_blank">33</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Stratized Nodes</td></tr>
+<tr><td>Amir Taaki</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/34" target="_blank">34</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Block v2, Height in Coinbase</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/35" target="_blank">35</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>mempool message</td></tr>
+<tr><td>Jeff Garzik</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/36" target="_blank">36</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Custom Services</td></tr>
+<tr><td>Stefan Thomas</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/37" target="_blank">37</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Connection Bloom filtering</td></tr>
+<tr><td>Mike Hearn, Matt Corallo</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/38" target="_blank">38</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Passphrase-protected private key</td></tr>
+<tr><td>Mike Caldwell, Aaron Voisine</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/39" target="_blank">39</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Mnemonic code for generating deterministic keys</td></tr>
+<tr><td>Marek Palatinus, Pavol Rusnak, Aaron Voisine, Sean Bowe</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/42" target="_blank">42</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>A finite monetary supply for Bitcoin</td></tr>
+<tr><td>Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/43" target="_blank">43</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Purpose Field for Deterministic Wallets</td></tr>
+<tr><td>Marek Palatinus, Pavol Rusnak</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/44" target="_blank">44</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Multi-Account Hierarchy for Deterministic Wallets</td></tr>
+<tr><td>Marek Palatinus, Pavol Rusnak</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/45" target="_blank">45</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Structure for Deterministic P2SH Multisignature Wallets</td></tr>
+<tr><td>Manuel Araoz, Ryan X. Charles, Matias Alejo Garcia</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/47" target="_blank">47</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Reusable Payment Codes for Hierarchical Deterministic Wallets</td></tr>
+<tr><td>Justus Ranvier</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/49" target="_blank">49</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Derivation scheme for P2WPKH-nested-in-P2SH based accounts</td></tr>
+<tr><td>Daniel Weigl</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/50" target="_blank">50</a></td></tr>
+<tr><td>March 2013 Chain Fork Post-Mortem</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/60" target="_blank">60</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Fixed Length &quot;version&quot; Message (Relay-Transactions Field)</td></tr>
+<tr><td>Amir Taaki</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/61" target="_blank">61</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Reject P2P message</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/62" target="_blank">62</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Dealing with malleability</td></tr>
+<tr><td>Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Withdrawn</td></tr>
+<tr><td><a href="/64" target="_blank">64</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>getutxo message</td></tr>
+<tr><td>Mike Hearn</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/65" target="_blank">65</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>OP_CHECKLOCKTIMEVERIFY</td></tr>
+<tr><td>Peter Todd</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/66" target="_blank">66</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Strict DER signatures</td></tr>
+<tr><td>Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/67" target="_blank">67</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Deterministic Pay-to-script-hash multi-signature addresses through public key sorting</td></tr>
+<tr><td>Thomas Kerin, Jean-Pierre Rupp, Ruben de Vries</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/68" target="_blank">68</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Relative lock-time using consensus-enforced sequence numbers</td></tr>
+<tr><td>Mark Friedenbach, BtcDrak, Nicolas Dorier, kinoshitajona</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/69" target="_blank">69</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Lexicographical Indexing of Transaction Inputs and Outputs</td></tr>
+<tr><td>Kristov Atlas</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/70" target="_blank">70</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Payment Protocol</td></tr>
+<tr><td>Gavin Andresen, Mike Hearn</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/71" target="_blank">71</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Payment Protocol MIME types</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/72" target="_blank">72</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>bitcoin: uri extensions for Payment Protocol</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/73" target="_blank">73</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Use &quot;Accept&quot; header for response type negotiation with Payment Request URLs</td></tr>
+<tr><td>Stephen Pair</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/74" target="_blank">74</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Allow zero value OP_RETURN in Payment Protocol</td></tr>
+<tr><td>Toby Padilla</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/75" target="_blank">75</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Out of Band Address Exchange using Payment Protocol Encryption</td></tr>
+<tr><td>Justin Newton, Matt David, Aaron Voisine, James MacWhyte</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/80" target="_blank">80</a></td></tr>
+<tr><td>Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets</td></tr>
+<tr><td>Justus Ranvier, Jimmy Song</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Deferred</td></tr>
+<tr><td><a href="/81" target="_blank">81</a></td></tr>
+<tr><td>Hierarchy for Colored Voting Pool Deterministic Multisig Wallets</td></tr>
+<tr><td>Justus Ranvier, Jimmy Song</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Deferred</td></tr>
+<tr><td><a href="/83" target="_blank">83</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Dynamic Hierarchical Deterministic Key Trees</td></tr>
+<tr><td>Eric Lombrozo</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/99" target="_blank">99</a></td></tr>
+<tr><td>Motivation and deployment of consensus rule changes ([soft/hard]forks)</td></tr>
+<tr><td>Jorge Timón</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/101" target="_blank">101</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Increase maximum block size</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Withdrawn</td></tr>
+<tr><td><a href="/102" target="_blank">102</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Block size increase to 2MB</td></tr>
+<tr><td>Jeff Garzik</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/103" target="_blank">103</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Block size following technological growth</td></tr>
+<tr><td>Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/105" target="_blank">105</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Consensus based block size retargeting algorithm</td></tr>
+<tr><td>BtcDrak</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/106" target="_blank">106</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Dynamically Controlled Bitcoin Block Size Max Cap</td></tr>
+<tr><td>Upal Chakraborty</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/107" target="_blank">107</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Dynamic limit on the block size</td></tr>
+<tr><td>Washington Y. Sanchez</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/109" target="_blank">109</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Two million byte size limit with sigop and sighash limits</td></tr>
+<tr><td>Gavin Andresen</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/111" target="_blank">111</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>NODE_BLOOM service bit</td></tr>
+<tr><td>Matt Corallo, Peter Todd</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/112" target="_blank">112</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>CHECKSEQUENCEVERIFY</td></tr>
+<tr><td>BtcDrak, Mark Friedenbach, Eric Lombrozo</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/113" target="_blank">113</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Median time-past as endpoint for lock-time calculations</td></tr>
+<tr><td>Thomas Kerin, Mark Friedenbach</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Final</td></tr>
+<tr><td><a href="/114" target="_blank">114</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Merkelized Abstract Syntax Tree</td></tr>
+<tr><td>Johnson Lau</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/120" target="_blank">120</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Proof of Payment</td></tr>
+<tr><td>Kalle Rosenbaum</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/121" target="_blank">121</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Proof of Payment URI scheme</td></tr>
+<tr><td>Kalle Rosenbaum</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/122" target="_blank">122</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>URI scheme for Blockchain references / exploration</td></tr>
+<tr><td>Marco Pontello</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/123" target="_blank">123</a></td></tr>
+<tr><td>BIP Classification</td></tr>
+<tr><td>Eric Lombrozo</td></tr>
+<tr><td>Process</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/124" target="_blank">124</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Hierarchical Deterministic Script Templates</td></tr>
+<tr><td>Eric Lombrozo, William Swanson</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/125" target="_blank">125</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Opt-in Full Replace-by-Fee Signaling</td></tr>
+<tr><td>David A. Harding, Peter Todd</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/126" target="_blank">126</a></td></tr>
+<tr><td>Best Practices for Heterogeneous Input Script Transactions</td></tr>
+<tr><td>Kristov Atlas</td></tr>
+<tr><td>Informational</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/130" target="_blank">130</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>sendheaders message</td></tr>
+<tr><td>Suhas Daftuar</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Accepted</td></tr>
+<tr><td><a href="/131" target="_blank">131</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>&quot;Coalescing Transaction&quot; Specification (wildcard inputs)</td></tr>
+<tr><td>Chris Priest</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/132" target="_blank">132</a></td></tr>
+<tr><td>Committee-based BIP Acceptance Process</td></tr>
+<tr><td>Andy Chase</td></tr>
+<tr><td>Process</td></tr>
+<tr><td>Withdrawn</td></tr>
+<tr><td><a href="/133" target="_blank">133</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>feefilter message</td></tr>
+<tr><td>Alex Morcos</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/134" target="_blank">134</a></td></tr>
+<tr><td>Consensus (hard fork)</td></tr>
+<tr><td>Flexible Transactions</td></tr>
+<tr><td>Tom Zander</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/140" target="_blank">140</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Normalized TXID</td></tr>
+<tr><td>Christian Decker</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/141" target="_blank">141</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Segregated Witness (Consensus layer)</td></tr>
+<tr><td>Eric Lombrozo, Johnson Lau, Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/142" target="_blank">142</a></td></tr>
+<tr><td>Applications</td></tr>
+<tr><td>Address Format for Segregated Witness</td></tr>
+<tr><td>Johnson Lau</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Deferred</td></tr>
+<tr><td><a href="/143" target="_blank">143</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Transaction Signature Verification for Version 0 Witness Program</td></tr>
+<tr><td>Johnson Lau, Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/144" target="_blank">144</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Segregated Witness (Peer Services)</td></tr>
+<tr><td>Eric Lombrozo, Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/145" target="_blank">145</a></td></tr>
+<tr><td>API/RPC</td></tr>
+<tr><td>getblocktemplate Updates for Segregated Witness</td></tr>
+<tr><td>Luke Dashjr</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/146" target="_blank">146</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Dealing with signature encoding malleability</td></tr>
+<tr><td>Johnson Lau, Pieter Wuille</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/147" target="_blank">147</a></td></tr>
+<tr><td>Consensus (soft fork)</td></tr>
+<tr><td>Dealing with dummy stack element malleability</td></tr>
+<tr><td>Johnson Lau</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/150" target="_blank">150</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Peer Authentication</td></tr>
+<tr><td>Jonas Schnelli</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/151" target="_blank">151</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Peer-to-Peer Communication Encryption</td></tr>
+<tr><td>Jonas Schnelli</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+<tr><td><a href="/152" target="_blank">152</a></td></tr>
+<tr><td>Peer Services</td></tr>
+<tr><td>Compact Block Relay</td></tr>
+<tr><td>Matt Corallo</td></tr>
+<tr><td>Standard</td></tr>
+<tr><td>Draft</td></tr>
+</tbody></table>
+
+    </div>
+
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container has-text-centered has-text-weight-bold is-family-monospace">
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
+            <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
+            <p>Stay humble. Stack sats. ₿</p>
+        </div>
+    </footer>
+
+     
+</body>
+</html>
