@@ -3,63 +3,68 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 372: Pay-to-contract tweak fields for PSBT</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 372</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
             </div>
         </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 372: Pay-to-contract tweak fields for PSBT</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2022-01-16</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0372.mediawiki" target="_blank">View on GitHub</a>
             </div>
         </div>
-    </div>
 
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 372: Pay-to-contract tweak fields for PSBT
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2022-01-16</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0372.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 372
-</span><span>  Layer: Applications
-</span><span>  Title: Pay-to-contract tweak fields for PSBT
-</span><span>  Author: Maxim Orlovsky &lt;orlovsky@lnp-bp.org&gt;
-</span><span>  Discussions-To: &lt;bitcoin-dev@lists.linuxfoundation.org&gt;
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0372
-</span><span>  Status: Draft
-</span><span>  Type: Standards Track
-</span><span>  Created: 2022-01-16
-</span><span>  License: BSD-2-Clause
-</span><span>  Requires: BIP-174
-</span></code></pre>
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 372
+  Layer: Applications
+  Title: Pay-to-contract tweak fields for PSBT
+  Author: Maxim Orlovsky &lt;orlovsky@lnp-bp.org&gt;
+  Discussions-To: &lt;bitcoin-dev@lists.linuxfoundation.org&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0372
+  Status: Draft
+  Type: Standards Track
+  Created: 2022-01-16
+  License: BSD-2-Clause
+  Requires: BIP-174
+</code></pre>
 <h2>Introduction</h2>
 <h3>Abstract</h3>
 <p>This document proposes additional fields for BIP 174 PSBTv0 and BIP 370 PSBTv2
@@ -178,37 +183,238 @@ was designed.</p>
 <p>TBD</p>
 <h2>References</h2>
 <p>[1] Ilja Gerhardt, Timo Hanke. Homomorphic Payment Addresses and the</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    Pay-to-Contract Protocol. arXiv:1212.3257 \[cs.CR\]
-</span><span>    &lt;https://arxiv.org/pdf/1212.3257.pdf&gt;
-</span><span>[2] Eternity Wall&#39;s &quot;sign-to-contract&quot; article.
-</span><span>    &lt;https://blog.eternitywall.com/2018/04/13/sign-to-contract/&gt;
-</span><span>[3] Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed
-</span><span>    Timestamping with Bitcoin.
-</span><span>    &lt;https://petertodd.org/2016/opentimestamps-announcement&gt;
-</span><span>[4] Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain
-</span><span>    Innovations with Pegged Sidechains (commit5620e43). Appenxix A.
-</span><span>    &lt;https://blockstream.com/sidechains.pdf&gt;;.
-</span><span>[5] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. Key
-</span><span>    tweaking: collision- resistant elliptic curve-based commitments.
-</span><span>    LNPBP-1 Standard.
-</span><span>    &lt;https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md&gt;
-</span><span>[6] Peter Todd. Single-use-seals. LNPBP-8 Standard.
-</span><span>    &lt;https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0008.md&gt;
-</span></code></pre>
+<pre><code>    Pay-to-Contract Protocol. arXiv:1212.3257 \[cs.CR\]
+    &lt;https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1212.3257.pdf&gt;
+[2] Eternity Wall&#x27;s &quot;sign-to-contract&quot; article.
+    &lt;https:&#x2F;&#x2F;blog.eternitywall.com&#x2F;2018&#x2F;04&#x2F;13&#x2F;sign-to-contract&#x2F;&gt;
+[3] Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed
+    Timestamping with Bitcoin.
+    &lt;https:&#x2F;&#x2F;petertodd.org&#x2F;2016&#x2F;opentimestamps-announcement&gt;
+[4] Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain
+    Innovations with Pegged Sidechains (commit5620e43). Appenxix A.
+    &lt;https:&#x2F;&#x2F;blockstream.com&#x2F;sidechains.pdf&gt;;.
+[5] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. Key
+    tweaking: collision- resistant elliptic curve-based commitments.
+    LNPBP-1 Standard.
+    &lt;https:&#x2F;&#x2F;github.com&#x2F;LNP-BP&#x2F;LNPBPs&#x2F;blob&#x2F;master&#x2F;lnpbp-0001.md&gt;
+[6] Peter Todd. Single-use-seals. LNPBP-8 Standard.
+    &lt;https:&#x2F;&#x2F;github.com&#x2F;LNP-BP&#x2F;LNPBPs&#x2F;blob&#x2F;master&#x2F;lnpbp-0008.md&gt;
+</code></pre>
 
+        </article>
     </div>
 
+    <!--
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
         </div>
-    </section>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 372: Pay-to-contract tweak fields for PSBT
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2022-01-16</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0372.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre><code>  BIP: 372
+  Layer: Applications
+  Title: Pay-to-contract tweak fields for PSBT
+  Author: Maxim Orlovsky &lt;orlovsky@lnp-bp.org&gt;
+  Discussions-To: &lt;bitcoin-dev@lists.linuxfoundation.org&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0372
+  Status: Draft
+  Type: Standards Track
+  Created: 2022-01-16
+  License: BSD-2-Clause
+  Requires: BIP-174
+</code></pre>
+<h2>Introduction</h2>
+<h3>Abstract</h3>
+<p>This document proposes additional fields for BIP 174 PSBTv0 and BIP 370 PSBTv2
+that allow for pay-to-contract key tweaking data data to be included in a PSBT
+of any version. These will represent an extra-transaction information required
+for the signer to produce valid signatures spending previous outputs.</p>
+<h3>Copyright</h3>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+<h3>Background</h3>
+<p>Key tweaking is a procedure for creating a cryptographic commitment to some
+message using elliptic curve properties. The procedure uses the discrete log
+problem (DLP) to commit to an extra-transaction message. This is done by adding
+to a public key (for which the output owner knows the corresponding private key)
+a hash of the message multiplied on the generator point G of the elliptic curve.
+This produces a tweaked public key, containing the commitment. Later, in order
+to spend an output containing P2C commitment, the same commitment should be
+added to the corresponding private key.</p>
+<p>This type of commitment was originally proposed as a part of the pay to contract
+concept by Ilja Gerhardt and Timo Hanke in [1] and later used by Eternity Wall
+[2] for the same purpose. Since that time multiple different protocols for P2C
+has been developed, including OpenTimeStamps [3], Elements sidechain P2C tweaks
+[4] and LNPBP-1 [5], used in for constructing Peter Todd's single-use-seals [6]
+in client-side-validation protocols like RGB.</p>
+<h3>Motivation</h3>
+<p>P2C outputs can be detected onchain and spent only if the output owner
+not just knows the corresponding original private key, but also is aware about
+P2C tweak applied to the public key. In order to produce a valid signature, the
+same tweak value must be added (modulo group order) to the original private key
+by a signer device. This represents a challenge for external signers, which may
+not have any information about such commitment. This proposal addresses this
+issue by adding relevant fields to the PSBT input information.</p>
+<p>The proposal abstracts details of specific P2C protocols and provides universal
+method for spending previous outputs containing P2C tweaks, applied to the public
+key contained within any standard form of the <tt>scriptPubkey</tt>, including
+bare scripts and P2PK, P2PKH, P2SH, witness v0 P2WPKH, P2WSH, nested witness v0
+P2WPKH-P2SH, P2WSH-P2SH and witness v1 P2TR outputs.</p>
+<h2>Design</h2>
+<p>P2C-tweaked public keys are already exposed in the
+<tt>PSBT_IN_REDEEM_SCRIPT</tt>, <tt>PSBT_IN_WITNESS_SCRIPT</tt>,
+<tt>PSBT_IN_TAP_INTERNAL_KEY</tt> and <tt>PSBT_IN_TAP_LEAF_SCRIPT</tt> fields;
+the only information signer is needed to recognize which keys it should sign
+with is from which of the original keys they were generated. This is achieved by
+introducing new <code>PSBT_IN_P2C_TWEAK</code> field which has the original key as a field
+key and the tweak as a field value. The signer will recognize the keys which are
+available to it, apply the tweak to them and see in which scripts it was used --
+and use this information to apply tweaks for the corresponding private keys and
+produce valid signatures.</p>
+<h2>Specification</h2>
+<p>The new per-input type is defined as follows:</p>
+<table><thead><tr><th>Name</th></tr></thead><tbody>
+<tr><td><tt><keytype></tt></td></tr>
+<tr><td>-</td></tr>
+<tr><td><tt><keydata></tt></td></tr>
+<tr><td>-</td></tr>
+<tr><td><tt><keydata></tt> Description</td></tr>
+<tr><td>-</td></tr>
+<tr><td><tt><valuedata></tt></td></tr>
+<tr><td>-</td></tr>
+<tr><td><tt><valuedata></tt> Description</td></tr>
+<tr><td>-</td></tr>
+<tr><td>Versions Requiring Inclusion</td></tr>
+<tr><td>-</td></tr>
+<tr><td>Versions Requiring Exclusion</td></tr>
+<tr><td>-</td></tr>
+<tr><td>Versions Allowing Inclusion</td></tr>
+<tr><td>-</td></tr>
+<tr><td>P2C Key Tweak</td></tr>
+<tr><td><tt>PSBT_IN_P2C_TWEAK = 0x19</tt></td></tr>
+<tr><td><tt><pubkey></tt></td></tr>
+<tr><td>33 bytes of compact public key serialization specifying to which of keys the</td></tr>
+<tr><td><tt><tweak></tt></td></tr>
+<tr><td>The 32 byte value which MUST be added to a private key to produce correct</td></tr>
+<tr><td>0, 2</td></tr>
+<tr><td>BIP-P2C</td></tr>
+</tbody></table>
+<h2>Security considerations</h2>
+<p>The scope of this proposal is deliberately kept narrow; it addresses
+only spending of transaction outputs containing P2C tweaks - and does not
+addresses construction of a new P2C commitments or transactions containing them
+in their outputs.<ref><strong>Why only spending of P2C tweaked outputs is covered</strong>
+P2C tweaks commit to external data, some of which may represent certain value
+(like in some sidechains, single-use-seal applications like RGB etc). Creation
+of such outputs much allow hardware devices to understand the structure of such
+extra-transaction data, which may be in different formats and constantly
+involve. Thus, this should be addresses with a separate standards (or be a
+vendor-based). The current proposal only touches the question of spending an
+output which contained previously created P2C commitment, which does not creates
+a new commitment and does not provides that kind of risk of extra-blockchain
+value loses.</ref></p>
+<h2>Rationale</h2>
+<references/>
+<h2>Compatibility</h2>
+<p>The proposal is compatible with the existing consensus rules and does not
+require any of their modifications.</p>
+<p>The proposed P2C PSBT fields provides sufficient information for creating a
+valid signatures for spendings of the following output types containing tweaked
+public keys:</p>
+<ul>
+<li>bare scripts,</li>
+<li>P2PK,</li>
+<li>P2PKH,</li>
+<li>P2SH,</li>
+<li>witness v0 P2WPKH and P2WSH,</li>
+<li>nested witness v0 P2WPKH-P2SH and P2WSH-P2SH,</li>
+</ul>
+<p>Post-0 witness versions, including taproot outputs and future witness versions,
+may not be supported or covered by this BIP and may require addition of new
+fields to the PSBT inputs.</p>
+<h2>Reference implementation</h2>
+<p>WIP</p>
+<h2>Acknowledgements</h2>
+<p>Author is grateful to Andrew Poelstra, who provided an initial set of ideas
+and information on his previous work on the topic basing on which this standard
+was designed.</p>
+<h2>Test vectors</h2>
+<p>TBD</p>
+<h2>References</h2>
+<p>[1] Ilja Gerhardt, Timo Hanke. Homomorphic Payment Addresses and the</p>
+<pre><code>    Pay-to-Contract Protocol. arXiv:1212.3257 \[cs.CR\]
+    &lt;https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1212.3257.pdf&gt;
+[2] Eternity Wall&#x27;s &quot;sign-to-contract&quot; article.
+    &lt;https:&#x2F;&#x2F;blog.eternitywall.com&#x2F;2018&#x2F;04&#x2F;13&#x2F;sign-to-contract&#x2F;&gt;
+[3] Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed
+    Timestamping with Bitcoin.
+    &lt;https:&#x2F;&#x2F;petertodd.org&#x2F;2016&#x2F;opentimestamps-announcement&gt;
+[4] Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain
+    Innovations with Pegged Sidechains (commit5620e43). Appenxix A.
+    &lt;https:&#x2F;&#x2F;blockstream.com&#x2F;sidechains.pdf&gt;;.
+[5] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. Key
+    tweaking: collision- resistant elliptic curve-based commitments.
+    LNPBP-1 Standard.
+    &lt;https:&#x2F;&#x2F;github.com&#x2F;LNP-BP&#x2F;LNPBPs&#x2F;blob&#x2F;master&#x2F;lnpbp-0001.md&gt;
+[6] Peter Todd. Single-use-seals. LNPBP-8 Standard.
+    &lt;https:&#x2F;&#x2F;github.com&#x2F;LNP-BP&#x2F;LNPBPs&#x2F;blob&#x2F;master&#x2F;lnpbp-0008.md&gt;
+</code></pre>
+
+    </div>
+    -->
+
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

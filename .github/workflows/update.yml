@@ -15,8 +15,19 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
 
+    - name: generate
+      run: |
+        git config --global --add safe.directory '*'
+        ./scripts/bips.sh
+        ./scripts/generate.sh
+        ./scripts/static.sh
+        ./scripts/tailwind.sh
+
     - name: build
-      uses: docker://ngmiller/bips-dev:latest
+      uses: shalzz/zola-deploy-action@v0.18.0
+      env:
+        BUILD_DIR: web
+        BUILD_ONLY: true
 
     - name: commit and push
       uses: EndBug/add-and-commit@v7.2.0

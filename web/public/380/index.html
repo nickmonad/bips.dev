@@ -3,63 +3,68 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 380: Output Script Descriptors General Operation</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 380</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
             </div>
         </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 380: Output Script Descriptors General Operation</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2021-06-27</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0380.mediawiki" target="_blank">View on GitHub</a>
             </div>
         </div>
-    </div>
 
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 380: Output Script Descriptors General Operation
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2021-06-27</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0380.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 380
-</span><span>  Layer: Applications
-</span><span>  Title: Output Script Descriptors General Operation
-</span><span>  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
-</span><span>          Ava Chow &lt;me@achow101.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0380
-</span><span>  Status: Draft
-</span><span>  Type: Informational
-</span><span>  Created: 2021-06-27
-</span><span>  License: BSD-2-Clause
-</span></code></pre>
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 380
+  Layer: Applications
+  Title: Output Script Descriptors General Operation
+  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
+          Ava Chow &lt;me@achow101.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0380
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+</code></pre>
 <h2>Abstract</h2>
 <p>Output Script Descriptors are a simple language which can be used to describe collections of output scripts.
 There can be many different descriptor fragments and functions.
@@ -142,10 +147,10 @@ If the final derivation is hardened, then it is not necessary to do additional d
 <h3>Character Set</h3>
 <p>The expressions used in descriptors must only contain characters within this character set so that the descriptor checksum will work.</p>
 <p>The allowed characters are:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>0123456789()[],&#39;/*abcdefgh@:$%{}
-</span><span>IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~
-</span><span>ijklmnopqrstuvwxyzABCDEFGH`#&quot;\&lt;space&gt;
-</span></code></pre>
+<pre><code>0123456789()[],&#x27;&#x2F;*abcdefgh@:$%{}
+IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~
+ijklmnopqrstuvwxyzABCDEFGH`#&quot;\&lt;space&gt;
+</code></pre>
 <p>Note that <tt><space></tt> on the last line is a space character.</p>
 <p>This character set is written as 3 groups of 32 characters in this specific order so that the checksum below can identify more errors.
 The first group are the most common &quot;unprotected&quot; characters (i.e. things such as hex and keypaths that do not already have their own checksums).
@@ -177,61 +182,389 @@ The checksum is an error correcting checksum similar to bech32.</p>
 <p>The checksum itself uses the same character set as bech32: <tt>qpzry9x8gf2tvdw0s3jn54khce6mua7l</tt></p>
 <p>Valid descriptor strings with a checksum must pass the criteria for validity specified by the Python3 code snippet below.
 The function <tt>descsum_check</tt> must return true when its argument <tt>s</tt> is a descriptor consisting in the form <tt>SCRIPT#CHECKSUM</tt>.</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>INPUT_CHARSET = &quot;0123456789()[],&#39;/*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\&quot;\\ &quot;
-</span><span>CHECKSUM_CHARSET = &quot;qpzry9x8gf2tvdw0s3jn54khce6mua7l&quot;
-</span><span>GENERATOR = [0xf5dee51989, 0xa9fdca3312, 0x1bab10e32d, 0x3706b1677a, 0x644d626ffd]
-</span><span>
-</span><span>def descsum_polymod(symbols):
-</span><span>    &quot;&quot;&quot;Internal function that computes the descriptor checksum.&quot;&quot;&quot;
-</span><span>    chk = 1
-</span><span>    for value in symbols:
-</span><span>        top = chk &gt;&gt; 35
-</span><span>        chk = (chk &amp; 0x7ffffffff) &lt;&lt; 5 ^ value
-</span><span>        for i in range(5):
-</span><span>            chk ^= GENERATOR[i] if ((top &gt;&gt; i) &amp; 1) else 0
-</span><span>    return chk
-</span><span>
-</span><span>def descsum_expand(s):
-</span><span>    &quot;&quot;&quot;Internal function that does the character to symbol expansion&quot;&quot;&quot;
-</span><span>    groups = []
-</span><span>    symbols = []
-</span><span>    for c in s:
-</span><span>        if not c in INPUT_CHARSET:
-</span><span>            return None
-</span><span>        v = INPUT_CHARSET.find(c)
-</span><span>        symbols.append(v &amp; 31)
-</span><span>        groups.append(v &gt;&gt; 5)
-</span><span>        if len(groups) == 3:
-</span><span>            symbols.append(groups[0] * 9 + groups[1] * 3 + groups[2])
-</span><span>            groups = []
-</span><span>    if len(groups) == 1:
-</span><span>        symbols.append(groups[0])
-</span><span>    elif len(groups) == 2:
-</span><span>        symbols.append(groups[0] * 3 + groups[1])
-</span><span>    return symbols
-</span><span>
-</span><span>def descsum_check(s):
-</span><span>    &quot;&quot;&quot;Verify that the checksum is correct in a descriptor&quot;&quot;&quot;
-</span><span>    if s[-9] != &#39;#&#39;:
-</span><span>        return False
-</span><span>    if not all(x in CHECKSUM_CHARSET for x in s[-8:]):
-</span><span>        return False
-</span><span>    symbols = descsum_expand(s[:-9]) + [CHECKSUM_CHARSET.find(x) for x in s[-8:]]
-</span><span>    return descsum_polymod(symbols) == 1
-</span></code></pre>
+<pre><code>INPUT_CHARSET = &quot;0123456789()[],&#x27;&#x2F;*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\&quot;\\ &quot;
+CHECKSUM_CHARSET = &quot;qpzry9x8gf2tvdw0s3jn54khce6mua7l&quot;
+GENERATOR = [0xf5dee51989, 0xa9fdca3312, 0x1bab10e32d, 0x3706b1677a, 0x644d626ffd]
+
+def descsum_polymod(symbols):
+    &quot;&quot;&quot;Internal function that computes the descriptor checksum.&quot;&quot;&quot;
+    chk = 1
+    for value in symbols:
+        top = chk &gt;&gt; 35
+        chk = (chk &amp; 0x7ffffffff) &lt;&lt; 5 ^ value
+        for i in range(5):
+            chk ^= GENERATOR[i] if ((top &gt;&gt; i) &amp; 1) else 0
+    return chk
+
+def descsum_expand(s):
+    &quot;&quot;&quot;Internal function that does the character to symbol expansion&quot;&quot;&quot;
+    groups = []
+    symbols = []
+    for c in s:
+        if not c in INPUT_CHARSET:
+            return None
+        v = INPUT_CHARSET.find(c)
+        symbols.append(v &amp; 31)
+        groups.append(v &gt;&gt; 5)
+        if len(groups) == 3:
+            symbols.append(groups[0] * 9 + groups[1] * 3 + groups[2])
+            groups = []
+    if len(groups) == 1:
+        symbols.append(groups[0])
+    elif len(groups) == 2:
+        symbols.append(groups[0] * 3 + groups[1])
+    return symbols
+
+def descsum_check(s):
+    &quot;&quot;&quot;Verify that the checksum is correct in a descriptor&quot;&quot;&quot;
+    if s[-9] != &#x27;#&#x27;:
+        return False
+    if not all(x in CHECKSUM_CHARSET for x in s[-8:]):
+        return False
+    symbols = descsum_expand(s[:-9]) + [CHECKSUM_CHARSET.find(x) for x in s[-8:]]
+    return descsum_polymod(symbols) == 1
+</code></pre>
 <p>This implements a BCH code that has the properties described above.
 The entire descriptor string is first processed into an array of symbols.
 The symbol for each character is its position within its group.
 After every 3rd symbol, a 4th symbol is inserted which represents the group numbers combined together.
 This means that a change that only affects the position within a group, or only a group number change, will only affect a single symbol.</p>
 <p>To construct a valid checksum given a script expression, the code below can be used:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>def descsum_create(s):
-</span><span>    &quot;&quot;&quot;Add a checksum to a descriptor without&quot;&quot;&quot;
-</span><span>    symbols = descsum_expand(s) + [0, 0, 0, 0, 0, 0, 0, 0]
-</span><span>    checksum = descsum_polymod(symbols) ^ 1
-</span><span>    return s + &#39;#&#39; + &#39;&#39;.join(CHECKSUM_CHARSET[(checksum &gt;&gt; (5 * (7 - i))) &amp; 31] for i in range(8))
-</span><span>
-</span></code></pre>
+<pre><code>def descsum_create(s):
+    &quot;&quot;&quot;Add a checksum to a descriptor without&quot;&quot;&quot;
+    symbols = descsum_expand(s) + [0, 0, 0, 0, 0, 0, 0, 0]
+    checksum = descsum_polymod(symbols) ^ 1
+    return s + &#x27;#&#x27; + &#x27;&#x27;.join(CHECKSUM_CHARSET[(checksum &gt;&gt; (5 * (7 - i))) &amp; 31] for i in range(8))
+
+</code></pre>
+<h2>Test Vectors</h2>
+<p>The following tests cover the checksum and character set:</p>
+<ul>
+<li>Valid checksum: <tt>raw(deadbeef) 89f8spxm</tt></li>
+<li>No checksum: <tt>raw(deadbeef)</tt></li>
+<li>Missing checksum: <tt>raw(deadbeef) </tt></li>
+<li>Too long checksum (9 chars): <tt>raw(deadbeef) 89f8spxmx</tt></li>
+<li>Too short checksum (7 chars): <tt>raw(deadbeef) 89f8spx</tt></li>
+<li>Error in payload: <tt>raw(deedbeef) 89f8spxm</tt></li>
+<li>Error in checksum: <tt>raw(deedbeef)  9f8spxm</tt></li>
+<li>Invalid characters in payload: <tt>raw(Ü) 00000000</tt></li>
+</ul>
+<p>The following tests cover key expressions: </p>
+<p>Valid expressions:</p>
+<ul>
+<li>Compressed public key: <tt>0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Uncompressed public key: <tt>04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235</tt></li>
+<li>Public key with key origin: <tt>[deadbeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Public key with key origin (<tt>'</tt> as hardened indicator): <tt>[deadbeef/0'/0'/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Public key with key origin (mixed hardened indicator): <tt>[deadbeef/0'/0h/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>WIF uncompressed private key <tt>5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss</tt></li>
+<li>WIF compressed private key <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1</tt></li>
+<li>Extended public key: <tt>xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL</tt></li>
+<li>Extended public key with key origin: <tt>[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL</tt></li>
+<li>Extended public key with derivation: <tt>[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5</tt></li>
+<li>Extended public key with derivation and children: <tt>[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5/*</tt></li>
+<li>Extended public key with hardened derivation and unhardened children: <tt>xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*</tt></li>
+<li>Extended public key with hardened derivation and children: <tt>xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h</tt></li>
+<li>Extended public key with key origin, hardened derivation and children: <tt>[deadbeef/0h/1h/2]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h</tt></li>
+<li>Extended private key: <tt>xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc</tt></li>
+<li>Extended private key with key origin: <tt>[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc</tt></li>
+<li>Extended private key with derivation: <tt>[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5</tt></li>
+<li>Extended private key with derivation and children: <tt>[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5/*</tt></li>
+<li>Extended private key with hardened derivation and unhardened children: <tt>xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*</tt></li>
+<li>Extended private key with hardened derivation and children: <tt>xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h</tt></li>
+<li>Extended private key with key origin, hardened derivation and children: <tt>[deadbeef/0h/1h/2]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h</tt></li>
+</ul>
+<p>Invalid expressiosn:</p>
+<ul>
+<li>Children indicator in key origin: <tt>[deadbeef/0h/0h/0h/*]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Trailing slash in key origin: <tt>[deadbeef/0h/0h/0h/]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Too short fingerprint: <tt>[deadbef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Too long fingerprint: <tt>[deadbeeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Invalid hardened indicators: <tt>[deadbeef/0f/0f/0f]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Invalid hardened indicators: <tt>[deadbeef/0H/0H/0H]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Invalid hardened indicators: <tt>[deadbeef/-0/-0/-0]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
+<li>Private key with derivation: <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/0</tt></li>
+<li>Private key with derivation children: <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/*</tt></li>
+<li>Derivation index out of range: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483648)&quot;, &quot;pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/2147483648</tt></li>
+<li>Invalid derivation index: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/1aa)&quot;, &quot;pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/1aa</tt></li>
+<li>Multiple key origins: <tt>[aaaaaaaa][aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt></li>
+<li>Missing key origin start: <tt>aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt></li>
+<li>Non hex fingerprint: <tt>[gaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt></li>
+<li>Key origin with no public key: <tt>[deadbeef]</tt></li>
+</ul>
+<h2>Backwards Compatibility</h2>
+<p>Output script descriptors are an entirely new language which is not compatible with any existing software.
+However many components of the expressions reuse encodings and serializations defined by previous BIPs.</p>
+<p>Output script descriptors are designed for future extension with further fragment types and new script expressions.
+These will be specified in additional BIPs.</p>
+<h2>Reference Implementation</h2>
+<p>Descriptors have been implemented in Bitcoin Core since version 0.17.</p>
+<h2>Appendix A: Index of Expressions</h2>
+<p>Future BIPs may specify additional types of expressions.
+All available expression types are listed in this table.</p>
+<table><thead><tr><th>Name</th></tr></thead><tbody>
+<tr><td>Denoted As</td></tr>
+<tr><td>-</td></tr>
+<tr><td>BIP</td></tr>
+<tr><td>-</td></tr>
+<tr><td>Script</td></tr>
+<tr><td><tt>SCRIPT</tt></td></tr>
+<tr><td>380</td></tr>
+<tr><td>Key</td></tr>
+<tr><td><tt>KEY</tt></td></tr>
+<tr><td>380</td></tr>
+<tr><td>Tree</td></tr>
+<tr><td><tt>TREE</tt></td></tr>
+<tr><td><a href="/386" target="_blank">386</a></td></tr>
+</tbody></table>
+<h2>Appendix B: Index of Script Expressions</h2>
+<p>Script expressions will be specified in additional BIPs.
+This Table lists all available Script expressions and the BIPs specifying them.</p>
+<table><thead><tr><th>Expression</th></tr></thead><tbody>
+<tr><td>BIP</td></tr>
+<tr><td>-</td></tr>
+<tr><td><tt>pk(KEY)</tt></td></tr>
+<tr><td><a href="/381" target="_blank">381</a></td></tr>
+<tr><td><tt>pkh(KEY)</tt></td></tr>
+<tr><td><a href="/381" target="_blank">381</a></td></tr>
+<tr><td><tt>sh(SCRIPT)</tt></td></tr>
+<tr><td><a href="/381" target="_blank">381</a></td></tr>
+<tr><td><tt>wpkh(KEY)</tt></td></tr>
+<tr><td><a href="/382" target="_blank">382</a></td></tr>
+<tr><td><tt>wsh(SCRIPT)</tt></td></tr>
+<tr><td><a href="/382" target="_blank">382</a></td></tr>
+<tr><td><tt>multi(NUM, KEY, ..., KEY)</tt></td></tr>
+<tr><td><a href="/383" target="_blank">383</a></td></tr>
+<tr><td><tt>sortedmulti(NUM, KEY, ..., KEY)</tt></td></tr>
+<tr><td><a href="/383" target="_blank">383</a></td></tr>
+<tr><td><tt>combo(KEY)</tt></td></tr>
+<tr><td><a href="/384" target="_blank">384</a></td></tr>
+<tr><td><tt>raw(HEX)</tt></td></tr>
+<tr><td><a href="/385" target="_blank">385</a></td></tr>
+<tr><td><tt>addr(ADDR)</tt></td></tr>
+<tr><td><a href="/385" target="_blank">385</a></td></tr>
+<tr><td><tt>tr(KEY)</tt>, <tt>tr(KEY, TREE)</tt></td></tr>
+<tr><td><a href="/386" target="_blank">386</a></td></tr>
+</tbody></table>
+
+        </article>
+    </div>
+
+    <!--
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 380: Output Script Descriptors General Operation
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2021-06-27</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0380.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre><code>  BIP: 380
+  Layer: Applications
+  Title: Output Script Descriptors General Operation
+  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
+          Ava Chow &lt;me@achow101.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0380
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>Output Script Descriptors are a simple language which can be used to describe collections of output scripts.
+There can be many different descriptor fragments and functions.
+This document describes the general syntax for descriptors, descriptor checksums, and common expressions.</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+<h2>Motivation</h2>
+<p>Bitcoin wallets traditionally have stored a set of keys which are later serialized and mutated to produce the output scripts that the wallet watches and the addresses it provides to users.
+Typically backups have consisted of solely the private keys, nowadays primarily in the form of BIP 39 mnemonics.
+However this backup solution is insuffient, especially since the introduction of Segregated Witness which added new output types.
+Given just the private keys, it is not possible for restored wallets to know which kinds of output scripts and addresses to produce.
+This has lead to incompatibilities between wallets when restoring a backup or exporting data for a watch only wallet.</p>
+<p>Further complicating matters are BIP 32 derivation paths.
+Although BIPs 44, 49, and 84 have specified standard BIP 32 derivation paths for different output scripts and addresses, not all wallets support them nor use those derivation paths.
+The lack of derivation path information in these backups and exports leads to further incompatibilities between wallets.</p>
+<p>Current solutions to these issues have not been generic and can be viewed as being layer violations.
+Solutions such as introducing different version bytes for extended key serialization both are a layer violation (key derivation should be separate from script type meaning) and specific only to a particular derivation path and script type.</p>
+<p>Output Script Descriptors introduces a generic solution to these issues.
+Script types are specified explicitly through the use of Script Expressions.
+Key derivation paths are specified explicitly in Key Expressions.
+These allow for creating wallet backups and exports which specify the exact scripts, subscripts (redeemScript, witnessScript, etc.), and keys to produce.
+With the general structure specified in this BIP, new Script Expressions can be introduced as new script types are added.
+Lastly, the use of common terminology and existing standards allow for Output Script Descriptors to be engineer readable so that the results can be understood at a glance.</p>
+<h2>Specification</h2>
+<p>Descriptors consist of several types of expressions.
+The top level expression is a <tt>SCRIPT</tt>.
+This expression may be followed by <tt>#CHECKSUM</tt>, where <tt>CHECKSUM</tt> is an 8 character alphanumeric descriptor checksum.
+Although the checksum is optional for parsing, applications may choose to reject descriptors that do not contain a checksum.</p>
+<h3>Script Expressions</h3>
+<p>Script Expressions (denoted <tt>SCRIPT</tt>) are expressions which correspond directly with a Bitcoin script.
+These expressions are written as functions and take arguments.
+Such expressions have a script template which is filled with the arguments correspondingly.
+Expressions are written with a human readable identifier string with the arguments enclosed with parentheses.
+The identifier string should be alphanumeric and may include underscores.</p>
+<p>The arguments to a script expression are defined by that expression itself.
+They could be a script expression, a key expression, or some other expression entirely.</p>
+<h3>Key Expressions</h3>
+<p>A common expression used as an argument to script expressions are key expressions (denoted <tt>KEY</tt>).
+These represent a public or private key and, optionally, information about the origin of that key.
+Key expressions can only be used as arguments to script expressions.</p>
+<p>Key expressions consist of:</p>
+<ul>
+<li>Optionally, key origin information, consisting of:
+<ul>
+<li>An open bracket <tt>[</tt></li>
+<li>Exactly 8 hex characters for the fingerprint of the key where the derivation starts (see BIP 32 for details)</li>
+<li>Followed by zero or more <tt>/NUM</tt> or <tt>/NUMh</tt>  path elements to indicate the unhardened or hardened derivation steps between the fingerprint and the key that follows.</li>
+<li>A closing bracket <tt>]</tt></li>
+</ul>
+</li>
+<li>Followed by the actual key, which is either:
+<ul>
+<li>A hex encoded public key, which depending the script expression, may be either:
+<ul>
+<li>66 hex character string beginning with <tt>02</tt> or <tt>03</tt> representing a compressed public key</li>
+<li>130 hex character string beginning with <tt>04</tt> representing an uncompressed public key</li>
+</ul>
+</li>
+<li>A <a href="https://en.bitcoin.it/wiki/Wallet_import_format" target="_blank">WIF</a> encoded private key</li>
+<li><tt>xpub</tt> encoded extended public key or <tt>xprv</tt> encoded extended private key (as defined in BIP 32)
+<ul>
+<li>Followed by zero or more <tt>/NUM</tt> or <tt>/NUMh</tt> path elements indicating BIP 32 derivation steps to be taken after the given extended key.</li>
+<li>Optionally followed by a single <tt>/*</tt> or <tt>/*h</tt> final step to denote all direct unhardened or hardened children.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>If the <tt>KEY</tt> is a BIP 32 extended key, before output scripts can be created, child keys must be derived using the derivation information that follows the extended key.
+When the final step is <tt>/<em></tt> or <tt>/</em>'</tt>, an output script will be produced for every child key index.
+The derived key must be not be serialized as an uncompressed public key.
+Script Expressions may have further requirements on how derived public keys are serialized for script creation.</p>
+<p>In the above specification, the hardened indicator <tt>h</tt> may be replaced with alternative hardened indicators of <tt>H</tt> or <tt>'</tt>.</p>
+<h4>Normalization of Key Expressions with Hardened Derivation</h4>
+<p>When a descriptor is exported without private keys, it is necessary to do additional derivation to remove any intermediate hardened derivation steps for the exported descriptor to be useful.
+The exporter should derive the extended public key at the last hardened derivation step and use that extended public key as the key in the descriptor.
+The derivation steps that were taken to get to that key must be added to the previous key origin information.
+If there is no key origin information, then one must be added for the newly derived extended public key.
+If the final derivation is hardened, then it is not necessary to do additional derivation.</p>
+<h3>Character Set</h3>
+<p>The expressions used in descriptors must only contain characters within this character set so that the descriptor checksum will work.</p>
+<p>The allowed characters are:</p>
+<pre><code>0123456789()[],&#x27;&#x2F;*abcdefgh@:$%{}
+IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~
+ijklmnopqrstuvwxyzABCDEFGH`#&quot;\&lt;space&gt;
+</code></pre>
+<p>Note that <tt><space></tt> on the last line is a space character.</p>
+<p>This character set is written as 3 groups of 32 characters in this specific order so that the checksum below can identify more errors.
+The first group are the most common &quot;unprotected&quot; characters (i.e. things such as hex and keypaths that do not already have their own checksums).
+Case errors cause an offset that is a multiple of 32 while as many alphabetic characters are in the same group while following the previous restrictions.</p>
+<h3>Checksum</h3>
+<p>Following the top level script expression is a single octothorpe (<tt>#</tt>) followed by the 8 character checksum.
+The checksum is an error correcting checksum similar to bech32.</p>
+<p>The checksum has the following properties:</p>
+<ul>
+<li>Mistakes in a descriptor string are measured in &quot;symbol errors&quot;. The higher the number of symbol errors, the harder it is to detect:
+<ul>
+<li>An error substituting a character from <tt>0123456789()[],'/*abcdefgh@:$%{}</tt> for another in that set always counts as 1 symbol error.
+<ul>
+<li>Note that hex encoded keys are covered by these characters. Extended keys (<tt>xpub</tt> and <tt>xprv</tt>) use other characters too, but also have their own checksum mechanism.</li>
+<li><tt>SCRIPT</tt> expression function names use other characters, but mistakes in these would generally result in an unparsable descriptor.</li>
+</ul>
+</li>
+<li>A case error always counts as 1 symbol error.</li>
+<li>Any other 1 character substitution error counts as 1 or 2 symbol errors.</li>
+</ul>
+</li>
+<li>Any 1 symbol error is always detected.</li>
+<li>Any 2 or 3 symbol error in a descriptor of up to 49154 characters is always detected.</li>
+<li>Any 4 symbol error in a descriptor of up to 507 characters is always detected.</li>
+<li>Any 5 symbol error in a descriptor of up to 77 characters is always detected.</li>
+<li>Is optimized to minimize the chance of a 5 symbol error in a descriptor up to 387 characters is undetected</li>
+<li>Random errors have a chance of 1 in 2<super>40</super> of being undetected.</li>
+</ul>
+<p>The checksum itself uses the same character set as bech32: <tt>qpzry9x8gf2tvdw0s3jn54khce6mua7l</tt></p>
+<p>Valid descriptor strings with a checksum must pass the criteria for validity specified by the Python3 code snippet below.
+The function <tt>descsum_check</tt> must return true when its argument <tt>s</tt> is a descriptor consisting in the form <tt>SCRIPT#CHECKSUM</tt>.</p>
+<pre><code>INPUT_CHARSET = &quot;0123456789()[],&#x27;&#x2F;*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&amp;+-.;&lt;=&gt;?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\&quot;\\ &quot;
+CHECKSUM_CHARSET = &quot;qpzry9x8gf2tvdw0s3jn54khce6mua7l&quot;
+GENERATOR = [0xf5dee51989, 0xa9fdca3312, 0x1bab10e32d, 0x3706b1677a, 0x644d626ffd]
+
+def descsum_polymod(symbols):
+    &quot;&quot;&quot;Internal function that computes the descriptor checksum.&quot;&quot;&quot;
+    chk = 1
+    for value in symbols:
+        top = chk &gt;&gt; 35
+        chk = (chk &amp; 0x7ffffffff) &lt;&lt; 5 ^ value
+        for i in range(5):
+            chk ^= GENERATOR[i] if ((top &gt;&gt; i) &amp; 1) else 0
+    return chk
+
+def descsum_expand(s):
+    &quot;&quot;&quot;Internal function that does the character to symbol expansion&quot;&quot;&quot;
+    groups = []
+    symbols = []
+    for c in s:
+        if not c in INPUT_CHARSET:
+            return None
+        v = INPUT_CHARSET.find(c)
+        symbols.append(v &amp; 31)
+        groups.append(v &gt;&gt; 5)
+        if len(groups) == 3:
+            symbols.append(groups[0] * 9 + groups[1] * 3 + groups[2])
+            groups = []
+    if len(groups) == 1:
+        symbols.append(groups[0])
+    elif len(groups) == 2:
+        symbols.append(groups[0] * 3 + groups[1])
+    return symbols
+
+def descsum_check(s):
+    &quot;&quot;&quot;Verify that the checksum is correct in a descriptor&quot;&quot;&quot;
+    if s[-9] != &#x27;#&#x27;:
+        return False
+    if not all(x in CHECKSUM_CHARSET for x in s[-8:]):
+        return False
+    symbols = descsum_expand(s[:-9]) + [CHECKSUM_CHARSET.find(x) for x in s[-8:]]
+    return descsum_polymod(symbols) == 1
+</code></pre>
+<p>This implements a BCH code that has the properties described above.
+The entire descriptor string is first processed into an array of symbols.
+The symbol for each character is its position within its group.
+After every 3rd symbol, a 4th symbol is inserted which represents the group numbers combined together.
+This means that a change that only affects the position within a group, or only a group number change, will only affect a single symbol.</p>
+<p>To construct a valid checksum given a script expression, the code below can be used:</p>
+<pre><code>def descsum_create(s):
+    &quot;&quot;&quot;Add a checksum to a descriptor without&quot;&quot;&quot;
+    symbols = descsum_expand(s) + [0, 0, 0, 0, 0, 0, 0, 0]
+    checksum = descsum_polymod(symbols) ^ 1
+    return s + &#x27;#&#x27; + &#x27;&#x27;.join(CHECKSUM_CHARSET[(checksum &gt;&gt; (5 * (7 - i))) &amp; 31] for i in range(8))
+
+</code></pre>
 <h2>Test Vectors</h2>
 <p>The following tests cover the checksum and character set:</p>
 <ul>
@@ -343,18 +676,37 @@ This Table lists all available Script expressions and the BIPs specifying them.<
 </tbody></table>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

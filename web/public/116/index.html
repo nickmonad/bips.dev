@@ -3,65 +3,70 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 116: MERKLEBRANCHVERIFY</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 116</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
             </div>
         </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 116: MERKLEBRANCHVERIFY</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2017-08-25</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0116.mediawiki" target="_blank">View on GitHub</a>
             </div>
         </div>
-    </div>
 
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 116: MERKLEBRANCHVERIFY
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2017-08-25</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0116.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 116
-</span><span>  Layer: Consensus (soft fork)
-</span><span>  Title: MERKLEBRANCHVERIFY
-</span><span>  Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
-</span><span>          Kalle Alm &lt;kalle.alm@gmail.com&gt;
-</span><span>          BtcDrak &lt;btcdrak@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0116
-</span><span>  Status: Draft
-</span><span>  Type: Standards Track
-</span><span>  Created: 2017-08-25
-</span><span>  License: CC-BY-SA-4.0
-</span><span>  License-Code: MIT
-</span></code></pre>
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 116
+  Layer: Consensus (soft fork)
+  Title: MERKLEBRANCHVERIFY
+  Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
+          Kalle Alm &lt;kalle.alm@gmail.com&gt;
+          BtcDrak &lt;btcdrak@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0116
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-08-25
+  License: CC-BY-SA-4.0
+  License-Code: MIT
+</code></pre>
 <h2>Abstract</h2>
 <p>A general approach to bitcoin contracts is to fully enumerate the possible spending conditions and then program verification of these conditions into a single script.
 At redemption, the spending condition used is explicitly selected, e.g. by pushing a value on the witness stack which cascades through a series if if/else constructs.</p>
@@ -117,9 +122,145 @@ Validation of a 256-branch path (e.g. a binary prefix tree with a hash value as 
 <h2>Applications</h2>
 <h3>1-of-N for large N</h3>
 <p>Here is a redeem script that allows a coin to be spent by any key from a large set, without linear scaling in script size:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>  redeemScript: &lt;root&gt; 2 MERKLEBRANCHVERIFY 2DROP DROP CHECKSIG
-</span><span>  witness: &lt;sig&gt; &lt;pubkey&gt; &lt;proof&gt;
-</span></code></pre>
+<pre><code>  redeemScript: &lt;root&gt; 2 MERKLEBRANCHVERIFY 2DROP DROP CHECKSIG
+  witness: &lt;sig&gt; &lt;pubkey&gt; &lt;proof&gt;
+</code></pre>
+<p>The redeem script looks very similar to the standard pay-to-pubkey-hash, except instead of showing that the pubkey's hash is the same as the commitment given, we demonstrate that the pubkey is one of potentially many pubkeys included in the Merkle tree committed to in the redeem script.
+The low-order bit of the first parameter, 2, is clear, meaning that there is one input (<code>(2&gt;&gt;1) == 1</code>), the serialized pubkey, and its VERIFY hash needs to be calculated by MERKLEBRANCHVERIFY using double-SHA256.</p>
+<h3>Honeypots</h3>
+<p>As described by Pieter Wuille[8] the 1-of-N scheme is particularly useful for constructing honeypots.
+The desire is to put a large bounty on a server, larger than the value of the server itself so that if the server is compromised it is highly likely that the hacker will claim the bitcoin, thereby revealing the intrusion.
+However if there are many servers, e.g. 1,000, it becomes excessively expensive to lock up separate bounties for each server.
+It would be desirable if the same bounty was shared across multiple servers in such a way that the spend would reveal which server was compromised.</p>
+<p>This is accomplished by generating 1,000 different keys, building a hash tree of these public keys, and placing each key and associated Merkle path on separate servers.
+When the honeypot is claimed, the (previous) owner of the coins can tell which server was compromised from the key and path used to claim the funds.</p>
+<h2>Implementation</h2>
+<p>An implementation of this BIP, including both consensus code updates and tests is available at the following Github repository:</p>
+<p>[https://github.com/maaku/bitcoin/tree/merkle-branch-verify]</p>
+<h2>Deployment</h2>
+<p>This BIP will be deployed by BIP8 (Version bits with lock-in by height)[9] with the name &quot;merklebranchverify&quot; and using bit 2.</p>
+<p>For Bitcoin mainnet, the BIP8 startheight will be at height M to be determined and BIP8 timeout activation will occur on height M + 50,400 blocks.</p>
+<p>For Bitcoin testnet, the BIP8 startheight will be at height T to be determined and BIP8 timeout activation will occur on height T + 50,400 blocks.</p>
+<p>We note that DISCOURAGE_UPGRADABLE_NOPS means that transactions which use this feature are already considered non-standard by the rules of the network, making deployment easier than was the case with, for example, with BIP68 (Relative lock-time using consensus-enforced sequence numbers)[9].</p>
+<h2>Compatibility</h2>
+<p>Old clients will consider the OP_MERKLEBRANCHVERIFY as a NOP and ignore it. Proof will not be verified, but the transaction will be accepted.</p>
+<h2>References</h2>
+<p>[1] <a href="/98" target="_blank">BIP98: Fast Merkle Trees (Consensus layer)</a></p>
+<p>[2] <a href="/16" target="_blank">BIP16: Pay to Script Hash</a></p>
+<p>[3] <a href="/141" target="_blank">BIP141: Segregated Witness (Consensus layer)</a></p>
+<p>[4] <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2459" target="_blank">National Vulnerability Database: CVE-2012-2459</a></p>
+<p>[5] <a href="/65" target="_blank">BIP65: OP_CHECKLOCKTIMEVERIFY</a></p>
+<p>[6] <a href="/112" target="_blank">BIP112: CHECKSEQUENCEVERIFY</a></p>
+<p>[7] <a href="/143" target="_blank">BIP143: Transaction Signature Verification for Version 0 Witness Program</a></p>
+<p>[8] <a href="https://blockstream.com/2015/08/24/treesignatures.html" target="_blank">Multisig on steroids using tree signatures</a></p>
+<p>[9] <a href="/68" target="_blank">BIP68: Relative lock-time using consensus-enforced sequence numbers</a></p>
+
+        </article>
+    </div>
+
+    <!--
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 116: MERKLEBRANCHVERIFY
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2017-08-25</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0116.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre><code>  BIP: 116
+  Layer: Consensus (soft fork)
+  Title: MERKLEBRANCHVERIFY
+  Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
+          Kalle Alm &lt;kalle.alm@gmail.com&gt;
+          BtcDrak &lt;btcdrak@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0116
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-08-25
+  License: CC-BY-SA-4.0
+  License-Code: MIT
+</code></pre>
+<h2>Abstract</h2>
+<p>A general approach to bitcoin contracts is to fully enumerate the possible spending conditions and then program verification of these conditions into a single script.
+At redemption, the spending condition used is explicitly selected, e.g. by pushing a value on the witness stack which cascades through a series if if/else constructs.</p>
+<p>This approach has significant downsides, such as requiring all program pathways to be visible in the scriptPubKey or redeem script, even those which are not used at validation.
+This wastes space on the block chain, restricts the size of possible scripts due to push limits, and impacts both privacy and fungibility as details of the contract can often be specific to the user.</p>
+<p>This BIP proposes a new soft-fork upgradeable opcode, MERKLEBRANCHVERIFY, which allows script writers to commit to a set of data elements and have one or more of these elements be provided at redemption without having to reveal the entire set.
+As these data elements can be used to encode policy, such as public keys or validation subscripts, the MERKLEBRANCHVERIFY opcode can be used to overcome these limitations of existing bitcoin script.</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under a Creative Commons Attribution-ShareAlike license. All provided source code is licensed under the MIT license.</p>
+<h2>Specification</h2>
+<p>MERKLEBRANCHVERIFY redefines the existing NOP4 opcode.
+When executed, if any of the following conditions are true, the script interpreter will terminate with an error:</p>
+<ol>
+<li>the stack contains less than three (3) items;</li>
+<li>the first item on the stack is more than 2 bytes;</li>
+<li>the first item on the stack, interpreted as an integer, N, is negative or not minimally encoded;</li>
+<li>the second item on the stack is not exactly 32 bytes;</li>
+<li>the third item on the stack is not a serialized Merkle tree inclusion proof as specified by BIP98[1] and requiring exactly <code>floor(N/2)</code> VERIFY hashes; or</li>
+<li>the remainder of the stack contains less than <code>floor(N/2)</code> additional items, together referred to as the input stack elements.</li>
+</ol>
+<p>If the low-order bit of N is clear, <code>N&amp;1 == 0</code>, each input stack element is hashed using double-SHA256.
+Otherwise, each element must be exactly 32 bytes in length and are interpreted as serialized hashes.
+These are the VERIFY hashes.</p>
+<p>If the fast Merkle root computed from the Merkle tree inclusion proof, the third item on the stack,
+with the VERIFY hashes in the order as presented on the stack, from top to bottom,
+does not exactly match the second item on the stack,
+the script interpreter will terminate with an error.</p>
+<p>Otherwise, script execution will continue as if a NOP had been executed.</p>
+<h2>Motivation</h2>
+<p>Although BIP16 (Pay to Script Hash)[2] and BIP141 (Segregated Witness)[3] both allow the redeem script to be kept out of the scriptPubKey and therefore out of the UTXO set, the entire spending conditions for a coin must nevertheless be revealed when that coin is spent.
+This includes execution pathways or policy conditions which end up not being needed by the redemption.
+Not only is it inefficient to require this unnecessary information to be present on the blockchain, albeit in the witness, it also impacts privacy and fungibility as some unused script policies may be identifying.
+Using a Merkle hash tree to commit to the policy options, and then only forcing revelation of the policy used at redemption minimizes this information leakage.</p>
+<p>Using Merkle hash trees to commit to policy allows for considerably more complex contracts than would would otherwise be possible, due to various built-in script size and runtime limitations.
+With Merkle commitments to policy these size and runtime limitations constrain the complexity of any one policy that can be used rather than the sum of all possible policies.</p>
+<h2>Rationale</h2>
+<p>The MERKLEBRANCHVERIFY opcode uses fast Merkle hash trees as specified by BIP98[1] rather than the construct used by Satoshi for committing transactions to the block header as the later has a known vulnerability relating to duplicate entries that introduces a source of malleability to downstream protocols[4].
+A source of malleability in Merkle proofs could potentially lead to spend vulnerabilities in protocols that use MERKLEBRANCHVERIFY.
+For example, a compact 2-of-N policy could be written by using MERKLEBRANCHVERIFY to prove that two keys are extracted from the same tree, one at a time, then checking the proofs for bitwise equality to make sure the same entry wasn't used twice.
+With the vulnerable Merkle tree implementation there are privledged positions in unbalanced Merkle trees that allow multiple proofs to be constructed for the same, single entry.</p>
+<p>BIP141 (Segregated Witness)[3] provides support for a powerful form of script upgrades called script versioning, which is able to achieve the sort of upgrades which would previously have been hard-forks.
+If script versioning were used for deployment then MERKLEBRANCHVERIFY could be written to consume its inputs, which would provide a small 2-byte savings for many anticipated use cases.
+However the more familiar NOP-expansion soft-fork mechanism used by BIP65 (CHECKLOCKTIMEVERIFY)[5] and BIP112 (CHECKSEQUENCEVERIFY)[6] was chosen over script versioning for the following two reasons:</p>
+<ol>
+<li><strong>Infrastructure compatibility.</strong> Using soft-fork NOP extensions allows MERKLEBRANCHVERIFY to be used by any existing software able to consume custom scripts, and results in standard P2SH or P2WSH-nested-in-P2SH addresses without the need for BIP143[7] signing code. This allows MERKLEBRANCHVERIFY to be used immediately by services that need it rather than wait on support for script versioning and/or BIP-143[7] signatures in tools and libraries.</li>
+<li><strong>Delayed decision on script upgrade protocol.</strong> There are unresolved issues with respect to how script versioning should be used for future script upgrades. There are only 16 available script versions reserved for future use, and so they should be treated as a scarce resource. Additionally, script feature versioning should arguably be specified in the witness and the BIP141 script versioning only be used to specify the structure of the witness, however no such protocol exists as of yet. Using the NOP-expansion space prevents MERKLEBRANCHVERIFY from being stalled due to waiting on script upgrade procedure to be worked out, while making use of expansion space that is already available.</li>
+</ol>
+<p>The MERKLEBRANCHVERIFY opcode allows for VERIFY hashes to be presented directly, or calculated from the leaf values using double-SHA256.
+In most cases the latter approach is expected to be used so that the leaf value(s) can be used for both branch validation and other purposes without any explicit preprocessing.
+However allowing already-calculated hash values as inputs enables using chained MERKLEBRANCHVERIFY opcodes to verify branches of trees with proofs large enough that they would not fit in the 520 byte script push limitation.
+As specified, a 30-branch path can be verified by proving the path from the leaf to the 15th interior node as the 'root', then proving that node's hash to be a child of the actual Merkle tree root hash.
+Validation of a 256-branch path (e.g. a binary prefix tree with a hash value as key) would require 18 chained validations, which would fit within current script limitations.</p>
+<h2>Applications</h2>
+<h3>1-of-N for large N</h3>
+<p>Here is a redeem script that allows a coin to be spent by any key from a large set, without linear scaling in script size:</p>
+<pre><code>  redeemScript: &lt;root&gt; 2 MERKLEBRANCHVERIFY 2DROP DROP CHECKSIG
+  witness: &lt;sig&gt; &lt;pubkey&gt; &lt;proof&gt;
+</code></pre>
 <p>The redeem script looks very similar to the standard pay-to-pubkey-hash, except instead of showing that the pubkey's hash is the same as the commitment given, we demonstrate that the pubkey is one of potentially many pubkeys included in the Merkle tree committed to in the redeem script.
 The low-order bit of the first parameter, 2, is clear, meaning that there is one input (<code>(2&gt;&gt;1) == 1</code>), the serialized pubkey, and its VERIFY hash needs to be calculated by MERKLEBRANCHVERIFY using double-SHA256.</p>
 <h3>Honeypots</h3>
@@ -151,18 +292,37 @@ When the honeypot is claimed, the (previous) owner of the coins can tell which s
 <p>[9] <a href="/68" target="_blank">BIP68: Relative lock-time using consensus-enforced sequence numbers</a></p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

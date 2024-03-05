@@ -3,62 +3,67 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 65: OP_CHECKLOCKTIMEVERIFY</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 65</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
             </div>
         </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 65: OP_CHECKLOCKTIMEVERIFY</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2014-10-01</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0065.mediawiki" target="_blank">View on GitHub</a>
             </div>
         </div>
-    </div>
 
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 65: OP_CHECKLOCKTIMEVERIFY
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2014-10-01</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0065.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 65
-</span><span>  Layer: Consensus (soft fork)
-</span><span>  Title: OP_CHECKLOCKTIMEVERIFY
-</span><span>  Author: Peter Todd &lt;pete@petertodd.org&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0065
-</span><span>  Status: Final
-</span><span>  Type: Standards Track
-</span><span>  Created: 2014-10-01
-</span><span>  License: PD
-</span></code></pre>
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 65
+  Layer: Consensus (soft fork)
+  Title: OP_CHECKLOCKTIMEVERIFY
+  Author: Peter Todd &lt;pete@petertodd.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0065
+  Status: Final
+  Type: Standards Track
+  Created: 2014-10-01
+  License: PD
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP describes a new opcode (OP_CHECKLOCKTIMEVERIFY) for the Bitcoin
 scripting system that allows a transaction output to be made unspendable until
@@ -102,22 +107,22 @@ not to have immediate access to the funds to discourage bad actors from
 attempting to get the secret keys from him by force.</p>
 <p>However, with CHECKLOCKTIMEVERIFY the funds can be stored in scriptPubKeys of
 the form:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    IF
-</span><span>        &lt;now + 3 months&gt; CHECKLOCKTIMEVERIFY DROP
-</span><span>        &lt;Lenny&#39;s pubkey&gt; CHECKSIGVERIFY
-</span><span>        1
-</span><span>    ELSE
-</span><span>        2
-</span><span>    ENDIF
-</span><span>    &lt;Alice&#39;s pubkey&gt; &lt;Bob&#39;s pubkey&gt; 2 CHECKMULTISIG
-</span></code></pre>
+<pre><code>    IF
+        &lt;now + 3 months&gt; CHECKLOCKTIMEVERIFY DROP
+        &lt;Lenny&#x27;s pubkey&gt; CHECKSIGVERIFY
+        1
+    ELSE
+        2
+    ENDIF
+    &lt;Alice&#x27;s pubkey&gt; &lt;Bob&#x27;s pubkey&gt; 2 CHECKMULTISIG
+</code></pre>
 <p>At any time the funds can be spent with the following scriptSig:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    0 &lt;Alice&#39;s signature&gt; &lt;Bob&#39;s signature&gt; 0
-</span></code></pre>
+<pre><code>    0 &lt;Alice&#x27;s signature&gt; &lt;Bob&#x27;s signature&gt; 0
+</code></pre>
 <p>After 3 months have passed Lenny and one of either Alice or Bob can spend the
 funds with the following scriptSig:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    0 &lt;Alice/Bob&#39;s signature&gt; &lt;Lenny&#39;s signature&gt; 1
-</span></code></pre>
+<pre><code>    0 &lt;Alice&#x2F;Bob&#x27;s signature&gt; &lt;Lenny&#x27;s signature&gt; 1
+</code></pre>
 <h3>Non-interactive time-locked refunds</h3>
 <p>There exist a number of protocols where a transaction output is created that
 requires the co-operation of both parties to spend the output. To ensure the
@@ -140,13 +145,13 @@ the service is not available, they wait until the nLockTime expires.</p>
 signature for some or all of their transaction outputs. With
 CHECKLOCKTIMEVERIFY rather than creating refund signatures on demand
 scriptPubKeys of the following form are used instead:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    IF
-</span><span>        &lt;service pubkey&gt; CHECKSIGVERIFY
-</span><span>    ELSE
-</span><span>        &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP
-</span><span>    ENDIF
-</span><span>    &lt;user pubkey&gt; CHECKSIG
-</span></code></pre>
+<pre><code>    IF
+        &lt;service pubkey&gt; CHECKSIGVERIFY
+    ELSE
+        &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP
+    ENDIF
+    &lt;user pubkey&gt; CHECKSIG
+</code></pre>
 <p>Now the user is always able to spend their funds without the co-operation of
 the service by waiting for the expiry time to be reached.</p>
 <h4>Payment Channels</h4>
@@ -167,14 +172,14 @@ significant flaw: the publisher can delay the release of the keys indefinitely.<
 <p>This problem can be solved interactively with the refund transaction technique;
 with CHECKLOCKTIMEVERIFY the problem can be non-interactively solved using
 scriptPubKeys of the following form:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    IF
-</span><span>        HASH160 &lt;Hash160(encryption key)&gt; EQUALVERIFY
-</span><span>        &lt;publisher pubkey&gt; CHECKSIG
-</span><span>    ELSE
-</span><span>        &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP
-</span><span>        &lt;buyer pubkey&gt; CHECKSIG
-</span><span>    ENDIF
-</span></code></pre>
+<pre><code>    IF
+        HASH160 &lt;Hash160(encryption key)&gt; EQUALVERIFY
+        &lt;publisher pubkey&gt; CHECKSIG
+    ELSE
+        &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP
+        &lt;buyer pubkey&gt; CHECKSIG
+    ENDIF
+</code></pre>
 <p>The buyer of the data is now making a secure offer with an expiry time. If the
 publisher fails to accept the offer before the expiry time is reached the buyer
 can cancel the offer by spending the output.</p>
@@ -197,8 +202,8 @@ to control funds, now funds can be frozen in UTXOs directly on the blockchain.
 With the following scriptPubKey, nobody will be able to spend the encumbered
 output until the provided expiry time. This ability to freeze funds reliably may
 be useful in scenarios where reducing duress or confiscation risk is desired.</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP DUP HASH160 &lt;pubKeyHash&gt; EQUALVERIFY CHECKSIG
-</span></code></pre>
+<pre><code>    &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP DUP HASH160 &lt;pubKeyHash&gt; EQUALVERIFY CHECKSIG
+</code></pre>
 <h3>Replacing the nLockTime field entirely</h3>
 <p>As an aside, note how if the SignatureHash() algorithm could optionally cover
 part of the scriptSig the signature could require that the scriptSig contain
@@ -210,76 +215,386 @@ transaction output <em>can</em> be spent.</p>
 <h2>Detailed Specification</h2>
 <p>Refer to the reference implementation, reproduced below, for the precise
 semantics and detailed rationale for those semantics.</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    
-</span><span>    case OP_NOP2:
-</span><span>    {
-</span><span>        // CHECKLOCKTIMEVERIFY
-</span><span>        //
-</span><span>        // (nLockTime -- nLockTime )
-</span><span>    
-</span><span>        if (!(flags &amp; SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY))
-</span><span>            break; // not enabled; treat as a NOP
-</span><span>    
-</span><span>        if (stack.size() &lt; 1)
-</span><span>            return false;
-</span><span>    
-</span><span>        // Note that elsewhere numeric opcodes are limited to
-</span><span>        // operands in the range -2**31+1 to 2**31-1, however it is
-</span><span>        // legal for opcodes to produce results exceeding that
-</span><span>        // range. This limitation is implemented by CScriptNum&#39;s
-</span><span>        // default 4-byte limit.
-</span><span>        //
-</span><span>        // If we kept to that limit we&#39;d have a year 2038 problem,
-</span><span>        // even though the nLockTime field in transactions
-</span><span>        // themselves is uint32 which only becomes meaningless
-</span><span>        // after the year 2106.
-</span><span>        //
-</span><span>        // Thus as a special case we tell CScriptNum to accept up
-</span><span>        // to 5-byte bignums, which are good until 2**32-1, the
-</span><span>        // same limit as the nLockTime field itself.
-</span><span>        const CScriptNum nLockTime(stacktop(-1), 5);
-</span><span>    
-</span><span>        // In the rare event that the argument may be &lt; 0 due to
-</span><span>        // some arithmetic being done first, you can always use
-</span><span>        // 0 MAX CHECKLOCKTIMEVERIFY.
-</span><span>        if (nLockTime &lt; 0)
-</span><span>            return false;
-</span><span>    
-</span><span>        // There are two types of nLockTime: lock-by-blockheight
-</span><span>        // and lock-by-blocktime, distinguished by whether
-</span><span>        // nLockTime &lt; LOCKTIME_THRESHOLD.
-</span><span>        //
-</span><span>        // We want to compare apples to apples, so fail the script
-</span><span>        // unless the type of nLockTime being tested is the same as
-</span><span>        // the nLockTime in the transaction.
-</span><span>        if (!(
-</span><span>              (txTo.nLockTime &lt;  LOCKTIME_THRESHOLD &amp;&amp; nLockTime &lt;  LOCKTIME_THRESHOLD) ||
-</span><span>              (txTo.nLockTime &gt;= LOCKTIME_THRESHOLD &amp;&amp; nLockTime &gt;= LOCKTIME_THRESHOLD)
-</span><span>             ))
-</span><span>            return false;
-</span><span>    
-</span><span>        // Now that we know we&#39;re comparing apples-to-apples, the
-</span><span>        // comparison is a simple numeric one.
-</span><span>        if (nLockTime &gt; (int64_t)txTo.nLockTime)
-</span><span>            return false;
-</span><span>    
-</span><span>        // Finally the nLockTime feature can be disabled and thus
-</span><span>        // CHECKLOCKTIMEVERIFY bypassed if every txin has been
-</span><span>        // finalized by setting nSequence to maxint. The
-</span><span>        // transaction would be allowed into the blockchain, making
-</span><span>        // the opcode ineffective.
-</span><span>        //
-</span><span>        // Testing if this vin is not final is sufficient to
-</span><span>        // prevent this condition. Alternatively we could test all
-</span><span>        // inputs, but testing just this input minimizes the data
-</span><span>        // required to prove correct CHECKLOCKTIMEVERIFY execution.
-</span><span>        if (txTo.vin[nIn].IsFinal())
-</span><span>            return false;
-</span><span>    
-</span><span>        break;
-</span><span>    
-</span><span>    }
-</span></code></pre>
+<pre><code>    
+    case OP_NOP2:
+    {
+        &#x2F;&#x2F; CHECKLOCKTIMEVERIFY
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; (nLockTime -- nLockTime )
+    
+        if (!(flags &amp; SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY))
+            break; &#x2F;&#x2F; not enabled; treat as a NOP
+    
+        if (stack.size() &lt; 1)
+            return false;
+    
+        &#x2F;&#x2F; Note that elsewhere numeric opcodes are limited to
+        &#x2F;&#x2F; operands in the range -2**31+1 to 2**31-1, however it is
+        &#x2F;&#x2F; legal for opcodes to produce results exceeding that
+        &#x2F;&#x2F; range. This limitation is implemented by CScriptNum&#x27;s
+        &#x2F;&#x2F; default 4-byte limit.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; If we kept to that limit we&#x27;d have a year 2038 problem,
+        &#x2F;&#x2F; even though the nLockTime field in transactions
+        &#x2F;&#x2F; themselves is uint32 which only becomes meaningless
+        &#x2F;&#x2F; after the year 2106.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; Thus as a special case we tell CScriptNum to accept up
+        &#x2F;&#x2F; to 5-byte bignums, which are good until 2**32-1, the
+        &#x2F;&#x2F; same limit as the nLockTime field itself.
+        const CScriptNum nLockTime(stacktop(-1), 5);
+    
+        &#x2F;&#x2F; In the rare event that the argument may be &lt; 0 due to
+        &#x2F;&#x2F; some arithmetic being done first, you can always use
+        &#x2F;&#x2F; 0 MAX CHECKLOCKTIMEVERIFY.
+        if (nLockTime &lt; 0)
+            return false;
+    
+        &#x2F;&#x2F; There are two types of nLockTime: lock-by-blockheight
+        &#x2F;&#x2F; and lock-by-blocktime, distinguished by whether
+        &#x2F;&#x2F; nLockTime &lt; LOCKTIME_THRESHOLD.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; We want to compare apples to apples, so fail the script
+        &#x2F;&#x2F; unless the type of nLockTime being tested is the same as
+        &#x2F;&#x2F; the nLockTime in the transaction.
+        if (!(
+              (txTo.nLockTime &lt;  LOCKTIME_THRESHOLD &amp;&amp; nLockTime &lt;  LOCKTIME_THRESHOLD) ||
+              (txTo.nLockTime &gt;= LOCKTIME_THRESHOLD &amp;&amp; nLockTime &gt;= LOCKTIME_THRESHOLD)
+             ))
+            return false;
+    
+        &#x2F;&#x2F; Now that we know we&#x27;re comparing apples-to-apples, the
+        &#x2F;&#x2F; comparison is a simple numeric one.
+        if (nLockTime &gt; (int64_t)txTo.nLockTime)
+            return false;
+    
+        &#x2F;&#x2F; Finally the nLockTime feature can be disabled and thus
+        &#x2F;&#x2F; CHECKLOCKTIMEVERIFY bypassed if every txin has been
+        &#x2F;&#x2F; finalized by setting nSequence to maxint. The
+        &#x2F;&#x2F; transaction would be allowed into the blockchain, making
+        &#x2F;&#x2F; the opcode ineffective.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; Testing if this vin is not final is sufficient to
+        &#x2F;&#x2F; prevent this condition. Alternatively we could test all
+        &#x2F;&#x2F; inputs, but testing just this input minimizes the data
+        &#x2F;&#x2F; required to prove correct CHECKLOCKTIMEVERIFY execution.
+        if (txTo.vin[nIn].IsFinal())
+            return false;
+    
+        break;
+    
+    }
+</code></pre>
+<p>https://github.com/petertodd/bitcoin/commit/ab0f54f38e08ee1e50ff72f801680ee84d0f1bf4</p>
+<h2>Deployment</h2>
+<p>We reuse the double-threshold IsSuperMajority() switchover mechanism used in
+BIP66 with the same thresholds, but for nVersion = 4. The new rules are
+in effect for every block (at height H) with nVersion = 4 and at least
+750 out of 1000 blocks preceding it (with heights H-1000..H-1) also
+have nVersion &gt;= 4. Furthermore, when 950 out of the 1000 blocks
+preceding a block do have nVersion &gt;= 4, nVersion &lt; 4 blocks become
+invalid, and all further blocks enforce the new rules.</p>
+<p>It should be noted that BIP9 involves permanently setting a high-order bit to
+1 which results in nVersion &gt;= all prior IsSuperMajority() soft-forks and thus
+no bits in nVersion are permanently lost.</p>
+<h3>SPV Clients</h3>
+<p>While SPV clients are (currently) unable to validate blocks in general,
+trusting miners to do validation for them, they are able to validate block
+headers and thus can validate a subset of the deployment rules. SPV clients
+should reject nVersion &lt; 4 blocks if 950 out of 1000 preceding blocks have
+nVersion &gt;= 4 to prevent false confirmations from the remaining 5% of
+non-upgraded miners when the 95% threshold has been reached.</p>
+<h2>Credits</h2>
+<p>Thanks goes to Gregory Maxwell for suggesting that the argument be compared
+against the per-transaction nLockTime, rather than the current block height and
+time.</p>
+<h2>References</h2>
+<p>PayPub</p>
+<ul>
+<li>https://github.com/unsystem/paypub</li>
+</ul>
+<p>Jeremy Spilman Payment Channels</p>
+<ul>
+<li>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002433.html</li>
+</ul>
+<h2>Implementations</h2>
+<p>Python / python-bitcoinlib</p>
+<ul>
+<li>https://github.com/petertodd/checklocktimeverify-demos</li>
+</ul>
+<p>JavaScript / Node.js / bitcore</p>
+<ul>
+<li>https://github.com/mruddy/bip65-demos</li>
+</ul>
+<h2>Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+        </article>
+    </div>
+
+    <!--
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 65: OP_CHECKLOCKTIMEVERIFY
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2014-10-01</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0065.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre><code>  BIP: 65
+  Layer: Consensus (soft fork)
+  Title: OP_CHECKLOCKTIMEVERIFY
+  Author: Peter Todd &lt;pete@petertodd.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0065
+  Status: Final
+  Type: Standards Track
+  Created: 2014-10-01
+  License: PD
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP describes a new opcode (OP_CHECKLOCKTIMEVERIFY) for the Bitcoin
+scripting system that allows a transaction output to be made unspendable until
+some point in the future.</p>
+<h2>Summary</h2>
+<p>CHECKLOCKTIMEVERIFY redefines the existing NOP2 opcode. When executed, if
+any of the following conditions are true, the script interpreter will terminate
+with an error:</p>
+<ul>
+<li>the stack is empty; or</li>
+<li>the top item on the stack is less than 0; or</li>
+<li>the lock-time type (height vs. timestamp) of the top stack item and the nLockTime field are not the same; or</li>
+<li>the top stack item is greater than the transaction's nLockTime field; or</li>
+<li>the nSequence field of the txin is 0xffffffff;</li>
+</ul>
+<p>Otherwise, script execution will continue as if a NOP had been executed.</p>
+<p>The nLockTime field in a transaction prevents the transaction from being mined
+until either a certain block height, or block time, has been reached. By
+comparing the argument to CHECKLOCKTIMEVERIFY against the nLockTime field, we
+indirectly verify that the desired block height or block time has been reached;
+until that block height or block time has been reached the transaction output
+remains unspendable.</p>
+<h2>Motivation</h2>
+<p>The nLockTime field in transactions can be used to prove that it is
+<em>possible</em> to spend a transaction output in the future, by constructing a
+valid transaction spending that output with the nLockTime field set.</p>
+<p>However, the nLockTime field can't prove that it is <em>impossible</em> to spend a
+transaction output until some time in the future, as there is no way to know if
+a valid signature for a different transaction spending that output has been
+created.</p>
+<h3>Escrow</h3>
+<p>If Alice and Bob jointly operate a business they may want to
+ensure that all funds are kept in 2-of-2 multisig transaction outputs that
+require the co-operation of both parties to spend. However, they recognise that
+in exceptional circumstances such as either party getting &quot;hit by a bus&quot; they
+need a backup plan to retrieve the funds. So they appoint their lawyer, Lenny,
+to act as a third-party.</p>
+<p>With a standard 2-of-3 CHECKMULTISIG at any time Lenny could conspire with
+either Alice or Bob to steal the funds illegitimately. Equally Lenny may prefer
+not to have immediate access to the funds to discourage bad actors from
+attempting to get the secret keys from him by force.</p>
+<p>However, with CHECKLOCKTIMEVERIFY the funds can be stored in scriptPubKeys of
+the form:</p>
+<pre><code>    IF
+        &lt;now + 3 months&gt; CHECKLOCKTIMEVERIFY DROP
+        &lt;Lenny&#x27;s pubkey&gt; CHECKSIGVERIFY
+        1
+    ELSE
+        2
+    ENDIF
+    &lt;Alice&#x27;s pubkey&gt; &lt;Bob&#x27;s pubkey&gt; 2 CHECKMULTISIG
+</code></pre>
+<p>At any time the funds can be spent with the following scriptSig:</p>
+<pre><code>    0 &lt;Alice&#x27;s signature&gt; &lt;Bob&#x27;s signature&gt; 0
+</code></pre>
+<p>After 3 months have passed Lenny and one of either Alice or Bob can spend the
+funds with the following scriptSig:</p>
+<pre><code>    0 &lt;Alice&#x2F;Bob&#x27;s signature&gt; &lt;Lenny&#x27;s signature&gt; 1
+</code></pre>
+<h3>Non-interactive time-locked refunds</h3>
+<p>There exist a number of protocols where a transaction output is created that
+requires the co-operation of both parties to spend the output. To ensure the
+failure of one party does not result in the funds becoming lost, refund
+transactions are setup in advance using nLockTime. These refund transactions
+need to be created interactively, and additionally, are currently vulnerable to
+transaction malleability. CHECKLOCKTIMEVERIFY can be used in these protocols,
+replacing the interactive setup with a non-interactive setup, and additionally,
+making transaction malleability a non-issue.</p>
+<h4>Two-factor wallets</h4>
+<p>Services like GreenAddress store bitcoins with 2-of-2 multisig scriptPubKey's
+such that one keypair is controlled by the user, and the other keypair is
+controlled by the service. To spend funds the user uses locally installed
+wallet software that generates one of the required signatures, and then uses a
+2nd-factor authentication method to authorize the service to create the second
+SIGHASH_NONE signature that is locked until some time in the future and sends
+the user that signature for storage. If the user needs to spend their funds and
+the service is not available, they wait until the nLockTime expires.</p>
+<p>The problem is there exist numerous occasions the user will not have a valid
+signature for some or all of their transaction outputs. With
+CHECKLOCKTIMEVERIFY rather than creating refund signatures on demand
+scriptPubKeys of the following form are used instead:</p>
+<pre><code>    IF
+        &lt;service pubkey&gt; CHECKSIGVERIFY
+    ELSE
+        &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP
+    ENDIF
+    &lt;user pubkey&gt; CHECKSIG
+</code></pre>
+<p>Now the user is always able to spend their funds without the co-operation of
+the service by waiting for the expiry time to be reached.</p>
+<h4>Payment Channels</h4>
+<p>Jeremy Spilman style payment channels first setup a deposit controlled by
+2-of-2 multisig, tx1, and then adjust a second transaction, tx2, that spends
+the output of tx1 to payor and payee. Prior to publishing tx1 a refund
+transaction is created, tx3, to ensure that should the payee vanish the payor
+can get their deposit back. The process by which the refund transaction is
+created is currently vulnerable to transaction malleability attacks, and
+additionally, requires the payor to store the refund. Using the same
+scriptPubKey form as in the Two-factor wallets example solves both these issues.</p>
+<h3>Trustless Payments for Publishing Data</h3>
+<p>The PayPub protocol makes it possible to pay for information in a trustless way
+by first proving that an encrypted file contains the desired data, and secondly
+crafting scriptPubKeys used for payment such that spending them reveals the
+encryption keys to the data. However the existing implementation has a
+significant flaw: the publisher can delay the release of the keys indefinitely.</p>
+<p>This problem can be solved interactively with the refund transaction technique;
+with CHECKLOCKTIMEVERIFY the problem can be non-interactively solved using
+scriptPubKeys of the following form:</p>
+<pre><code>    IF
+        HASH160 &lt;Hash160(encryption key)&gt; EQUALVERIFY
+        &lt;publisher pubkey&gt; CHECKSIG
+    ELSE
+        &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP
+        &lt;buyer pubkey&gt; CHECKSIG
+    ENDIF
+</code></pre>
+<p>The buyer of the data is now making a secure offer with an expiry time. If the
+publisher fails to accept the offer before the expiry time is reached the buyer
+can cancel the offer by spending the output.</p>
+<h3>Proving sacrifice to miners' fees</h3>
+<p>Proving the sacrifice of some limited resource is a common technique in a
+variety of cryptographic protocols. Proving sacrifices of coins to mining fees
+has been proposed as a <em>universal public good</em> to which the sacrifice could
+be directed, rather than simply destroying the coins. However doing so is
+non-trivial, and even the best existing technqiue - announce-commit sacrifices</p>
+<ul>
+<li>could encourage mining centralization. CHECKLOCKTIMEVERIFY can be used to
+create outputs that are provably spendable by anyone (thus to mining fees
+assuming miners behave optimally and rationally) but only at a time
+sufficiently far into the future that large miners can't profitably sell the
+sacrifices at a discount.</li>
+</ul>
+<h3>Freezing Funds</h3>
+<p>In addition to using cold storage, hardware wallets, and P2SH multisig outputs
+to control funds, now funds can be frozen in UTXOs directly on the blockchain.
+With the following scriptPubKey, nobody will be able to spend the encumbered
+output until the provided expiry time. This ability to freeze funds reliably may
+be useful in scenarios where reducing duress or confiscation risk is desired.</p>
+<pre><code>    &lt;expiry time&gt; CHECKLOCKTIMEVERIFY DROP DUP HASH160 &lt;pubKeyHash&gt; EQUALVERIFY CHECKSIG
+</code></pre>
+<h3>Replacing the nLockTime field entirely</h3>
+<p>As an aside, note how if the SignatureHash() algorithm could optionally cover
+part of the scriptSig the signature could require that the scriptSig contain
+CHECKLOCKTIMEVERIFY opcodes, and additionally, require that they be executed.
+(the CODESEPARATOR opcode came very close to making this possible in v0.1 of
+Bitcoin) This per-signature capability could replace the per-transaction
+nLockTime field entirely as a valid signature would now be the proof that a
+transaction output <em>can</em> be spent.</p>
+<h2>Detailed Specification</h2>
+<p>Refer to the reference implementation, reproduced below, for the precise
+semantics and detailed rationale for those semantics.</p>
+<pre><code>    
+    case OP_NOP2:
+    {
+        &#x2F;&#x2F; CHECKLOCKTIMEVERIFY
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; (nLockTime -- nLockTime )
+    
+        if (!(flags &amp; SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY))
+            break; &#x2F;&#x2F; not enabled; treat as a NOP
+    
+        if (stack.size() &lt; 1)
+            return false;
+    
+        &#x2F;&#x2F; Note that elsewhere numeric opcodes are limited to
+        &#x2F;&#x2F; operands in the range -2**31+1 to 2**31-1, however it is
+        &#x2F;&#x2F; legal for opcodes to produce results exceeding that
+        &#x2F;&#x2F; range. This limitation is implemented by CScriptNum&#x27;s
+        &#x2F;&#x2F; default 4-byte limit.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; If we kept to that limit we&#x27;d have a year 2038 problem,
+        &#x2F;&#x2F; even though the nLockTime field in transactions
+        &#x2F;&#x2F; themselves is uint32 which only becomes meaningless
+        &#x2F;&#x2F; after the year 2106.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; Thus as a special case we tell CScriptNum to accept up
+        &#x2F;&#x2F; to 5-byte bignums, which are good until 2**32-1, the
+        &#x2F;&#x2F; same limit as the nLockTime field itself.
+        const CScriptNum nLockTime(stacktop(-1), 5);
+    
+        &#x2F;&#x2F; In the rare event that the argument may be &lt; 0 due to
+        &#x2F;&#x2F; some arithmetic being done first, you can always use
+        &#x2F;&#x2F; 0 MAX CHECKLOCKTIMEVERIFY.
+        if (nLockTime &lt; 0)
+            return false;
+    
+        &#x2F;&#x2F; There are two types of nLockTime: lock-by-blockheight
+        &#x2F;&#x2F; and lock-by-blocktime, distinguished by whether
+        &#x2F;&#x2F; nLockTime &lt; LOCKTIME_THRESHOLD.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; We want to compare apples to apples, so fail the script
+        &#x2F;&#x2F; unless the type of nLockTime being tested is the same as
+        &#x2F;&#x2F; the nLockTime in the transaction.
+        if (!(
+              (txTo.nLockTime &lt;  LOCKTIME_THRESHOLD &amp;&amp; nLockTime &lt;  LOCKTIME_THRESHOLD) ||
+              (txTo.nLockTime &gt;= LOCKTIME_THRESHOLD &amp;&amp; nLockTime &gt;= LOCKTIME_THRESHOLD)
+             ))
+            return false;
+    
+        &#x2F;&#x2F; Now that we know we&#x27;re comparing apples-to-apples, the
+        &#x2F;&#x2F; comparison is a simple numeric one.
+        if (nLockTime &gt; (int64_t)txTo.nLockTime)
+            return false;
+    
+        &#x2F;&#x2F; Finally the nLockTime feature can be disabled and thus
+        &#x2F;&#x2F; CHECKLOCKTIMEVERIFY bypassed if every txin has been
+        &#x2F;&#x2F; finalized by setting nSequence to maxint. The
+        &#x2F;&#x2F; transaction would be allowed into the blockchain, making
+        &#x2F;&#x2F; the opcode ineffective.
+        &#x2F;&#x2F;
+        &#x2F;&#x2F; Testing if this vin is not final is sufficient to
+        &#x2F;&#x2F; prevent this condition. Alternatively we could test all
+        &#x2F;&#x2F; inputs, but testing just this input minimizes the data
+        &#x2F;&#x2F; required to prove correct CHECKLOCKTIMEVERIFY execution.
+        if (txTo.vin[nIn].IsFinal())
+            return false;
+    
+        break;
+    
+    }
+</code></pre>
 <p>https://github.com/petertodd/bitcoin/commit/ab0f54f38e08ee1e50ff72f801680ee84d0f1bf4</p>
 <h2>Deployment</h2>
 <p>We reuse the double-threshold IsSuperMajority() switchover mechanism used in
@@ -325,18 +640,37 @@ time.</p>
 <p>This document is placed in the public domain.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

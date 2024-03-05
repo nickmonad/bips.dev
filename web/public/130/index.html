@@ -3,21 +3,99 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 130: sendheaders message</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 130</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 130: sendheaders message</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2015-05-08</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0130.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 130
+  Layer: Peer Services
+  Title: sendheaders message
+  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0130
+  Status: Proposed
+  Type: Standards Track
+  Created: 2015-05-08
+  License: PD
+</code></pre>
+<h2>Abstract</h2>
+<p>Add a new message, &quot;sendheaders&quot;, which indicates that a node prefers to receive new block announcements via a &quot;headers&quot; message rather than an &quot;inv&quot;.</p>
+<h2>Motivation</h2>
+<p>Since the introduction of &quot;headers-first&quot; downloading of blocks in 0.10, blocks will not be processed unless
+they are able to connect to a (valid) headers chain.  Consequently, block relay generally works
+as follows:</p>
+<ol>
+<li>A node (N) announces the new tip with an &quot;inv&quot; message, containing the block hash</li>
+<li>A peer (P) responds to the &quot;inv&quot; with a &quot;getheaders&quot; message (to request headers up to the new tip) and a &quot;getdata&quot; message for the new tip itself</li>
+<li>N responds with a &quot;headers&quot; message (with the header for the new block along with any preceding headers unknown to P) and a &quot;block&quot; message containing the new block</li>
+</ol>
+<p>However, in the case where a new block is being announced that builds on the tip, it would be generally more efficient if the node N just announced the block header for the new block, rather than just the block hash, and saved the peer from generating and transmitting the getheaders message (and the required block locator).</p>
+<p>In the case of a reorg, where 1 or more blocks are disconnected, nodes currently just send an &quot;inv&quot; for the new tip.  Peers currently are able to request the new tip immediately, but wait until the headers for the intermediate blocks are delivered before requesting those blocks.  By announcing headers from the last fork point leading up to the new tip in the block announcement, peers are able to request all the intermediate blocks immediately.</p>
+<h2>Specification</h2>
+<ol>
+<li>The sendheaders message is defined as an empty message where pchCommand == &quot;sendheaders&quot;</li>
+<li>Upon receipt of a &quot;sendheaders&quot; message, the node will be permitted, but not required, to announce new blocks by sending the header of the new block (along with any other blocks that a node believes a peer might need in order for the block to connect).</li>
+<li>Feature discovery is enabled by checking protocol version &gt;= 70012</li>
+</ol>
+<h2>Additional constraints</h2>
+<p>As support for sendheaders is optional, software that implements this may also optionally impose additional constraints, such as only honoring sendheaders messages shortly after a connection is established.</p>
+<h2>Backward compatibility</h2>
+<p>Older clients remain fully compatible and interoperable after this change.</p>
+<h2>Implementation</h2>
+<p>https://github.com/bitcoin/bitcoin/pull/6494</p>
+<h2>Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +126,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 130
-</span><span>  Layer: Peer Services
-</span><span>  Title: sendheaders message
-</span><span>  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0130
-</span><span>  Status: Proposed
-</span><span>  Type: Standards Track
-</span><span>  Created: 2015-05-08
-</span><span>  License: PD
-</span></code></pre>
+      <pre><code>  BIP: 130
+  Layer: Peer Services
+  Title: sendheaders message
+  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0130
+  Status: Proposed
+  Type: Standards Track
+  Created: 2015-05-08
+  License: PD
+</code></pre>
 <h2>Abstract</h2>
 <p>Add a new message, &quot;sendheaders&quot;, which indicates that a node prefers to receive new block announcements via a &quot;headers&quot; message rather than an &quot;inv&quot;.</p>
 <h2>Motivation</h2>
@@ -88,18 +166,37 @@ as follows:</p>
 <p>This document is placed in the public domain.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

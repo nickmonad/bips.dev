@@ -3,21 +3,105 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 30: Duplicate transactions</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 30</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 30: Duplicate transactions</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2012-02-22</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0030.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 30
+  Layer: Consensus (soft fork)
+  Title: Duplicate transactions
+  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0030
+  Status: Final
+  Type: Standards Track
+  Created: 2012-02-22
+  License: BSD-2-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>This document gives a specification for dealing with duplicate transactions in the block chain, in an attempt to solve certain problems the reference implementation has with them.</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+<h2>Motivation</h2>
+<p>So far, the Bitcoin reference implementation always assumed duplicate transactions (transactions with the same identifier) didn't exist. This is not true; in particular coinbases are easy to duplicate, and by building on duplicate coinbases, duplicate normal transactions are possible as well. Recently, an attack that exploits the reference implementation's dealing with duplicate transactions was described and demonstrated. It allows reverting fully-confirmed transactions to a single confirmation, making them vulnerable to become unspendable entirely. Another attack is possible that allows forking the block chain for a subset of the network.</p>
+<h2>Specification</h2>
+<p>To counter this problem, the following network rule is introduced:</p>
+<ul>
+<li>Blocks are not allowed to contain a transaction whose identifier matches that of an earlier, not-fully-spent transaction in the same chain.</li>
+</ul>
+<p>This rule initially applied to all blocks whose timestamp is after March 15, 2012, 00:00 UTC (testnet: February 20, 2012 00:00 UTC). It was later extended by Commit <a href="https://github.com/bitcoin/bitcoin/commit/ab91bf39b7c11e9c86bb2043c24f0f377f1cf514" target="_blank">Apply BIP30 checks to all blocks except the two historic violations.</a> to apply to all blocks except the two historic blocks at heights 91842 and 91880 on the main chain that had to be grandfathered in.</p>
+<h2>Rationale</h2>
+<p>Whatever solution is used, the following law must be obeyed to guarantee sane behaviour: the set of usable
+transactions outputs must not be modified by adding blocks to the chain and removing them again. This happens during
+a reorganisation, and the current Bitcoin reference implementation does not obey this law in case the temporarily
+added blocks contain a duplicate transaction.</p>
+<p>There are several potential solutions to this problem:</p>
+<ol>
+<li>Guarantee that all coinbases are unique, making duplicate transactions very hard to create.</li>
+<li>Remember previous remaining outputs of a given transaction identifier, in case a new transaction with the same identifier is added.</li>
+<li>Only allow duplicate transactions in case the previous instance of the transaction had no spendable outputs left. Removing a block from the chain can then safely reset the removed transaction's outputs to nothing.</li>
+</ol>
+<p>The first option is probably the most complete one, as it also guarantees transaction identifiers are unique. However, implementing it requires several changes that need to be accepted throughout the network. Furthermore, it does not prevent duplicate transactions based on earlier duplicate coinbases. The second option is impossible to implement in a forward-compatible way, as it potentially renders currently-invalid blocks valid. In this document we choose for the third option, because it only requires a trivial change.</p>
+<p>Fully-spent transactions are allowed to be duplicated in order not to hinder pruning at some point in the future. Not allowing any transaction to be duplicated would require evidence to be kept for each transaction ever made.</p>
+<h2>Backward compatibility</h2>
+<p>The addition of this rule only makes some previously-valid blocks invalid. This implies that if the rule is implemented by a supermajority of miners, it is not possible to fork the block chain in a permanent way between nodes with and without the new rule.</p>
+<h2>Implementation</h2>
+<p>A patch for the reference client can be found on https://github.com/sipa/bitcoin/tree/nooverwritetx</p>
+<p>This BIP was implemented in Commit <a href="https://github.com/bitcoin/bitcoin/commit/a206b0ea12eb4606b93323268fc81a4f1f952531" target="_blank">Do not allow overwriting unspent transactions (BIP 30)</a>
+There have been additional commits to refine the implementation of this BIP.</p>
+<h2>Acknowledgements</h2>
+<p>Thanks to Russell O'Connor for finding and demonstrating this problem, and helping test the patch.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +132,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 30
-</span><span>  Layer: Consensus (soft fork)
-</span><span>  Title: Duplicate transactions
-</span><span>  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0030
-</span><span>  Status: Final
-</span><span>  Type: Standards Track
-</span><span>  Created: 2012-02-22
-</span><span>  License: BSD-2-Clause
-</span></code></pre>
+      <pre><code>  BIP: 30
+  Layer: Consensus (soft fork)
+  Title: Duplicate transactions
+  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0030
+  Status: Final
+  Type: Standards Track
+  Created: 2012-02-22
+  License: BSD-2-Clause
+</code></pre>
 <h2>Abstract</h2>
 <p>This document gives a specification for dealing with duplicate transactions in the block chain, in an attempt to solve certain problems the reference implementation has with them.</p>
 <h2>Copyright</h2>
@@ -94,18 +178,37 @@ There have been additional commits to refine the implementation of this BIP.</p>
 <p>Thanks to Russell O'Connor for finding and demonstrating this problem, and helping test the patch.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

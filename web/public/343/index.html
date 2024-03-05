@@ -3,21 +3,104 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 343: Mandatory activation of taproot deployment</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 343</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 343: Mandatory activation of taproot deployment</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2021-04-25</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0343.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 343
+  Layer: Consensus (soft fork)
+  Title: Mandatory activation of taproot deployment
+  Author: Shinobius &lt;quantumedusa@gmail.com&gt;
+          Michael Folkson &lt;michaelfolkson@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0343
+  Status: Final
+  Type: Standards Track
+  Created: 2021-04-25
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre>
+<h2>Abstract</h2>
+<p>This document specifies a BIP8 (LOT=true) deployment to activate taproot.</p>
+<h2>Motivation</h2>
+<p>The Taproot soft fork upgrade has been assessed to have overwhelming community consensus and hence should attempt to be activated. Lessons have been learned from the BIP148 and BIP91 deployments in 2017 with regards to giving many months of advance warning before the mandatory signaling is attempted. The mandatory signaling is only required if miners have failed to meet the signaling threshold during the BIP8 deployment. It is important that mandatory signaling is included as without it miners would effectively have the ability to indefinitely block the activation of a soft fork with overwhelming consensus. </p>
+<h2>Specification</h2>
+<p>This BIP will begin an activation signaling period using bit 2 at blockheight 681408 with a minimum activation height of 709632 and an activation threshold of 90%. The signaling period will timeout at blockheight 760032 with a latest activation height of 762048. Lockinontimeout (LOT) is set to true so mandatory signaling will be enforced in the last signaling period before the timeout height. Blocks without the signaling bit 2 set run the risk of being rejected during this period if taproot is not locked in prior. This BIP will cease to be active when taproot is locked in.</p>
+<h2>Reference implementation</h2>
+<ul>
+<li><a href="https://github.com/BitcoinActivation/bitcoin" target="_blank">https://github.com/BitcoinActivation/bitcoin</a></li>
+</ul>
+<h2>Backward Compatibility</h2>
+<p>As a soft fork, older software will continue to operate without modification. Non-upgraded nodes, however, will consider all SegWit version 1 witness programs as anyone-can-spend scripts. They are strongly encouraged to upgrade in order to fully validate the new programs.</p>
+<h2>Compatibility with later alternative activations</h2>
+<p>The activation mechanism “Speedy Trial” as proposed by Russell O’Connor and outlined in this bitcoin-dev mailing list <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-March/018583.html" target="_blank">post</a> by David Harding was released in Bitcoin Core. It is effectively a BIP8 activation mechanism with one exception: start height and timeout height were defined using median time past (MTP) rather than block heights. It uses signaling bit 2, was deployed between midnight April 24th 2021 and midnight August 11th 2021, has a minimum activation height of 709632 and intends to activate BIPs 340, 341, and 342. The BIP8(LOT=true) deployment is compatible with the “Speedy Trial” deployment in Bitcoin Core as there was not a discrepancy between MTP and block height for the defined start heights.</p>
+<p>The BIP8 (LOT=true) deployment has also been deliberately designed to be compatible with a future BIP8(LOT=false) or BIP8(LOT=true) deployment in Bitcoin Core assuming Bitcoin Core releases one of these activation mechanisms in the event of the Speedy Trial deployment failing to activate.</p>
+<h2>Rationale</h2>
+<p>The deployment of BIP148 demonstrated that multiple implementations with different activation mechanisms can incentivize the necessary actors to act so that the different deployments activate in sync. A BIP8 LOT=true deployment can run in parallel with other BIP8 activation mechanisms that have eventual mandatory signaling or no mandatory signaling. Eventual mandatory signaling ensures that miners cannot prevent the activation of a desired feature with community consensus indefinitely.</p>
+<h2>Acknowledgements</h2>
+<p>Thanks to Shaolin Fry and Luke Dashjr for their work on BIP148 and BIP8 which were important prerequisites for this proposal.</p>
+<h2>References</h2>
+<ul>
+<li><a href="/8" target="_blank">BIP8 Version bits with lock-in by height</a></li>
+<li><a href="/148" target="_blank">BIP148 Mandatory activation of segwit deployment</a></li>
+<li><a href="/340" target="_blank">BIP340 Schnorr Signatures for secp256k1</a></li>
+<li><a href="/341" target="_blank">BIP341 Taproot: SegWit version 1 spending rules</a></li>
+<li><a href="/342" target="_blank">BIP342 Validation of Taproot Scripts</a></li>
+<li><a href="https://taproot.works/taproot-faq/" target="_blank">Taproot benefits</a></li>
+</ul>
+<h2>Copyright</h2>
+<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,19 +131,19 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 343
-</span><span>  Layer: Consensus (soft fork)
-</span><span>  Title: Mandatory activation of taproot deployment
-</span><span>  Author: Shinobius &lt;quantumedusa@gmail.com&gt;
-</span><span>          Michael Folkson &lt;michaelfolkson@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0343
-</span><span>  Status: Final
-</span><span>  Type: Standards Track
-</span><span>  Created: 2021-04-25
-</span><span>  License: BSD-3-Clause
-</span><span>           CC0-1.0
-</span></code></pre>
+      <pre><code>  BIP: 343
+  Layer: Consensus (soft fork)
+  Title: Mandatory activation of taproot deployment
+  Author: Shinobius &lt;quantumedusa@gmail.com&gt;
+          Michael Folkson &lt;michaelfolkson@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0343
+  Status: Final
+  Type: Standards Track
+  Created: 2021-04-25
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre>
 <h2>Abstract</h2>
 <p>This document specifies a BIP8 (LOT=true) deployment to activate taproot.</p>
 <h2>Motivation</h2>
@@ -93,18 +176,37 @@
 <p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

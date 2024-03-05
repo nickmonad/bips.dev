@@ -3,21 +3,163 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 338: Disable transaction relay message</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 338</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 338: Disable transaction relay message</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2020-09-03</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0338.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 338
+  Layer: Peer Services
+  Title: Disable transaction relay message
+  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0338
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-09-03
+  License: BSD-2-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP describes a change to the p2p protocol to allow a node to tell a peer
+that a connection will not be used for transaction relay, to support
+block-relay-only connections that are currently in use on the network.</p>
+<h2>Motivation</h2>
+<p>This proposal is part of an effort to increase the number of inbound
+connections that a peer can service, by distinguishing peers which will not
+relay transactions from those that do.</p>
+<p>Since 2019, software has been deployed[1] which initiates
+connections on the Bitcoin network and sets the transaction relay field
+(introduced by BIP 37 and also defined in BIP 60) to false, to prevent
+transaction relay from occurring on the connection. Additionally, addr messages
+received from the peer are ignored by this software.</p>
+<p>The purpose of these connections is two-fold: by making additional
+low-bandwidth connections on which blocks can propagate, the robustness of a
+node to network partitioning attacks is strengthened.  Additionally, by not
+relaying transactions and ignoring received addresses, the ability of an
+adversary to learn the complete network graph (or a subgraph) is reduced[2],
+which in turn increases the cost or difficulty to an attacker seeking to carry
+out a network partitioning attack (when compared with having such knowledge).</p>
+<p>The low-bandwidth / minimal-resource nature of these connections is currently
+known only by the initiator of the connection; this is because the transaction
+relay field in the version message is not a permanent setting for the lifetime
+of the connection.  Consequently, a node receiving an inbound connection with
+transaction relay disabled cannot distinguish between a peer that will never
+enable transaction relay (as described in BIP 37) and one that will.  Moreover,
+the node also cannot determine that the incoming connection will ignore relayed
+addresses; with that knowledge a node would likely choose other peers to
+receive announced addresses instead.</p>
+<p>This proposal adds a new, optional message that a node can send a peer when
+initiating a connection to that peer, to indicate that connection should not be
+used for transaction relay for the connection's lifetime. In addition, without
+a current mechanism to negotiate whether addresses should be relayed on a
+connection, this BIP suggests that address messages not be sent on links where
+transaction relay has been disabled.</p>
+<p>After this BIP is deployed, nodes could more easily implement inbound
+connection limiting that differentiates low-resource nodes (such as those
+sending disabletx) from full-relay peers, potentially allowing for an increase
+in the number of block-relay-only connections that can be made on the network.</p>
+<h2>Specification</h2>
+<ol>
+<li>A new disabletx message is added, which is defined as an empty message with message type set to &quot;disabletx&quot;.</li>
+<li>The protocol version of nodes implementing this BIP must be set to 70017 or higher.</li>
+<li>If a node sets the transaction relay field in the version message to a peer to false, then the disabletx message MAY also be sent in response to a version message from that peer if the peer's protocol version is &gt;= 70017. If sent, the disabletx message MUST be sent prior to sending a verack.</li>
+<li>A node MUST NOT send the disabletx message if the transaction relay field in the version message is omitted or set to true.</li>
+<li>A node that has sent or received a disabletx message to/from a peer MUST NOT send any of these messages to the peer:
+<ol>
+<li>inv messages for transactions</li>
+<li>notfound messages for transactions</li>
+<li>getdata messages for transactions</li>
+<li>getdata messages for merkleblock (BIP 37)</li>
+<li>filteradd/filterload/filterclear (BIP 37)</li>
+<li>feefilter (BIP 133)</li>
+<li>mempool (BIP 35)</li>
+<li>tx message</li>
+</ol>
+</li>
+<li>It is RECOMMENDED that a node that has sent or received a disabletx message to/from a peer not send any of these messages to the peer:
+<ol>
+<li>addr/getaddr</li>
+<li>addrv2 (BIP 155)</li>
+</ol>
+</li>
+<li>The behavior regarding sending or processing other message types is not specified by this BIP.</li>
+<li>Nodes MAY decide to not remain connected to peers that send this message (for example, if trying to find a peer that will relay transactions).</li>
+</ol>
+<h2>Compatibility</h2>
+<p>Nodes with protocol version &gt;= 70017 that do not implement this BIP, and nodes
+with protocol version &lt; 70017, will continue to remain compatible with
+implementing software: transactions would not be relayed to peers sending the
+disabletx message (provided that BIP 37 or BIP 60 has been implemented), and while
+periodic address relay may still take place, software implementing this BIP
+should not be disconnecting such peers solely for that reason.</p>
+<p>Disabling address relay is suggested but not required by this BIP, to allow for
+future protocol extensions that might specify more carefully how address relay
+is to be negotiated. This BIP's recommendations for software to not relay
+addresses is intended to be interpreted as guidance in the absence of any such
+future protocol extension, to accommodate existing software behavior.</p>
+<p>Note that all messages specified in BIP 152, including blocktxn and
+getblocktxn, are permitted between peers that have sent/received a disabletx
+message, subject to the feature negotiation of BIP 152.</p>
+<p>This proposal is compatible with, but independent of, BIP 37.</p>
+<h2>Implementation</h2>
+<p>https://github.com/bitcoin/bitcoin/pull/20726</p>
+<h2>References</h2>
+<ol>
+<li>Bitcoin Core has <a href="https://github.com/bitcoin/bitcoin/pull/15759" target="_blank">implemented this functionality</a> since version 0.19.0.1, released in November 2019.</li>
+<li>For example, see https://www.cs.umd.edu/projects/coinscope/coinscope.pdf and https://arxiv.org/pdf/1812.00942.pdf.</li>
+</ol>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +190,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 338
-</span><span>  Layer: Peer Services
-</span><span>  Title: Disable transaction relay message
-</span><span>  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0338
-</span><span>  Status: Draft
-</span><span>  Type: Standards Track
-</span><span>  Created: 2020-09-03
-</span><span>  License: BSD-2-Clause
-</span></code></pre>
+      <pre><code>  BIP: 338
+  Layer: Peer Services
+  Title: Disable transaction relay message
+  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0338
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-09-03
+  License: BSD-2-Clause
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP describes a change to the p2p protocol to allow a node to tell a peer
 that a connection will not be used for transaction relay, to support
@@ -152,18 +294,37 @@ message, subject to the feature negotiation of BIP 152.</p>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

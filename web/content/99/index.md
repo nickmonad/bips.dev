@@ -48,40 +48,28 @@ deployment of changes.
 
 
 ;Software fork
-```
- A copy of an existing project. In free software, this can be done without the permission of the original project's maintainers.
+A copy of an existing project. In free software, this can be done without the permission of the original project's maintainers.
 
-```
 
 ;Consensus fork
-```
- A divergence in the implementation of the verification consensus rules can impede the expected eventual convergence of the network in a single chain that has the most proof of work and also satisfies the rules. This can be intentional or be caused by a bug in consensus validation reimplementations.
+A divergence in the implementation of the verification consensus rules can impede the expected eventual convergence of the network in a single chain that has the most proof of work and also satisfies the rules. This can be intentional or be caused by a bug in consensus validation reimplementations.
 
-```
 
 ;Softfork
-```
- A consensus fork wherein everything that was previously invalid remains invalid while blocks that would have previously considered valid become invalid. A hashrate majority of miners can impose the new rules. They have some deployment advantages like backward compatibility.
+A consensus fork wherein everything that was previously invalid remains invalid while blocks that would have previously considered valid become invalid. A hashrate majority of miners can impose the new rules. They have some deployment advantages like backward compatibility.
 
-```
 
 ;Hardfork
-```
- A consensus fork that makes previously invalid blocks valid. Hardforks require all users to upgrade.
+A consensus fork that makes previously invalid blocks valid. Hardforks require all users to upgrade.
 
-```
 
 ;Libconsensus
-```
- a theoretical piece of software that contains the specifications that define the validity of a block for a given state and chain parameters (ie it may act differently on, for example, regtest).
+a theoretical piece of software that contains the specifications that define the validity of a block for a given state and chain parameters (ie it may act differently on, for example, regtest).
 
-```
 
 ;Libbitcoinconsensus
-```
- the existing implementation is a library that is compiled by default with Bitcoin Core master and exposes a single C function named bitcoinconsensus_verify_script(). Although it has a deterministic build and implements the most complex rules (most of the cryptography, which is itself heavily based on libsecp256k1 after #REPLACE_libsecp256k1_PR), it is still not a complete specification of the consensus rules. Since libconsensus doesn't manage the current state but only the validation of the next block given that state, it is known that this long effort of encapsulation and decoupling will eventually finish, and that the person who moves the last line 
+the existing implementation is a library that is compiled by default with Bitcoin Core master and exposes a single C function named bitcoinconsensus_verify_script(). Although it has a deterministic build and implements the most complex rules (most of the cryptography, which is itself heavily based on libsecp256k1 after #REPLACE_libsecp256k1_PR), it is still not a complete specification of the consensus rules. Since libconsensus doesn't manage the current state but only the validation of the next block given that state, it is known that this long effort of encapsulation and decoupling will eventually finish, and that the person who moves the last line 
 
-```
 
 <h2>Taxonomy of consensus forks</h2>
 

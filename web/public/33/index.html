@@ -3,21 +3,167 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 33: Stratized Nodes</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 33</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 33: Stratized Nodes</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2012-05-15</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0033.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 33
+  Layer: Peer Services
+  Title: Stratized Nodes
+  Author: Amir Taaki &lt;genjix@riseup.net&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0033
+  Status: Rejected
+  Type: Standards Track
+  Created: 2012-05-15
+</code></pre>
+<h2> Abstract </h2>
+<p>As the Bitcoin network scales, roles are fast becoming specialised. In the beginning, a single Bitcoin user would perform the synonymous roles of miner, merchant and end-user. With the growth however of this system, these functions are being abstracted away to specialised services as a natural part of Bitcoin's growth.</p>
+<p>Bitcoin's blockchain becomes more unwieldy for end users over time, negatively affecting the usability of Bitcoin clients. As it grows, it becomes ever more impractical to deal with on portable devices or low end machines. Several proposals have been put forward to deal with this such as lightweight (headers-only) clients and skipping validation for blocks before the last checkpoint. However these measures are at best stop-gap workarounds to stave off a growing problem.</p>
+<p>This document will examine a proposal which will be termed <em>stratized nodes</em>, a modification of an earlier concept termed <em>blockchain service</em>.</p>
+<h2> History </h2>
+<p>Jan Moller created BCCAPI in 2011. BCCAPI allowed a user's client to delegate blockchain interaction to a remote server. This server would store and manage the blockchain while the user client would run queries against that server.</p>
+<p>ThomasV later created Electrum server. BCCAPI's server backend was proprietary, and Electrum required a full Free Software stack. Electrum's server was an adhoc temporary replacement. As it grew and became used, issues started to appear in its design.</p>
+<p>Marek Palatinus (slush) drafted a new standard called Stratum to replace Electrum's server. Stratum has multiple transports and is usable as a blockchain server by merchants, miners and user-clients. Electrum moved to using a Stratum implementation first relying on ABE/bitcoind and more recently libbitcoin.</p>
+<p>Stratum is unmaintained by Marek Palatinus, suffers from easy resource starvation and denial of service attacks, and is insecure. The proposal specified here is intended to replace the Stratum's role as a blockchain for user-clients. The proposal here is solely concerned with removing the onus of blockchain validation and lookups from user-clients to specialised services in a secure manner. Any secondary benefits or uses are purely incidental.</p>
+<h2> Overview </h2>
+<p>During the initial handshake between Bitcoin nodes, a version packet is sent. version packets have a bitfield called services. Nodes can fill this field to tell the network how they behave and which services they support. NODE_NETWORK (1) means a node can be asked for full blocks for example.</p>
+<p>We propose two more values of NODE_SERVICE (2) and NODE_STRATIZED (4).</p>
+<h3> NODE_SERVICE </h3>
+<ul>
+<li>A blockchain service which supports the additional messages &quot;getoutputs&quot; and &quot;getspends&quot;.</li>
+<li>Does not respond to &quot;getdata&quot; messages by itself (unless NODE_NETWORK is specified)</li>
+<li>If NODE_NETWORK is specified, then &quot;getdata&quot; for transactions will retrieve them not only from the memory pool but also check the blockchain if necessary.</li>
+</ul>
+<h3> NODE_STRATIZED </h3>
+<ul>
+<li>A node which uses the stratized strategy specified in this document.</li>
+<li>NODE_STRATIZED will relay inventories for accepted transactions.</li>
+<li>Does not support &quot;getblocks&quot; as stratized nodes do not contain the entire blockchain.</li>
+</ul>
+<p>Apart from the differences noted above, the nodes are otherwise unchanged in their behaviour from NODE_NETWORK.</p>
+<h2> Specification </h2>
+<h3> Initialisation </h3>
+<p>Four new messages are defined which are represented below in C-like pseudocode.</p>
+<p>&quot;getoutputs&quot;</p>
+<pre><code>struct decoded_address
+{
+    uint8_t payment_type;
+    uint8_t address_hash[16];
+};
+
+struct get_outputs
+{
+    decoded_address dest;
+};
+</code></pre>
+<p>&quot;outputs&quot;</p>
+<pre><code>struct point_t
+{
+    uint8_t hash[32];
+    uint32_t index;
+};
+
+struct outputs
+{
+    decoded_address dest;
+    uint64_t number_outputs;  &#x2F;&#x2F; variable uint
+    point_t outpoints[];
+};
+</code></pre>
+<p>&quot;getspend&quot;</p>
+<pre><code>struct get_spend
+{
+    point_t outpoint;
+};
+</code></pre>
+<p>&quot;spend&quot;</p>
+<pre><code>struct spend
+{
+    point_t outpoint, inpoint;
+};
+</code></pre>
+<p>These four messages allow a node to discover the history of a Bitcoin address without needing direct access to the blockchain.</p>
+<p>A typical use case might look like:</p>
+<ol>
+<li>Send &quot;getoutputs&quot; for a decoded Bitcoin address.</li>
+<li>Receive &quot;outputs&quot;, and loop through each contained output point:
+<ol>
+<li>Send &quot;getdata&quot; to download the transaction for that point.</li>
+<li>Send &quot;getspend&quot; for each output point.</li>
+</ol>
+</li>
+<li>Receive &quot;spend&quot;:
+<ol>
+<li>Send &quot;getdata&quot; to download the transaction for that input point.</li>
+</ol>
+</li>
+</ol>
+<p>This sequence allows the gradual but fast build up of history for an address.</p>
+<h3> Updates </h3>
+<p>Nodes receive &quot;inv&quot; messages as normal from service nodes, issuing &quot;getdata&quot; to download the block or transaction data. From this they check for newly sent (in the input points) or received (in the output points) payments in the transaction data.</p>
+<p>Note that blocks must at minimum have their merkle root validated and transactions must be checked for uniqueness by stratized nodes.</p>
+<h2> Security </h2>
+<p>The concern here is that stratized nodes are at the mercy of blockchain services. This proposal deals with that issue by designing this protocol in such a way that the implementation can resolve the common history between multiple services.</p>
+<p>A stratized node will typically connect to 8 blockchain services. It will only accept an output, spend or inventory vector that has been sent by a common subset of all those services (6 in our example). This spreads the risk between all services, and does not make a node vulnerable to any one rogue blockchain service.</p>
+<h2> Privacy </h2>
+<p>The other strategy for thin clients termed <em>headers-only</em> or <em>Simplified. Payment. Verification.</em> have the same privacy issues as this proposal. SPV resolves this problem by sending out fake requests for transaction data which obfuscates the client data. By sending out a sufficient number of fake requests, privacy can be kept to a sufficient level.</p>
+<h2> Rationale </h2>
+<p>NODE_SERVICE does not respond to &quot;getdata&quot; requests by itself (unless used in conjunction with NODE_NETWORK) to prevent starvation attacks. This allows a single trusted NODE_SERVICE architecture (possibly acting as a front-end to multiple backends) to service very many nodes while externalising the costs to the Bitcoin network.</p>
+<p>NODE_STRATIZED tries its best to maintain the facade and help upkeep the Bitcoin network (see relaying), but cannot support &quot;getblocks&quot; as it does not have the entire blockchain.</p>
+<h2> Backwards Compatibility </h2>
+<p>This proposal is an addon to the current Bitcoin network, and is completely backwards compatible.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,16 +194,16 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 33
-</span><span>  Layer: Peer Services
-</span><span>  Title: Stratized Nodes
-</span><span>  Author: Amir Taaki &lt;genjix@riseup.net&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0033
-</span><span>  Status: Rejected
-</span><span>  Type: Standards Track
-</span><span>  Created: 2012-05-15
-</span></code></pre>
+      <pre><code>  BIP: 33
+  Layer: Peer Services
+  Title: Stratized Nodes
+  Author: Amir Taaki &lt;genjix@riseup.net&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0033
+  Status: Rejected
+  Type: Standards Track
+  Created: 2012-05-15
+</code></pre>
 <h2> Abstract </h2>
 <p>As the Bitcoin network scales, roles are fast becoming specialised. In the beginning, a single Bitcoin user would perform the synonymous roles of miner, merchant and end-user. With the growth however of this system, these functions are being abstracted away to specialised services as a natural part of Bitcoin's growth.</p>
 <p>Bitcoin's blockchain becomes more unwieldy for end users over time, negatively affecting the usability of Bitcoin clients. As it grows, it becomes ever more impractical to deal with on portable devices or low end machines. Several proposals have been put forward to deal with this such as lightweight (headers-only) clients and skipping validation for blocks before the last checkpoint. However these measures are at best stop-gap workarounds to stave off a growing problem.</p>
@@ -87,43 +233,43 @@
 <h3> Initialisation </h3>
 <p>Four new messages are defined which are represented below in C-like pseudocode.</p>
 <p>&quot;getoutputs&quot;</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct decoded_address
-</span><span>{
-</span><span>    uint8_t payment_type;
-</span><span>    uint8_t address_hash[16];
-</span><span>};
-</span><span>
-</span><span>struct get_outputs
-</span><span>{
-</span><span>    decoded_address dest;
-</span><span>};
-</span></code></pre>
+<pre><code>struct decoded_address
+{
+    uint8_t payment_type;
+    uint8_t address_hash[16];
+};
+
+struct get_outputs
+{
+    decoded_address dest;
+};
+</code></pre>
 <p>&quot;outputs&quot;</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct point_t
-</span><span>{
-</span><span>    uint8_t hash[32];
-</span><span>    uint32_t index;
-</span><span>};
-</span><span>
-</span><span>struct outputs
-</span><span>{
-</span><span>    decoded_address dest;
-</span><span>    uint64_t number_outputs;  // variable uint
-</span><span>    point_t outpoints[];
-</span><span>};
-</span></code></pre>
+<pre><code>struct point_t
+{
+    uint8_t hash[32];
+    uint32_t index;
+};
+
+struct outputs
+{
+    decoded_address dest;
+    uint64_t number_outputs;  &#x2F;&#x2F; variable uint
+    point_t outpoints[];
+};
+</code></pre>
 <p>&quot;getspend&quot;</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct get_spend
-</span><span>{
-</span><span>    point_t outpoint;
-</span><span>};
-</span></code></pre>
+<pre><code>struct get_spend
+{
+    point_t outpoint;
+};
+</code></pre>
 <p>&quot;spend&quot;</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>struct spend
-</span><span>{
-</span><span>    point_t outpoint, inpoint;
-</span><span>};
-</span></code></pre>
+<pre><code>struct spend
+{
+    point_t outpoint, inpoint;
+};
+</code></pre>
 <p>These four messages allow a node to discover the history of a Bitcoin address without needing direct access to the blockchain.</p>
 <p>A typical use case might look like:</p>
 <ol>
@@ -156,18 +302,37 @@
 <p>This proposal is an addon to the current Bitcoin network, and is completely backwards compatible.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

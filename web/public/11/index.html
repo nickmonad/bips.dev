@@ -3,21 +3,107 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 11: M-of-N Standard Transactions</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 11</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 11: M-of-N Standard Transactions</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2011-10-18</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0011.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 11
+  Layer: Applications
+  Title: M-of-N Standard Transactions
+  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0011
+  Status: Final
+  Type: Standards Track
+  Created: 2011-10-18
+  Post-History: 2011-10-02
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP proposes M-of-N-signatures required transactions as a new 'standard' transaction type.</p>
+<h2>Motivation</h2>
+<p>Enable secured wallets, escrow transactions, and other use cases where redeeming funds requires more than a single signature.</p>
+<p>A couple of motivating use cases:</p>
+<ul>
+<li>
+<p>A wallet secured by a &quot;wallet protection service&quot; (WPS).  2-of-2 signatures required transactions will be used, with one signature coming from the (possibly compromised) computer with the wallet and the second signature coming from the WPS. When sending protected bitcoins, the user's bitcoin client will contact the WPS with the proposed transaction and it can then contact the user for confirmation that they initiated the transaction and that the transaction details are correct. Details for how clients and WPS's communicate are outside the scope of this BIP. Side note: customers should insist that their wallet protection service provide them with copies of the private key(s) used to secure their wallets that they can safely store off-line, so that their coins can be spent even if the WPS goes out of business.</p>
+</li>
+<li>
+<p>Three-party escrow (buyer, seller, and trusted dispute agent). 2-of-3 signatures required transactions will be used. The buyer and seller and agent will each provide a public key, and the buyer will then send coins into a 2-of-3 CHECKMULTISIG transaction and send the seller and the agent the transaction id. The seller will fulfill their obligation and then ask the buyer to co-sign a transaction ( already signed by seller ) that sends the tied-up coins to him (seller).<br />If the buyer and seller cannot agree, then the agent can, with the cooperation of either buyer or seller, decide what happens to the tied-up coins.  Details of how buyer, seller, and agent communicate to gather signatures or public keys are outside the scope of this BIP.</p>
+</li>
+</ul>
+<h2>Specification</h2>
+<p>A new standard transaction type (scriptPubKey) that is relayed by clients and included in mined blocks:</p>
+<pre><code>    m {pubkey}...{pubkey} n OP_CHECKMULTISIG
+</code></pre>
+<p>But only for n less than or equal to 3.</p>
+<p>OP_CHECKMULTISIG transactions are redeemed using a standard scriptSig:</p>
+<pre><code>    OP_0 ...signatures...
+</code></pre>
+<p>(OP_0 is required because of a bug in OP_CHECKMULTISIG; it pops one too many items off the execution stack, so a dummy value must be placed on the stack).</p>
+<p>The current Satoshi bitcoin client does not relay or mine transactions with scriptSigs larger than 200 bytes; to accommodate 3-signature transactions, this will be increased to 500 bytes.</p>
+<h2>Rationale</h2>
+<p>OP_CHECKMULTISIG is already an enabled opcode, and is the most straightforward way to support several important use cases.</p>
+<p>One argument against using OP_CHECKMULTISIG is that old clients and miners count it as &quot;20 sigops&quot; for purposes of computing how many signature operations are in a block, and there is a hard limit of 20,000 sigops per block-- meaning a maximum of 1,000 multisig transactions per block. Creating multisig transactions using multiple OP_CHECKSIG operations allows more of them per block.</p>
+<p>The counter-argument is that these new multi-signature transactions will be used in combination with OP_EVAL (see the OP_EVAL BIP), and <strong>will</strong> be counted accurately. And in any case, as transaction volume rises the hard-coded maximum block size will have to be addressed, and the rules for counting number-of-signature-operations-in-a-block can be addressed at that time.</p>
+<p>A weaker argument is OP_CHECKMULTISIG should not be used because it pops one too many items off the stack during validation. Adding an extra OP_0 placeholder to the scriptSig adds only 1 byte to the transaction, and any alternative that avoids OP_CHECKMULTISIG adds at least several bytes of opcodes.</p>
+<h2>Implementation</h2>
+<p>OP_CHECKMULTISIG is already supported by old clients and miners as a non-standard transaction type.</p>
+<p>https://github.com/gavinandresen/bitcoin-git/tree/77f21f1583deb89bf3fffe80fe9b181fedb1dd60</p>
+<h2> Post History </h2>
+<ul>
+<li><a href="https://bitcointalk.org/index.php?topic=46538" target="_blank">OP_EVAL proposal</a></li>
+</ul>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +134,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 11
-</span><span>  Layer: Applications
-</span><span>  Title: M-of-N Standard Transactions
-</span><span>  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0011
-</span><span>  Status: Final
-</span><span>  Type: Standards Track
-</span><span>  Created: 2011-10-18
-</span><span>  Post-History: 2011-10-02
-</span></code></pre>
+      <pre><code>  BIP: 11
+  Layer: Applications
+  Title: M-of-N Standard Transactions
+  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0011
+  Status: Final
+  Type: Standards Track
+  Created: 2011-10-18
+  Post-History: 2011-10-02
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP proposes M-of-N-signatures required transactions as a new 'standard' transaction type.</p>
 <h2>Motivation</h2>
@@ -74,12 +160,12 @@
 </ul>
 <h2>Specification</h2>
 <p>A new standard transaction type (scriptPubKey) that is relayed by clients and included in mined blocks:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    m {pubkey}...{pubkey} n OP_CHECKMULTISIG
-</span></code></pre>
+<pre><code>    m {pubkey}...{pubkey} n OP_CHECKMULTISIG
+</code></pre>
 <p>But only for n less than or equal to 3.</p>
 <p>OP_CHECKMULTISIG transactions are redeemed using a standard scriptSig:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    OP_0 ...signatures...
-</span></code></pre>
+<pre><code>    OP_0 ...signatures...
+</code></pre>
 <p>(OP_0 is required because of a bug in OP_CHECKMULTISIG; it pops one too many items off the execution stack, so a dummy value must be placed on the stack).</p>
 <p>The current Satoshi bitcoin client does not relay or mine transactions with scriptSigs larger than 200 bytes; to accommodate 3-signature transactions, this will be increased to 500 bytes.</p>
 <h2>Rationale</h2>
@@ -96,18 +182,37 @@
 </ul>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

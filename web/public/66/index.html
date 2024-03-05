@@ -3,21 +3,204 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 66: Strict DER signatures</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 66</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 66: Strict DER signatures</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2015-01-10</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0066.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 66
+  Layer: Consensus (soft fork)
+  Title: Strict DER signatures
+  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0066
+  Status: Final
+  Type: Standards Track
+  Created: 2015-01-10
+  License: BSD-2-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>This document specifies proposed changes to the Bitcoin transaction validity rules to restrict signatures to strict DER encoding.</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+<h2>Motivation</h2>
+<p>Bitcoin's reference implementation currently relies on OpenSSL for signature validation, which means it is implicitly defining Bitcoin's block validity rules. Unfortunately, OpenSSL is not designed for consensus-critical behaviour (it does not guarantee bug-for-bug compatibility between versions), and thus changes to it can - and have - affected Bitcoin software.</p>
+<p>One specifically critical area is the encoding of signatures. Until recently, OpenSSL's releases would accept various deviations from the DER standard and accept signatures as valid. When this changed in OpenSSL 1.0.0p and 1.0.1k, it made some nodes reject the chain.</p>
+<p>This document proposes to restrict valid signatures to exactly what is mandated by DER, to make the consensus rules not depend on OpenSSL's signature parsing. A change like this is required if implementations would want to remove all of OpenSSL from the consensus code.</p>
+<h2>Specification</h2>
+<p>Every signature passed to OP_CHECKSIG, OP_CHECKSIGVERIFY, OP_CHECKMULTISIG, or OP_CHECKMULTISIGVERIFY, to which ECDSA verification is applied, must be encoded using strict DER encoding (see further).</p>
+<p>These operators all perform ECDSA verifications on pubkey/signature pairs, iterating from the top of the stack backwards. For each such verification, if the signature does not pass the <code>IsValidSignatureEncoding</code> check below, the entire script evaluates to false immediately. If the signature is valid DER, but does not pass ECDSA verification, opcode execution continues as it used to, causing opcode execution to stop and push false on the stack (but not immediately fail the script) in some cases, which potentially skips further signatures (and thus does not subject them to <code>IsValidSignatureEncoding</code>).</p>
+<h3>DER encoding reference</h3>
+<p>The following code specifies the behaviour of strict DER checking. Note that this function tests a signature byte vector which includes the 1-byte sighash flag that Bitcoin adds, even though that flag falls outside of the DER specification, and is unaffected by this proposal. The function is also not called for cases where the length of sig is 0, in order to provide a simple, short and efficiently-verifiable encoding for deliberately invalid signatures.</p>
+<p>DER is specified in https://www.itu.int/rec/T-REC-X.690/en .</p>
+<pre><code>bool static IsValidSignatureEncoding(const std::vector&lt;unsigned char&gt; &amp;sig) {
+    &#x2F;&#x2F; Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S] [sighash]
+    &#x2F;&#x2F; * total-length: 1-byte length descriptor of everything that follows,
+    &#x2F;&#x2F;   excluding the sighash byte.
+    &#x2F;&#x2F; * R-length: 1-byte length descriptor of the R value that follows.
+    &#x2F;&#x2F; * R: arbitrary-length big-endian encoded R value. It must use the shortest
+    &#x2F;&#x2F;   possible encoding for a positive integers (which means no null bytes at
+    &#x2F;&#x2F;   the start, except a single one when the next byte has its highest bit set).
+    &#x2F;&#x2F; * S-length: 1-byte length descriptor of the S value that follows.
+    &#x2F;&#x2F; * S: arbitrary-length big-endian encoded S value. The same rules apply.
+    &#x2F;&#x2F; * sighash: 1-byte value indicating what data is hashed (not part of the DER
+    &#x2F;&#x2F;   signature)
+
+    &#x2F;&#x2F; Minimum and maximum size constraints.
+    if (sig.size() &lt; 9) return false;
+    if (sig.size() &gt; 73) return false;
+
+    &#x2F;&#x2F; A signature is of type 0x30 (compound).
+    if (sig[0] != 0x30) return false;
+
+    &#x2F;&#x2F; Make sure the length covers the entire signature.
+    if (sig[1] != sig.size() - 3) return false;
+
+    &#x2F;&#x2F; Extract the length of the R element.
+    unsigned int lenR = sig[3];
+
+    &#x2F;&#x2F; Make sure the length of the S element is still inside the signature.
+    if (5 + lenR &gt;= sig.size()) return false;
+
+    &#x2F;&#x2F; Extract the length of the S element.
+    unsigned int lenS = sig[5 + lenR];
+
+    &#x2F;&#x2F; Verify that the length of the signature matches the sum of the length
+    &#x2F;&#x2F; of the elements.
+    if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
+ 
+    &#x2F;&#x2F; Check whether the R element is an integer.
+    if (sig[2] != 0x02) return false;
+
+    &#x2F;&#x2F; Zero-length integers are not allowed for R.
+    if (lenR == 0) return false;
+
+    &#x2F;&#x2F; Negative numbers are not allowed for R.
+    if (sig[4] &amp; 0x80) return false;
+
+    &#x2F;&#x2F; Null bytes at the start of R are not allowed, unless R would
+    &#x2F;&#x2F; otherwise be interpreted as a negative number.
+    if (lenR &gt; 1 &amp;&amp; (sig[4] == 0x00) &amp;&amp; !(sig[5] &amp; 0x80)) return false;
+
+    &#x2F;&#x2F; Check whether the S element is an integer.
+    if (sig[lenR + 4] != 0x02) return false;
+
+    &#x2F;&#x2F; Zero-length integers are not allowed for S.
+    if (lenS == 0) return false;
+
+    &#x2F;&#x2F; Negative numbers are not allowed for S.
+    if (sig[lenR + 6] &amp; 0x80) return false;
+
+    &#x2F;&#x2F; Null bytes at the start of S are not allowed, unless S would otherwise be
+    &#x2F;&#x2F; interpreted as a negative number.
+    if (lenS &gt; 1 &amp;&amp; (sig[lenR + 6] == 0x00) &amp;&amp; !(sig[lenR + 7] &amp; 0x80)) return false;
+
+    return true;
+}
+</code></pre>
+<h3>Examples</h3>
+<p>Notation: P1 and P2 are valid, serialized, public keys. S1 and S2 are valid signatures using respective keys P1 and P2. S1' and S2' are non-DER but otherwise valid signatures using those same keys. F is any invalid but DER-compliant signature (including 0, the empty string). F' is any invalid and non-DER-compliant signature.</p>
+<ol>
+<li>
+<p><code>S1' P1 CHECKSIG</code> fails (<b>changed</b>)</p>
+</li>
+<li>
+<p><code>S1' P1 CHECKSIG NOT</code> fails (unchanged)</p>
+</li>
+<li>
+<p><code>F P1 CHECKSIG</code> fails (unchanged)</p>
+</li>
+<li>
+<p><code>F P1 CHECKSIG NOT</code> can succeed (unchanged)</p>
+</li>
+<li>
+<p><code>F' P1 CHECKSIG</code> fails (unchanged)</p>
+</li>
+<li>
+<p><code>F' P1 CHECKSIG NOT</code> fails (<b>changed</b>)</p>
+</li>
+<li>
+<p><code>0 S1' S2 2 P1 P2 2 CHECKMULTISIG</code> fails (<b>changed</b>)</p>
+</li>
+<li>
+<p><code>0 S1' S2 2 P1 P2 2 CHECKMULTISIG NOT</code> fails (unchanged)</p>
+</li>
+<li>
+<p><code>0 F S2' 2 P1 P2 2 CHECKMULTISIG</code> fails (unchanged)</p>
+</li>
+<li>
+<p><code>0 F S2' 2 P1 P2 2 CHECKMULTISIG NOT</code> fails (<b>changed</b>)</p>
+</li>
+<li>
+<p><code>0 S1' F 2 P1 P2 2 CHECKMULTISIG</code> fails (unchanged)</p>
+</li>
+<li>
+<p><code>0 S1' F 2 P1 P2 2 CHECKMULTISIG NOT</code> can succeed (unchanged)</p>
+</li>
+</ol>
+<p>Note that the examples above show that only additional failures are required by this change, as required for a soft forking change.</p>
+<h2>Deployment</h2>
+<p>We reuse the double-threshold switchover mechanism from BIP 34, with the same thresholds, but for nVersion = 3. The new rules are in effect for every block (at height H) with nVersion = 3 and at least 750 out of 1000 blocks preceding it (with heights H-1000..H-1) also have nVersion = 3. Furthermore, when 950 out of the 1000 blocks preceding a block do have nVersion = 3, nVersion = 2 blocks become invalid, and all further blocks enforce the new rules.</p>
+<h2>Compatibility</h2>
+<p>The requirement to have signatures that comply strictly with DER has been enforced as a relay policy by the reference client since v0.8.0, and very few transactions violating it are being added to the chain as of January 2015. In addition, every non-compliant signature can trivially be converted into a compliant one, so there is no loss of functionality by this requirement. This proposal has the added benefit of reducing transaction malleability (see BIP 62).</p>
+<h2>Implementation</h2>
+<p>An implementation for the reference client is available at https://github.com/bitcoin/bitcoin/pull/5713</p>
+<h2>Acknowledgements</h2>
+<p>This document is extracted from the previous BIP62 proposal, which had input from various people, in particular Greg Maxwell and Peter Todd, who gave feedback about this document as well. </p>
+<h2>Disclosures</h2>
+<ul>
+<li>Subsequent to the network-wide adoption and enforcement of this BIP, the author <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-July/009697.html" target="_blank">disclosed</a> that strict DER signatures provided an indirect solution to a consensus bug he had previously discovered.</li>
+</ul>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +231,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 66
-</span><span>  Layer: Consensus (soft fork)
-</span><span>  Title: Strict DER signatures
-</span><span>  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0066
-</span><span>  Status: Final
-</span><span>  Type: Standards Track
-</span><span>  Created: 2015-01-10
-</span><span>  License: BSD-2-Clause
-</span></code></pre>
+      <pre><code>  BIP: 66
+  Layer: Consensus (soft fork)
+  Title: Strict DER signatures
+  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0066
+  Status: Final
+  Type: Standards Track
+  Created: 2015-01-10
+  License: BSD-2-Clause
+</code></pre>
 <h2>Abstract</h2>
 <p>This document specifies proposed changes to the Bitcoin transaction validity rules to restrict signatures to strict DER encoding.</p>
 <h2>Copyright</h2>
@@ -73,71 +256,71 @@
 <h3>DER encoding reference</h3>
 <p>The following code specifies the behaviour of strict DER checking. Note that this function tests a signature byte vector which includes the 1-byte sighash flag that Bitcoin adds, even though that flag falls outside of the DER specification, and is unaffected by this proposal. The function is also not called for cases where the length of sig is 0, in order to provide a simple, short and efficiently-verifiable encoding for deliberately invalid signatures.</p>
 <p>DER is specified in https://www.itu.int/rec/T-REC-X.690/en .</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>bool static IsValidSignatureEncoding(const std::vector&lt;unsigned char&gt; &amp;sig) {
-</span><span>    // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S] [sighash]
-</span><span>    // * total-length: 1-byte length descriptor of everything that follows,
-</span><span>    //   excluding the sighash byte.
-</span><span>    // * R-length: 1-byte length descriptor of the R value that follows.
-</span><span>    // * R: arbitrary-length big-endian encoded R value. It must use the shortest
-</span><span>    //   possible encoding for a positive integers (which means no null bytes at
-</span><span>    //   the start, except a single one when the next byte has its highest bit set).
-</span><span>    // * S-length: 1-byte length descriptor of the S value that follows.
-</span><span>    // * S: arbitrary-length big-endian encoded S value. The same rules apply.
-</span><span>    // * sighash: 1-byte value indicating what data is hashed (not part of the DER
-</span><span>    //   signature)
-</span><span>
-</span><span>    // Minimum and maximum size constraints.
-</span><span>    if (sig.size() &lt; 9) return false;
-</span><span>    if (sig.size() &gt; 73) return false;
-</span><span>
-</span><span>    // A signature is of type 0x30 (compound).
-</span><span>    if (sig[0] != 0x30) return false;
-</span><span>
-</span><span>    // Make sure the length covers the entire signature.
-</span><span>    if (sig[1] != sig.size() - 3) return false;
-</span><span>
-</span><span>    // Extract the length of the R element.
-</span><span>    unsigned int lenR = sig[3];
-</span><span>
-</span><span>    // Make sure the length of the S element is still inside the signature.
-</span><span>    if (5 + lenR &gt;= sig.size()) return false;
-</span><span>
-</span><span>    // Extract the length of the S element.
-</span><span>    unsigned int lenS = sig[5 + lenR];
-</span><span>
-</span><span>    // Verify that the length of the signature matches the sum of the length
-</span><span>    // of the elements.
-</span><span>    if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
-</span><span> 
-</span><span>    // Check whether the R element is an integer.
-</span><span>    if (sig[2] != 0x02) return false;
-</span><span>
-</span><span>    // Zero-length integers are not allowed for R.
-</span><span>    if (lenR == 0) return false;
-</span><span>
-</span><span>    // Negative numbers are not allowed for R.
-</span><span>    if (sig[4] &amp; 0x80) return false;
-</span><span>
-</span><span>    // Null bytes at the start of R are not allowed, unless R would
-</span><span>    // otherwise be interpreted as a negative number.
-</span><span>    if (lenR &gt; 1 &amp;&amp; (sig[4] == 0x00) &amp;&amp; !(sig[5] &amp; 0x80)) return false;
-</span><span>
-</span><span>    // Check whether the S element is an integer.
-</span><span>    if (sig[lenR + 4] != 0x02) return false;
-</span><span>
-</span><span>    // Zero-length integers are not allowed for S.
-</span><span>    if (lenS == 0) return false;
-</span><span>
-</span><span>    // Negative numbers are not allowed for S.
-</span><span>    if (sig[lenR + 6] &amp; 0x80) return false;
-</span><span>
-</span><span>    // Null bytes at the start of S are not allowed, unless S would otherwise be
-</span><span>    // interpreted as a negative number.
-</span><span>    if (lenS &gt; 1 &amp;&amp; (sig[lenR + 6] == 0x00) &amp;&amp; !(sig[lenR + 7] &amp; 0x80)) return false;
-</span><span>
-</span><span>    return true;
-</span><span>}
-</span></code></pre>
+<pre><code>bool static IsValidSignatureEncoding(const std::vector&lt;unsigned char&gt; &amp;sig) {
+    &#x2F;&#x2F; Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S] [sighash]
+    &#x2F;&#x2F; * total-length: 1-byte length descriptor of everything that follows,
+    &#x2F;&#x2F;   excluding the sighash byte.
+    &#x2F;&#x2F; * R-length: 1-byte length descriptor of the R value that follows.
+    &#x2F;&#x2F; * R: arbitrary-length big-endian encoded R value. It must use the shortest
+    &#x2F;&#x2F;   possible encoding for a positive integers (which means no null bytes at
+    &#x2F;&#x2F;   the start, except a single one when the next byte has its highest bit set).
+    &#x2F;&#x2F; * S-length: 1-byte length descriptor of the S value that follows.
+    &#x2F;&#x2F; * S: arbitrary-length big-endian encoded S value. The same rules apply.
+    &#x2F;&#x2F; * sighash: 1-byte value indicating what data is hashed (not part of the DER
+    &#x2F;&#x2F;   signature)
+
+    &#x2F;&#x2F; Minimum and maximum size constraints.
+    if (sig.size() &lt; 9) return false;
+    if (sig.size() &gt; 73) return false;
+
+    &#x2F;&#x2F; A signature is of type 0x30 (compound).
+    if (sig[0] != 0x30) return false;
+
+    &#x2F;&#x2F; Make sure the length covers the entire signature.
+    if (sig[1] != sig.size() - 3) return false;
+
+    &#x2F;&#x2F; Extract the length of the R element.
+    unsigned int lenR = sig[3];
+
+    &#x2F;&#x2F; Make sure the length of the S element is still inside the signature.
+    if (5 + lenR &gt;= sig.size()) return false;
+
+    &#x2F;&#x2F; Extract the length of the S element.
+    unsigned int lenS = sig[5 + lenR];
+
+    &#x2F;&#x2F; Verify that the length of the signature matches the sum of the length
+    &#x2F;&#x2F; of the elements.
+    if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
+ 
+    &#x2F;&#x2F; Check whether the R element is an integer.
+    if (sig[2] != 0x02) return false;
+
+    &#x2F;&#x2F; Zero-length integers are not allowed for R.
+    if (lenR == 0) return false;
+
+    &#x2F;&#x2F; Negative numbers are not allowed for R.
+    if (sig[4] &amp; 0x80) return false;
+
+    &#x2F;&#x2F; Null bytes at the start of R are not allowed, unless R would
+    &#x2F;&#x2F; otherwise be interpreted as a negative number.
+    if (lenR &gt; 1 &amp;&amp; (sig[4] == 0x00) &amp;&amp; !(sig[5] &amp; 0x80)) return false;
+
+    &#x2F;&#x2F; Check whether the S element is an integer.
+    if (sig[lenR + 4] != 0x02) return false;
+
+    &#x2F;&#x2F; Zero-length integers are not allowed for S.
+    if (lenS == 0) return false;
+
+    &#x2F;&#x2F; Negative numbers are not allowed for S.
+    if (sig[lenR + 6] &amp; 0x80) return false;
+
+    &#x2F;&#x2F; Null bytes at the start of S are not allowed, unless S would otherwise be
+    &#x2F;&#x2F; interpreted as a negative number.
+    if (lenS &gt; 1 &amp;&amp; (sig[lenR + 6] == 0x00) &amp;&amp; !(sig[lenR + 7] &amp; 0x80)) return false;
+
+    return true;
+}
+</code></pre>
 <h3>Examples</h3>
 <p>Notation: P1 and P2 are valid, serialized, public keys. S1 and S2 are valid signatures using respective keys P1 and P2. S1' and S2' are non-DER but otherwise valid signatures using those same keys. F is any invalid but DER-compliant signature (including 0, the empty string). F' is any invalid and non-DER-compliant signature.</p>
 <ol>
@@ -193,18 +376,37 @@
 </ul>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

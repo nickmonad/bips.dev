@@ -3,44 +3,40 @@
 {% block title %}bips.dev{% endblock title %}
 
 {% block content %}
-    <img src="bips-dev-header.png" width="750" height="200" />
-    <div id="what-is-a-bip" class="box">
-        {{ section.content | safe }}
-    </div>
+    <div class="flex flex-col items-center space-y-8">
 
-    <div class="columns is-vcentered">
-        <div class="column is-one-third">
-            <div class="level">
-                <div class="level-left">
-                    <div class="level-item">
-                        <h5 class="title is-5 mr-2">View BIPs by</h5>
-                        <a href="/authors" class="button is-warning is-light mr-2">Authors</a>
-                        <a href="/status" class="button is-warning is-light">Status</a>
-                    </div>
-                </div>
+        <div class="flex flex-col items-center">
+            <div class="flex w-full justify-end">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
             </div>
+            <img class="hidden dark:block self-start" src="/bips-header-dark.png" width="750" height="200" />
+            <img class="dark:hidden self-start" src="/bips-header-light.png" width="750" height="200" />
         </div>
-        <div class="column">
-            <form id="form-search" autocomplete="off" action="/search" method="GET">
-                <div class="field has-addons">
-                    <div class="control is-expanded">
-                        <input name="q" id="search" class="input" type="text" placeholder="Search BIPs" />
-                    </div>
-                    <div class="control">
-                        <button type="submit" class="button is-warning">
-                            Search
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <ul class="list-all-bips">
-        {% for page in section.pages %}
-        <li class="list-bip">
-            <span>{{ page.extra.bip }}</span> <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
-        </li>
-        {% endfor %}
-    </ul>
+        <div class="flex p-6 md:p-8 border border-bitcoin rounded shadow-lg font-medium">
+            {{ section.content | safe }}
+        </div>
+
+        <div class="flex w-full justify-start items-center space-x-4">
+            <div class="hidden sm:flex font-bold text-xl">View BIPs by</div>
+            <button class="py-2 px-4 rounded bg-bitcoin"><a class="text-white hover:text-white" href="/authors">Authors</a></button>
+            <button class="py-2 px-4 rounded bg-bitcoin"><a class="text-white hover:text-white" href="/status">Status</a></button>
+        </div>
+
+        <ul>
+            {% for page in section.pages %}
+                <li class="font-mono hover:text-bitcoin line-clamp-1">
+                    <span class="inline-block text-right w-8">{{ page.extra.bip }}</span>
+                    <a class="bip-link" href="{{ page.permalink | safe }}">{{ page.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock content %}

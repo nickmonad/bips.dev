@@ -3,21 +3,142 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 140: Normalized TXID</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 140</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 140: Normalized TXID</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2015-10-14</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0140.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 140
+  Layer: Consensus (soft fork)
+  Title: Normalized TXID
+  Author: Christian Decker &lt;decker.christian@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0140
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-10-14
+  License: PD
+</code></pre>
+<h2> Abstract </h2>
+<p>This BIP describes the use of normalized transaction IDs (NTXIDs) in order to eliminate transaction malleability, both in the third-party modification scenario as well as the participant modification scenario. The transaction ID is normalized by removing the signature scripts from transactions before computing its hash. The normalized transaction hashes are then used during the signature creation and signature verification of dependent transactions.</p>
+<h2> Motivation </h2>
+<p>Transaction malleability refers to the fact that transactions can be modified, either by one of the signers by re-signing the transaction or a third-party by modifying the signature representation. This is a problem since any modification to the serialized representation also changes the hash of the transaction, which is used by spending transaction to reference the funds that are being transferred. If a transaction is modified and later confirmed by ending up in the blockchain all transactions that depended on the original transaction are no longer valid, and thus orphaned.</p>
+<p>BIPs 62<ref><a href="/62" target="_blank">BIP 62 - Dealing with malleability</a></ref> and 66<ref><a href="/66" target="_blank">BIP 66 - Strict DER signatures</a></ref> alleviate the problem of third-party modification by defining a canonical representation of the signatures. However, checking the canonical representation is complex and may not eliminate all sources of third-party malleability. Furthermore, these BIPs do not address modifications by one of the signers, i.e., re-signing the transaction, because signers can produce any number of signatures due to the random parameter in ECDSA.</p>
+<p>This proposal eliminates malleability by removing the malleable signatures from the hash used to reference the outputs spent by a transaction. The new hash used to reference an output is called the <em>normalized transaction ID</em>. The integrity of all data that is used to reference the output is guaranteed by the signature itself, and any modification that would change the normalized transaction ID would also invalidate the signature itself.</p>
+<p>Besides eliminating transaction malleability as a source of problems it also allows the use of transaction templates. Transaction templates simplify higher level protocols and allows new uses. They allow an unsigned template transaction to be used as a basis for a sequence of transaction and only once the sequence matches the signers' expectations they provide the necessary signatures for the template to become valid, thus opting in to the sequence.</p>
+<h2> Specification </h2>
+<p>The use of normalized transaction IDs is introduced as a softfork. The specification is divided into three parts:</p>
+<ul>
+<li>Computation of the normalized transaction ID</li>
+<li>Introduction of a new extensible signature verification opcode to enable softfork deployment</li>
+<li>Changes to the UTXO tracking to enable normalized transaction ID lookup</li>
+</ul>
+<h3> Normalized Transaction ID computation </h3>
+<p>In order to calculate the normalized transaction ID, the signature script is stripped from each input of the transaction of non-coinbase transactions and each input is normalized. Stripping the signature script is achieved by setting the script's length to 0 and removing the <code>uchar[]</code> array from the <code>TxIn</code>.<ref><a href="https://en.bitcoin.it/wiki/Protocol_Specification#tx" target="_blank">Protocol Specification: TX</a></ref>
+Inputs are then normalized by replacing the hash of each previous transaction with its normalized version if available, i.e., the normalized hash of the previous transaction that created the output being spent in the current transaction. Version 1 transactions do not have a normalized transaction ID hence the non-normalized transaction ID is used for input normalization.</p>
+<p>The normalized transaction ID is then computed as the double <code>SHA 256</code> hash of the normalized transaction matching the existing transaction ID computation. The normalized transaction ID remains unchanged even if the signatures of the transaction are replaced/malleated and describe a class of semantically identical transactions. In the following we use <em>transaction instance ID</em> to refer to the transaction ID computed on the transaction including signatures. Normalized transaction IDs for coinbase transactions are computed with the signature script in the coinbase input, in order to avoid hash collisions.</p>
+<h3> OP_CHECKSIGEX </h3>
+<p>This BIP introduces a new opcode <code>OP_CHECKSIGEX</code> which replaces <code>OP_NOP4</code>. <code>OP_CHECKSIGEX</code> subsumes <code>OP_CHECKSIGVERIFY</code> and <code>OP_CHECKMULTISIGVERIFY</code>, and extends them by accepting a new <code>VERSION</code> parameter. The version parameter is a single integer pushed onto the stack before invoking <code>OP_CHECKSIGEX</code> and is used to group and evolve future versions of signature checking opcodes.</p>
+<p>When executed <code>OP_CHECKSIGEX</code> pops the version from the stack and then performs the signature check according to the specified version. If the verifying client does not support the specified version, i.e., the version was defined after the release of the client, the client must treat the <code>OP_CHECKSIGEX</code> as an <code>OP_NOP</code>.</p>
+<h4> Version 1 </h4>
+<p>The first version of <code>OP_CHECKSIGEX</code> (<code>VERSION=1</code>) implements normalized transaction IDs and uses Schnorr signatures instead of the current ECDSA signatures.</p>
+<p>Version 1 introduces the following new standard script format:</p>
+<pre><code>    m {pubkey}...{pubkey} n v OP_CHECKSIGEX
+</code></pre>
+<p>with matching scriptSig format:</p>
+<pre><code>    {signature}...{signature}
+</code></pre>
+<p>This is the standard <em>m-of-n</em> script defined in <a href="/11" target="_blank">BIP 11</a> with an additional version parameter <code>v</code> and the new opcode. Singlesig transactions are encoded as <em>1-of-1</em> transactions.</p>
+<p>The existing <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> have a bug<ref><a href="https://bitcoin.org/en/developer-guide#multisig" target="_blank">Developer Documentation - Multisig</a></ref> that pops one argument too many from the stack. This bug is not reproduced in the implementation of OP_CHECKSIGEX, so the canonical solution of pushing a dummy value onto the stack is not necessary.</p>
+<p>The normalization is achieved by normalizing the transaction before computing the signaturehash, i.e., the hash that is signed.
+The transaction must be normalized by replacing all transaction IDs in the inputs by their normalized variants and stripping the signature scripts. The normalized transction IDs are computed as described in the previous section. This normalization step is performed both when creating the signatures as well as when checking the signatures.</p>
+<h3> Tracking Normalized Transaction IDs </h3>
+<p>The transaction version is bumped to 2. The new version signals to clients receiving the transaction that they should track the normalized transaction ID along with the transaction instance ID in the unspent transaction output (UTXO) set. Upon receiving a version 2 transaction the client computes the normalized transaction ID, annotates the outputs with it, and adds them into the UTXO set indexed by the transaction instance ID as before. Transactions continue using the transaction instance ID to reference the outputs, but while checking the signature they may get normalized. All network messages continue to use the transaction instance ID to reference the transaction, specifically <code>inv</code>, <code>getdata</code>, <code>tx</code> and <code>block</code> messages still use transaction instance IDs, not the normalized transaction IDs.</p>
+<p>Outputs created by version 1 transactions are not annotated with the normalized transaction ID, and when normalizing the hashes in transaction inputs referencing version 1 outputs are not modified.</p>
+<h2> Rationale </h2>
+<h3> Normalization </h3>
+<p>Normalized transaction IDs are provably non-malleable since no data is included in the signaturehash whose integrity is not also proven in the signature, thus any modification causing the hash to change will also invalidate the signature.
+Normalized transactions are secure as they still use cryptographic hashes over all the semantic information of the transaction, i.e., the inputs, outputs and metadata, thus it is still computationally infeasible to cause a hash collision between transactions.</p>
+<p>There are a number of advantages to using normalized transaction IDs:</p>
+<ul>
+<li>Like BIP 62 and BIP 66 it solves the problem of third-parties picking transactions out of the network, modifying them and reinjecting them.</li>
+<li><em>m-of-n</em> multisig outputs are often used in higher level protocols<ref><a href="http://www.tik.ee.ethz.ch/file/716b955c130e6c703fac336ea17b1670/duplex-micropayment-channels.pdf" target="_blank">A Fast and Scalable Payment Network with Bitcoin Duplex Micropayment Channels </a></ref><ref>[[http://lightning.network/lightning-network-paper.pdf|The Bitcoin Lightning Network:</li>
+</ul>
+<p>Scalable Off-Chain Instant Payments]]</ref> in which several parties sign a transaction. Without normalized transaction IDs it is trivial for one party to re-sign a transaction, hence changing the transaction hash and invalidating any transaction built on top of its outputs. Normalized transaction IDs force the ID not to change, even if a party replaces its signature.</p>
+<ul>
+<li>Many higher level protocols build structures of transactions on top of multisig outputs that are not completely signed. This is currently not possible without one party holding a fully signed transaction and then calculating the ID. It is desirable to be able to build successive transactions without one party collecting all signatures, and thus possibly lock in funds unilaterally. Normalized transaction IDs allow the use of transaction templates, i.e., completely unsigned transactions upon which further transactions can be built, and only once every party is assured the structure matches its expectations it signs the template, thus validating the template.</li>
+</ul>
+<p>The only occurrence in which transactions can still be modified unilaterally is in the case <code>SIGHASH_NONE</code>, <code>SIGHASH_SINGLE</code> or <code>SIGHASH_ANYONECANPAY</code> is used. This however is not problematic since in these cases the creator of the transaction explicitly allows modification.</p>
+<p>In case of a transaction becoming invalid due to one of the inputs being malleated it is necessary to modify the spending transaction to reference the modified transaction ID. However, the signatures, which only use the normalized IDs, remain valid as long as the semantics of the funding transaction remain unchanged. An observer in the network may fix the transaction and reinject a corrected version.</p>
+<p>Using version 2 for transactions is an explicit opt-in to the normalized ID tracking and a simple upgrade for existing clients. It avoids having to reprocess the entire blockchain and computing the normalized transaction IDs for existing outputs in the UTXO. This would be further complicated by having to recursively compute normalized transaction IDs down to the coinbase transactions which created the coins.</p>
+<p>Tracking the normalized transaction IDs in the UTXO requires the storage of an additional hash per transaction whose outputs are not completely spent, which at 7,000,000 transactions with unspent outputs amounts to 224MB additional storage on disk.</p>
+<p>The coinbase transactions have been checked for hash-collisions and no collisions were found except for the coinbase transactions in blocks at heights 91842 and 91880, which are known to be identical<ref><a href="/30" target="_blank">BIP 30 - Duplicate transactions</a></ref>, and motivated the introduction of BIP 34.<ref><a href="/34" target="_blank">Block v2, Height in Coinbase</a></ref> Since coinbase transactions are invalid if transmitted outside of a block it is not possible to modify them on the fly and since they only mature after being included for a long time in the blockchain they are considered safe.</p>
+<h3> OP_CHECKSIGEX </h3>
+<p>The new opcode <code>OP_CHECKSIGEX</code> was introduced in order to allow the use of normalized transaction IDs as a softfork and in order to keep the number of <code>OP_NOP</code>s needed to a bare minimum, while enabling future soft-fork updates to the signing algorithms.</p>
+<p>The additional argument containing the version can be pushed on the stack using a single byte up to version 16 (<code>OP_1</code> - <code>OP_16</code>), resulting in one byte overhead for this script type. Using the standard multisig format also for 1-of-1 transactions add an additional 2 bytes, however it also removes the bug requiring a dummy push, resulting in a single byte overhead.
+Furthermore, using Schnorr signatures instead of ECDSA brings a number of improvements that reduce the size of transactions (<em>m-of-m</em> is the same size as <em>1-of-1</em>) and increase verification speed (batch signature validation by summing up keys and signatures). The code is already in bitcoin/secp256k1 and can be merged in. We limited the description of this BIP to re-using BIP 11 style <em>m-of-n</em> scripts to keep it short, however Schnorr also allows a number of more complex applications which we defer to future BIPs.</p>
+<p>Version 0 was intentionally skipped in order to guarantee that the top-most element before <code>OP_CHECKSIGEX</code> is non-zero. This is necessary to guarantee that non-upgraded clients, which interpret <code>OP_CHECKSIGEX</code> as <code>OP_NOP4</code>, do not end up with a zero value on top of the stack after execution, which would be interpreted as script failure.</p>
+<h3> Impact </h3>
+<p>This is a softfork which replaces <code>OP_NOP4</code> with the new implementation of <code>OP_CHECKSIGEX</code>, as such the impact on the network is minimal. Wallets that do not implement this opcode will not be able to verify the validity of the scripts, however if transactions using <code>OP_CHECKSIGEX</code> are included in blocks they will accept them and track the inputs correctly. This is guaranteed since the transaction inputs still use the non-normalized transaction ID to reference the outputs to be claimed, hence non-upgraded wallets can still lookup the outputs and mark them as spent. Furthermore, clients that do not implement this BIP are unable to identify outputs using this script as their own, however upgrading and rescanning the blockchain will make them available.</p>
+<h2> See also </h2>
+<ul>
+<li><a href="/62" target="_blank">BIP 62: Dealing with malleability</a></li>
+<li><a href="/66" target="_blank">BIP 66: Strict DER Signatures</a></li>
+</ul>
+<h2> References </h2>
+<references>
+<h2>Copyright</h2>
+<p>This document is placed in the public domain.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +169,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 140
-</span><span>  Layer: Consensus (soft fork)
-</span><span>  Title: Normalized TXID
-</span><span>  Author: Christian Decker &lt;decker.christian@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0140
-</span><span>  Status: Rejected
-</span><span>  Type: Standards Track
-</span><span>  Created: 2015-10-14
-</span><span>  License: PD
-</span></code></pre>
+      <pre><code>  BIP: 140
+  Layer: Consensus (soft fork)
+  Title: Normalized TXID
+  Author: Christian Decker &lt;decker.christian@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0140
+  Status: Rejected
+  Type: Standards Track
+  Created: 2015-10-14
+  License: PD
+</code></pre>
 <h2> Abstract </h2>
 <p>This BIP describes the use of normalized transaction IDs (NTXIDs) in order to eliminate transaction malleability, both in the third-party modification scenario as well as the participant modification scenario. The transaction ID is normalized by removing the signature scripts from transactions before computing its hash. The normalized transaction hashes are then used during the signature creation and signature verification of dependent transactions.</p>
 <h2> Motivation </h2>
@@ -83,11 +204,11 @@ Inputs are then normalized by replacing the hash of each previous transaction wi
 <h4> Version 1 </h4>
 <p>The first version of <code>OP_CHECKSIGEX</code> (<code>VERSION=1</code>) implements normalized transaction IDs and uses Schnorr signatures instead of the current ECDSA signatures.</p>
 <p>Version 1 introduces the following new standard script format:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    m {pubkey}...{pubkey} n v OP_CHECKSIGEX
-</span></code></pre>
+<pre><code>    m {pubkey}...{pubkey} n v OP_CHECKSIGEX
+</code></pre>
 <p>with matching scriptSig format:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    {signature}...{signature}
-</span></code></pre>
+<pre><code>    {signature}...{signature}
+</code></pre>
 <p>This is the standard <em>m-of-n</em> script defined in <a href="/11" target="_blank">BIP 11</a> with an additional version parameter <code>v</code> and the new opcode. Singlesig transactions are encoded as <em>1-of-1</em> transactions.</p>
 <p>The existing <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> have a bug<ref><a href="https://bitcoin.org/en/developer-guide#multisig" target="_blank">Developer Documentation - Multisig</a></ref> that pops one argument too many from the stack. This bug is not reproduced in the implementation of OP_CHECKSIGEX, so the canonical solution of pushing a dummy value onto the stack is not necessary.</p>
 <p>The normalization is achieved by normalizing the transaction before computing the signaturehash, i.e., the hash that is signed.
@@ -131,18 +252,37 @@ Furthermore, using Schnorr signatures instead of ECDSA brings a number of improv
 <p>This document is placed in the public domain.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

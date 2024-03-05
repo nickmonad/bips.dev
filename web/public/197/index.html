@@ -3,64 +3,69 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 197: Hashed Time-Locked Collateral Contract</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 197</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
             </div>
         </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 197: Hashed Time-Locked Collateral Contract</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2019-03-19</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0197.mediawiki" target="_blank">View on GitHub</a>
             </div>
         </div>
-    </div>
 
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 197: Hashed Time-Locked Collateral Contract
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2019-03-19</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0197.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 197
-</span><span>  Layer: Applications
-</span><span>  Title: Hashed Time-Locked Collateral Contract
-</span><span>  Author: Matthew Black &lt;matthew@atomicloans.io&gt;
-</span><span>          Tony Cai &lt;tony@atomicloans.io&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0197
-</span><span>  Status: Draft
-</span><span>  Type: Standards Track
-</span><span>  Created: 2019-03-19
-</span><span>  License: BSD-3-Clause
-</span><span>           CC0-1.0
-</span></code></pre>
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 197
+  Layer: Applications
+  Title: Hashed Time-Locked Collateral Contract
+  Author: Matthew Black &lt;matthew@atomicloans.io&gt;
+          Tony Cai &lt;tony@atomicloans.io&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0197
+  Status: Draft
+  Type: Standards Track
+  Created: 2019-03-19
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP describes a script for generalized debt agreement contract based on Hashed Time-Lock Contract (BIP 199) transactions according to the Atomic Loans specification (https://arxiv.org/pdf/1901.05117.pdf). For more details visit https://atomicloans.io.</p>
 <h2>Summary</h2>
@@ -68,31 +73,31 @@
 <p>The purpose of each script is to enable the creation of a debt agreement between two parties (the &quot;borrower&quot; and the &quot;lender&quot;), where the collateral is locked in a P2SH, and can only be spent once the borrower repays the principal and interest in the debt agreement on the principal blockchain. In the case that the borrower does not repay, the borrower or lender can opt for liquidation of the collateral, which will involve the atomic swapping of collateral for the loan currency. In the case that at least one of the two parties don't opt for liquidation, then each party will be entitled to a percentage of the collateral, decided when the funds are initially locked in the P2SH.</p>
 <p>These funds are locked into two scripts. Refundable Collateral and Seizable Collateral scripts. The funds sent to these scripts represent the percentage of collateral that each party is entitled to in the case that repayment fails, and the parties don't opt for liquidation.</p>
 <p>The Refundable Collateral script takes the following form:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    OP_IF
-</span><span>        OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b2&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
-</span><span>    OP_ELSE
-</span><span>        OP_IF
-</span><span>            &lt;loan expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE OP_PUSHDATA(1) &lt;secret a2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a2&gt; OP_EQUALVERIFY OP_SIZE &lt;secret b3 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b3&gt; OP_EQUALVERIFY OP_2 &lt;borrower pubkey&gt; &lt;lender pubkey&gt; OP_2 OP_CHECKMULTISIG
-</span><span>        OP_ELSE
-</span><span>            &lt;liquidation expiration num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
-</span><span>        OP_ENDIF
-</span><span>    OP_ENDIF
-</span></code></pre>
+<pre><code>    OP_IF
+        OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b2&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+    OP_ELSE
+        OP_IF
+            &lt;loan expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE OP_PUSHDATA(1) &lt;secret a2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a2&gt; OP_EQUALVERIFY OP_SIZE &lt;secret b3 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b3&gt; OP_EQUALVERIFY OP_2 &lt;borrower pubkey&gt; &lt;lender pubkey&gt; OP_2 OP_CHECKMULTISIG
+        OP_ELSE
+            &lt;liquidation expiration num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+        OP_ENDIF
+    OP_ENDIF
+</code></pre>
 <p>The Seizable Collateral script takes the following form:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    OP_IF
-</span><span>        OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b2&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
-</span><span>    OP_ELSE
-</span><span>        OP_IF
-</span><span>            &lt;loan expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE &lt;secret a2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a2&gt; OP_EQUALVERIFY OP_SIZE &lt;secret b3 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b3&gt; OP_EQUALVERIFY OP_2 &lt;borrower pubkey&gt; &lt;lender pubkey&gt; OP_2 OP_CHECKMULTISIG
-</span><span>        OP_ELSE
-</span><span>            OP_IF
-</span><span>                &lt;bidding expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE &lt;secret a1 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a1&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;lender pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
-</span><span>            OP_ELSE
-</span><span>                &lt;seizure expiration num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
-</span><span>            OP_ENDIF
-</span><span>        OP_ENDIF
-</span><span>    OP_ENDIF
-</span></code></pre>
+<pre><code>    OP_IF
+        OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b2&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+    OP_ELSE
+        OP_IF
+            &lt;loan expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE &lt;secret a2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a2&gt; OP_EQUALVERIFY OP_SIZE &lt;secret b3 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b3&gt; OP_EQUALVERIFY OP_2 &lt;borrower pubkey&gt; &lt;lender pubkey&gt; OP_2 OP_CHECKMULTISIG
+        OP_ELSE
+            OP_IF
+                &lt;bidding expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE &lt;secret a1 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a1&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;lender pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+            OP_ELSE
+                &lt;seizure expiration num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+            OP_ENDIF
+        OP_ENDIF
+    OP_ENDIF
+</code></pre>
 <p>[HASHOP] is either OP_SHA256 or OP_HASH160.</p>
 <p>[TIMEOUTOP] is either OP_CHECKSEQUENCEVERIFY or OP_CHECKLOCKTIMEVERIFY.</p>
 <h3>Interaction</h3>
@@ -160,8 +165,165 @@
 <p>In the case that the lender does not seize the collateral locked in the Seizable Collateral script, then the borrower can refund the funds locked in the Seizable Collateral script.</p>
 <h2>Rationale</h2>
 <p>The rational for the following script checking the length of secrets pushed to the stack that are used with OP_SHA256 in the following script</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>  OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY
-</span></code></pre>
+<pre><code>  OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY
+</code></pre>
+<p>is to ensure that the secret size is exactly a certain number of bytes long.</p>
+<p>This is especially important when this script is used alongside the HTLPC on other chains like Ethereum where the sha256 opcode only takes up 32 bytes and disregards the rest, there is a need to ensure that the length on the Bitcoin side is 32 bytes.</p>
+<h2>Backwards Compatibility</h2>
+<p>As this is a new standard for collateralized debt, there is no need for backward compatibility. Once this is accepted as a standard there are certain aspects of the contract that can be modified while still retaining backwards compatibility, such as removing the need to verify the size of the hash if being used with two blockchains with the same maximum block size, which would be backward compatible with the current script.</p>
+<h2>Implementation</h2>
+<p>https://github.com/AtomicLoans/chainabstractionlayer/blob/bitcoin-collateral-provider/src/providers/bitcoin/BitcoinCollateralProvider.js</p>
+<h2>Copyright</h2>
+<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
+
+        </article>
+    </div>
+
+    <!--
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="/">Back to BIPs</a>
+            </div>
+        </div>
+    </div>
+
+    <p class="is-size-3 has-text-weight-bold mb-0">
+      BIP 197: Hashed Time-Locked Collateral Contract
+    </p>
+    <div class="level is-mobile">
+        <div class="level-left">
+            <div class="level-item">
+                <p class="subtitle"><strong>2019-03-19</strong></p>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0197.mediawiki">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <pre><code>  BIP: 197
+  Layer: Applications
+  Title: Hashed Time-Locked Collateral Contract
+  Author: Matthew Black &lt;matthew@atomicloans.io&gt;
+          Tony Cai &lt;tony@atomicloans.io&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0197
+  Status: Draft
+  Type: Standards Track
+  Created: 2019-03-19
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP describes a script for generalized debt agreement contract based on Hashed Time-Lock Contract (BIP 199) transactions according to the Atomic Loans specification (https://arxiv.org/pdf/1901.05117.pdf). For more details visit https://atomicloans.io.</p>
+<h2>Summary</h2>
+<p>A Hashed Time-Locked Collateral Contract (HTLCC) consists of two scripts that permit a designated party (the &quot;borrower&quot;) to lock funds on the Bitcoin chain for a specified amount of time as collateral in a debt agreement where the loan principal is denominated in a currency on another blockchain. We denote the blockchain on which the loan principal is issued the principal blockchain.</p>
+<p>The purpose of each script is to enable the creation of a debt agreement between two parties (the &quot;borrower&quot; and the &quot;lender&quot;), where the collateral is locked in a P2SH, and can only be spent once the borrower repays the principal and interest in the debt agreement on the principal blockchain. In the case that the borrower does not repay, the borrower or lender can opt for liquidation of the collateral, which will involve the atomic swapping of collateral for the loan currency. In the case that at least one of the two parties don't opt for liquidation, then each party will be entitled to a percentage of the collateral, decided when the funds are initially locked in the P2SH.</p>
+<p>These funds are locked into two scripts. Refundable Collateral and Seizable Collateral scripts. The funds sent to these scripts represent the percentage of collateral that each party is entitled to in the case that repayment fails, and the parties don't opt for liquidation.</p>
+<p>The Refundable Collateral script takes the following form:</p>
+<pre><code>    OP_IF
+        OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b2&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+    OP_ELSE
+        OP_IF
+            &lt;loan expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE OP_PUSHDATA(1) &lt;secret a2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a2&gt; OP_EQUALVERIFY OP_SIZE &lt;secret b3 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b3&gt; OP_EQUALVERIFY OP_2 &lt;borrower pubkey&gt; &lt;lender pubkey&gt; OP_2 OP_CHECKMULTISIG
+        OP_ELSE
+            &lt;liquidation expiration num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+        OP_ENDIF
+    OP_ENDIF
+</code></pre>
+<p>The Seizable Collateral script takes the following form:</p>
+<pre><code>    OP_IF
+        OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b2&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+    OP_ELSE
+        OP_IF
+            &lt;loan expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE &lt;secret a2 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a2&gt; OP_EQUALVERIFY OP_SIZE &lt;secret b3 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash b3&gt; OP_EQUALVERIFY OP_2 &lt;borrower pubkey&gt; &lt;lender pubkey&gt; OP_2 OP_CHECKMULTISIG
+        OP_ELSE
+            OP_IF
+                &lt;bidding expiration num&gt; [TIMEOUTOP] OP_DROP OP_SIZE &lt;secret a1 length&gt; OP_EQUALVERIFY [HASHOP] &lt;secret hash a1&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;lender pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+            OP_ELSE
+                &lt;seizure expiration num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;borrower pubkey hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+            OP_ENDIF
+        OP_ENDIF
+    OP_ENDIF
+</code></pre>
+<p>[HASHOP] is either OP_SHA256 or OP_HASH160.</p>
+<p>[TIMEOUTOP] is either OP_CHECKSEQUENCEVERIFY or OP_CHECKLOCKTIMEVERIFY.</p>
+<h3>Interaction</h3>
+<ul>
+<li>
+<p>Alice (the &quot;borrower&quot;) and Bob (the &quot;lender&quot;) exchange public keys as well as two secret hashes A1, A2 created by Alice and three hashes B1, B2, B3 created by Bob. They then mutually agree upon a timeout threshold for the Loan Period, Liquidation Period, and Seizure Period. Alice constructs the script and P2SH address for the Refundable Collateral Contract and Seizable Collateral Contract. Bob constructs the script for the blockchain on which the loan principal will be issued - the principal blockchain.</p>
+</li>
+<li>
+<p>Bob sends loan principal funds to the loan script on the principal blockchain</p>
+</li>
+<li>
+<p>Alice sends funds to the Refundable Collateral P2SH address and the Seizable Collateral P2SH address. The amount of funds she sends to the two addresses will be determined beforehand off-chain between Alice and Bob.</p>
+</li>
+<li>
+<p>Either</p>
+<ul>
+<li>
+<p>Bob accepts locking of collateral by Alice and reveals B1, allowing Alice to withdraw the loan amount on the principal blockchain.</p>
+</li>
+<li>
+<p>Bob doesn't accept locking of collateral by Alice, and recovers the funds after the approve expiration while revealing B2, which allows Alice to refund the Refundable and Seizable collateral.</p>
+</li>
+<li>
+<p>If Bob accepts the locking of collateral by Alice</p>
+<ul>
+<li>Either
+*  Alice repays the loan by the end of the Loan Period and Bob reveals the secret to Alice by revealing it in the loan repayment acceptance transaction; OR
+*  Alice defaults on the loan and Alice and Bob both opt for collateral liquidation, where any third-party is able to bid on the collateral. The winning bidder, Charlie, will subsequently receive the liquidated collateral by way of an Atomic Swap between the collateral funds (ie. BTC locked in both the Refundable Collateral P2SH and the Seizable Collateral P2SH) and the bid funds (ie. funds denominated in the loan currency, put forth by Charlie as part of his bid).  This is done by both Alice and Bob signing a multisig and revealing A2 and B2; OR
+*  Alice defaults on the loan and at least one of Alice or Bob opts out of collateral liquidation, then Alice recovers the Refundable Collateral funds and Bob spends the Seizable Collateral funds.
+*  Alice defaults on the loan and at least one of Alice or Bob opts out of collateral liquidation. But Bob doesn't spend the Seizable Collateral funds,  so Alice recovers both the Refundable Collateral funds and the Seizable Collateral funds.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Compatibility</h2>
+<p>BIP 197 is compatible with <a href="ERC" target="_blank">1850</a>(https://github.com/ethereum/EIPs/pull/1850) for <a href="atomic" target="_blank">loans</a>(https://arxiv.org/pdf/1901.05117.pdf) with Ethereum. Can be extended in the future to be compatible with other HTLC and smart contract compatible chains.</p>
+<h2>Motivation</h2>
+<p>In many different protocols, the revealing of secrets is used as a settlement mechanism. HTLCC transactions are a safe way of exchanging secrets to advance the state of a debt agreement, due to the ability to recover a percentage of collateral funds from an uncooperative counterparty, and ensure principal + interest + liquidation fee is paid with a cooperative party.</p>
+<h2>Definitions</h2>
+<p>borrower: entity that locks collateral on the Bitcoin chain and receives loan amount on principal blockchain from lender following the approval of the borrower’s borrow request</p>
+<p>lender: entity that contributes funds to the Hashed Time-Locked Principal Contract (HTLPC) on the principal blockchain, to be borrowed by the borrower upon the locking of collateral on the Bitcoin chain and the lender’s approval</p>
+<p>repay: when the borrower pays back the principal + interest before loanExpiration</p>
+<p>default: when the borrower fails to pay back the principal + interest before the loanExpiration</p>
+<p>secret: random number chosen by the borrower or lender, revealed to allow the parties to change the state of the debt agreement</p>
+<p>secretHash: hash of the secret, used in the construction of HTLCC</p>
+<p>SecretA1: secret generated by the borrower, used to prove that the borrower has withdrawn the loan</p>
+<p>SecretA2: secret generated by the borrower, used to allow  the bidder to withdraw the liquidated collateral funds</p>
+<p>SecretB1: secret generated by the lender, used to accept the locking of collateral by borrower, enabling borrower to withdraw the loan amount</p>
+<p>SecretB2: secret generated by the lender, used to refund themselves in the event they aren't satisfied with borrower’slocking of collateral.  Also used to accept borrower’s repayment of principal plus interest</p>
+<p>SecretB3: secret generated by the lender, used to allow the bidder to withdraw the liquidated collateral funds</p>
+<p>SecretC: secret generated by the bidder, used to accept the signatures of the borrower and lender for authorizing the liquidation of collateral</p>
+<p>loan expiration num: timestamp before which the borrower must repay the loan; or otherwise risk the liquidation or seizure of their collateral</p>
+<p>bidding expiration num: timestamp that determines the amount of time allocated to bidding before seizure period occurs</p>
+<p>seizure expiration num: timestamp that determines the amount of time during which the lender can seize funds within the Seizable Collateral P2SH, after which the borrower can refund their corresponding amount of the collateral they are entitled to (ie. either just the funds within the Refundable Collateral P2SH, or both the Refundable Collateral and Seizable Collateral in the event where the lender failed to seize).</p>
+<h3>Approve Period</h3>
+<p>During this time, the lender deploys the HTLPC on the principal blockchain. Following this, the borrower locks their collateral on the Bitcoin blockchain in a HTLCC. The lender then either reveals secretB1 to signify that they are satisfied with the collateral, and the borrower can withdraw the loan by revealing secretA1. If the lender is not satisfied with the collateral locked by the borrower, the lender can refunds their loan amount by revealing secretB2, which will subsequently allow the borrower to refund the collateral amount they deposited.</p>
+<h3>Loan Period</h3>
+<p>Once the borrower has withdrawn the loan amount, the Loan Period begins. Once the Loan Period is finished, the borrower is expected to repay the loan. If they do, the lender can then accept the repayment by revealing secretB2, enabling the borrower to refund their collateral amount. In the case that the borrower defaults or does not repay the full principal plus interest amount, the lender can choose to not accept the loan repayment, and the parties can opt for liquidation of the collateral in the Bidding Period.</p>
+<h3>Bidding Period</h3>
+<p>In the case of a default or the lender not accepting the borrower repayment, the lender and borrower can opt for liquidation of the collateral through the process of third party bidders bidding on the collateral.  The Bidding Period can be initiated by either the lender or the borrower. Once the bidding timeout occurs, the lender and borrower must each provide a signature, followed by secretC revealed by the winning bidder once they have checked that the signature is proper. Finally, the lender and borrower must each reveal secretA2 and secretB3 to allow the collateral to be withdrawn by the winning bidder.</p>
+<h3>Seizure Period</h3>
+<p>In the case that either the lender or borrower don’t accept the bid, the lender can seize a percentage of the collateral. The amount is dependent on the amount of collateral locked in the Seizable Collateral and Refundable Collateral script as described in this BIP. During this period, the borrower can also refund the funds locked in the Refundable Collateral script.</p>
+<h3>Refund Period</h3>
+<p>In the case that the lender does not seize the collateral locked in the Seizable Collateral script, then the borrower can refund the funds locked in the Seizable Collateral script.</p>
+<h2>Rationale</h2>
+<p>The rational for the following script checking the length of secrets pushed to the stack that are used with OP_SHA256 in the following script</p>
+<pre><code>  OP_SIZE &lt;secret b2 length&gt; OP_EQUALVERIFY
+</code></pre>
 <p>is to ensure that the secret size is exactly a certain number of bytes long.</p>
 <p>This is especially important when this script is used alongside the HTLPC on other chains like Ethereum where the sha256 opcode only takes up 32 bytes and disregards the rest, there is a need to ensure that the length on the Bitcoin side is 32 bytes.</p>
 <h2>Backwards Compatibility</h2>
@@ -172,18 +334,37 @@
 <p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

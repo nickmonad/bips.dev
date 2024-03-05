@@ -3,21 +3,91 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 34: Block v2, Height in Coinbase</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 34</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 34: Block v2, Height in Coinbase</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2012-07-06</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0034.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 34
+  Layer: Consensus (soft fork)
+  Title: Block v2, Height in Coinbase
+  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0034
+  Status: Final
+  Type: Standards Track
+  Created: 2012-07-06
+</code></pre>
+<h2>Abstract</h2>
+<p>Bitcoin blocks and transactions are versioned binary structures. Both currently use version 1. This BIP introduces an upgrade path for versioned transactions and blocks. A unique value is added to newly produced coinbase transactions, and blocks are updated to version 2.</p>
+<h2>Motivation</h2>
+<ol>
+<li>Clarify and exercise the mechanism whereby the bitcoin network collectively consents to upgrade transaction or block binary structures, rules and behaviors.</li>
+<li>Enforce block and transaction uniqueness, and assist unconnected block validation.</li>
+</ol>
+<h2>Specification</h2>
+<ol>
+<li>Treat transactions with a version greater than 1 as non-standard (official Satoshi client will not mine or relay them).</li>
+<li>Add height as the first item in the coinbase transaction's scriptSig, and increase block version to 2. The format of the height is &quot;minimally encoded serialized CScript&quot; -- first byte is number of bytes in the number (will be 0x03 on main net for the next 150 or so years with 2<sup>23</sup>-1 blocks), following bytes are little-endian representation of the number (including a sign bit).  Height is the height of the mined block in the block chain, where the genesis block is height zero (0).</li>
+<li>75% rule: If 750 of the last 1,000 blocks are version 2 or greater, reject invalid version 2 blocks. (testnet3: 51 of last 100)</li>
+<li>95% rule (&quot;Point of no return&quot;): If 950 of the last 1,000 blocks are version 2 or greater, reject all version 1 blocks. (testnet3: 75 of last 100)</li>
+</ol>
+<h2>Backward compatibility</h2>
+<p>All older clients are compatible with this change. Users and merchants should not be impacted. Miners are strongly recommended to upgrade to version 2 blocks. Once 95% of the miners have upgraded to version 2, the remainder will be orphaned if they fail to upgrade.</p>
+<h2>Implementation</h2>
+<p>https://github.com/bitcoin/bitcoin/pull/1526</p>
+<h2>Result</h2>
+<p>Block number 227,835 (timestamp 2013-03-24 15:49:13 GMT) was the last version 1 block.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,16 +118,16 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 34
-</span><span>  Layer: Consensus (soft fork)
-</span><span>  Title: Block v2, Height in Coinbase
-</span><span>  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0034
-</span><span>  Status: Final
-</span><span>  Type: Standards Track
-</span><span>  Created: 2012-07-06
-</span></code></pre>
+      <pre><code>  BIP: 34
+  Layer: Consensus (soft fork)
+  Title: Block v2, Height in Coinbase
+  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0034
+  Status: Final
+  Type: Standards Track
+  Created: 2012-07-06
+</code></pre>
 <h2>Abstract</h2>
 <p>Bitcoin blocks and transactions are versioned binary structures. Both currently use version 1. This BIP introduces an upgrade path for versioned transactions and blocks. A unique value is added to newly produced coinbase transactions, and blocks are updated to version 2.</p>
 <h2>Motivation</h2>
@@ -80,18 +150,37 @@
 <p>Block number 227,835 (timestamp 2013-03-24 15:49:13 GMT) was the last version 1 block.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

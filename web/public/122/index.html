@@ -3,21 +3,162 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 122: URI scheme for Blockchain references &#x2F; exploration</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 122</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 122: URI scheme for Blockchain references &#x2F; exploration</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2015-08-29</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0122.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 122
+  Layer: Applications
+  Title: URI scheme for Blockchain references &#x2F; exploration
+  Author: Marco Pontello &lt;marcopon@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0122
+  Status: Draft
+  Type: Standards Track
+  Created: 2015-08-29
+  License: PD
+  Post-History: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2015-August&#x2F;010712.html
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP proposes a URI scheme for looking up blocks, transactions and addresses on a Blockchain explorer, or in general to make proper Blockchain references.</p>
+<h2>Motivation</h2>
+<p>The purpose of this URI scheme is to enable users to handle all the requests for details about blocks, transactions, etc. with their preferred tool (being that a web service or a local application).
+Currently a Bitcoin client usually points to an arbitrary blockchain explorer when the user looks for the details of a transaction or allows the user to choose from a set of alternatives.
+Resorting to copy + paste into a browser is often required.
+The same happens with posts and messages that reference some particular txs or blocks, if they provide links at all.</p>
+<h2>Specification</h2>
+<p>The URI follow this form:</p>
+<pre><code> &lt;nowiki&gt;blockchain:[&#x2F;&#x2F;&lt;chain&gt;]&#x2F;&lt;tx|block|address&gt;&#x2F;&lt;hash&gt;&lt;&#x2F;nowiki&gt;
+</code></pre>
+<p>Where:</p>
+<p>|style=&quot;text-align: center;&quot; | Element|
+|-|
+|Required?|
+|-|
+|chain|
+|optional|
+|rowspan=&quot;3&quot; | type|
+|tx|
+|for transactions.|
+|rowspan=&quot;3&quot; | required|
+|block|
+|for blocks (supports both hash or height).|
+|address|
+|for addresses.|
+|hash|
+|required|</p>
+<h4>ABNF grammar</h4>
+<pre><code>blockchainuri = &quot;blockchain:&quot; [&quot;&#x2F;&#x2F;&quot; chain] &quot;&#x2F;&quot; object
+object = (&quot;tx&quot; &quot;&#x2F;&quot; hash) &#x2F; (&quot;block&quot; &quot;&#x2F;&quot; (hash &#x2F; blockheight)) &#x2F;
+         (&quot;address&quot; &quot;&#x2F;&quot; address)
+chain = hash
+hash = 64HEXDIG
+blockheight = 1*15DIGIT ; 15 is somehow arbitrary, i.e. a &quot;small&quot; int.
+address = base58 ; https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Base58
+</code></pre>
+<hr />
+<h3>Definition of chain ID</h3>
+<p>The <strong>chain ID</strong> of a chain is the block hash of the corresponding genesis block. For forked chains, it's the block hash of the first block after fork.</p>
+<p>So, for example:</p>
+<pre><code>Bitcoin main   : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f 
+Bitcoin test   : 000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943
+Bitcoin regtest: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206 
+</code></pre>
+<p>An example of forked chain (Feathercoin, that forked Litecoin):</p>
+<p><img src=bip-0122/chainid.png></img></p>
+<pre><code>Litecoin   : 12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2
+Feathercoin: fdbe99b90c90bae7505796461471d89ae8388ab953997aa06a355bbda8d915cb
+&lt;&#x2F;pre&gt;  
+
+
+==Examples==
+
+A transaction on Bitcoin main net:
+ blockchain:&#x2F;tx&#x2F;b462ae6eb8bdae2e060239a2a3ea5d9c3e0f9ef34d9717beb2dcf0ed42cee7da
+
+A block on Bitcoin main net:
+ blockchain:&#x2F;block&#x2F;00000000000000000119af5bcae2926df54ae262e9071a94a99c913cc217cc72
+or
+ blockchain:&#x2F;block&#x2F;372338
+
+An address on Bitcoin main net:
+ blockchain:&#x2F;address&#x2F;16EW6Rv9P9AxFDBrZV816dD4sj1EAYUX3f
+
+A transaction on Bitcoin test net:
+ blockchain:&#x2F;&#x2F;000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943&#x2F;tx&#x2F;3b95a766d7a99b87188d6875c8484cb2b310b78459b7816d4dfc3f0f7e04281a
+
+==Rationale==
+
+From the point of view of a wallet (or other Blockchain related tool) developers which need to reference Blockchain data, using this scheme mean that he can simply make it a `blockchain:` link without having to worry about any specific Blockchain explorer or provide a means for the user to select one.
+
+Blockchain explorers in turn will simply offer to handle the `blockchain:` URI schema, the first time the user visit their website, or launch&#x2F;install the application, or even set themselves if there isn&#x27;t already one.
+
+Users can link directly to their preferred block explorer (avoiding copy + paste which can be awkward on mobile devices).
+
+== Sample implementation ==
+
+[https:&#x2F;&#x2F;github.com&#x2F;MarcoPon&#x2F;blockchain-exploration Demo Blockchain: URI handler on GitHub]
+
+==Acknowledgements==
+
+Thanks to Btc Drak for suggesting support for different networks and Jorge Timon for the suggestion that we could identify each network by its genesis block hash.
+Thanks to Richard Moore, Matt Whitlock, Andreas Schildbach for help with the structure and hierarchy of the URI scheme.
+
+==Copyright==
+
+This document is placed in the public domain.
+</code></pre>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,18 +189,18 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 122
-</span><span>  Layer: Applications
-</span><span>  Title: URI scheme for Blockchain references / exploration
-</span><span>  Author: Marco Pontello &lt;marcopon@gmail.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0122
-</span><span>  Status: Draft
-</span><span>  Type: Standards Track
-</span><span>  Created: 2015-08-29
-</span><span>  License: PD
-</span><span>  Post-History: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010712.html
-</span></code></pre>
+      <pre><code>  BIP: 122
+  Layer: Applications
+  Title: URI scheme for Blockchain references &#x2F; exploration
+  Author: Marco Pontello &lt;marcopon@gmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0122
+  Status: Draft
+  Type: Standards Track
+  Created: 2015-08-29
+  License: PD
+  Post-History: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2015-August&#x2F;010712.html
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP proposes a URI scheme for looking up blocks, transactions and addresses on a Blockchain explorer, or in general to make proper Blockchain references.</p>
 <h2>Motivation</h2>
@@ -69,8 +210,8 @@ Resorting to copy + paste into a browser is often required.
 The same happens with posts and messages that reference some particular txs or blocks, if they provide links at all.</p>
 <h2>Specification</h2>
 <p>The URI follow this form:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span> &lt;nowiki&gt;blockchain:[//&lt;chain&gt;]/&lt;tx|block|address&gt;/&lt;hash&gt;&lt;/nowiki&gt;
-</span></code></pre>
+<pre><code> &lt;nowiki&gt;blockchain:[&#x2F;&#x2F;&lt;chain&gt;]&#x2F;&lt;tx|block|address&gt;&#x2F;&lt;hash&gt;&lt;&#x2F;nowiki&gt;
+</code></pre>
 <p>Where:</p>
 <p>|style=&quot;text-align: center;&quot; | Element|
 |-|
@@ -89,80 +230,99 @@ The same happens with posts and messages that reference some particular txs or b
 |hash|
 |required|</p>
 <h4>ABNF grammar</h4>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>blockchainuri = &quot;blockchain:&quot; [&quot;//&quot; chain] &quot;/&quot; object
-</span><span>object = (&quot;tx&quot; &quot;/&quot; hash) / (&quot;block&quot; &quot;/&quot; (hash / blockheight)) /
-</span><span>         (&quot;address&quot; &quot;/&quot; address)
-</span><span>chain = hash
-</span><span>hash = 64HEXDIG
-</span><span>blockheight = 1*15DIGIT ; 15 is somehow arbitrary, i.e. a &quot;small&quot; int.
-</span><span>address = base58 ; https://en.wikipedia.org/wiki/Base58
-</span></code></pre>
+<pre><code>blockchainuri = &quot;blockchain:&quot; [&quot;&#x2F;&#x2F;&quot; chain] &quot;&#x2F;&quot; object
+object = (&quot;tx&quot; &quot;&#x2F;&quot; hash) &#x2F; (&quot;block&quot; &quot;&#x2F;&quot; (hash &#x2F; blockheight)) &#x2F;
+         (&quot;address&quot; &quot;&#x2F;&quot; address)
+chain = hash
+hash = 64HEXDIG
+blockheight = 1*15DIGIT ; 15 is somehow arbitrary, i.e. a &quot;small&quot; int.
+address = base58 ; https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Base58
+</code></pre>
 <hr />
 <h3>Definition of chain ID</h3>
 <p>The <strong>chain ID</strong> of a chain is the block hash of the corresponding genesis block. For forked chains, it's the block hash of the first block after fork.</p>
 <p>So, for example:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>Bitcoin main   : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f 
-</span><span>Bitcoin test   : 000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943
-</span><span>Bitcoin regtest: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206 
-</span></code></pre>
+<pre><code>Bitcoin main   : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f 
+Bitcoin test   : 000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943
+Bitcoin regtest: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206 
+</code></pre>
 <p>An example of forked chain (Feathercoin, that forked Litecoin):</p>
 <p><img src=bip-0122/chainid.png></img></p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>Litecoin   : 12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2
-</span><span>Feathercoin: fdbe99b90c90bae7505796461471d89ae8388ab953997aa06a355bbda8d915cb
-</span><span>&lt;/pre&gt;  
-</span><span>
-</span><span>
-</span><span>==Examples==
-</span><span>
-</span><span>A transaction on Bitcoin main net:
-</span><span> blockchain:/tx/b462ae6eb8bdae2e060239a2a3ea5d9c3e0f9ef34d9717beb2dcf0ed42cee7da
-</span><span>
-</span><span>A block on Bitcoin main net:
-</span><span> blockchain:/block/00000000000000000119af5bcae2926df54ae262e9071a94a99c913cc217cc72
-</span><span>or
-</span><span> blockchain:/block/372338
-</span><span>
-</span><span>An address on Bitcoin main net:
-</span><span> blockchain:/address/16EW6Rv9P9AxFDBrZV816dD4sj1EAYUX3f
-</span><span>
-</span><span>A transaction on Bitcoin test net:
-</span><span> blockchain://000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943/tx/3b95a766d7a99b87188d6875c8484cb2b310b78459b7816d4dfc3f0f7e04281a
-</span><span>
-</span><span>==Rationale==
-</span><span>
-</span><span>From the point of view of a wallet (or other Blockchain related tool) developers which need to reference Blockchain data, using this scheme mean that he can simply make it a `blockchain:` link without having to worry about any specific Blockchain explorer or provide a means for the user to select one.
-</span><span>
-</span><span>Blockchain explorers in turn will simply offer to handle the `blockchain:` URI schema, the first time the user visit their website, or launch/install the application, or even set themselves if there isn&#39;t already one.
-</span><span>
-</span><span>Users can link directly to their preferred block explorer (avoiding copy + paste which can be awkward on mobile devices).
-</span><span>
-</span><span>== Sample implementation ==
-</span><span>
-</span><span>[https://github.com/MarcoPon/blockchain-exploration Demo Blockchain: URI handler on GitHub]
-</span><span>
-</span><span>==Acknowledgements==
-</span><span>
-</span><span>Thanks to Btc Drak for suggesting support for different networks and Jorge Timon for the suggestion that we could identify each network by its genesis block hash.
-</span><span>Thanks to Richard Moore, Matt Whitlock, Andreas Schildbach for help with the structure and hierarchy of the URI scheme.
-</span><span>
-</span><span>==Copyright==
-</span><span>
-</span><span>This document is placed in the public domain.
-</span></code></pre>
+<pre><code>Litecoin   : 12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2
+Feathercoin: fdbe99b90c90bae7505796461471d89ae8388ab953997aa06a355bbda8d915cb
+&lt;&#x2F;pre&gt;  
+
+
+==Examples==
+
+A transaction on Bitcoin main net:
+ blockchain:&#x2F;tx&#x2F;b462ae6eb8bdae2e060239a2a3ea5d9c3e0f9ef34d9717beb2dcf0ed42cee7da
+
+A block on Bitcoin main net:
+ blockchain:&#x2F;block&#x2F;00000000000000000119af5bcae2926df54ae262e9071a94a99c913cc217cc72
+or
+ blockchain:&#x2F;block&#x2F;372338
+
+An address on Bitcoin main net:
+ blockchain:&#x2F;address&#x2F;16EW6Rv9P9AxFDBrZV816dD4sj1EAYUX3f
+
+A transaction on Bitcoin test net:
+ blockchain:&#x2F;&#x2F;000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943&#x2F;tx&#x2F;3b95a766d7a99b87188d6875c8484cb2b310b78459b7816d4dfc3f0f7e04281a
+
+==Rationale==
+
+From the point of view of a wallet (or other Blockchain related tool) developers which need to reference Blockchain data, using this scheme mean that he can simply make it a `blockchain:` link without having to worry about any specific Blockchain explorer or provide a means for the user to select one.
+
+Blockchain explorers in turn will simply offer to handle the `blockchain:` URI schema, the first time the user visit their website, or launch&#x2F;install the application, or even set themselves if there isn&#x27;t already one.
+
+Users can link directly to their preferred block explorer (avoiding copy + paste which can be awkward on mobile devices).
+
+== Sample implementation ==
+
+[https:&#x2F;&#x2F;github.com&#x2F;MarcoPon&#x2F;blockchain-exploration Demo Blockchain: URI handler on GitHub]
+
+==Acknowledgements==
+
+Thanks to Btc Drak for suggesting support for different networks and Jorge Timon for the suggestion that we could identify each network by its genesis block hash.
+Thanks to Richard Moore, Matt Whitlock, Andreas Schildbach for help with the structure and hierarchy of the URI scheme.
+
+==Copyright==
+
+This document is placed in the public domain.
+</code></pre>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

@@ -3,21 +3,132 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 64: getutxo message</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 64</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 64: getutxo message</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2014-06-10</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0064.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 64
+  Layer: Peer Services
+  Title: getutxo message
+  Author: Mike Hearn &lt;hearn@vinumeris.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0064
+  Status: Obsolete
+  Type: Standards Track
+  Created: 2014-06-10
+</code></pre>
+<h2>Abstract</h2>
+<p>This document describes a small P2P protocol extension that performs UTXO lookups given a set of outpoints.</p>
+<h2>Motivation</h2>
+<p>All full Bitcoin nodes maintain a database called the unspent transaction output set. This set is
+how double spending is checked for: to be valid a transaction must identify unspent outputs in this
+set using an identifier called an &quot;outpoint&quot;, which is merely the hash of the output's containing
+transaction plus an index.</p>
+<p>The ability to query this can sometimes be useful for a lightweight/SPV client which does not have
+the full UTXO set at hand. For example, it can be useful in applications implementing assurance
+contracts to do a quick check when a new pledge becomes visible to test whether that pledge was
+already revoked via a double spend. Although this message is not strictly necessary because e.g.
+such an app could be implemented by fully downloading and storing the block chain, it is useful for
+obtaining acceptable performance and resolving various UI cases.</p>
+<p>Another example of when this data can be useful is for performing floating fee calculations in an
+SPV wallet. This use case requires some other changes to the Bitcoin protocol however, so we will
+not dwell on it here.</p>
+<h2>Specification</h2>
+<p>Two new messages are defined. The &quot;getutxos&quot; message has the following structure:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>1</td><td>check mempool</td><td>bool</td><td>Whether to apply mempool transactions during the calculation, thus exposing their UTXOs and removing outputs that they spend.</td></tr>
+<tr><td>?</td><td>outpoints</td><td>vector<COutPoint></td><td>The list of outpoints to be queried. Each outpoint is serialized in the same way it is in a tx message.</td></tr>
+</tbody></table>
+<p>The response message &quot;utxos&quot; has the following structure:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>4</td><td>chain height</td><td>uint32</td><td>The height of the chain at the moment the result was calculated.</td></tr>
+<tr><td>32</td><td>chain tip hash</td><td>uint256</td><td>Block hash of the top of the chain at the moment the result was calculated.</td></tr>
+<tr><td>?</td><td>hit bitmap</td><td>byte[]</td><td>An array of bytes encoding one bit for each outpoint queried. Each bit indicates whether the queried outpoint was found in the UTXO set or not.</td></tr>
+<tr><td>?</td><td>result utxos</td><td>result[]</td><td>A list of result objects (defined below), one for each outpoint that is unspent (i.e. has a bit set in the bitmap).</td></tr>
+</tbody></table>
+<p>The result object is defined as:</p>
+<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
+<tr><td>4</td><td>tx version</td><td>uint32</td><td>The version number of the transaction the UTXO was found in.</td></tr>
+<tr><td>4</td><td>height</td><td>uint32</td><td>The height of the block containing the defining transaction, or 0x7FFFFFFF if the tx is in the mempool.</td></tr>
+<tr><td>?</td><td>output</td><td>CTxOut</td><td>The output itself, serialized in the same way as in a tx message.</td></tr>
+</tbody></table>
+<h2>Backward compatibility</h2>
+<p>Nodes indicate support by advertising a protocol version above 70003 and by setting a new
+NODE_GETUTXO flag in their nServices field, which has a value of 2 (the second bit of the field).</p>
+<h2>Authentication</h2>
+<p>The UTXO set is not currently authenticated by anything. There are proposals to resolve this by
+introducing a new consensus rule that commits to a root hash of the UTXO set in blocks, however this
+feature is not presently available in the Bitcoin protocol. Once it is, the utxos message could be
+upgraded to include Merkle branches showing inclusion of the UTXOs in the committed sets.</p>
+<p>If the requesting client is looking up outputs for a signed transaction that they have locally, the
+client can partly verify the returned output by running the input scripts with it. Currently this
+verifies only that the script is correct. A future version of the Bitcoin protocol is likely to also
+allow the value to be checked in this way. It does not show that the output is really unspent or was
+ever actually created in the block chain however. Additionally, the form of the provided scriptPubKey 
+should be checked before execution to ensure the remote peer doesn't just set the script to OP_TRUE.</p>
+<p>If the requesting client has a mapping of chain heights to block hashes in the best chain e.g.
+obtained via getheaders, then they can obtain a proof that the output did at one point exist by
+requesting the block and searching for the output within it. When combined with Bloom filtering this
+can be reasonably efficient.</p>
+<p>Note that even when the outputs are being checked against something this protocol has the same
+security model as Bloom filtering: a remote node can lie through omission by claiming the requested
+UTXO does not exist / was already spent (they are the same, from the perspective of a full node).
+Querying multiple nodes and combining their answers can be a partial solution to this, although as
+nothing authenticates the Bitcoin P2P network a man in the middle could still yield incorrect
+results.</p>
+<h2>Implementation</h2>
+<p>https://github.com/bitcoin/bitcoin/pull/4351/files</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,16 +159,16 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 64
-</span><span>  Layer: Peer Services
-</span><span>  Title: getutxo message
-</span><span>  Author: Mike Hearn &lt;hearn@vinumeris.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0064
-</span><span>  Status: Obsolete
-</span><span>  Type: Standards Track
-</span><span>  Created: 2014-06-10
-</span></code></pre>
+      <pre><code>  BIP: 64
+  Layer: Peer Services
+  Title: getutxo message
+  Author: Mike Hearn &lt;hearn@vinumeris.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0064
+  Status: Obsolete
+  Type: Standards Track
+  Created: 2014-06-10
+</code></pre>
 <h2>Abstract</h2>
 <p>This document describes a small P2P protocol extension that performs UTXO lookups given a set of outpoints.</p>
 <h2>Motivation</h2>
@@ -121,18 +232,37 @@ results.</p>
 <p>https://github.com/bitcoin/bitcoin/pull/4351/files</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

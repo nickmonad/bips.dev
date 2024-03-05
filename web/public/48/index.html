@@ -3,21 +3,156 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 48: Multi-Script Hierarchy for Multi-Sig Wallets</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 48</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 48: Multi-Script Hierarchy for Multi-Sig Wallets</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2020-12-16</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0048.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 48
+  Layer: Applications
+  Title: Multi-Script Hierarchy for Multi-Sig Wallets
+  Author: Fontaine &lt;dentondevelopment@protonmail.com&gt;
+  Comments-Summary: No comments
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0048
+  Status: Proposed
+  Type: Standards Track
+  Created: 2020-12-16
+  License: MIT
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP defines a logical hierarchy for deterministic multi-sig wallets based on an algorithm
+described in BIP-0067 (BIP67 from now on), BIP-0032 (BIP32 from now on), purpose scheme described in
+BIP-0043 (BIP43 from now on), and multi-account hierarchy described in
+BIP-0044 (BIP44 from now on).</p>
+<p>This BIP is a particular application of BIP43.</p>
+<h2>Copyright</h2>
+<p>This BIP falls under the MIT License.</p>
+<h2>Motivation</h2>
+<p>The motivation of this BIP is to define the existing industry wide practice of utilizing  m/48'
+derivation paths in hierarchical deterministic multi-sig wallets so that other developers may
+benefit from a standard. This BIP allows for future script types to easily be appended to the
+specification so that a new BIP is not required for every future script type.</p>
+<p>The hierarchy proposed in this paper is quite comprehensive. It allows the handling of
+multiple accounts, external and internal chains per account, multiple script types and
+millions of addresses per chain.</p>
+<p>This paper was inspired from BIP44.</p>
+<h2>Backwards compatibility</h2>
+<p>Currently a number of wallets utilize the ‎<code>m/48'</code> derivation scheme for HD multi-sig accounts.
+This BIP is intended to maintain the <em>existing</em> real world use of the ‎<code>m/48'</code> derivation.
+No breaking changes are made so as to avoid &quot;loss of funds&quot; to existing users.
+Wallets which currently support the ‎<code>m/48'</code> derivation will not need to make any changes
+to comply with this BIP.</p>
+<h2>Specification</h2>
+<h3>Key sorting</h3>
+<p>Any wallet that supports BIP48 inherently supports deterministic key sorting as per BIP67 so that all possible
+multi-signature addresses/scripts are derived from deterministically sorted public keys.</p>
+<h3>Path levels</h3>
+<p>We define the following 6 levels in BIP32 path:</p>
+<pre><code>m &#x2F; purpose&#x27; &#x2F; coin_type&#x27; &#x2F; account&#x27; &#x2F; script_type&#x27; &#x2F; change &#x2F; address_index
+</code></pre>
+<p><code>h</code> or <code>'</code> in the path indicates that BIP32 hardened derivation is used.</p>
+<p>Each level has a special meaning, described in the chapters below.</p>
+<h3>Purpose</h3>
+<p>Purpose is a constant set to 48' following the BIP43 recommendation.
+It indicates that the subtree of this node is used according to this specification.</p>
+<p>Hardened derivation is used at this level.</p>
+<h3>Coin type</h3>
+<p>One master node (seed) can be used for multiple Bitcoin networks.
+Sharing the same space for various networks has some disadvantages.</p>
+<p>Avoiding reusing addresses across networks and improving privacy issues.</p>
+<p>Coin type <code>0</code> for mainnet and <code>1</code> for testnet.</p>
+<p>Hardened derivation is used at this level.</p>
+<h3>Account</h3>
+<p>This level splits the key space into independent user identities, following the BIP44 pattern,
+so the wallet never mixes the coins across different accounts.</p>
+<p>Users can use these accounts to organize the funds in the same
+fashion as bank accounts; for donation purposes (where all
+addresses are considered public), for saving purposes,
+for common expenses etc.</p>
+<p>Accounts are numbered from index 0 in sequentially increasing manner.
+This number is used as child index in BIP32 derivation.</p>
+<p>Hardened derivation is used at this level.</p>
+<h3>Script</h3>
+<p>This level splits the key space into two separate <code>script_type</code>(s). To provide
+forward compatibility for future script types this specification can be easily extended.</p>
+<p>Currently the only script types covered by this BIP are Native Segwit (p2wsh) and
+Nested Segwit (p2sh-p2wsh).</p>
+<p>The following path represents Nested Segwit (p2sh-p2wsh) mainnet, account 0:
+<code>1'</code>: Nested Segwit (p2sh-p2wsh) <code>m/48'/0'/0'/1'</code></br></p>
+<p>The following path represents Native Segwit (p2wsh) mainnet, account 0:
+<code>2'</code>: Native Segwit (p2wsh) <code>m/48'/0'/0'/2'</code></br></p>
+<p>The recommended default for wallets is pay to witness script hash <code>m/48'/0'/0'/2'</code>.</p>
+<p>To add new script types submit a PR to this specification and include it in the list above:
+<code>X'</code>: Future script type <code>m/48'/0'/0'/X'</code></br></p>
+<h3>Change</h3>
+<p>Constant 0 is used for external chain and constant 1 for internal chain (also
+known as change addresses). External chain is used for addresses that are meant
+to be visible outside of the wallet (e.g. for receiving payments). Internal
+chain is used for addresses which are not meant to be visible outside of the
+wallet and is used for return transaction change.</p>
+<p>Public derivation is used at this level.</p>
+<h3>Index</h3>
+<p>Addresses are numbered from index 0 in sequentially increasing manner.
+This number is used as child index in BIP32 derivation.</p>
+<p>Public derivation is used at this level.</p>
+<h2>Examples</h2>
+<h2>Reference</h2>
+<ul>
+<li><a href="/67" target="_blank">BIP67 - Deterministic Pay-to-script-hash multi-signature addresses through public key sorting</a></li>
+<li><a href="/32" target="_blank">BIP32 - Hierarchical Deterministic Wallets</a></li>
+<li><a href="/43" target="_blank">BIP43 - Purpose Field for Deterministic Wallets</a></li>
+<li><a href="/44" target="_blank">BIP44 - Multi-Account Hierarchy for Deterministic Wallets</a></li>
+</ul>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +183,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 48
-</span><span>  Layer: Applications
-</span><span>  Title: Multi-Script Hierarchy for Multi-Sig Wallets
-</span><span>  Author: Fontaine &lt;dentondevelopment@protonmail.com&gt;
-</span><span>  Comments-Summary: No comments
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0048
-</span><span>  Status: Proposed
-</span><span>  Type: Standards Track
-</span><span>  Created: 2020-12-16
-</span><span>  License: MIT
-</span></code></pre>
+      <pre><code>  BIP: 48
+  Layer: Applications
+  Title: Multi-Script Hierarchy for Multi-Sig Wallets
+  Author: Fontaine &lt;dentondevelopment@protonmail.com&gt;
+  Comments-Summary: No comments
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0048
+  Status: Proposed
+  Type: Standards Track
+  Created: 2020-12-16
+  License: MIT
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP defines a logical hierarchy for deterministic multi-sig wallets based on an algorithm
 described in BIP-0067 (BIP67 from now on), BIP-0032 (BIP32 from now on), purpose scheme described in
@@ -88,8 +223,8 @@ to comply with this BIP.</p>
 multi-signature addresses/scripts are derived from deterministically sorted public keys.</p>
 <h3>Path levels</h3>
 <p>We define the following 6 levels in BIP32 path:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>m / purpose&#39; / coin_type&#39; / account&#39; / script_type&#39; / change / address_index
-</span></code></pre>
+<pre><code>m &#x2F; purpose&#x27; &#x2F; coin_type&#x27; &#x2F; account&#x27; &#x2F; script_type&#x27; &#x2F; change &#x2F; address_index
+</code></pre>
 <p><code>h</code> or <code>'</code> in the path indicates that BIP32 hardened derivation is used.</p>
 <p>Each level has a special meaning, described in the chapters below.</p>
 <h3>Purpose</h3>
@@ -145,18 +280,37 @@ This number is used as child index in BIP32 derivation.</p>
 </ul>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

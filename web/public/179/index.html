@@ -3,21 +3,113 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 179: Name for payment recipient identifiers</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 179</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 179: Name for payment recipient identifiers</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2019-10-17</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0179.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 179
+  Title: Name for payment recipient identifiers
+  Author: Emil Engler &lt;me@emilengler.com&gt;
+          Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0179
+  Status: Draft
+  Type: Informational
+  Created: 2019-10-17
+  License: CC0-1.0
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP proposes a new term for 'address'</p>
+<h2>Specification</h2>
+<p>The new term is:
+<em>Bitcoin</em> <strong>Invoice</strong> <em>Address</em></p>
+<p>The <em>Bitcoin</em> and <em>Address</em> parts are optional.
+The address suffix should only be used as a transitional step.</p>
+<p>A <em>Bitcoin</em> Invoice <em>Address</em> is a string of characters that can be used to indicate the intended recipient and purpose of a transaction.</p>
+<h2>Motivation</h2>
+<p>Bitcoin addresses are intended to be only used <strong>once</strong> and you should generate a new one for every new incoming payment.
+The term 'address' however indicates consistency because nearly everything on the internet or the offline world with the term 'address'
+is something that rarely or even never changes (postal address, email address, IP addresses (depends heavily on the provider), etc.)
+The motivation for this BIP is to change the term address to something that indicates that the address is connected to a single transaction.</p>
+<h2>Rationale</h2>
+<p>The reason why we use <em>Bitcoin Invoice Address</em> or just <em>Invoice</em> is to emphasize that it is single-use.
+The terms <em>Bitcoin</em> and <em>Address</em> are optional for the following reasons:
+For <em>Bitcoin</em>:</p>
+<ul>
+<li>Useful for multicoin wallets to indicate that it belongs to Bitcoin</li>
+<li>Indicates a difference between a lightning and an on-chain invoice</li>
+</ul>
+<p>For <em>Address</em>:</p>
+<ul>
+<li>To not confuse users with a completely new term</li>
+<li>To show that it is where you send something to</li>
+<li>To not break backwards compatibility</li>
+</ul>
+<p>This gives us the four following possibilities:</p>
+<ul>
+<li>Bitcoin Invoice Address</li>
+<li>Bitcoin Invoice</li>
+<li>Invoice Address</li>
+<li>Invoice</li>
+</ul>
+<h2>Backwards Compatibility</h2>
+<p>To avoid issues, the 'Address' suffix is permitted, but not recommended.
+The suffix 'Address' remains so users should be immediately able to recognize it until the new term is widely known.</p>
+<h2>Acknowledgements</h2>
+<p>Thanks to Chris Belcher for the suggestion of the term 'Bitcoin Invoice Address'</p>
+<h2>Copyright</h2>
+<p>This BIP is released under CC0-1.0 and therefore Public Domain.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +140,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 179
-</span><span>  Title: Name for payment recipient identifiers
-</span><span>  Author: Emil Engler &lt;me@emilengler.com&gt;
-</span><span>          Luke Dashjr &lt;luke+bip@dashjr.org&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0179
-</span><span>  Status: Draft
-</span><span>  Type: Informational
-</span><span>  Created: 2019-10-17
-</span><span>  License: CC0-1.0
-</span></code></pre>
+      <pre><code>  BIP: 179
+  Title: Name for payment recipient identifiers
+  Author: Emil Engler &lt;me@emilengler.com&gt;
+          Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0179
+  Status: Draft
+  Type: Informational
+  Created: 2019-10-17
+  License: CC0-1.0
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP proposes a new term for 'address'</p>
 <h2>Specification</h2>
@@ -102,18 +194,37 @@ The suffix 'Address' remains so users should be immediately able to recognize it
 <p>This BIP is released under CC0-1.0 and therefore Public Domain.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

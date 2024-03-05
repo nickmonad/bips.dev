@@ -3,21 +3,122 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 199: Hashed Time-Locked Contract transactions</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 199</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 199: Hashed Time-Locked Contract transactions</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2017-03-27</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0199.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 199
+  Layer: Applications
+  Title: Hashed Time-Locked Contract transactions
+  Author: Sean Bowe &lt;sean@z.cash&gt;
+          Daira Hopwood &lt;daira@z.cash&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0199
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-03-27
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP describes a script for generalized off-chain contract negotiation.</p>
+<h2>Summary</h2>
+<p>A Hashed Time-Locked Contract (HTLC) is a script that permits a designated party (the &quot;seller&quot;) to spend funds by disclosing the preimage of a hash.  It also permits 
+a second party (the &quot;buyer&quot;) to spend the funds after a timeout is reached, in a refund situation.</p>
+<p>The script takes the following form:</p>
+<pre><code>    OP_IF
+        [HASHOP] &lt;digest&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;seller pubkey hash&gt;            
+    OP_ELSE
+        &lt;num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;buyer pubkey hash&gt;
+    OP_ENDIF
+    OP_EQUALVERIFY
+    OP_CHECKSIG
+</code></pre>
+<p>[HASHOP] is either OP_SHA256 or OP_HASH160.</p>
+<p>[TIMEOUTOP] is either OP_CHECKSEQUENCEVERIFY or OP_CHECKLOCKTIMEVERIFY.</p>
+<h3>Interaction</h3>
+<ul>
+<li>Victor (the &quot;buyer&quot;) and Peggy (the &quot;seller&quot;) exchange public keys and mutually agree upon a timeout threshold.  Peggy provides a hash digest.  Both parties can now construct the script and P2SH address for the HTLC.</li>
+<li>Victor sends funds to the P2SH address.</li>
+<li>Either:
+<ul>
+<li>Peggy spends the funds, and in doing so, reveals the preimage to Victor in the transaction; OR</li>
+<li>Victor recovers the funds after the timeout threshold.</li>
+</ul>
+</li>
+</ul>
+<p>Victor is interested in a lower timeout to reduce the amount of time that his funds are encumbered in the event that Peggy does not reveal the preimage.  Peggy is 
+interested in a higher timeout to reduce the risk that she is unable to spend the funds before the threshold, or worse, that her transaction spending the funds does 
+not enter the blockchain before Victor's but does reveal the preimage to Victor anyway.</p>
+<h2>Motivation</h2>
+<p>In many off-chain protocols, secret disclosure is used as part of a settlement mechanism.  In some others, the secrets themselves are valuable.  HTLC transactions are 
+a safe and cheap method of exchanging secrets for money over the blockchain, due to the ability to recover funds from an uncooperative counterparty, and the 
+opportunity that the possessor of a secret has to receive the funds before such a refund can occur.</p>
+<h3>Lightning network</h3>
+<p>In the lightning network, HTLC scripts are used to perform atomic swaps between payment channels.</p>
+<p>Alice constructs K and hashes it to produce L.  She sends an HTLC payment to Bob for the preimage of L.  Bob sends an HTLC payment to Carol for the same preimage and 
+amount.  Only when Alice releases the preimage K does any exchange of value occur, and because the secret is divulged for each hop, all parties are compensated.  If 
+at any point some parties become uncooperative, the process can be aborted via the refund conditions.</p>
+<h3>Zero-knowledge contingent payments</h3>
+<p>Various practical zero-knowledge proving systems exist which can be used to guarantee that a hash preimage derives valuable information.  As an example, a 
+zero-knowledge proof can be used to prove that a hash preimage acts as a decryption key for an encrypted sudoku puzzle solution.  (See 
+<a href="https://github.com/zcash/pay-to-sudoku" target="_blank">pay-to-sudoku</a> for a concrete example of such a protocol.)</p>
+<p>HTLC transactions can be used to exchange such decryption keys for money without risk, and they do not require large or expensive-to-validate transactions.</p>
+<h2>Implementation</h2>
+<p>https://github.com/bitcoin/bitcoin/pull/7601</p>
+<h2>Copyright</h2>
+<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,33 +149,33 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 199
-</span><span>  Layer: Applications
-</span><span>  Title: Hashed Time-Locked Contract transactions
-</span><span>  Author: Sean Bowe &lt;sean@z.cash&gt;
-</span><span>          Daira Hopwood &lt;daira@z.cash&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0199
-</span><span>  Status: Draft
-</span><span>  Type: Standards Track
-</span><span>  Created: 2017-03-27
-</span><span>  License: BSD-3-Clause
-</span><span>           CC0-1.0
-</span></code></pre>
+      <pre><code>  BIP: 199
+  Layer: Applications
+  Title: Hashed Time-Locked Contract transactions
+  Author: Sean Bowe &lt;sean@z.cash&gt;
+          Daira Hopwood &lt;daira@z.cash&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0199
+  Status: Draft
+  Type: Standards Track
+  Created: 2017-03-27
+  License: BSD-3-Clause
+           CC0-1.0
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP describes a script for generalized off-chain contract negotiation.</p>
 <h2>Summary</h2>
 <p>A Hashed Time-Locked Contract (HTLC) is a script that permits a designated party (the &quot;seller&quot;) to spend funds by disclosing the preimage of a hash.  It also permits 
 a second party (the &quot;buyer&quot;) to spend the funds after a timeout is reached, in a refund situation.</p>
 <p>The script takes the following form:</p>
-<pre style="background-color:#fafafa;color:#61676c;"><code><span>    OP_IF
-</span><span>        [HASHOP] &lt;digest&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;seller pubkey hash&gt;            
-</span><span>    OP_ELSE
-</span><span>        &lt;num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;buyer pubkey hash&gt;
-</span><span>    OP_ENDIF
-</span><span>    OP_EQUALVERIFY
-</span><span>    OP_CHECKSIG
-</span></code></pre>
+<pre><code>    OP_IF
+        [HASHOP] &lt;digest&gt; OP_EQUALVERIFY OP_DUP OP_HASH160 &lt;seller pubkey hash&gt;            
+    OP_ELSE
+        &lt;num&gt; [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 &lt;buyer pubkey hash&gt;
+    OP_ENDIF
+    OP_EQUALVERIFY
+    OP_CHECKSIG
+</code></pre>
 <p>[HASHOP] is either OP_SHA256 or OP_HASH160.</p>
 <p>[TIMEOUTOP] is either OP_CHECKSEQUENCEVERIFY or OP_CHECKLOCKTIMEVERIFY.</p>
 <h3>Interaction</h3>
@@ -111,18 +212,37 @@ zero-knowledge proof can be used to prove that a hash preimage acts as a decrypt
 <p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

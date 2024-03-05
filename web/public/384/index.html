@@ -3,21 +3,144 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 384: combo() Output Script Descriptors</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 384</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 384: combo() Output Script Descriptors</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2021-06-27</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0384.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 384
+  Layer: Applications
+  Title: combo() Output Script Descriptors
+  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
+          Ava Chow &lt;me@achow101.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0384
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>This document specifies <tt>combo()</tt> output script descriptors.
+These take a key and produce P2PK, P2PKH, P2WPKH, and P2SH-P2WPKH output scripts if applicable to the key.</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+<h2>Motivation</h2>
+<p>In order to make the transition from traditional key based wallets to descriptor based wallets easier, it is useful to be able to take a key and produce the scripts which have traditionally been produced by wallet software.</p>
+<h2>Specification</h2>
+<p>A new top level script expression is defined: <tt>combo(KEY)</tt>.
+This expression can only be used as a top level expression.
+It takes a single key expression as an argument and produces either 2 or 4 output scripts, depending on the key.
+A <tt>combo()</tt> expression always produces a P2PK and P2PKH script, the same as putting the key in both a <tt>pk()</tt> and a <tt>pkh()</tt> expression.
+If the key is/has a compressed public key, then P2WPKH and P2SH-P2WPKH scripts are also produced, the same as putting the key in both a <tt>wpkh()</tt> and <tt>sh(wpkh())</tt> expression.</p>
+<h2>Test Vectors</h2>
+<p>Valid descriptors followed by the scripts they produce. Descriptors involving derived child keys will have the 0th, and 1st scripts in additional sub-bullets.</p>
+<ul>
+<li><tt>combo(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1)</tt>
+<ul>
+<li><tt>2103a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bdac</tt></li>
+<li><tt>76a9149a1c78a507689f6f54b847ad1cef1e614ee23f1e88ac</tt></li>
+<li><tt>00149a1c78a507689f6f54b847ad1cef1e614ee23f1e</tt></li>
+<li><tt>a91484ab21b1b2fd065d4504ff693d832434b6108d7b87</tt></li>
+</ul>
+</li>
+<li><tt>combo(04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235)</tt>
+<ul>
+<li><tt>4104a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235ac</tt></li>
+<li><tt>76a914b5bd079c4d57cc7fc28ecf8213a6b791625b818388ac</tt></li>
+</ul>
+</li>
+<li><tt>combo([01234567]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL)</tt>
+<ul>
+<li><tt>2102d2b36900396c9282fa14628566582f206a5dd0bcc8d5e892611806cafb0301f0ac</tt></li>
+<li><tt>76a91431a507b815593dfc51ffc7245ae7e5aee304246e88ac</tt></li>
+<li><tt>001431a507b815593dfc51ffc7245ae7e5aee304246e</tt></li>
+<li><tt>a9142aafb926eb247cb18240a7f4c07983ad1f37922687</tt></li>
+</ul>
+</li>
+<li><tt>combo(xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334/*)</tt>
+<ul>
+<li>Child 0
+<ul>
+<li><tt>2102df12b7035bdac8e3bab862a3a83d06ea6b17b6753d52edecba9be46f5d09e076ac</tt></li>
+<li><tt>76a914f90e3178ca25f2c808dc76624032d352fdbdfaf288ac</tt></li>
+<li><tt>0014f90e3178ca25f2c808dc76624032d352fdbdfaf2</tt></li>
+<li><tt>a91473e39884cb71ae4e5ac9739e9225026c99763e6687</tt></li>
+</ul>
+</li>
+<li>Child 1
+<ul>
+<li><tt>21032869a233c9adff9a994e4966e5b821fd5bac066da6c3112488dc52383b4a98ecac</tt></li>
+<li><tt>76a914a8409d1b6dfb1ed2a3e8aa5e0ef2ff26b15b75b788ac</tt></li>
+<li><tt>0014a8409d1b6dfb1ed2a3e8aa5e0ef2ff26b15b75b7</tt></li>
+<li><tt>a91473e39884cb71ae4e5ac9739e9225026c99763e6687</tt></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Invalid descriptors</p>
+<ul>
+<li><tt>combo()</tt> in <tt>sh</tt> : <tt>sh(combo(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))</tt></li>
+<li><tt>combo()</tt> in <tt>wsh</tt> : <tt>wsh(combo(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))</tt></li>
+<li>Script in <tt>combo()</tt>: <tt>combo(pkh(03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))</tt></li>
+</ul>
+<h2>Backwards Compatibility</h2>
+<p><tt>combo()</tt> descriptors use the format and general operation specified in <a href="/380" target="_blank">380</a>.
+As this is a wholly new descriptor, it is not compatible with any implementation.
+However the scripts produced are standard scripts so existing software are likely to be familiar with them.</p>
+<h2>Reference Implementation</h2>
+<p><tt>combo()</tt> descriptors have been implemented in Bitcoin Core since version 0.17.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,18 +171,18 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 384
-</span><span>  Layer: Applications
-</span><span>  Title: combo() Output Script Descriptors
-</span><span>  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
-</span><span>          Ava Chow &lt;me@achow101.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0384
-</span><span>  Status: Draft
-</span><span>  Type: Informational
-</span><span>  Created: 2021-06-27
-</span><span>  License: BSD-2-Clause
-</span></code></pre>
+      <pre><code>  BIP: 384
+  Layer: Applications
+  Title: combo() Output Script Descriptors
+  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
+          Ava Chow &lt;me@achow101.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0384
+  Status: Draft
+  Type: Informational
+  Created: 2021-06-27
+  License: BSD-2-Clause
+</code></pre>
 <h2>Abstract</h2>
 <p>This document specifies <tt>combo()</tt> output script descriptors.
 These take a key and produce P2PK, P2PKH, P2WPKH, and P2SH-P2WPKH output scripts if applicable to the key.</p>
@@ -133,18 +256,37 @@ However the scripts produced are standard scripts so existing software are likel
 <p><tt>combo()</tt> descriptors have been implemented in Bitcoin Core since version 0.17.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

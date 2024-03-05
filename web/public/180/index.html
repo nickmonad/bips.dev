@@ -3,21 +3,198 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 180: Block size&#x2F;weight fraud proof</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 180</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 180: Block size&#x2F;weight fraud proof</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2017-03-17</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0180.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 180
+  Layer: Peer Services
+  Title: Block size&#x2F;weight fraud proof
+  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0180
+  Status: Rejected
+  Type: Standards Track
+  Created: 2017-03-17
+  License: BSD-2-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>A fraud proof that enables light clients to detect oversized (or overweight) blocks.</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the BSD 2-clause license.</p>
+<h2>Definitions</h2>
+<p>; full tx size proof : SHA2 midstate and tail data proving the size of the full transaction data being hashed.
+; size component : Either a merkle link and height in the merkle tree thereof, or a full tx size proof.
+; full-size proof : The set of size components proving the lower-bound size of the block.
+; stripped-size proof : The set of size components proving the lower-bound size of the block when stripped of segwit witness data.</p>
+<h2>Specification</h2>
+<h3>Proof format</h3>
+<ul>
+<li>varint: ceil(log2(number of transactions in block))</li>
+<li>varint: number of size components in stripped-size proof</li>
+<li>foreach:
+<ul>
+<li>varint: ceil(log2(number of transactions represented by this size-component)) + 1</li>
+<li>if zero:
+<ul>
+<li>(this indicates a full tx size proof)</li>
+<li>256-bit: SHA2 midstate up until just before the final SHA2 chunk</li>
+<li>varint: total size of tx</li>
+<li>uint8: size of final SHA2 chunk (0-55)</li>
+<li>0-55 bytes: final SHA2 chunk</li>
+</ul>
+</li>
+<li>if one or more:
+<ul>
+<li>(this indicates default tx size counting)</li>
+<li>256-bit: SHA2 hash of merkle link</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>varint: number of size components in full-size proof (zero in case of a size-exceeded proof; non-zero for a weight-exceeded proof)</li>
+<li>foreach: (same as with stripped-size proof)</li>
+</ul>
+<h3>Proof verification</h3>
+<p>To verify an individual size proof:</p>
+<ol>
+<li>Check that at least one size component is a full tx size proof. (At least one size component MUST be a full tx size proof.)</li>
+<li>Determine the lower-bound number of transactions in the block (lowTxCount). It is either <code>pow(ceil(log2(txcount)) - 1, 2)</code>, or the position of the last full tx proof (plus one, if using 0-based positions). Note that the last full tx proof from <em>either</em> of the size proofs (stripped-size and full-size) should be used here.</li>
+<li>Calculate the lower-bound transaction-data size as the default size * lowTxCount.</li>
+<li>For each full tx size proof:
+<ol>
+<li>Subtract the default size it was presumed to consume, and add the claimed total size of tx.</li>
+<li>Take the SHA2 midstate, and update it with the final SHA2 chunk (which needs to be padded, including with the total tx size). The final SHA2 hash is the transaction id (stripped-size proof) or hash (full-size proof).</li>
+</ol>
+</li>
+<li>For the full-size proof, replace the 60 byte default with any larger sizes proven from the stripped-size proof.</li>
+<li>Build the merkle root, and compare it to the block header (stripped-size proof) or witness commitment (full-size proof). Ensure when building the merkle root, that there are no duplicate merkle links, and each merkle link claims to represent the correct number of represented transactions.</li>
+<li>Add 80 bytes, plus the size of the tx-count varint, to the calculated lower-bound size.</li>
+<li>The calculated size is returned as the lower-bound possible size of the block.</li>
+</ol>
+<p>For the stripped-size proof, the default size of transactions is 60 bytes.
+For the full-size proof, it is the size established by the stripped-size proof.</p>
+<p>To verify the complete weight proof:</p>
+<ol>
+<li>Verify the stripped-size proof. Save the resulting lower-bound size (call it lowStrippedSize).</li>
+<li>Verify the full-size proof. Save the resulting lower-bound size (call it lowFullSize).</li>
+<li>Calculate minFullSize + (minStrippedSize * 3). This is the lower-bound block weight.</li>
+<li>Compare the lower-bound block weight to the applicable block weight limit.</li>
+</ol>
+<h3>Network protocol</h3>
+<p>If a light client detects that one or more of its peers do not consider the block it knows to have the most work as their best block, it should inquire with all those peers for a fraud proof by sending a new message <code>getfraud</code>, with a block locator (between the last common block, and the presumed best tip) as the sole parameter (extra parameters should be ignored).</p>
+<p>Compatible nodes will respond with a (new) <code>fraud</code> message, which has 2-3 parameters:</p>
+<ul>
+<li>uint256: The hash of the most recent block in the locator (or a parent thereof) that it has checked. In the event of an invalid block, this should be the exact invalid block's hash (post-invalid blocks should be treated as unchecked, even if the node has independently checked them for some reason).</li>
+<li>varint: Fraud proof type code
+<ul>
+<li>0 = Block is valid</li>
+<li>1 = No fraud proof available</li>
+<li>2 = Size/weight exceeded</li>
+</ul>
+</li>
+<li>(For type 2) the fraud proof</li>
+</ul>
+<p>If none of the blocks in the locator are recognised, compatible nodes should send a <code>fraud</code> message with no parameters.
+(To avoid this outcome, clients may include a known-common block in the locator.)</p>
+<p>In the event that the peer claims a block earlier than the client's tip is valid, the light client should prepare a new locator between that block and its tip, and rerequest <code>getfraud</code> until it has determined which block the peer rejects and why.</p>
+<p>Once a block is proven to be invalid, the light client should never consider any blockchain including it as a candidate for the best chain.
+It should not recheck blocks known to be invalid, nor continue proving it from other nodes.
+(To avoid doubt: the user MAY be given the opportunity to override any rejections, but should be warned of the implications of doing so.)</p>
+<p>If an invalid fraud proof is provided, the client SHOULD CONSIDER disconnecting and possibly banning the node providing it.
+However, if any change has been made to the size/weight limits, that should be taken into consideration (eg, if the limit increases, an innocent node may prove a size smaller than the limit).</p>
+<h2>Information</h2>
+<h3>Creation of proofs</h3>
+<p>Proofs should ideally use the smallest amount of data required to prove excess of the limit.
+The most obvious mechanism in doing so, would be to include full tx size proofs for the largest transactions until the limit is exceeded.
+However, in some cases, a smaller size may be accomplished by collapsing more merkle links.</p>
+<p>Because optimisation of proof size may be complicated, nodes are not required to implement it in any particular manner, so long as the proofs meet the requirements given above in <a href="#proof-verification" target="_blank">Proof verification</a>.</p>
+<h2>Motivation</h2>
+<p>Recently, there have been proposals for hardforks to increase the block size limit.
+While no consensus has been reached, proponents of these ideas often threaten and attempt to have miners force them through anyway.
+As things presently are, light clients cannot detect invalid blocks at all, and could be fooled into accepting an invalid chain created in such a manner.
+By supporting block size fraud proofs, light clients can protect their users from this form of unconsensual &quot;hardfork&quot; attempt.</p>
+<h2>Rationale</h2>
+<p>Why must a full tx size proof be included?</p>
+<ul>
+<li>This is necessary to establish that the claimed block transaction count is not inflated. Otherwise, a prover could claim any number of represented transactions for merkle links, and rely on the default size alone to exceed the limit.</li>
+</ul>
+<p>How does the full tx size proof actually prove the size?</p>
+<ul>
+<li>The first step of SHA2 hashing is to transform the input data into chunks (per <a href="https://tools.ietf.org/html/rfc4634" target="_blank">section-4.1 RFC 4634</a>). The final chunk is required to include the absolute length of the input data at the end of the final chunk. Therefore, by committing to the midstate prior to the final chunk, and replaying only the final chunk, we can confirm that the claimed size matches the full transaction data being hashed.</li>
+</ul>
+<p>How does this prove the block weight?</p>
+<ul>
+<li>The block weight defined by <a href="/141" target="_blank">BIP 141</a> is the size of the block stripped of its segwit signatures times 3, plus the full size of the block. By proving lower-bound sizes of both the stripped block and the full block, a lower-bound weight can also be calculated.</li>
+</ul>
+<p>Why is the number of transactions in the block represented as a log2?</p>
+<ul>
+<li>To avoid attacks that rely on fooling clients by claiming an amount they cannot verify.</li>
+</ul>
+<p>Why does it matter if a full tx size proof is on the right side of a duplicate merkle link?</p>
+<ul>
+<li>We assume full tx size proofs show the number of transactions in the block. This assumption doesn't hold if the proof is provided on the right-hand side of duplicate links.</li>
+</ul>
+<p>Why a fraud proof only for oversized/overweight blocks?</p>
+<ul>
+<li>While it is currently believed to be impossible to prove all invalid (or rather, won't-be-part-of-the-main-chain) blocks, there are regularly active proposals of miners attacking with simply oversized blocks in an attempt to force a hardfork. This specific attack can be proven, and reliably so, since the proof cannot be broken without also breaking the attempted hardfork at the same time.</li>
+</ul>
+<h2>Backwards compatibility</h2>
+<p>These fraud proofs protect only clients which use them.
+In non-attack scenarios, they are unnecessary and clients supporting them will otherwise behave as any other.</p>
+<h2>Reference implementation</h2>
+<p>TODO</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +225,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 180
-</span><span>  Layer: Peer Services
-</span><span>  Title: Block size/weight fraud proof
-</span><span>  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0180
-</span><span>  Status: Rejected
-</span><span>  Type: Standards Track
-</span><span>  Created: 2017-03-17
-</span><span>  License: BSD-2-Clause
-</span></code></pre>
+      <pre><code>  BIP: 180
+  Layer: Peer Services
+  Title: Block size&#x2F;weight fraud proof
+  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0180
+  Status: Rejected
+  Type: Standards Track
+  Created: 2017-03-17
+  License: BSD-2-Clause
+</code></pre>
 <h2>Abstract</h2>
 <p>A fraud proof that enables light clients to detect oversized (or overweight) blocks.</p>
 <h2>Copyright</h2>
@@ -187,18 +364,37 @@ In non-attack scenarios, they are unnecessary and clients supporting them will o
 <p>TODO</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

@@ -3,21 +3,107 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="share and save bitcoin BIPs">
+    <meta name="description" content="How devs read BIPs.">
     <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>BIP 339: WTXID-based transaction relay</title>
+
     <link rel="stylesheet" href="/style.css" />
-
-    <title>bips.dev - BIP 339</title>
-
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
+
+    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script>
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+
+        window.setTheme()
+    </script>
 </head>
 
-<body>
-    <section class="section">
-        <div class="container">
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="text-2xl font-extrabold">BIP 339: WTXID-based transaction relay</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2020-02-03</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0339.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 339
+  Layer: Peer Services
+  Title: WTXID-based transaction relay
+  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0339
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-02-03
+  License: BSD-2-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP describes two changes to the p2p protocol to support transaction relay
+based on the BIP 141 wtxid of a transaction, rather than its txid.</p>
+<h2>Motivation</h2>
+<p>Historically, the inv messages sent on the Bitcoin peer-to-peer network to
+announce transactions refer to transactions by their txid, which is a hash of
+the transaction that does not include the witness (see BIP 141). This has been
+the case even since Segregated Witness (BIP 141/143/144) has been adopted by
+the network.</p>
+<p>Not committing to the witness in transaction announcements creates
+inefficiencies: because a transaction's witness can be malleated without
+altering the txid, a node in receipt of a witness transaction that the node
+does not accept will generally still download that same transaction when
+announced by other peers. This is because the alternative -- of not downloading
+a given txid after rejecting a transaction with that txid -- would allow a
+third party to interfere with transaction relay by malleating a transaction's
+witness and announcing the resulting invalid transaction to nodes, preventing
+relay of the valid version of the transaction as well.</p>
+<p>We can eliminate this concern by using the wtxid in place of the txid when
+announcing and fetching transactions.</p>
+<h2>Specification</h2>
+<ol>
+<li>A new wtxidrelay message is added, which is defined as an empty message where pchCommand == &quot;wtxidrelay&quot;.</li>
+<li>The protocol version of nodes implementing this BIP must be set to 70016 or higher.</li>
+<li>The wtxidrelay message MUST be sent in response to a version message from a peer whose protocol version is &gt;= 70016 and prior to sending a verack. A wtxidrelay message received after a verack message MUST be ignored or treated as invalid.</li>
+<li>A new inv type MSG_WTX (0x00000005) is added, for use in both inv messages and getdata requests, indicating that the hash being referenced is a transaction's wtxid. In the case of getdata requests, MSG_WTX implies that the transaction being requested should be serialized with witness as well, as described in BIP 144.</li>
+<li>After a node has received a wtxidrelay message from a peer, the node MUST use the MSG_WTX inv type when announcing transactions to that peer.</li>
+<li>After a node has received a wtxidrelay message from a peer, the node SHOULD use a MSG_WTX getdata message to request any announced transactions. A node MAY still request transactions from that peer using MSG_TX getdata messages, such as for transactions not recently announced by that peer (like the parents of recently announced transactions).</li>
+</ol>
+<h2>Backward compatibility</h2>
+<p>As wtxid-based transaction relay is only enabled between peers that both support it, older clients remain fully compatible and interoperable after this change.</p>
+<h2>Implementation</h2>
+<p>https://github.com/bitcoin/bitcoin/pull/18044</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+
+        </article>
+    </div>
+
+    <!--
     <div class="level">
         <div class="level-left">
             <div class="level-item">
@@ -48,17 +134,17 @@
     </div>
 
     <div class="content">
-      <pre style="background-color:#fafafa;color:#61676c;"><code><span>  BIP: 339
-</span><span>  Layer: Peer Services
-</span><span>  Title: WTXID-based transaction relay
-</span><span>  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
-</span><span>  Comments-Summary: No comments yet.
-</span><span>  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0339
-</span><span>  Status: Draft
-</span><span>  Type: Standards Track
-</span><span>  Created: 2020-02-03
-</span><span>  License: BSD-2-Clause
-</span></code></pre>
+      <pre><code>  BIP: 339
+  Layer: Peer Services
+  Title: WTXID-based transaction relay
+  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0339
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-02-03
+  License: BSD-2-Clause
+</code></pre>
 <h2>Abstract</h2>
 <p>This BIP describes two changes to the p2p protocol to support transaction relay
 based on the BIP 141 wtxid of a transaction, rather than its txid.</p>
@@ -96,18 +182,37 @@ announcing and fetching transactions.</p>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
 
     </div>
+    -->
 
+
+            <hr class="border-slate-700" />
+
+            <div class="w-full flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-03-05</p>
+                </div>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!--
     <footer class="footer">
         <div class="container has-text-centered has-text-weight-bold is-family-monospace">
-            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-04</span></p>
+            <p class="mb-1">Updated <span class="tag is-medium is-warning is-light">2024-03-05</span></p>
             <p>bips.dev - Made with ☕ by <a href="https://nickmonad.blog">nickmonad</a></p>
             <p>Check it out on <a href="https://github.com/nickmonad/bips-dev">GitHub</a></p>
             <p>Stay humble. Stack sats. ₿</p>
         </div>
     </footer>
+    -->
 
-     
+    <script>
+
+    </script>
 </body>
 </html>

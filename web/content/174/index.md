@@ -89,16 +89,17 @@ be used as a separator and allow for easier unserializer implementation.</ref>.
 Where:
 
 ;<tt><keytype></tt>
-```
- A [https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer compact size] unsigned integer representing the type. This compact size unsigned integer must be minimally encoded, i.e. if the value can be represented using one byte, it must be represented as one byte. There can be multiple entries with the same <tt><keytype></tt> within a specific <tt><map></tt>, but the <tt><key></tt> must be unique.
+A <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">compact size</a> unsigned integer representing the type. This compact size unsigned integer must be minimally encoded, i.e. if the value can be represented using one byte, it must be represented as one byte. There can be multiple entries with the same <tt><keytype></tt> within a specific <tt><map></tt>, but the <tt><key></tt> must be unique.
 
 ;<tt><keylen></tt>
-: The compact size unsigned integer containing the combined length of <tt><keytype></tt> and <tt><keydata></tt>
+The compact size unsigned integer containing the combined length of <tt><keytype></tt> and <tt><keydata></tt>
+
 ;<tt><valuelen></tt>
-: The compact size unsigned integer containing the length of <tt><valuedata></tt>.
+The compact size unsigned integer containing the length of <tt><valuedata></tt>.
+
 ;<tt><magic></tt>
-: Magic bytes which are ASCII for psbt <ref>'''Why use 4 bytes for psbt?''' The
-```
+Magic bytes which are ASCII for psbt <ref>**Why use 4 bytes for psbt?** The
+
 transaction format needed to start with a 5 byte header which uniquely identifies
 it. The first bytes were chosen to be the ASCII for psbt because that stands for
 Partially Signed Bitcoin Transaction. </ref> followed by a separator of <tt>0xFF</tt><ref>**Why Use a separator after the magic bytes?** The separator
