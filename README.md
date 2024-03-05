@@ -1,4 +1,4 @@
-![bips.dev logo](web/static/bips-dev-dark.png)
+![bips.dev logo](./web/static/bips-dev-dark.png)
 
 Search, share, and save BIPs (Bitcoin Improvement Proposals)
 
