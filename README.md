@@ -6,6 +6,10 @@ Search, share, and save BIPs (Bitcoin Improvement Proposals)
 repo as input. The result is a site that enables a simple UI for navigating BIPs, searching, and sharing them easily via short URLs, i.e.
 [`https://bips.dev/141`](https://bips.dev/141)
 
+## Issues
+
+Please submit any issues you see with rendering or formatting here, as a GitHub issue.
+
 ## Building
 
 * Install [Rust](https://www.rust-lang.org/) and [zola](https://www.getzola.org/)
