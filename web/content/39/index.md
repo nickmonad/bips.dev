@@ -93,6 +93,7 @@ a) smart selection of words
      letters to unambiguously identify the word
 ```
 
+
 b) similar words avoided
 ```
    - word pairs like "build" and "built", "woman" and "women", or "quick" and "quickly"
@@ -100,12 +101,14 @@ b) similar words avoided
      prone and more difficult to guess
 ```
 
+
 c) sorted wordlists
 ```
    - the wordlist is sorted which allows for more efficient lookup of the code words
      (i.e. implementations can use binary search instead of linear search)
    - this also allows trie (a prefix tree) to be used, e.g. for better compression
 ```
+
 
 The wordlist can contain native characters, but they must be encoded in UTF-8
 using Normalization Form Compatibility Decomposition (NFKD).

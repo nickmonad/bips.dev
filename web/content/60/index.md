@@ -68,6 +68,7 @@ Payload:
 |4|start_height|int32_t|The last block received by the emitting node|
 |1|relay|bool|Whether the remote peer should announce relayed transactions or not, see <a href="/37" target="_blank">BIP 0037</a>, since version >= 70001|
 
+
 A "verack" packet shall be sent if the version packet was accepted.
 
 The following services are currently assigned:
@@ -76,6 +77,7 @@ The following services are currently assigned:
 |Value|Name|Description|
 |-|-|-|
 |1|NODE_NETWORK|This node can be asked for full blocks instead of just headers.|
+
 
 <h3> Code Updates </h3>
 

@@ -62,6 +62,7 @@ Two new messages are defined. The "getutxos" message has the following structure
 |1|check mempool|bool|Whether to apply mempool transactions during the calculation, thus exposing their UTXOs and removing outputs that they spend.|
 |?|outpoints|vector<COutPoint>|The list of outpoints to be queried. Each outpoint is serialized in the same way it is in a tx message.|
 
+
 The response message "utxos" has the following structure:
 
 
@@ -72,6 +73,7 @@ The response message "utxos" has the following structure:
 |?|hit bitmap|byte[]|An array of bytes encoding one bit for each outpoint queried. Each bit indicates whether the queried outpoint was found in the UTXO set or not.|
 |?|result utxos|result[]|A list of result objects (defined below), one for each outpoint that is unspent (i.e. has a bit set in the bitmap).|
 
+
 The result object is defined as:
 
 
@@ -80,6 +82,7 @@ The result object is defined as:
 |4|tx version|uint32|The version number of the transaction the UTXO was found in.|
 |4|height|uint32|The height of the block containing the defining transaction, or 0x7FFFFFFF if the tx is in the mempool.|
 |?|output|CTxOut|The output itself, serialized in the same way as in a tx message.|
+
 
 <h2>Backward compatibility</h2>
 

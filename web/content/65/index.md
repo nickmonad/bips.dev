@@ -102,11 +102,13 @@ the form:
     <Alice's pubkey> <Bob's pubkey> 2 CHECKMULTISIG
 ```
 
+
 At any time the funds can be spent with the following scriptSig:
 
 ```
     0 <Alice's signature> <Bob's signature> 0
 ```
+
 
 After 3 months have passed Lenny and one of either Alice or Bob can spend the
 funds with the following scriptSig:
@@ -114,6 +116,7 @@ funds with the following scriptSig:
 ```
     0 <Alice/Bob's signature> <Lenny's signature> 1
 ```
+
 
 
 <h3>Non-interactive time-locked refunds</h3>
@@ -155,6 +158,7 @@ scriptPubKeys of the following form are used instead:
     <user pubkey> CHECKSIG
 ```
 
+
 Now the user is always able to spend their funds without the co-operation of
 the service by waiting for the expiry time to be reached.
 
@@ -195,6 +199,7 @@ scriptPubKeys of the following form:
     ENDIF
 ```
 
+
 The buyer of the data is now making a secure offer with an expiry time. If the
 publisher fails to accept the offer before the expiry time is reached the buyer
 can cancel the offer by spending the output.
@@ -227,6 +232,7 @@ be useful in scenarios where reducing duress or confiscation risk is desired.
 ```
     <expiry time> CHECKLOCKTIMEVERIFY DROP DUP HASH160 <pubKeyHash> EQUALVERIFY CHECKSIG
 ```
+
 
 
 <h3>Replacing the nLockTime field entirely</h3>
@@ -318,6 +324,7 @@ semantics and detailed rationale for those semantics.
     
     }
 ```
+
 
 https://github.com/petertodd/bitcoin/commit/ab0f54f38e08ee1e50ff72f801680ee84d0f1bf4
 

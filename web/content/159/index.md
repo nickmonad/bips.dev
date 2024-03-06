@@ -52,9 +52,8 @@ all historical blocks.
 This BIP proposes a new service bit
 
 
-||||
-|-|-|-|
 |NODE_NETWORK_LIMITED|bit 10 (0x400)|If signaled, the peer <I>MUST</I> be capable of serving at least the last 288 blocks (~2 days).|
+
 
 A safety buffer of 144 blocks to handle chain reorganizations <I>SHOULD</I> be taken into account when connecting to a peer signaling the `NODE_NETWORK_LIMITED` service bit.
 

@@ -79,11 +79,13 @@ Version 1 introduces the following new standard script format:
     m {pubkey}...{pubkey} n v OP_CHECKSIGEX
 ```
 
+
 with matching scriptSig format:
 
 ```
     {signature}...{signature}
 ```
+
 
 This is the standard _m-of-n_ script defined in <a href="/11" target="_blank">BIP 11</a> with an additional version parameter `v` and the new opcode. Singlesig transactions are encoded as _1-of-1_ transactions.
 

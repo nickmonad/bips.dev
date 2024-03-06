@@ -71,48 +71,27 @@ Lines are separated by <tt>\n</tt>. Multiline values are not permitted.
 Each JSON object must contain 3 or 4 key/value pairs, defined as follows:
 
 
-|Key|
-|-|
-|Description|
-|-|
-|<tt>type</tt>|
-|One of <tt>tx</tt>, <tt>addr</tt>, <tt>pubkey</tt>, <tt>input</tt>, <tt>output</tt> or <tt>xpub</tt>|
-|<tt>ref</tt>|
-|Reference to the transaction, address, public key, input, output or extended public key|
-|<tt>label</tt>|
-|The label applied to the reference|
-|<tt>origin</tt>|
-|Optional key origin information referencing the wallet associated with the label|
-|<tt>spendable</tt>|
-|One of <tt>true</tt> or <tt>false</tt>, denoting if an output should be spendable by the wallet|
+|Key|Description|
+|-|-|
+|<tt>type</tt>|One of <tt>tx</tt>, <tt>addr</tt>, <tt>pubkey</tt>, <tt>input</tt>, <tt>output</tt> or <tt>xpub</tt>|
+|<tt>ref</tt>|Reference to the transaction, address, public key, input, output or extended public key|
+|<tt>label</tt>|The label applied to the reference|
+|<tt>origin</tt>|Optional key origin information referencing the wallet associated with the label|
+|<tt>spendable</tt>|One of <tt>true</tt> or <tt>false</tt>, denoting if an output should be spendable by the wallet|
+
 
 The reference is defined for each <tt>type</tt> as follows:
 
 
-|Type|
-|-|
-|Description|
-|-|
-|Example|
-|-|
-|<tt>tx</tt>|
-|Transaction id in hexadecimal format|
-|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd</tt>|
-|<tt>addr</tt>|
-|Address in base58 or bech32 format|
-|<tt>bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c</tt>|
-|<tt>pubkey</tt>|
-|32, 33 or 65 byte public key in hexadecimal format|
-|<tt>0283409659355b6d1cc3c32decd5d561abaac86c37a353b52895a5e6c196d6f448</tt>|
-|<tt>input</tt>|
-|Transaction id and input index separated by a colon|
-|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0</tt>|
-|<tt>output</tt>|
-|Transaction id and output index separated by a colon|
-|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1</tt>|
-|<tt>xpub</tt>|
-|Extended public key as defined by BIP32|
-|<tt>xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8Nq...</tt>|
+|Type|Description|Example|
+|-|-|-|
+|<tt>tx</tt>|Transaction id in hexadecimal format|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd</tt>|
+|<tt>addr</tt>|Address in base58 or bech32 format|<tt>bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c</tt>|
+|<tt>pubkey</tt>|32, 33 or 65 byte public key in hexadecimal format|<tt>0283409659355b6d1cc3c32decd5d561abaac86c37a353b52895a5e6c196d6f448</tt>|
+|<tt>input</tt>|Transaction id and input index separated by a colon|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0</tt>|
+|<tt>output</tt>|Transaction id and output index separated by a colon|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1</tt>|
+|<tt>xpub</tt>|Extended public key as defined by BIP32|<tt>xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8Nq...</tt>|
+
 
 Each JSON object must contain both <tt>type</tt> and <tt>ref</tt> properties. The <tt>label</tt>, <tt>origin</tt> and <tt>spendable</tt> properties are optional. If the <tt>label</tt> or <tt>spendable</tt> properties are omitted, the importing wallet should not alter these values. The <tt>origin</tt> property should only appear where type is <tt>tx</tt>, and the <tt>spendable</tt> property only where type is <tt>output</tt>.
 

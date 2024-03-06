@@ -112,6 +112,7 @@ RSA key generation is an example of a function that requires orders of magnitude
     rsa_key = RSA.generate_key(4096, drng_reader.read())
 ```
 
+
 <h3>Test Vectors</h3>
 
 INPUT:
@@ -172,41 +173,28 @@ Example: a BIP39 mnemonic with 12 English words (first index) would have the pat
 Language Table
 
 
-||
-|-|
-|English|
-|0'|
-|Japanese|
-|1'|
-|Korean|
-|2'|
-|Spanish|
-|3'|
-|Chinese (Simplified)|
-|4'|
-|Chinese (Traditional)|
-|5'|
-|French|
-|6'|
-|Italian|
-|7'|
-|Czech|
-|8'|
+|Wordlist|Code|
+|-|-|
+|English|0'|
+|Japanese|1'|
+|Korean|2'|
+|Spanish|3'|
+|Chinese (Simplified)|4'|
+|Chinese (Traditional)|5'|
+|French|6'|
+|Italian|7'|
+|Czech|8'|
+
 
 Words Table
 
 
-||
-|-|
-|12 words|
-|128 bits|
-|12'|
-|18 words|
-|192 bits|
-|18'|
-|24 words|
-|256 bits|
-|24'|
+|Words|Entropy|Code|
+|-|-|-|
+|12 words|128 bits|12'|
+|18 words|192 bits|18'|
+|24 words|256 bits|24'|
+
 
 <h4>12 English words</h4>
 
@@ -337,6 +325,7 @@ Entropy = log2(R ** L)<br>
 |64|384.0|
 |86|516.0|
 
+
 INPUT:
 *  MASTER BIP32 ROOT KEY: xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
 *  PATH: m/83696968'/707764'/21'/0'
@@ -373,6 +362,7 @@ Entropy = log2(R ** L)<br>
 |30|192.0|
 |20|512.0|
 
+
 INPUT:
 *  MASTER BIP32 ROOT KEY: xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb
 *  PATH: m/83696968'/707785'/12'/0'
@@ -402,12 +392,14 @@ Keys allocated for RSA-GPG purposes use the following scheme:
  - Sub keys:  <code>m/83696968'/828365'/{key_bits}'/{key_index}'/{sub_key}'</code>
 ```
 
+
 ```
     - key_index is the parent key for CERTIFY capability
     - sub_key <code>0'</code> is used as the ENCRYPTION key
     - sub_key <code>1'</code> is used as the AUTHENTICATION key
     - sub_key <code>2'</code> is usually used as SIGNATURE key
 ```
+
 
 Note on timestamps:
 

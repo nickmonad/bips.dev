@@ -47,12 +47,12 @@ The Media Type (Content-Type in HTML/email headers) for bitcoin
 protocol messages shall be:
 
 
-|||
-|-|-|
 |Message|Type/Subtype|
+|-|-|
 |PaymentRequest|application/bitcoin-paymentrequest|
 |Payment|application/bitcoin-payment|
 |PaymentACK|application/bitcoin-paymentack|
+
 
 Payment protocol messages are encoded in binary.
 

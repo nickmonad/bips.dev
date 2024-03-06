@@ -48,6 +48,7 @@ A new standard transaction type that is relayed and included in mined blocks is 
     OP_HASH160 [20-byte-hash-value] OP_EQUAL
 ```
 
+
 [20-byte-hash-value] shall be the push-20-bytes-onto-the-stack opcode (0x14) followed by exactly 20 bytes.
 
 This new transaction type is redeemed by a standard scriptSig:
@@ -55,6 +56,7 @@ This new transaction type is redeemed by a standard scriptSig:
 ```
     ...signatures... {serialized script}
 ```
+
 
 Transactions that redeem these pay-to-script outpoints are only considered standard if the _serialized script_ - also referred to as the _redeemScript_ - is, itself, one of the other standard transaction types.
 
@@ -74,6 +76,7 @@ For example, the scriptPubKey and corresponding scriptSig for a one-signature-re
     scriptPubKey: OP_HASH160 [20-byte-hash of {[pubkey] OP_CHECKSIG} ] OP_EQUAL
 ```
 
+
 Signature operations in the {serialized script} shall contribute to the maximum number allowed per block (20,000) as follows:
 
 1.  OP_CHECKSIG and OP_CHECKSIGVERIFY count as 1 signature operation, whether or not they are evaluated.
@@ -88,10 +91,12 @@ Examples:
     {2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG}
 ```
 
+
 +22 signature operations
 ```
     {OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF}
 ```
+
 
 <h2>Rationale</h2>
 

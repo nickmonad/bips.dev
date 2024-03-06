@@ -238,15 +238,16 @@ requested by the corresponding cosigner.
 
 
 
-||
-|-|
-|m / 45' / 0 / 0 / 0|
-|m / 45' / 0 / 0 / 1|
-|m / 45' / 0 / 0 / 4|
-|m / 45' / 0 / 1 / 0|
-|m / 45' / 0 / 1 / 1|
-|m / 45' / 1 / 0 / 0|
-|m / 45' / 2 / 1 / 9|
+|cosigner_index|change|address_index|path|
+|-|-|-|-|
+|first|receive|first|m / 45' / 0 / 0 / 0|
+|first|receive|second|m / 45' / 0 / 0 / 1|
+|first|receive|fifth|m / 45' / 0 / 0 / 4|
+|first|change|first|m / 45' / 0 / 1 / 0|
+|first|change|second|m / 45' / 0 / 1 / 1|
+|second|receive|first|m / 45' / 1 / 0 / 0|
+|third|change|tenth|m / 45' / 2 / 1 / 9|
+
 
 <h2>Compatible wallets</h2>
 

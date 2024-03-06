@@ -71,10 +71,12 @@ It can be said to have BIP 23 Level 2 support if it also implements:
 |target|String|desired target for block template (may be ignored)|
 
 
+
 |Key|Type|Description|
 |-|-|-|
 |expires|Number|how many seconds (beginning from when the server sent the response) this work is valid for, at most|
 |target|String|the number which valid results must be less than, in big-endian hexadecimal|
+
 
 <h3>Block Proposal</h3>
 
@@ -86,6 +88,7 @@ Servers may indicate support for proposing blocks by including a capability stri
 |capabilities|Array of Strings|MAY contain "proposal" to indicate support for block proposal|
 |reject-reason|String|Reason the proposal was invalid as-is (only applicable in response to proposals)|
 
+
 If supported, a miner MAY propose a block to the server for general validation at any point before the job expires.
 This is accomplished by calling getblocktemplate with two keys:
 
@@ -94,6 +97,7 @@ This is accomplished by calling getblocktemplate with two keys:
 |data|String|MUST be hex-encoded block data|
 |mode|String|MUST be "proposal"|
 |workid|String|if the server provided a workid, it MUST be included with proposals|
+
 
 The block data MUST be validated and checked against the server's usual acceptance rules (excluding the check for a valid proof-of-work).
 If it is found to be in violation of any of these rules, the server MUST return one of the following:
@@ -107,6 +111,7 @@ It is RECOMMENDED that servers which merely need to track the proposed block for
  {"workid":"new workid"}
 ```
 
+
 Clients SHOULD assume their proposed block will remain valid if the only changes they make are to the portion of the coinbase scriptSig they themselves provided (if any) and the time header.
 Servers SHOULD NOT break this assumption without good cause.
 
@@ -119,6 +124,7 @@ Servers SHOULD NOT break this assumption without good cause.
 |nonces|Number|size of nonce range the miner needs; if not provided, the server SHOULD assume the client requires 2<sup>32</sup>|
 
 
+
 |Key|Type|Description|
 |-|-|-|
 |maxtime|Number|the maximum time allowed|
@@ -128,31 +134,23 @@ Servers SHOULD NOT break this assumption without good cause.
 |mutable|Array of Strings|different manipulations that the server explicitly allows to be made|
 |noncerange|String|two 32-bit integers, concatenated in big-endian hexadecimal, which represent the valid ranges of nonces the miner may scan|
 
+
 If the block template contains a "mutable" key, it is a list of these to signify modifications the miner is allowed to make:
 
 
 |Value|Significance|
 |-|-|
-|coinbase/append|
-|append the provided coinbase scriptSig|
-|coinbase|
-|provide their own coinbase; if one is provided, it may be replaced or modified (implied if "coinbasetxn" omitted)|
-|generation|
-|add or remove outputs from the coinbase/generation transaction (implied if "coinbasetxn" omitted)|
-|time/increment|
-|change the time header to a value after "time" (implied if "maxtime" or "maxtimeoff" are provided)|
-|time/decrement|
-|change the time header to a value before "time" (implied if "mintime" is provided)|
-|time|
-|modify the time header of the block|
-|transactions/add (or "transactions")|
-|add other valid transactions to the block (implied if "transactions" omitted from result)|
-|prevblock|
-|use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting "height" as necessary|
-|version/force|
-|encode the provide block version, even if the miner doesn't understand it|
-|version/reduce|
-|use an older block version than the one provided (for example, if the client does not support the version provided)|
+|coinbase/append|append the provided coinbase scriptSig|
+|coinbase|provide their own coinbase; if one is provided, it may be replaced or modified (implied if "coinbasetxn" omitted)|
+|generation|add or remove outputs from the coinbase/generation transaction (implied if "coinbasetxn" omitted)|
+|time/increment|change the time header to a value after "time" (implied if "maxtime" or "maxtimeoff" are provided)|
+|time/decrement|change the time header to a value before "time" (implied if "mintime" is provided)|
+|time|modify the time header of the block|
+|transactions/add (or "transactions")|add other valid transactions to the block (implied if "transactions" omitted from result)|
+|prevblock|use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting "height" as necessary|
+|version/force|encode the provide block version, even if the miner doesn't understand it|
+|version/reduce|use an older block version than the one provided (for example, if the client does not support the version provided)|
+
 
 <h3>Submission Abbreviation</h3>
 
@@ -163,23 +161,19 @@ If the block template contains a "mutable" key, it is a list of these to signify
 |fulltarget|String|the number which full results should be less than, in big-endian hexadecimal (see "share/*" mutations)|
 |mutable|Array of Strings|different manipulations that the server explicitly allows to be made, including abbreviations|
 
+
 If the block template contains a "mutable" key, it is a list of these to signify modifications the miner is allowed to make:
 
 
 |Value|Significance|
 |-|-|
-|submit/hash|
-|each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a ":" character|
-|submit/coinbase|
-|if the "transactions" provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)|
-|submit/truncate|
-|if the "coinbasetxn" and "transactions" provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of "coinbasetxn" is modified, the params Object MUST contain a "coinbasesig" key with the content, or a "coinbaseadd" with appended data (if only appending)|
-|share/coinbase|
-|same as "submit/coinbase", but only if the block hash is greater than "fulltarget"|
-|share/merkle|
-|if the block hash is greater than "fulltarget", the non-coinbase transactions may be replaced with a merkle chain connecting it to the root|
-|share/truncate|
-|same as "submit/truncate", but only if the block hash is greater than "fulltarget"|
+|submit/hash|each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a ":" character|
+|submit/coinbase|if the "transactions" provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)|
+|submit/truncate|if the "coinbasetxn" and "transactions" provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of "coinbasetxn" is modified, the params Object MUST contain a "coinbasesig" key with the content, or a "coinbaseadd" with appended data (if only appending)|
+|share/coinbase|same as "submit/coinbase", but only if the block hash is greater than "fulltarget"|
+|share/merkle|if the block hash is greater than "fulltarget", the non-coinbase transactions may be replaced with a merkle chain connecting it to the root|
+|share/truncate|same as "submit/truncate", but only if the block hash is greater than "fulltarget"|
+
 
 <h4> Format of Data for Merkle-Only Shares </h4>
 
@@ -195,9 +189,11 @@ The format used for submitting shares with the "share/merkle" mutation shall be 
 |capabilities|Array of Strings|miners which support this SHOULD provide a list including the String "serverlist"|
 
 
+
 |Key|Type|Description|
 |-|-|-|
 |serverlist|Array of Objects|list of servers in this single logical service|
+
 
 If the "serverlist" parameter is provided, clients MAY choose to intelligently treat the server as part of a larger single logical service.
 
@@ -211,6 +207,7 @@ Each host Object in the Array is comprised of the following fields:
 |sticky|Number|number of seconds to stick to this server when used|
 |update|Boolean|whether this server may update the serverlist (default: true)|
 |weight|Number|a relative weight for hosts with the same priority (default: 1)|
+
 
 When choosing which actual server to get the next job from, URIs MUST be tried in order of their "priority" key, lowest Number first.
 Where the priority of URIs is the same, they should be chosen from in random order, weighed by their "weight" key.
@@ -229,10 +226,12 @@ A permanent change in server URI MAY be indicated with a simple "serverlist" par
  "serverlist":[{"uri": "http://newserver"}]
 ```
 
+
 A temporary delegation to another server for 5 minutes MAY be indicated likewise:
 ```
  "serverlist":[{"uri": "", avoid: 300}, {"uri": "http://newserver", "update": false}]
 ```
+
 
 <h2>Motivation</h2>
 

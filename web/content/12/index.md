@@ -55,10 +55,12 @@ A new standard transaction type (scriptPubKey) that is relayed by clients and in
     DUP HASH160 {20-byte-hash-value} EQUALVERIFY OP_EVAL
 ```
 
+
 Which is redeemed by a standard scriptSig:
 ```
     ...signatures... {serialized script}
 ```
+
 
 Transactions that redeem standard OP_EVAL scriptPubKeys are only considered standard if the _serialized script_ is, itself, one of the standard transaction types.
 
@@ -103,6 +105,7 @@ Example of a transaction that must fail for both old and new miners/clients:
   scriptSig:  {serialized OP_11}
   scriptPubKey:  OP_EVAL OP_11 OP_EQUAL
 ```
+
 
 <h2>Reference Implementation</h2>
 

@@ -290,6 +290,7 @@ The following conventions are used, with constants as defined for <a href="https
 ** Tuples are written by listing the elements within parentheses and separated by commas. For example, ''(2, 3, 1)'' is a tuple.
 ```
 
+
 <h3> Key Generation and Aggregation </h3>
 
 
@@ -660,11 +661,9 @@ We provide two modifications to _NonceGen_ that are secure when applied correctl
 ||needs secure randomness|needs secure counter|needs to keep state securely|needs aggregate nonce of all other signers (only possible for one signer)|
 |-|-|-|-|-|
 |NonceGen          || ✓      || &nbsp; || ✓      || &nbsp;|
-|-|
 |CounterNonceGen   || &nbsp; || ✓      || ✓      || &nbsp;|
-|-|
 |DeterministicSign || &nbsp; || &nbsp; || &nbsp; || ✓|
-|-|
+
 
 First, on systems where obtaining uniformly random values is much harder than maintaining a global atomic counter, it can be beneficial to modify _NonceGen_.
 The resulting algorithm _CounterNonceGen_ does not draw _rand' _ uniformly at random but instead sets _rand' _ to the value of an atomic counter that is incremented whenever it is read.
@@ -754,6 +753,7 @@ The following elliptic curve points arise as intermediate steps when creating a 
 </poem>
 ```
 
+
 The signer's goal is to produce a partial signature corresponding to the final result of key aggregation and tweaking, i.e., the X-only public key _with_even_y(Q<sub>v</sub>)_.
 
 <poem>
@@ -762,11 +762,13 @@ For _1 &le; i &le; v_, we denote the value _g_ computed in the _i_-th execution 
     ''f(i-1) = g<sub>i-1</sub>⋅Q<sub>i-1</sub>'' for ''1 &le; i &le; v''.
 ```
 
+
 Furthermore, the _Sign_ and _PartialSigVerify_ algorithms set value _g_ depending on whether _Q<sub>v</sub>_ needed to be negated to produce the (X-only) final output. For consistency, this value _g_ is referred to as _g<sub>v</sub>_ in this section.
 ```
     ''with_even_y(Q<sub>v</sub>) = g<sub>v</sub>⋅Q<sub>v</sub>''.
 </poem>
 ```
+
 
 <poem>
 So, the (X-only) final public key is
@@ -786,6 +788,7 @@ So, the (X-only) final public key is
 </poem>
 ```
 
+
 <poem>
 _KeyAgg_ and _ApplyTweak_ compute
 ```
@@ -793,10 +796,12 @@ _KeyAgg_ and _ApplyTweak_ compute
     gacc<sub>i</sub> = g<sub>i-1</sub>⋅gacc<sub>i-1</sub> for i=1..v mod n''
 ```
 So we can rewrite above equation for the final public key as
+
 ```
   ''with_even_y(Q<sub>v</sub>) = g<sub>v</sub>⋅gacc<sub>v</sub>⋅Q<sub>0</sub> + g<sub>v</sub>⋅tacc<sub>v</sub>⋅G''.
 </poem>
 ```
+
 
 <poem>
 Then we have
@@ -809,6 +814,7 @@ Then we have
 </poem>
 ```
 
+
 Intuitively, _gacc<sub>i</sub>_ tracks accumulated sign flipping and _tacc<sub>i</sub>_ tracks the accumulated tweak value after applying the first _i_ individual tweaks. Additionally, _g<sub>v</sub>_ indicates whether _Q<sub>v</sub>_ needed to be negated to produce the final X-only result. Thus, signer _i_ multiplies its secret key _d<sub>i</sub>' _ with _g<sub>v</sub>⋅gacc<sub>v</sub>_ in the _<a href="#Sign negation" target="_blank">Sign</a>_ algorithm.
 
 <h4> Negation Of The Individual Public Key When Partially Verifying </h4>
@@ -820,6 +826,7 @@ As explained in <a href="#negation-of-the-secret-key-when-signing" target="_blan
     ''d = g<sub>v</sub>⋅gacc<sub>v</sub>⋅d' mod n''
 ```
 when producing a partial signature to ensure that the aggregate signature will correspond to an aggregate public key with even Y coordinate.
+
 </poem>
 
 <poem>
@@ -829,6 +836,7 @@ The _<a href="#SigVerify negation" target="_blank">PartialSigVerifyInternal</a>_
 </poem>
 ```
 
+
 <poem>
 The verifier doesn't have access to _d⋅G_ but can construct it using the individual public key _pk_ as follows:
 _d⋅G
@@ -837,6 +845,7 @@ _d⋅G
     = g<sub>v</sub>⋅gacc<sub>v</sub>⋅cpoint(pk)''
 ```
 Note that the aggregate public key and list of tweaks are inputs to partial signature verification, so the verifier can also construct _g<sub>v</sub>_ and _gacc<sub>v</sub>_.
+
 </poem>
 
 <h3> Dealing with Infinity in Nonce Aggregation </h3>

@@ -73,6 +73,7 @@ The 1000-block lookback test, first described in BIP 34, is no longer performed 
                                  strprintf("rejected nVersion=0x%08x block", block.nVersion));
 ```
 
+
 Furthermore, rather than consider the block versions of the prior 1000 blocks to determine whether to enforce BIP 34, BIP 65, or BIP 66 on a given block, we instead just compare the height of the block being validated with the stored activation heights:
 
 ```
@@ -87,6 +88,7 @@ Furthermore, rather than consider the block versions of the prior 1000 blocks to
     }
 ```
 
+
 and
 
 ```
@@ -96,12 +98,14 @@ and
     }
 ```
 
+
 ```
     // Start enforcing CHECKLOCKTIMEVERIFY (BIP65) rule
     if (pindex->nHeight >= chainparams.GetConsensus().BIP65Height) {
         flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
     }
 ```
+
 
 Please see the implementation for additional details.
 

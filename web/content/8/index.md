@@ -136,6 +136,7 @@ The genesis block has state DEFINED for each deployment, by definition.
         }
 ```
 
+
 All blocks within a retarget period have the same state. This means that if
 floor(block1.height / 2016) = floor(block2.height / 2016), they are guaranteed to have the same state for every
 deployment.
@@ -146,11 +147,13 @@ deployment.
         }
 ```
 
+
 Otherwise, the next state depends on the previous state:
 
 ```
         switch (GetStateForBlock(GetAncestorAtHeight(block, block.height - 2016))) {
 ```
+
 
 We remain in the initial state until we reach the start block height.
 
@@ -161,6 +164,7 @@ We remain in the initial state until we reach the start block height.
             }
             return DEFINED;
 ```
+
 
 After a period in the STARTED state, we tally the bits set,
 and transition to LOCKED_IN if a sufficient number of blocks in the past period set the deployment bit in their
@@ -190,12 +194,14 @@ Note that a block's state never depends on its own nVersion; only on that of its
             return STARTED;
 ```
 
+
 If we have finished a period of MUST_SIGNAL, we transition directly to LOCKED_IN.
 
 ```
         case MUST_SIGNAL:
             return LOCKED_IN;
 ```
+
 
 After at least one retarget period of LOCKED_IN, we automatically transition to ACTIVE if the minimum activation height is reached. Otherwise LOCKED_IN continues.
 
@@ -208,6 +214,7 @@ After at least one retarget period of LOCKED_IN, we automatically transition to 
             }
 ```
 
+
 And ACTIVE and FAILED are terminal states, which a deployment stays in once they're reached.
 
 ```
@@ -215,12 +222,14 @@ And ACTIVE and FAILED are terminal states, which a deployment stays in once they
             return ACTIVE;
 ```
 
+
 ```
         case FAILED:
             return FAILED;
         }
     }
 ```
+
 
 **Implementation**
 It should be noted that the states are maintained along block chain
@@ -256,6 +265,7 @@ Blocks received while in the MUST_SIGNAL phase must be checked to ensure that th
     }
 ```
 
+
 Implementations should be careful not to ban peers that send blocks that are invalid due to not signalling (or blocks that build on those blocks), as that would allow an incompatible chain that is only briefly longer than the compliant chain to cause a split of the p2p network. If that occurred, nodes that have not set _lockinontimeout_ may not see new blocks in the compliant chain, and thus not reorg to it at the point when it has more work, and would thus not be following the valid chain with the most work.
 
 Implementations with _lockinontimeout_ set to true may potentially follow a lower work chain than nodes with _lockinontimeout_ set to false for an extended period. In order for this not to result in a net split nodes with _lockinontimeout_ set to true, those nodes may need to preferentially connect to each other. Deployments proposing that implementations set _lockinontimeout_ to true should either use parameters that do not risk there being a higher work alternative chain, or specify a mechanism for implementations that support the deployment to preferentially peer with each other.
@@ -275,6 +285,7 @@ The template request Object is extended to include a new item:
 |-|-|-|-|
 |rules|No|Array of Strings|list of supported softfork deployments, by name|
 
+
 The template Object is also extended:
 
 
@@ -283,6 +294,7 @@ The template Object is also extended:
 |rules|Yes|Array of Strings|list of softfork deployments, by name, that are active state|
 |vbavailable|Yes|Object|set of pending, supported softfork deployments; each uses the softfork name as the key, and the softfork bit as its value|
 |vbrequired|No|Number|bit mask of softfork deployment version bits the server requires enabled in submissions|
+
 
 The "version" key of the template is retained, and used to indicate the server's preference of deployments.
 If versionbits is being used, "version" MUST be within the versionbits range of [0x20000000...0x3FFFFFFF].

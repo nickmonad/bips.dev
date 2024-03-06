@@ -67,11 +67,13 @@ hashScriptCheck must be encoded exactly so:
     0xa9 0x14 (20-byte-hash-value) 0x87
 ```
 
+
 This can be interpreted by legacy (pre-BIP 18) clients as the following script:
 
 ```
     OP_HASH160 [20-byte-hash-value] OP_EQUAL
 ```
+
 
 If this template is not matched exactly OR the transaction is in a block with a timestamp before the hashScriptCheck activation date, validation MUST proceed in backward-compatibility mode, using scriptSig+scriptPubKey rather than dataSig+scriptCheck+hashScriptCheck.
 
@@ -92,6 +94,7 @@ For example, the hashScriptCheck and corresponding dataSig for a one-signature-r
     hashScriptCheck: [20-byte-hash of {[pubkey] OP_CHECKSIG}]
 ```
 
+
 <h3>Signature operation limits for scriptCheck</h3>
 
 
@@ -110,10 +113,12 @@ Examples:
     2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG
 ```
 
+
 +22 signature operations
 ```
     OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF
 ```
+
 
 <h2>Rationale</h2>
 

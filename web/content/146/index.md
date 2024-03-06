@@ -93,6 +93,7 @@ Notation:
   F        : any BIP66-compliant non-empty byte array but not a valid signature
 ```
 
+
 These scripts will return a `TRUE` to the stack as before:
 
 ```
@@ -100,12 +101,14 @@ These scripts will return a `TRUE` to the stack as before:
   0 S1L S2L 2 P1 P2 2 CHECKMULTISIG
 ```
 
+
 These scripts will return a `FALSE` to the stack as before:
 
 ```
   0 P1 CHECKSIG
   0 0 0 2 P1 P2 2 CHECKMULTISIG
 ```
+
 
 These previously `TRUE` scripts will fail immediately under the new rules:
 
@@ -115,6 +118,7 @@ These previously `TRUE` scripts will fail immediately under the new rules:
   0 S1L S2H 2 P1 P2 2 CHECKMULTISIG
   0 S1H S2H 2 P1 P2 2 CHECKMULTISIG
 ```
+
 
 These previously `FALSE` scripts will fail immediately under the new rules:
 
@@ -128,6 +132,7 @@ These previously `FALSE` scripts will fail immediately under the new rules:
   0 F   0   2 P1 P2 2 CHECKMULTISIG
   0 0   F   2 P1 P2 2 CHECKMULTISIG
 ```
+
 
 
 <h2>Deployment</h2>

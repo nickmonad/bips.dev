@@ -8,10 +8,46 @@ use std::io;
 use std::io::prelude::*;
 use std::path::Path;
 
-lazy_static! {
-    static ref BIP_FILE: Regex = Regex::new(r"^bip-([0-9]+)/.*").expect("error parsing regex");
-    static ref BIP_NUMBER: Regex =
-        Regex::new(r"bip-([0-9]+)\.mediawiki").expect("error parsing regex");
+/// Generate a BIP, converting from mediawiki to HTML.
+/// This creates a new content directory for Zola to serve, containing an index.md file,
+/// prepended with parsed front matter metadata.
+pub fn generate(bip: u32, path: &str) -> io::Result<()> {
+    // read input bip.mediawiki
+    let mut input = File::open(path)?;
+    let mut content = String::new();
+    input.read_to_string(&mut content)?;
+
+    // create output directory and file
+    let dir = format!("web/content/{}", bip);
+    let generated = format!("{}/index.md", dir);
+
+    match fs::create_dir(dir) {
+        Err(err) => {
+            if err.kind() != io::ErrorKind::AlreadyExists {
+                return Err(err);
+            }
+        }
+        _ => {}
+    }
+
+    let mut file = File::create(generated)?;
+    // render mediawiki content as html
+    let wikitext = wiki::Configuration::default().parse(&content);
+    let mut ctx = RenderContext::None;
+
+    // start by parsing out front matter for zola
+    render_front_matter(&mut file, wikitext.nodes)?;
+
+    // render the rest of the document, line by line
+    if let Ok(lines) = read_lines(path) {
+        for line in lines.flatten() {
+            if let Some(output) = render(&mut ctx, &line) {
+                write!(file, "{}", output)?;
+            }
+        }
+    }
+
+    Ok(())
 }
 
 enum RenderContext {
@@ -20,111 +56,118 @@ enum RenderContext {
     PreFormatted,
     UnorderedList,
     OrderedList,
-    Table(bool),
+    Table(TableContext),
 }
 
-fn render(context: &mut RenderContext, file: &mut File, line: &str) -> io::Result<()> {
+#[derive(Clone, Default)]
+struct TableContext {
+    header: bool,
+    row: Vec<String>,
+}
+
+fn render(context: &mut RenderContext, line: &str) -> Option<String> {
     match context {
         RenderContext::None => {
             // preformatted, tag
             // NOTE: see source for BIP 10 for a case where "</pre>" actually _starts_ preformatted
             if line == "<pre>" || line == "</pre>" || line.starts_with("<source") {
                 *context = RenderContext::PreTag;
-                return write!(file, "```\n");
+                return Some("```\n".into());
             }
 
             // preformatted, space
             if line.starts_with(" ") {
-                write!(file, "```\n")?;
                 *context = RenderContext::PreFormatted;
-                return render(context, file, line);
+
+                return Some(format!(
+                    "```\n{}",
+                    render(context, line).unwrap_or("".into())
+                ));
             }
 
             // empty line, write new line
             if line == "" {
-                return write!(file, "\n");
+                return Some("\n".into());
             }
 
             // heading
             if line.starts_with("=") {
-                return write!(file, "{}\n\n", render_heading(line));
+                return Some(format!("{}\n\n", render_heading(line)));
             }
 
             // ordered list
             if line.starts_with("#") {
                 *context = RenderContext::OrderedList;
-                return render(context, file, line);
+                return render(context, line);
             }
 
             // unordered list
             if line.starts_with("*") {
                 *context = RenderContext::UnorderedList;
-                return render(context, file, line);
+                return render(context, line);
             }
 
             // table
             if line.starts_with("{|") {
-                *context = RenderContext::Table(false);
-                // edge case, sometimes authors don't include a new line between
-                // the last line and the start of the table
-                writeln!(file)?;
+                *context = RenderContext::Table(TableContext::default());
 
-                return Ok(());
+                // edge case
+                // sometimes authors don't include a new line between
+                // the last line and the start of the table
+                return Some("\n".into());
             }
 
             // definition list? or indentation? ignore....
             if line.starts_with(":") {
-                render(
+                return render(
                     context,
-                    file,
                     line.trim_start_matches(":").trim_start_matches(" "),
-                )?;
-
-                return writeln!(file);
+                );
             }
 
-            write!(file, "{}\n", render_line(line).unwrap())
+            // no marker at beginning, render the line
+            Some(format!("{}\n", render_line(line).unwrap()))
         }
         RenderContext::PreFormatted => {
             // end preformatted
             if line == "" || line.starts_with(char::is_alphanumeric) {
                 // close out
                 *context = RenderContext::None;
-                write!(file, "```\n")?;
-                return render(context, file, line);
+                return Some(format!(
+                    "```\n{}\n",
+                    render(context, line).unwrap_or("".into())
+                ));
             }
 
             // write as is, no modification
-            write!(file, "{}\n", line)
+            Some(format!("{}\n", line))
         }
         RenderContext::PreTag => {
             // end preformatted
             if line == "</pre>" || line == "</source>" {
                 // close out
                 *context = RenderContext::None;
-                return write!(file, "```\n");
+                return Some("```\n".into());
             }
 
             // write as is, no modification
-            write!(file, "{}\n", line)
+            Some(format!("{}\n", line))
         }
         RenderContext::OrderedList => {
             // end ordered list
             if !line.starts_with("#") {
                 *context = RenderContext::None;
-                writeln!(file)?;
-
-                return render(context, file, line);
+                return Some(format!("\n{}", render(context, line).unwrap_or("".into())));
             }
 
-            // edge case, see BIP 36
+            // edge case
+            // BIP 36
             if line.starts_with("#*") {
-                return write!(
-                    file,
+                return Some(format!(
                     "{}* {}\n",
                     " ".repeat(4),
                     render_line(&line["#*".len()..line.len()]).unwrap()
-                );
+                ));
             }
 
             // check for the list level (*, **, etc)
@@ -140,14 +183,12 @@ fn render(context: &mut RenderContext, file: &mut File, line: &str) -> io::Resul
             });
 
             let trimmed = line.trim_start_matches("#");
-            write!(file, "{}1. {}\n", indent, render_line(trimmed).unwrap())
+            Some(format!("{}1. {}\n", indent, render_line(trimmed).unwrap()))
         }
         RenderContext::UnorderedList => {
             if !line.starts_with("*") {
                 *context = RenderContext::None;
-                writeln!(file)?;
-
-                return render(context, file, line);
+                return Some(format!("\n{}", render(context, line).unwrap_or("".into())));
             }
 
             // edge case, BIP 107
@@ -168,63 +209,122 @@ fn render(context: &mut RenderContext, file: &mut File, line: &str) -> io::Resul
             // sometimes, an unordered list is written without any space after the '*' in the
             // source document. The zola markdown to html rendering doesn't like that, so we have
             // to "push out" all unordered lists by one space, so they render correctly
-            write!(
-                file,
-                "{}\n",
-                format!(
-                    "{}* {}",
-                    indent,
-                    render_line(&clean[level..line.len()]).unwrap()
-                ),
-            )
+            Some(format!(
+                "{}* {}\n",
+                indent,
+                render_line(&clean[level..line.len()]).unwrap()
+            ))
         }
-        RenderContext::Table(header) => {
+        RenderContext::Table(ref mut table) => {
             if line.starts_with("|}") {
+                // write any remaining row
+                let buffer = format!(
+                    "|{}|\n\n",
+                    table
+                        .row
+                        .iter()
+                        .map(|r| render_line(r).unwrap())
+                        .collect::<Vec<String>>()
+                        .join("|")
+                );
+
                 *context = RenderContext::None;
-                return Ok(());
+                return Some(buffer);
             }
 
             if line.contains("colspan") {
                 // ignore for now
-                return Ok(());
+                return None;
             }
 
             // table header
             // convert to markdown format
-            if line.starts_with("! ") {
-                let header: Vec<String> = line["! ".len()..line.len()] // note the space
+            if line.starts_with("!") {
+                let headers: Vec<&str> = line["!".len()..line.len()]
                     .split("!!")
                     .map(|s| s.trim())
-                    .map(|s| render_line(s).unwrap())
                     .collect();
 
-                write!(file, "|{}|\n", header.join("|"))?;
-                write!(file, "|{}\n", "-|".repeat(header.len()))?;
+                if headers.len() > 1 {
+                    // multiple column values on a single line
+                    // collect and defer rendering
+                    table.row = headers.iter().map(|s| s.to_string()).collect();
+                    return None;
+                }
 
-                *context = RenderContext::Table(true);
-                return Ok(());
+                // columns are spread across multiple lines
+                // collect and defer rendering
+                table.row.push(headers[0].to_string());
+                return None;
+            }
+
+            // row separation
+            // write rows in buffer
+            // MUST be before check below for .starts_with("|")
+            if line.starts_with("|-") {
+                if table.row.is_empty() {
+                    // metadata before getting to table data, nothing to do
+                    return None;
+                }
+
+                let mut buffer = String::new();
+
+                // write rows
+                buffer.push_str(&format!(
+                    "|{}|\n",
+                    table
+                        .row
+                        .iter()
+                        .map(|r| render_line(r).unwrap())
+                        .collect::<Vec<String>>()
+                        .join("|")
+                ));
+
+                if !table.header {
+                    // write out "bottom" of header
+                    buffer.push_str(&format!("|{}\n", "-|".repeat(table.row.len())));
+                    table.header = true;
+                }
+
+                // reset rows
+                table.row = Vec::new();
+                return Some(buffer);
             }
 
             // table row
-            if line.starts_with("| ") {
-                if !*header {
-                    let width = line.split("||").collect::<Vec<_>>().len();
-                    write!(file, "|{}\n", "|".repeat(width))?;
-                    write!(file, "|{}\n", "-|".repeat(width))?;
-
-                    *context = RenderContext::Table(true);
-                }
-
-                let row: Vec<String> = line["| ".len()..line.len()] // note the space
+            if line.starts_with("|") {
+                let columns: Vec<&str> = line["|".len()..line.len()]
                     .split("||")
-                    .map(|s| s.trim())
-                    .map(|s| render_line(s).unwrap())
+                    .map(|s| {
+                        // edge case, see BIP 98
+                        // remove any leading metadata in the cell
+                        // "| scope="col"| A" ---> "A"
+                        let t = s.trim();
+                        if t.starts_with("scope=\"col\"|") || t.starts_with("scope=\"row\"|") {
+                            let marker = "scope=\"___\"";
+                            if marker.len() + 1 < t.len() {
+                                t[(marker.len() + 1)..t.len()].trim()
+                            } else {
+                                ""
+                            }
+                        } else {
+                            t
+                        }
+                    })
                     .collect();
 
-                return write!(file, "|{}|\n", row.join("|"));
+                if columns.len() > 1 {
+                    // multiple column values on a single line
+                    // collect and defer rendering
+                    table.row = columns.iter().map(|s| s.to_string()).collect();
+                } else {
+                    // columns are spread across multiple lines
+                    // collect and defer rendering
+                    table.row.push(columns[0].to_string());
+                }
             }
 
-            Ok(())
+            None
         }
     }
 }
@@ -349,6 +449,12 @@ fn replace_internal_links(line: String) -> Result<String, Infallible> {
 
     buffer.push_str(&line[ptr..line.len()]);
     Ok(buffer)
+}
+
+#[rustfmt::skip]
+lazy_static! {
+    static ref BIP_FILE: Regex = Regex::new(r"^bip-([0-9]+)/.*").expect("error parsing regex");
+    static ref BIP_NUMBER: Regex = Regex::new(r"bip-([0-9]+)\.mediawiki").expect("error parsing regex");
 }
 
 fn bip_link(link: &str) -> Option<u32> {
@@ -502,46 +608,6 @@ note = "THIS FILE IS AUTOMATICALLY GENERATED - NOT MEANT FOR EDITING"
         status = front.status,
         github = front.github
     )?;
-
-    Ok(())
-}
-
-/// Generate a BIP, converting from mediawiki to HTML.
-/// This creates a new content directory for Zola to serve, containing an index.md file,
-/// prepended with parsed front matter metadata.
-pub fn generate(bip: u32, path: &str) -> io::Result<()> {
-    // read input bip.mediawiki
-    let mut input = File::open(path)?;
-    let mut content = String::new();
-    input.read_to_string(&mut content)?;
-
-    // create output directory and file
-    let dir = format!("web/content/{}", bip);
-    let generated = format!("{}/index.md", dir);
-
-    match fs::create_dir(dir) {
-        Err(err) => {
-            if err.kind() != io::ErrorKind::AlreadyExists {
-                return Err(err);
-            }
-        }
-        _ => {}
-    }
-
-    let mut file = File::create(generated)?;
-    // render mediawiki content as html
-    let wikitext = wiki::Configuration::default().parse(&content);
-    let mut ctx = RenderContext::None;
-
-    // start by parsing out front matter for zola
-    render_front_matter(&mut file, wikitext.nodes)?;
-
-    // render the rest of the document, line by line
-    if let Ok(lines) = read_lines(path) {
-        for line in lines.flatten() {
-            render(&mut ctx, &mut file, &line)?;
-        }
-    }
 
     Ok(())
 }
@@ -820,6 +886,21 @@ fn a_href(target: &str, link: &str) -> String {
 mod test {
     use super::*;
 
+    fn run(input: Vec<String>) -> Vec<String> {
+        let mut context = RenderContext::None;
+        input
+            .iter()
+            .filter_map(|line| render(&mut context, line))
+            .collect()
+    }
+
+    fn lines(from: &str) -> Vec<String> {
+        from.lines()
+            .map(|s| s.trim_start())
+            .map(|s| s.to_string())
+            .collect()
+    }
+
     // render_line
 
     #[test]
@@ -923,5 +1004,200 @@ mod test {
             .unwrap(),
             a_href("/65", "BIP-65")
         )
+    }
+
+    // tables
+
+    #[test]
+    fn render_table_normal() {
+        let input = lines(
+            r#"{| class="wikitable"
+            !colspan=3| template
+            |-
+            ! ColumnA !! ColumnB !! ColumnC
+            |-
+            | a || b || c
+            |-
+            | e || f || g
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|ColumnA|ColumnB|ColumnC|\n|-|-|-|\n".into(),
+            "|a|b|c|\n".into(),
+            "|e|f|g|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_header_multiple_lines() {
+        let input = lines(
+            r#"{|
+            !thisisa
+            !thisisb
+            !thisisc
+            |-
+            |a
+            |bb
+            |ccc
+            |-
+            |a
+            |bb
+            |ccc
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|thisisa|thisisb|thisisc|\n|-|-|-|\n".into(),
+            "|a|bb|ccc|\n".into(),
+            "|a|bb|ccc|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_header_multiple_lines_no_explicit_header() {
+        let input = lines(
+            r#"{|
+            |thisisa
+            |thisisb
+            |thisisc
+            |-
+            |a
+            |bb
+            |ccc
+            |-
+            |a
+            |bb
+            |ccc
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|thisisa|thisisb|thisisc|\n|-|-|-|\n".into(),
+            "|a|bb|ccc|\n".into(),
+            "|a|bb|ccc|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_header_single_then_multiple() {
+        let input = lines(
+            r#"{| class="wikitable"
+            !colspan=2| testing testing
+            |-
+            ! A !! B
+            |-
+            | foo
+            | bar
+            |-
+            | hello
+            | world
+            |-
+            | lol
+            | wtf
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|A|B|\n|-|-|\n".into(),
+            "|foo|bar|\n".into(),
+            "|hello|world|\n".into(),
+            "|lol|wtf|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_no_proper_header() {
+        let input = lines(
+            r#"{|
+            | A || B
+            |-
+            | foo || bar
+            |-
+            | hello || world
+            |-
+            | lol || wtf
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|A|B|\n|-|-|\n".into(),
+            "|foo|bar|\n".into(),
+            "|hello|world|\n".into(),
+            "|lol|wtf|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_header_metadata() {
+        let input = lines(
+            r#"{| class="wikitable"
+            |-
+            | scope="col"| A
+            | scope="col"| B
+            | scope="col"| C
+            |-
+            | scope="row"| aaa
+            | bbb
+            | ccc
+            |-
+            | scope="row"| aaa
+            | bbb
+            | ccc
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|A|B|C|\n|-|-|-|\n".into(),
+            "|aaa|bbb|ccc|\n".into(),
+            "|aaa|bbb|ccc|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_header_metadata_empty() {
+        let input = lines(
+            r#"{| class="wikitable"
+            |-
+            | scope="col"|
+            | scope="col"| B
+            | scope="col"| C
+            |-
+            | scope="row"| aaa
+            | bbb
+            | ccc
+            |-
+            | scope="row"| aaa
+            | bbb
+            | ccc
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "||B|C|\n|-|-|-|\n".into(),
+            "|aaa|bbb|ccc|\n".into(),
+            "|aaa|bbb|ccc|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
     }
 }

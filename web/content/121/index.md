@@ -93,12 +93,12 @@ the data associated with the original payment according to the
 following table:
 
 
-||||
-|-|-|-|
 |<tt>btcpop:</tt> URI parameter|<tt>bitcoin:</tt> URI parameter|BIP70 PaymentDetails data|
+|-|-|-|
 |<tt>label</tt>|<tt>label</tt>|<tt>memo</tt>|
 |<tt>amount</tt>|<tt>amount</tt>|<tt>sum of outputs.amount</tt>|
 |<tt>message</tt>|<tt>message</tt>|<tt>-</tt>|
+
 
 The <tt>txid</tt> parameter value must match the transaction hash of
 the payment.

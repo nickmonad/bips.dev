@@ -48,6 +48,7 @@ The new bitcoin address type is constructed in the same manner as existing bitco
     base58-encode: [one-byte version][20-byte hash][4-byte checksum]
 ```
 
+
 Version byte is 5 for a main-network address, 196 for a testnet address.
 The 20-byte hash is the hash of the script that will be used to redeem the coins.
 And the 4-byte checksum is the first four bytes of the double SHA256 hash of the version and hash.

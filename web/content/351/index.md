@@ -124,6 +124,7 @@ Currently defined flags:
 |P2WPKH|`1 << 1`|`0x0002`|1|
 |P2TR|`1 << 2`|`0x0004`|2|
 
+
 The remaining flags are reserved for future address types.
 
 While payment codes use 2-byte bitflag arrays, notifications use ordinal values in the form of a single byte.

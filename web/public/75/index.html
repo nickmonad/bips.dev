@@ -83,8 +83,7 @@
 <img src="https://licensebuttons.net/l/by/4.0/88x31.png">
 <p>This work is licensed under a <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a>.</p>
 <h2>Definitions</h2>
-<table><thead><tr><th></th><th></th></tr></thead><tbody>
-<tr><td>Sender</td><td>Entity wishing to transfer value that they control</td></tr>
+<table><thead><tr><th>Sender</th><th>Entity wishing to transfer value that they control</th></tr></thead><tbody>
 <tr><td>Receiver</td><td>Entity receiving a value transfer</td></tr>
 </tbody></table>
 <h2>Motivation</h2>
@@ -178,6 +177,12 @@
 }
 </code></pre>
 <table><thead><tr><th>Field Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>version</td><td>Protocol version number (Currently 1)</td></tr>
+<tr><td>status_code</td><td>Payment Protocol Status Code</td></tr>
+<tr><td>message_type</td><td>Message Type of serialized_message</td></tr>
+<tr><td>serialized_message</td><td>Serialized Payment Protocol Message</td></tr>
+<tr><td>status_message</td><td>Human-readable Payment Protocol status message</td></tr>
+<tr><td>identifier</td><td>Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String)</td></tr>
 </tbody></table>
 <h3>Versioning</h3>
 <p>This BIP introduces version 1 of this protocol. All messages sent using these base requirements MUST use a value of 1 for the version number. Any future BIPs that modify this protocol (encryption schemes, etc) MUST each increment the version number by 1.</p>
@@ -260,6 +265,7 @@ The status_message value SHOULD be set with a human readable explanation of the 
 <tr><td>302</td><td>Certificate Invalid for Transaction</td></tr>
 <tr><td>303</td><td>Certificate Revoked</td></tr>
 <tr><td>304</td><td>Certificate Not Well Rooted</td></tr>
+<tr><td></td><td></td></tr>
 </tbody></table>
 <p>+==Canceling A Message==+
 If a participant to a transaction would like to inform the other party that a previous message should be canceled, they can send the same message with a status code of 2 (&quot;Cancel&quot;) and, where applicable, an updated nonce. How recipients make use of the &quot;Cancel&quot; message is up to developers. For example, wallet developers may want to offer users the ability to cancel payment requests they have sent to other users, and have that change reflected in the recipient's UI. Developers using the non-encrypted ProtocolMessage may want to ignore &quot;Cancel&quot; messages, as it may be difficult to authenticate that the message originated from the same user.</p>
@@ -454,8 +460,7 @@ Clients SHOULD keep in mind Receivers can broadcast a transaction without return
 <img src="https://licensebuttons.net/l/by/4.0/88x31.png">
 <p>This work is licensed under a <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a>.</p>
 <h2>Definitions</h2>
-<table><thead><tr><th></th><th></th></tr></thead><tbody>
-<tr><td>Sender</td><td>Entity wishing to transfer value that they control</td></tr>
+<table><thead><tr><th>Sender</th><th>Entity wishing to transfer value that they control</th></tr></thead><tbody>
 <tr><td>Receiver</td><td>Entity receiving a value transfer</td></tr>
 </tbody></table>
 <h2>Motivation</h2>
@@ -549,6 +554,12 @@ Clients SHOULD keep in mind Receivers can broadcast a transaction without return
 }
 </code></pre>
 <table><thead><tr><th>Field Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>version</td><td>Protocol version number (Currently 1)</td></tr>
+<tr><td>status_code</td><td>Payment Protocol Status Code</td></tr>
+<tr><td>message_type</td><td>Message Type of serialized_message</td></tr>
+<tr><td>serialized_message</td><td>Serialized Payment Protocol Message</td></tr>
+<tr><td>status_message</td><td>Human-readable Payment Protocol status message</td></tr>
+<tr><td>identifier</td><td>Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String)</td></tr>
 </tbody></table>
 <h3>Versioning</h3>
 <p>This BIP introduces version 1 of this protocol. All messages sent using these base requirements MUST use a value of 1 for the version number. Any future BIPs that modify this protocol (encryption schemes, etc) MUST each increment the version number by 1.</p>
@@ -631,6 +642,7 @@ The status_message value SHOULD be set with a human readable explanation of the 
 <tr><td>302</td><td>Certificate Invalid for Transaction</td></tr>
 <tr><td>303</td><td>Certificate Revoked</td></tr>
 <tr><td>304</td><td>Certificate Not Well Rooted</td></tr>
+<tr><td></td><td></td></tr>
 </tbody></table>
 <p>+==Canceling A Message==+
 If a participant to a transaction would like to inform the other party that a previous message should be canceled, they can send the same message with a status code of 2 (&quot;Cancel&quot;) and, where applicable, an updated nonce. How recipients make use of the &quot;Cancel&quot; message is up to developers. For example, wallet developers may want to offer users the ability to cancel payment requests they have sent to other users, and have that change reflected in the recipient's UI. Developers using the non-encrypted ProtocolMessage may want to ignore &quot;Cancel&quot; messages, as it may be difficult to authenticate that the message originated from the same user.</p>
@@ -773,9 +785,9 @@ Clients SHOULD keep in mind Receivers can broadcast a transaction without return
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

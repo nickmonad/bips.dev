@@ -91,11 +91,13 @@ To request encrypted communication, the requesting peer generates an EC ephemera
 |33bytes|ephemeral-pubkey|comp.-pubkey|The session pubkey from the requesting peer|
 |1bytes|symmetric key cipher type|int8|symmetric key cipher type to use|
 
+
 Possible symmetric key ciphers types
 
 |Number|symmetric key ciphers type|
 |-|-|
 |0|chacha20-poly1305@openssh.com|
+
 
 <h3> ChaCha20-Poly1305 Cipher Suite </h3>
 
@@ -124,6 +126,7 @@ The responding peer accepts the encryption request by sending an `encack` messag
 |-|-|-|-|
 |33bytes|ephemeral-pubkey|comp.-pubkey|The session pubkey from the responding peer|
 
+
 At this point, the shared secret key for the symmetric key cipher must be calculated by using ECDH (own privkey x remote pub key).
 Private keys will never be transmitted. The shared secret can only be calculated if an attacker knows at least one private key and the remote peer's public key.
 
@@ -146,6 +149,7 @@ After a successful `encinit`/`encack` interaction from both sides, the messages 
 |?|ciphertext payload|?|One or many ciphertext command & message data|
 |16|MAC tag|?|128bit MAC-tag|
 
+
 Encrypted messages do not have the 4byte network magic.
 
 The maximum message length needs to be chosen carefully. The 4 byte length field can lead to a required message buffer of 4 GiB.
@@ -163,6 +167,7 @@ The encrypted payload will result decrypted in one or many unencrypted messages:
 |?|command|varlen|ASCII string identifying the packet content, we are using varlen in the encrypted messages.|
 |4|length|uint32_t|Length of plaintext payload|
 |?|payload|?|The actual data|
+
 If more data is present, another message must be deserialized. There is no explicit amount-of-messages integer.
 
 

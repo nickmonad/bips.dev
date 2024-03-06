@@ -55,10 +55,10 @@ This work is licensed under a <a href="http://creativecommons.org/licenses/by/4.
 <h2>Definitions</h2>
 
 
-|||
-|-|-|
 |Sender|Entity wishing to transfer value that they control|
+|-|-|
 |Receiver|Entity receiving a value transfer|
+
 
 <h2>Motivation</h2>
 
@@ -116,6 +116,7 @@ This BIP adds additional possible values for the pki_type variable in the Paymen
 |pgp+sha256|An <a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP" target="_blank">OpenPGP</a> certificate|
 |ecdsa+sha256|A <a href="https://en.bitcoin.it/wiki/Secp256k1" target="_blank">secp256k1</a> <a href="https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm" target="_blank">ECDSA</a> public key|
 
+
 **NOTE**: Although SHA1 was supported in BIP70, it has been deprecated and BIP75 only supports SHA256. The hashing algorithm is still specified in the values listed above for forward and backwards compatibility.
 
 <h2>New Messages</h2>
@@ -151,6 +152,7 @@ message InvoiceRequest {
 |notification_url|Secure (usually TLS-protected HTTP) location where an <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> SHOULD be sent when ready|
 |signature|PKI-dependent signature|
 
+
 <h3>ProtocolMessageType Enum</h3>
 
 This enum is used in the newly defined <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> and <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> messages to define the serialized message type. The **ProtocolMessageType** enum is defined in an extensible way to allow for new message type additions to the Payment Protocol.
@@ -181,6 +183,13 @@ message ProtocolMessage {
 
 |Field Name|Description|
 |-|-|
+|version|Protocol version number (Currently 1)|
+|status_code|Payment Protocol Status Code|
+|message_type|Message Type of serialized_message|
+|serialized_message|Serialized Payment Protocol Message|
+|status_message|Human-readable Payment Protocol status message|
+|identifier|Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String)|
+
 
 <h3>Versioning</h3>
 
@@ -218,6 +227,7 @@ message EncryptedProtocolMessage {
 |identifier|Unique key to identify this entire exchange on the server. Default value SHOULD be SHA256(Serialized Initial InvoiceRequest + Current Epoch Time in Seconds as a String)|
 |status_message|Human-readable Payment Protocol status message|
 |signature|DER-encoded Signature over the full EncryptedProtocolMessage with EC Key Belonging to Sender / Receiver, respectively|
+
 
 <h2>Payment Protocol Process with InvoiceRequests</h2>
 
@@ -260,6 +270,7 @@ When communicated via **HTTP**, the listed messages MUST be transmitted via TLS-
 |ProtocolMessage|application/bitcoin-paymentprotocol-message|
 |EncryptedProtocolMessage|application/bitcoin-encrypted-paymentprotocol-message|
 
+
 <h3>Payment Protocol Status Communication</h3>
 
 
@@ -287,6 +298,8 @@ The status_message value SHOULD be set with a human readable explanation of the 
 |302|Certificate Invalid for Transaction|
 |303|Certificate Revoked|
 |304|Certificate Not Well Rooted|
+||
+
 
 +==Canceling A Message==+
 If a participant to a transaction would like to inform the other party that a previous message should be canceled, they can send the same message with a status code of 2 ("Cancel") and, where applicable, an updated nonce. How recipients make use of the "Cancel" message is up to developers. For example, wallet developers may want to offer users the ability to cancel payment requests they have sent to other users, and have that change reflected in the recipient's UI. Developers using the non-encrypted ProtocolMessage may want to ignore "Cancel" messages, as it may be difficult to authenticate that the message originated from the same user.

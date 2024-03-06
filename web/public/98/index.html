@@ -158,34 +158,15 @@ followed by the hashes themselves in the order previously traversed.</p>
 SKIP means the branch contains a hash of an elided subtree or element, and the fast-SHA256 root hash of this subtree or double-SHA256 hash of the element is included in the proof structure; and
 VERIFY means the branch contains an externally provided hash that is needed as witness for the verification of the proof.
 In tabular form, these code values are:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>DESCEND</td></tr>
+<table><thead><tr><th>Code</th><th>Left</th><th>Right</th></tr></thead><tbody>
+<tr><td>000</td><td>VERIFY</td><td>SKIP</td></tr>
+<tr><td>001</td><td>VERIFY</td><td>VERIFY</td></tr>
+<tr><td>010</td><td>VERIFY</td><td>DESCEND</td></tr>
+<tr><td>011</td><td>DESCEND</td><td>SKIP</td></tr>
+<tr><td>100</td><td>DESCEND</td><td>VERIFY</td></tr>
+<tr><td>101</td><td>DESCEND</td><td>DESCEND</td></tr>
+<tr><td>110</td><td>SKIP</td><td>VERIFY</td></tr>
+<tr><td>111</td><td>SKIP</td><td>DESCEND</td></tr>
 </tbody></table>
 <p>These 3-bit codes are packed into a byte array such that eight (8) codes would fit in every three (3) bytes.
 The order of filling a byte begins with the most significant bit <code>0x80</code> and ends with the least significant bit <code>0x01</code>.
@@ -205,23 +186,10 @@ and the number of SKIP hashes can be either 0 or 1.</p>
 The depth-first, left-to-right, pre-order traversal of the tree visits these nodes in the following order: A, B, D, F, C, then E.
 There are three (3) skipped hashes, visited in the following order: 0x00..., 0x66..., and 0x22...
 The remaining four (4) hashes are provided at runtime to be verified by the proof.</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>76543210</td></tr>
-<tr><td>76543210</td></tr>
-<tr><td>76543210</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>AAABBBDD</td></tr>
-<tr><td>DFFFCCCE</td></tr>
-<tr><td>EE------</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>10111101</td></tr>
-<tr><td>10000100</td></tr>
-<tr><td>01000000</td></tr>
+<table><thead><tr><th></th><th>Byte 1</th><th>Byte 2</th><th>Byte 3</th></tr></thead><tbody>
+<tr><td>Bits</td><td>76543210</td><td>76543210</td><td>76543210</td></tr>
+<tr><td>Nodes</td><td>AAABBBDD</td><td>DFFFCCCE</td><td>EE------</td></tr>
+<tr><td>Code</td><td>10111101</td><td>10000100</td><td>01000000</td></tr>
 </tbody></table>
 <p>The serialization begins with the VarInt encoded number of inner nodes, <code>0x06</code>, followed by the tree serialization itself, <code>0xbd8440</code>.
 Next the number of SKIP hashes is VarInt encoded, <code>0x03</code>, followed by the three (3) hashes in sequence.
@@ -427,34 +395,15 @@ followed by the hashes themselves in the order previously traversed.</p>
 SKIP means the branch contains a hash of an elided subtree or element, and the fast-SHA256 root hash of this subtree or double-SHA256 hash of the element is included in the proof structure; and
 VERIFY means the branch contains an externally provided hash that is needed as witness for the verification of the proof.
 In tabular form, these code values are:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>DESCEND</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>VERIFY</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>SKIP</td></tr>
-<tr><td>DESCEND</td></tr>
+<table><thead><tr><th>Code</th><th>Left</th><th>Right</th></tr></thead><tbody>
+<tr><td>000</td><td>VERIFY</td><td>SKIP</td></tr>
+<tr><td>001</td><td>VERIFY</td><td>VERIFY</td></tr>
+<tr><td>010</td><td>VERIFY</td><td>DESCEND</td></tr>
+<tr><td>011</td><td>DESCEND</td><td>SKIP</td></tr>
+<tr><td>100</td><td>DESCEND</td><td>VERIFY</td></tr>
+<tr><td>101</td><td>DESCEND</td><td>DESCEND</td></tr>
+<tr><td>110</td><td>SKIP</td><td>VERIFY</td></tr>
+<tr><td>111</td><td>SKIP</td><td>DESCEND</td></tr>
 </tbody></table>
 <p>These 3-bit codes are packed into a byte array such that eight (8) codes would fit in every three (3) bytes.
 The order of filling a byte begins with the most significant bit <code>0x80</code> and ends with the least significant bit <code>0x01</code>.
@@ -474,23 +423,10 @@ and the number of SKIP hashes can be either 0 or 1.</p>
 The depth-first, left-to-right, pre-order traversal of the tree visits these nodes in the following order: A, B, D, F, C, then E.
 There are three (3) skipped hashes, visited in the following order: 0x00..., 0x66..., and 0x22...
 The remaining four (4) hashes are provided at runtime to be verified by the proof.</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;col&quot;</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>76543210</td></tr>
-<tr><td>76543210</td></tr>
-<tr><td>76543210</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>AAABBBDD</td></tr>
-<tr><td>DFFFCCCE</td></tr>
-<tr><td>EE------</td></tr>
-<tr><td>scope=&quot;row&quot;</td></tr>
-<tr><td>10111101</td></tr>
-<tr><td>10000100</td></tr>
-<tr><td>01000000</td></tr>
+<table><thead><tr><th></th><th>Byte 1</th><th>Byte 2</th><th>Byte 3</th></tr></thead><tbody>
+<tr><td>Bits</td><td>76543210</td><td>76543210</td><td>76543210</td></tr>
+<tr><td>Nodes</td><td>AAABBBDD</td><td>DFFFCCCE</td><td>EE------</td></tr>
+<tr><td>Code</td><td>10111101</td><td>10000100</td><td>01000000</td></tr>
 </tbody></table>
 <p>The serialization begins with the VarInt encoded number of inner nodes, <code>0x06</code>, followed by the tree serialization itself, <code>0xbd8440</code>.
 Next the number of SKIP hashes is VarInt encoded, <code>0x03</code>, followed by the three (3) hashes in sequence.
@@ -569,9 +505,9 @@ The deployment plan for BIP116 is covered in the text of that BIP.</p>
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

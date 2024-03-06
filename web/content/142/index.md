@@ -56,6 +56,7 @@ The new address is encoded in a way similar to existing address formats:
 ```
 For P2WPKH address, the address version is 6 (0x06) for a main-network address or 3 (0x03) for a testnet address.
 
+
 For P2WSH address, the address version is 10 (0x0A) for a main-network address or 40 (0x28) for a testnet address.
 
 The witness program version is a 1-byte value between 0 (0x00) and 16 (0x10). Only version 0 is defined in BIP141. Versions 1 to 16 are reserved for future extensions.
@@ -68,6 +69,28 @@ The 4-byte checksum is the first four bytes of the double SHA256 hash of the ser
 
 All addresses generated with this scheme will have a constant length, with 36 digits for 20-byte and 53 digits for 32-byte. Different witness program versions will have a unique prefix, as shown in the following table:
 
+
+|rowspan=3 style=""|Witness program version|
+|-|
+|Mainnet|Testnet|Mainnet|Testnet|
+|0|p2|QW|7Xh|T7n|
+|1|p4|QY|7Xq|T7w|
+|2|p6|Qa|7Xz|T85|
+|3|p7|Qc|7Y9|T8E|
+|4|pA|Qe|7YH|T8N|
+|5|pB|Qf|7YS|T8X|
+|6|pD|Qh|7Ya|T8g|
+|7|pF|Qj|7Yj|T8p|
+|8|pG|Qm|7Yt|T8y|
+|9|pJ|Qn|7Z2|T97|
+|10|pL|Qp|7ZB|T9G|
+|11|pN|Qr|7ZK|T9Q|
+|12|pQ|Qt|7ZU|T9Z|
+|13|pS|Qv|7Zc|T9i|
+|14|pT|Qw|7Zm|T9r|
+|15|pV|Qy|7Zv|TA1|
+|16|pX|R1|7a4|TA9|
+||
 
 
 
@@ -109,10 +132,12 @@ The following public key,
  
 ```
 when encoded as a P2PKH template, would become:
+
 ```
   
     DUP HASH160 <010966776006953D5567439E5E39F86A0D273BEE> EQUALVERIFY CHECKSIG
 ```
+
 
 With the corresponding version 1 Bitcoin address being:
 ```
@@ -121,10 +146,12 @@ With the corresponding version 1 Bitcoin address being:
  
 ```
 When the same public key is encoded as P2WPKH, the scriptPubKey becomes: 
+
 ```
   
     OP_0 <010966776006953D5567439E5E39F86A0D273BEE>
 ```
+
 
 Using 0x06 as address version, followed by 0x00 as witness program version, and a 0x00 padding, the equivalent P2WPKH address is:
 ```
@@ -133,6 +160,7 @@ Using 0x06 as address version, followed by 0x00 as witness program version, and 
  
 == Reference implementation ==
 ```
+
 
 https://github.com/theuni/bitcoin/commit/ede1b57058ac8efdefe61f67395affb48f2c0d80
 

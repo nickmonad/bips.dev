@@ -213,6 +213,7 @@ The matching algorithm:
     3. Otherwise, succeed
 ```
 
+
 <h2>Formal specification</h2>
 
 
@@ -258,6 +259,7 @@ Its representation after parsing can be (using Python syntax, ignoring full/part
      [(0, 50000)]]
 ```
 
+
 `{0-2,33,123}/*` specifies a partial template that matches non-hardened values 0, 1, 2, 33, 123 as first index, and any non-hardened value at second index
 
 Its representation after parsing can be:
@@ -265,12 +267,14 @@ Its representation after parsing can be:
     [[(0, 2), (33, 33), (123, 123)], [(0, 2147483647)]]
 ```
 
+
 `*h/0` specifies a partial template that matches any hardened index followed by non-hardened index 0
 
 Its representation after parsing can be:
 ```
     [[(2147483648, 4294967295)], [(0, 0)]]
 ```
+
 
 <h2>Acknowledgements</h2>
 

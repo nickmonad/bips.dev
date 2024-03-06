@@ -62,6 +62,7 @@ A new transaction digest algorithm is defined, but only applicable to sigops in 
     10. sighash type of the signature (4-byte little endian)
 ```
 
+
 Semantics of the original sighash types remain unchanged, except the followings:
 1.  The way of serialization is changed;
 1.  All sighash types commit to the amount being spent by the signed input;
@@ -235,6 +236,7 @@ To ensure consistency in consensus-critical behaviour, developers should test th
     nLockTime: 11000000
 ```
 
+
 <h3> P2SH-P2WPKH </h3>
 
 ```
@@ -294,6 +296,7 @@ To ensure consistency in consensus-critical behaviour, developers should test th
     witness    02 473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb01 2103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a26873
     nLockTime: 92040000
 ```
+
 
 <h3> Native P2WSH </h3>
 
@@ -358,6 +361,7 @@ This example shows how `OP_CODESEPARATOR` and out-of-range `SIGHASH_SINGLE` are 
   
   The serialized signed transaction is: 01000000000102fe3dc9208094f3ffd12645477b3dc56f60ec4fa8e6f5d67c565d1c6b9216b36e000000004847304402200af4e47c9b9629dbecc21f73af989bdaa911f7e6f6c2e9394588a3aa68f81e9902204f3fcf6ade7e5abb1295b6774c8e0abd94ae62217367096bc02ee5e435b67da201ffffffff0815cf020f013ed6cf91d29f4202e8a58726b1ac6c79da47c23d1bee0a6925f80000000000ffffffff0100f2052a010000001976a914a30741f8145e5acadf23f751864167f32e0963f788ac000347304402200de66acf4527789bfda55fc5459e214fa6083f936b430a762c629656216805ac0220396f550692cd347171cbc1ef1f51e15282e837bb2b30860dc77c8f78bc8501e503473044022027dc95ad6b740fe5129e7e62a75dd00f291a2aeb1200b84b09d9e3789406b6c002201a9ecd315dd6a0e632ab20bbb98948bc0c6fb204f2c286963bb48517a7058e27034721026dccc749adc2a9d0d89497ac511f760f45c47dc5ed9cf352a58ac706453880aeadab210255a9626aebf5e29c0e6538428ba0d1dcf6ca98ffdf086aa8ced5e0d0215ea465ac00000000
 ```
+
 
 
 This example shows how unexecuted `OP_CODESEPARATOR` is processed, and `SINGLE|ANYONECANPAY` does not commit to the input index:
@@ -444,6 +448,7 @@ This example shows how unexecuted `OP_CODESEPARATOR` is processed, and `SINGLE|A
                02 483045022100f6a10b8604e6dc910194b79ccfc93e1bc0ec7c03453caaa8987f7d6c3413566002206216229ede9b4d6ec2d325be245c5b508ff0339bf1794078e20bfe0babc7ffe683 270063ab68210392972e2eb617b2388771abe27235fd5ac44af8e61693261550447a4c3e39da98ac
     nLockTime: 00000000
 ```
+
 
 <h3> P2SH-P2WSH </h3>
 
@@ -582,6 +587,7 @@ This example is a P2SH-P2WSH 6-of-6 multisig witness program signed with 6 diffe
 ```
 
 
+
 <h3> No FindAndDelete </h3>
 
 
@@ -635,6 +641,7 @@ These examples show that `FindAndDelete` for the signature is not applied. The t
   The serialized signed transaction is: 0100000000010169c12106097dc2e0526493ef67f21269fe888ef05c7a3a5dacab38e1ac8387f14c1d000000ffffffff01010000000000000000034830450220487fb382c4974de3f7d834c1b617fe15860828c7f96454490edd6d891556dcc9022100baf95feb48f845d5bfc9882eb6aeefa1bc3790e39f59eaa46ff7f15ae626c53e012102a9781d66b61fb5a7ef00ac5ad5bc6ffc78be7b44a566e3c87870e1079368df4c4aad4830450220487fb382c4974de3f7d834c1b617fe15860828c7f96454490edd6d891556dcc9022100baf95feb48f845d5bfc9882eb6aeefa1bc3790e39f59eaa46ff7f15ae626c53e0100000000
 ```
 
+
 ```
     nVersion:  01000000
     marker:    00
@@ -647,6 +654,7 @@ These examples show that `FindAndDelete` for the signature is not applied. The t
     nLockTime: 00000000
   
 ```
+
 
 ```
   
@@ -663,6 +671,7 @@ These examples show that `FindAndDelete` for the signature is not applied. The t
                     21034ffc99dd9a79dd3cb31e2ab3e0b09e0e67db41ac068c625cd1f491576016c84e
                     9552af4830450220487fb382c4974de3f7d834c1b617fe15860828c7f96454490edd6d891556dcc9022100baf95feb48f845d5bfc9882eb6aeefa1bc3790e39f59eaa46ff7f15ae626c53e0148304502205286f726690b2e9b0207f0345711e63fa7012045b9eb0f19c2458ce1db90cf43022100e89f17f86abc5b149eba4115d4f128bcf45d77fb3ecdd34f594091340c0395960175
 ```
+
 
 
 The new serialization format is described in BIP144 <ref><a href="/144" target="_blank">BIP144: Segregated Witness (Peer Services)</a></ref>

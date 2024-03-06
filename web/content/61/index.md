@@ -62,6 +62,7 @@ For example, the message flow between two peers for a relayed transaction that i
  <-- reject
 ```
 
+
 All implementations of the P2P protocol version 70,002 and later should support the reject message.
 
 <h4>common payload</h4>
@@ -71,12 +72,12 @@ All implementations of the P2P protocol version 70,002 and later should support 
 Every reject message begins with the following fields. Some messages append extra, message-specific data.
 
 
-|||||
-|-|-|-|-|
 |Field Size|Name|Data type|Comments|
+|-|-|-|-|
 |variable|response-to-msg|var_str|Message that triggered the reject|
 |1|reject-code|uint8_t|0x01 through 0x4f (see below)|
 |variable|reason|var_string|Human-readable message for debugging|
+
 
 The human-readable string is intended only for debugging purposes; in particular, different implementations may
 use different strings. The string should not be shown to users or used for anthing besides diagnosing
@@ -86,21 +87,21 @@ The following reject code categories are used; in the descriptions below, "serve
 the reject message, "client" is the peer that will receive the message.
 
 
-|||
-|-|-|
 |Range|Category|
+|-|-|
 |0x01-0x0f|Protocol syntax errors|
 |0x10-0x1f|Protocol semantic errors|
 |0x40-0x4f|Server policy rule|
+
 
 <h4> rejection codes common to all message types </h4>
 
 
 
-|||
-|-|-|
 |Code|Description|
+|-|-|
 |0x01|Message could not be decoded|
+
 
 <h4> reject version codes </h4>
 
@@ -108,11 +109,11 @@ the reject message, "client" is the peer that will receive the message.
 Codes generated during the initial connection process in response to a "version" message:
 
 
-|||
-|-|-|
 |Code|Description|
+|-|-|
 |0x11|Client is an obsolete, unsupported version|
 |0x12|Duplicate version message received|
+
 
 <h4> reject tx payload, codes </h4>
 
@@ -120,22 +121,22 @@ Codes generated during the initial connection process in response to a "version"
 Transaction rejection messages extend the basic message with the transaction id hash:
 
 
-|||||
-|-|-|-|-|
 |Field Size|Name|Data type|Comments|
+|-|-|-|-|
 |32|hash|char[32]|transaction that is rejected|
+
 
 The following codes are used:
 
 
-|||
-|-|-|
 |Code|Description|
+|-|-|
 |0x10|Transaction is invalid for some reason (invalid signature, output value greater than input, etc.)|
 |0x12|An input is already spent|
 |0x40|Not mined/relayed because it is "non-standard" (type or version unknown by the server)|
 |0x41|One or more output amounts are below the 'dust' threshold|
 |0x42|Transaction does not have enough fee/priority to be relayed or mined|
+
 
 <h4> payload, reject block </h4>
 
@@ -143,20 +144,20 @@ The following codes are used:
 Block rejection messages extend the basic message with the block header hash:
 
 
-|||||
-|-|-|-|-|
 |Field Size|Name|Data type|Comments|
+|-|-|-|-|
 |32|hash|char[32]|block (hash of block header) that is rejected|
+
 
 Rejection codes:
 
 
-|||
-|-|-|
 |code|description|
+|-|-|
 |0x10|Block is invalid for some reason (invalid proof-of-work, invalid signature, etc)|
 |0x11|Block's version is no longer supported|
 |0x43|Inconsistent with a compiled-in checkpoint|
+
 
 Note: blocks that are not part of the server's idea of the current best chain, but are otherwise valid, should not trigger reject messages.
 

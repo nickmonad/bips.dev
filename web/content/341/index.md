@@ -273,6 +273,7 @@ To spend this output using script _D_, the control block would contain the follo
      <control byte with leaf version and parity bit> <internal key p> <C> <E> <AB>
 ```
 
+
 The TapTweak would then be computed as described <a href="/341" target="_blank">above</a> like so:
 
 ```
@@ -364,6 +365,7 @@ For Bitcoin mainnet and testnet3, these BIPs are deployed by "version bits" with
         return DEFINED;
 ```
 
+
 ```
     case STARTED:
         int count = 0;
@@ -382,6 +384,7 @@ For Bitcoin mainnet and testnet3, these BIPs are deployed by "version bits" with
         return STARTED;
 ```
 
+
 ```
     case LOCKED_IN:
         if (block.nHeight < min_activation_height) {
@@ -389,6 +392,7 @@ For Bitcoin mainnet and testnet3, these BIPs are deployed by "version bits" with
         }
         return ACTIVE;
 ```
+
 
 For Bitcoin mainnet, the starttime is epoch timestamp 1619222400 (midnight 24 April 2021 UTC), timeout is epoch timestamp 1628640000 (midnight 11 August 2021 UTC), the threshold is 1815 blocks (90%) instead of 1916 blocks (95%), and the min_activation_height is block 709632.
 The deployment did activate at height 709632 on Bitcoin mainnet.

@@ -385,6 +385,7 @@ The following table describes mainnet compatibility options (95%, 2016 blocks):
 |minlockedblocks|n/a|2016|
 |minlockedtime|n/a|0|
 
+
 The following table describes testnet compatibility options (75%, 2016 blocks):
 
 
@@ -398,6 +399,7 @@ The following table describes testnet compatibility options (75%, 2016 blocks):
 |threshold|n/a|1512|
 |minlockedblocks|n/a|2016|
 |minlockedtime|n/a|0|
+
 
 
 <h2>Deployment</h2>

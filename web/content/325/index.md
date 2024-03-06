@@ -55,6 +55,7 @@ Signet requires all blocks to have a BIP 141 commitment in the coinbase transact
     y bytes - scriptWitness
 ```
 
+
 In the special case where an empty solution is valid (ie scriptSig and scriptWitness are both empty) this additional commitment can optionally be left out. This special case is to allow non-signet-aware block generation code to be used to test a custom signet chain where the challenge is trivially true.
 
 The scriptSig is serialized by first encoding its length as CompactSize. The scriptWitness stack is serialized as described in BIP 141.
@@ -77,6 +78,7 @@ The "to_spend" transaction is:
     vout[0].scriptPubKey = signet_challenge
 ```
 
+
 where block_data is the serialization of the block's nVersion, hashPrevBlock, signet_merkle_root, and nTime. The `signet_merkle_root` is obtained by generating the merkle root of the block transactions, after modifying the coinbase witness commitment by replacing the signet solution with an empty solution (that is, the witness commitment includes a four byte push of the Signet header with no additional solution data, and no prior pushes beginning with the Signet header). This means the merkle root of the block is different from the merkle root in the signet commitment. This is needed, because the signature can never be included in the very message (in this case, a block) that is being signed.
 
 The "to_sign" transaction is:
@@ -92,6 +94,7 @@ The "to_sign" transaction is:
     vout[0].nValue = 0
     vout[0].scriptPubKey = OP_RETURN
 ```
+
 
 The scriptSig and/or scriptWitness for `vin[0]` are filled in from the Signet header push above.
 

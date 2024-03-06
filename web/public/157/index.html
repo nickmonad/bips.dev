@@ -174,25 +174,10 @@ the genesis block is defined to be the 32-byte array of 0's.</p>
 <p><code>getcfilters</code> is used to request the compact filters of a particular
 type for a particular range of blocks. The message contains the following
 fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StartHeight</td></tr>
-<tr><td>uint32</td></tr>
-<tr><td>4</td></tr>
-<tr><td>The height of the first block in the requested range</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the requested range</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StartHeight</td><td>uint32</td><td>4</td><td>The height of the first block in the requested range</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the requested range</td></tr>
 </tbody></table>
 <ol>
 <li>Nodes SHOULD NOT send <code>getcfilters</code> unless the peer has signaled support for this filter type. Nodes receiving <code>getcfilters</code> with an unsupported filter type SHOULD NOT respond.</li>
@@ -203,29 +188,11 @@ fields:</p>
 <h4> cfilter </h4>
 <p><code>cfilter</code> is sent in response to <code>getcfilters</code>, one for
 each block in the requested range. The message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Byte identifying the type of filter being returned</td></tr>
-<tr><td>BlockHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>Block hash of the Bitcoin block for which the filter is being returned</td></tr>
-<tr><td>NumFilterBytes</td></tr>
-<tr><td>CompactSize</td></tr>
-<tr><td>1-5</td></tr>
-<tr><td>A variable length integer representing the size of the filter in the following field</td></tr>
-<tr><td>FilterBytes</td></tr>
-<tr><td>[]byte</td></tr>
-<tr><td>NumFilterBytes</td></tr>
-<tr><td>The serialized compact filter for this block</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Byte identifying the type of filter being returned</td></tr>
+<tr><td>BlockHash</td><td>[32]byte</td><td>32</td><td>Block hash of the Bitcoin block for which the filter is being returned</td></tr>
+<tr><td>NumFilterBytes</td><td>CompactSize</td><td>1-5</td><td>A variable length integer representing the size of the filter in the following field</td></tr>
+<tr><td>FilterBytes</td><td>[]byte</td><td>NumFilterBytes</td><td>The serialized compact filter for this block</td></tr>
 </tbody></table>
 <ol>
 <li>The FilterType SHOULD match the field in the <code>getcfilters</code> request, and BlockHash must correspond to a block that is an ancestor of StopHash with height greater than or equal to StartHeight.</li>
@@ -233,25 +200,10 @@ each block in the requested range. The message contains the following fields:</p
 <h4> getcfheaders </h4>
 <p><code>getcfheaders</code> is used to request verifiable filter headers for a
 range of blocks. The message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StartHeight</td></tr>
-<tr><td>uint32</td></tr>
-<tr><td>4</td></tr>
-<tr><td>The height of the first block in the requested range</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the requested range</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StartHeight</td><td>uint32</td><td>4</td><td>The height of the first block in the requested range</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the requested range</td></tr>
 </tbody></table>
 <ol>
 <li>Nodes SHOULD NOT send <code>getcfheaders</code> unless the peer has signaled support for this filter type. Nodes receiving <code>getcfheaders</code> with an unsupported filter type SHOULD NOT respond.</li>
@@ -264,33 +216,12 @@ of including the filter headers themselves, the response includes one filter
 header and a sequence of filter hashes, from which the headers can be derived.
 This has the benefit that the client can verify the binding links between the
 headers. The message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which hashes are requested</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the requested range</td></tr>
-<tr><td>PreviousFilterHeader</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The filter header preceding the first block in the requested range</td></tr>
-<tr><td>FilterHashesLength</td></tr>
-<tr><td>CompactSize</td></tr>
-<tr><td>1-3</td></tr>
-<tr><td>The length of the following vector of filter hashes</td></tr>
-<tr><td>FilterHashes</td></tr>
-<tr><td>[][32]byte</td></tr>
-<tr><td>FilterHashesLength * 32</td></tr>
-<tr><td>The filter hashes for each block in the requested range</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which hashes are requested</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the requested range</td></tr>
+<tr><td>PreviousFilterHeader</td><td>[32]byte</td><td>32</td><td>The filter header preceding the first block in the requested range</td></tr>
+<tr><td>FilterHashesLength</td><td>CompactSize</td><td>1-3</td><td>The length of the following vector of filter hashes</td></tr>
+<tr><td>FilterHashes</td><td>[][32]byte</td><td>FilterHashesLength * 32</td><td>The filter hashes for each block in the requested range</td></tr>
 </tbody></table>
 <ol>
 <li>The FilterType and StopHash SHOULD match the fields in the <code>getcfheaders</code> request.</li>
@@ -304,21 +235,9 @@ intervals over a range of blocks. Clients may use filter hashes from
 <code>getcfheaders</code> to connect these checkpoints, as is described in the
 <a href="#client-operation" target="_blank">Client Operation</a> section below. The
 <code>getcfcheckpt</code> message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the chain that headers are requested for</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the chain that headers are requested for</td></tr>
 </tbody></table>
 <ol>
 <li>Nodes SHOULD NOT send <code>getcfcheckpt</code> unless the peer has signaled support for this filter type. Nodes receiving <code>getcfcheckpt</code> with an unsupported filter type SHOULD NOT respond.</li>
@@ -329,29 +248,11 @@ intervals over a range of blocks. Clients may use filter hashes from
 filter headers included are the set of all filter headers on the requested chain
 where the height is a positive multiple of 1,000. The message contains the
 following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the chain that headers are requested for</td></tr>
-<tr><td>FilterHeadersLength</td></tr>
-<tr><td>CompactSize</td></tr>
-<tr><td>1-3</td></tr>
-<tr><td>The length of the following vector of filter headers</td></tr>
-<tr><td>FilterHeaders</td></tr>
-<tr><td>[][32]byte</td></tr>
-<tr><td>FilterHeadersLength * 32</td></tr>
-<tr><td>The filter headers at intervals of 1,000</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the chain that headers are requested for</td></tr>
+<tr><td>FilterHeadersLength</td><td>CompactSize</td><td>1-3</td><td>The length of the following vector of filter headers</td></tr>
+<tr><td>FilterHeaders</td><td>[][32]byte</td><td>FilterHeadersLength * 32</td><td>The filter headers at intervals of 1,000</td></tr>
 </tbody></table>
 <ol>
 <li>The FilterType and StopHash SHOULD match the fields in the <code>getcfcheckpt</code> request.</li>
@@ -613,25 +514,10 @@ the genesis block is defined to be the 32-byte array of 0's.</p>
 <p><code>getcfilters</code> is used to request the compact filters of a particular
 type for a particular range of blocks. The message contains the following
 fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StartHeight</td></tr>
-<tr><td>uint32</td></tr>
-<tr><td>4</td></tr>
-<tr><td>The height of the first block in the requested range</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the requested range</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StartHeight</td><td>uint32</td><td>4</td><td>The height of the first block in the requested range</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the requested range</td></tr>
 </tbody></table>
 <ol>
 <li>Nodes SHOULD NOT send <code>getcfilters</code> unless the peer has signaled support for this filter type. Nodes receiving <code>getcfilters</code> with an unsupported filter type SHOULD NOT respond.</li>
@@ -642,29 +528,11 @@ fields:</p>
 <h4> cfilter </h4>
 <p><code>cfilter</code> is sent in response to <code>getcfilters</code>, one for
 each block in the requested range. The message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Byte identifying the type of filter being returned</td></tr>
-<tr><td>BlockHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>Block hash of the Bitcoin block for which the filter is being returned</td></tr>
-<tr><td>NumFilterBytes</td></tr>
-<tr><td>CompactSize</td></tr>
-<tr><td>1-5</td></tr>
-<tr><td>A variable length integer representing the size of the filter in the following field</td></tr>
-<tr><td>FilterBytes</td></tr>
-<tr><td>[]byte</td></tr>
-<tr><td>NumFilterBytes</td></tr>
-<tr><td>The serialized compact filter for this block</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Byte identifying the type of filter being returned</td></tr>
+<tr><td>BlockHash</td><td>[32]byte</td><td>32</td><td>Block hash of the Bitcoin block for which the filter is being returned</td></tr>
+<tr><td>NumFilterBytes</td><td>CompactSize</td><td>1-5</td><td>A variable length integer representing the size of the filter in the following field</td></tr>
+<tr><td>FilterBytes</td><td>[]byte</td><td>NumFilterBytes</td><td>The serialized compact filter for this block</td></tr>
 </tbody></table>
 <ol>
 <li>The FilterType SHOULD match the field in the <code>getcfilters</code> request, and BlockHash must correspond to a block that is an ancestor of StopHash with height greater than or equal to StartHeight.</li>
@@ -672,25 +540,10 @@ each block in the requested range. The message contains the following fields:</p
 <h4> getcfheaders </h4>
 <p><code>getcfheaders</code> is used to request verifiable filter headers for a
 range of blocks. The message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StartHeight</td></tr>
-<tr><td>uint32</td></tr>
-<tr><td>4</td></tr>
-<tr><td>The height of the first block in the requested range</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the requested range</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StartHeight</td><td>uint32</td><td>4</td><td>The height of the first block in the requested range</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the requested range</td></tr>
 </tbody></table>
 <ol>
 <li>Nodes SHOULD NOT send <code>getcfheaders</code> unless the peer has signaled support for this filter type. Nodes receiving <code>getcfheaders</code> with an unsupported filter type SHOULD NOT respond.</li>
@@ -703,33 +556,12 @@ of including the filter headers themselves, the response includes one filter
 header and a sequence of filter hashes, from which the headers can be derived.
 This has the benefit that the client can verify the binding links between the
 headers. The message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which hashes are requested</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the requested range</td></tr>
-<tr><td>PreviousFilterHeader</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The filter header preceding the first block in the requested range</td></tr>
-<tr><td>FilterHashesLength</td></tr>
-<tr><td>CompactSize</td></tr>
-<tr><td>1-3</td></tr>
-<tr><td>The length of the following vector of filter hashes</td></tr>
-<tr><td>FilterHashes</td></tr>
-<tr><td>[][32]byte</td></tr>
-<tr><td>FilterHashesLength * 32</td></tr>
-<tr><td>The filter hashes for each block in the requested range</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which hashes are requested</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the requested range</td></tr>
+<tr><td>PreviousFilterHeader</td><td>[32]byte</td><td>32</td><td>The filter header preceding the first block in the requested range</td></tr>
+<tr><td>FilterHashesLength</td><td>CompactSize</td><td>1-3</td><td>The length of the following vector of filter hashes</td></tr>
+<tr><td>FilterHashes</td><td>[][32]byte</td><td>FilterHashesLength * 32</td><td>The filter hashes for each block in the requested range</td></tr>
 </tbody></table>
 <ol>
 <li>The FilterType and StopHash SHOULD match the fields in the <code>getcfheaders</code> request.</li>
@@ -743,21 +575,9 @@ intervals over a range of blocks. Clients may use filter hashes from
 <code>getcfheaders</code> to connect these checkpoints, as is described in the
 <a href="#client-operation" target="_blank">Client Operation</a> section below. The
 <code>getcfcheckpt</code> message contains the following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the chain that headers are requested for</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the chain that headers are requested for</td></tr>
 </tbody></table>
 <ol>
 <li>Nodes SHOULD NOT send <code>getcfcheckpt</code> unless the peer has signaled support for this filter type. Nodes receiving <code>getcfcheckpt</code> with an unsupported filter type SHOULD NOT respond.</li>
@@ -768,29 +588,11 @@ intervals over a range of blocks. Clients may use filter hashes from
 filter headers included are the set of all filter headers on the requested chain
 where the height is a positive multiple of 1,000. The message contains the
 following fields:</p>
-<table><thead><tr><th>Field Name</th></tr></thead><tbody>
-<tr><td>Data Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Byte Size</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>FilterType</td></tr>
-<tr><td>byte</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Filter type for which headers are requested</td></tr>
-<tr><td>StopHash</td></tr>
-<tr><td>[32]byte</td></tr>
-<tr><td>32</td></tr>
-<tr><td>The hash of the last block in the chain that headers are requested for</td></tr>
-<tr><td>FilterHeadersLength</td></tr>
-<tr><td>CompactSize</td></tr>
-<tr><td>1-3</td></tr>
-<tr><td>The length of the following vector of filter headers</td></tr>
-<tr><td>FilterHeaders</td></tr>
-<tr><td>[][32]byte</td></tr>
-<tr><td>FilterHeadersLength * 32</td></tr>
-<tr><td>The filter headers at intervals of 1,000</td></tr>
+<table><thead><tr><th>Field Name</th><th>Data Type</th><th>Byte Size</th><th>Description</th></tr></thead><tbody>
+<tr><td>FilterType</td><td>byte</td><td>1</td><td>Filter type for which headers are requested</td></tr>
+<tr><td>StopHash</td><td>[32]byte</td><td>32</td><td>The hash of the last block in the chain that headers are requested for</td></tr>
+<tr><td>FilterHeadersLength</td><td>CompactSize</td><td>1-3</td><td>The length of the following vector of filter headers</td></tr>
+<tr><td>FilterHeaders</td><td>[][32]byte</td><td>FilterHeadersLength * 32</td><td>The filter headers at intervals of 1,000</td></tr>
 </tbody></table>
 <ol>
 <li>The FilterType and StopHash SHOULD match the fields in the <code>getcfcheckpt</code> request.</li>
@@ -909,9 +711,9 @@ Corallo for useful discussions.</p>
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

@@ -89,10 +89,10 @@ to specify where a refund should be sent.
     }
 ```
 
-|||
-|-|-|
 |amount|Number of satoshis (0.00000001 BTC) to be paid|
+|-|-|
 |script|a "TxOut" script where payment should be sent. This will normally be one of the standard Bitcoin transaction scripts (e.g. pubkey OP_CHECKSIG). This is optional to enable future extensions to this protocol that derive Outputs from a master public key and the PaymentRequest data itself.|
+
 
 <h3>PaymentDetails/PaymentRequest</h3>
 
@@ -113,15 +113,15 @@ about the merchant and a digital signature.
     }
 ```
 
-|||
-|-|-|
 |network|either "main" for payments on the production Bitcoin network, or "test" for payments on test network. If a client receives a PaymentRequest for a network it does not support it must reject the request.|
+|-|-|
 |outputs|one or more outputs where Bitcoins are to be sent. If the sum of outputs.amount is zero, the customer will be asked how much to pay, and the bitcoin client may choose any or all of the Outputs (if there are more than one) for payment. If the sum of outputs.amount is non-zero, then the customer will be asked to pay the sum, and the payment shall be split among the Outputs with non-zero amounts (if there are more than one; Outputs with zero amounts shall be ignored).|
 |time|Unix timestamp (seconds since 1-Jan-1970 UTC) when the PaymentRequest was created.|
 |expires|Unix timestamp (UTC) after which the PaymentRequest should be considered invalid.|
 |memo|UTF-8 encoded, plain-text (no formatting) note that should be displayed to the customer, explaining what this PaymentRequest is for.|
 |payment_url|Secure (usually https) location where a Payment message (see below) may be sent to obtain a PaymentACK.|
 |merchant_data|Arbitrary data that may be used by the merchant to identify the PaymentRequest. May be omitted if the merchant does not need to associate Payments with PaymentRequest or if they associate each PaymentRequest with a separate payment address.|
+
 
 The payment_url specified in the PaymentDetails should remain valid at least until the PaymentDetails
 expires (or as long as possible if the PaymentDetails does not expire). Note that this is irrespective of
@@ -140,13 +140,13 @@ A PaymentRequest is PaymentDetails optionally tied to a merchant's identity:
     }
 ```
 
-|||
-|-|-|
 |payment_details_version|See below for a discussion of versioning/upgrading.|
+|-|-|
 |pki_type|public-key infrastructure (PKI) system being used to identify the merchant. All implementation should support "none", "x509+sha256" and "x509+sha1".|
 |pki_data|PKI-system data that identifies the merchant and can be used to create a digital signature. In the case of X.509 certificates, pki_data contains one or more X.509 certificates (see Certificates section below).|
 |serialized_payment_details|A protocol-buffer serialized PaymentDetails message.|
 |signature|digital signature over a hash of the protocol buffer serialized variation of the PaymentRequest message,|
+
 When a Bitcoin wallet application receives a PaymentRequest, it must authorize payment by doing the following:
 
 1.  Validate the merchant's identity and signature using the PKI system, if the pki_type is not "none".
@@ -170,12 +170,12 @@ Payment messages are sent after the customer has authorized payment:
     }
 ```
 
-|||
-|-|-|
 |merchant_data|copied from PaymentDetails.merchant_data. Merchants may use invoice numbers or any other data they require to match Payments to  PaymentRequests. Note that malicious clients may modify the merchant_data, so should be authenticated in some way (for example, signed with a merchant-only key).|
+|-|-|
 |transactions|One or more valid, signed Bitcoin transactions that fully pay the PaymentRequest|
 |refund_to|One or more outputs where the merchant may return funds, if necessary. The merchant may return funds using these outputs for up to 2 months|
 |memo|UTF-8 encoded, plain-text note from the customer to the merchant.|
+
 If the customer authorizes payment, then the Bitcoin client:
 
 1.  Creates and signs one or more transactions that satisfy (pay in full) PaymentDetails.outputs
@@ -223,10 +223,10 @@ Payment message:
     }
 ```
 
-|||
-|-|-|
 |payment|Copy of the Payment message that triggered this PaymentACK. Clients may ignore this if they implement another way of associating Payments with PaymentACKs.|
+|-|-|
 |memo|UTF-8 encoded note that should be displayed to the customer giving the status of the transaction (e.g. "Payment of 1 BTC for eleven tribbles accepted for processing.")|
+
 
 PaymentACK messages larger than 60,000 bytes should be rejected by
 the wallet application, to mitigate denial-of-service attacks. This

@@ -56,6 +56,7 @@ Block template creation can be influenced by various parameters:
 |capabilities|No|Array of Strings|SHOULD contain a list of the following, to indicate client-side support: <a href="#Optional: Long Polling" target="_blank">"longpoll"</a>, "coinbasetxn", "coinbasevalue", <a href="/23" target="_blank">"proposal"</a>, <a href="/23" target="_blank">"serverlist"</a>, "workid", and any of the <a href="/23" target="_blank">mutations</a>|
 |mode|No|String|MUST be "template" or omitted|
 
+
 getblocktemplate MUST return a JSON Object containing the following keys:
 
 |Key|Required|Type|Description|
@@ -73,6 +74,7 @@ getblocktemplate MUST return a JSON Object containing the following keys:
 |coinbasevalue|this or ↑|Number|total funds available for the coinbase (in Satoshis)|
 |workid|No|String|if provided, this value must be returned with results (see <a href="#Block Submission" target="_blank">Block Submission</a>)|
 
+
 <h4> Transactions Object Format </h4>
 
 
@@ -87,6 +89,7 @@ The Objects listed in the response's "transactions" key contains these keys:
 |hash|String|hash/id encoded in little-endian hexadecimal|
 |required|Boolean|if provided and true, this transaction must be in the final block|
 |sigops|Number|total number of SigOps, as counted for purposes of block limits; if key is not present, sigop count is unknown and clients MUST NOT assume there aren't any|
+
 
 Only the "data" key is required, but servers should provide the others if they are known.
 
@@ -103,6 +106,7 @@ the second is an Object of parameters, and is optional if parameters are not nee
 |-|-|-|
 |workid|String|if the server provided a workid, it MUST be included with submissions|
 
+
 This method MUST return either null (when a share is accepted), a String describing briefly the reason the share was rejected, or an Object of these with a key for each merged-mining chain the share was submitted to.
 
 <h3>Optional: Long Polling</h3>
@@ -115,11 +119,13 @@ This method MUST return either null (when a share is accepted), a String describ
 |longpollid|String|"longpollid" of job to monitor for expiration; required and valid only for long poll requests|
 
 
+
 |Key|Type|Description|
 |-|-|-|
 |longpollid|String|identifier for long poll request; MUST be omitted if the server does not support long polling|
 |longpolluri|String|if provided, an alternate URI to use for long poll requests|
 |submitold|Boolean|only relevant for long poll responses: indicates if work received prior to this response remains potentially valid (default) and should have its shares submitted; if false, the miner may wish to discard its share queue|
+
 
 If the server supports long polling, it MUST include a "longpollid" key in block templates, and it MUST be unique for each event:
 any given "longpollid" should check for only one condition and not be reused.
@@ -154,6 +160,7 @@ In the case of a "Forbidden" response (for example, HTTP 403), a client SHOULD N
 |sizelimit|Number or Boolean|maximum number of bytes to use for the entire block|
 |maxversion|Number|highest block version number supported|
 
+
 For "sigoplimit" and "sizelimit", negative values and zero are offset from the server-determined block maximum.
 If a Boolean is provided and true, the default limit is used; if false, the server is instructed not to use any limits on returned template.
 Servers SHOULD respect these desired maximums, but are NOT required to:
@@ -183,6 +190,7 @@ Possible reasons a share may be rejected include, but are not limited to:
 |time-too-old|the time was too far in the past|
 |unknown-user|the user submitting the block was not recognized|
 |unknown-work|the template or workid could not be identified|
+
 
 <h2>Motivation</h2>
 

@@ -95,6 +95,7 @@ Example:
       {"cp":"XBTUSD-european", "quote":"USD", "base": "XBT", "locale": "en_GB"}
 ```
 
+
 <h3>Currency-pair information</h3>
 
 
@@ -133,6 +134,7 @@ Example:
       {"cp":"2", "quote":"USD", "base": "XBT", "locale": "en_US", "desc": "Updated per-trade", "longdesc": "Maximum precision USD price quotes as compared to Bitcoin value", "symbol": [["-$", "$"], null], "digits": "arabic", "grouping": [3, ",", 0], "fraction_sep": ".", "fraction_digits": [0, 2, 2], "minpoll": 3600, "longpoll": false, "history": 1467458333.1225}
 ```
 
+
 <h3>Current exchange rate</h3>
 
 
@@ -162,6 +164,7 @@ Example:
       {"cp":"XBTUSD-ver4", "time": 1488767410.5463133, "rates": {"typical": 1349.332215, "high": 1351.2}}
       {"cp":"2", "time": 1488767410, "rates": {"typical": 1350.111332}}
 ```
+
 
 <h3>Historical exchange rates</h3>
 
@@ -207,6 +210,7 @@ Example:
       {"cp":"XBTUSD-ver4", "time": 1488760082, "rates": {"typical": 1309}}
       {"cp":"2", "time": 1488760082, "rates": {"typical": 1309.1}}
 ```
+
 
 <h2>Motivation</h2>
 

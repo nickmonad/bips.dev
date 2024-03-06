@@ -48,6 +48,14 @@ By extending the suffix, we can specify what kind of bitcoin address was associa
 Currently, private keys are stored as a uint256 (private key data) followed by an optional uint8 (compressed flag). The latter is extended to specify the address types:
 
 
+|Value|Type|Compr|Clarification|
+|-|-|-|-|
+|No suffix|P2PKH_UNCOMPRESSED|No|Uncompressed legacy public key. Unknown public key format|
+|`0x01`|P2PKH_COMPRESSED|Yes|Compressed legacy public key. Unknown public key format|
+|`0x10`|P2PKH|Yes|Compressed legacy public key. Legacy public key format (`1...`)|
+|`0x11`|P2WPKH|Yes|Bech32 format (native Segwit)|
+|`0x12`|P2WPKH_P2SH|Yes|Segwit nested in BIP16 P2SH (`3...`)|
+
 
 When a wallet imports a private key, it will have two outcomes:
 

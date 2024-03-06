@@ -100,6 +100,7 @@ The responding peer needs to check if the hash matches the hash calculated with 
 |32bytes|challenge-hash|hash|`hash(encryption-session-ID|challenge_type|remote-peers-expected-identity-public-key)`|
 
 
+
 `challenge_type` is a single character. `i` if the `AUTHCHALLENGE`-message is the first, requesting challenge or `r` if it's the second, remote peers challenge message.
 
 <h3> <code>AUTHREPLY</code> message </h3>
@@ -110,6 +111,7 @@ A peer must reply an `AUTHCHALLENGE`-message with an `AUTHREPLY`-message.
 |Field Size|Description|Data type|Comments|
 |-|-|-|-|
 |64bytes|signature|normalized comp.-signature|A signature of the encryption-session-ID done with the identity-key|
+
 
 If the challenge-hash from the `AUTHCHALLENGE`-message did not match the local authentication public-key, the signature must contain 64 bytes of zeros.
 
@@ -129,6 +131,7 @@ The `AUTHPROPOSE` message must be answered with an `AUTHCHALLENGE`-message - eve
 |Field Size|Description|Data type|Comments|
 |-|-|-|-|
 |32bytes|auth-propose-hash|hash|`hash(encryption-session-ID|"p"|identity-public-key)`|
+
 
 <h2> Post-Authentication Re-Keying </h2>
 
@@ -171,6 +174,7 @@ Authentication
     [32 bytes, hash(encryption-session-ID || "i" || <remote-peers-expected-identity-public-key>)]
 ```
 
+
 1.  Responding peer does create the same hash `(encryption-session-ID || "i" || <remote-peers-expected-identity-public-key>)` with its local identity-public-key
 1.  If the hash does not match, response with an `AUTHREPLY` message containing 64bytes of zeros.
 1.  In case of a match, response with an `AUTHREPLY` message
@@ -180,6 +184,7 @@ Authentication
     [64 bytes normalized compact ECDSA signature (H)] (sig of the encryption-session-ID done with the identity-key)
 ```
 
+
 1.  Requesting peer does verify the signature with the `remote-peers-identity-public-key`
 1.  If the signature is invalid, requesting peer answers with an `AUTHREPLY` message containing 32 random bytes
 1.  In case of a valid signature, requesting peer sends an `AUTHPROPOSE` message
@@ -188,6 +193,7 @@ Authentication
   AUTHPROPOSE:
     [32 bytes, hash(encryption-session-ID || "p" || <client-identity-public-key>)]
 ```
+
 
 1.  Responding peer iterates over authorized-peers database (A), hashes the identical data and looks for a match.
 1.  If the hash does not match, responding peer answer with an `AUTHCHALLENGE` message containing 32 bytes of zeros.
@@ -203,6 +209,7 @@ Authentication
 # Responding peer must verify the signature and can grant access to restricted services.
 # Both peers re-key the encryption after BIP151 including the requesting-peer-identity-public-key and responding-peer-identity-public-key
 ```
+
 
 <h2> Disadvantages </h2>
 

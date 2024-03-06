@@ -70,6 +70,7 @@ Payment base denoted as `payment_base`:
     m / purpose' / coin_type'
 ```
 
+
 Payment address denoted as `payment_address`:
 
 ```
@@ -77,6 +78,7 @@ Payment address denoted as `payment_address`:
     or
     m / payment_base / contract_hash
 ```
+
 
 Each level has special meaning described in the chapters below.
 
@@ -109,11 +111,13 @@ For a given contract documents denoted by c<sub>1</sub>,...,c<sub>n</sub>, payme
   h(c1),...,h(cn)
 ```
 
+
 2. Sort all hashes lexicographically.
 
 ```
   hash_1,...,hash_n
 ```
+
 
 3. Prepend payment_base and concatenate the sorted hashes and apply the hash function.
 
@@ -121,17 +125,20 @@ For a given contract documents denoted by c<sub>1</sub>,...,c<sub>n</sub>, payme
   h(payment_base+hash_1+...+hash_n)
 ```
 
+
 4. Compute a partial BIP32 derivation path from the combined hash as defined in Hash to Partial Derivation Path Mapping procedure below.
 
 ```
   contract_hash
 ```
 
+
 5. Prepend `payment_base` to contract_hash derivation path.
 
 ```
   payment_base / contract_hash
 ```
+
 
 6. Compute public extended key from the derivation path in step 5.
 
@@ -179,6 +186,7 @@ For the following given inputs:
   0
 ```
 
+
 we can compute payment base as follows:
 
 ```
@@ -187,6 +195,7 @@ we can compute payment base as follows:
   contract base public extended key:
   xpub6B3JSEWjqm5GgfzcjPwBixxLPzi15pFM3jq4E4yCzXXUFS5MFdXiSdw7b5dbdPGHuc7c1V4zXbbFRtc9G1njMUt9ZvMdGVGYQSQsurD6HAW
 ```
+
 
 In the below examples, we are going to use SHA256 as a cryptographic hash function, and the above contract base public key.
 
@@ -201,11 +210,13 @@ document 1:
   bar
 ```
 
+
 document 2:
 
 ```
   foo
 ```
+
 
 1. Apply the hash function:
 
@@ -216,12 +227,14 @@ document 2:
   2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae
 ```
 
+
 2. Sort all hashes lexicographically:
 
 ```
   2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae
   fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9
 ```
+
 
 3. Concatenate hashes and apply the hash function.
 
@@ -232,11 +245,13 @@ document 2:
   310057788c6073640dc222466d003411cd5c1cc0bf2803fc6ebbfae03ceb4451
 ```
 
+
 4. Compute the partial BIP32 derivation path of the combined hash.
 
 ```
   12544/22392/35936/29540/3522/8774/27904/13329/52572/7360/48936/1020/28347/64224/15595/17489
 ```
+
 
 5. Prepend `payment_base` to `contract_hash` derivation path.
 
@@ -246,17 +261,20 @@ document 2:
   m/175'/0'/12544/22392/35936/29540/3522/8774/27904/13329/52572/7360/48936/1020/28347/64224/15595/17489
 ```
 
+
 6. Compute public extended key.
 
 ```
   xpub6hefaATTG5LbcwyPDvmNfnkyzefoM2TJDoo5astH7Gvs1g8vZURviBWvAvBnWc2CNb8ybJ6mDpnQYVsvNSZ3oUmbssX3rUVG97TFYa6AXVk
 ```
 
+
 7. Compute address of the public extended key (P2PKH).
 
 ```
   1C7f322izqMqLzZzfzkPAjxBzprxDi47Yf
 ```
+
 
 
 <h4>Verification example (negative test)</h4>
@@ -270,11 +288,13 @@ document 1:
   baz
 ```
 
+
 1. Apply the hash function.
 
 ```
   baa5a0964d3320fbc0c6a922140453c8513ea24ab8fd0577034804a967248096
 ```
+
 
 2. Prepend payment_base
 
@@ -282,17 +302,20 @@ document 1:
   xpub6B3JSEWjqm5GgfzcjPwBixxLPzi15pFM3jq4E4yCzXXUFS5MFdXiSdw7b5dbdPGHuc7c1V4zXbbFRtc9G1njMUt9ZvMdGVGYQSQsurD6HAWbaa5a0964d3320fbc0c6a922140453c8513ea24ab8fd0577034804a967248096
 ```
 
+
 2. Apply hash function
 
 ```
   3a08605829413ce0bf551b08d21e4a28dbda6e407f90eff1c448e839050c73a1
 ```
 
+
 3. Compute the partial derivation path.
 
 ```
   5338/54412/19213/962/30664/62597/11873/59874/56779/24089/54550/19585/28087/36422/18666/17562
 ```
+
 
 4. Prepend contract_base<sub>pub</sub> to contract_hash derivation path.
 
@@ -302,17 +325,20 @@ document 1:
   m/175'/0'/5338/54412/19213/962/30664/62597/11873/59874/56779/24089/54550/19585/28087/36422/18666/17562
 ```
 
+
 5. Compute public extended key.
 
 ```
   xpub6h9k2KqsMpwghxt7naj1puhGV1ZDC88sxvpYN1HibCf8yQZdPsuhYmmvdK32Kf2Lb3rS1sV8UcZ1f84DJEiXuVfLCAj4bC85aEUCxh38m8i
 ```
 
+
 7. Compute address of the public extended key (P2PKH).
 
 ```
   1QGe5LaDMAmHeibJbZBmZqhQDZSp7QCqSs
 ```
+
 
 8. As expected the address doesn't match the Bitcoin address from the last example `1C7f322izqMqLzZzfzkPAjxBzprxDi47Yf`.
 

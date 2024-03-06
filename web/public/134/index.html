@@ -143,6 +143,18 @@ integer value (id, below) is equally important to the written name.
 If any token found that is not covered in the next table it will make the
 transaction that contains it invalid.</p>
 <table><thead><tr><th>Name</th><th>id</th><th>Format</th><th>Default Value</th><th>Description</th></tr></thead><tbody>
+<tr><td>TxEnd</td><td>0</td><td>BoolTrue</td><td>Required</td><td>A marker that is the end of the transaction</td></tr>
+<tr><td>TxInPrevHash</td><td>1</td><td>ByteArray</td><td>Required</td><td>TxId we are spending</td></tr>
+<tr><td>TxPrevIndex</td><td>2</td><td>Integer</td><td>0</td><td>Index in prev tx we are spending (applied to previous TxInPrevHash)</td></tr>
+<tr><td>TxInputStackItem</td><td>3</td><td>ByteArray</td><td> </td><td>A 'push' of the input script</td></tr>
+<tr><td>TxInputStackItemContinued</td><td>4</td><td>ByteArray</td><td>&amp;nsbp;</td><td>Another section for the same input</td></tr>
+<tr><td>TxOutValue</td><td>5</td><td>Integer</td><td>Required</td><td>Amount of Satoshis to transfer</td></tr>
+<tr><td>TxOutScript</td><td>6</td><td>ByteArray</td><td>Required</td><td>The output script</td></tr>
+<tr><td>TxRelativeBlockLock</td><td>7</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of blocks (max 0XFFFF) after that input was mined, it can be mined</td></tr>
+<tr><td>TxRelativeTimeLock</td><td>8</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of time (max 0XFFFF) after that input was mined, it can be mined. 1 Unit is 512 seconds</td></tr>
+<tr><td>CoinbaseMessage</td><td>9</td><td>ByteArray</td><td>Optional</td><td>A message and some data for a coinbase transaction. Can't be used in combination with any TxIn* tags</td></tr>
+<tr><td>NOP_1x</td><td>1x</td><td> </td><td>Optional</td><td>Values that will be ignored by anyone parsing the transaction</td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td></tr>
 </tbody></table>
 <h3> Scripting changes </h3>
 <p>In Bitcoin transactions version 1, checking of signatures is performed by
@@ -173,6 +185,11 @@ similarly have to be set after the TxInPrevHash they belong to.</p>
 <p>Similarly, the TxInputStackItem always has to be the first and can be
 followed by a number of TxInputStackItemContinued items.</p>
 <p>At a larger scope we define 3 sections of a transaction.</p>
+<table><thead><tr><th>Segment</th><th>Tags</th><th>Description</th></tr></thead><tbody>
+<tr><td>Transaction</td><td>all not elsewhere used</td><td>This section is used to make the TxId</td></tr>
+<tr><td>Signatures</td><td>TxInputStackItem, TxInputStackItemContinued</td><td>The input-proofs</td></tr>
+<tr><td>TxEnd</td><td>TxEnd</td><td> </td></tr>
+</tbody></table>
 <p>The TxId is calculated by taking the serialized transaction without the
 Signatures and the TxEnd and hashing that.</p>
 <p>TxEnd is there to allow a parser to know when one transaction in a stream
@@ -358,6 +375,18 @@ integer value (id, below) is equally important to the written name.
 If any token found that is not covered in the next table it will make the
 transaction that contains it invalid.</p>
 <table><thead><tr><th>Name</th><th>id</th><th>Format</th><th>Default Value</th><th>Description</th></tr></thead><tbody>
+<tr><td>TxEnd</td><td>0</td><td>BoolTrue</td><td>Required</td><td>A marker that is the end of the transaction</td></tr>
+<tr><td>TxInPrevHash</td><td>1</td><td>ByteArray</td><td>Required</td><td>TxId we are spending</td></tr>
+<tr><td>TxPrevIndex</td><td>2</td><td>Integer</td><td>0</td><td>Index in prev tx we are spending (applied to previous TxInPrevHash)</td></tr>
+<tr><td>TxInputStackItem</td><td>3</td><td>ByteArray</td><td> </td><td>A 'push' of the input script</td></tr>
+<tr><td>TxInputStackItemContinued</td><td>4</td><td>ByteArray</td><td>&amp;nsbp;</td><td>Another section for the same input</td></tr>
+<tr><td>TxOutValue</td><td>5</td><td>Integer</td><td>Required</td><td>Amount of Satoshis to transfer</td></tr>
+<tr><td>TxOutScript</td><td>6</td><td>ByteArray</td><td>Required</td><td>The output script</td></tr>
+<tr><td>TxRelativeBlockLock</td><td>7</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of blocks (max 0XFFFF) after that input was mined, it can be mined</td></tr>
+<tr><td>TxRelativeTimeLock</td><td>8</td><td>Integer</td><td>Optional</td><td>Part of the input stating the amount of time (max 0XFFFF) after that input was mined, it can be mined. 1 Unit is 512 seconds</td></tr>
+<tr><td>CoinbaseMessage</td><td>9</td><td>ByteArray</td><td>Optional</td><td>A message and some data for a coinbase transaction. Can't be used in combination with any TxIn* tags</td></tr>
+<tr><td>NOP_1x</td><td>1x</td><td> </td><td>Optional</td><td>Values that will be ignored by anyone parsing the transaction</td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td></tr>
 </tbody></table>
 <h3> Scripting changes </h3>
 <p>In Bitcoin transactions version 1, checking of signatures is performed by
@@ -388,6 +417,11 @@ similarly have to be set after the TxInPrevHash they belong to.</p>
 <p>Similarly, the TxInputStackItem always has to be the first and can be
 followed by a number of TxInputStackItemContinued items.</p>
 <p>At a larger scope we define 3 sections of a transaction.</p>
+<table><thead><tr><th>Segment</th><th>Tags</th><th>Description</th></tr></thead><tbody>
+<tr><td>Transaction</td><td>all not elsewhere used</td><td>This section is used to make the TxId</td></tr>
+<tr><td>Signatures</td><td>TxInputStackItem, TxInputStackItemContinued</td><td>The input-proofs</td></tr>
+<tr><td>TxEnd</td><td>TxEnd</td><td> </td></tr>
+</tbody></table>
 <p>The TxId is calculated by taking the serialized transaction without the
 Signatures and the TxEnd and hashing that.</p>
 <p>TxEnd is there to allow a parser to know when one transaction in a stream
@@ -461,9 +495,9 @@ Distribution of the work or derivative of the work in any standard (paper) book 
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

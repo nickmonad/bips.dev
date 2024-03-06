@@ -170,26 +170,12 @@ type for a particular range of blocks. The message contains the following
 fields:
 
 
-|Field Name|
-|-|
-|Data Type|
-|-|
-|Byte Size|
-|-|
-|Description|
-|-|
-|FilterType|
-|byte|
-|1|
-|Filter type for which headers are requested|
-|StartHeight|
-|uint32|
-|4|
-|The height of the first block in the requested range|
-|StopHash|
-|[32]byte|
-|32|
-|The hash of the last block in the requested range|
+|Field Name|Data Type|Byte Size|Description|
+|-|-|-|-|
+|FilterType|byte|1|Filter type for which headers are requested|
+|StartHeight|uint32|4|The height of the first block in the requested range|
+|StopHash|[32]byte|32|The hash of the last block in the requested range|
+
 
 1.  Nodes SHOULD NOT send `getcfilters` unless the peer has signaled support for this filter type. Nodes receiving `getcfilters` with an unsupported filter type SHOULD NOT respond.
 1.  StopHash MUST be known to belong to a block accepted by the receiving peer. This is the case if the peer had previously sent a `headers` or `inv` message with that block or any descendents. A node that receives `getcfilters` with an unknown StopHash SHOULD NOT respond.
@@ -203,30 +189,13 @@ fields:
 each block in the requested range. The message contains the following fields:
 
 
-|Field Name|
-|-|
-|Data Type|
-|-|
-|Byte Size|
-|-|
-|Description|
-|-|
-|FilterType|
-|byte|
-|1|
-|Byte identifying the type of filter being returned|
-|BlockHash|
-|[32]byte|
-|32|
-|Block hash of the Bitcoin block for which the filter is being returned|
-|NumFilterBytes|
-|CompactSize|
-|1-5|
-|A variable length integer representing the size of the filter in the following field|
-|FilterBytes|
-|[]byte|
-|NumFilterBytes|
-|The serialized compact filter for this block|
+|Field Name|Data Type|Byte Size|Description|
+|-|-|-|-|
+|FilterType|byte|1|Byte identifying the type of filter being returned|
+|BlockHash|[32]byte|32|Block hash of the Bitcoin block for which the filter is being returned|
+|NumFilterBytes|CompactSize|1-5|A variable length integer representing the size of the filter in the following field|
+|FilterBytes|[]byte|NumFilterBytes|The serialized compact filter for this block|
+
 
 1.  The FilterType SHOULD match the field in the `getcfilters` request, and BlockHash must correspond to a block that is an ancestor of StopHash with height greater than or equal to StartHeight.
 
@@ -237,26 +206,12 @@ each block in the requested range. The message contains the following fields:
 range of blocks. The message contains the following fields:
 
 
-|Field Name|
-|-|
-|Data Type|
-|-|
-|Byte Size|
-|-|
-|Description|
-|-|
-|FilterType|
-|byte|
-|1|
-|Filter type for which headers are requested|
-|StartHeight|
-|uint32|
-|4|
-|The height of the first block in the requested range|
-|StopHash|
-|[32]byte|
-|32|
-|The hash of the last block in the requested range|
+|Field Name|Data Type|Byte Size|Description|
+|-|-|-|-|
+|FilterType|byte|1|Filter type for which headers are requested|
+|StartHeight|uint32|4|The height of the first block in the requested range|
+|StopHash|[32]byte|32|The hash of the last block in the requested range|
+
 
 1.  Nodes SHOULD NOT send `getcfheaders` unless the peer has signaled support for this filter type. Nodes receiving `getcfheaders` with an unsupported filter type SHOULD NOT respond.
 1.  StopHash MUST be known to belong to a block accepted by the receiving peer. This is the case if the peer had previously sent a `headers` or `inv` message with that block or any descendents. A node that receives `getcfheaders` with an unknown StopHash SHOULD NOT respond.
@@ -272,34 +227,14 @@ This has the benefit that the client can verify the binding links between the
 headers. The message contains the following fields:
 
 
-|Field Name|
-|-|
-|Data Type|
-|-|
-|Byte Size|
-|-|
-|Description|
-|-|
-|FilterType|
-|byte|
-|1|
-|Filter type for which hashes are requested|
-|StopHash|
-|[32]byte|
-|32|
-|The hash of the last block in the requested range|
-|PreviousFilterHeader|
-|[32]byte|
-|32|
-|The filter header preceding the first block in the requested range|
-|FilterHashesLength|
-|CompactSize|
-|1-3|
-|The length of the following vector of filter hashes|
-|FilterHashes|
-|[][32]byte|
-|FilterHashesLength * 32|
-|The filter hashes for each block in the requested range|
+|Field Name|Data Type|Byte Size|Description|
+|-|-|-|-|
+|FilterType|byte|1|Filter type for which hashes are requested|
+|StopHash|[32]byte|32|The hash of the last block in the requested range|
+|PreviousFilterHeader|[32]byte|32|The filter header preceding the first block in the requested range|
+|FilterHashesLength|CompactSize|1-3|The length of the following vector of filter hashes|
+|FilterHashes|[][32]byte|FilterHashesLength * 32|The filter hashes for each block in the requested range|
+
 
 1.  The FilterType and StopHash SHOULD match the fields in the `getcfheaders` request.
 1.  FilterHashesLength MUST NOT be greater than 2,000.
@@ -316,22 +251,11 @@ intervals over a range of blocks. Clients may use filter hashes from
 `getcfcheckpt` message contains the following fields:
 
 
-|Field Name|
-|-|
-|Data Type|
-|-|
-|Byte Size|
-|-|
-|Description|
-|-|
-|FilterType|
-|byte|
-|1|
-|Filter type for which headers are requested|
-|StopHash|
-|[32]byte|
-|32|
-|The hash of the last block in the chain that headers are requested for|
+|Field Name|Data Type|Byte Size|Description|
+|-|-|-|-|
+|FilterType|byte|1|Filter type for which headers are requested|
+|StopHash|[32]byte|32|The hash of the last block in the chain that headers are requested for|
+
 
 1.  Nodes SHOULD NOT send `getcfcheckpt` unless the peer has signaled support for this filter type. Nodes receiving `getcfcheckpt` with an unsupported filter type SHOULD NOT respond.
 1.  StopHash MUST be known to belong to a block accepted by the receiving peer. This is the case if the peer had previously sent a `headers` or `inv` message with any descendent blocks. A node that receives `getcfcheckpt` with an unknown StopHash SHOULD NOT respond.
@@ -345,30 +269,13 @@ where the height is a positive multiple of 1,000. The message contains the
 following fields:
 
 
-|Field Name|
-|-|
-|Data Type|
-|-|
-|Byte Size|
-|-|
-|Description|
-|-|
-|FilterType|
-|byte|
-|1|
-|Filter type for which headers are requested|
-|StopHash|
-|[32]byte|
-|32|
-|The hash of the last block in the chain that headers are requested for|
-|FilterHeadersLength|
-|CompactSize|
-|1-3|
-|The length of the following vector of filter headers|
-|FilterHeaders|
-|[][32]byte|
-|FilterHeadersLength * 32|
-|The filter headers at intervals of 1,000|
+|Field Name|Data Type|Byte Size|Description|
+|-|-|-|-|
+|FilterType|byte|1|Filter type for which headers are requested|
+|StopHash|[32]byte|32|The hash of the last block in the chain that headers are requested for|
+|FilterHeadersLength|CompactSize|1-3|The length of the following vector of filter headers|
+|FilterHeaders|[][32]byte|FilterHeadersLength * 32|The filter headers at intervals of 1,000|
+
 
 1.  The FilterType and StopHash SHOULD match the fields in the `getcfcheckpt` request.
 1.  FilterHeaders MUST have exactly one entry for each block on the chain terminating in StopHash, where the block height is a multiple of 1,000 greater than 0. The entries MUST be the filter headers of the given type for each such block, in ascending order by height.

@@ -61,6 +61,7 @@ For a set of public keys, ensure that they have been received in compressed form
  
 ```
 Sort them lexicographically according to their binary representation: 
+
 ```
     
     021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18
@@ -68,11 +69,13 @@ Sort them lexicographically according to their binary representation:
     03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9
 ```
 
+
 ..before using the resulting list of keys in a standard multisig redeem script:  
 ```
     
     OP_2 021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18 022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da 03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9 OP_3 OP_CHECKMULTISIG
 ```
+
 
 Hash the redeem script according to BIP-0016 to get the P2SH address.
 ```
@@ -86,6 +89,7 @@ Hash the redeem script according to BIP-0016 to get the P2SH address.
 * Implementations which do adopt this standard will be cross-compatible when choosing multisig addressses. 
 * If a group of users were not entirely compliant, there is the possibility that a participant will derive an address that the others will not recognize as part of the common multisig account.
 ```
+
 
 <h2>Test vectors</h2>
 

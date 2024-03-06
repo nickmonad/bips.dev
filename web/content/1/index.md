@@ -149,11 +149,13 @@ The Author header lists the names, and optionally the email addresses of all the
   Random J. User <address@dom.ain>
 ```
 
+
 if the email address is included, and just
 
 ```
   Random J. User
 ```
+
 
 if the address is not given.
 

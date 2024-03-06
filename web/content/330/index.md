@@ -117,6 +117,7 @@ def mul2(x):
     return (x << 1) ^ (FIELD_MODULUS if x.bit_length() >= FIELD_BITS else 0)
 ```
 
+
 def mul(x, y):
 ```
     """Compute x*y in GF(2^FIELD_BITS)"""
@@ -125,6 +126,7 @@ def mul(x, y):
         ret, y = ret ^ bit * y, mul2(y)
     return ret
 ```
+
 
 def create_sketch(shortids, capacity):
 ```
@@ -138,6 +140,7 @@ def create_sketch(shortids, capacity):
     return b''.join(elem.to_bytes(4, 'little') for elem in odd_sums)
 </pre>
 ```
+
 
 The <a href="https://github.com/sipa/minisketch/" target="_blank">minisketch</a> library implements the construction, merging, and decoding of these sketches efficiently.
 
@@ -185,6 +188,7 @@ Its payload consists of:
 |uint32|version|Sender must set this to 1 currently, otherwise receiver should ignore the message. v1 is the lowest protocol version, everything below that is a protocol violation.|
 |uint64|salt|The salt used in the short transaction ID computation.|
 
+
 After both peers have confirmed support by sending "sendtxrcncl", the initiator of the P2P connection assumes the role of reconciliation initiator (will send "reqrecon" messages) and the other peer assumes the role of reconciliation responder (will respond to "reqrecon" messages).
 "reqrecon" messages can only be sent by the reconciliation initiator.
 
@@ -197,6 +201,7 @@ The reqrecon message initiates a reconciliation round.
 |-|-|-|
 |uint16|set_size|Size of the sender's reconciliation set, used to estimate set difference.|
 |uint16|q|Coefficient used to estimate set difference. Multiplied by PRECISION=(2^15) - 1 and rounded up by the sender and divided by PRECISION by the receiver.|
+
 
 Upon receipt of a "reqrecon" message, the receiver:
 *  Constructs and sends a "sketch" message (see below), with a sketch of certain _capacity=f(set_size, local_set_size, q)_ (the exact function is suggested below), where _local_set_size_ represents size of the receiver's reconciliation set.
@@ -213,6 +218,7 @@ The sketch message is used to communicate a sketch required to perform set recon
 |Data type|Name|Description|
 |-|-|-|
 |byte[]|skdata|The sketch of the sender's reconciliation snapshot|
+
 
 The sketch message may be received in two cases.
 
@@ -247,6 +253,7 @@ The reconcildiff message is used by reconciliation initiator to announce transac
 |-|-|-|
 |uint8|success|Indicates whether sender of the message succeeded at set difference decoding.|
 |uint32[]|ask_shortids|The short IDs that the sender did not have.|
+
 
 Upon receipt a "reconcildiff" message with _success=1_ (reconciliation success), a node sends an "inv" message for the transactions requested by 32-bit IDs (first vector) containing their wtxids (with parent transactions occuring before their dependencies).
 If _success=0_ (reconciliation failure), receiver should announce all transactions from the reconciliation set via an "inv" message.

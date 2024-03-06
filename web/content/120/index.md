@@ -80,11 +80,13 @@ A proof of payment for a transaction T, here called PoP(T), is used to prove tha
 ```
 
 
+
 |Field|Size [B]|Description|
 |-|-|-|
 |&lt;version>|2|Version, little endian, currently 0x01 0x00|
 |&lt;txid>|32|The transaction to prove|
 |&lt;nonce>|6|Random data|
+
 
 The lock_time of the PoP must be set to 499999999 to prevent the PoP from being included in a block, should it appear on the bitcoin p2p network. This is also the reason for setting the sequence numbers to 0, since sequence number of ffffffff would make lock_time ineffective. This specification demands that all input sequence numbers are 0, not just one of them, which would be sufficient to make lock_time effective. This is for simplicity reasons.
 

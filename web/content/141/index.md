@@ -71,12 +71,14 @@ Definition of `txid` remains unchanged: the double SHA256 of the traditional ser
   
 ```
 A new `wtxid` is defined: the double SHA256 of the new serialization with witness data:
+
 ```
   
   [nVersion][marker][flag][txins][txouts][witness][nLockTime]
   
 ```
 Format of `nVersion`, `txins`, `txouts`, and `nLockTime` are same as traditional serialization.
+
 
 The `marker` MUST be a 1-byte zero value: `0x00`.
 
@@ -105,6 +107,7 @@ The commitment is recorded in a `scriptPubKey` of the coinbase transaction. It m
   
 ```
 and the coinbase's input's witness must consist of a single 32-byte array for the `witness reserved value`.
+
 
 If there are more than one `scriptPubKey` matching the pattern, the one with highest output index is assumed to be the commitment.
 
@@ -210,6 +213,7 @@ The following example is a version 0 pay-to-witness-public-key-hash (P2WPKH):
                   (0x0014{20-byte-key-hash})
 ```
 
+
 The '0' in scriptPubKey indicates the following push is a version 0 witness program. The length of the witness program indicates that it is a P2WPKH type. The witness must consist of exactly 2 items. The HASH160 of the pubkey in witness must match the witness program.
 
 The signature is verified as
@@ -217,6 +221,7 @@ The signature is verified as
 ```
     <signature> <pubkey> CHECKSIG
 ```
+
 
 Comparing with a traditional P2PKH output, the P2WPKH equivalent occupies 3 less bytes in the scriptPubKey, and moves the signature and public key from scriptSig to witness.
 
@@ -233,11 +238,13 @@ The following example is the same P2WPKH, but nested in a BIP16 P2SH output.
                   (0xA914{20-byte-script-hash}87)
 ```
 
+
 The only item in scriptSig is hashed with HASH160, compared against the 20-byte-script-hash in scriptPubKey, and interpreted as:
 
 ```
     0 <20-byte-key-hash>
 ```
+
 
 The public key and signature are then verified as described in the previous example.
 
@@ -255,17 +262,20 @@ The following example is an 1-of-2 multi-signature version 0 pay-to-witness-scri
                   (0x0020{32-byte-hash})
 ```
 
+
 The '0' in scriptPubKey indicates the following push is a version 0 witness program. The length of the witness program indicates that it is a P2WSH type. The last item in the witness (the "witnessScript") is popped off, hashed with SHA256, compared against the 32-byte-hash in scriptPubKey, and deserialized:
 
 ```
     1 <pubkey1> <pubkey2> 2 CHECKMULTISIG
 ```
 
+
 The script is executed with the remaining data from witness:
 
 ```
     0 <signature1> 1 <pubkey1> <pubkey2> 2 CHECKMULTISIG
 ```
+
 
 P2WSH allows maximum script size of 10,000 bytes, as the 520-byte push limit is bypassed.
 
@@ -284,11 +294,13 @@ The following example is the same 1-of-2 multi-signature P2WSH script, but neste
                   (0xA914{20-byte-hash}87)
 ```
 
+
 The only item in scriptSig is hashed with HASH160, compared against the 20-byte-hash in scriptPubKey, and interpreted as:
 
 ```
     0 <32-byte-hash>
 ```
+
 
 The P2WSH witnessScript is then executed as described in the previous example.
 
@@ -302,6 +314,7 @@ The new commitment in coinbase transaction is a hash of the `witness root hash` 
 ```
   Double-SHA256(Witness root hash|Hash(new commitment|witness reserved value))
 ```
+
 
 For backward compatibility, the `Hash(new commitment|witness reserved value)` will go to the coinbase witness, and the `witness reserved value` will be recorded in another location specified by the future softfork. Any number of new commitment could be added in this way.
 

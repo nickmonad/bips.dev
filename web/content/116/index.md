@@ -119,6 +119,7 @@ Here is a redeem script that allows a coin to be spent by any key from a large s
   witness: <sig> <pubkey> <proof>
 ```
 
+
 The redeem script looks very similar to the standard pay-to-pubkey-hash, except instead of showing that the pubkey's hash is the same as the commitment given, we demonstrate that the pubkey is one of potentially many pubkeys included in the Merkle tree committed to in the redeem script.
 The low-order bit of the first parameter, 2, is clear, meaning that there is one input (`(2>>1) == 1`), the serialized pubkey, and its VERIFY hash needs to be calculated by MERKLEBRANCHVERIFY using double-SHA256.
 

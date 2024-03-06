@@ -55,12 +55,14 @@ A new standard transaction type (scriptPubKey) that is relayed by clients and in
     m {pubkey}...{pubkey} n OP_CHECKMULTISIG
 ```
 
+
 But only for n less than or equal to 3.
 
 OP_CHECKMULTISIG transactions are redeemed using a standard scriptSig:
 ```
     OP_0 ...signatures...
 ```
+
 
 (OP_0 is required because of a bug in OP_CHECKMULTISIG; it pops one too many items off the execution stack, so a dummy value must be placed on the stack).
 

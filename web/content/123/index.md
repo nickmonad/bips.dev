@@ -106,517 +106,93 @@ The applications layer specifies high level structures, abstractions, and conven
 
 
 
-||
-|-|
-|<a href="/1" target="_blank">1</a>|
-|BIP Purpose and Guidelines|
-|Amir Taaki|
-|Process|
-|Active|
-|<a href="/2" target="_blank">2</a>|
-|BIP process, revised|
-|Luke Dashjr|
-|Process|
-|Draft|
-|<a href="/9" target="_blank">9</a>|
-|Version bits with timeout and delay|
-|Pieter Wuille, Peter Todd, Greg Maxwell, Rusty Russell|
-|Informational|
-|Final|
-|<a href="/10" target="_blank">10</a>|
-|Applications|
-|Multi-Sig Transaction Distribution|
-|Alan Reiner|
-|Informational|
-|Withdrawn|
-|<a href="/11" target="_blank">11</a>|
-|Applications|
-|M-of-N Standard Transactions|
-|Gavin Andresen|
-|Standard|
-|Final|
-|<a href="/12" target="_blank">12</a>|
-|Consensus (soft fork)|
-|OP_EVAL|
-|Gavin Andresen|
-|Standard|
-|Withdrawn|
-|<a href="/13" target="_blank">13</a>|
-|Applications|
-|Address Format for pay-to-script-hash|
-|Gavin Andresen|
-|Standard|
-|Final|
-|<a href="/14" target="_blank">14</a>|
-|Peer Services|
-|Protocol Version and User Agent|
-|Amir Taaki, Patrick Strateman|
-|Standard|
-|Final|
-|<a href="/15" target="_blank">15</a>|
-|Applications|
-|Aliases|
-|Amir Taaki|
-|Standard|
-|Deferred|
-|<a href="/16" target="_blank">16</a>|
-|Consensus (soft fork)|
-|Pay to Script Hash|
-|Gavin Andresen|
-|Standard|
-|Final|
-|<a href="/17" target="_blank">17</a>|
-|Consensus (soft fork)|
-|OP_CHECKHASHVERIFY (CHV)|
-|Luke Dashjr|
-|Standard|
-|Withdrawn|
-|<a href="/18" target="_blank">18</a>|
-|Consensus (soft fork)|
-|hashScriptCheck|
-|Luke Dashjr|
-|Standard|
-|Accepted|
-|<a href="/19" target="_blank">19</a>|
-|Applications|
-|M-of-N Standard Transactions (Low SigOp)|
-|Luke Dashjr|
-|Standard|
-|Draft|
-|<a href="/20" target="_blank">20</a>|
-|Applications|
-|URI Scheme|
-|Luke Dashjr|
-|Standard|
-|Replaced|
-|<a href="/21" target="_blank">21</a>|
-|Applications|
-|URI Scheme|
-|Nils Schneider, Matt Corallo|
-|Standard|
-|Final|
-|<a href="/22" target="_blank">22</a>|
-|API/RPC|
-|getblocktemplate - Fundamentals|
-|Luke Dashjr|
-|Standard|
-|Final|
-|<a href="/23" target="_blank">23</a>|
-|API/RPC|
-|getblocktemplate - Pooled Mining|
-|Luke Dashjr|
-|Standard|
-|Final|
-|<a href="/30" target="_blank">30</a>|
-|Consensus (soft fork)|
-|Duplicate transactions|
-|Pieter Wuille|
-|Standard|
-|Final|
-|<a href="/31" target="_blank">31</a>|
-|Peer Services|
-|Pong message|
-|Mike Hearn|
-|Standard|
-|Final|
-|<a href="/32" target="_blank">32</a>|
-|Applications|
-|Hierarchical Deterministic Wallets|
-|Pieter Wuille|
-|Informational|
-|Final|
-|<a href="/33" target="_blank">33</a>|
-|Peer Services|
-|Stratized Nodes|
-|Amir Taaki|
-|Standard|
-|Draft|
-|<a href="/34" target="_blank">34</a>|
-|Consensus (soft fork)|
-|Block v2, Height in Coinbase|
-|Gavin Andresen|
-|Standard|
-|Final|
-|<a href="/35" target="_blank">35</a>|
-|Peer Services|
-|mempool message|
-|Jeff Garzik|
-|Standard|
-|Final|
-|<a href="/36" target="_blank">36</a>|
-|Peer Services|
-|Custom Services|
-|Stefan Thomas|
-|Standard|
-|Draft|
-|<a href="/37" target="_blank">37</a>|
-|Peer Services|
-|Connection Bloom filtering|
-|Mike Hearn, Matt Corallo|
-|Standard|
-|Final|
-|<a href="/38" target="_blank">38</a>|
-|Applications|
-|Passphrase-protected private key|
-|Mike Caldwell, Aaron Voisine|
-|Standard|
-|Draft|
-|<a href="/39" target="_blank">39</a>|
-|Applications|
-|Mnemonic code for generating deterministic keys|
-|Marek Palatinus, Pavol Rusnak, Aaron Voisine, Sean Bowe|
-|Standard|
-|Accepted|
-|<a href="/42" target="_blank">42</a>|
-|Consensus (soft fork)|
-|A finite monetary supply for Bitcoin|
-|Pieter Wuille|
-|Standard|
-|Draft|
-|<a href="/43" target="_blank">43</a>|
-|Applications|
-|Purpose Field for Deterministic Wallets|
-|Marek Palatinus, Pavol Rusnak|
-|Informational|
-|Draft|
-|<a href="/44" target="_blank">44</a>|
-|Applications|
-|Multi-Account Hierarchy for Deterministic Wallets|
-|Marek Palatinus, Pavol Rusnak|
-|Standard|
-|Accepted|
-|<a href="/45" target="_blank">45</a>|
-|Applications|
-|Structure for Deterministic P2SH Multisignature Wallets|
-|Manuel Araoz, Ryan X. Charles, Matias Alejo Garcia|
-|Standard|
-|Accepted|
-|<a href="/47" target="_blank">47</a>|
-|Applications|
-|Reusable Payment Codes for Hierarchical Deterministic Wallets|
-|Justus Ranvier|
-|Informational|
-|Draft|
-|<a href="/49" target="_blank">49</a>|
-|Applications|
-|Derivation scheme for P2WPKH-nested-in-P2SH based accounts|
-|Daniel Weigl|
-|Informational|
-|Draft|
-|<a href="/50" target="_blank">50</a>|
-|March 2013 Chain Fork Post-Mortem|
-|Gavin Andresen|
-|Informational|
-|Final|
-|<a href="/60" target="_blank">60</a>|
-|Peer Services|
-|Fixed Length "version" Message (Relay-Transactions Field)|
-|Amir Taaki|
-|Standard|
-|Draft|
-|<a href="/61" target="_blank">61</a>|
-|Peer Services|
-|Reject P2P message|
-|Gavin Andresen|
-|Standard|
-|Final|
-|<a href="/62" target="_blank">62</a>|
-|Consensus (soft fork)|
-|Dealing with malleability|
-|Pieter Wuille|
-|Standard|
-|Withdrawn|
-|<a href="/64" target="_blank">64</a>|
-|Peer Services|
-|getutxo message|
-|Mike Hearn|
-|Standard|
-|Draft|
-|<a href="/65" target="_blank">65</a>|
-|Consensus (soft fork)|
-|OP_CHECKLOCKTIMEVERIFY|
-|Peter Todd|
-|Standard|
-|Final|
-|<a href="/66" target="_blank">66</a>|
-|Consensus (soft fork)|
-|Strict DER signatures|
-|Pieter Wuille|
-|Standard|
-|Final|
-|<a href="/67" target="_blank">67</a>|
-|Applications|
-|Deterministic Pay-to-script-hash multi-signature addresses through public key sorting|
-|Thomas Kerin, Jean-Pierre Rupp, Ruben de Vries|
-|Standard|
-|Accepted|
-|<a href="/68" target="_blank">68</a>|
-|Consensus (soft fork)|
-|Relative lock-time using consensus-enforced sequence numbers|
-|Mark Friedenbach, BtcDrak, Nicolas Dorier, kinoshitajona|
-|Standard|
-|Final|
-|<a href="/69" target="_blank">69</a>|
-|Applications|
-|Lexicographical Indexing of Transaction Inputs and Outputs|
-|Kristov Atlas|
-|Informational|
-|Accepted|
-|<a href="/70" target="_blank">70</a>|
-|Applications|
-|Payment Protocol|
-|Gavin Andresen, Mike Hearn|
-|Standard|
-|Final|
-|<a href="/71" target="_blank">71</a>|
-|Applications|
-|Payment Protocol MIME types|
-|Gavin Andresen|
-|Standard|
-|Final|
-|<a href="/72" target="_blank">72</a>|
-|Applications|
-|bitcoin: uri extensions for Payment Protocol|
-|Gavin Andresen|
-|Standard|
-|Final|
-|<a href="/73" target="_blank">73</a>|
-|Applications|
-|Use "Accept" header for response type negotiation with Payment Request URLs|
-|Stephen Pair|
-|Standard|
-|Final|
-|<a href="/74" target="_blank">74</a>|
-|Applications|
-|Allow zero value OP_RETURN in Payment Protocol|
-|Toby Padilla|
-|Standard|
-|Draft|
-|<a href="/75" target="_blank">75</a>|
-|Applications|
-|Out of Band Address Exchange using Payment Protocol Encryption|
-|Justin Newton, Matt David, Aaron Voisine, James MacWhyte|
-|Standard|
-|Draft|
-|<a href="/80" target="_blank">80</a>|
-|Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets|
-|Justus Ranvier, Jimmy Song|
-|Informational|
-|Deferred|
-|<a href="/81" target="_blank">81</a>|
-|Hierarchy for Colored Voting Pool Deterministic Multisig Wallets|
-|Justus Ranvier, Jimmy Song|
-|Informational|
-|Deferred|
-|<a href="/83" target="_blank">83</a>|
-|Applications|
-|Dynamic Hierarchical Deterministic Key Trees|
-|Eric Lombrozo|
-|Standard|
-|Draft|
-|<a href="/99" target="_blank">99</a>|
-|Motivation and deployment of consensus rule changes ([soft/hard]forks)|
-|Jorge Timón|
-|Informational|
-|Draft|
-|<a href="/101" target="_blank">101</a>|
-|Consensus (hard fork)|
-|Increase maximum block size|
-|Gavin Andresen|
-|Standard|
-|Withdrawn|
-|<a href="/102" target="_blank">102</a>|
-|Consensus (hard fork)|
-|Block size increase to 2MB|
-|Jeff Garzik|
-|Standard|
-|Draft|
-|<a href="/103" target="_blank">103</a>|
-|Consensus (hard fork)|
-|Block size following technological growth|
-|Pieter Wuille|
-|Standard|
-|Draft|
-|<a href="/105" target="_blank">105</a>|
-|Consensus (hard fork)|
-|Consensus based block size retargeting algorithm|
-|BtcDrak|
-|Standard|
-|Draft|
-|<a href="/106" target="_blank">106</a>|
-|Consensus (hard fork)|
-|Dynamically Controlled Bitcoin Block Size Max Cap|
-|Upal Chakraborty|
-|Standard|
-|Draft|
-|<a href="/107" target="_blank">107</a>|
-|Consensus (hard fork)|
-|Dynamic limit on the block size|
-|Washington Y. Sanchez|
-|Standard|
-|Draft|
-|<a href="/109" target="_blank">109</a>|
-|Consensus (hard fork)|
-|Two million byte size limit with sigop and sighash limits|
-|Gavin Andresen|
-|Standard|
-|Draft|
-|<a href="/111" target="_blank">111</a>|
-|Peer Services|
-|NODE_BLOOM service bit|
-|Matt Corallo, Peter Todd|
-|Standard|
-|Accepted|
-|<a href="/112" target="_blank">112</a>|
-|Consensus (soft fork)|
-|CHECKSEQUENCEVERIFY|
-|BtcDrak, Mark Friedenbach, Eric Lombrozo|
-|Standard|
-|Final|
-|<a href="/113" target="_blank">113</a>|
-|Consensus (soft fork)|
-|Median time-past as endpoint for lock-time calculations|
-|Thomas Kerin, Mark Friedenbach|
-|Standard|
-|Final|
-|<a href="/114" target="_blank">114</a>|
-|Consensus (soft fork)|
-|Merkelized Abstract Syntax Tree|
-|Johnson Lau|
-|Standard|
-|Draft|
-|<a href="/120" target="_blank">120</a>|
-|Applications|
-|Proof of Payment|
-|Kalle Rosenbaum|
-|Standard|
-|Draft|
-|<a href="/121" target="_blank">121</a>|
-|Applications|
-|Proof of Payment URI scheme|
-|Kalle Rosenbaum|
-|Standard|
-|Draft|
-|<a href="/122" target="_blank">122</a>|
-|Applications|
-|URI scheme for Blockchain references / exploration|
-|Marco Pontello|
-|Standard|
-|Draft|
-|<a href="/123" target="_blank">123</a>|
-|BIP Classification|
-|Eric Lombrozo|
-|Process|
-|Draft|
-|<a href="/124" target="_blank">124</a>|
-|Applications|
-|Hierarchical Deterministic Script Templates|
-|Eric Lombrozo, William Swanson|
-|Informational|
-|Draft|
-|<a href="/125" target="_blank">125</a>|
-|Applications|
-|Opt-in Full Replace-by-Fee Signaling|
-|David A. Harding, Peter Todd|
-|Standard|
-|Accepted|
-|<a href="/126" target="_blank">126</a>|
-|Best Practices for Heterogeneous Input Script Transactions|
-|Kristov Atlas|
-|Informational|
-|Draft|
-|<a href="/130" target="_blank">130</a>|
-|Peer Services|
-|sendheaders message|
-|Suhas Daftuar|
-|Standard|
-|Accepted|
-|<a href="/131" target="_blank">131</a>|
-|Consensus (hard fork)|
-|"Coalescing Transaction" Specification (wildcard inputs)|
-|Chris Priest|
-|Standard|
-|Draft|
-|<a href="/132" target="_blank">132</a>|
-|Committee-based BIP Acceptance Process|
-|Andy Chase|
-|Process|
-|Withdrawn|
-|<a href="/133" target="_blank">133</a>|
-|Peer Services|
-|feefilter message|
-|Alex Morcos|
-|Standard|
-|Draft|
-|<a href="/134" target="_blank">134</a>|
-|Consensus (hard fork)|
-|Flexible Transactions|
-|Tom Zander|
-|Standard|
-|Draft|
-|<a href="/140" target="_blank">140</a>|
-|Consensus (soft fork)|
-|Normalized TXID|
-|Christian Decker|
-|Standard|
-|Draft|
-|<a href="/141" target="_blank">141</a>|
-|Consensus (soft fork)|
-|Segregated Witness (Consensus layer)|
-|Eric Lombrozo, Johnson Lau, Pieter Wuille|
-|Standard|
-|Draft|
-|<a href="/142" target="_blank">142</a>|
-|Applications|
-|Address Format for Segregated Witness|
-|Johnson Lau|
-|Standard|
-|Deferred|
-|<a href="/143" target="_blank">143</a>|
-|Consensus (soft fork)|
-|Transaction Signature Verification for Version 0 Witness Program|
-|Johnson Lau, Pieter Wuille|
-|Standard|
-|Draft|
-|<a href="/144" target="_blank">144</a>|
-|Peer Services|
-|Segregated Witness (Peer Services)|
-|Eric Lombrozo, Pieter Wuille|
-|Standard|
-|Draft|
-|<a href="/145" target="_blank">145</a>|
-|API/RPC|
-|getblocktemplate Updates for Segregated Witness|
-|Luke Dashjr|
-|Standard|
-|Draft|
-|<a href="/146" target="_blank">146</a>|
-|Consensus (soft fork)|
-|Dealing with signature encoding malleability|
-|Johnson Lau, Pieter Wuille|
-|Standard|
-|Draft|
-|<a href="/147" target="_blank">147</a>|
-|Consensus (soft fork)|
-|Dealing with dummy stack element malleability|
-|Johnson Lau|
-|Standard|
-|Draft|
-|<a href="/150" target="_blank">150</a>|
-|Peer Services|
-|Peer Authentication|
-|Jonas Schnelli|
-|Standard|
-|Draft|
-|<a href="/151" target="_blank">151</a>|
-|Peer Services|
-|Peer-to-Peer Communication Encryption|
-|Jonas Schnelli|
-|Standard|
-|Draft|
-|<a href="/152" target="_blank">152</a>|
-|Peer Services|
-|Compact Block Relay|
-|Matt Corallo|
-|Standard|
-|Draft|
+|Number|Layer|Title|Owner|Type|Status|
+|-|-|-|-|-|-|
+|<a href="/1" target="_blank">1</a>||BIP Purpose and Guidelines|Amir Taaki|Process|Active|
+|<a href="/2" target="_blank">2</a>||BIP process, revised|Luke Dashjr|Process|Draft|
+|<a href="/9" target="_blank">9</a>||Version bits with timeout and delay|Pieter Wuille, Peter Todd, Greg Maxwell, Rusty Russell|Informational|Final|
+|<a href="/10" target="_blank">10</a>|Applications|Multi-Sig Transaction Distribution|Alan Reiner|Informational|Withdrawn|
+|<a href="/11" target="_blank">11</a>|Applications|M-of-N Standard Transactions|Gavin Andresen|Standard|Final|
+|<a href="/12" target="_blank">12</a>|Consensus (soft fork)|OP_EVAL|Gavin Andresen|Standard|Withdrawn|
+|<a href="/13" target="_blank">13</a>|Applications|Address Format for pay-to-script-hash|Gavin Andresen|Standard|Final|
+|<a href="/14" target="_blank">14</a>|Peer Services|Protocol Version and User Agent|Amir Taaki, Patrick Strateman|Standard|Final|
+|<a href="/15" target="_blank">15</a>|Applications|Aliases|Amir Taaki|Standard|Deferred|
+|<a href="/16" target="_blank">16</a>|Consensus (soft fork)|Pay to Script Hash|Gavin Andresen|Standard|Final|
+|<a href="/17" target="_blank">17</a>|Consensus (soft fork)|OP_CHECKHASHVERIFY (CHV)|Luke Dashjr|Standard|Withdrawn|
+|<a href="/18" target="_blank">18</a>|Consensus (soft fork)|hashScriptCheck|Luke Dashjr|Standard|Accepted|
+|<a href="/19" target="_blank">19</a>|Applications|M-of-N Standard Transactions (Low SigOp)|Luke Dashjr|Standard|Draft|
+|<a href="/20" target="_blank">20</a>|Applications|URI Scheme|Luke Dashjr|Standard|Replaced|
+|<a href="/21" target="_blank">21</a>|Applications|URI Scheme|Nils Schneider, Matt Corallo|Standard|Final|
+|<a href="/22" target="_blank">22</a>|API/RPC|getblocktemplate - Fundamentals|Luke Dashjr|Standard|Final|
+|<a href="/23" target="_blank">23</a>|API/RPC|getblocktemplate - Pooled Mining|Luke Dashjr|Standard|Final|
+|<a href="/30" target="_blank">30</a>|Consensus (soft fork)|Duplicate transactions|Pieter Wuille|Standard|Final|
+|<a href="/31" target="_blank">31</a>|Peer Services|Pong message|Mike Hearn|Standard|Final|
+|<a href="/32" target="_blank">32</a>|Applications|Hierarchical Deterministic Wallets|Pieter Wuille|Informational|Final|
+|<a href="/33" target="_blank">33</a>|Peer Services|Stratized Nodes|Amir Taaki|Standard|Draft|
+|<a href="/34" target="_blank">34</a>|Consensus (soft fork)|Block v2, Height in Coinbase|Gavin Andresen|Standard|Final|
+|<a href="/35" target="_blank">35</a>|Peer Services|mempool message|Jeff Garzik|Standard|Final|
+|<a href="/36" target="_blank">36</a>|Peer Services|Custom Services|Stefan Thomas|Standard|Draft|
+|<a href="/37" target="_blank">37</a>|Peer Services|Connection Bloom filtering|Mike Hearn, Matt Corallo|Standard|Final|
+|<a href="/38" target="_blank">38</a>|Applications|Passphrase-protected private key|Mike Caldwell, Aaron Voisine|Standard|Draft|
+|<a href="/39" target="_blank">39</a>|Applications|Mnemonic code for generating deterministic keys|Marek Palatinus, Pavol Rusnak, Aaron Voisine, Sean Bowe|Standard|Accepted|
+|<a href="/42" target="_blank">42</a>|Consensus (soft fork)|A finite monetary supply for Bitcoin|Pieter Wuille|Standard|Draft|
+|<a href="/43" target="_blank">43</a>|Applications|Purpose Field for Deterministic Wallets|Marek Palatinus, Pavol Rusnak|Informational|Draft|
+|<a href="/44" target="_blank">44</a>|Applications|Multi-Account Hierarchy for Deterministic Wallets|Marek Palatinus, Pavol Rusnak|Standard|Accepted|
+|<a href="/45" target="_blank">45</a>|Applications|Structure for Deterministic P2SH Multisignature Wallets|Manuel Araoz, Ryan X. Charles, Matias Alejo Garcia|Standard|Accepted|
+|<a href="/47" target="_blank">47</a>|Applications|Reusable Payment Codes for Hierarchical Deterministic Wallets|Justus Ranvier|Informational|Draft|
+|<a href="/49" target="_blank">49</a>|Applications|Derivation scheme for P2WPKH-nested-in-P2SH based accounts|Daniel Weigl|Informational|Draft|
+|<a href="/50" target="_blank">50</a>||March 2013 Chain Fork Post-Mortem|Gavin Andresen|Informational|Final|
+|<a href="/60" target="_blank">60</a>|Peer Services|Fixed Length "version" Message (Relay-Transactions Field)|Amir Taaki|Standard|Draft|
+|<a href="/61" target="_blank">61</a>|Peer Services|Reject P2P message|Gavin Andresen|Standard|Final|
+|<a href="/62" target="_blank">62</a>|Consensus (soft fork)|Dealing with malleability|Pieter Wuille|Standard|Withdrawn|
+|<a href="/64" target="_blank">64</a>|Peer Services|getutxo message|Mike Hearn|Standard|Draft|
+|<a href="/65" target="_blank">65</a>|Consensus (soft fork)|OP_CHECKLOCKTIMEVERIFY|Peter Todd|Standard|Final|
+|<a href="/66" target="_blank">66</a>|Consensus (soft fork)|Strict DER signatures|Pieter Wuille|Standard|Final|
+|<a href="/67" target="_blank">67</a>|Applications|Deterministic Pay-to-script-hash multi-signature addresses through public key sorting|Thomas Kerin, Jean-Pierre Rupp, Ruben de Vries|Standard|Accepted|
+|<a href="/68" target="_blank">68</a>|Consensus (soft fork)|Relative lock-time using consensus-enforced sequence numbers|Mark Friedenbach, BtcDrak, Nicolas Dorier, kinoshitajona|Standard|Final|
+|<a href="/69" target="_blank">69</a>|Applications|Lexicographical Indexing of Transaction Inputs and Outputs|Kristov Atlas|Informational|Accepted|
+|<a href="/70" target="_blank">70</a>|Applications|Payment Protocol|Gavin Andresen, Mike Hearn|Standard|Final|
+|<a href="/71" target="_blank">71</a>|Applications|Payment Protocol MIME types|Gavin Andresen|Standard|Final|
+|<a href="/72" target="_blank">72</a>|Applications|bitcoin: uri extensions for Payment Protocol|Gavin Andresen|Standard|Final|
+|<a href="/73" target="_blank">73</a>|Applications|Use "Accept" header for response type negotiation with Payment Request URLs|Stephen Pair|Standard|Final|
+|<a href="/74" target="_blank">74</a>|Applications|Allow zero value OP_RETURN in Payment Protocol|Toby Padilla|Standard|Draft|
+|<a href="/75" target="_blank">75</a>|Applications|Out of Band Address Exchange using Payment Protocol Encryption|Justin Newton, Matt David, Aaron Voisine, James MacWhyte|Standard|Draft|
+|<a href="/80" target="_blank">80</a>||Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets|Justus Ranvier, Jimmy Song|Informational|Deferred|
+|<a href="/81" target="_blank">81</a>||Hierarchy for Colored Voting Pool Deterministic Multisig Wallets|Justus Ranvier, Jimmy Song|Informational|Deferred|
+|<a href="/83" target="_blank">83</a>|Applications|Dynamic Hierarchical Deterministic Key Trees|Eric Lombrozo|Standard|Draft|
+|<a href="/99" target="_blank">99</a>||Motivation and deployment of consensus rule changes ([soft/hard]forks)|Jorge Timón|Informational|Draft|
+|<a href="/101" target="_blank">101</a>|Consensus (hard fork)|Increase maximum block size|Gavin Andresen|Standard|Withdrawn|
+|<a href="/102" target="_blank">102</a>|Consensus (hard fork)|Block size increase to 2MB|Jeff Garzik|Standard|Draft|
+|<a href="/103" target="_blank">103</a>|Consensus (hard fork)|Block size following technological growth|Pieter Wuille|Standard|Draft|
+|<a href="/105" target="_blank">105</a>|Consensus (hard fork)|Consensus based block size retargeting algorithm|BtcDrak|Standard|Draft|
+|<a href="/106" target="_blank">106</a>|Consensus (hard fork)|Dynamically Controlled Bitcoin Block Size Max Cap|Upal Chakraborty|Standard|Draft|
+|<a href="/107" target="_blank">107</a>|Consensus (hard fork)|Dynamic limit on the block size|Washington Y. Sanchez|Standard|Draft|
+|<a href="/109" target="_blank">109</a>|Consensus (hard fork)|Two million byte size limit with sigop and sighash limits|Gavin Andresen|Standard|Draft|
+|<a href="/111" target="_blank">111</a>|Peer Services|NODE_BLOOM service bit|Matt Corallo, Peter Todd|Standard|Accepted|
+|<a href="/112" target="_blank">112</a>|Consensus (soft fork)|CHECKSEQUENCEVERIFY|BtcDrak, Mark Friedenbach, Eric Lombrozo|Standard|Final|
+|<a href="/113" target="_blank">113</a>|Consensus (soft fork)|Median time-past as endpoint for lock-time calculations|Thomas Kerin, Mark Friedenbach|Standard|Final|
+|<a href="/114" target="_blank">114</a>|Consensus (soft fork)|Merkelized Abstract Syntax Tree|Johnson Lau|Standard|Draft|
+|<a href="/120" target="_blank">120</a>|Applications|Proof of Payment|Kalle Rosenbaum|Standard|Draft|
+|<a href="/121" target="_blank">121</a>|Applications|Proof of Payment URI scheme|Kalle Rosenbaum|Standard|Draft|
+|<a href="/122" target="_blank">122</a>|Applications|URI scheme for Blockchain references / exploration|Marco Pontello|Standard|Draft|
+|<a href="/123" target="_blank">123</a>||BIP Classification|Eric Lombrozo|Process|Draft|
+|<a href="/124" target="_blank">124</a>|Applications|Hierarchical Deterministic Script Templates|Eric Lombrozo, William Swanson|Informational|Draft|
+|<a href="/125" target="_blank">125</a>|Applications|Opt-in Full Replace-by-Fee Signaling|David A. Harding, Peter Todd|Standard|Accepted|
+|<a href="/126" target="_blank">126</a>||Best Practices for Heterogeneous Input Script Transactions|Kristov Atlas|Informational|Draft|
+|<a href="/130" target="_blank">130</a>|Peer Services|sendheaders message|Suhas Daftuar|Standard|Accepted|
+|<a href="/131" target="_blank">131</a>|Consensus (hard fork)|"Coalescing Transaction" Specification (wildcard inputs)|Chris Priest|Standard|Draft|
+|<a href="/132" target="_blank">132</a>||Committee-based BIP Acceptance Process|Andy Chase|Process|Withdrawn|
+|<a href="/133" target="_blank">133</a>|Peer Services|feefilter message|Alex Morcos|Standard|Draft|
+|<a href="/134" target="_blank">134</a>|Consensus (hard fork)|Flexible Transactions|Tom Zander|Standard|Draft|
+|<a href="/140" target="_blank">140</a>|Consensus (soft fork)|Normalized TXID|Christian Decker|Standard|Draft|
+|<a href="/141" target="_blank">141</a>|Consensus (soft fork)|Segregated Witness (Consensus layer)|Eric Lombrozo, Johnson Lau, Pieter Wuille|Standard|Draft|
+|<a href="/142" target="_blank">142</a>|Applications|Address Format for Segregated Witness|Johnson Lau|Standard|Deferred|
+|<a href="/143" target="_blank">143</a>|Consensus (soft fork)|Transaction Signature Verification for Version 0 Witness Program|Johnson Lau, Pieter Wuille|Standard|Draft|
+|<a href="/144" target="_blank">144</a>|Peer Services|Segregated Witness (Peer Services)|Eric Lombrozo, Pieter Wuille|Standard|Draft|
+|<a href="/145" target="_blank">145</a>|API/RPC|getblocktemplate Updates for Segregated Witness|Luke Dashjr|Standard|Draft|
+|<a href="/146" target="_blank">146</a>|Consensus (soft fork)|Dealing with signature encoding malleability|Johnson Lau, Pieter Wuille|Standard|Draft|
+|<a href="/147" target="_blank">147</a>|Consensus (soft fork)|Dealing with dummy stack element malleability|Johnson Lau|Standard|Draft|
+|<a href="/150" target="_blank">150</a>|Peer Services|Peer Authentication|Jonas Schnelli|Standard|Draft|
+|<a href="/151" target="_blank">151</a>|Peer Services|Peer-to-Peer Communication Encryption|Jonas Schnelli|Standard|Draft|
+|<a href="/152" target="_blank">152</a>|Peer Services|Compact Block Relay|Matt Corallo|Standard|Draft|
+

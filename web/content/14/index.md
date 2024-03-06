@@ -66,6 +66,7 @@ In short:
   Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.6) Gecko/20100127 Gentoo Shiretoko/3.5.6
 ```
 
+
 User agents are most often parsed by computers more than humans. The space delimited format, does not provide an easy, fast or efficient way for parsing. The data contains no structure indicating hierarchy in this placement.
 
 The most immediate pieces of information there are the browser product, rendering engine and the build (Gentoo Shiretoko) together with version number. Various other pieces of information as included as comments such as desktop environment, platform, language and revision number of the build.
@@ -85,12 +86,14 @@ Basic format:
   /Name:Version/Name:Version/.../
 ```
 
+
 Example:
 
 ```
   /Satoshi:5.64/bitcoin-qt:0.4/
   /Satoshi:5.12/Spesmilo:0.8/
 ```
+
 
 Here bitcoin-qt and Spesmilo may use protocol version 5.0, however the internal codebase they use are different versions of the same software. The version numbers are not defined to any strict format, although this guide recommends:
 
@@ -109,6 +112,7 @@ Example:
 ```
   /BitcoinJ:0.2(iPad; U; CPU OS 3_2_1)/AndroidBuild:0.8/
 ```
+
 
 Reserved symbols are therefore: / : ( )
 

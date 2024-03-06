@@ -178,6 +178,7 @@ this is a table of Golomb-Rice coded values using `P=2`:
 |8|(2, 0)|`110 00`|
 |9|(2, 1)|`110 01`|
 
+
 ```
 golomb_encode(stream, x: uint64, P: uint):
     let q = x >> P
@@ -343,11 +344,8 @@ complete serialization of a filter is:
 This BIP allocates a new service bit:
 
 
-||
-|-|
-|NODE_COMPACT_FILTERS|
-|style="white-space: nowrap;" | `1 << 6`|
-|If enabled, the node MUST respond to all BIP 157 messages for filter type `0x00`|
+|NODE_COMPACT_FILTERS|style="white-space: nowrap;" | `1 << 6`|If enabled, the node MUST respond to all BIP 157 messages for filter type `0x00`|
+
 
 <h2> Compatibility </h2>
 

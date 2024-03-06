@@ -131,11 +131,9 @@ extension "version-rolling".
 
 - Each string in the list MUST be a valid extension code. The meaning of each code is described independently as part of the extension definition. A miner SHOULD advertise all its available features.
 
-
 *  **extension-parameters** (REQUIRED, _Map of (String -> Any)_)
 
 - Parameters of the requested/allowed extensions from the first parameter.
-
 
 
 **Return value**:
@@ -143,9 +141,7 @@ extension "version-rolling".
 *  _Map of (String -> Any)_
 
 - Each code from the **extensions** list MUST have a defined return value (_TExtensionCode_ -> _TExtensionResult_). This way the miner knows if the extension is activated or not. E.g. `{"version-rolling":false}` for unsupported version rolling.
-
 - Some extensions need additional information to be delivered to the miner. The return value map is used for this purpose.
-
 
 
 Example request (new-lines added):
@@ -203,11 +199,13 @@ Example request (a miner capable of changing any 2 bits from a 16-bit mask):
 ```
 
 
+
 Example result (success):
 
 ```
  {"error": null, "id": 1, "result": {"version-rolling": true, "version-rolling.mask": "18000000"}}
 ```
+
 
 
 Example result (unknown extension):
@@ -217,12 +215,12 @@ Example result (unknown extension):
 ```
 
 
+
 **Extension parameters**:
 
 *  **"version-rolling.mask"** (OPTIONAL, _TMask_, default value `"ffffffff"`)
 
 - Bits set to 1 can be changed by the miner. This value is expected
-
 to be stable for the whole mining session. A miner doesn't have to
 send the mask, in this case a default full mask is used.
 
@@ -232,18 +230,14 @@ send the mask, in this case a default full mask is used.
 
 - When responded with `true`, the server will accept new parameter of **"mining.submit"**, see later.
 
-
 *  **"version-rolling.mask"** (REQUIRED, _TMask_)
 
 - Bits set to 1 are allowed to be changed by the miner. If a miner changes bits with mask value 0, the server will reject the submit.
-
 - The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="Draft" target="_blank">BIP</a>(https://github.com/bitcoin/bips/pull/661/files) describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.
-
 
 *  **"version-rolling.min-bit-count"** (REQUIRED, _TMask_)
 
 - The miner also provides a minimum number of bits that it needs for efficient version rolling in hardware. Note that this parameter provides important diagnostic information to the pool server. If the requested bit count exceeds the limit of the pool server, the miner always has the chance to operate in a degraded mode without using full hashing power. The pool server SHOULD NOT terminate miner connection if this rare mismatch case occurs.
-
 
 <h3>Notification '''"mining.set_version_mask"'''</h3>
 
@@ -267,6 +261,7 @@ Example:
 ```
 
 
+
 <h3>Changes in request '''"mining.submit"'''</h3>
 
 
@@ -282,13 +277,13 @@ _worker_name_, _job_id_, _extranonce2_, _ntime_ and _nonce_).
 *  _version_bits_ (REQUIRED, _TMask_) - Version bits set by miner.
 
 - Miner can set only bits corresponding to the set bits in the last received mask from the server either as response to "mining.configure" or "mining.set_version_mask" notification (`last_mask`). This must hold:
-
 ```
  version_bits & ~last_mask ==  0
 ::- The server computes ''nVersion'' for the submit as follows:
  nVersion = (job_version & ~last_mask) | (version_bits & last_mask)
 ```
 where `job_version` is the block version sent to miner as part of job with id `job_id`.
+
 
 <h2>Extension "minimum-difficulty"</h2>
 
@@ -303,14 +298,11 @@ connected device.
 
 - The minimum difficulty value acceptable for the miner/connection. The value can be 0 for essentially disabling the feature.
 
-
 **Extension return values**:
 *  **"minimum-difficulty"** (REQUIRED, _TExtensionResult_)
 
 - Whether the minimum difficulty was accepted or not.
-
 - This extension can be configured multiple times by calling "mining.configure" with "minimum-difficulty" code again.
-
 
 
 <h2>Extension "subscribe-extranonce"</h2>
@@ -330,21 +322,17 @@ Miner provides additional text-based information.
 
 - Exact URL used by the mining software to connect to the stratum server.
 
-
 *  **"info.hw-version"** (OPTIONAL, _String_)
 
 - Manufacturer specific hardware revision string.
-
 
 *  **"info.sw-version"** (OPTIONAL, _String_)
 
 - Manufacturer specific software version
 
-
 *  **"info.hw-id"** (OPTIONAL, _String_)
 
 - Unique  identifier of the mining device
-
 
 <h2>Compatibility</h2>
 

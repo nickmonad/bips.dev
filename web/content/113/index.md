@@ -85,6 +85,7 @@ block time for the purpose of checking lock-time constraints:
     }
 ```
 
+
 Lock-time constraints are checked by the consensus method IsFinalTx().
 This method takes the block time as one parameter. This BIP proposes
 that after activation calls to IsFinalTx() within consensus code use

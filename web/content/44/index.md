@@ -165,6 +165,11 @@ described in chapter "Coin type" above.
 All these constants are used as hardened derivation.
 
 
+|index|hexa|coin|
+|-|-|-|
+|0|0x80000000|Bitcoin|
+|1|0x80000001|Bitcoin Testnet|
+
 
 This BIP is not a central directory for the registered coin types, please
 visit SatoshiLabs that maintains the full list:
@@ -177,6 +182,25 @@ is required and a pull request to the above file should be created.
 <h2>Examples</h2>
 
 
+
+|coin|account|chain|address|path|
+|-|-|-|-|-|
+|Bitcoin|first|external|first|m / 44' / 0' / 0' / 0 / 0|
+|Bitcoin|first|external|second|m / 44' / 0' / 0' / 0 / 1|
+|Bitcoin|first|change|first|m / 44' / 0' / 0' / 1 / 0|
+|Bitcoin|first|change|second|m / 44' / 0' / 0' / 1 / 1|
+|Bitcoin|second|external|first|m / 44' / 0' / 1' / 0 / 0|
+|Bitcoin|second|external|second|m / 44' / 0' / 1' / 0 / 1|
+|Bitcoin|second|change|first|m / 44' / 0' / 1' / 1 / 0|
+|Bitcoin|second|change|second|m / 44' / 0' / 1' / 1 / 1|
+|Bitcoin Testnet|first|external|first|m / 44' / 1' / 0' / 0 / 0|
+|Bitcoin Testnet|first|external|second|m / 44' / 1' / 0' / 0 / 1|
+|Bitcoin Testnet|first|change|first|m / 44' / 1' / 0' / 1 / 0|
+|Bitcoin Testnet|first|change|second|m / 44' / 1' / 0' / 1 / 1|
+|Bitcoin Testnet|second|external|first|m / 44' / 1' / 1' / 0 / 0|
+|Bitcoin Testnet|second|external|second|m / 44' / 1' / 1' / 0 / 1|
+|Bitcoin Testnet|second|change|first|m / 44' / 1' / 1' / 1 / 0|
+|Bitcoin Testnet|second|change|second|m / 44' / 1' / 1' / 1 / 1|
 
 
 <h2>Reference</h2>

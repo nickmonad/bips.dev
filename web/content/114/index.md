@@ -76,6 +76,7 @@ To redeem an output of this kind, the witness must consist of the following item
 ```
 
 
+
 `Metadata` is the last witness item. It is a vector of 1 to 5 bytes. The first byte is an unsigned integer between 1 to 255 denoting the number of `Subscript` (defined hereinafter). The following 0 to 4 byte(s) is an unsigned little-endian integer denoting the `MAST version`. `MAST Version` must be minimally encoded (the most significant byte must not be 0).
 
 `Path` is the second last witness item. It is a serialized Merkle path of the `Script Hash` (defined hereinafter). Size of `Path` must be a multiple of 32 bytes, and not more than 1024 bytes. Each 32 byte word is a double-SHA256 merkle node in the merkle branch connecting to the `Script Root` (defined hereinafter). `Depth` of the tree (0 to 32) is the size of `Path` divided by 32.
@@ -90,6 +91,7 @@ Depends on the first byte of `Metadata`, there should be 1 to 255 `Subscript` wi
   Script Hash = H(Y|H(Subscript_1)|H(Subscript_2)|...|H(Subscript_Y))
   H() = SHA256(SHA256())
 ```
+
 
 where `Y` is a 1-byte value denoting number of `Subscript`, followed by the hash of each `Subscript`
 
@@ -124,6 +126,7 @@ This proposal is a restricted case of more general MAST. In a general MAST desig
   (A or B) and (C or D or E) and (F or G)
 ```
 
+
 In a general MAST design, the 7 branches (A to G) will form a 3-level Merkle tree, plus an "overall condition" describing the relationship of different branches. In redemption, the "overall condition", executed branches (e.g. B, D, F), and Merkle path data will be provided for validation.
 
 In the current proposal, the user has to transform the redeem condition into 12 mutually exclusive branches and form a 4-level Merkle tree, and present only one branch in redemption:
@@ -137,6 +140,7 @@ In the current proposal, the user has to transform the redeem condition into 12 
   .
   B and E and G
 ```
+
 
 One way to implement the general MAST design is using a combination of `OP_EVAL`, `OP_CAT`, and `OP_HASH256`. However, that will suffer from the problems of `OP_EVAL`, including risks of indefinite program loop and inability to do static program analysis. A complicated implementation is required to fix these problems and is difficult to review.
 
@@ -198,12 +202,14 @@ This proposal requires script evaluation resulting in an empty stack, instead of
 ```
 
 
+
 The scriptPubKey with native witness program is:
 
 ```
   1 <0xb4b706e0c02eab9aba58419eb7ea2a286fb1c01d7406105fc12742bf8a3f97c9>
   (0x5120b4b706e0c02eab9aba58419eb7ea2a286fb1c01d7406105fc12742bf8a3f97c9)
 ```
+
 
 
 To redeem with the `SD|SE|SF` branch, the witness is
@@ -219,6 +225,7 @@ To redeem with the `SD|SE|SF` branch, the witness is
   Path (HE|HJ):   0x049b9f2f94f0a9bdea624e39cd7d6b27a365c6a0545bf0e9d88d86eff4894210d00fc690c4700d0f983f9700740066531ea826b21a4cbc62f80317261723d477
   Metadata:       0x03 (3 Subscript)
 ```
+
 
 
 
@@ -238,6 +245,7 @@ The following is the "Escrow with Timeout" example in <a href="/112" target="_bl
     ENDIF
 ```
 
+
 Using compressed public key, the size of this script is 150 bytes.
 
 With MAST, this script could be broken down into 2 mutually exclusive branches:<ref>In BIPXXX, it is proposed that CHECKLOCKTIMEVERIFY and CHECKSEQUENCEVERIFY will pop the top stack item</ref>
@@ -245,6 +253,7 @@ With MAST, this script could be broken down into 2 mutually exclusive branches:<
     2 <Alice's pubkey> <Bob's pubkey> <Escrow's pubkey> 3 CHECKMULTISIGVERIFY (105 bytes)
     "30d" CHECKSEQUENCEVERIFY <Alice's pubkey> CHECKSIGVERIFY (42 bytes)
 ```
+
 
 Since only one branch will be published, it is more difficult for a blockchain analyst to determine the details of the escrow.
 
@@ -267,12 +276,14 @@ The following is the "Hashed TIme-Lock Contract" example in <a href="/112" targe
     CHECKSIG
 ```
 
+
 To create a MAST Root, it is flattened to 3 mutually exclusive branches:
 ```
     HASH160 <R-HASH> EQUALVERIFY "24h" CHECKSEQUENCEVERIFY <Alice's pubkey> CHECKSIGVERIFY
     HASH160 <Commit-Revocation-Hash> EQUALVERIFY <Bob's pubkey> CHECKSIGVERIFY
     "Timestamp" CHECKLOCKTIMEVERIFY <Bob's pubkey> CHECKSIGVERIFY
 ```
+
 
 which significantly improves readability and reduces the witness size when it is redeemed.
 

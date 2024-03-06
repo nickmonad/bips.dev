@@ -58,6 +58,7 @@ The Refundable Collateral script takes the following form:
     OP_ENDIF
 ```
 
+
 The Seizable Collateral script takes the following form:
 
 ```
@@ -75,6 +76,7 @@ The Seizable Collateral script takes the following form:
         OP_ENDIF
     OP_ENDIF
 ```
+
 
 [HASHOP] is either OP_SHA256 or OP_HASH160.
 
@@ -178,6 +180,7 @@ The rational for the following script checking the length of secrets pushed to t
 ```
   OP_SIZE <secret b2 length> OP_EQUALVERIFY
 ```
+
 
 is to ensure that the secret size is exactly a certain number of bytes long.
 

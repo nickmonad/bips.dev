@@ -76,7 +76,6 @@ The following image depicts an example unbalanced hash-tree:
 
 <img src="bip-0098/unbalanced-hash-tree.png" />
 
-
 **A**, **B**, and **C** are leaf labels, 32-byte double-SHA256 hashes of the data associated with the leaf.
 **Node** and **Root** are inner nodes, whose labels are fast-SHA256 (defined below) hashes of their respective children's labels.
 **Node** is labelled with the fast-SHA256 hash of the concatenation of **B** and **C**.
@@ -96,6 +95,7 @@ The custom IV is the intermediate hash value generated after performing a standa
     d41670a136851f32 663914b66b4b3c23 1b9e3d7740a60887 63c11d86d446cb1c
 ```
 
+
 This data is the first 512 fractional bits of the square root of 23, the 9th prime number.
 The resulting midstate is used as IV for the fast-SHA256 cryptographic hash function:
 
@@ -106,6 +106,7 @@ The resulting midstate is used as IV for the fast-SHA256 cryptographic hash func
           0x76, 0x8f, 0xd2, 0xc9, 0x18, 0xbd, 0x42, 0xed,
           0x0e, 0x0b, 0x9f, 0x79, 0xee, 0xf6, 0x8a, 0x24 };
 ```
+
 
 As fast-SHA256 is only defined for two (2) 32-byte hash inputs, there are necessarily two special cases:
 an empty Merkle tree is not allowed, nor is any root hash defined for such a "tree";
@@ -160,42 +161,23 @@ There are eight possible configurations of internal nodes, as given in the follo
 
 <img src="bip-0098/node-variants.png" />
 
-
 In this diagram, DESCEND means the branch links to another internal node, as indicated by its child graph elements labeled "...";
 SKIP means the branch contains a hash of an elided subtree or element, and the fast-SHA256 root hash of this subtree or double-SHA256 hash of the element is included in the proof structure; and
 VERIFY means the branch contains an externally provided hash that is needed as witness for the verification of the proof.
 In tabular form, these code values are:
 
 
-||
-|-|
-|scope="col"| Code|
-|scope="col"| Left|
-|scope="col"| Right|
-|scope="row"| 000|
-|VERIFY|
-|SKIP|
-|scope="row"| 001|
-|VERIFY|
-|VERIFY|
-|scope="row"| 010|
-|VERIFY|
-|DESCEND|
-|scope="row"| 011|
-|DESCEND|
-|SKIP|
-|scope="row"| 100|
-|DESCEND|
-|VERIFY|
-|scope="row"| 101|
-|DESCEND|
-|DESCEND|
-|scope="row"| 110|
-|SKIP|
-|VERIFY|
-|scope="row"| 111|
-|SKIP|
-|DESCEND|
+|Code|Left|Right|
+|-|-|-|
+|000|VERIFY|SKIP|
+|001|VERIFY|VERIFY|
+|010|VERIFY|DESCEND|
+|011|DESCEND|SKIP|
+|100|DESCEND|VERIFY|
+|101|DESCEND|DESCEND|
+|110|SKIP|VERIFY|
+|111|SKIP|DESCEND|
+
 
 These 3-bit codes are packed into a byte array such that eight (8) codes would fit in every three (3) bytes.
 The order of filling a byte begins with the most significant bit `0x80` and ends with the least significant bit `0x01`.
@@ -218,31 +200,18 @@ Consider the following Merkle tree structure:
 
 <img src="bip-0098/traversal-example.png" />
 
-
 There are six (6) internal nodes.
 The depth-first, left-to-right, pre-order traversal of the tree visits these nodes in the following order: A, B, D, F, C, then E.
 There are three (3) skipped hashes, visited in the following order: 0x00..., 0x66..., and 0x22...
 The remaining four (4) hashes are provided at runtime to be verified by the proof.
 
 
-||
-|-|
-|scope="col"||
-|scope="col"| Byte 1|
-|scope="col"| Byte 2|
-|scope="col"| Byte 3|
-|scope="row"| Bits|
-|76543210|
-|76543210|
-|76543210|
-|scope="row"| Nodes|
-|AAABBBDD|
-|DFFFCCCE|
-|EE------|
-|scope="row"| Code|
-|10111101|
-|10000100|
-|01000000|
+||Byte 1|Byte 2|Byte 3|
+|-|-|-|-|
+|Bits|76543210|76543210|76543210|
+|Nodes|AAABBBDD|DFFFCCCE|EE------|
+|Code|10111101|10000100|01000000|
+
 
 The serialization begins with the VarInt encoded number of inner nodes, `0x06`, followed by the tree serialization itself, `0xbd8440`.
 Next the number of SKIP hashes is VarInt encoded, `0x03`, followed by the three (3) hashes in sequence.
@@ -253,6 +222,7 @@ The resulting 101 byte proof, encoded in base64:.
     ZmZmZmZmZmZmZmZmREREREREREREREREREREREREREREREREREREREREREQ=
 ```
 
+
 <h3>Rationale</h3>
 
 
@@ -260,7 +230,6 @@ The 3-bit encoding for inner nodes allows encoding all relevant configurations o
 The excluded 9th possibility would have both branches as SKIP:
 
 <img src="bip-0098/skip-skip.png" />
-
 
 This possibility is not allowed as for verification purposes it is entirely equivalent to the shorter proof where the branch to that node was SKIP'ed.
 Disallowing a node with two SKIP branches eliminates what would otherwise be a source of proof malleability.

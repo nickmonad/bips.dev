@@ -92,6 +92,7 @@ To derive the P2SH address from the above calculated public key, we use the enca
 ```
 
 
+
 <h3>Extended Key Version</h3>
 
 

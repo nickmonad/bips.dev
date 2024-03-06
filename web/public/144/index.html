@@ -73,43 +73,16 @@
 <h3> Serialization </h3>
 <p>A new serialization format for tx messages is added to the peer-to-peer protocol.</p>
 <p>The serialization has the following structure:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td>4</td></tr>
-<tr><td>version</td></tr>
-<tr><td>int32_t</td></tr>
-<tr><td>Transaction data format version</td></tr>
-<tr><td>1</td></tr>
-<tr><td>marker</td></tr>
-<tr><td>char</td></tr>
-<tr><td>Must be zero</td></tr>
-<tr><td>1</td></tr>
-<tr><td>flag</td></tr>
-<tr><td>char</td></tr>
-<tr><td>Must be nonzero</td></tr>
-<tr><td>1+</td></tr>
-<tr><td>txin_count</td></tr>
-<tr><td>var_int</td></tr>
-<tr><td>Number of transaction inputs</td></tr>
-<tr><td>41+</td></tr>
-<tr><td>txins</td></tr>
-<tr><td>txin[]</td></tr>
-<tr><td>A list of one or more transaction inputs</td></tr>
-<tr><td>1+</td></tr>
-<tr><td>txout_count</td></tr>
-<tr><td>var_int</td></tr>
-<tr><td>Number of transaction outputs</td></tr>
-<tr><td>9+</td></tr>
-<tr><td>txouts</td></tr>
-<tr><td>txouts[]</td></tr>
-<tr><td>A list of one or more transaction outputs</td></tr>
-<tr><td>1+</td></tr>
-<tr><td>script_witnesses</td></tr>
-<tr><td>script_witnesses[]</td></tr>
-<tr><td>The witness structure as a serialized byte array</td></tr>
-<tr><td>4</td></tr>
-<tr><td>lock_time</td></tr>
-<tr><td>uint32_t</td></tr>
-<tr><td>The block number or timestamp until which the transaction is locked</td></tr>
+<table><thead><tr><th>Field Size</th><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>4</td><td>version</td><td>int32_t</td><td>Transaction data format version</td></tr>
+<tr><td>1</td><td>marker</td><td>char</td><td>Must be zero</td></tr>
+<tr><td>1</td><td>flag</td><td>char</td><td>Must be nonzero</td></tr>
+<tr><td>1+</td><td>txin_count</td><td>var_int</td><td>Number of transaction inputs</td></tr>
+<tr><td>41+</td><td>txins</td><td>txin[]</td><td>A list of one or more transaction inputs</td></tr>
+<tr><td>1+</td><td>txout_count</td><td>var_int</td><td>Number of transaction outputs</td></tr>
+<tr><td>9+</td><td>txouts</td><td>txouts[]</td><td>A list of one or more transaction outputs</td></tr>
+<tr><td>1+</td><td>script_witnesses</td><td>script_witnesses[]</td><td>The witness structure as a serialized byte array</td></tr>
+<tr><td>4</td><td>lock_time</td><td>uint32_t</td><td>The block number or timestamp until which the transaction is locked</td></tr>
 </tbody></table>
 <p>Parsers supporting this BIP will be able to distinguish between the old serialization format (without the witness) and this one. The marker byte is set to zero so that this structure will never parse as a valid transaction in a parser that does not support this BIP. If parsing were to succeed, such a transaction would contain no inputs and a single output.</p>
 <p>If the witness is empty, the old serialization format must be used. </p>
@@ -208,43 +181,16 @@ similar to MSG_FILTERED_BLOCK. A further inv type MSG_FILTERED_WITNESS_BLOCK (0x
 <h3> Serialization </h3>
 <p>A new serialization format for tx messages is added to the peer-to-peer protocol.</p>
 <p>The serialization has the following structure:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td>4</td></tr>
-<tr><td>version</td></tr>
-<tr><td>int32_t</td></tr>
-<tr><td>Transaction data format version</td></tr>
-<tr><td>1</td></tr>
-<tr><td>marker</td></tr>
-<tr><td>char</td></tr>
-<tr><td>Must be zero</td></tr>
-<tr><td>1</td></tr>
-<tr><td>flag</td></tr>
-<tr><td>char</td></tr>
-<tr><td>Must be nonzero</td></tr>
-<tr><td>1+</td></tr>
-<tr><td>txin_count</td></tr>
-<tr><td>var_int</td></tr>
-<tr><td>Number of transaction inputs</td></tr>
-<tr><td>41+</td></tr>
-<tr><td>txins</td></tr>
-<tr><td>txin[]</td></tr>
-<tr><td>A list of one or more transaction inputs</td></tr>
-<tr><td>1+</td></tr>
-<tr><td>txout_count</td></tr>
-<tr><td>var_int</td></tr>
-<tr><td>Number of transaction outputs</td></tr>
-<tr><td>9+</td></tr>
-<tr><td>txouts</td></tr>
-<tr><td>txouts[]</td></tr>
-<tr><td>A list of one or more transaction outputs</td></tr>
-<tr><td>1+</td></tr>
-<tr><td>script_witnesses</td></tr>
-<tr><td>script_witnesses[]</td></tr>
-<tr><td>The witness structure as a serialized byte array</td></tr>
-<tr><td>4</td></tr>
-<tr><td>lock_time</td></tr>
-<tr><td>uint32_t</td></tr>
-<tr><td>The block number or timestamp until which the transaction is locked</td></tr>
+<table><thead><tr><th>Field Size</th><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>4</td><td>version</td><td>int32_t</td><td>Transaction data format version</td></tr>
+<tr><td>1</td><td>marker</td><td>char</td><td>Must be zero</td></tr>
+<tr><td>1</td><td>flag</td><td>char</td><td>Must be nonzero</td></tr>
+<tr><td>1+</td><td>txin_count</td><td>var_int</td><td>Number of transaction inputs</td></tr>
+<tr><td>41+</td><td>txins</td><td>txin[]</td><td>A list of one or more transaction inputs</td></tr>
+<tr><td>1+</td><td>txout_count</td><td>var_int</td><td>Number of transaction outputs</td></tr>
+<tr><td>9+</td><td>txouts</td><td>txouts[]</td><td>A list of one or more transaction outputs</td></tr>
+<tr><td>1+</td><td>script_witnesses</td><td>script_witnesses[]</td><td>The witness structure as a serialized byte array</td></tr>
+<tr><td>4</td><td>lock_time</td><td>uint32_t</td><td>The block number or timestamp until which the transaction is locked</td></tr>
 </tbody></table>
 <p>Parsers supporting this BIP will be able to distinguish between the old serialization format (without the witness) and this one. The marker byte is set to zero so that this structure will never parse as a valid transaction in a parser that does not support this BIP. If parsing were to succeed, such a transaction would contain no inputs and a single output.</p>
 <p>If the witness is empty, the old serialization format must be used. </p>
@@ -301,9 +247,9 @@ similar to MSG_FILTERED_BLOCK. A further inv type MSG_FILTERED_WITNESS_BLOCK (0x
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

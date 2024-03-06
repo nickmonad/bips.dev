@@ -208,6 +208,12 @@ The receiver is not constrained to specific set of errors, some are specified in
 }
 </code></pre>
 <p>The well-known error codes are:</p>
+<table><thead><tr><th>Error code</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>unavailable</td><td>The payjoin endpoint is not available for now.</td></tr>
+<tr><td>not-enough-money</td><td>The receiver added some inputs but could not bump the fee of the payjoin proposal.</td></tr>
+<tr><td>version-unsupported</td><td>This version of payjoin is not supported.</td></tr>
+<tr><td>original-psbt-rejected</td><td>The receiver rejected the original PSBT.</td></tr>
+</tbody></table>
 <p>The receiver is allowed to return implementation specific errors which may assist the sender to diagnose any issue.</p>
 <p>However, it is important that error codes that are not well-known and that the message do not appear on the sender's software user interface.
 Such error codes or messages could be used maliciously to phish a non technical user.
@@ -231,6 +237,12 @@ To prevent this, the sender can agree to pay more fee so the receiver make sure 
 </ul>
 <p>When a sender pick a specific fee rate, the sender expects the transaction to be confirmed after a specific amount of time. But if the receiver adds an input without bumping the fee of the transaction, the payjoin transaction fee rate will be lower, and thus, longer to confirm.</p>
 <p>Our recommendation for <code>maxadditionalfeecontribution=</code> is <code>originalPSBTFeeRate * vsize(sender_input_type)</code>.</p>
+<table><thead><tr><th>sender_input_type</th><th>vsize(sender_input_type)</th></tr></thead><tbody>
+<tr><td>P2WPKH</td><td>68</td></tr>
+<tr><td>P2PKH</td><td>148</td></tr>
+<tr><td>P2SH-P2WPKH</td><td>91</td></tr>
+<tr><td>P2TR</td><td>58</td></tr>
+</tbody></table>
 <h3>Receiver's original PSBT checklist</h3>
 <p>The receiver needs to do some check on the original PSBT before proceeding:</p>
 <ul>
@@ -607,6 +619,9 @@ PSBT CreateOriginalPSBT(PSBT signedPSBT)
 </code></pre>
 <h2><span id"test-vectors"></span>Test vectors</h2>
 <p>A successful exchange with:</p>
+<table><thead><tr><th>InputScriptType</th><th>Orginal PSBT Fee rate</th><th>maxadditionalfeecontribution</th><th>additionalfeeoutputindex</th></tr></thead><tbody>
+<tr><td>P2SH-P2WPKH</td><td>2 sat/vbyte</td><td>0.00000182</td><td>0</td></tr>
+</tbody></table>
 <p><code>Unfinalized signed PSBT</code></p>
 <pre>cHNidP8BAHMCAAAAAY8nutGgJdyYGXWiBEb45Hoe9lWGbkxh/6bNiOJdCDuDAAAAAAD+////AtyVuAUAAAAAF6kUHehJ8GnSdBUOOv6ujXLrWmsJRDCHgIQeAAAAAAAXqRR3QJbbz0hnQ8IvQ0fptGn+votneofTAAAAAAEBIKgb1wUAAAAAF6kU3k4ekGHKWRNbA1rV5tR5kEVDVNCHAQQWABTHikVyU1WCjVZYB03VJg1fy2mFMCICAxWawBqg1YdUxLTYt9NJ7R7fzws2K09rVRBnI6KFj4UWRzBEAiB8Q+A6dep+Rz92vhy26lT0AjZn4PRLi8Bf9qoB/CMk0wIgP/Rj2PWZ3gEjUkTlhDRNAQ0gXwTO7t9n+V14pZ6oljUBIgYDFZrAGqDVh1TEtNi300ntHt/PCzYrT2tVEGcjooWPhRYYSFzWUDEAAIABAACAAAAAgAEAAAAAAAAAAAEAFgAURvYaK7pzgo7lhbSl/DeUan2MxRQiAgLKC8FYHmmul/HrXLUcMDCjfuRg/dhEkG8CO26cEC6vfBhIXNZQMQAAgAEAAIAAAACAAQAAAAEAAAAAAA==</pre>
 <p><code>Original PSBT</code></p>
@@ -819,6 +834,12 @@ The receiver is not constrained to specific set of errors, some are specified in
 }
 </code></pre>
 <p>The well-known error codes are:</p>
+<table><thead><tr><th>Error code</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>unavailable</td><td>The payjoin endpoint is not available for now.</td></tr>
+<tr><td>not-enough-money</td><td>The receiver added some inputs but could not bump the fee of the payjoin proposal.</td></tr>
+<tr><td>version-unsupported</td><td>This version of payjoin is not supported.</td></tr>
+<tr><td>original-psbt-rejected</td><td>The receiver rejected the original PSBT.</td></tr>
+</tbody></table>
 <p>The receiver is allowed to return implementation specific errors which may assist the sender to diagnose any issue.</p>
 <p>However, it is important that error codes that are not well-known and that the message do not appear on the sender's software user interface.
 Such error codes or messages could be used maliciously to phish a non technical user.
@@ -842,6 +863,12 @@ To prevent this, the sender can agree to pay more fee so the receiver make sure 
 </ul>
 <p>When a sender pick a specific fee rate, the sender expects the transaction to be confirmed after a specific amount of time. But if the receiver adds an input without bumping the fee of the transaction, the payjoin transaction fee rate will be lower, and thus, longer to confirm.</p>
 <p>Our recommendation for <code>maxadditionalfeecontribution=</code> is <code>originalPSBTFeeRate * vsize(sender_input_type)</code>.</p>
+<table><thead><tr><th>sender_input_type</th><th>vsize(sender_input_type)</th></tr></thead><tbody>
+<tr><td>P2WPKH</td><td>68</td></tr>
+<tr><td>P2PKH</td><td>148</td></tr>
+<tr><td>P2SH-P2WPKH</td><td>91</td></tr>
+<tr><td>P2TR</td><td>58</td></tr>
+</tbody></table>
 <h3>Receiver's original PSBT checklist</h3>
 <p>The receiver needs to do some check on the original PSBT before proceeding:</p>
 <ul>
@@ -1218,6 +1245,9 @@ PSBT CreateOriginalPSBT(PSBT signedPSBT)
 </code></pre>
 <h2><span id"test-vectors"></span>Test vectors</h2>
 <p>A successful exchange with:</p>
+<table><thead><tr><th>InputScriptType</th><th>Orginal PSBT Fee rate</th><th>maxadditionalfeecontribution</th><th>additionalfeeoutputindex</th></tr></thead><tbody>
+<tr><td>P2SH-P2WPKH</td><td>2 sat/vbyte</td><td>0.00000182</td><td>0</td></tr>
+</tbody></table>
 <p><code>Unfinalized signed PSBT</code></p>
 <pre>cHNidP8BAHMCAAAAAY8nutGgJdyYGXWiBEb45Hoe9lWGbkxh/6bNiOJdCDuDAAAAAAD+////AtyVuAUAAAAAF6kUHehJ8GnSdBUOOv6ujXLrWmsJRDCHgIQeAAAAAAAXqRR3QJbbz0hnQ8IvQ0fptGn+votneofTAAAAAAEBIKgb1wUAAAAAF6kU3k4ekGHKWRNbA1rV5tR5kEVDVNCHAQQWABTHikVyU1WCjVZYB03VJg1fy2mFMCICAxWawBqg1YdUxLTYt9NJ7R7fzws2K09rVRBnI6KFj4UWRzBEAiB8Q+A6dep+Rz92vhy26lT0AjZn4PRLi8Bf9qoB/CMk0wIgP/Rj2PWZ3gEjUkTlhDRNAQ0gXwTO7t9n+V14pZ6oljUBIgYDFZrAGqDVh1TEtNi300ntHt/PCzYrT2tVEGcjooWPhRYYSFzWUDEAAIABAACAAAAAgAEAAAAAAAAAAAEAFgAURvYaK7pzgo7lhbSl/DeUan2MxRQiAgLKC8FYHmmul/HrXLUcMDCjfuRg/dhEkG8CO26cEC6vfBhIXNZQMQAAgAEAAIAAAACAAQAAAAEAAAAAAA==</pre>
 <p><code>Original PSBT</code></p>
@@ -1253,9 +1283,9 @@ Thanks again to RHavar who wrote the <a href="/79" target="_blank">BIP79 Bustapa
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

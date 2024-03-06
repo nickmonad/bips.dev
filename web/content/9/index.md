@@ -115,6 +115,7 @@ The genesis block has state DEFINED for each deployment, by definition.
         }
 ```
 
+
 All blocks within a retarget period have the same state. This means that if
 floor(block1.height / 2016) = floor(block2.height / 2016), they are guaranteed to have the same state for every
 deployment.
@@ -125,11 +126,13 @@ deployment.
         }
 ```
 
+
 Otherwise, the next state depends on the previous state:
 
 ```
         switch (GetStateForBlock(GetAncestorAtHeight(block, block.height - 2016))) {
 ```
+
 
 We remain in the initial state until either we pass the start time or the timeout. GetMedianTimePast in the code below
 refers to the median nTime of a block and its 10 predecessors. The expression GetMedianTimePast(block.parent) is
@@ -145,6 +148,7 @@ referred to as MTP in the diagram above, and is treated as a monotonic clock def
             }
             return DEFINED;
 ```
+
 
 After a period in the STARTED state, if we're past the timeout, we switch to FAILED. If not, we tally the bits set,
 and transition to LOCKED_IN if a sufficient number of blocks in the past period set the deployment bit in their
@@ -174,12 +178,14 @@ Note that a block's state never depends on its own nVersion; only on that of its
             return STARTED;
 ```
 
+
 After a retarget period of LOCKED_IN, we automatically transition to ACTIVE.
 
 ```
         case LOCKED_IN:
             return ACTIVE;
 ```
+
 
 And ACTIVE and FAILED are terminal states, which a deployment stays in once they're reached.
 
@@ -188,12 +194,14 @@ And ACTIVE and FAILED are terminal states, which a deployment stays in once they
             return ACTIVE;
 ```
 
+
 ```
         case FAILED:
             return FAILED;
         }
     }
 ```
+
 
 **Implementation**
 It should be noted that the states are maintained along block chain
@@ -219,6 +227,7 @@ The template request Object is extended to include a new item:
 |-|-|-|-|
 |rules|No|Array of Strings|list of supported softfork deployments, by name|
 
+
 The template Object is also extended:
 
 
@@ -227,6 +236,7 @@ The template Object is also extended:
 |rules|Yes|Array of Strings|list of softfork deployments, by name, that are active state|
 |vbavailable|Yes|Object|set of pending, supported softfork deployments; each uses the softfork name as the key, and the softfork bit as its value|
 |vbrequired|No|Number|bit mask of softfork deployment version bits the server requires enabled in submissions|
+
 
 The "version" key of the template is retained, and used to indicate the server's preference of deployments.
 If versionbits is being used, "version" MUST be within the versionbits range of [0x20000000...0x3FFFFFFF].

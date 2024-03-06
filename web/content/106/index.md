@@ -58,6 +58,7 @@ https://blockchain.info/charts/avg-block-size?timespan=all&showDataPoints=false&
       Keep the same MaxBlockSize
 ```
 
+
 <h3>Proposal 2 : Depending on previous block size calculation and previous Tx fee collected by miners</h3>
 
 ```
@@ -75,6 +76,7 @@ https://blockchain.info/charts/avg-block-size?timespan=all&showDataPoints=false&
   Else
       Keep the same MaxBlockSize
 ```
+
 
 <h2>Rationale</h2>
 

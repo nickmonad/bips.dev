@@ -94,53 +94,17 @@
 </ul>
 <h4> D1 (The Sidechain List) </h4>
 <p>D1 is a list of active sidechains. D1 is updated via M1 and M2.</p>
-<table><thead><tr><th>Field No.</th></tr></thead><tbody>
-<tr><td>Label</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description / Purpose</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Escrow Number</td></tr>
-<tr><td>uint8_t</td></tr>
-<tr><td>The escrow's ID number. Used to uniquely refer to each sidechain.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Version</td></tr>
-<tr><td>int32_t</td></tr>
-<tr><td>Version number.</td></tr>
-<tr><td>3</td></tr>
-<tr><td>Sidechain Name</td></tr>
-<tr><td>string</td></tr>
-<tr><td>A human-readable name of the sidechain.</td></tr>
-<tr><td>4</td></tr>
-<tr><td>Sidechain Description</td></tr>
-<tr><td>string</td></tr>
-<tr><td>A human-readable name description of the sidechain.</td></tr>
-<tr><td>5</td></tr>
-<tr><td>Hash1 - tarball hash</td></tr>
-<tr><td>uint256</td></tr>
-<tr><td>Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
-<tr><td>6</td></tr>
-<tr><td>Hash2 - git commit hash</td></tr>
-<tr><td>uint160</td></tr>
-<tr><td>Intended as the git commit hash of the canonical sidechain node software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
-<tr><td>7</td></tr>
-<tr><td>Active</td></tr>
-<tr><td>bool</td></tr>
-<tr><td>Does this sidechain slot contain an active sidechain?<br /></td></tr>
-<tr><td>8</td></tr>
-<tr><td>Activation Status</td></tr>
-<tr><td>int , int</td></tr>
-<tr><td>The age of the proposal (in blocks); and the number of &quot;fails&quot; (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.</td></tr>
-<tr><td>9</td></tr>
-<tr><td>&quot;CTIP&quot; -- &quot;TxID&quot;</td></tr>
-<tr><td>uint256</td></tr>
-<tr><td>A UTXO that holds the sidechain's money. (Part 1 of 2).</td></tr>
-<tr><td>10</td></tr>
-<tr><td>&quot;CTIP&quot; -- &quot;vout&quot;</td></tr>
-<tr><td>int32_t</td></tr>
-<tr><td>A UTXO that holds the sidechain's money. (Part 2 of 2).</td></tr>
+<table><thead><tr><th>Field No.</th><th>Label</th><th>Type</th><th>Description / Purpose</th></tr></thead><tbody>
+<tr><td>1</td><td>Escrow Number</td><td>uint8_t</td><td>The escrow's ID number. Used to uniquely refer to each sidechain.</td></tr>
+<tr><td>2</td><td>Version</td><td>int32_t</td><td>Version number.</td></tr>
+<tr><td>3</td><td>Sidechain Name</td><td>string</td><td>A human-readable name of the sidechain.</td></tr>
+<tr><td>4</td><td>Sidechain Description</td><td>string</td><td>A human-readable name description of the sidechain.</td></tr>
+<tr><td>5</td><td>Hash1 - tarball hash</td><td>uint256</td><td>Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
+<tr><td>6</td><td>Hash2 - git commit hash</td><td>uint160</td><td>Intended as the git commit hash of the canonical sidechain node software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
+<tr><td>7</td><td>Active</td><td>bool</td><td>Does this sidechain slot contain an active sidechain?<br /></td></tr>
+<tr><td>8</td><td>Activation Status</td><td>int , int</td><td>The age of the proposal (in blocks); and the number of &quot;fails&quot; (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.</td></tr>
+<tr><td>9</td><td>&quot;CTIP&quot; -- &quot;TxID&quot;</td><td>uint256</td><td>A UTXO that holds the sidechain's money. (Part 1 of 2).</td></tr>
+<tr><td>10</td><td>&quot;CTIP&quot; -- &quot;vout&quot;</td><td>int32_t</td><td>A UTXO that holds the sidechain's money. (Part 2 of 2).</td></tr>
 </tbody></table>
 <h4> D2 (The Withdrawal List) </h4>
 <p>D2 lists withdrawal-attempts. If these attempts succeed, they will pay coins &quot;from&quot; a Bip300-locked UTXO, to new UTXOs controlled by the withdrawing-user. Each attempt pays out many users, so we call these withdrawal-attempts &quot;Bundles&quot;.</p>
@@ -154,29 +118,11 @@
 <li>If the M6 of a Bundle is paid out, it is also removed.</li>
 <li>If a Bundle cannot possibly succeed ( 13150 - &quot;ACKs&quot;  &gt;  &quot;Blocks Remaining&quot; ), it is removed immediately.</li>
 </ol>
-<table><thead><tr><th>Field No.</th></tr></thead><tbody>
-<tr><td>Label</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description / Purpose</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Sidechain Number</td></tr>
-<tr><td>uint8_t</td></tr>
-<tr><td>Links the withdrawal-request to a specific hashrate escrow.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Bundle Hash</td></tr>
-<tr><td>uint256</td></tr>
-<tr><td>A withdrawal attempt. Specifically, it is a &quot;blinded transaction id&quot; (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.</td></tr>
-<tr><td>3</td></tr>
-<tr><td>Work Score (ACKs)</td></tr>
-<tr><td>uint16_t</td></tr>
-<tr><td>How many miner upvotes a withdrawal has. Starts at 0. Fastest possible rate of increase is 1 per block.</td></tr>
-<tr><td>4</td></tr>
-<tr><td>Blocks Remaining</td></tr>
-<tr><td>uint16_t</td></tr>
-<tr><td>How long this bundle has left to live (measured in blocks). Starts at 26,300 and counts down.</td></tr>
+<table><thead><tr><th>Field No.</th><th>Label</th><th>Type</th><th>Description / Purpose</th></tr></thead><tbody>
+<tr><td>1</td><td>Sidechain Number</td><td>uint8_t</td><td>Links the withdrawal-request to a specific hashrate escrow.</td></tr>
+<tr><td>2</td><td>Bundle Hash</td><td>uint256</td><td>A withdrawal attempt. Specifically, it is a &quot;blinded transaction id&quot; (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.</td></tr>
+<tr><td>3</td><td>Work Score (ACKs)</td><td>uint16_t</td><td>How many miner upvotes a withdrawal has. Starts at 0. Fastest possible rate of increase is 1 per block.</td></tr>
+<tr><td>4</td><td>Blocks Remaining</td><td>uint16_t</td><td>How long this bundle has left to live (measured in blocks). Starts at 26,300 and counts down.</td></tr>
 </tbody></table>
 <p>D1, with all 256 slots active, reaches a maximum size of: 256 * ( 1 (map index) + 36 (outpoint) + 8 (amount) ) = 11,520 bytes.</p>
 <p>D2, under normal conditions, would reach a size of: (38 bytes per withdrawal * 256 sidechains) = 9,728 bytes.</p>
@@ -284,62 +230,20 @@ Version 0x03 omits the upvote vector, and instead upvotes only those withdrawals
 <p>If M4 is present and valid: each withdrawal-bundle that is ACKed, will gain one upvote.</p>
 <p>Important: Within a sidechain-group, upvoting one Bundle (&quot;+1&quot;) automatically downvotes (&quot;-1&quot;) all other Bundles in that group. However, the minimum ACK-counter is zero. While only one Bundle can be upvoted at once; the whole group can all be unchanged at once (&quot;abstain&quot;), and they can all be downvoted at once (&quot;alarm&quot;).</p>
 <p>For example:</p>
-<table><thead><tr><th>SC#</th></tr></thead><tbody>
-<tr><td>Bundle Hash</td></tr>
-<tr><td>-</td></tr>
-<tr><td>ACKs</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Blocks Remaining</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h1</td></tr>
-<tr><td>45</td></tr>
-<tr><td>22,109</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h2</td></tr>
-<tr><td>12</td></tr>
-<tr><td>22,008</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h3</td></tr>
-<tr><td>13</td></tr>
-<tr><td>22,999</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h4</td></tr>
-<tr><td>8</td></tr>
-<tr><td>23,550<br /></td></tr>
-<tr><td>2</td></tr>
-<tr><td>h5</td></tr>
-<tr><td>2</td></tr>
-<tr><td>22,560</td></tr>
+<table><thead><tr><th>SC#</th><th>Bundle Hash</th><th>ACKs</th><th>Blocks Remaining</th></tr></thead><tbody>
+<tr><td>1</td><td>h1</td><td>45</td><td>22,109</td></tr>
+<tr><td>1</td><td>h2</td><td>12</td><td>22,008</td></tr>
+<tr><td>2</td><td>h3</td><td>13</td><td>22,999</td></tr>
+<tr><td>2</td><td>h4</td><td>8</td><td>23,550<br /></td></tr>
+<tr><td>2</td><td>h5</td><td>2</td><td>22,560</td></tr>
 </tbody></table>
 <p>...in block 900,000 could become...</p>
-<table><thead><tr><th>SC#</th></tr></thead><tbody>
-<tr><td>Bundle Hash</td></tr>
-<tr><td>-</td></tr>
-<tr><td>ACKs</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Blocks Remaining</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h1</td></tr>
-<tr><td>46</td></tr>
-<tr><td>22,108</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h2</td></tr>
-<tr><td>11</td></tr>
-<tr><td>22,007</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h3</td></tr>
-<tr><td>12</td></tr>
-<tr><td>22,998</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h4</td></tr>
-<tr><td>9</td></tr>
-<tr><td>23,549<br /></td></tr>
-<tr><td>2</td></tr>
-<tr><td>h5</td></tr>
-<tr><td>1</td></tr>
-<tr><td>22,559</td></tr>
+<table><thead><tr><th>SC#</th><th>Bundle Hash</th><th>ACKs</th><th>Blocks Remaining</th></tr></thead><tbody>
+<tr><td>1</td><td>h1</td><td>46</td><td>22,108</td></tr>
+<tr><td>1</td><td>h2</td><td>11</td><td>22,007</td></tr>
+<tr><td>2</td><td>h3</td><td>12</td><td>22,998</td></tr>
+<tr><td>2</td><td>h4</td><td>9</td><td>23,549<br /></td></tr>
+<tr><td>2</td><td>h5</td><td>1</td><td>22,559</td></tr>
 </tbody></table>
 <p>...if M4 were [0x6A,D77D1776,00,0000,0001].</p>
 <p>Finally, we describe Deposits and Withdrawals.</p>
@@ -402,17 +306,20 @@ M3: 3 get, 1 delete, 2 create, 2 hash
   for each prior proposed withdrawl: (included in 1 get+delete+create)
 ```
 M4: 1 get
+
 ```
   + for every proposed withdraw, 1 get, 1 delete, 1 create, 1 add
   v0 needs to read and parse previous block
 ```
 M5/M6 OP_DRIVECHAIN spends require 2 additional input lookups
+
 ```
   for each output: check for duplicate OP_DRIVECHAINs
   amount comparison
   M6: encode & compare fee amount, 2 hash, counter compare
 -->
 <pre><code>
+
 
 &lt;h2&gt;Backward compatibility&lt;&#x2F;h2&gt;
 
@@ -531,53 +438,17 @@ This BIP is licensed under the BSD 2-clause license.
 </ul>
 <h4> D1 (The Sidechain List) </h4>
 <p>D1 is a list of active sidechains. D1 is updated via M1 and M2.</p>
-<table><thead><tr><th>Field No.</th></tr></thead><tbody>
-<tr><td>Label</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description / Purpose</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Escrow Number</td></tr>
-<tr><td>uint8_t</td></tr>
-<tr><td>The escrow's ID number. Used to uniquely refer to each sidechain.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Version</td></tr>
-<tr><td>int32_t</td></tr>
-<tr><td>Version number.</td></tr>
-<tr><td>3</td></tr>
-<tr><td>Sidechain Name</td></tr>
-<tr><td>string</td></tr>
-<tr><td>A human-readable name of the sidechain.</td></tr>
-<tr><td>4</td></tr>
-<tr><td>Sidechain Description</td></tr>
-<tr><td>string</td></tr>
-<tr><td>A human-readable name description of the sidechain.</td></tr>
-<tr><td>5</td></tr>
-<tr><td>Hash1 - tarball hash</td></tr>
-<tr><td>uint256</td></tr>
-<tr><td>Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
-<tr><td>6</td></tr>
-<tr><td>Hash2 - git commit hash</td></tr>
-<tr><td>uint160</td></tr>
-<tr><td>Intended as the git commit hash of the canonical sidechain node software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
-<tr><td>7</td></tr>
-<tr><td>Active</td></tr>
-<tr><td>bool</td></tr>
-<tr><td>Does this sidechain slot contain an active sidechain?<br /></td></tr>
-<tr><td>8</td></tr>
-<tr><td>Activation Status</td></tr>
-<tr><td>int , int</td></tr>
-<tr><td>The age of the proposal (in blocks); and the number of &quot;fails&quot; (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.</td></tr>
-<tr><td>9</td></tr>
-<tr><td>&quot;CTIP&quot; -- &quot;TxID&quot;</td></tr>
-<tr><td>uint256</td></tr>
-<tr><td>A UTXO that holds the sidechain's money. (Part 1 of 2).</td></tr>
-<tr><td>10</td></tr>
-<tr><td>&quot;CTIP&quot; -- &quot;vout&quot;</td></tr>
-<tr><td>int32_t</td></tr>
-<tr><td>A UTXO that holds the sidechain's money. (Part 2 of 2).</td></tr>
+<table><thead><tr><th>Field No.</th><th>Label</th><th>Type</th><th>Description / Purpose</th></tr></thead><tbody>
+<tr><td>1</td><td>Escrow Number</td><td>uint8_t</td><td>The escrow's ID number. Used to uniquely refer to each sidechain.</td></tr>
+<tr><td>2</td><td>Version</td><td>int32_t</td><td>Version number.</td></tr>
+<tr><td>3</td><td>Sidechain Name</td><td>string</td><td>A human-readable name of the sidechain.</td></tr>
+<tr><td>4</td><td>Sidechain Description</td><td>string</td><td>A human-readable name description of the sidechain.</td></tr>
+<tr><td>5</td><td>Hash1 - tarball hash</td><td>uint256</td><td>Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
+<tr><td>6</td><td>Hash2 - git commit hash</td><td>uint160</td><td>Intended as the git commit hash of the canonical sidechain node software. (This is not enforced anywhere by Bip300, and is for human purposes only.)</td></tr>
+<tr><td>7</td><td>Active</td><td>bool</td><td>Does this sidechain slot contain an active sidechain?<br /></td></tr>
+<tr><td>8</td><td>Activation Status</td><td>int , int</td><td>The age of the proposal (in blocks); and the number of &quot;fails&quot; (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.</td></tr>
+<tr><td>9</td><td>&quot;CTIP&quot; -- &quot;TxID&quot;</td><td>uint256</td><td>A UTXO that holds the sidechain's money. (Part 1 of 2).</td></tr>
+<tr><td>10</td><td>&quot;CTIP&quot; -- &quot;vout&quot;</td><td>int32_t</td><td>A UTXO that holds the sidechain's money. (Part 2 of 2).</td></tr>
 </tbody></table>
 <h4> D2 (The Withdrawal List) </h4>
 <p>D2 lists withdrawal-attempts. If these attempts succeed, they will pay coins &quot;from&quot; a Bip300-locked UTXO, to new UTXOs controlled by the withdrawing-user. Each attempt pays out many users, so we call these withdrawal-attempts &quot;Bundles&quot;.</p>
@@ -591,29 +462,11 @@ This BIP is licensed under the BSD 2-clause license.
 <li>If the M6 of a Bundle is paid out, it is also removed.</li>
 <li>If a Bundle cannot possibly succeed ( 13150 - &quot;ACKs&quot;  &gt;  &quot;Blocks Remaining&quot; ), it is removed immediately.</li>
 </ol>
-<table><thead><tr><th>Field No.</th></tr></thead><tbody>
-<tr><td>Label</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Type</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Description / Purpose</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>Sidechain Number</td></tr>
-<tr><td>uint8_t</td></tr>
-<tr><td>Links the withdrawal-request to a specific hashrate escrow.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Bundle Hash</td></tr>
-<tr><td>uint256</td></tr>
-<tr><td>A withdrawal attempt. Specifically, it is a &quot;blinded transaction id&quot; (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.</td></tr>
-<tr><td>3</td></tr>
-<tr><td>Work Score (ACKs)</td></tr>
-<tr><td>uint16_t</td></tr>
-<tr><td>How many miner upvotes a withdrawal has. Starts at 0. Fastest possible rate of increase is 1 per block.</td></tr>
-<tr><td>4</td></tr>
-<tr><td>Blocks Remaining</td></tr>
-<tr><td>uint16_t</td></tr>
-<tr><td>How long this bundle has left to live (measured in blocks). Starts at 26,300 and counts down.</td></tr>
+<table><thead><tr><th>Field No.</th><th>Label</th><th>Type</th><th>Description / Purpose</th></tr></thead><tbody>
+<tr><td>1</td><td>Sidechain Number</td><td>uint8_t</td><td>Links the withdrawal-request to a specific hashrate escrow.</td></tr>
+<tr><td>2</td><td>Bundle Hash</td><td>uint256</td><td>A withdrawal attempt. Specifically, it is a &quot;blinded transaction id&quot; (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.</td></tr>
+<tr><td>3</td><td>Work Score (ACKs)</td><td>uint16_t</td><td>How many miner upvotes a withdrawal has. Starts at 0. Fastest possible rate of increase is 1 per block.</td></tr>
+<tr><td>4</td><td>Blocks Remaining</td><td>uint16_t</td><td>How long this bundle has left to live (measured in blocks). Starts at 26,300 and counts down.</td></tr>
 </tbody></table>
 <p>D1, with all 256 slots active, reaches a maximum size of: 256 * ( 1 (map index) + 36 (outpoint) + 8 (amount) ) = 11,520 bytes.</p>
 <p>D2, under normal conditions, would reach a size of: (38 bytes per withdrawal * 256 sidechains) = 9,728 bytes.</p>
@@ -721,62 +574,20 @@ Version 0x03 omits the upvote vector, and instead upvotes only those withdrawals
 <p>If M4 is present and valid: each withdrawal-bundle that is ACKed, will gain one upvote.</p>
 <p>Important: Within a sidechain-group, upvoting one Bundle (&quot;+1&quot;) automatically downvotes (&quot;-1&quot;) all other Bundles in that group. However, the minimum ACK-counter is zero. While only one Bundle can be upvoted at once; the whole group can all be unchanged at once (&quot;abstain&quot;), and they can all be downvoted at once (&quot;alarm&quot;).</p>
 <p>For example:</p>
-<table><thead><tr><th>SC#</th></tr></thead><tbody>
-<tr><td>Bundle Hash</td></tr>
-<tr><td>-</td></tr>
-<tr><td>ACKs</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Blocks Remaining</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h1</td></tr>
-<tr><td>45</td></tr>
-<tr><td>22,109</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h2</td></tr>
-<tr><td>12</td></tr>
-<tr><td>22,008</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h3</td></tr>
-<tr><td>13</td></tr>
-<tr><td>22,999</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h4</td></tr>
-<tr><td>8</td></tr>
-<tr><td>23,550<br /></td></tr>
-<tr><td>2</td></tr>
-<tr><td>h5</td></tr>
-<tr><td>2</td></tr>
-<tr><td>22,560</td></tr>
+<table><thead><tr><th>SC#</th><th>Bundle Hash</th><th>ACKs</th><th>Blocks Remaining</th></tr></thead><tbody>
+<tr><td>1</td><td>h1</td><td>45</td><td>22,109</td></tr>
+<tr><td>1</td><td>h2</td><td>12</td><td>22,008</td></tr>
+<tr><td>2</td><td>h3</td><td>13</td><td>22,999</td></tr>
+<tr><td>2</td><td>h4</td><td>8</td><td>23,550<br /></td></tr>
+<tr><td>2</td><td>h5</td><td>2</td><td>22,560</td></tr>
 </tbody></table>
 <p>...in block 900,000 could become...</p>
-<table><thead><tr><th>SC#</th></tr></thead><tbody>
-<tr><td>Bundle Hash</td></tr>
-<tr><td>-</td></tr>
-<tr><td>ACKs</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Blocks Remaining</td></tr>
-<tr><td>-</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h1</td></tr>
-<tr><td>46</td></tr>
-<tr><td>22,108</td></tr>
-<tr><td>1</td></tr>
-<tr><td>h2</td></tr>
-<tr><td>11</td></tr>
-<tr><td>22,007</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h3</td></tr>
-<tr><td>12</td></tr>
-<tr><td>22,998</td></tr>
-<tr><td>2</td></tr>
-<tr><td>h4</td></tr>
-<tr><td>9</td></tr>
-<tr><td>23,549<br /></td></tr>
-<tr><td>2</td></tr>
-<tr><td>h5</td></tr>
-<tr><td>1</td></tr>
-<tr><td>22,559</td></tr>
+<table><thead><tr><th>SC#</th><th>Bundle Hash</th><th>ACKs</th><th>Blocks Remaining</th></tr></thead><tbody>
+<tr><td>1</td><td>h1</td><td>46</td><td>22,108</td></tr>
+<tr><td>1</td><td>h2</td><td>11</td><td>22,007</td></tr>
+<tr><td>2</td><td>h3</td><td>12</td><td>22,998</td></tr>
+<tr><td>2</td><td>h4</td><td>9</td><td>23,549<br /></td></tr>
+<tr><td>2</td><td>h5</td><td>1</td><td>22,559</td></tr>
 </tbody></table>
 <p>...if M4 were [0x6A,D77D1776,00,0000,0001].</p>
 <p>Finally, we describe Deposits and Withdrawals.</p>
@@ -839,17 +650,20 @@ M3: 3 get, 1 delete, 2 create, 2 hash
   for each prior proposed withdrawl: (included in 1 get+delete+create)
 ```
 M4: 1 get
+
 ```
   + for every proposed withdraw, 1 get, 1 delete, 1 create, 1 add
   v0 needs to read and parse previous block
 ```
 M5/M6 OP_DRIVECHAIN spends require 2 additional input lookups
+
 ```
   for each output: check for duplicate OP_DRIVECHAINs
   amount comparison
   M6: encode & compare fee amount, 2 hash, counter compare
 -->
 <pre><code>
+
 
 &lt;h2&gt;Backward compatibility&lt;&#x2F;h2&gt;
 
@@ -905,9 +719,9 @@ This BIP is licensed under the BSD 2-clause license.
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

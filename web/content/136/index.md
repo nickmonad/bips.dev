@@ -68,6 +68,7 @@ It is possible to reference transactions not only by their **TxID**, but by thei
 |170|1|0|tx1:r52q&#8209;qqpq&#8209;qpty&#8209;cfg|f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16|
 |456789|1234|1|tx1:y29u&#8209;mqjx&#8209;ppqq&#8209;sfp2&#8209;tt|6fb8960f70667dc9666329728a19917937896fc476dfc54a3e802e887ecb4e82|
 
+
 <h2> Specification </h2>
 
 
@@ -132,18 +133,14 @@ To increase portability and readability, additional separator characters SHOULD 
 Encoding a **TxRef** requires 4 or 5 pieces of data: a magic code denoting which network is being used; a version number (currently always 0); the block height of the block containing the transaction; the index of the transaction within the block; and optionally, the index of the outpoint within the transaction. Only a certain number of bits are supported for each of these values, see the following table for details.
 
 
-||
-|-|
-|style="background: #99DDFF; color: black; text-align : center;" | Magic Code|
-|style="background: #99DDFF; color: black; text-align : center;" | 5|
-|style="background: #DDDDDD; color: black; text-align : center;" | Version|
-|style="background: #DDDDDD; color: black; text-align : center;" | 1|
-|style="background: #EEDD88; color: black; text-align : center;" | Block<br>Height|
-|style="background: #EEDD88; color: black; text-align : center;" | 24|
-|style="background: #FFAABB; color: black; text-align : center;" | Transaction<br>Index|
-|style="background: #FFAABB; color: black; text-align : center;" | 15|
-|style="background: #BBCC33; color: black; text-align : center;" | Outpoint<br>Index|
-|style="background: #BBCC33; color: black; text-align : center;" | 15|
+||Description|Possible Data Type|**# of Bits used**|Values|
+|-|-|-|-|-|
+|style="background: #99DDFF; color: black; text-align : center;" | Magic Code|Chain Namespacing Code|uint8|style="background: #99DDFF; color: black; text-align : center;" | 5|**3**: Mainnet<br>**4**: Mainnet with Outpoint<br>**6**: Testnet<br>**7**: Testnet with Outpoint<br>**0**: Regtest<br>**1**: Regtest with Outpoint|
+|style="background: #DDDDDD; color: black; text-align : center;" | Version|For Future Use|uint8|style="background: #DDDDDD; color: black; text-align : center;" | 1|Must be **0**|
+|style="background: #EEDD88; color: black; text-align : center;" | Block<br>Height|The Block Height of the Tx|uint32|style="background: #EEDD88; color: black; text-align : center;" | 24|Block 0 to Block 16777215|
+|style="background: #FFAABB; color: black; text-align : center;" | Transaction<br>Index|The index of the Tx inside the block|uint16, uint32|style="background: #FFAABB; color: black; text-align : center;" | 15|Tx 0 to Tx 32767|
+|style="background: #BBCC33; color: black; text-align : center;" | Outpoint<br>Index|The index of the Outpoint inside the Tx|uint16, uint32|style="background: #BBCC33; color: black; text-align : center;" | 15|Outpoint 0 to Outpoint 32767|
+
 
 <h4> Magic Notes </h4>
 
@@ -163,118 +160,56 @@ The magic code provides namespacing between chains:
 We want to encode a **TxRef** that refers to Transaction #1234 of Block #456789 on the Mainnet chain. We use this data in preparation for the Bech32 encoding algorithm:
 
 
-||
-|-|
-|style="background: #99DDFF; color: black; text-align : center;" | Magic<br>Code|
-|style="background: #99DDFF; color: black; text-align : center;" | 3|
-|style="background: #99DDFF; color: black; text-align : center;" | 5|
-|style="background: #DDDDDD; color: black; text-align : center;" | Version|
-|style="background: #DDDDDD; color: black; text-align : center;" | 0|
-|style="background: #DDDDDD; color: black; text-align : center;" | 1|
-|style="background: #EEDD88; color: black; text-align : center;" | Block<br>Height|
-|style="background: #EEDD88; color: black; text-align : center;" | 456789|
-|style="background: #EEDD88; color: black; text-align : center;" | 24|
-|style="background: #FFAABB; color: black; text-align : center;" | Transaction<br>Index|
-|style="background: #FFAABB; color: black; text-align : center;" | 1234|
-|style="background: #FFAABB; color: black; text-align : center;" | 15|
+||Decimal<br>Value|Binary<br>Value|**# of Bits<br>used**|Bit Indexes and Values|
+|-|-|-|-|-|
+|style="background: #99DDFF; color: black; text-align : center;" | Magic<br>Code|style="background: #99DDFF; color: black; text-align : center;" | 3|00000011|style="background: #99DDFF; color: black; text-align : center;" | 5|(mc04, mc03, mc02, mc01, mc00) = (0, 0, 0, 1, 1)|
+|style="background: #DDDDDD; color: black; text-align : center;" | Version|style="background: #DDDDDD; color: black; text-align : center;" | 0|00000000|style="background: #DDDDDD; color: black; text-align : center;" | 1|(v0) = (0)|
+|style="background: #EEDD88; color: black; text-align : center;" | Block<br>Height|style="background: #EEDD88; color: black; text-align : center;" | 456789|00000110<br>11111000<br>01010101|style="background: #EEDD88; color: black; text-align : center;" | 24|(bh23, bh22, bh21, bh20, bh19, bh18, bh17, bh16) = (0, 0, 0, 0, 0, 1, 1, 0)<br>(bh15, bh14, bh13, bh12, bh11, bh10, bh09, bh08) = (1, 1, 1, 1, 1, 0, 0, 0)<br>(bh07, bh06, bh05, bh04, bh03, bh02, bh01, bh00) = (0, 1, 0, 1, 0, 1, 0, 1)|
+|style="background: #FFAABB; color: black; text-align : center;" | Transaction<br>Index|style="background: #FFAABB; color: black; text-align : center;" | 1234|00000100<br>11010010|style="background: #FFAABB; color: black; text-align : center;" | 15|(ti14, ti13, ti12, ti11, ti10, ti09, ti08) = (0, 0, 0, 0, 1, 0, 0)<br>(ti07, ti06, ti05, ti04, ti03, ti02, ti01, ti00) = (1, 1, 0, 1, 0, 0, 1, 0)|
+
 
 As shown in the last column, we take the necessary bits of each binary value and copy them into nine unsigned chars illustrated in the next table. We only set the lower five bits of each unsigned char as the bech32 algorithm only uses those bits.
 
 
-||||||||||||||
+|||style="width:2em"|7|style="width:2em"|6|style="width:2em"|5|style="width:2em"|4|style="width:2em"|3|style="width:2em"|2|style="width:2em"|1|style="width:2em"|0||Decimal<br>Value|Bech32<br>Character|
 |-|-|-|-|-|-|-|-|-|-|-|-|-|
 ||||||||||||||
-|rowspan="2" | data[0]|Index|
-|style="background: #99DDFF; color: black; text-align : center;" | mc04|
-|style="background: #99DDFF; color: black; text-align : center;" | mc03|
-|style="background: #99DDFF; color: black; text-align : center;" | mc02|
-|style="background: #99DDFF; color: black; text-align : center;" | mc01|
-|style="background: #99DDFF; color: black; text-align : center;" | mc00|
+|rowspan="2" | data[0]|Index|na|na|na|style="background: #99DDFF; color: black; text-align : center;" | mc04|style="background: #99DDFF; color: black; text-align : center;" | mc03|style="background: #99DDFF; color: black; text-align : center;" | mc02|style="background: #99DDFF; color: black; text-align : center;" | mc01|style="background: #99DDFF; color: black; text-align : center;" | mc00||||
+|Value|0|0|0|0|0|0|1|1||3|r|
 |||||||||||||
-|rowspan="2" | data[1]|Index|
-|style="background: #EEDD88; color: black; text-align : center;" | bh03|
-|style="background: #EEDD88; color: black; text-align : center;" | bh02|
-|style="background: #EEDD88; color: black; text-align : center;" | bh01|
-|style="background: #EEDD88; color: black; text-align : center;" | bh00|
-|style="background: #DDDDDD; color: black; text-align : center;" | v0|
+|rowspan="2" | data[1]|Index|na|na|na|style="background: #EEDD88; color: black; text-align : center;" | bh03|style="background: #EEDD88; color: black; text-align : center;" | bh02|style="background: #EEDD88; color: black; text-align : center;" | bh01|style="background: #EEDD88; color: black; text-align : center;" | bh00|style="background: #DDDDDD; color: black; text-align : center;" | v0||||
+|Value|0|0|0|0|1|0|1|0||10|2|
 |||||||||||||
-|rowspan="2" | data[2]|Index|
-|style="background: #EEDD88; color: black; text-align : center;" | bh08|
-|style="background: #EEDD88; color: black; text-align : center;" | bh07|
-|style="background: #EEDD88; color: black; text-align : center;" | bh06|
-|style="background: #EEDD88; color: black; text-align : center;" | bh05|
-|style="background: #EEDD88; color: black; text-align : center;" | bh04|
+|rowspan="2" | data[2]|Index|na|na|na|style="background: #EEDD88; color: black; text-align : center;" | bh08|style="background: #EEDD88; color: black; text-align : center;" | bh07|style="background: #EEDD88; color: black; text-align : center;" | bh06|style="background: #EEDD88; color: black; text-align : center;" | bh05|style="background: #EEDD88; color: black; text-align : center;" | bh04||||
+|Value|0|0|0|0|0|1|0|1||5|9|
 |||||||||||||
-|rowspan="2" | data[3]|Index|
-|style="background: #EEDD88; color: black; text-align : center;" | bh13|
-|style="background: #EEDD88; color: black; text-align : center;" | bh12|
-|style="background: #EEDD88; color: black; text-align : center;" | bh11|
-|style="background: #EEDD88; color: black; text-align : center;" | bh10|
-|style="background: #EEDD88; color: black; text-align : center;" | bh09|
+|rowspan="2" | data[3]|Index|na|na|na|style="background: #EEDD88; color: black; text-align : center;" | bh13|style="background: #EEDD88; color: black; text-align : center;" | bh12|style="background: #EEDD88; color: black; text-align : center;" | bh11|style="background: #EEDD88; color: black; text-align : center;" | bh10|style="background: #EEDD88; color: black; text-align : center;" | bh09||||
+|Value|0|0|0|1|1|1|0|0||28|u|
 |||||||||||||
-|rowspan="2" | data[4]|Index|
-|style="background: #EEDD88; color: black; text-align : center;" | bh18|
-|style="background: #EEDD88; color: black; text-align : center;" | bh17|
-|style="background: #EEDD88; color: black; text-align : center;" | bh16|
-|style="background: #EEDD88; color: black; text-align : center;" | bh15|
-|style="background: #EEDD88; color: black; text-align : center;" | bh14|
+|rowspan="2" | data[4]|Index|na|na|na|style="background: #EEDD88; color: black; text-align : center;" | bh18|style="background: #EEDD88; color: black; text-align : center;" | bh17|style="background: #EEDD88; color: black; text-align : center;" | bh16|style="background: #EEDD88; color: black; text-align : center;" | bh15|style="background: #EEDD88; color: black; text-align : center;" | bh14||||
+|Value|0|0|0|1|1|0|1|1||27|m|
 |||||||||||||
-|rowspan="2" | data[5]|Index|
-|style="background: #EEDD88; color: black; text-align : center;" | bh23|
-|style="background: #EEDD88; color: black; text-align : center;" | bh22|
-|style="background: #EEDD88; color: black; text-align : center;" | bh21|
-|style="background: #EEDD88; color: black; text-align : center;" | bh20|
-|style="background: #EEDD88; color: black; text-align : center;" | bh19|
+|rowspan="2" | data[5]|Index|na|na|na|style="background: #EEDD88; color: black; text-align : center;" | bh23|style="background: #EEDD88; color: black; text-align : center;" | bh22|style="background: #EEDD88; color: black; text-align : center;" | bh21|style="background: #EEDD88; color: black; text-align : center;" | bh20|style="background: #EEDD88; color: black; text-align : center;" | bh19||||
+|Value|0|0|0|0|0|0|0|0||0|q|
 |||||||||||||
-|rowspan="2" | data[6]|Index|
-|style="background: #FFAABB; color: black; text-align : center;" | ti04|
-|style="background: #FFAABB; color: black; text-align : center;" | ti03|
-|style="background: #FFAABB; color: black; text-align : center;" | ti02|
-|style="background: #FFAABB; color: black; text-align : center;" | ti01|
-|style="background: #FFAABB; color: black; text-align : center;" | ti00|
+|rowspan="2" | data[6]|Index|na|na|na|style="background: #FFAABB; color: black; text-align : center;" | ti04|style="background: #FFAABB; color: black; text-align : center;" | ti03|style="background: #FFAABB; color: black; text-align : center;" | ti02|style="background: #FFAABB; color: black; text-align : center;" | ti01|style="background: #FFAABB; color: black; text-align : center;" | ti00||||
+|Value|0|0|0|1|0|0|1|0||18|j|
 |||||||||||||
-|rowspan="2" | data[7]|Index|
-|style="background: #FFAABB; color: black; text-align : center;" | ti09|
-|style="background: #FFAABB; color: black; text-align : center;" | ti08|
-|style="background: #FFAABB; color: black; text-align : center;" | ti07|
-|style="background: #FFAABB; color: black; text-align : center;" | ti06|
-|style="background: #FFAABB; color: black; text-align : center;" | ti05|
+|rowspan="2" | data[7]|Index|na|na|na|style="background: #FFAABB; color: black; text-align : center;" | ti09|style="background: #FFAABB; color: black; text-align : center;" | ti08|style="background: #FFAABB; color: black; text-align : center;" | ti07|style="background: #FFAABB; color: black; text-align : center;" | ti06|style="background: #FFAABB; color: black; text-align : center;" | ti05||||
+|Value|0|0|0|0|0|1|1|0||6|x|
 |||||||||||||
-|rowspan="2" | data[8]|Index|
-|style="background: #FFAABB; color: black; text-align : center;" | ti14|
-|style="background: #FFAABB; color: black; text-align : center;" | ti13|
-|style="background: #FFAABB; color: black; text-align : center;" | ti12|
-|style="background: #FFAABB; color: black; text-align : center;" | ti11|
-|style="background: #FFAABB; color: black; text-align : center;" | ti10|
+|rowspan="2" | data[8]|Index|na|na|na|style="background: #FFAABB; color: black; text-align : center;" | ti14|style="background: #FFAABB; color: black; text-align : center;" | ti13|style="background: #FFAABB; color: black; text-align : center;" | ti12|style="background: #FFAABB; color: black; text-align : center;" | ti11|style="background: #FFAABB; color: black; text-align : center;" | ti10||||
+|Value|0|0|0|0|0|0|0|1||1|p|
+
 
 The Bech32 algorithm encodes the nine unsigned chars above and computes a checksum of those chars and encodes that as well--this gives a six character checksum (in this case, **utt3p0**) which is appended to the final **TxRef**. The final **TxRef** given is: **tx1:r29u-mqjx-putt-3p0** and is illustrated in the following table:
 
 TxRef character indexes and descriptions
 
-||
-|-|
-|style="background: #BBCCEE; color: black; text-align : center;" | t|
-|style="background: #BBCCEE; color: black; text-align : center;" | x|
-|style="background: #FFCCCC; color: black; text-align : center;" | 1|
-|style="background: #CCDDAA; color: black; text-align : center;" | &#58;|
-|style="background: #EEEEBB; color: black; text-align : center;" | r|
-|style="background: #EEEEBB; color: black; text-align : center;" | 2|
-|style="background: #EEEEBB; color: black; text-align : center;" | 9|
-|style="background: #EEEEBB; color: black; text-align : center;" | u|
-|style="background: #CCDDAA; color: black; text-align : center;" | -|
-|style="background: #EEEEBB; color: black; text-align : center;" | m|
-|style="background: #EEEEBB; color: black; text-align : center;" | q|
-|style="background: #EEEEBB; color: black; text-align : center;" | j|
-|style="background: #EEEEBB; color: black; text-align : center;" | x|
-|style="background: #CCDDAA; color: black; text-align : center;" | -|
-|style="background: #EEEEBB; color: black; text-align : center;" | p|
-|style="background: #EEEEBB; color: black; text-align : center;" | u|
-|style="background: #EEEEBB; color: black; text-align : center;" | t|
-|style="background: #EEEEBB; color: black; text-align : center;" | t|
-|style="background: #CCDDAA; color: black; text-align : center;" | -|
-|style="background: #EEEEBB; color: black; text-align : center;" | 3|
-|style="background: #EEEEBB; color: black; text-align : center;" | p|
-|style="background: #EEEEBB; color: black; text-align : center;" | 0|
+|style="width:2em"|Index|style="width:2em"|0|style="width:2em"|1|style="width:2em"|2|style="width:2em"|3|style="width:2em"|4|style="width:2em"|5|style="width:2em"|6|style="width:2em"|7|style="width:2em"|8|style="width:2em"|9|style="width:2em"|10|style="width:2em"|11|style="width:2em"|12|style="width:2em"|13|style="width:2em"|14|style="width:2em"|15|style="width:2em"|16|style="width:2em"|17|style="width:2em"|18|style="width:2em"|19|style="width:2em"|20|style="width:2em"|21|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|Char:|style="background: #BBCCEE; color: black; text-align : center;" | t|style="background: #BBCCEE; color: black; text-align : center;" | x|style="background: #FFCCCC; color: black; text-align : center;" | 1|style="background: #CCDDAA; color: black; text-align : center;" | &#58;|style="background: #EEEEBB; color: black; text-align : center;" | r|style="background: #EEEEBB; color: black; text-align : center;" | 2|style="background: #EEEEBB; color: black; text-align : center;" | 9|style="background: #EEEEBB; color: black; text-align : center;" | u|style="background: #CCDDAA; color: black; text-align : center;" | -|style="background: #EEEEBB; color: black; text-align : center;" | m|style="background: #EEEEBB; color: black; text-align : center;" | q|style="background: #EEEEBB; color: black; text-align : center;" | j|style="background: #EEEEBB; color: black; text-align : center;" | x|style="background: #CCDDAA; color: black; text-align : center;" | -|style="background: #EEEEBB; color: black; text-align : center;" | p|style="background: #EEEEBB; color: black; text-align : center;" | u|style="background: #EEEEBB; color: black; text-align : center;" | t|style="background: #EEEEBB; color: black; text-align : center;" | t|style="background: #CCDDAA; color: black; text-align : center;" | -|style="background: #EEEEBB; color: black; text-align : center;" | 3|style="background: #EEEEBB; color: black; text-align : center;" | p|style="background: #EEEEBB; color: black; text-align : center;" | 0|
+
 
 <h4> Outpoint Index </h4>
 
@@ -284,80 +219,37 @@ Some uses of **TxRef** may want to refer to a specific outpoint of the transacti
 If instead, for example, we want to reference the second (index 1) outpoint, we need to change the magic code from **3** to **4** and would include the following in the data to be encoded:
 
 
-||
-|-|
-|style="background: #99DDFF; color: black; text-align : center;" | Magic<br>Code|
-|style="background: #99DDFF; color: black; text-align : center;" | 4|
-|style="background: #99DDFF; color: black; text-align : center;" | 5|
-|style="background: #BBCC33; color: black; text-align : center;" | Outpoint Index|
-|style="background: #BBCC33; color: black; text-align : center;" | 1|
-|style="background: #BBCC33; color: black; text-align : center;" | 15|
+||Decimal<br>Value|Binary<br>Value|**# of Bits<br>used**|Bit Indexes and Values|
+|-|-|-|-|-|
+|style="background: #99DDFF; color: black; text-align : center;" | Magic<br>Code|style="background: #99DDFF; color: black; text-align : center;" | 4|00000100|style="background: #99DDFF; color: black; text-align : center;" | 5|(mc04, mc03, mc02, mc01, mc00) = (0, 0, 1, 0, 0)|
+|style="background: #BBCC33; color: black; text-align : center;" | Outpoint Index|style="background: #BBCC33; color: black; text-align : center;" | 1|00000000 00000001|style="background: #BBCC33; color: black; text-align : center;" | 15|(op14, op13, op12, op11, op10, op09, op08) = (0, 0, 0, 0, 0, 0, 0)<br>(op07, op06, op05, op04, op03, op02, op01, op00) = (0, 0, 0, 0, 0, 0, 0, 1)|
 
 
-||||||||||||||
+
+|||style="width:2em"|7|style="width:2em"|6|style="width:2em"|5|style="width:2em"|4|style="width:2em"|3|style="width:2em"|2|style="width:2em"|1|style="width:2em"|0||Decimal<br>Value|Bech32<br>Character|
 |-|-|-|-|-|-|-|-|-|-|-|-|-|
 ||||||||||||||
-|rowspan="2" | data[0]|Index|
-|style="background: #99DDFF; color: black; text-align : center;" | mc04|
-|style="background: #99DDFF; color: black; text-align : center;" | mc03|
-|style="background: #99DDFF; color: black; text-align : center;" | mc02|
-|style="background: #99DDFF; color: black; text-align : center;" | mc01|
-|style="background: #99DDFF; color: black; text-align : center;" | mc00|
+|rowspan="2" | data[0]|Index|na|na|na|style="background: #99DDFF; color: black; text-align : center;" | mc04|style="background: #99DDFF; color: black; text-align : center;" | mc03|style="background: #99DDFF; color: black; text-align : center;" | mc02|style="background: #99DDFF; color: black; text-align : center;" | mc01|style="background: #99DDFF; color: black; text-align : center;" | mc00||||
+|Value|0|0|0|0|0|1|0|0||4|y|
 |||||||||||||
-|rowspan="2" | data[9]|Index|
-|style="background: #BBCC33; color: black; text-align : center;" | op04|
-|style="background: #BBCC33; color: black; text-align : center;" | op03|
-|style="background: #BBCC33; color: black; text-align : center;" | op02|
-|style="background: #BBCC33; color: black; text-align : center;" | op01|
-|style="background: #BBCC33; color: black; text-align : center;" | op00|
+|rowspan="2" | data[9]|Index|na|na|na|style="background: #BBCC33; color: black; text-align : center;" | op04|style="background: #BBCC33; color: black; text-align : center;" | op03|style="background: #BBCC33; color: black; text-align : center;" | op02|style="background: #BBCC33; color: black; text-align : center;" | op01|style="background: #BBCC33; color: black; text-align : center;" | op00||||
+|Value|0|0|0|0|0|0|0|1||1|p|
 |||||||||||||
-|rowspan="2" | data[10]|Index|
-|style="background: #BBCC33; color: black; text-align : center;" | op09|
-|style="background: #BBCC33; color: black; text-align : center;" | op08|
-|style="background: #BBCC33; color: black; text-align : center;" | op07|
-|style="background: #BBCC33; color: black; text-align : center;" | op06|
-|style="background: #BBCC33; color: black; text-align : center;" | op05|
+|rowspan="2" | data[10]|Index|na|na|na|style="background: #BBCC33; color: black; text-align : center;" | op09|style="background: #BBCC33; color: black; text-align : center;" | op08|style="background: #BBCC33; color: black; text-align : center;" | op07|style="background: #BBCC33; color: black; text-align : center;" | op06|style="background: #BBCC33; color: black; text-align : center;" | op05||||
+|Value|0|0|0|0|0|0|0|0||0|q|
 |||||||||||||
-|rowspan="2" | data[11]|Index|
-|style="background: #BBCC33; color: black; text-align : center;" | op14|
-|style="background: #BBCC33; color: black; text-align : center;" | op13|
-|style="background: #BBCC33; color: black; text-align : center;" | op12|
-|style="background: #BBCC33; color: black; text-align : center;" | op11|
-|style="background: #BBCC33; color: black; text-align : center;" | op10|
-|Value|
+|rowspan="2" | data[11]|Index|na|na|na|style="background: #BBCC33; color: black; text-align : center;" | op14|style="background: #BBCC33; color: black; text-align : center;" | op13|style="background: #BBCC33; color: black; text-align : center;" | op12|style="background: #BBCC33; color: black; text-align : center;" | op11|style="background: #BBCC33; color: black; text-align : center;" | op10||||
+|Value|0|0|0|0|0|0|0|0||0|q|
+
 
 After Bech32 encoding all twelve unsigned chars above, we get the checksum: **sfp2tt**. The final **TxRef** given is: **tx1:y29u-mqjx-ppqq-sfp2-tt** and is illustrated in the following table:
 
 TxRef character indexes and descriptions
 
-||
-|-|
-|style="background: #BBCCEE; color: black; text-align : center;" | t|
-|style="background: #BBCCEE; color: black; text-align : center;" | x|
-|style="background: #FFCCCC; color: black; text-align : center;" | 1|
-|style="background: #CCDDAA; color: black; text-align : center;" | &#58;|
-|style="background: #EEEEBB; color: black; text-align : center;" | y|
-|style="background: #EEEEBB; color: black; text-align : center;" | 2|
-|style="background: #EEEEBB; color: black; text-align : center;" | 9|
-|style="background: #EEEEBB; color: black; text-align : center;" | u|
-|style="background: #CCDDAA; color: black; text-align : center;" | -|
-|style="background: #EEEEBB; color: black; text-align : center;" | m|
-|style="background: #EEEEBB; color: black; text-align : center;" | q|
-|style="background: #EEEEBB; color: black; text-align : center;" | j|
-|style="background: #EEEEBB; color: black; text-align : center;" | x|
-|style="background: #CCDDAA; color: black; text-align : center;" | -|
-|style="background: #EEEEBB; color: black; text-align : center;" | p|
-|style="background: #EEEEBB; color: black; text-align : center;" | p|
-|style="background: #EEEEBB; color: black; text-align : center;" | q|
-|style="background: #EEEEBB; color: black; text-align : center;" | q|
-|style="background: #CCDDAA; color: black; text-align : center;" | -|
-|style="background: #EEEEBB; color: black; text-align : center;" | s|
-|style="background: #EEEEBB; color: black; text-align : center;" | f|
-|style="background: #EEEEBB; color: black; text-align : center;" | p|
-|style="background: #EEEEBB; color: black; text-align : center;" | 2|
-|style="background: #CCDDAA; color: black; text-align : center;" | -|
-|style="background: #EEEEBB; color: black; text-align : center;" | t|
-|style="background: #EEEEBB; color: black; text-align : center;" | t|
+|style="width:2em"|Index|style="width:2em"|0|style="width:2em"|1|style="width:2em"|2|style="width:2em"|3|style="width:2em"|4|style="width:2em"|5|style="width:2em"|6|style="width:2em"|7|style="width:2em"|8|style="width:2em"|9|style="width:2em"|10|style="width:2em"|11|style="width:2em"|12|style="width:2em"|13|style="width:2em"|14|style="width:2em"|15|style="width:2em"|16|style="width:2em"|17|style="width:2em"|18|style="width:2em"|19|style="width:2em"|20|style="width:2em"|21|style="width:2em"|22|style="width:2em"|23|style="width:2em"|24|style="width:2em"|25|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|Char:|style="background: #BBCCEE; color: black; text-align : center;" | t|style="background: #BBCCEE; color: black; text-align : center;" | x|style="background: #FFCCCC; color: black; text-align : center;" | 1|style="background: #CCDDAA; color: black; text-align : center;" | &#58;|style="background: #EEEEBB; color: black; text-align : center;" | y|style="background: #EEEEBB; color: black; text-align : center;" | 2|style="background: #EEEEBB; color: black; text-align : center;" | 9|style="background: #EEEEBB; color: black; text-align : center;" | u|style="background: #CCDDAA; color: black; text-align : center;" | -|style="background: #EEEEBB; color: black; text-align : center;" | m|style="background: #EEEEBB; color: black; text-align : center;" | q|style="background: #EEEEBB; color: black; text-align : center;" | j|style="background: #EEEEBB; color: black; text-align : center;" | x|style="background: #CCDDAA; color: black; text-align : center;" | -|style="background: #EEEEBB; color: black; text-align : center;" | p|style="background: #EEEEBB; color: black; text-align : center;" | p|style="background: #EEEEBB; color: black; text-align : center;" | q|style="background: #EEEEBB; color: black; text-align : center;" | q|style="background: #CCDDAA; color: black; text-align : center;" | -|style="background: #EEEEBB; color: black; text-align : center;" | s|style="background: #EEEEBB; color: black; text-align : center;" | f|style="background: #EEEEBB; color: black; text-align : center;" | p|style="background: #EEEEBB; color: black; text-align : center;" | 2|style="background: #CCDDAA; color: black; text-align : center;" | -|style="background: #EEEEBB; color: black; text-align : center;" | t|style="background: #EEEEBB; color: black; text-align : center;" | t|
+
 
 
 <h3> Decoding </h3>

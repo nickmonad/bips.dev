@@ -51,11 +51,13 @@ As an example, brmlab hackerspace in Prague has an address for purchasing food o
   1BRMLAB7nryYgFGrG8x9SYaokb8r2ZwAsX
 ```
 
+
 Their FirstBits alias becomes:
 
 ```
   1brmlab
 ```
+
 
 It is enough information to be given the FirstBits alias _1brmlab_. When someone wishes to make a purchase, without FirstBits, they either have to type out their address laboriously by hand, scan their QR code (which requires a mobile handset that this author does not own) or find their address on the internet to copy and paste into the client to send bitcoins. FirstBits alleviates this impracticality by providing an easy method to make payments.
 
@@ -109,11 +111,13 @@ When trying to send to:
   genjix@foo.org
 ```
 
+
 The request is broken into the handle (genjix) and domain (foo.org) at the last occurrence of the @. The client then constructs a request that will query for the address.
 
 ```
   https://foo.org/bitcoin-alias/?handle=genjix
 ```
+
 
 bitcoin-alias has been chosen as the query suffix because it allows this system to co-exist easily within another web root without the fear of name clashes.
 
@@ -122,6 +126,7 @@ The query will then return an address which is used to make the payment.
 ```
   1Hd44nkJfNAcPJeZyrGC5sKJS1TzgmCTjjZ
 ```
+
 
 The details of whether a unique address is returned per query, whether an address is fetched from a pre-existing pool of addresses, and so on is an implementation detail unique to every server. How alias to address mappings are setup is dependent on the site which could have a web-interface and be providing a free service to users or be a private customised service serving pre-existing addresses. This is left up to sysop policy, and deliberately not defined here.
 
@@ -372,6 +377,7 @@ An IP transaction is an old transaction format in bitcoin that is disabled and p
   <public key> OP_CHECKSIG
 ```
 
+
 Similar to coinbase output transactions. IP transactions have the advantage of being able to contain additional metadata which can be useful in many transactions. Currently no authentication is done making the scheme insecure against man in the middle (MITM) attacks.
 
 This proposal seeks to enable DNS lookups for IP transactions.
@@ -398,6 +404,7 @@ Two examples are presented below. The first shows a simpler format, while the se
  }
 ```
 
+
 ```
  $ namecoind name_show id/khal
  {
@@ -408,6 +415,7 @@ Two examples are presented below. The first shows a simpler format, while the se
    }
  }
 ```
+
 
 **More possibilities :**
 
@@ -425,6 +433,7 @@ You can put an url and a bitcoin address that will be used to sign the result. I
  }
 ```
 
+
 *  Allow to get a different address each time, or per user, per order, etc
 
 ```
@@ -439,6 +448,7 @@ You can put an url and a bitcoin address that will be used to sign the result. I
  }
 ```
 In the above example, bitcoin will ask the user for "Your customer id" and replace that value in the url before making the http request. The merchant will receive the request and give the user a payment address associated with that customer.
+
 
 Any text can be put into the brackets, allowing merchants to adapt it to all their needs.
 

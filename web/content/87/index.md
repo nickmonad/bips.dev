@@ -195,6 +195,23 @@ As wallets complying with this BIP are descriptor wallets, this therefore necess
 
 
 
+|network|account|chain|address|path|
+|-|-|-|-|-|
+|mainnet|first|external|first|m / 87' / 0' / 0' / 0 / 0|
+|mainnet|first|external|second|m / 87' / 0' / 0' / 0 / 1|
+|mainnet|first|change|first|m / 87' / 0' / 0' / 1 / 0|
+|mainnet|first|change|second|m / 87' / 0' / 0' / 1 / 1|
+|mainnet|second|external|first|m / 87' / 0' / 1' / 0 / 0|
+|mainnet|second|external|second|m / 87' / 0' / 1' / 0 / 1|
+|testnet|first|external|first|m / 87' / 1' / 0' / 0 / 0|
+|testnet|first|external|second|m / 87' / 1' / 0' / 0 / 1|
+|testnet|first|change|first|m / 87' / 1' / 0' / 1 / 0|
+|testnet|first|change|second|m / 87' / 1' / 0' / 1 / 1|
+|testnet|second|external|first|m / 87' / 1' / 1' / 0 / 0|
+|testnet|second|external|second|m / 87' / 1' / 1' / 0 / 1|
+|testnet|second|change|first|m / 87' / 1' / 1' / 1 / 0|
+|testnet|second|change|second|m / 87' / 1' / 1' / 1 / 1|
+
 
 <h2>Reference Implementation</h2>
 

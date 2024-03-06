@@ -143,6 +143,7 @@ The final redeem script which funds are sent to is as follows:
   witness: <nowiki><argN> ... <arg1> <policyScript> <proof></nowiki>
 ```
 
+
 Where `policyScript` is the flattened execution pathway, `proof` is the serialized Merkle branch and path that proves the policyScript is drawn from the set used to construct the Merkle tree `root`, and `arg1` through `argN` are the arguments required by `policyScript`.
 The `2` indicates that a single leaf (`1 << 1`) follows, and the leaf value is not pre-hashed.
 The `2DROP DROP` is necessary to remove the arguments to MERKLEBRANCHVERIFY from the stack.
@@ -154,6 +155,7 @@ Unless the CLEANSTACK rule is dropped or modified in a new segwit output version
   redeemScript: <nowiki>[TOALTSTACK]*N <root> 2 MERKLEBRANCHVERIFY 2DROP DROP</nowiki>
   witness: <nowiki><policyScript> <proof> <arg1> ... <argN></nowiki>
 ```
+
 
 Where `[TOALTSTACK]*N` is the TOALTSTACK opcode repeated N times.
 This moves `arg1` through `argN` to the alt-stack in reverse order, such that `arg1` is on the top of the alt-stack when execution of `policyScript` begins.
@@ -173,12 +175,14 @@ The following redeem script allows between 1 and 3 witness arguments in addition
   alt-stack: <nowiki><N+2> <argN> ... <arg1></nowiki>
 ```
 
+
 Because the number of witness elements is pushed onto the alt-stack, this enables policy scripts to verify the number of arguments passed, even though the size of the alt-stack is not usually accessible to script.
 The following policy script for use with the above redeem script will only accept 2 witness elements on the alt-stack, preventing witness malleability:
 
 ```
   policyScript: <nowiki>FROMALTSTACK ...check arg1... FROMALTSTACK ...check&consume arg2/arg1&2... FROMALTSTACK 4 EQUAL
 ```
+
 
 The number 4 is expected as that includes the `policyScript` and `proof`.
 

@@ -213,6 +213,13 @@ The errors have the following format:
 
 The well-known error codes are:
 
+|Error code|Meaning|
+|-|-|
+|unavailable|The payjoin endpoint is not available for now.|
+|not-enough-money|The receiver added some inputs but could not bump the fee of the payjoin proposal.|
+|version-unsupported|This version of payjoin is not supported.|
+|original-psbt-rejected|The receiver rejected the original PSBT.|
+
 
 The receiver is allowed to return implementation specific errors which may assist the sender to diagnose any issue.
 
@@ -248,6 +255,13 @@ When a sender pick a specific fee rate, the sender expects the transaction to be
 
 Our recommendation for `maxadditionalfeecontribution=` is `originalPSBTFeeRate * vsize(sender_input_type)`.
 
+
+|sender_input_type|vsize(sender_input_type)|
+|-|-|
+|P2WPKH|68|
+|P2PKH|148|
+|P2SH-P2WPKH|91|
+|P2TR|58|
 
 
 
@@ -679,6 +693,10 @@ PSBT CreateOriginalPSBT(PSBT signedPSBT)
 
 A successful exchange with:
 
+
+|InputScriptType|Orginal PSBT Fee rate|maxadditionalfeecontribution|additionalfeeoutputindex|
+|-|-|-|-|
+|P2SH-P2WPKH|2 sat/vbyte|0.00000182|0|
 
 
 `Unfinalized signed PSBT`

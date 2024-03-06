@@ -75,6 +75,7 @@ Elements of the query component may contain characters outside the valid range. 
  reqparam       = "req-" qchar *qchar [ "=" *qchar ]
 ```
 
+
 Here, "qchar" corresponds to valid characters of an RFC 3986 URI query component, excluding the "=" and "&" characters, which this BIP takes as separators.
 
 The scheme component ("bitcoin:") is case-insensitive, and implementations must accept any combination of uppercase and lowercase letters. The rest of the URI is case-sensitive, including the query parameter keys.
@@ -136,6 +137,7 @@ Please see the BNF grammar above for the normative syntax.
  <nowiki>bitcoin:<address>[?amount=<amount>][?label=<label>][?message=<message>]</nowiki>
 ```
 
+
 <h3> Examples </h3>
 
 
@@ -144,30 +146,36 @@ Just the address:
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W
 ```
 
+
 Address with name:
 ```
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr
 ```
+
 
 Request 20.30 BTC to "Luke-Jr":
 ```
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&label=Luke-Jr
 ```
 
+
 Request 50 BTC with message:
 ```
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Luke-Jr&message=Donation%20for%20project%20xyz
 ```
+
 
 Some future version that has variables which are (currently) not understood and required and thus invalid:
 ```
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999
 ```
 
+
 Some future version that has variables which are (currently) not understood but not required and thus valid:
 ```
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&somethingelseyoudontget=999
 ```
+
 
 Characters must be URI encoded properly.
 

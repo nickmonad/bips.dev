@@ -82,54 +82,19 @@ Nodes organize those messages into two caches:
 D1 is a list of active sidechains. D1 is updated via M1 and M2.
 
 
-|Field No.|
-|-|
-|Label|
-|-|
-|Type|
-|-|
-|Description / Purpose|
-|-|
-|1|
-|Escrow Number|
-|uint8_t|
-|The escrow's ID number. Used to uniquely refer to each sidechain.|
-|2|
-|Version|
-|int32_t|
-|Version number.|
-|3|
-|Sidechain Name|
-|string|
-|A human-readable name of the sidechain.|
-|4|
-|Sidechain Description|
-|string|
-|A human-readable name description of the sidechain.|
-|5|
-|Hash1 - tarball hash|
-|uint256|
-|Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced anywhere by Bip300, and is for human purposes only.)|
-|6|
-|Hash2 - git commit hash|
-|uint160|
-|Intended as the git commit hash of the canonical sidechain node software. (This is not enforced anywhere by Bip300, and is for human purposes only.)|
-|7|
-|Active|
-|bool|
-|Does this sidechain slot contain an active sidechain?<br />|
-|8|
-|Activation Status|
-|int , int|
-|The age of the proposal (in blocks); and the number of "fails" (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.|
-|9|
-|"CTIP" -- "TxID"|
-|uint256|
-|A UTXO that holds the sidechain's money. (Part 1 of 2).|
-|10|
-|"CTIP" -- "vout"|
-|int32_t|
-|A UTXO that holds the sidechain's money. (Part 2 of 2).|
+|Field No.|Label|Type|Description / Purpose|
+|-|-|-|-|
+|1|Escrow Number|uint8_t|The escrow's ID number. Used to uniquely refer to each sidechain.|
+|2|Version|int32_t|Version number.|
+|3|Sidechain Name|string|A human-readable name of the sidechain.|
+|4|Sidechain Description|string|A human-readable name description of the sidechain.|
+|5|Hash1 - tarball hash|uint256|Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced anywhere by Bip300, and is for human purposes only.)|
+|6|Hash2 - git commit hash|uint160|Intended as the git commit hash of the canonical sidechain node software. (This is not enforced anywhere by Bip300, and is for human purposes only.)|
+|7|Active|bool|Does this sidechain slot contain an active sidechain?<br />|
+|8|Activation Status|int , int|The age of the proposal (in blocks); and the number of "fails" (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.|
+|9|"CTIP" -- "TxID"|uint256|A UTXO that holds the sidechain's money. (Part 1 of 2).|
+|10|"CTIP" -- "vout"|int32_t|A UTXO that holds the sidechain's money. (Part 2 of 2).|
+
 
 
 <h4> D2 (The Withdrawal List) </h4>
@@ -150,30 +115,13 @@ D2 is driven by M3, M4, M5, and M6. Those messages enforce the following princip
 
 
 
-|Field No.|
-|-|
-|Label|
-|-|
-|Type|
-|-|
-|Description / Purpose|
-|-|
-|1|
-|Sidechain Number|
-|uint8_t|
-|Links the withdrawal-request to a specific hashrate escrow.|
-|2|
-|Bundle Hash|
-|uint256|
-|A withdrawal attempt. Specifically, it is a "blinded transaction id" (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.|
-|3|
-|Work Score (ACKs)|
-|uint16_t|
-|How many miner upvotes a withdrawal has. Starts at 0. Fastest possible rate of increase is 1 per block.|
-|4|
-|Blocks Remaining|
-|uint16_t|
-|How long this bundle has left to live (measured in blocks). Starts at 26,300 and counts down.|
+|Field No.|Label|Type|Description / Purpose|
+|-|-|-|-|
+|1|Sidechain Number|uint8_t|Links the withdrawal-request to a specific hashrate escrow.|
+|2|Bundle Hash|uint256|A withdrawal attempt. Specifically, it is a "blinded transaction id" (ie, the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.|
+|3|Work Score (ACKs)|uint16_t|How many miner upvotes a withdrawal has. Starts at 0. Fastest possible rate of increase is 1 per block.|
+|4|Blocks Remaining|uint16_t|How long this bundle has left to live (measured in blocks). Starts at 26,300 and counts down.|
+
 
 D1, with all 256 slots active, reaches a maximum size of: 256 * ( 1 (map index) + 36 (outpoint) + 8 (amount) ) = 11,520 bytes.
 
@@ -207,6 +155,7 @@ M1 is a coinbase OP Return output containing the following:
 ```
 
 
+
 M1 is invalid if:
 
 *  It would add a duplicate entry to D1.
@@ -230,6 +179,7 @@ M2 is a coinbase OP Return output containing the following:
     4-byte - Message header (0xD6E1C5BF)
     32-byte - the sha256D hash of sidechain's serialization
 ```
+
 
 
 M2 is ignored if it doesn't parse, or if it is for a sidechain that doesn't exist.
@@ -296,6 +246,7 @@ M3 is a coinbase OP Return output containing the following:
     1-byte - nSidechain (the slot number)
 ```
 
+
 M3 is ignored if it does not parse, or if it is for a sidechain that doesn't exist.
 
 M3 is invalid if:
@@ -321,6 +272,7 @@ M4 is a coinbase OP Return output containing the following:
     1-byte - Version
     n-byte - The "upvote vector" -- describes which bundle-choice is "upvoted", for each sidechain.
 ```
+
 
 The upvote vector will code "abstain" as 0xFF (or 0xFFFF); it will code "alarm" as 0xFE (or 0xFFFE). Otherwise it simply indicates which withdrawal-bundle in the list, is the one to be "upvoted". 
 
@@ -354,68 +306,28 @@ Important: Within a sidechain-group, upvoting one Bundle ("+1") automatically do
 For example:
 
 
-|SC#|
-|-|
-|Bundle Hash|
-|-|
-|ACKs|
-|-|
-|Blocks Remaining|
-|-|
-|1|
-|h1|
-|45|
-|22,109|
-|1|
-|h2|
-|12|
-|22,008|
-|2|
-|h3|
-|13|
-|22,999|
-|2|
-|h4|
-|8|
-|23,550<br />|
-|2|
-|h5|
-|2|
-|22,560|
+|SC#|Bundle Hash|ACKs|Blocks Remaining|
+|-|-|-|-|
+|1|h1|45|22,109|
+|1|h2|12|22,008|
+|2|h3|13|22,999|
+|2|h4|8|23,550<br />|
+|2|h5|2|22,560|
+
 
 
 ...in block 900,000 could become...
 
 
 
-|SC#|
-|-|
-|Bundle Hash|
-|-|
-|ACKs|
-|-|
-|Blocks Remaining|
-|-|
-|1|
-|h1|
-|46|
-|22,108|
-|1|
-|h2|
-|11|
-|22,007|
-|2|
-|h3|
-|12|
-|22,998|
-|2|
-|h4|
-|9|
-|23,549<br />|
-|2|
-|h5|
-|1|
-|22,559|
+|SC#|Bundle Hash|ACKs|Blocks Remaining|
+|-|-|-|-|
+|1|h1|46|22,108|
+|1|h2|11|22,007|
+|2|h3|12|22,998|
+|2|h4|9|23,549<br />|
+|2|h5|1|22,559|
+
 
 ...if M4 were [0x6A,D77D1776,00,0000,0001].
 
@@ -483,6 +395,7 @@ To account for the additional drivechain checks, each message adds to the block'
 |M5|340|
 |M6|352|
 
+
 <!--
 get: 168 WU for 1 byte
 delete: free?
@@ -503,17 +416,20 @@ M3: 3 get, 1 delete, 2 create, 2 hash
   for each prior proposed withdrawl: (included in 1 get+delete+create)
 ```
 M4: 1 get
+
 ```
   + for every proposed withdraw, 1 get, 1 delete, 1 create, 1 add
   v0 needs to read and parse previous block
 ```
 M5/M6 OP_DRIVECHAIN spends require 2 additional input lookups
+
 ```
   for each output: check for duplicate OP_DRIVECHAINs
   amount comparison
   M6: encode & compare fee amount, 2 hash, counter compare
 -->
 ```
+
 
 
 <h2>Backward compatibility</h2>

@@ -584,10 +584,23 @@ v2 Bitcoin P2P transport layer packets use the encrypted message structure shown
 |`message_type`|1 or 13|either a one byte ID in range _1..255_ or `b'\x00'` followed by a 12-byte ASCII message type (as in the v1 P2P protocol)|
 |`message_payload`|`message_length`|message payload|
 
+
 If the first byte of `message_type` is `b'\x00'`, the following 12 bytes are interpreted as an ASCII message type (as in the v1 P2P protocol), trailing padded with `b'\x00'` as necessary. If the first byte of `message_type` is in the range _1..255_, it is interpreted as a message type ID. This structure results in smaller messages than the v1 protocol, as most messages sent/received will have a message type ID. We recommend reserving 1-byte type IDs for message types that are sent more than once per direction per connection.<ref name="smaller_messages">**How do the lengths between v1 and v2 compare?** For messages that use the 1-byte short message type ID, v2 packets use 3 bytes less per message than v1.</ref><ref name"fixed_length_long_ids">**Why not allow variable length long message type IDs?** Allowing for variable length long IDs reduces the available 1-byte ID space by 12 (to encode the length itself) and incentivizes less descriptive message types. In addition, limiting message types to fixed lengths of 1 or 13 hampers traffic analysis.</ref>
 
 The following table lists currently defined message type IDs:
 
+
+||0|1|2|3|
+|-|-|-|-|-|
+|(12 bytes follow)|`ADDR`|`BLOCK`|`BLOCKTXN`|
+|`CMPCTBLOCK`|`FEEFILTER`|`FILTERADD`|`FILTERCLEAR`|
+|`FILTERLOAD`|`GETBLOCKS`|`GETBLOCKTXN`|`GETDATA`|
+|`GETHEADERS`|`HEADERS`|`INV`|`MEMPOOL`|
+|`MERKLEBLOCK`|`NOTFOUND`|`PING`|`PONG`|
+|`SENDCMPCT`|`TX`|`GETCFILTERS`|`CFILTER`|
+|`GETCFHEADERS`|`CFHEADERS`|`GETCFCHECKPT`|`CFCHECKPT`|
+|+28|`ADDRV2`|
+|&geq;29|
 
 
 

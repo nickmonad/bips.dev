@@ -76,6 +76,7 @@ Graphical bitcoin clients SHOULD register themselves as the handler for the "bit
  otherparam      = pchar *pchar "=" *pchar
 ```
 
+
 <h3> Query Keys </h3>
 
 
@@ -148,40 +149,48 @@ Just the address:
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L
 ```
 
+
 Address with name:
 ```
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?label=Luke-Jr
 ```
+
 
 Request 20.30 BTC to "Luke-Jr":
 ```
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=20.3X8&label=Luke-Jr
 ```
 
+
 Request 400 TBC:
 ```
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x400X4
 ```
+
 
 Request 4000 TBC:
 ```
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=x4X7
 ```
 
+
 Request 5 uBTC:
 ```
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=5X2
 ```
+
 
 Request 50 BTC with message:
 ```
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=50X8&label=Luke-Jr&message=Donation%20for%20project%20xyz
 ```
 
+
 Send 1 BTC:
 ```
  bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJED9L?amount=1X8&send=S4b3N3oGqDqR5jNuxEvDwf
 ```
+
 
 Characters must be URI encoded properly.
 

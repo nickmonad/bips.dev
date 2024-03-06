@@ -53,6 +53,7 @@ The script takes the following form:
     OP_CHECKSIG
 ```
 
+
 [HASHOP] is either OP_SHA256 or OP_HASH160.
 
 [TIMEOUTOP] is either OP_CHECKSEQUENCEVERIFY or OP_CHECKLOCKTIMEVERIFY.

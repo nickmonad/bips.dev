@@ -77,6 +77,7 @@ The `filterload` command is defined as follows:
 |4|nTweak|uint32_t|A random value to add to the seed value in the hash function used by the bloom filter.|
 |1|nFlags|uint8_t|A set of flags that control how matched items are added to the filter.|
 
+
 See below for a description of the Bloom filter algorithm and how to select nHashFuncs and filter size for a desired false positive rate.
 
 Upon receiving a `filterload` command, the remote peer will immediately restrict the broadcast transactions it announces (in inv packets) to transactions matching the filter, where the matching algorithm is specified below. The flags control the update behaviour of the matching algorithm.
@@ -87,6 +88,7 @@ The `filteradd` command is defined as follows:
 |Field Size|Description|Data type|Comments|
 |-|-|-|-|
 |?|data|uint8_t[]|The data element to add to the current filter.|
+
 
 The data field must be smaller than or equal to 520 bytes in size (the maximum size of any potentially matched object).
 
@@ -109,6 +111,7 @@ After a filter has been set, nodes don't merely stop announcing non-matching tra
 |?|hashes|uint256[]|hashes in depth-first order (including standard varint size prefix)|
 |?|flags|byte[]|flag bits, packed per 8 in a byte, least significant bit first (including standard varint size prefix)|
 
+
 See below for the format of the partial merkle tree hashes and flags.
 
 Thus, a `merkleblock` message is a block header, plus a part of a merkle tree which can be used to extract identifying information for transactions that matched the filter and prove that the matching transaction data really did appear in the solved block. Clients can use this data to be sure that the remote node is not feeding them fake transactions that never appeared in a real block, although lying through omission is still possible.
@@ -122,6 +125,7 @@ The `version` command is extended with a new field:
 |Field Size|Description|Data type|Comments|
 |-|-|-|-|
 |1 byte|fRelay|bool|If false then broadcast transactions will not be announced until a filter{load,add,clear} command is received. If missing or true, no change in protocol behaviour occurs.|
+
 
 SPV clients that wish to use Bloom filtering would normally set fRelay to false in the version message, then set a filter based on their wallet (or a subset of it, if they are overlapping different peers). Being able to opt-out of inv messages until the filter is set prevents a client being flooded with traffic in the brief window of time between finishing version handshaking and setting the filter.
 

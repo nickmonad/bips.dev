@@ -282,16 +282,9 @@ The table below shows the error detection properties of Bech32m, and a compariso
 The properties are divided into two classes: those that hold over all strings when averaged over all possible HRPs (human readable parts), and those specific to the "bc1" HRP with the length restrictions imposed by segregated witness addresses<ref>**What restrictions were taken into account for the "bc1"-specific analysis?** The minimum length (due to witness programs being at least 2 bytes), the maximum length (due to witness programs being at most 40 bytes), and the fact that the witness programs are a multiple of 8 bits. The fact that the first data symbol cannot be over 16, or that the padding has to be 0, is not taken into account.</ref>.
 
 
-|rowspan="2" | errors|
-|-|
-|rowspan="2" | of type|
-|-|
-|rowspan="2" | window|
-|-|
-|rowspan="2" | code/verifier|
-|-|
+|rowspan="2" | errors|rowspan="2" | of type|rowspan="2" | window|rowspan="2" | code/verifier|
+|-|-|-|-|
 |_0_|_2<sup>-30</sup>_|_2<sup>-25</sup>_|_2<sup>-20</sup>_|_2<sup>-15</sup>_|_2<sup>-10</sup>_|
-|-|-|-|-|-|-|
 |any|any|&leq; 4|54.00%|43.84%|1.08%|0.90%|0.17%|0.0091%|
 |&leq; 2|any|&leq; 68|4.59%|92.29%|1.09%|1.01%|0.99%|0.039%|
 |&leq; 2|any|any|4.58%|92.21%|1.11%|1.04%|1.02%|0.038%|
@@ -302,6 +295,8 @@ The properties are divided into two classes: those that hold over all strings wh
 |any|any|&leq; 4|73.23%|25.26%|0.76%|0.63%|0.12%|0.0064%|
 |&leq; 2|any|any|12.79%|84.24%|1.06%|0.95%|0.92%|0.041%|
 |&leq; 3|any|any|13.00%|85.94%|0.57%|0.45%|0.044%|0.00067%|
+||
+
 
 The numbers in this table, as well as a comparison with the numbers for the ‘’1’’ constant and earlier proposed improved constants, can be found <a href="https://gist.github.com/sipa/14c248c288c3880a3b191f978a34508e#file-results_final-txt" target="_blank">here</a>.
 

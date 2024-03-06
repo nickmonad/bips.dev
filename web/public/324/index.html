@@ -608,6 +608,17 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
 </tbody></table>
 <p>If the first byte of <code>message_type</code> is <code>b'\x00'</code>, the following 12 bytes are interpreted as an ASCII message type (as in the v1 P2P protocol), trailing padded with <code>b'\x00'</code> as necessary. If the first byte of <code>message_type</code> is in the range <em>1..255</em>, it is interpreted as a message type ID. This structure results in smaller messages than the v1 protocol, as most messages sent/received will have a message type ID. We recommend reserving 1-byte type IDs for message types that are sent more than once per direction per connection.<ref name="smaller_messages"><strong>How do the lengths between v1 and v2 compare?</strong> For messages that use the 1-byte short message type ID, v2 packets use 3 bytes less per message than v1.</ref>&lt;ref name&quot;fixed_length_long_ids&quot;&gt;<strong>Why not allow variable length long message type IDs?</strong> Allowing for variable length long IDs reduces the available 1-byte ID space by 12 (to encode the length itself) and incentivizes less descriptive message types. In addition, limiting message types to fixed lengths of 1 or 13 hampers traffic analysis.</ref></p>
 <p>The following table lists currently defined message type IDs:</p>
+<table><thead><tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead><tbody>
+<tr><td>(12 bytes follow)</td><td><code>ADDR</code></td><td><code>BLOCK</code></td><td><code>BLOCKTXN</code></td><td></td></tr>
+<tr><td><code>CMPCTBLOCK</code></td><td><code>FEEFILTER</code></td><td><code>FILTERADD</code></td><td><code>FILTERCLEAR</code></td><td></td></tr>
+<tr><td><code>FILTERLOAD</code></td><td><code>GETBLOCKS</code></td><td><code>GETBLOCKTXN</code></td><td><code>GETDATA</code></td><td></td></tr>
+<tr><td><code>GETHEADERS</code></td><td><code>HEADERS</code></td><td><code>INV</code></td><td><code>MEMPOOL</code></td><td></td></tr>
+<tr><td><code>MERKLEBLOCK</code></td><td><code>NOTFOUND</code></td><td><code>PING</code></td><td><code>PONG</code></td><td></td></tr>
+<tr><td><code>SENDCMPCT</code></td><td><code>TX</code></td><td><code>GETCFILTERS</code></td><td><code>CFILTER</code></td><td></td></tr>
+<tr><td><code>GETCFHEADERS</code></td><td><code>CFHEADERS</code></td><td><code>GETCFCHECKPT</code></td><td><code>CFCHECKPT</code></td><td></td></tr>
+<tr><td>+28</td><td><code>ADDRV2</code></td><td></td><td></td><td></td></tr>
+<tr><td>≥29</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
 <p>Additional message types may be added separately after BIP finalization.</p>
 <h3> Signaling specification </h3>
 <h4> Signaling v2 support </h4>
@@ -1219,6 +1230,17 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
 </tbody></table>
 <p>If the first byte of <code>message_type</code> is <code>b'\x00'</code>, the following 12 bytes are interpreted as an ASCII message type (as in the v1 P2P protocol), trailing padded with <code>b'\x00'</code> as necessary. If the first byte of <code>message_type</code> is in the range <em>1..255</em>, it is interpreted as a message type ID. This structure results in smaller messages than the v1 protocol, as most messages sent/received will have a message type ID. We recommend reserving 1-byte type IDs for message types that are sent more than once per direction per connection.<ref name="smaller_messages"><strong>How do the lengths between v1 and v2 compare?</strong> For messages that use the 1-byte short message type ID, v2 packets use 3 bytes less per message than v1.</ref>&lt;ref name&quot;fixed_length_long_ids&quot;&gt;<strong>Why not allow variable length long message type IDs?</strong> Allowing for variable length long IDs reduces the available 1-byte ID space by 12 (to encode the length itself) and incentivizes less descriptive message types. In addition, limiting message types to fixed lengths of 1 or 13 hampers traffic analysis.</ref></p>
 <p>The following table lists currently defined message type IDs:</p>
+<table><thead><tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead><tbody>
+<tr><td>(12 bytes follow)</td><td><code>ADDR</code></td><td><code>BLOCK</code></td><td><code>BLOCKTXN</code></td><td></td></tr>
+<tr><td><code>CMPCTBLOCK</code></td><td><code>FEEFILTER</code></td><td><code>FILTERADD</code></td><td><code>FILTERCLEAR</code></td><td></td></tr>
+<tr><td><code>FILTERLOAD</code></td><td><code>GETBLOCKS</code></td><td><code>GETBLOCKTXN</code></td><td><code>GETDATA</code></td><td></td></tr>
+<tr><td><code>GETHEADERS</code></td><td><code>HEADERS</code></td><td><code>INV</code></td><td><code>MEMPOOL</code></td><td></td></tr>
+<tr><td><code>MERKLEBLOCK</code></td><td><code>NOTFOUND</code></td><td><code>PING</code></td><td><code>PONG</code></td><td></td></tr>
+<tr><td><code>SENDCMPCT</code></td><td><code>TX</code></td><td><code>GETCFILTERS</code></td><td><code>CFILTER</code></td><td></td></tr>
+<tr><td><code>GETCFHEADERS</code></td><td><code>CFHEADERS</code></td><td><code>GETCFCHECKPT</code></td><td><code>CFCHECKPT</code></td><td></td></tr>
+<tr><td>+28</td><td><code>ADDRV2</code></td><td></td><td></td><td></td></tr>
+<tr><td>≥29</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
 <p>Additional message types may be added separately after BIP finalization.</p>
 <h3> Signaling specification </h3>
 <h4> Signaling v2 support </h4>
@@ -1253,9 +1275,9 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

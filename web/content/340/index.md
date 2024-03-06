@@ -150,6 +150,7 @@ The following conventions are used, with constants as defined for <a href="https
 ** The function ''hash<sub>name</sub>(x)'' where ''x'' is a byte array returns the 32-byte hash ''SHA256(SHA256(tag) || SHA256(tag) || x)'', where ''tag'' is the UTF-8 encoding of ''name''.
 ```
 
+
 <h4> Public Key Generation </h4>
 
 

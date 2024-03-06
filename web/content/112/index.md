@@ -94,6 +94,7 @@ address with the following redeemscript.
     ENDIF
 ```
 
+
 At any time funds can be spent using signatures from any two of Alice, 
 Bob or the Escrow.
 
@@ -180,6 +181,7 @@ A simple output, paying to Alice might then look like:
     CHECKSIG
 ```
 
+
 This allows Alice to publish the latest commitment transaction at any
 time and spend the funds after 24 hours, but also ensures that if Alice
 relays a revoked transaction, that Bob has 24 hours to claim the funds.
@@ -196,6 +198,7 @@ With CHECKLOCKTIMEVERIFY, this would look like:
     ENDIF
     CHECKSIG
 ```
+
 
 This form of transaction would mean that if the anchor is unspent on
 2015/12/16, Alice can use this commitment even if it has been revoked,
@@ -230,6 +233,7 @@ Alice might look like the following in Alice's commitment transaction:
     CHECKSIG
 ```
 
+
 and correspondingly in Bob's commitment transaction:
 
 ```
@@ -245,6 +249,7 @@ and correspondingly in Bob's commitment transaction:
    ENDIF
    CHECKSIG
 ```
+
 
 Note that both CHECKSEQUENCEVERIFY and CHECKLOCKTIMEVERIFY are used in the
 final branch of above to ensure Bob cannot spend the output until after both
@@ -266,6 +271,7 @@ The 2-way pegged sidechain requires a new REORGPROOFVERIFY opcode, the semantics
         withdrawLockTime CHECKSEQUENCEVERIFY DROP HASH160 p2shWithdrawDest EQUAL
     ENDIF
 ```
+
 
 
 <h2>Specification</h2>

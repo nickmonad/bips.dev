@@ -90,52 +90,24 @@ It is serialized in the standard encoding for P2P messages.
 Its format is similar to the current <code>addr</code> message format, with the difference that the 
 fixed 16-byte IP address is replaced by a network ID and a variable-length address, and the services format has been changed to <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</p>
 <p>This means that the message contains a serialized <code>std::vector</code> of the following structure:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td><code>uint32_t</code></td></tr>
-<tr><td><code>time</code></td></tr>
-<tr><td>Time that this node was last seen as connected to the network. A time in Unix epoch time format.</td></tr>
-<tr><td><code>CompactSize</code></td></tr>
-<tr><td><code>services</code></td></tr>
-<tr><td>Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</td></tr>
-<tr><td><code>uint8_t</code></td></tr>
-<tr><td><code>networkID</code></td></tr>
-<tr><td>Network identifier. An 8-bit value that specifies which network is addressed.</td></tr>
-<tr><td><code>std::vector&lt;uint8_t&gt;</code></td></tr>
-<tr><td><code>addr</code></td></tr>
-<tr><td>Network address. The interpretation depends on networkID.</td></tr>
-<tr><td><code>uint16_t</code></td></tr>
-<tr><td><code>port</code></td></tr>
-<tr><td>Network port. If not relevant for the network this MUST be 0.</td></tr>
+<table><thead><tr><th>Type</th><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>uint32_t</code></td><td><code>time</code></td><td>Time that this node was last seen as connected to the network. A time in Unix epoch time format.</td></tr>
+<tr><td><code>CompactSize</code></td><td><code>services</code></td><td>Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</td></tr>
+<tr><td><code>uint8_t</code></td><td><code>networkID</code></td><td>Network identifier. An 8-bit value that specifies which network is addressed.</td></tr>
+<tr><td><code>std::vector&lt;uint8_t&gt;</code></td><td><code>addr</code></td><td>Network address. The interpretation depends on networkID.</td></tr>
+<tr><td><code>uint16_t</code></td><td><code>port</code></td><td>Network port. If not relevant for the network this MUST be 0.</td></tr>
 </tbody></table>
 <p>One message can contain up to 1,000 addresses. Clients SHOULD reject messages with more addresses.</p>
 <p>Field <code>addr</code> has a variable length, with a maximum of 512 bytes (4096 bits).
 Clients SHOULD reject messages with longer addresses, irrespective of the network ID.</p>
 <p>The list of reserved network IDs is as follows:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td><code>0x01</code></td></tr>
-<tr><td><code>IPV4</code></td></tr>
-<tr><td>4</td></tr>
-<tr><td>IPv4 address (globally routed internet)</td></tr>
-<tr><td><code>0x02</code></td></tr>
-<tr><td><code>IPV6</code></td></tr>
-<tr><td>16</td></tr>
-<tr><td>IPv6 address (globally routed internet)</td></tr>
-<tr><td><code>0x03</code></td></tr>
-<tr><td><code>TORV2</code></td></tr>
-<tr><td>10</td></tr>
-<tr><td>Tor v2 hidden service address</td></tr>
-<tr><td><code>0x04</code></td></tr>
-<tr><td><code>TORV3</code></td></tr>
-<tr><td>32</td></tr>
-<tr><td>Tor v3 hidden service address</td></tr>
-<tr><td><code>0x05</code></td></tr>
-<tr><td><code>I2P</code></td></tr>
-<tr><td>32</td></tr>
-<tr><td>I2P overlay network address</td></tr>
-<tr><td><code>0x06</code></td></tr>
-<tr><td><code>CJDNS</code></td></tr>
-<tr><td>16</td></tr>
-<tr><td>Cjdns overlay network address</td></tr>
+<table><thead><tr><th>Network ID</th><th>Enumeration</th><th>Address length (bytes)</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>0x01</code></td><td><code>IPV4</code></td><td>4</td><td>IPv4 address (globally routed internet)</td></tr>
+<tr><td><code>0x02</code></td><td><code>IPV6</code></td><td>16</td><td>IPv6 address (globally routed internet)</td></tr>
+<tr><td><code>0x03</code></td><td><code>TORV2</code></td><td>10</td><td>Tor v2 hidden service address</td></tr>
+<tr><td><code>0x04</code></td><td><code>TORV3</code></td><td>32</td><td>Tor v3 hidden service address</td></tr>
+<tr><td><code>0x05</code></td><td><code>I2P</code></td><td>32</td><td>I2P overlay network address</td></tr>
+<tr><td><code>0x06</code></td><td><code>CJDNS</code></td><td>16</td><td>Cjdns overlay network address</td></tr>
 </tbody></table>
 <p>Clients are RECOMMENDED to gossip addresses from all known networks even if they are currently not connected to some of them. That could help multi-homed nodes and make it more difficult for an observer to tell which networks a node is connected to.</p>
 <p>Clients SHOULD NOT gossip addresses from unknown networks because they have no means to validate those addresses and so can be tricked to gossip invalid addresses.</p>
@@ -254,52 +226,24 @@ It is serialized in the standard encoding for P2P messages.
 Its format is similar to the current <code>addr</code> message format, with the difference that the 
 fixed 16-byte IP address is replaced by a network ID and a variable-length address, and the services format has been changed to <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</p>
 <p>This means that the message contains a serialized <code>std::vector</code> of the following structure:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td><code>uint32_t</code></td></tr>
-<tr><td><code>time</code></td></tr>
-<tr><td>Time that this node was last seen as connected to the network. A time in Unix epoch time format.</td></tr>
-<tr><td><code>CompactSize</code></td></tr>
-<tr><td><code>services</code></td></tr>
-<tr><td>Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</td></tr>
-<tr><td><code>uint8_t</code></td></tr>
-<tr><td><code>networkID</code></td></tr>
-<tr><td>Network identifier. An 8-bit value that specifies which network is addressed.</td></tr>
-<tr><td><code>std::vector&lt;uint8_t&gt;</code></td></tr>
-<tr><td><code>addr</code></td></tr>
-<tr><td>Network address. The interpretation depends on networkID.</td></tr>
-<tr><td><code>uint16_t</code></td></tr>
-<tr><td><code>port</code></td></tr>
-<tr><td>Network port. If not relevant for the network this MUST be 0.</td></tr>
+<table><thead><tr><th>Type</th><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>uint32_t</code></td><td><code>time</code></td><td>Time that this node was last seen as connected to the network. A time in Unix epoch time format.</td></tr>
+<tr><td><code>CompactSize</code></td><td><code>services</code></td><td>Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</td></tr>
+<tr><td><code>uint8_t</code></td><td><code>networkID</code></td><td>Network identifier. An 8-bit value that specifies which network is addressed.</td></tr>
+<tr><td><code>std::vector&lt;uint8_t&gt;</code></td><td><code>addr</code></td><td>Network address. The interpretation depends on networkID.</td></tr>
+<tr><td><code>uint16_t</code></td><td><code>port</code></td><td>Network port. If not relevant for the network this MUST be 0.</td></tr>
 </tbody></table>
 <p>One message can contain up to 1,000 addresses. Clients SHOULD reject messages with more addresses.</p>
 <p>Field <code>addr</code> has a variable length, with a maximum of 512 bytes (4096 bits).
 Clients SHOULD reject messages with longer addresses, irrespective of the network ID.</p>
 <p>The list of reserved network IDs is as follows:</p>
-<table><thead><tr><th></th></tr></thead><tbody>
-<tr><td><code>0x01</code></td></tr>
-<tr><td><code>IPV4</code></td></tr>
-<tr><td>4</td></tr>
-<tr><td>IPv4 address (globally routed internet)</td></tr>
-<tr><td><code>0x02</code></td></tr>
-<tr><td><code>IPV6</code></td></tr>
-<tr><td>16</td></tr>
-<tr><td>IPv6 address (globally routed internet)</td></tr>
-<tr><td><code>0x03</code></td></tr>
-<tr><td><code>TORV2</code></td></tr>
-<tr><td>10</td></tr>
-<tr><td>Tor v2 hidden service address</td></tr>
-<tr><td><code>0x04</code></td></tr>
-<tr><td><code>TORV3</code></td></tr>
-<tr><td>32</td></tr>
-<tr><td>Tor v3 hidden service address</td></tr>
-<tr><td><code>0x05</code></td></tr>
-<tr><td><code>I2P</code></td></tr>
-<tr><td>32</td></tr>
-<tr><td>I2P overlay network address</td></tr>
-<tr><td><code>0x06</code></td></tr>
-<tr><td><code>CJDNS</code></td></tr>
-<tr><td>16</td></tr>
-<tr><td>Cjdns overlay network address</td></tr>
+<table><thead><tr><th>Network ID</th><th>Enumeration</th><th>Address length (bytes)</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>0x01</code></td><td><code>IPV4</code></td><td>4</td><td>IPv4 address (globally routed internet)</td></tr>
+<tr><td><code>0x02</code></td><td><code>IPV6</code></td><td>16</td><td>IPv6 address (globally routed internet)</td></tr>
+<tr><td><code>0x03</code></td><td><code>TORV2</code></td><td>10</td><td>Tor v2 hidden service address</td></tr>
+<tr><td><code>0x04</code></td><td><code>TORV3</code></td><td>32</td><td>Tor v3 hidden service address</td></tr>
+<tr><td><code>0x05</code></td><td><code>I2P</code></td><td>32</td><td>I2P overlay network address</td></tr>
+<tr><td><code>0x06</code></td><td><code>CJDNS</code></td><td>16</td><td>Cjdns overlay network address</td></tr>
 </tbody></table>
 <p>Clients are RECOMMENDED to gossip addresses from all known networks even if they are currently not connected to some of them. That could help multi-homed nodes and make it more difficult for an observer to tell which networks a node is connected to.</p>
 <p>Clients SHOULD NOT gossip addresses from unknown networks because they have no means to validate those addresses and so can be tricked to gossip invalid addresses.</p>
@@ -359,9 +303,9 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

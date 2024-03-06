@@ -195,6 +195,7 @@ The format of the Author header value must be
   Random J. User <address@dom.ain>
 ```
 
+
 If there are multiple authors, each should be on a separate line following RFC 2822 continuation line conventions.
 
 While a BIP is in private discussions (usually during the initial Draft phase), a Discussions-To header will indicate the mailing list or URL where the BIP is being discussed. No Discussions-To header is necessary if the BIP is being discussed privately with the author, or on the bitcoin email mailing lists.
@@ -347,6 +348,7 @@ Comments posted to this wiki should use the following format:
     <Your opinion> --<Your name>, <Date of posting, as YYYY-MM-DD>
 ```
 
+
 BIPs may also choose to list a second forum for BIP comments, in addition to the BIPs wiki.
 In this case, the second forum's URI should be listed below the primary wiki's URI.
 
@@ -367,6 +369,7 @@ For example, the preamble to BIP 1 might be updated to include the line:
     Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-0001
                   https://some-other-wiki.org/BIP_1_Comments
 ```
+
 
 These fields must follow the "Discussions-To" header defined in BIP 1 (if that header is not present, it should follow the position where it would be present; generally this is immediately above the Status header).
 
@@ -400,6 +403,7 @@ For example, a preamble might include the following License header:
              GNU-All-Permissive
 ```
 
+
 In this case, the BIP text is fully licensed under both the OSI-approved BSD 2-clause license as well as the GNU All-Permissive License, and anyone may modify and redistribute the text provided they comply with the terms of *either* license. In other words, the license list is an "OR choice", not an "AND also" requirement.
 
 It is also possible to license source code differently from the BIP text. An optional License-Code header is placed after the License header. Again, each license must be referenced by their respective abbreviation given below.
@@ -412,6 +416,7 @@ For example, a preamble specifying the optional License-Code header might look l
     License-Code: GPL-2.0+
 ```
 
+
 In this case, the code in the BIP is not available under the BSD or All-Permissive licenses, but only under the terms of the GNU General Public License (GPL), version 2 or newer.
 If the code were to be available under *only* version 2 exactly, the "+" symbol should be removed from the license abbreviation.
 For a later version (eg, GPL 3.0), you would increase the version number (and retain or remove the "+" depending on intent).
@@ -422,6 +427,7 @@ For a later version (eg, GPL 3.0), you would increase the version number (and re
     License-Code: GPL-3.0   # This refers to GPL v3.0 *only*, no later license versions are acceptable.
     License-Code: GPL-3.0+  # This refers to GPL v3.0 *or later*.
 ```
+
 
 In the event that the licensing for the text or code is too complicated to express with a simple list of alternatives, the list should instead be replaced with the single term "Complex". In all cases, details of the licensing terms must be provided in the Copyright section of the BIP.
 

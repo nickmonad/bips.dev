@@ -124,6 +124,13 @@ error models.</ref>.
 
 
 
+||0|1|2|3|4|5|6|7|
+|-|-|-|-|-|-|-|-|-|
+|q|p|z|r|y|9|x|8|
+|g|f|2|t|v|d|w|0|
+|s|3|j|n|5|4|k|h|
+|c|e|6|m|u|a|7|l|
+
 
 
 **Checksum**
@@ -383,6 +390,10 @@ analysis. The code can be found <a href="https://github.com/sipa/ezbase32/" targ
 The following table summarizes the chances for detection failure (as
 multiples of 1 in 10<sup>9</sup>).
 
+
+|Length|Description|≤4|5|6|7|8|≥9|
+|-|-|-|-|-|-|-|-|
+||
 
 This means that when 5 changed characters occur randomly distributed in
 the 39 characters of a P2WPKH address, there is a chance of

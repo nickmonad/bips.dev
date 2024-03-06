@@ -103,32 +103,10 @@ produce valid signatures.
 The new per-input type is defined as follows:
 
 
-|Name|
-|-|
-|<tt><keytype></tt>|
-|-|
-|<tt><keydata></tt>|
-|-|
-|<tt><keydata></tt> Description|
-|-|
-|<tt><valuedata></tt>|
-|-|
-|<tt><valuedata></tt> Description|
-|-|
-|Versions Requiring Inclusion|
-|-|
-|Versions Requiring Exclusion|
-|-|
-|Versions Allowing Inclusion|
-|-|
-|P2C Key Tweak|
-|<tt>PSBT_IN_P2C_TWEAK = 0x19</tt>|
-|<tt><pubkey></tt>|
-|33 bytes of compact public key serialization specifying to which of keys the|
-|<tt><tweak></tt>|
-|The 32 byte value which MUST be added to a private key to produce correct|
-|0, 2|
-|BIP-P2C|
+|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><keydata></tt> Description|<tt><valuedata></tt>|<tt><valuedata></tt> Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|-|-|-|-|-|-|-|-|-|
+|P2C Key Tweak|<tt>PSBT_IN_P2C_TWEAK = 0x19</tt>|<tt><pubkey></tt>|33 bytes of compact public key serialization specifying to which of keys the|<tt><tweak></tt>|The 32 byte value which MUST be added to a private key to produce correct|||0, 2|BIP-P2C|
+
 
 
 <h2>Security considerations</h2>

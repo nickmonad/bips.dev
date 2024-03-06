@@ -157,12 +157,8 @@ extension &quot;version-rolling&quot;.</p>
 <li><em>Map of (String -&gt; Any)</em></li>
 </ul>
 <ul>
-<li>
-<p>Each code from the <strong>extensions</strong> list MUST have a defined return value (<em>TExtensionCode</em> -&gt; <em>TExtensionResult</em>). This way the miner knows if the extension is activated or not. E.g. <code>{&quot;version-rolling&quot;:false}</code> for unsupported version rolling.</p>
-</li>
-<li>
-<p>Some extensions need additional information to be delivered to the miner. The return value map is used for this purpose.</p>
-</li>
+<li>Each code from the <strong>extensions</strong> list MUST have a defined return value (<em>TExtensionCode</em> -&gt; <em>TExtensionResult</em>). This way the miner knows if the extension is activated or not. E.g. <code>{&quot;version-rolling&quot;:false}</code> for unsupported version rolling.</li>
+<li>Some extensions need additional information to be delivered to the miner. The return value map is used for this purpose.</li>
 </ul>
 <p>Example request (new-lines added):</p>
 <pre><code> {&quot;method&quot;: &quot;mining.configure&quot;,
@@ -211,10 +207,10 @@ with common bits intersection of the miner's mask and its a mask
 <li><strong>&quot;version-rolling.mask&quot;</strong> (OPTIONAL, <em>TMask</em>, default value <code>&quot;ffffffff&quot;</code>)</li>
 </ul>
 <ul>
-<li>Bits set to 1 can be changed by the miner. This value is expected</li>
+<li>Bits set to 1 can be changed by the miner. This value is expected
+to be stable for the whole mining session. A miner doesn't have to
+send the mask, in this case a default full mask is used.</li>
 </ul>
-<p>to be stable for the whole mining session. A miner doesn't have to
-send the mask, in this case a default full mask is used.</p>
 <p><strong>Extension return values</strong>:</p>
 <ul>
 <li><strong>&quot;version-rolling&quot;</strong> (REQUIRED, <em>TExtensionResult</em>)</li>
@@ -226,12 +222,8 @@ send the mask, in this case a default full mask is used.</p>
 <li><strong>&quot;version-rolling.mask&quot;</strong> (REQUIRED, <em>TMask</em>)</li>
 </ul>
 <ul>
-<li>
-<p>Bits set to 1 are allowed to be changed by the miner. If a miner changes bits with mask value 0, the server will reject the submit.</p>
-</li>
-<li>
-<p>The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="Draft" target="_blank">BIP</a>(https://github.com/bitcoin/bips/pull/661/files) describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.</p>
-</li>
+<li>Bits set to 1 are allowed to be changed by the miner. If a miner changes bits with mask value 0, the server will reject the submit.</li>
+<li>The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="Draft" target="_blank">BIP</a>(https://github.com/bitcoin/bips/pull/661/files) describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.</li>
 </ul>
 <ul>
 <li><strong>&quot;version-rolling.min-bit-count&quot;</strong> (REQUIRED, <em>TMask</em>)</li>
@@ -287,12 +279,8 @@ connected device.</p>
 <li><strong>&quot;minimum-difficulty&quot;</strong> (REQUIRED, <em>TExtensionResult</em>)</li>
 </ul>
 <ul>
-<li>
-<p>Whether the minimum difficulty was accepted or not.</p>
-</li>
-<li>
-<p>This extension can be configured multiple times by calling &quot;mining.configure&quot; with &quot;minimum-difficulty&quot; code again.</p>
-</li>
+<li>Whether the minimum difficulty was accepted or not.</li>
+<li>This extension can be configured multiple times by calling &quot;mining.configure&quot; with &quot;minimum-difficulty&quot; code again.</li>
 </ul>
 <h2>Extension "subscribe-extranonce"</h2>
 <p>Parameter-less extension. Miner advertises its capability of receiving
@@ -472,12 +460,8 @@ extension &quot;version-rolling&quot;.</p>
 <li><em>Map of (String -&gt; Any)</em></li>
 </ul>
 <ul>
-<li>
-<p>Each code from the <strong>extensions</strong> list MUST have a defined return value (<em>TExtensionCode</em> -&gt; <em>TExtensionResult</em>). This way the miner knows if the extension is activated or not. E.g. <code>{&quot;version-rolling&quot;:false}</code> for unsupported version rolling.</p>
-</li>
-<li>
-<p>Some extensions need additional information to be delivered to the miner. The return value map is used for this purpose.</p>
-</li>
+<li>Each code from the <strong>extensions</strong> list MUST have a defined return value (<em>TExtensionCode</em> -&gt; <em>TExtensionResult</em>). This way the miner knows if the extension is activated or not. E.g. <code>{&quot;version-rolling&quot;:false}</code> for unsupported version rolling.</li>
+<li>Some extensions need additional information to be delivered to the miner. The return value map is used for this purpose.</li>
 </ul>
 <p>Example request (new-lines added):</p>
 <pre><code> {&quot;method&quot;: &quot;mining.configure&quot;,
@@ -526,10 +510,10 @@ with common bits intersection of the miner's mask and its a mask
 <li><strong>&quot;version-rolling.mask&quot;</strong> (OPTIONAL, <em>TMask</em>, default value <code>&quot;ffffffff&quot;</code>)</li>
 </ul>
 <ul>
-<li>Bits set to 1 can be changed by the miner. This value is expected</li>
+<li>Bits set to 1 can be changed by the miner. This value is expected
+to be stable for the whole mining session. A miner doesn't have to
+send the mask, in this case a default full mask is used.</li>
 </ul>
-<p>to be stable for the whole mining session. A miner doesn't have to
-send the mask, in this case a default full mask is used.</p>
 <p><strong>Extension return values</strong>:</p>
 <ul>
 <li><strong>&quot;version-rolling&quot;</strong> (REQUIRED, <em>TExtensionResult</em>)</li>
@@ -541,12 +525,8 @@ send the mask, in this case a default full mask is used.</p>
 <li><strong>&quot;version-rolling.mask&quot;</strong> (REQUIRED, <em>TMask</em>)</li>
 </ul>
 <ul>
-<li>
-<p>Bits set to 1 are allowed to be changed by the miner. If a miner changes bits with mask value 0, the server will reject the submit.</p>
-</li>
-<li>
-<p>The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="Draft" target="_blank">BIP</a>(https://github.com/bitcoin/bips/pull/661/files) describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.</p>
-</li>
+<li>Bits set to 1 are allowed to be changed by the miner. If a miner changes bits with mask value 0, the server will reject the submit.</li>
+<li>The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="Draft" target="_blank">BIP</a>(https://github.com/bitcoin/bips/pull/661/files) describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.</li>
 </ul>
 <ul>
 <li><strong>&quot;version-rolling.min-bit-count&quot;</strong> (REQUIRED, <em>TMask</em>)</li>
@@ -602,12 +582,8 @@ connected device.</p>
 <li><strong>&quot;minimum-difficulty&quot;</strong> (REQUIRED, <em>TExtensionResult</em>)</li>
 </ul>
 <ul>
-<li>
-<p>Whether the minimum difficulty was accepted or not.</p>
-</li>
-<li>
-<p>This extension can be configured multiple times by calling &quot;mining.configure&quot; with &quot;minimum-difficulty&quot; code again.</p>
-</li>
+<li>Whether the minimum difficulty was accepted or not.</li>
+<li>This extension can be configured multiple times by calling &quot;mining.configure&quot; with &quot;minimum-difficulty&quot; code again.</li>
 </ul>
 <h2>Extension "subscribe-extranonce"</h2>
 <p>Parameter-less extension. Miner advertises its capability of receiving
@@ -661,9 +637,9 @@ that <strong>mining.capabilities</strong> request has no associated response.</p
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

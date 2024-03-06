@@ -51,25 +51,18 @@ The URI follow this form:
  <nowiki>blockchain:[//<chain>]/<tx|block|address>/<hash></nowiki>
 ```
 
+
 Where:
 
 
-|style="text-align: center;" | Element|
-|-|
-|Required?|
-|-|
-|chain|
-|optional|
-|rowspan="3" | type|
-|tx|
-|for transactions.|
-|rowspan="3" | required|
-|block|
-|for blocks (supports both hash or height).|
-|address|
-|for addresses.|
-|hash|
-|required|
+|style="text-align: center;" | Element|Required?|
+|-|-|
+|chain|optional|
+|rowspan="3" | type|tx|for transactions.|rowspan="3" | required|
+|block|for blocks (supports both hash or height).|
+|address|for addresses.|
+|hash|required|
+
 
 <h4>ABNF grammar</h4>
 

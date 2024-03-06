@@ -134,26 +134,16 @@ Servers SHOULD NOT break this assumption without good cause.</p>
 </tbody></table>
 <p>If the block template contains a &quot;mutable&quot; key, it is a list of these to signify modifications the miner is allowed to make:</p>
 <table><thead><tr><th>Value</th><th>Significance</th></tr></thead><tbody>
-<tr><td>coinbase/append</td><td></td></tr>
-<tr><td>append the provided coinbase scriptSig</td><td></td></tr>
-<tr><td>coinbase</td><td></td></tr>
-<tr><td>provide their own coinbase; if one is provided, it may be replaced or modified (implied if &quot;coinbasetxn&quot; omitted)</td><td></td></tr>
-<tr><td>generation</td><td></td></tr>
-<tr><td>add or remove outputs from the coinbase/generation transaction (implied if &quot;coinbasetxn&quot; omitted)</td><td></td></tr>
-<tr><td>time/increment</td><td></td></tr>
-<tr><td>change the time header to a value after &quot;time&quot; (implied if &quot;maxtime&quot; or &quot;maxtimeoff&quot; are provided)</td><td></td></tr>
-<tr><td>time/decrement</td><td></td></tr>
-<tr><td>change the time header to a value before &quot;time&quot; (implied if &quot;mintime&quot; is provided)</td><td></td></tr>
-<tr><td>time</td><td></td></tr>
-<tr><td>modify the time header of the block</td><td></td></tr>
-<tr><td>transactions/add (or &quot;transactions&quot;)</td><td></td></tr>
-<tr><td>add other valid transactions to the block (implied if &quot;transactions&quot; omitted from result)</td><td></td></tr>
-<tr><td>prevblock</td><td></td></tr>
-<tr><td>use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting &quot;height&quot; as necessary</td><td></td></tr>
-<tr><td>version/force</td><td></td></tr>
-<tr><td>encode the provide block version, even if the miner doesn't understand it</td><td></td></tr>
-<tr><td>version/reduce</td><td></td></tr>
-<tr><td>use an older block version than the one provided (for example, if the client does not support the version provided)</td><td></td></tr>
+<tr><td>coinbase/append</td><td>append the provided coinbase scriptSig</td></tr>
+<tr><td>coinbase</td><td>provide their own coinbase; if one is provided, it may be replaced or modified (implied if &quot;coinbasetxn&quot; omitted)</td></tr>
+<tr><td>generation</td><td>add or remove outputs from the coinbase/generation transaction (implied if &quot;coinbasetxn&quot; omitted)</td></tr>
+<tr><td>time/increment</td><td>change the time header to a value after &quot;time&quot; (implied if &quot;maxtime&quot; or &quot;maxtimeoff&quot; are provided)</td></tr>
+<tr><td>time/decrement</td><td>change the time header to a value before &quot;time&quot; (implied if &quot;mintime&quot; is provided)</td></tr>
+<tr><td>time</td><td>modify the time header of the block</td></tr>
+<tr><td>transactions/add (or &quot;transactions&quot;)</td><td>add other valid transactions to the block (implied if &quot;transactions&quot; omitted from result)</td></tr>
+<tr><td>prevblock</td><td>use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting &quot;height&quot; as necessary</td></tr>
+<tr><td>version/force</td><td>encode the provide block version, even if the miner doesn't understand it</td></tr>
+<tr><td>version/reduce</td><td>use an older block version than the one provided (for example, if the client does not support the version provided)</td></tr>
 </tbody></table>
 <h3>Submission Abbreviation</h3>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -162,18 +152,12 @@ Servers SHOULD NOT break this assumption without good cause.</p>
 </tbody></table>
 <p>If the block template contains a &quot;mutable&quot; key, it is a list of these to signify modifications the miner is allowed to make:</p>
 <table><thead><tr><th>Value</th><th>Significance</th></tr></thead><tbody>
-<tr><td>submit/hash</td><td></td></tr>
-<tr><td>each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a &quot;:&quot; character</td><td></td></tr>
-<tr><td>submit/coinbase</td><td></td></tr>
-<tr><td>if the &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)</td><td></td></tr>
-<tr><td>submit/truncate</td><td></td></tr>
-<tr><td>if the &quot;coinbasetxn&quot; and &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of &quot;coinbasetxn&quot; is modified, the params Object MUST contain a &quot;coinbasesig&quot; key with the content, or a &quot;coinbaseadd&quot; with appended data (if only appending)</td><td></td></tr>
-<tr><td>share/coinbase</td><td></td></tr>
-<tr><td>same as &quot;submit/coinbase&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td><td></td></tr>
-<tr><td>share/merkle</td><td></td></tr>
-<tr><td>if the block hash is greater than &quot;fulltarget&quot;, the non-coinbase transactions may be replaced with a merkle chain connecting it to the root</td><td></td></tr>
-<tr><td>share/truncate</td><td></td></tr>
-<tr><td>same as &quot;submit/truncate&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td><td></td></tr>
+<tr><td>submit/hash</td><td>each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a &quot;:&quot; character</td></tr>
+<tr><td>submit/coinbase</td><td>if the &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)</td></tr>
+<tr><td>submit/truncate</td><td>if the &quot;coinbasetxn&quot; and &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of &quot;coinbasetxn&quot; is modified, the params Object MUST contain a &quot;coinbasesig&quot; key with the content, or a &quot;coinbaseadd&quot; with appended data (if only appending)</td></tr>
+<tr><td>share/coinbase</td><td>same as &quot;submit/coinbase&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td></tr>
+<tr><td>share/merkle</td><td>if the block hash is greater than &quot;fulltarget&quot;, the non-coinbase transactions may be replaced with a merkle chain connecting it to the root</td></tr>
+<tr><td>share/truncate</td><td>same as &quot;submit/truncate&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td></tr>
 </tbody></table>
 <h4> Format of Data for Merkle-Only Shares </h4>
 <p>The format used for submitting shares with the &quot;share/merkle&quot; mutation shall be the 80-byte block header, the total number of transactions encoded in Bitcoin variable length number format, the coinbase transaction, and then finally the little-endian SHA256 hashes of each link in the merkle chain connecting it to the merkle root.</p>
@@ -369,26 +353,16 @@ Servers SHOULD NOT break this assumption without good cause.</p>
 </tbody></table>
 <p>If the block template contains a &quot;mutable&quot; key, it is a list of these to signify modifications the miner is allowed to make:</p>
 <table><thead><tr><th>Value</th><th>Significance</th></tr></thead><tbody>
-<tr><td>coinbase/append</td><td></td></tr>
-<tr><td>append the provided coinbase scriptSig</td><td></td></tr>
-<tr><td>coinbase</td><td></td></tr>
-<tr><td>provide their own coinbase; if one is provided, it may be replaced or modified (implied if &quot;coinbasetxn&quot; omitted)</td><td></td></tr>
-<tr><td>generation</td><td></td></tr>
-<tr><td>add or remove outputs from the coinbase/generation transaction (implied if &quot;coinbasetxn&quot; omitted)</td><td></td></tr>
-<tr><td>time/increment</td><td></td></tr>
-<tr><td>change the time header to a value after &quot;time&quot; (implied if &quot;maxtime&quot; or &quot;maxtimeoff&quot; are provided)</td><td></td></tr>
-<tr><td>time/decrement</td><td></td></tr>
-<tr><td>change the time header to a value before &quot;time&quot; (implied if &quot;mintime&quot; is provided)</td><td></td></tr>
-<tr><td>time</td><td></td></tr>
-<tr><td>modify the time header of the block</td><td></td></tr>
-<tr><td>transactions/add (or &quot;transactions&quot;)</td><td></td></tr>
-<tr><td>add other valid transactions to the block (implied if &quot;transactions&quot; omitted from result)</td><td></td></tr>
-<tr><td>prevblock</td><td></td></tr>
-<tr><td>use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting &quot;height&quot; as necessary</td><td></td></tr>
-<tr><td>version/force</td><td></td></tr>
-<tr><td>encode the provide block version, even if the miner doesn't understand it</td><td></td></tr>
-<tr><td>version/reduce</td><td></td></tr>
-<tr><td>use an older block version than the one provided (for example, if the client does not support the version provided)</td><td></td></tr>
+<tr><td>coinbase/append</td><td>append the provided coinbase scriptSig</td></tr>
+<tr><td>coinbase</td><td>provide their own coinbase; if one is provided, it may be replaced or modified (implied if &quot;coinbasetxn&quot; omitted)</td></tr>
+<tr><td>generation</td><td>add or remove outputs from the coinbase/generation transaction (implied if &quot;coinbasetxn&quot; omitted)</td></tr>
+<tr><td>time/increment</td><td>change the time header to a value after &quot;time&quot; (implied if &quot;maxtime&quot; or &quot;maxtimeoff&quot; are provided)</td></tr>
+<tr><td>time/decrement</td><td>change the time header to a value before &quot;time&quot; (implied if &quot;mintime&quot; is provided)</td></tr>
+<tr><td>time</td><td>modify the time header of the block</td></tr>
+<tr><td>transactions/add (or &quot;transactions&quot;)</td><td>add other valid transactions to the block (implied if &quot;transactions&quot; omitted from result)</td></tr>
+<tr><td>prevblock</td><td>use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting &quot;height&quot; as necessary</td></tr>
+<tr><td>version/force</td><td>encode the provide block version, even if the miner doesn't understand it</td></tr>
+<tr><td>version/reduce</td><td>use an older block version than the one provided (for example, if the client does not support the version provided)</td></tr>
 </tbody></table>
 <h3>Submission Abbreviation</h3>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -397,18 +371,12 @@ Servers SHOULD NOT break this assumption without good cause.</p>
 </tbody></table>
 <p>If the block template contains a &quot;mutable&quot; key, it is a list of these to signify modifications the miner is allowed to make:</p>
 <table><thead><tr><th>Value</th><th>Significance</th></tr></thead><tbody>
-<tr><td>submit/hash</td><td></td></tr>
-<tr><td>each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a &quot;:&quot; character</td><td></td></tr>
-<tr><td>submit/coinbase</td><td></td></tr>
-<tr><td>if the &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)</td><td></td></tr>
-<tr><td>submit/truncate</td><td></td></tr>
-<tr><td>if the &quot;coinbasetxn&quot; and &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of &quot;coinbasetxn&quot; is modified, the params Object MUST contain a &quot;coinbasesig&quot; key with the content, or a &quot;coinbaseadd&quot; with appended data (if only appending)</td><td></td></tr>
-<tr><td>share/coinbase</td><td></td></tr>
-<tr><td>same as &quot;submit/coinbase&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td><td></td></tr>
-<tr><td>share/merkle</td><td></td></tr>
-<tr><td>if the block hash is greater than &quot;fulltarget&quot;, the non-coinbase transactions may be replaced with a merkle chain connecting it to the root</td><td></td></tr>
-<tr><td>share/truncate</td><td></td></tr>
-<tr><td>same as &quot;submit/truncate&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td><td></td></tr>
+<tr><td>submit/hash</td><td>each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a &quot;:&quot; character</td></tr>
+<tr><td>submit/coinbase</td><td>if the &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)</td></tr>
+<tr><td>submit/truncate</td><td>if the &quot;coinbasetxn&quot; and &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of &quot;coinbasetxn&quot; is modified, the params Object MUST contain a &quot;coinbasesig&quot; key with the content, or a &quot;coinbaseadd&quot; with appended data (if only appending)</td></tr>
+<tr><td>share/coinbase</td><td>same as &quot;submit/coinbase&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td></tr>
+<tr><td>share/merkle</td><td>if the block hash is greater than &quot;fulltarget&quot;, the non-coinbase transactions may be replaced with a merkle chain connecting it to the root</td></tr>
+<tr><td>share/truncate</td><td>same as &quot;submit/truncate&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td></tr>
 </tbody></table>
 <h4> Format of Data for Merkle-Only Shares </h4>
 <p>The format used for submitting shares with the &quot;share/merkle&quot; mutation shall be the 80-byte block header, the total number of transactions encoded in Bitcoin variable length number format, the coinbase transaction, and then finally the little-endian SHA256 hashes of each link in the merkle chain connecting it to the merkle root.</p>
@@ -501,9 +469,9 @@ By exposing the details of the block proposals to the miners, they are enabled t
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

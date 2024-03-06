@@ -68,11 +68,25 @@ Several uses of CompactSize below are "differentially encoded". For these, inste
 A PrefilledTransaction structure is used in HeaderAndShortIDs to provide a list of a few transactions explicitly.
 
 
+|Field Name|Type|Size|Encoding|Purpose|
+|-|-|-|-|-|
+|index|CompactSize|1, 3 bytes|Compact Size, differentially encoded since the last PrefilledTransaction in a list|The index into the block at which this transaction is|
+|tx|Transaction|variable|As encoded in "tx" messages sent in response to getdata MSG_TX|The transaction which is in the block at index index.|
+
 
 <h4>HeaderAndShortIDs</h4>
 
 A HeaderAndShortIDs structure is used to relay a block header, the short transactions IDs used for matching already-available transactions, and a select few transactions which we expect a peer may be missing.
 
+
+|Field Name|Type|Size|Encoding|Purpose|
+|-|-|-|-|-|
+|header|Block header|80 bytes|First 80 bytes of the block as defined by the encoding used by "block" messages|The header of the block being provided|
+|nonce|uint64_t|8 bytes|Little Endian|A nonce for use in short transaction ID calculations|
+|shortids_length|CompactSize|1 or 3 bytes|As used to encode array lengths elsewhere||The number of short transaction IDs in shortids (ie block tx count - prefilledtxn_length)|
+|shortids|List of 6-byte integers|6*shortids_length bytes|Little Endian|The short transaction IDs calculated from the transactions which were not provided explicitly in prefilledtxn|
+|prefilledtxn_length|CompactSize|1 or 3 bytes|As used to encode array lengths elsewhere||The number of prefilled transactions in prefilledtxn (ie block tx count - shortids_length)|
+|prefilledtxn|List of PrefilledTransactions|variable size*prefilledtxn_length|As defined by PrefilledTransaction definition, above|Used to provide the coinbase transaction and a select few which we expect a peer may be missing|
 
 
 <h4>BlockTransactionsRequest</h4>
@@ -80,11 +94,23 @@ A HeaderAndShortIDs structure is used to relay a block header, the short transac
 A BlockTransactionsRequest structure is used to list transaction indexes in a block being requested.
 
 
+|Field Name|Type|Size|Encoding|Purpose|
+|-|-|-|-|-|
+|blockhash|Binary blob|32 bytes|The output from a double-SHA256 of the block header, as used elsewhere|The blockhash of the block which the transactions being requested are in|
+|indexes_length|CompactSize|1 or 3 bytes|As used to encode array lengths elsewhere||The number of transactions being requested|
+|indexes|List of CompactSizes|1 or 3 bytes*indexes_length|Differentially encoded|The indexes of the transactions being requested in the block|
+
 
 <h4>BlockTransactions</h4>
 
 A BlockTransactions structure is used to provide some of the transactions in a block, as requested.
 
+
+|Field Name|Type|Size|Encoding|Purpose|
+|-|-|-|-|-|
+|blockhash|Binary blob|32 bytes|The output from a double-SHA256 of the block header, as used elsewhere|The blockhash of the block which the transactions being provided are in|
+|transactions_length|CompactSize|1 or 3 bytes|As used to encode array lengths elsewhere||The number of transactions provided|
+|transactions|List of Transactions|variable|As encoded in "tx" messages in response to getdata MSG_TX|The transactions provided|
 
 
 <h4>Short transaction IDs</h4>

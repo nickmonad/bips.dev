@@ -62,11 +62,13 @@ N-of-N (all signatures required):
     ( {pubkey} OP_CHECKSIGVERIFY )*n
 ```
 
+
 N-of-M (some signatures required):
 
 ```
     {pubkey} OP_CHECKSIG  ( OP_SWAP {pubkey} OP_CHECKSIG OP_ADD )*(n-1) n OP_EQUAL
 ```
+
 
 But only for n less than or equal to 3.
 
@@ -74,6 +76,7 @@ These transactions are redeemed using a standard scriptSig:
 ```
     ...signatures...
 ```
+
 
 The current Satoshi bitcoin client does not relay or mine transactions with scriptSigs larger than 200 bytes; to accommodate 3-signature transactions, this will be increased to 500 bytes.
 
@@ -85,23 +88,28 @@ scriptPubKey:
   {pubkey} OP_CHECKSIGVERIFY {pubkey} OP_CHECKSIGVERIFY
 ```
 
+
 ```
   {pubkey} OP_CHECKSIGVERIFY {pubkey} OP_CHECKSIGVERIFY {pubkey} OP_CHECKSIGVERIFY
 ```
+
 
 ```
   {pubkey} OP_CHECKSIG OP_SWAP {pubkey} OP_CHECKSIG OP_ADD {n} OP_EQUAL
 ```
 
+
 ```
   {pubkey} OP_CHECKSIG OP_SWAP {pubkey} OP_CHECKSIG OP_ADD OP_SWAP {pubkey} OP_CHECKSIG OP_ADD {n} OP_EQUAL
 ```
+
 
 scriptSig:
 
 ```
   ...signatures... up to 500 bytes
 ```
+
 
 <h2>Rationale</h2>
 

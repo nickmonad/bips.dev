@@ -309,21 +309,12 @@ Future BIPs may specify additional types of expressions.
 All available expression types are listed in this table.
 
 
-|Name|
-|-|
-|Denoted As|
-|-|
-|BIP|
-|-|
-|Script|
-|<tt>SCRIPT</tt>|
-|380|
-|Key|
-|<tt>KEY</tt>|
-|380|
-|Tree|
-|<tt>TREE</tt>|
-|<a href="/386" target="_blank">386</a>|
+|Name|Denoted As|BIP|
+|-|-|-|
+|Script|<tt>SCRIPT</tt>|380|
+|Key|<tt>KEY</tt>|380|
+|Tree|<tt>TREE</tt>|<a href="/386" target="_blank">386</a>|
+
 
 <h2>Appendix B: Index of Script Expressions</h2>
 
@@ -332,29 +323,17 @@ Script expressions will be specified in additional BIPs.
 This Table lists all available Script expressions and the BIPs specifying them.
 
 
-|Expression|
-|-|
-|BIP|
-|-|
-|<tt>pk(KEY)</tt>|
-|<a href="/381" target="_blank">381</a>|
-|<tt>pkh(KEY)</tt>|
-|<a href="/381" target="_blank">381</a>|
-|<tt>sh(SCRIPT)</tt>|
-|<a href="/381" target="_blank">381</a>|
-|<tt>wpkh(KEY)</tt>|
-|<a href="/382" target="_blank">382</a>|
-|<tt>wsh(SCRIPT)</tt>|
-|<a href="/382" target="_blank">382</a>|
-|<tt>multi(NUM, KEY, ..., KEY)</tt>|
-|<a href="/383" target="_blank">383</a>|
-|<tt>sortedmulti(NUM, KEY, ..., KEY)</tt>|
-|<a href="/383" target="_blank">383</a>|
-|<tt>combo(KEY)</tt>|
-|<a href="/384" target="_blank">384</a>|
-|<tt>raw(HEX)</tt>|
-|<a href="/385" target="_blank">385</a>|
-|<tt>addr(ADDR)</tt>|
-|<a href="/385" target="_blank">385</a>|
-|<tt>tr(KEY)</tt>, <tt>tr(KEY, TREE)</tt>|
-|<a href="/386" target="_blank">386</a>|
+|Expression|BIP|
+|-|-|
+|<tt>pk(KEY)</tt>|<a href="/381" target="_blank">381</a>|
+|<tt>pkh(KEY)</tt>|<a href="/381" target="_blank">381</a>|
+|<tt>sh(SCRIPT)</tt>|<a href="/381" target="_blank">381</a>|
+|<tt>wpkh(KEY)</tt>|<a href="/382" target="_blank">382</a>|
+|<tt>wsh(SCRIPT)</tt>|<a href="/382" target="_blank">382</a>|
+|<tt>multi(NUM, KEY, ..., KEY)</tt>|<a href="/383" target="_blank">383</a>|
+|<tt>sortedmulti(NUM, KEY, ..., KEY)</tt>|<a href="/383" target="_blank">383</a>|
+|<tt>combo(KEY)</tt>|<a href="/384" target="_blank">384</a>|
+|<tt>raw(HEX)</tt>|<a href="/385" target="_blank">385</a>|
+|<tt>addr(ADDR)</tt>|<a href="/385" target="_blank">385</a>|
+|<tt>tr(KEY)</tt>, <tt>tr(KEY, TREE)</tt>|<a href="/386" target="_blank">386</a>|
+

@@ -130,6 +130,19 @@ transaction that contains it invalid.
 
 |Name|id|Format|Default Value|Description|
 |-|-|-|-|-|
+|TxEnd|0|BoolTrue|Required|A marker that is the end of the transaction|
+|TxInPrevHash|1|ByteArray|Required|TxId we are spending|
+|TxPrevIndex|2|Integer|0|Index in prev tx we are spending (applied to previous TxInPrevHash)|
+|TxInputStackItem|3|ByteArray|&nbsp;|A 'push' of the input script|
+|TxInputStackItemContinued|4|ByteArray|&nsbp;|Another section for the same input|
+|TxOutValue|5|Integer|Required|Amount of Satoshis to transfer|
+|TxOutScript|6|ByteArray|Required|The output script|
+|TxRelativeBlockLock|7|Integer|Optional|Part of the input stating the amount of blocks (max 0XFFFF) after that input was mined, it can be mined|
+|TxRelativeTimeLock|8|Integer|Optional|Part of the input stating the amount of time (max 0XFFFF) after that input was mined, it can be mined. 1 Unit is 512 seconds|
+|CoinbaseMessage|9|ByteArray|Optional|A message and some data for a coinbase transaction. Can't be used in combination with any TxIn\* tags|
+|NOP_1x|1x|&nbsp;|Optional|Values that will be ignored by anyone parsing the transaction|
+||
+
 
 
 <h3> Scripting changes </h3>
@@ -174,6 +187,12 @@ followed by a number of TxInputStackItemContinued items.
 
 At a larger scope we define 3 sections of a transaction.
 
+
+|Segment|Tags|Description|
+|-|-|-|
+|Transaction|all not elsewhere used|This section is used to make the TxId|
+|Signatures|TxInputStackItem, TxInputStackItemContinued|The input-proofs|
+|TxEnd|TxEnd|&nbsp;|
 
 
 The TxId is calculated by taking the serialized transaction without the

@@ -59,29 +59,15 @@ Example: imagine that a sidechain block contains 20,000 txns, each paying a $0.1
 
 
 
-||
-|-|
-|Item|
-|Layer1 Miner ("Mary")|
-|Sidechain User ("Simon")|
-|Runs a sidechain node?|
-|No|
-|Yes|
-|How much hashing?|
-|100%|
-|0%|
-|Coins collected, on Layer2|
-|$0|
-|$2000|
-|Coins paid out, on Layer1|
-|$0|
-|$1999|
-|Coins rec'd, on Layer1|
-|$1999|
-|$0|
-|d(Net Worth)|
-|+$1999|
-|+$1|
+|Item|Layer1 Miner ("Mary")|Sidechain User ("Simon")|
+|-|-|-|
+|Runs a sidechain node?|No|Yes|
+|How much hashing?|100%|0%|
+|Coins collected, on Layer2|$0|$2000|
+|Coins paid out, on Layer1|$0|$1999|
+|Coins rec'd, on Layer1|$1999|$0|
+|d(Net Worth)|+$1999|+$1|
+
 
 
 Bip301 makes this specialization-of-labor trustless on layer1. If Mary takes Simon's money, then she must let Simon control the side:block.

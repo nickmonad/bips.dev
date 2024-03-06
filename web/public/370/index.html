@@ -88,164 +88,25 @@ Version number 1 is skipped because PSBT Version 0 has been colloquially referre
 version 1, but because it has been colloquially referred to as version 2 during its design phrase, it was decided to change the
 version number to 2 so that there would not be any confusion</ref>.</p>
 <p>The new global types for PSBT Version 2 are as follows:</p>
-<table><thead><tr><th>Name</th></tr></thead><tbody>
-<tr><td><tt><keytype></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Exclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Allowing Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Transaction Version</td></tr>
-<tr><td><tt>PSBT_GLOBAL_TX_VERSION = 0x02</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian int version&gt;</tt></td></tr>
-<tr><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Fallback Locktime</td></tr>
-<tr><td><tt>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td></tr>
-<tr><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Input Count</td></tr>
-<tr><td><tt>PSBT_GLOBAL_INPUT_COUNT = 0x04</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt><compact size uint input count></tt></td></tr>
-<tr><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Output Count</td></tr>
-<tr><td><tt>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt><compact size uint output count></tt></td></tr>
-<tr><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Transaction Modifiable Flags</td></tr>
-<tr><td><tt>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;8-bit uint flags&gt;</tt></td></tr>
-<tr><td>An 8 bit unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag, set to 1 to indicate whether inputs can be added or removed. Bit 1 is the Outputs Modifiable Flag, set to 1 to indicate whether outputs can be added or removed. Bit 2 is the Has SIGHASH_SINGLE flag, set to 1 to indicate whether the transaction has a SIGHASH_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add or remove an input.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Transaction Version</td><td><tt>PSBT_GLOBAL_TX_VERSION = 0x02</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian int version&gt;</tt></td><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Fallback Locktime</td><td><tt>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Input Count</td><td><tt>PSBT_GLOBAL_INPUT_COUNT = 0x04</tt></td><td>None</td><td>No key data</td><td><tt><compact size uint input count></tt></td><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Output Count</td><td><tt>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</tt></td><td>None</td><td>No key data</td><td><tt><compact size uint output count></tt></td><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Transaction Modifiable Flags</td><td><tt>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</tt></td><td>None</td><td>No key data</td><td><tt>&lt;8-bit uint flags&gt;</tt></td><td>An 8 bit unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag, set to 1 to indicate whether inputs can be added or removed. Bit 1 is the Outputs Modifiable Flag, set to 1 to indicate whether outputs can be added or removed. Bit 2 is the Has SIGHASH_SINGLE flag, set to 1 to indicate whether the transaction has a SIGHASH_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add or remove an input.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
 <p>The new per-input types for PSBT Version 2 are defined as follows:</p>
-<table><thead><tr><th>Name</th></tr></thead><tbody>
-<tr><td><tt><keytype></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Exclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Allowing Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Previous TXID</td></tr>
-<tr><td><tt>PSBT_IN_PREVIOUS_TXID = 0x0e</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32 byte txid&gt;</tt></td></tr>
-<tr><td>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Spent Output Index</td></tr>
-<tr><td><tt>PSBT_IN_OUTPUT_INDEX = 0x0f</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint index&gt;</tt></td></tr>
-<tr><td>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Sequence Number</td></tr>
-<tr><td><tt>PSBT_IN_SEQUENCE = 0x10</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint sequence&gt;</tt></td></tr>
-<tr><td>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Required Time-based Locktime</td></tr>
-<tr><td><tt>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td></tr>
-<tr><td>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Required Height-based Locktime</td></tr>
-<tr><td><tt>PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit uint locktime&gt;</tt></td></tr>
-<tr><td>32 bit unsigned little endian integer greater than 0 and less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Previous TXID</td><td><tt>PSBT_IN_PREVIOUS_TXID = 0x0e</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32 byte txid&gt;</tt></td><td>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Spent Output Index</td><td><tt>PSBT_IN_OUTPUT_INDEX = 0x0f</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint index&gt;</tt></td><td>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Sequence Number</td><td><tt>PSBT_IN_SEQUENCE = 0x10</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint sequence&gt;</tt></td><td>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Required Time-based Locktime</td><td><tt>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td><td>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Required Height-based Locktime</td><td><tt>PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit uint locktime&gt;</tt></td><td>32 bit unsigned little endian integer greater than 0 and less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
 <p>The new per-output types for PSBT Version 2 are defined as follows:</p>
-<table><thead><tr><th>Name</th></tr></thead><tbody>
-<tr><td><tt><keytype></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Exclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Allowing Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Output Amount</td></tr>
-<tr><td><tt>PSBT_OUT_AMOUNT = 0x03</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;64-bit little endian int amount&gt;</tt></td></tr>
-<tr><td>64 bit signed little endian integer representing the output's amount in satoshis.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Output Script</td></tr>
-<tr><td><tt>PSBT_OUT_SCRIPT = 0x04</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt><bytes script></tt></td></tr>
-<tr><td>The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Output Amount</td><td><tt>PSBT_OUT_AMOUNT = 0x03</tt></td><td>None</td><td>No key data</td><td><tt>&lt;64-bit little endian int amount&gt;</tt></td><td>64 bit signed little endian integer representing the output's amount in satoshis.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Output Script</td><td><tt>PSBT_OUT_SCRIPT = 0x04</tt></td><td>None</td><td>No key data</td><td><tt><bytes script></tt></td><td>The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.</td><td>2</td><td>0</td><td>2</td></tr>
 </tbody></table>
 <h3>Determining Lock Time</h3>
 <p>The nLockTime field of a transaction is determined by inspecting the PSBT_GLOBAL_FALLBACK_LOCKTIME and each input's PSBT_IN_REQUIRED_TIME_LOCKTIME and PSBT_IN_REQUIRED_HEIGHT_LOCKTIME fields.
@@ -721,164 +582,25 @@ Version number 1 is skipped because PSBT Version 0 has been colloquially referre
 version 1, but because it has been colloquially referred to as version 2 during its design phrase, it was decided to change the
 version number to 2 so that there would not be any confusion</ref>.</p>
 <p>The new global types for PSBT Version 2 are as follows:</p>
-<table><thead><tr><th>Name</th></tr></thead><tbody>
-<tr><td><tt><keytype></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Exclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Allowing Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Transaction Version</td></tr>
-<tr><td><tt>PSBT_GLOBAL_TX_VERSION = 0x02</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian int version&gt;</tt></td></tr>
-<tr><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Fallback Locktime</td></tr>
-<tr><td><tt>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td></tr>
-<tr><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Input Count</td></tr>
-<tr><td><tt>PSBT_GLOBAL_INPUT_COUNT = 0x04</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt><compact size uint input count></tt></td></tr>
-<tr><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Output Count</td></tr>
-<tr><td><tt>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt><compact size uint output count></tt></td></tr>
-<tr><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Transaction Modifiable Flags</td></tr>
-<tr><td><tt>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;8-bit uint flags&gt;</tt></td></tr>
-<tr><td>An 8 bit unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag, set to 1 to indicate whether inputs can be added or removed. Bit 1 is the Outputs Modifiable Flag, set to 1 to indicate whether outputs can be added or removed. Bit 2 is the Has SIGHASH_SINGLE flag, set to 1 to indicate whether the transaction has a SIGHASH_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add or remove an input.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Transaction Version</td><td><tt>PSBT_GLOBAL_TX_VERSION = 0x02</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian int version&gt;</tt></td><td>The 32-bit little endian signed integer representing the version number of the transaction being created. Note that this is not the same as the PSBT version number specified by the PSBT_GLOBAL_VERSION field.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Fallback Locktime</td><td><tt>PSBT_GLOBAL_FALLBACK_LOCKTIME = 0x03</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td><td>The 32-bit little endian unsigned integer representing the transaction locktime to use if no inputs specify a required locktime.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Input Count</td><td><tt>PSBT_GLOBAL_INPUT_COUNT = 0x04</tt></td><td>None</td><td>No key data</td><td><tt><compact size uint input count></tt></td><td>Compact size unsigned integer representing the number of inputs in this PSBT.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Output Count</td><td><tt>PSBT_GLOBAL_OUTPUT_COUNT = 0x05</tt></td><td>None</td><td>No key data</td><td><tt><compact size uint output count></tt></td><td>Compact size unsigned integer representing the number of outputs in this PSBT.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Transaction Modifiable Flags</td><td><tt>PSBT_GLOBAL_TX_MODIFIABLE = 0x06</tt></td><td>None</td><td>No key data</td><td><tt>&lt;8-bit uint flags&gt;</tt></td><td>An 8 bit unsigned integer as a bitfield for various transaction modification flags. Bit 0 is the Inputs Modifiable Flag, set to 1 to indicate whether inputs can be added or removed. Bit 1 is the Outputs Modifiable Flag, set to 1 to indicate whether outputs can be added or removed. Bit 2 is the Has SIGHASH_SINGLE flag, set to 1 to indicate whether the transaction has a SIGHASH_SINGLE signature who's input and output pairing must be preserved. Bit 2 essentially indicates that the Constructor must iterate the inputs to determine whether and how to add or remove an input.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
 <p>The new per-input types for PSBT Version 2 are defined as follows:</p>
-<table><thead><tr><th>Name</th></tr></thead><tbody>
-<tr><td><tt><keytype></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Exclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Allowing Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Previous TXID</td></tr>
-<tr><td><tt>PSBT_IN_PREVIOUS_TXID = 0x0e</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32 byte txid&gt;</tt></td></tr>
-<tr><td>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Spent Output Index</td></tr>
-<tr><td><tt>PSBT_IN_OUTPUT_INDEX = 0x0f</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint index&gt;</tt></td></tr>
-<tr><td>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Sequence Number</td></tr>
-<tr><td><tt>PSBT_IN_SEQUENCE = 0x10</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint sequence&gt;</tt></td></tr>
-<tr><td>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Required Time-based Locktime</td></tr>
-<tr><td><tt>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td></tr>
-<tr><td>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Required Height-based Locktime</td></tr>
-<tr><td><tt>PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;32-bit uint locktime&gt;</tt></td></tr>
-<tr><td>32 bit unsigned little endian integer greater than 0 and less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Previous TXID</td><td><tt>PSBT_IN_PREVIOUS_TXID = 0x0e</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32 byte txid&gt;</tt></td><td>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Spent Output Index</td><td><tt>PSBT_IN_OUTPUT_INDEX = 0x0f</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint index&gt;</tt></td><td>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Sequence Number</td><td><tt>PSBT_IN_SEQUENCE = 0x10</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint sequence&gt;</tt></td><td>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Required Time-based Locktime</td><td><tt>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td><td>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Required Height-based Locktime</td><td><tt>PSBT_IN_REQUIRED_HEIGHT_LOCKTIME = 0x12</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit uint locktime&gt;</tt></td><td>32 bit unsigned little endian integer greater than 0 and less than 500000000 representing the minimum block height that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
 <p>The new per-output types for PSBT Version 2 are defined as follows:</p>
-<table><thead><tr><th>Name</th></tr></thead><tbody>
-<tr><td><tt><keytype></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><keydata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt></td></tr>
-<tr><td>-</td></tr>
-<tr><td><tt><valuedata></tt> Description</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Requiring Exclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Versions Allowing Inclusion</td></tr>
-<tr><td>-</td></tr>
-<tr><td>Output Amount</td></tr>
-<tr><td><tt>PSBT_OUT_AMOUNT = 0x03</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt>&lt;64-bit little endian int amount&gt;</tt></td></tr>
-<tr><td>64 bit signed little endian integer representing the output's amount in satoshis.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
-<tr><td>Output Script</td></tr>
-<tr><td><tt>PSBT_OUT_SCRIPT = 0x04</tt></td></tr>
-<tr><td>None</td></tr>
-<tr><td>No key data</td></tr>
-<tr><td><tt><bytes script></tt></td></tr>
-<tr><td>The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.</td></tr>
-<tr><td>2</td></tr>
-<tr><td>0</td></tr>
-<tr><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Output Amount</td><td><tt>PSBT_OUT_AMOUNT = 0x03</tt></td><td>None</td><td>No key data</td><td><tt>&lt;64-bit little endian int amount&gt;</tt></td><td>64 bit signed little endian integer representing the output's amount in satoshis.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Output Script</td><td><tt>PSBT_OUT_SCRIPT = 0x04</tt></td><td>None</td><td>No key data</td><td><tt><bytes script></tt></td><td>The script for this output, also known as the scriptPubKey. Must be omitted in PSBTv0. Must be provided in PSBTv2.</td><td>2</td><td>0</td><td>2</td></tr>
 </tbody></table>
 <h3>Determining Lock Time</h3>
 <p>The nLockTime field of a transaction is determined by inspecting the PSBT_GLOBAL_FALLBACK_LOCKTIME and each input's PSBT_IN_REQUIRED_TIME_LOCKTIME and PSBT_IN_REQUIRED_HEIGHT_LOCKTIME fields.
@@ -1297,9 +1019,9 @@ transaction from the PSBTv2 fields.</p>
                     <p class="font-bold">2024-03-06</p>
                 </div>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
-                <p>Check it out <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Check it out on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Stay humble. Stack sats.</p>
-                <p class="pt-2 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+                <p class="pt-2 text-sm text-center">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
             </div>
         </div>
     </div>

@@ -232,6 +232,7 @@ For the avoidance of unclarity, the parameters to be determined are:
     consensus.vDeployments[Consensus::DEPLOYMENT_CHECKTEMPLATEVERIFY].min_activation_height = 0;
 ```
 
+
 Until BIP-119 reaches ACTIVE state and the
 SCRIPT_VERIFY_DEFAULT_CHECK_TEMPLATE_VERIFY_HASH flag is enforced, node implementations should (are recommended to)
 execute a NOP4 as SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS (to deny entry to the mempool) for policy and must evaluate as
@@ -327,6 +328,7 @@ Script paths:
     Path A: <+24 hours> OP_CHECKSEQUENCEVERIFY OP_CHECKTEMPLATEVERIFY <Pay Alice 1 Bitcoin (1 input) nLockTime for +24 hours>
     Path B: OP_CHECKTEMPLATEVERIFY <Pay Bob 2 Bitcoin (2 inputs)>
 ```
+
 
 In this case, there are 24 hours for the output to, with the addition of a
 second output, pay Bob 2 BTC. If 24 hours lapses, then Alice may redeem her 1
@@ -523,6 +525,7 @@ An example of a script that could experience an DoS issue without caching is:
     <H> CTV CTV CTV... CTV
 ```
 
+
 Such a script would cause the intepreter to compute hashes (supposing N CTV's) over O(N*T) data.
 If the scriptSigs non-nullity is not cached, then the O(T) transaction could be scanned over O(N)
 times as well (although cheaper than hashing, still a DoS). As such, CTV caches hashes and computations
@@ -606,6 +609,7 @@ something similar to templates, via a scriptPubKey like:
     <sig of desired TX with PK and fixed nonce R || SIGHASH_ANYPREVOUTANYSCRIPT <PK with public SK> OP_CHECKSIG
 ```
 
+
 SIGHASH_ANYPREVOUTANYSCRIPT bears additional technical and implementation risks
 that may preclude its viability for inclusion in Bitcoin, but the capabilities
 above are similar to what CHECKTEMPLATEVERIFY offers. The key functional
@@ -664,6 +668,7 @@ transactions using the following script:
     program(S): OP_CHECKTEMPLATEVERIFY <musig_key(pk_update_a, pk_update_b)> OP_CHECKSIGFROMSTACKVERIFY <S+1> OP_CHECKLOCKTIMEVERIFY
 ```
 
+
 Compared to SIGHASH_ANYPREVOUTANYSCRIPT, because OP_CHECKTEMPLATEVERIFY does not
 allow something similar to SIGHASH_ANYONECANPAY or SIGHASH_SINGLE, protocol
 implementers might elect to sign multiple versions of transactions with CPFP
@@ -685,6 +690,7 @@ apply for expected values and default to a keypath otherwise, e.g.:
     IF OP_AMOUNTVERIFY <N> OP_GREATER <PK> CHECKSIG ELSE <H> OP_CHECKTEMPLATEVERIFY
 ```
 
+
 <h5>OP_CAT/OP_SHA256STREAM</h5>
 
 
@@ -700,6 +706,7 @@ concatenates it to the template and checks the template matches the transaction.
     <nVersion || nLockTime || input count || sequences hash || output count || outputs hash>
     OP_SWAP OP_CAT OP_SHA256 OP_CHECKTEMPLATEVERIFY
 ```
+
 
 <h2> Backwards Compatibility </h2>
 

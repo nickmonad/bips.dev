@@ -49,6 +49,7 @@ As is well known, Satoshi was a master programmer whose knowledge of C++ was sur
     nSubsidy >>= (nHeight / 210000);
 ```
 
+
 is carefully written to rely on undefined behaviour in the C++ specification - perhaps so it can be hardware accelerated in future.
 
 The block number is divided by 210000 (the "apparent" subsidy halving interval in blocks), and the result is used as input for a binary shift, applied to the original payout (50 BTC), expressed in base units. Thanks to the new-goldmine interval being exactly 64 times the halving interval, and 64 being the size in bits of the currency datatype, the cycle repeats itself every 64 halvings on all currently supported platforms.
@@ -76,11 +77,13 @@ An alternative solution would be to represent the total number of bitcoins as a 
     "21000000000000000000000"
 ```
 
+
 and then use string manipulation to remove the rightmost zero every 4 years, give or take a leap-year:
 
 ```
     strSubsidy = strSubsidy.substr(0, strSubsidy.size() - 2);
 ```
+
 
 This style relies less heavily on clever C++ and is more familiar to the Core Dev Team who are primarily PHP programmers.
 

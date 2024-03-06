@@ -47,44 +47,18 @@ A new serialization format for tx messages is added to the peer-to-peer protocol
 The serialization has the following structure:
 
 
-||
-|-|
-|4|
-|version|
-|int32_t|
-|Transaction data format version|
-|1|
-|marker|
-|char|
-|Must be zero|
-|1|
-|flag|
-|char|
-|Must be nonzero|
-|1+|
-|txin_count|
-|var_int|
-|Number of transaction inputs|
-|41+|
-|txins|
-|txin[]|
-|A list of one or more transaction inputs|
-|1+|
-|txout_count|
-|var_int|
-|Number of transaction outputs|
-|9+|
-|txouts|
-|txouts[]|
-|A list of one or more transaction outputs|
-|1+|
-|script_witnesses|
-|script_witnesses[]|
-|The witness structure as a serialized byte array|
-|4|
-|lock_time|
-|uint32_t|
-|The block number or timestamp until which the transaction is locked|
+|Field Size|Name|Type|Description|
+|-|-|-|-|
+|4|version|int32_t|Transaction data format version|
+|1|marker|char|Must be zero|
+|1|flag|char|Must be nonzero|
+|1+|txin_count|var_int|Number of transaction inputs|
+|41+|txins|txin[]|A list of one or more transaction inputs|
+|1+|txout_count|var_int|Number of transaction outputs|
+|9+|txouts|txouts[]|A list of one or more transaction outputs|
+|1+|script_witnesses|script_witnesses[]|The witness structure as a serialized byte array|
+|4|lock_time|uint32_t|The block number or timestamp until which the transaction is locked|
+
 
 Parsers supporting this BIP will be able to distinguish between the old serialization format (without the witness) and this one. The marker byte is set to zero so that this structure will never parse as a valid transaction in a parser that does not support this BIP. If parsing were to succeed, such a transaction would contain no inputs and a single output.
 
@@ -109,6 +83,7 @@ A node will signal that it can provide witnesses using the following service bit
     NODE_WITNESS = (1 << 3)
 	
 ```
+
 
 <h3> Hashes </h3>
 

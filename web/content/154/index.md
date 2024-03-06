@@ -104,6 +104,7 @@ retain its place in the list indefinitely.
 |1|sha256|11k cycles|11+ bytes|0, 4 or 8 bytes|Yes|Low|Active|
 |2|cuckoo-cycle|ss 28: 150G cycles / ~48M RAM|6+ bytes|168 bytes|No|High|Active|
 
+
 <h4>sha256</h4>
 
 
@@ -113,6 +114,7 @@ Properties:
 |Property|Value|
 |-|-|
 |Solution probability|`sum((1/2)^i*(1-targetBE[i]))`|
+
 
 Challenge format:
 
@@ -126,12 +128,14 @@ Challenge format:
 |10..|payload_length|varint|Length of the input data|
 |..|payload|byte array|Input data|
 
+
 Solution format:
 
 
 |Range|Field Name|Data Type|Description|
 |-|-|-|-|
 |0..|nonce|uint32/64, or data|Nonce value that satisfies challenge; for zero-byte nonces, this is variable data that is appended to the challenge payload before hashing|
+
 
 Note: SHA256 works in two "modes".
 1.  One is where the task is to insert a nonce into an existing data block so that the hash of the data block matches a given target; this is the conventional block proof of work behavior.
@@ -153,6 +157,7 @@ Properties:
 |-|-|
 |Solution probability|`~1.0` for sizeshift=28, proofsize-min:-max=12:228|
 
+
 Challenge format:
 
 
@@ -165,6 +170,7 @@ Challenge format:
 |6|payload_length|varint|Length of the input data; must be 76, but may be variable in the future|
 |7..|payload|byte array|Input data|
 
+
 Solution format:
 
 
@@ -172,6 +178,7 @@ Solution format:
 |-|-|-|-|
 |0..3|nonce|uint32|Nonce which is appended to challenge payload to form solution graph|
 |4..171|edges|uint32 array|42 values which identify each of the 42 edges in the cycle|
+
 
 Additional notes:
 
@@ -191,6 +198,7 @@ the list indefinitely.
 |ID|Purpose Name|Description|Status|
 |-|-|-|-|
 |1|connect|Establish peer to peer connection|Active|
+
 
 <h3>Challenges</h3>
 
@@ -232,6 +240,7 @@ The POW specification contains a list of tuples containing a POW identifier and 
 |?|sign-len|varint|The length of the signature|
 |?|sign|byte array|The signature data|
 
+
 For POW specifications with a pow-count > 1, the output of the succeeding POW algorithm will be appended to the input of the predecessor for all POW algorithms except the last one.
 Normally mid-layer (all but the last) POW algorithms have a zero-length input. Example implementing sha256(cuckoo-cycle):
 
@@ -256,6 +265,7 @@ Normally mid-layer (all but the last) POW algorithms have a zero-length input. E
 |110..117|expiration|1491285696|Expiration is April 4 2017, 15:01:36 (JST)|
 |118|sign-len|71|71 byte signature|
 |119..189|sign|(signature)|Signature of above challenge|
+
 
 (* Compact 0x207fffff = 0x7fffff0000000000000000000000000000000000000000000000000000000000.)
 
@@ -287,6 +297,7 @@ A solution consists of two parts: the entire challenge, and solution parameters:
 |?|sign|byte array|The signature data|
 |?|solution|?|The solution to the challenge|
 
+
 Note that the solution contains the parameters for the last algorithm only.
 For each algorithm except the last one, the input is derived from the output of the successor.
 Example solution:
@@ -296,6 +307,7 @@ Example solution:
 |-|-|-|-|
 |0|length|4|The input to the innermost POW is 4 bytes in length|
 |1..4|nonce32|0x12345|The nonce used as input is 0x12345|
+
 
 The above example will provide a single nonce for the inner POW. For the SHA256(SHA256(challenge data || nonce32)) case, the solution would
 claim that SHA256(SHA256(challenge data || 0x00012345)) solves the challenge.
@@ -412,6 +424,8 @@ This would result in probability targets according to the table below, for varyi
 |0.8|0.09|07:54|
 |0.9|0.08|09:48|
 |1.0|0.06|11:55|
+||
+
 
 <h2>Cuckoo Cycle</h2>
 
@@ -529,6 +543,7 @@ f2957a384de8eddb75b037798d1073214b7ea6954f1b3a01000000a49d0659000000004730450221
 |`0xbd7cd06f9ba89587a28e14cea14e7f8f`|
 |`0x8d5ab851541791`|
 
+
 <h3>Serialized solution example</h3>
 
 
@@ -554,6 +569,7 @@ Note that the first 187 bytes are identical to the challenge above.
 |`0x08da0e026ccc570306fe84041d3f8504`|Cycle edges 4..7|
 |`0x559e3e05d41a99051707520697cfa006`|Cycle edges 8..11|
 |`0x59e50d077bd71f0713fe260714493007`|Cycle edges 12..15|
+
 
 <h3>Cuckoo-Cycle Example 2</h3>
 
@@ -643,6 +659,7 @@ d29c9e54a76f3457ff1a2ee19490ff027c528a896f4bf6aff577
 |`0xa76f3457ff1a2ee19490ff027c528a89`|
 |`0x6f4bf6aff577`|
 
+
 <h3>Serialized solution example</h3>
 
 
@@ -670,6 +687,7 @@ Note that the first 186 bytes are identical to the challenge above.
 |`0x297f20048e76a60467e44a057b077405`|Cycle edges 12..15|
 |`0x634f840523e88c050d887606109d3e07`|Cycle edges 16..19|
 |`0xc4bdcd073db2d407`|Cycle edges 20..21|
+
 
 <h2>Copyright</h2>
 

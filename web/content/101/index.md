@@ -50,6 +50,7 @@ Expressed in pseudo-code, using integer math, assuming that block_timestamp is a
     function max_block_size(block_timestamp):
 ```
 
+
 ```
         time_start = 1452470400
         time_double = 60*60*24*365*2
@@ -57,6 +58,7 @@ Expressed in pseudo-code, using integer math, assuming that block_timestamp is a
         if block_timestamp >= time_start+time_double*10
             return size_start * 2^10
 ```
+
 
 ```
         // Piecewise-linear-between-doublings growth:
@@ -67,9 +69,11 @@ Expressed in pseudo-code, using integer math, assuming that block_timestamp is a
         max_size = size_start * 2^doublings + interpolate
 ```
 
+
 ```
         return max_size
 ```
+
 
 <h2>Deployment</h2>
 
@@ -90,6 +94,7 @@ Test network parameters are the same as the main network, except starting earlie
     activation condition: 75 of 100 blocks
     grace period: 24 hours
 ```
+
 
 <h2>Rationale</h2>
 

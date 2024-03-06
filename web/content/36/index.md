@@ -49,6 +49,7 @@ Two new fields are added to the `version` command, after `extra_height`:
 |1+|service_count|<a href="Protocol_specification#Variable_length_integer" target="_blank">var_int</a>|Number of extra services|
 |?|service_list|service[]|List of service definitions|
 
+
 The service definitions `service[]` are given in the following format:
 
 
@@ -57,6 +58,7 @@ The service definitions `service[]` are given in the following format:
 |?|service_name|<a href="#Variable length string" target="_blank">var_str</a>|Unique service identifier|
 |4|service_version|uint32_t|Identifies service version being used by the node|
 |?|service_data|<a href="#Variable length string" target="_blank">var_str</a>|Additional service-specific data|
+
 
 A node MUST NOT announce two services with the same `service_name`. If a remote node sends such a `version` message the client MAY disconnect.
 
@@ -107,6 +109,7 @@ The service-specific command name SHOULD then be specified in an extra header in
 |-|-|-|-|
 |12|subcommand|char[12]|ASCII string identifying the service command, NULL padded (non-NULL padding results in packet rejected)|
 |?|subpayload|uchar[]|The actual data|
+
 
 The length of `subpayload` is derived from the length of the total payload minus twelve (12) bytes for the `subcommand`. Implementations MUST NOT rely on this format to be used by unknown services. Clients SHOULD ignore any services or subcommands they don't explicitly understand.
 

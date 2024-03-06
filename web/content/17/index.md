@@ -64,6 +64,7 @@ A new standard transaction type that is relayed and included in mined blocks is 
     [20-byte-hash-value] OP_CHECKHASHVERIFY OP_DROP
 ```
 
+
 [20-byte-hash-value] shall be the push-20-bytes-onto-the-stack opcode (0x14) followed by exactly 20 bytes.
 
 This new transaction type is redeemed by a standard scriptSig:
@@ -71,6 +72,7 @@ This new transaction type is redeemed by a standard scriptSig:
 ```
     ...signatures... OP_CODESEPARATOR {script}
 ```
+
 
 Transactions that redeem these pay-to-script outpoints are only considered standard if they contain exactly one OP_CODESEPARATOR and the appended _script_ is, itself, one of the other standard transaction types.
 
@@ -84,12 +86,14 @@ For example, the scriptPubKey and corresponding scriptSig for a one-signature-re
     scriptPubKey: [20-byte-hash of {[pubkey] OP_CHECKSIG} ] OP_CHECKHASHVERIFY OP_DROP
 ```
 
+
 2-of-3:
 
 ```
     scriptSig: [signatures...] OP_CODESEPARATOR 2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG
     scriptPubKey: [20-byte-hash of {2 [pubkey1] [pubkey2] [pubkey3] 3 OP_CHECKMULTISIG} ] OP_CHECKHASHVERIFY OP_DROP
 ```
+
 
 <h2>Rationale</h2>
 

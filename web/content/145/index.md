@@ -47,6 +47,7 @@ The template Object is revised to include a new key:
 |-|-|-|-|
 |weightlimit|No|Number|total weight allowed in blocks|
 
+
 The '!' rule prefix MUST be enabled on the "segwit" rule for templates including transactions with witness data.
 In particular, note that even if the client's "rules" list lacks "segwit", server MAY support old miners by producing a witness-free template and omitting the '!' rule prefix for "segwit" in the template's "rules" list.
 If the GBT server does not support producing witness-free templates after its activation, it must also use the '!' rule prefix in the "vbavailable" list prior to activation.
@@ -62,6 +63,7 @@ The Objects listed in the response's "transactions" key is revised to include th
 |txid|String|transaction id encoded in hexadecimal; required for transactions with witness data|
 |weight|Number|numeric weight of the transaction, as counted for purposes of the block's weightlimit; if key is not present, weight is unknown and clients MUST NOT assume it is zero, although they MAY choose to calculate it themselves|
 |hash|String|reversed hash of complete transaction (with witness data included) encoded in hexadecimal|
+
 
 Transactions with witness data may only be included if the template's "rules" list (see <a href="/9" target="_blank">BIP 9</a>) includes "segwit".
 

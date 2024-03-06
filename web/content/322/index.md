@@ -87,6 +87,7 @@ The `to_spend` transaction is:
     vout[0].scriptPubKey = message_challenge
 ```
 
+
 where `message_hash` is a BIP340-tagged hash of the message, i.e. sha256_tag(m), where tag = `BIP0322-signed-message` and `m` is the message as is without length prefix or null terminator, and `message_challenge` is the to be proven (public) key script.
 
 The `to_sign` transaction is:
@@ -101,6 +102,7 @@ The `to_sign` transaction is:
     vout[0].nValue = 0
     vout[0].scriptPubKey = OP_RETURN
 ```
+
 
 A full signature consists of the base64-encoding of the `to_sign` transaction in standard network serialisation once it has been signed.
 

@@ -72,23 +72,14 @@ fixed 16-byte IP address is replaced by a network ID and a variable-length addre
 This means that the message contains a serialized `std::vector` of the following structure:
 
 
-||
-|-|
-|`uint32_t`|
-|`time`|
-|Time that this node was last seen as connected to the network. A time in Unix epoch time format.|
-|`CompactSize`|
-|`services`|
-|Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.|
-|`uint8_t`|
-|`networkID`|
-|Network identifier. An 8-bit value that specifies which network is addressed.|
-|`std::vector<uint8_t>`|
-|`addr`|
-|Network address. The interpretation depends on networkID.|
-|`uint16_t`|
-|`port`|
-|Network port. If not relevant for the network this MUST be 0.|
+|Type|Name|Description|
+|-|-|-|
+|`uint32_t`|`time`|Time that this node was last seen as connected to the network. A time in Unix epoch time format.|
+|`CompactSize`|`services`|Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.|
+|`uint8_t`|`networkID`|Network identifier. An 8-bit value that specifies which network is addressed.|
+|`std::vector<uint8_t>`|`addr`|Network address. The interpretation depends on networkID.|
+|`uint16_t`|`port`|Network port. If not relevant for the network this MUST be 0.|
+
 
 One message can contain up to 1,000 addresses. Clients SHOULD reject messages with more addresses.
 
@@ -98,32 +89,15 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 The list of reserved network IDs is as follows:
 
 
-||
-|-|
-|`0x01`|
-|`IPV4`|
-|4|
-|IPv4 address (globally routed internet)|
-|`0x02`|
-|`IPV6`|
-|16|
-|IPv6 address (globally routed internet)|
-|`0x03`|
-|`TORV2`|
-|10|
-|Tor v2 hidden service address|
-|`0x04`|
-|`TORV3`|
-|32|
-|Tor v3 hidden service address|
-|`0x05`|
-|`I2P`|
-|32|
-|I2P overlay network address|
-|`0x06`|
-|`CJDNS`|
-|16|
-|Cjdns overlay network address|
+|Network ID|Enumeration|Address length (bytes)|Description|
+|-|-|-|-|
+|`0x01`|`IPV4`|4|IPv4 address (globally routed internet)|
+|`0x02`|`IPV6`|16|IPv6 address (globally routed internet)|
+|`0x03`|`TORV2`|10|Tor v2 hidden service address|
+|`0x04`|`TORV3`|32|Tor v3 hidden service address|
+|`0x05`|`I2P`|32|I2P overlay network address|
+|`0x06`|`CJDNS`|16|Cjdns overlay network address|
+
 
 Clients are RECOMMENDED to gossip addresses from all known networks even if they are currently not connected to some of them. That could help multi-homed nodes and make it more difficult for an observer to tell which networks a node is connected to.
 
