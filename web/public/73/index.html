@@ -22,10 +22,13 @@
     <title>BIP 73: Use &quot;Accept&quot; header for response type negotiation with Payment Request URLs</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 73: Use &quot;Accept&quot; header for response type negotiation with Payment Request URLs</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 73: Use &quot;Accept&quot; header for response type negotiation with Payment Request URLs</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2013-08-27</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0073.mediawiki" target="_blank">View on GitHub</a>
@@ -136,112 +176,10 @@ code with only the payment request url specified.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 73: Use &quot;Accept&quot; header for response type negotiation with Payment Request URLs
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2013-08-27</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0073.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 73
-  Layer: Applications
-  Title: Use &quot;Accept&quot; header for response type negotiation with Payment Request URLs
-  Author: Stephen Pair &lt;stephen@bitpay.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0073
-  Status: Final
-  Type: Standards Track
-  Created: 2013-08-27
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP describes an enhancement to the payment protocol (<a href="/70" target="_blank">BIP 70</a>)
-that addresses the need for short URLs when scanning from QR codes.  It
-generalizes the specification for the behavior of a payment request URL in a
-way that allows the client and server to negotiate the content of the
-response using the HTTP Accept: header field.  Specifically, the client
-can indicate to the server whether it prefers to receive a bitcoin URI or
-a payment request.</p>
-<p>Implementation of this BIP does not require full payment request (<a href="/70" target="_blank">BIP 70</a>) support.</p>
-<h2>Motivation</h2>
-<p>The payment protocol augments the bitcoin: uri scheme with an additional
-&quot;payment&quot; parameter that specifies a URL where a payment request can be
-downloaded.  This creates long URIs that, when rendered as a QR code, have
-a high information density.  Dense QR codes can be difficult to scan resulting
-in a more frustrating user experience.  The goal is to create a standard that
-would allow QR scanning wallets to use less dense QR codes.  It also makes
-general purpose QR code scanners more usable with bitcoin accepting
-websites.</p>
-<h2>Specification</h2>
-<p>QR scanning wallets will consider a non bitcoin URI scanned from a QR code to
-be an end point where either a bitcoin URI or a payment request can be obtained.</p>
-<p>A wallet client uses the Accept: HTTP header to specify whether it can accept
-a payment request, a URI, or both.  A media type of text/uri-list specifies that
-the client accepts a bitcoin URI. A media type of application/bitcoin-paymentrequest
-specifies that the client can process a payment request.  In the absence of an
-Accept: header, the server is expected to respond with text/html suitable for
-rendering in a browser.  An HTML response will ensure that QR codes scanned
-by non Bitcoin wallet QR scanners are useful (they could render an HTML page
-with a payment link that when clicked would open a wallet on the device).</p>
-<p>It is not required that the client and server support the full semantics of an
-HTTP Accept header.  If application/bitcoin-paymentrequest is specified in the
-header, the server should send a payment request regardless of anything else
-specified in the Accept header.  If text/uri-list is specified (but not
-application/bitcoin-paymentrequest), a valid Bitcoin URI should be returned.  If
-neither is specified, the server can return an HTML page.  When a uri-list is returned
-only the first item in the list is used (and expected to be a bitcoin URI), any additional
-URIs should be ignored.</p>
-<h2>Compatibility</h2>
-<p>Only QR scanning wallets that implement this BIP will be able to process QR
-codes containing payment request URLs.  There are two possible workarounds for QR
-scanning wallets that do not implement this BIP: 1) the server gives the user an
-option to change the QR code to a bitcoin: URI or 2) the user scans the code with
-a generic QR code scanner.</p>
-<p>In the second scenario, if the server responds with a webpage containing a link
-to a bitcoin URI, the user can complete the payment by clicking that link provided
-the user has a wallet installed on their device and it supports bitcoin URIs.  If the
-wallet/device does not have support for bitcoin URIs, the user can fall back on
-address copy/paste.</p>
-<p>This BIP should be fully compatible with BIP 70 assuming it is required that wallets
-implementing BIP 70 make use of the Accept: HTTP header when retrieving a
-payment request.</p>
-<h2>Examples</h2>
-<p>The first image below is of a bitcoin URI with an amount and payment request
-specified (note, this is a fairly minimal URI as it does not contain a
-label and the request URL is of moderate size).  The second image is a QR
-code with only the payment request url specified.</p>
-<p><img src=bip-0073/a.png></img><img src=bip-0073/b.png></img></p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

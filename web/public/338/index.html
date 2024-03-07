@@ -22,10 +22,13 @@
     <title>BIP 338: Disable transaction relay message</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 338: Disable transaction relay message</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 338: Disable transaction relay message</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2020-09-03</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0338.mediawiki" target="_blank">View on GitHub</a>
@@ -171,147 +211,10 @@ message, subject to the feature negotiation of BIP 152.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 338: Disable transaction relay message
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2020-09-03</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0338.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 338
-  Layer: Peer Services
-  Title: Disable transaction relay message
-  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0338
-  Status: Draft
-  Type: Standards Track
-  Created: 2020-09-03
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP describes a change to the p2p protocol to allow a node to tell a peer
-that a connection will not be used for transaction relay, to support
-block-relay-only connections that are currently in use on the network.</p>
-<h2>Motivation</h2>
-<p>This proposal is part of an effort to increase the number of inbound
-connections that a peer can service, by distinguishing peers which will not
-relay transactions from those that do.</p>
-<p>Since 2019, software has been deployed[1] which initiates
-connections on the Bitcoin network and sets the transaction relay field
-(introduced by BIP 37 and also defined in BIP 60) to false, to prevent
-transaction relay from occurring on the connection. Additionally, addr messages
-received from the peer are ignored by this software.</p>
-<p>The purpose of these connections is two-fold: by making additional
-low-bandwidth connections on which blocks can propagate, the robustness of a
-node to network partitioning attacks is strengthened.  Additionally, by not
-relaying transactions and ignoring received addresses, the ability of an
-adversary to learn the complete network graph (or a subgraph) is reduced[2],
-which in turn increases the cost or difficulty to an attacker seeking to carry
-out a network partitioning attack (when compared with having such knowledge).</p>
-<p>The low-bandwidth / minimal-resource nature of these connections is currently
-known only by the initiator of the connection; this is because the transaction
-relay field in the version message is not a permanent setting for the lifetime
-of the connection.  Consequently, a node receiving an inbound connection with
-transaction relay disabled cannot distinguish between a peer that will never
-enable transaction relay (as described in BIP 37) and one that will.  Moreover,
-the node also cannot determine that the incoming connection will ignore relayed
-addresses; with that knowledge a node would likely choose other peers to
-receive announced addresses instead.</p>
-<p>This proposal adds a new, optional message that a node can send a peer when
-initiating a connection to that peer, to indicate that connection should not be
-used for transaction relay for the connection's lifetime. In addition, without
-a current mechanism to negotiate whether addresses should be relayed on a
-connection, this BIP suggests that address messages not be sent on links where
-transaction relay has been disabled.</p>
-<p>After this BIP is deployed, nodes could more easily implement inbound
-connection limiting that differentiates low-resource nodes (such as those
-sending disabletx) from full-relay peers, potentially allowing for an increase
-in the number of block-relay-only connections that can be made on the network.</p>
-<h2>Specification</h2>
-<ol>
-<li>A new disabletx message is added, which is defined as an empty message with message type set to &quot;disabletx&quot;.</li>
-<li>The protocol version of nodes implementing this BIP must be set to 70017 or higher.</li>
-<li>If a node sets the transaction relay field in the version message to a peer to false, then the disabletx message MAY also be sent in response to a version message from that peer if the peer's protocol version is &gt;= 70017. If sent, the disabletx message MUST be sent prior to sending a verack.</li>
-<li>A node MUST NOT send the disabletx message if the transaction relay field in the version message is omitted or set to true.</li>
-<li>A node that has sent or received a disabletx message to/from a peer MUST NOT send any of these messages to the peer:
-<ol>
-<li>inv messages for transactions</li>
-<li>notfound messages for transactions</li>
-<li>getdata messages for transactions</li>
-<li>getdata messages for merkleblock (BIP 37)</li>
-<li>filteradd/filterload/filterclear (BIP 37)</li>
-<li>feefilter (BIP 133)</li>
-<li>mempool (BIP 35)</li>
-<li>tx message</li>
-</ol>
-</li>
-<li>It is RECOMMENDED that a node that has sent or received a disabletx message to/from a peer not send any of these messages to the peer:
-<ol>
-<li>addr/getaddr</li>
-<li>addrv2 (BIP 155)</li>
-</ol>
-</li>
-<li>The behavior regarding sending or processing other message types is not specified by this BIP.</li>
-<li>Nodes MAY decide to not remain connected to peers that send this message (for example, if trying to find a peer that will relay transactions).</li>
-</ol>
-<h2>Compatibility</h2>
-<p>Nodes with protocol version &gt;= 70017 that do not implement this BIP, and nodes
-with protocol version &lt; 70017, will continue to remain compatible with
-implementing software: transactions would not be relayed to peers sending the
-disabletx message (provided that BIP 37 or BIP 60 has been implemented), and while
-periodic address relay may still take place, software implementing this BIP
-should not be disconnecting such peers solely for that reason.</p>
-<p>Disabling address relay is suggested but not required by this BIP, to allow for
-future protocol extensions that might specify more carefully how address relay
-is to be negotiated. This BIP's recommendations for software to not relay
-addresses is intended to be interpreted as guidance in the absence of any such
-future protocol extension, to accommodate existing software behavior.</p>
-<p>Note that all messages specified in BIP 152, including blocktxn and
-getblocktxn, are permitted between peers that have sent/received a disabletx
-message, subject to the feature negotiation of BIP 152.</p>
-<p>This proposal is compatible with, but independent of, BIP 37.</p>
-<h2>Implementation</h2>
-<p>https://github.com/bitcoin/bitcoin/pull/20726</p>
-<h2>References</h2>
-<ol>
-<li>Bitcoin Core has <a href="https://github.com/bitcoin/bitcoin/pull/15759" target="_blank">implemented this functionality</a> since version 0.19.0.1, released in November 2019.</li>
-<li>For example, see https://www.cs.umd.edu/projects/coinscope/coinscope.pdf and https://arxiv.org/pdf/1812.00942.pdf.</li>
-</ol>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the 2-clause BSD license.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

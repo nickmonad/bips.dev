@@ -22,10 +22,13 @@
     <title>BIP 103: Block size following technological growth</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 103: Block size following technological growth</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 103: Block size following technological growth</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-07-21</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0103.mediawiki" target="_blank">View on GitHub</a>
@@ -123,99 +163,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 103: Block size following technological growth
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-07-21</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0103.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 103
-  Layer: Consensus (hard fork)
-  Title: Block size following technological growth
-  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0103
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2015-07-21
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP proposes a block size growth intended to accommodate for hardware and other technological improvements for the foreseeable future.</p>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the 2-clause BSD license.</p>
-<h2>Motivation</h2>
-<p>Many people want to see Bitcoin scale over time, allowing an increasing number of transactions on the block chain. It would come at an increased cost for the ecosystem (bandwidth, processing, and storage for relay nodes, as well as an impact on propagation speed of blocks on the network), but technology also improves over time. When all technologies depended on have improved as well as their availability on the market, there is no reason why Bitcoin's fundamental transaction rate cannot improve proportionally.</p>
-<p>Currently, there is a consensus rule in place that limits the size of blocks to 1000000 bytes. Changing this requires a hard-forking change: one that will require every full node in the network to implement the new rules. The new chain created by those changed nodes will be rejected by old nodes, so this would effectively be a request to the ecosystem to migrate to a new and incompatible network. Doing this while controversy exists is dangerous to the network and the ecosystem.</p>
-<p>Furthermore, the effective space available is always constrained by a hash rate majority and its ability to process transactions. No hard forking change that relaxes the block size limit can be guaranteed to provide enough space for every possible demand - or even any particular demand - unless strong centralization of the mining ecosystem is expected. Because of that, the development of a fee market and the evolution towards an ecosystem that is able to cope with block space competition should be considered healthy. This does not mean the block size or its limitation needs to be constant forever. However, the purpose of such a change should be evolution with technological growth, and not kicking the can down the road because of a fear of change in economics.</p>
-<p>Bitcoin's advantage over other systems does not lie in scalability. Well-designed centralized systems can trivially compete with Bitcoin's on-chain transactions in terms of cost, speed, reliability, convenience, and scale. Its power lies in transparency, lack of need for trust in network peers, miners, and those who influence or control the system. Wanting to increase the scale of the system is in conflict with all of those. Attempting to buy time with a fast increase is not wanting to face that reality, and treating the system as something whose scale trumps all other concerns. A long term scalability plan should aim on decreasing the need for trust required in off-chain systems, rather than increasing the need for trust in Bitcoin.</p>
-<p>In summary, hard forks are extremely powerful, and we need to use them very responsibly as a community. They have the ability to fundamentally change the technology or economics of the system, and can be used to disadvantage those who expected certain rules to be immutable. They should be restricted to uncontroversial changes, or risk eroding the expectation of low trust needed in the system in the longer term. As the block size debate has been controversial so far - for good or bad reasons - this BIP aims for gradual change and its effects start far enough in the future.</p>
-<h2>Specification</h2>
-<p>The block size limitation is replaced by the function below, applied to the median of the timestamps of the previous 11 blocks, or in code terms: the block size limit for pindexBlock is GetMaxBlockSize(pindexBlock-&gt;pprev-&gt;GetMedianTimePast()).</p>
-<p>The sigop limit scales proportionally.</p>
-<p>It implements a series of block size steps, one every ~97 days, between January 2017 and July 2063, each increasing the maximum block size by 4.4%. This allows an overall growth of 17.7% per year.</p>
-<pre><code>uint32_t GetMaxBlockSize(int64_t nMedianTimePast) {
-    &#x2F;&#x2F; The first step is on January 1st 2017.
-    if (nMedianTimePast &lt; 1483246800) {
-        return 1000000;
-    }
-    &#x2F;&#x2F; After that, one step happens every 2^23 seconds.
-    int64_t step = (nMedianTimePast - 1483246800) &gt;&gt; 23;
-    &#x2F;&#x2F; Don&#x27;t do more than 11 doublings for now.
-    step = std::min&lt;int64_t&gt;(step, 175);
-    &#x2F;&#x2F; Every step is a 2^(1&#x2F;16) factor.
-    static const uint32_t bases[16] = {
-        &#x2F;&#x2F; bases[i] == round(1000000 * pow(2.0, (i + 1) &#x2F; 16.0))
-        1044274, 1090508, 1138789, 1189207,
-        1241858, 1296840, 1354256, 1414214,
-        1476826, 1542211, 1610490, 1681793,
-        1756252, 1834008, 1915207, 2000000
-    };
-    return bases[step &amp; 15] &lt;&lt; (step &#x2F; 16);
-}
-</code></pre>
-<h2>Rationale</h2>
-<p>Waiting 1.5 years before the hard fork takes place should provide ample time to minimize the risk of a hard fork, if found uncontroversial.</p>
-<p>Because every increase (including the first) is only 4.4%, risk from large market or technological changes is minimized.</p>
-<p>The growth rate of 17.7% growth per year is consistent with the average growth rate of bandwidth the last years, which seems to be the bottleneck. If over time, this growth factor is beyond what the actual technology offers, the intention should be to soft fork a tighter limit.</p>
-<p>Using a time-based check is very simple to implement, needs little context, is efficient, and is trivially reviewable. Using the &quot;median time past&quot; guarantees monotonic behaviour, as this median is required to be increasing, according to Bitcoin's existing consensus rules. Using the &quot;median time past&quot; of the block before means we know in advance what the limit of each block will be, without depending on the actual block's timestamp.</p>
-<h2>Compatibility</h2>
-<p>This is a hard forking change, thus breaks compatibility with old fully-validating node. It should not be deployed without widespread consensus.</p>
-<h2>Acknowledgements</h2>
-<p>Thanks to Gregory Maxwell and Wladimir J. van der Laan for their suggestions.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

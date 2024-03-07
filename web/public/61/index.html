@@ -22,10 +22,13 @@
     <title>BIP 61: Reject P2P message</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 61: Reject P2P message</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 61: Reject P2P message</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2014-06-18</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0061.mediawiki" target="_blank">View on GitHub</a>
@@ -161,137 +201,10 @@ an implementation vulnerable to a fill-up-the-users-disk attack.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 61: Reject P2P message
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2014-06-18</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0061.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 61
-  Layer: Peer Services
-  Title: Reject P2P message
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: Controversial; some recommendation, and some discouragement
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0061
-  Status: Final
-  Type: Standards Track
-  Created: 2014-06-18
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP describes a new message type for the Bitcoin peer-to-peer network.</p>
-<h2>Motivation</h2>
-<p>Giving peers feedback about why their blocks or transactions are rejected, or
-why they are being banned for not following the protocol helps
-interoperability between different implementations.</p>
-<p>It also gives SPV (simplified payment verification) clients a hint that something
-may be wrong when their transactions are rejected due to insufficient priority
-or fees.</p>
-<h2>Specification</h2>
-<p>Data types in this specification are as described at https://en.bitcoin.it/wiki/Protocol_specification</p>
-<h3>reject</h3>
-<p>One new message type &quot;reject&quot; is introduced. It is sent directly to a peer in response to a &quot;version&quot;, &quot;tx&quot; or &quot;block&quot; message.</p>
-<p>For example, the message flow between two peers for a relayed transaction that is rejected for some reason would be:</p>
-<pre><code> --&gt; inv
- &lt;-- getdata
- --&gt; tx
- &lt;-- reject
-</code></pre>
-<p>All implementations of the P2P protocol version 70,002 and later should support the reject message.</p>
-<h4>common payload</h4>
-<p>Every reject message begins with the following fields. Some messages append extra, message-specific data.</p>
-<table><thead><tr><th>Field Size</th><th>Name</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
-<tr><td>variable</td><td>response-to-msg</td><td>var_str</td><td>Message that triggered the reject</td></tr>
-<tr><td>1</td><td>reject-code</td><td>uint8_t</td><td>0x01 through 0x4f (see below)</td></tr>
-<tr><td>variable</td><td>reason</td><td>var_string</td><td>Human-readable message for debugging</td></tr>
-</tbody></table>
-<p>The human-readable string is intended only for debugging purposes; in particular, different implementations may
-use different strings. The string should not be shown to users or used for anthing besides diagnosing
-interoperability problems.</p>
-<p>The following reject code categories are used; in the descriptions below, &quot;server&quot; is the peer generating
-the reject message, &quot;client&quot; is the peer that will receive the message.</p>
-<table><thead><tr><th>Range</th><th>Category</th></tr></thead><tbody>
-<tr><td>0x01-0x0f</td><td>Protocol syntax errors</td></tr>
-<tr><td>0x10-0x1f</td><td>Protocol semantic errors</td></tr>
-<tr><td>0x40-0x4f</td><td>Server policy rule</td></tr>
-</tbody></table>
-<h4> rejection codes common to all message types </h4>
-<table><thead><tr><th>Code</th><th>Description</th></tr></thead><tbody>
-<tr><td>0x01</td><td>Message could not be decoded</td></tr>
-</tbody></table>
-<h4> reject version codes </h4>
-<p>Codes generated during the initial connection process in response to a &quot;version&quot; message:</p>
-<table><thead><tr><th>Code</th><th>Description</th></tr></thead><tbody>
-<tr><td>0x11</td><td>Client is an obsolete, unsupported version</td></tr>
-<tr><td>0x12</td><td>Duplicate version message received</td></tr>
-</tbody></table>
-<h4> reject tx payload, codes </h4>
-<p>Transaction rejection messages extend the basic message with the transaction id hash:</p>
-<table><thead><tr><th>Field Size</th><th>Name</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
-<tr><td>32</td><td>hash</td><td>char[32]</td><td>transaction that is rejected</td></tr>
-</tbody></table>
-<p>The following codes are used:</p>
-<table><thead><tr><th>Code</th><th>Description</th></tr></thead><tbody>
-<tr><td>0x10</td><td>Transaction is invalid for some reason (invalid signature, output value greater than input, etc.)</td></tr>
-<tr><td>0x12</td><td>An input is already spent</td></tr>
-<tr><td>0x40</td><td>Not mined/relayed because it is &quot;non-standard&quot; (type or version unknown by the server)</td></tr>
-<tr><td>0x41</td><td>One or more output amounts are below the 'dust' threshold</td></tr>
-<tr><td>0x42</td><td>Transaction does not have enough fee/priority to be relayed or mined</td></tr>
-</tbody></table>
-<h4> payload, reject block </h4>
-<p>Block rejection messages extend the basic message with the block header hash:</p>
-<table><thead><tr><th>Field Size</th><th>Name</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
-<tr><td>32</td><td>hash</td><td>char[32]</td><td>block (hash of block header) that is rejected</td></tr>
-</tbody></table>
-<p>Rejection codes:</p>
-<table><thead><tr><th>code</th><th>description</th></tr></thead><tbody>
-<tr><td>0x10</td><td>Block is invalid for some reason (invalid proof-of-work, invalid signature, etc)</td></tr>
-<tr><td>0x11</td><td>Block's version is no longer supported</td></tr>
-<tr><td>0x43</td><td>Inconsistent with a compiled-in checkpoint</td></tr>
-</tbody></table>
-<p>Note: blocks that are not part of the server's idea of the current best chain, but are otherwise valid, should not trigger reject messages.</p>
-<h2> Compatibility </h2>
-<p>The reject message is backwards-compatible; older peers that do not recognize the reject message will ignore it.</p>
-<h2> Implementation notes </h2>
-<p>Implementors must consider what happens if an attacker either sends them
-reject messages for valid transactions/blocks or sends them random
-reject messages, and should beware of possible denial-of-service attacks.
-For example, notifying the user of every reject message received
-would make it trivial for an attacker to mount an annoy-the-user attack.
-Even merely writing every reject message to a debugging log could make
-an implementation vulnerable to a fill-up-the-users-disk attack.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

@@ -22,10 +22,13 @@
     <title>BIP 102: Block size increase to 2MB</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 102: Block size increase to 2MB</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 102: Block size increase to 2MB</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-06-23</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0102.mediawiki" target="_blank">View on GitHub</a>
@@ -104,80 +144,10 @@ network engineering limit.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 102: Block size increase to 2MB
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-06-23</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0102.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 102
-  Layer: Consensus (hard fork)
-  Title: Block size increase to 2MB
-  Author: Jeff Garzik &lt;jgarzik@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0102
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-06-23
-</code></pre>
-<h2>Abstract</h2>
-<p>Simple, one-time increase in total amount of transaction data permitted in a block from 1MB to 2MB.</p>
-<h2>Motivation</h2>
-<ol>
-<li>Continue current economic policy.</li>
-<li>Exercise hard fork network upgrade.</li>
-</ol>
-<h2>Specification</h2>
-<ol>
-<li>MAX_BLOCK_SIZE increased to 2,000,000 bytes at trigger point.</li>
-<li>Increase maximum block sigops by similar factor, preserving SIZE/50 formula.</li>
-<li>Trigger:  (1) Block time 00:00:00 on flag day, AND (2) 95% of the last 1,000 blocks have signaled support.</li>
-</ol>
-<h2>Backward compatibility</h2>
-<p>Fully validating older clients are not compatible with this change.
-The first block exceeding 1,000,000 bytes will partition older clients
-off the new network.</p>
-<h2>Discussion</h2>
-<p>In the short term, an increase is needed to continue to current
-economic policies with regards to fees and block space, matching
-market expectations and preventing market disruption.</p>
-<p>In the long term, this limit should focus on reflecting the maximum
-network engineering limit.</p>
-<h2>Implementation</h2>
-<p>https://github.com/jgarzik/bitcoin/tree/2015_2mb_blocksize</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

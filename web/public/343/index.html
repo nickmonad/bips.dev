@@ -22,10 +22,13 @@
     <title>BIP 343: Mandatory activation of taproot deployment</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 343: Mandatory activation of taproot deployment</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 343: Mandatory activation of taproot deployment</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2021-04-25</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0343.mediawiki" target="_blank">View on GitHub</a>
@@ -112,88 +152,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 343: Mandatory activation of taproot deployment
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2021-04-25</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0343.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 343
-  Layer: Consensus (soft fork)
-  Title: Mandatory activation of taproot deployment
-  Author: Shinobius &lt;quantumedusa@gmail.com&gt;
-          Michael Folkson &lt;michaelfolkson@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0343
-  Status: Final
-  Type: Standards Track
-  Created: 2021-04-25
-  License: BSD-3-Clause
-           CC0-1.0
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies a BIP8 (LOT=true) deployment to activate taproot.</p>
-<h2>Motivation</h2>
-<p>The Taproot soft fork upgrade has been assessed to have overwhelming community consensus and hence should attempt to be activated. Lessons have been learned from the BIP148 and BIP91 deployments in 2017 with regards to giving many months of advance warning before the mandatory signaling is attempted. The mandatory signaling is only required if miners have failed to meet the signaling threshold during the BIP8 deployment. It is important that mandatory signaling is included as without it miners would effectively have the ability to indefinitely block the activation of a soft fork with overwhelming consensus. </p>
-<h2>Specification</h2>
-<p>This BIP will begin an activation signaling period using bit 2 at blockheight 681408 with a minimum activation height of 709632 and an activation threshold of 90%. The signaling period will timeout at blockheight 760032 with a latest activation height of 762048. Lockinontimeout (LOT) is set to true so mandatory signaling will be enforced in the last signaling period before the timeout height. Blocks without the signaling bit 2 set run the risk of being rejected during this period if taproot is not locked in prior. This BIP will cease to be active when taproot is locked in.</p>
-<h2>Reference implementation</h2>
-<ul>
-<li><a href="https://github.com/BitcoinActivation/bitcoin" target="_blank">https://github.com/BitcoinActivation/bitcoin</a></li>
-</ul>
-<h2>Backward Compatibility</h2>
-<p>As a soft fork, older software will continue to operate without modification. Non-upgraded nodes, however, will consider all SegWit version 1 witness programs as anyone-can-spend scripts. They are strongly encouraged to upgrade in order to fully validate the new programs.</p>
-<h2>Compatibility with later alternative activations</h2>
-<p>The activation mechanism “Speedy Trial” as proposed by Russell O’Connor and outlined in this bitcoin-dev mailing list <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-March/018583.html" target="_blank">post</a> by David Harding was released in Bitcoin Core. It is effectively a BIP8 activation mechanism with one exception: start height and timeout height were defined using median time past (MTP) rather than block heights. It uses signaling bit 2, was deployed between midnight April 24th 2021 and midnight August 11th 2021, has a minimum activation height of 709632 and intends to activate BIPs 340, 341, and 342. The BIP8(LOT=true) deployment is compatible with the “Speedy Trial” deployment in Bitcoin Core as there was not a discrepancy between MTP and block height for the defined start heights.</p>
-<p>The BIP8 (LOT=true) deployment has also been deliberately designed to be compatible with a future BIP8(LOT=false) or BIP8(LOT=true) deployment in Bitcoin Core assuming Bitcoin Core releases one of these activation mechanisms in the event of the Speedy Trial deployment failing to activate.</p>
-<h2>Rationale</h2>
-<p>The deployment of BIP148 demonstrated that multiple implementations with different activation mechanisms can incentivize the necessary actors to act so that the different deployments activate in sync. A BIP8 LOT=true deployment can run in parallel with other BIP8 activation mechanisms that have eventual mandatory signaling or no mandatory signaling. Eventual mandatory signaling ensures that miners cannot prevent the activation of a desired feature with community consensus indefinitely.</p>
-<h2>Acknowledgements</h2>
-<p>Thanks to Shaolin Fry and Luke Dashjr for their work on BIP148 and BIP8 which were important prerequisites for this proposal.</p>
-<h2>References</h2>
-<ul>
-<li><a href="/8" target="_blank">BIP8 Version bits with lock-in by height</a></li>
-<li><a href="/148" target="_blank">BIP148 Mandatory activation of segwit deployment</a></li>
-<li><a href="/340" target="_blank">BIP340 Schnorr Signatures for secp256k1</a></li>
-<li><a href="/341" target="_blank">BIP341 Taproot: SegWit version 1 spending rules</a></li>
-<li><a href="/342" target="_blank">BIP342 Validation of Taproot Scripts</a></li>
-<li><a href="https://taproot.works/taproot-faq/" target="_blank">Taproot benefits</a></li>
-</ul>
-<h2>Copyright</h2>
-<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

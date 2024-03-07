@@ -22,10 +22,13 @@
     <title>BIP 106: Dynamically Controlled Bitcoin Block Size Max Cap</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 106: Dynamically Controlled Bitcoin Block Size Max Cap</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 106: Dynamically Controlled Bitcoin Block Size Max Cap</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-08-24</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0106.mediawiki" target="_blank">View on GitHub</a>
@@ -126,102 +166,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 106: Dynamically Controlled Bitcoin Block Size Max Cap
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-08-24</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0106.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 106
-  Layer: Consensus (hard fork)
-  Title: Dynamically Controlled Bitcoin Block Size Max Cap
-  Author: Upal Chakraborty &lt;bitcoin@upalc.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0106
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-08-24
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP proposes replacing the fixed one megabyte maximum block size with a dynamically controlled maximum block size that may increase or decrease with difficulty change depending on various network factors. I have two proposals regarding this...</p>
-<p>i. Depending only on previous block size calculation.</p>
-<p>ii. Depending on previous block size calculation and previous Tx fee collected by miners.</p>
-<h2>Motivation</h2>
-<p>With increased adoption, transaction volume on bitcoin network is bound to grow. If the one megabyte max cap is not changed to a flexible one which changes itself with changing network demand, then adoption will hamper and bitcoin's growth may choke up. Following graph shows the change in average block size since inception...</p>
-<p>https://blockchain.info/charts/avg-block-size?timespan=all&amp;showDataPoints=false&amp;daysAverageString=1&amp;show_header=true&amp;scale=0&amp;address=</p>
-<h2>Specification</h2>
-<h3>Proposal 1 : Depending only on previous block size calculation</h3>
-<pre><code>  If more than 50% of block&#x27;s size, found in the first 2000 of the last difficulty period, is more than 90% MaxBlockSize
-      Double MaxBlockSize
-  Else if more than 90% of block&#x27;s size, found in the first 2000 of the last difficulty period, is less than 50% MaxBlockSize
-      Half MaxBlockSize
-  Else
-      Keep the same MaxBlockSize
-</code></pre>
-<h3>Proposal 2 : Depending on previous block size calculation and previous Tx fee collected by miners</h3>
-<pre><code>  
-  TotalBlockSizeInLastButOneDifficulty = Sum of all Block size of first 2008 blocks in last 2 difficulty period
-  TotalBlockSizeInLastDifficulty = Sum of all Block size of second 2008 blocks in last 2 difficulty period (This actually includes 8 blocks from last but one difficulty)
-  
-  TotalTxFeeInLastButOneDifficulty = Sum of all Tx fees of first 2008 blocks in last 2 difficulty period
-  TotalTxFeeInLastDifficulty = Sum of all Tx fees of second 2008 blocks in last 2 difficulty period (This actually includes 8 blocks from last but one difficulty)
-  
-  If ( ( (Sum of first 4016 block size in last 2 difficulty period)&#x2F;4016 &gt; 50% MaxBlockSize) AND (TotalTxFeeInLastDifficulty &gt; TotalTxFeeInLastButOneDifficulty) AND (TotalBlockSizeInLastDifficulty &gt; TotalBlockSizeInLastButOneDifficulty) )
-      MaxBlockSize = TotalBlockSizeInLastDifficulty * MaxBlockSize &#x2F; TotalBlockSizeInLastButOneDifficulty
-  Else If ( ( (Sum of first 4016 block size in last 2 difficulty period)&#x2F;4016 &lt; 50% MaxBlockSize) AND (TotalTxFeeInLastDifficulty &lt; TotalTxFeeInLastButOneDifficulty) AND (TotalBlockSizeInLastDifficulty &lt; TotalBlockSizeInLastButOneDifficulty) )
-      MaxBlockSize = TotalBlockSizeInLastDifficulty * MaxBlockSize &#x2F; TotalBlockSizeInLastButOneDifficulty
-  Else
-      Keep the same MaxBlockSize
-</code></pre>
-<h2>Rationale</h2>
-<p>These two proposals have been derived after discussion on <a href="https://bitcointalk.org/index.php?topic=1154536.0" target="_blank">BitcoinTalk</a> and <a href="http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010285.html" target="_blank">bitcoin-dev mailing list</a>. The original idea and its evolution in the light of various arguments can be found <a href="http://upalc.com/maxblocksize.php" target="_blank">here</a>.</p>
-<h3>Proposal 1 : Depending only on previous block size calculation</h3>
-<p>This solution is derived directly from the indication of the problem. If transaction volume increases, then we will naturally see bigger blocks. On the contrary, if there are not enough transaction volume, but maximum block size is high, then only few blocks may sweep the mempool. Hence, if block size is itself taken into consideration, then maximum block size can most rationally be derived. Moreover, this solution not only increases, but also decreases the maximum block size, just like difficulty.</p>
-<h3>Proposal 2 : Depending on previous block size calculation and previous Tx fee collected by miners</h3>
-<p>This solution takes care of stable mining subsidy. It will not increase maximum block size, if Tx fee collection is not increasing and thereby creating a Tx fee pressure on the market. On the other hand, though the block size max cap is dynamically controlled, it is very difficult to game by any party because the increase or decrease of block size max cap will take place in the same ratio of average block size increase or decrease.</p>
-<h2>Compatibility</h2>
-<p>This is a hard-forking change to the Bitcoin protocol; anybody running code that fully validates blocks must upgrade before the activation time or they will risk rejecting a chain containing larger-than-one-megabyte blocks.</p>
-<h2>Other solutions considered</h2>
-<p><a href="http://gtf.org/garzik/bitcoin/BIP100-blocksizechangeproposal.pdf" target="_blank">Making Decentralized Economic Policy</a> - by Jeff Garzik</p>
-<p><a href="https://bitcointalk.org/index.php?topic=1078521.0" target="_blank">Elastic block cap with rollover penalties</a> - by Meni Rosenfeld</p>
-<p><a href="/101" target="_blank">Increase maximum block size</a> - by Gavin Andresen</p>
-<p><a href="https://gist.github.com/sipa/c65665fc360ca7a176a6" target="_blank">Block size following technological growth</a> - by Pieter Wuille</p>
-<p><a href="https://lightning.network/lightning-network-paper.pdf" target="_blank">The Bitcoin Lightning Network: Scalable Off-Chain Instant Payments</a> - by Joseph Poon &amp; Thaddeus Dryja</p>
-<h2>Deployment</h2>
-<p>If consensus is achieved, deployment can be made at a future block number at which difficulty will change.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

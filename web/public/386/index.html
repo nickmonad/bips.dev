@@ -22,10 +22,13 @@
     <title>BIP 386: tr() Output Script Descriptors</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 386: tr() Output Script Descriptors</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 386: tr() Output Script Descriptors</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2021-06-27</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0386.mediawiki" target="_blank">View on GitHub</a>
@@ -184,160 +224,10 @@ However there will be future BIPs that specify script expressions that can be us
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 386: tr() Output Script Descriptors
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2021-06-27</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0386.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 386
-  Layer: Applications
-  Title: tr() Output Script Descriptors
-  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
-          Ava Chow &lt;me@achow101.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0386
-  Status: Draft
-  Type: Informational
-  Created: 2021-06-27
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies <tt>tr()</tt> output script descriptors.
-<tt>tr()</tt> descriptors take a key and optionally a tree of scripts and produces a P2TR output script.</p>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2>Motivation</h2>
-<p>Taproot added one additional standard output script format: P2TR.
-These expressions allow specifying those formats as a descriptor.</p>
-<h2>Specification</h2>
-<p>A new script expression is defined: <tt>tr()</tt>.
-A new expression is defined: Tree Expressions</p>
-<h3>Tree Expression</h3>
-<p>A Tree Expression (denoted <tt>TREE</tt>) is an expression which represents a tree of scripts.
-The way the tree is represented in an output script is dependent on the higher level expressions.</p>
-<p>A Tree Expression is:</p>
-<ul>
-<li>Any Script Expression that is allowed at the level this Tree Expression is in.</li>
-<li>A pair of Tree Expressions consisting of:
-<ul>
-<li>An open brace <tt>{</tt></li>
-<li>A Tree Expression</li>
-<li>A comma <tt>,</tt></li>
-<li>A Tree Expression</li>
-<li>A closing brace <tt>}</tt></li>
-</ul>
-</li>
-</ul>
-<h3><tt>tr()</tt></h3>
-<p>The <tt>tr(KEY)</tt> or <tt>tr(KEY, TREE)</tt> expression can only be used as a top level expression.
-All key expressions under any <tt>tr()</tt> expression must create x-only public keys.</p>
-<p><tt>tr(KEY)</tt> takes a single key expression as an argument and produces a P2TR output script which does not have a script path.
-Each key produced by the key expression is used as the internal key of a P2TR output as specified by <a href="/341" target="_blank">BIP 341</a>.
-Specifically, &quot;If the spending conditions do not require a script path, the output key should commit to an unspendable script path instead of having no script path.
-This can be achieved by computing the output key point as <em>Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G</em>.&quot;</p>
-<pre><code>internal_key:       lift_x(KEY)
-32_byte_output_key: internal_key + int(HashTapTweak(bytes(internal_key)))G
-scriptPubKey:       OP_1 &lt;32_byte_output_key&gt;
-</code></pre>
-<p><tt>tr(KEY, TREE)</tt> takes a key expression as the first argument, and a tree expression as the second argument and produces a P2TR output script which has a script path.
-The keys produced by the first key expression are used as the internal key as specified by <a href="/341" target="_blank">BIP 341</a>.
-The Tree expression becomes the Taproot script tree as described in BIP 341.
-A merkle root is computed from this tree and combined with the internal key to create the Taproot output key.</p>
-<pre><code>internal_key:       lift_x(KEY)
-merkle_root:        HashTapBranch(TREE)
-32_byte_output_key: internal_key + int(HashTapTweak(bytes(internal_key) || merkle_root))G
-scriptPubKey:       OP_1 &lt;32_byte_output_key&gt;
-</code></pre>
-<h3>Modified Key Expression</h3>
-<p>Key Expressions within a <tt>tr()</tt> expression must only create x-only public keys.
-Uncompressed public keys are not allowed, but compressed public keys would be implicitly converted to x-only public keys.
-The keys derived from extended keys must be serialized as x-only public keys.
-An additional key expression is defined only for use within a <tt>tr()</tt> descriptor:</p>
-<ul>
-<li>A 64 hex character string representing an x-only public key</li>
-</ul>
-<h2>Test Vectors</h2>
-<p>Valid descriptors followed by the scripts they produce. Descriptors involving derived child keys will have the 0th, 1st, and 2nd scripts listed.</p>
-<ul>
-<li><tt>tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd)</tt>
-<ul>
-<li><tt>512077aab6e066f8a7419c5ab714c12c67d25007ed55a43cadcacb4d7a970a093f11</tt></li>
-</ul>
-</li>
-<li><tt>tr(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1)</tt>
-<ul>
-<li><tt>512077aab6e066f8a7419c5ab714c12c67d25007ed55a43cadcacb4d7a970a093f11</tt></li>
-</ul>
-</li>
-<li><tt>tr(xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/0/<em>,pk(xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/1/</em>))</tt>
-<ul>
-<li><tt>512078bc707124daa551b65af74de2ec128b7525e10f374dc67b64e00ce0ab8b3e12</tt></li>
-<li><tt>512001f0a02a17808c20134b78faab80ef93ffba82261ccef0a2314f5d62b6438f11</tt></li>
-<li><tt>512021024954fcec88237a9386fce80ef2ced5f1e91b422b26c59ccfc174c8d1ad25</tt></li>
-</ul>
-</li>
-<li><tt>tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd,pk(669b8afcec803a0d323e9a17f3ea8e68e8abe5a278020a929adbec52421adbd0))</tt>
-<ul>
-<li><tt>512017cf18db381d836d8923b1bdb246cfcd818da1a9f0e6e7907f187f0b2f937754</tt></li>
-</ul>
-</li>
-<li><tt>tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd,{pk(xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334/0),{{pk(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL),pk(02df12b7035bdac8e3bab862a3a83d06ea6b17b6753d52edecba9be46f5d09e076)},pk(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1)}})</tt>
-<ul>
-<li><tt>512071fff39599a7b78bc02623cbe814efebf1a404f5d8ad34ea80f213bd8943f574</tt></li>
-</ul>
-</li>
-</ul>
-<p>Invalid Descriptors</p>
-<ul>
-<li>Uncompressed private key: <tt>tr(5kyzdueo39z3fprtux2qbbwgnnp5ztd7yyr2sc1j299sbcnwjss)</tt></li>
-<li>Uncompressed public key: <tt>tr(04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235)</tt></li>
-<li><tt>tr()</tt> nested in <tt>wsh</tt>: <tt>wsh(tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))</tt></li>
-<li><tt>tr()</tt> nested in <tt>sh</tt>: <tt>sh(tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))</tt></li>
-<li><tt>pkh()</tt> nested in <tt>tr</tt>: <tt>tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd, pkh(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1))</tt></li>
-</ul>
-<h2>Backwards Compatibility</h2>
-<p><tt>tr()</tt> descriptors use the format and general operation specified in <a href="/380" target="_blank">380</a>.
-As these are a set of wholly new descriptors, they are not compatible with any implementation.
-However the scripts produced are standard scripts so existing software are likely to be familiar with them.</p>
-<p>Tree Expressions are largely incompatible with existing script expressions due to the restrictions in those expressions.
-As of 2021-06-27, the only allowed script expression that can be used in a tree expression is <tt>pk()</tt>.
-However there will be future BIPs that specify script expressions that can be used in tree expressions.</p>
-<h2>Reference Implementation</h2>
-<p><tt>tr()</tt> descriptors have been implemented in Bitcoin Core since version 22.0.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

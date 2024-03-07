@@ -22,10 +22,13 @@
     <title>BIP 159: NODE_NETWORK_LIMITED service bit</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 159: NODE_NETWORK_LIMITED service bit</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 159: NODE_NETWORK_LIMITED service bit</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2017-05-11</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0159.mediawiki" target="_blank">View on GitHub</a>
@@ -111,87 +151,10 @@ all historical blocks.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 159: NODE_NETWORK_LIMITED service bit
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2017-05-11</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0159.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 159
-  Layer: Peer Services
-  Title: NODE_NETWORK_LIMITED service bit
-  Author: Jonas Schnelli &lt;dev@jonasschnelli.ch&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0159
-  Status: Draft
-  Type: Standards Track
-  Created: 2017-05-11
-  License: BSD-2-Clause
-</code></pre>
-<h2> Abstract </h2>
-<p>Define a service bit that allow pruned peers to signal their limited services</p>
-<h2>Motivation</h2>
-<p>Pruned peers can offer the same services as traditional peer except of serving all historical blocks.
-Bitcoin right now only offers the NODE_NETWORK service bit which indicates that a peer can serve
-all historical blocks.</p>
-<ol>
-<li>Pruned peers can relay blocks, headers, transactions, addresses and can serve a limited number of historical blocks, thus they should have a way how to announce their service(s)</li>
-<li>Peers no longer in initial block download should consider connecting some of its outbound connections to pruned peers to allow other peers to bootstrap from non-pruned peers</li>
-</ol>
-<h2> Specification </h2>
-<h3> New service bit </h3>
-<p>This BIP proposes a new service bit</p>
-<p>|NODE_NETWORK_LIMITED|bit 10 (0x400)|If signaled, the peer <I>MUST</I> be capable of serving at least the last 288 blocks (~2 days).|</p>
-<p>A safety buffer of 144 blocks to handle chain reorganizations <I>SHOULD</I> be taken into account when connecting to a peer signaling the <code>NODE_NETWORK_LIMITED</code> service bit.</p>
-<h3> Address relay </h3>
-<p>Full nodes following this BIP <I>SHOULD</I> relay address/services (<code>addr</code> message) from peers they would connect to (including peers signaling <code>NODE_NETWORK_LIMITED</code>).</p>
-<h3> Counter-measures for peer fingerprinting </h3>
-<p>Peers may have different prune depths (depending on the peers configuration, disk space, etc.) which can result in a fingerprinting weakness (finding the prune depth through getdata requests). NODE_NETWORK_LIMITED supporting peers <I>SHOULD</I> avoid leaking the prune depth and therefore not serve blocks deeper than the signaled <code>NODE_NETWORK_LIMITED</code> threshold (288 blocks).</p>
-<h3> Risks </h3>
-<p>Pruned peers following this BIP may consume more outbound bandwidth.</p>
-<p>Light clients (and such) who are not checking the <code>nServiceFlags</code> (service bits) from a relayed <code>addr</code>-message may unwillingly connect to a pruned peer and ask for (filtered) blocks at a depth below their pruned depth. Light clients should therefore check the service bits (and eventually connect to peers signaling <code>NODE_NETWORK_LIMITED</code> if they require [filtered] blocks around the tip). Light clients obtaining peer IPs though DNS seed should use the DNS filtering option.</p>
-<h2> Compatibility  </h2>
-<p>This proposal is backward compatible.</p>
-<h2> Reference implementation </h2>
-<ul>
-<li>https://github.com/bitcoin/bitcoin/pull/11740 (signaling)</li>
-<li>https://github.com/bitcoin/bitcoin/pull/10387 (connection and relay)</li>
-</ul>
-<h2> Copyright </h2>
-<p>This BIP is licensed under the 2-clause BSD license.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

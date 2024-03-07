@@ -22,10 +22,13 @@
     <title>BIP 111: NODE_BLOOM service bit</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 111: NODE_BLOOM service bit</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 111: NODE_BLOOM service bit</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-08-20</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0111.mediawiki" target="_blank">View on GitHub</a>
@@ -132,108 +172,10 @@ allowing node operators to fully close the bloom-related DoS vectors.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 111: NODE_BLOOM service bit
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-08-20</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0111.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 111
-  Layer: Peer Services
-  Title: NODE_BLOOM service bit
-  Author: Matt Corallo &lt;bip111@bluematt.me&gt;
-          Peter Todd &lt;pete@petertodd.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0111
-  Status: Proposed
-  Type: Standards Track
-  Created: 2015-08-20
-  License: PD
-</code></pre>
-<h2> Abstract </h2>
-<p>This BIP extends BIP 37, Connection Bloom filtering, by defining a
-service bit to allow peers to advertise that they support bloom filters
-explicitly. It also bumps the protocol version to allow peers to
-identify old nodes which allow bloom filtering of the connection despite
-lacking the new service bit.</p>
-<h2> Motivation </h2>
-<p>BIP 37 did not specify a service bit for the bloom filter service, thus
-implicitly assuming that all nodes that serve peers data support it.
-However, the connection filtering algorithm proposed in BIP 37, and
-implemented in several clients today, has been shown to provide little
-to no privacy<ref>http://eprint.iacr.org/2014/763</ref>, as well as being a large DoS risk on some nodes<ref>[http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-July/003044.html] is one example where the issues were found, though others independently discovered issues as well. Sample DoS exploit code available at https://github.com/petertodd/bloom-io-attack.</ref>.
-Thus, allowing node operators to disable connection bloom filtering is a
-much-needed feature.</p>
-<h2> Specification </h2>
-<p>The following protocol bit is added:</p>
-<pre><code>    NODE_BLOOM = (1 &lt;&lt; 2)
-</code></pre>
-<p>Nodes which support bloom filters should set that protocol bit.
-Otherwise it should remain unset. In addition the protocol version is
-increased from 70002 to 70011 in the reference implementation. It is
-often the case that nodes which have a protocol version smaller than
-70011, but larger than 70000 support bloom filtered connections without
-the NODE_BLOOM bit set, however clients which require bloom filtered
-connections should avoid making this assumption.</p>
-<p>NODE_BLOOM is distinct from NODE_NETWORK, and it is legal to advertise
-NODE_BLOOM but not NODE_NETWORK (though there is little reason to do
-so now, some proposals may make this more useful in the future)</p>
-<p>If a node does not support bloom filters but receives a &quot;filterload&quot;,
-&quot;filteradd&quot;, or &quot;filterclear&quot; message from a peer the node should
-disconnect that peer immediately. For backwards compatibility, in
-initial implementations, nodes may choose to only disconnect nodes which
-have the new protocol version set and attempt to send a filter command.</p>
-<p>While outside the scope of this BIP it is suggested that DNS seeds and
-other peer discovery mechanisms support the ability to specify the
-services required; current implementations simply check only that
-NODE_NETWORK is set.</p>
-<h2> Design rational </h2>
-<p>A service bit was chosen as applying a bloom filter is a service.</p>
-<p>The increase in protocol version is for backwards compatibility. In
-initial implementations, old nodes which are not yet aware of NODE_BLOOM
-and use a protocol version &lt; 70011 may still send filter messages to a
-node without NODE_BLOOM. This feature may be removed after there are
-sufficient NODE_BLOOM nodes available and SPV clients have upgraded,
-allowing node operators to fully close the bloom-related DoS vectors.</p>
-<h2> Reference Implementation </h2>
-<p>https://github.com/bitcoin/bitcoin/pull/6579</p>
-<h2> Copyright </h2>
-<p>This document is placed in the public domain.</p>
-<h2> References </h2>
-<references>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

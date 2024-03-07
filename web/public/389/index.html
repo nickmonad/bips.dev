@@ -22,10 +22,13 @@
     <title>BIP 389: Multipath Descriptor Key Expressions</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 389: Multipath Descriptor Key Expressions</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 389: Multipath Descriptor Key Expressions</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2022-07-26</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0389.mediawiki" target="_blank">View on GitHub</a>
@@ -187,163 +227,10 @@ This limitation exists in order to reduce the number of descriptors that are exp
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 389: Multipath Descriptor Key Expressions
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2022-07-26</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0389.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 389
-  Layer: Applications
-  Title: Multipath Descriptor Key Expressions
-  Author: Ava Chow &lt;me@achow101.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0389
-  Status: Draft
-  Type: Informational
-  Created: 2022-07-26
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies a modification to Key Expressions of Descriptors that are described in BIP 380.
-This modification allows Key Expressions to indicate BIP 32 derivation path steps that can have multiple values.</p>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2>Motivation</h2>
-<p>Descriptors can describe the scripts that are used in a wallet, but wallets often require at least two descriptors for all of the scripts that they watch for.
-Wallets typically have one descriptor for producing receiving addresses, and the other for change addresses.
-These descriptors are often extremely similar - they produce the same types of scripts, derive keys from the same master key, and use derivation paths that are almost identical.
-The only differences are in the derivation path where one of the steps will be different between the descriptors.
-Thus it is useful to have a notation to represent both descriptors as a single descriptor where one of the derivation steps is a pair of values.</p>
-<h2>Specification</h2>
-<p>For extended keys and their derivations paths in a Key Expression, BIP 380 states:</p>
-<ul>
-<li><tt>xpub</tt> encoded extended public key or <tt>xprv</tt> encoded extended private key (as defined in BIP 32)
-<ul>
-<li>Followed by zero or more <tt>/NUM</tt> or <tt>/NUMh</tt> path elements indicating BIP 32 derivation steps to be taken after the given extended key.</li>
-<li>Optionally followed by a single <tt>/*</tt> or <tt>/*h</tt> final step to denote all direct unhardened or hardened children.</li>
-</ul>
-</li>
-</ul>
-<p>This is modifed to state:</p>
-<ul>
-<li><tt>xpub</tt> encoded extended public key or <tt>xprv</tt> encoded extended private key (as defined in BIP 32)
-<ul>
-<li>Followed by zero or more <tt>/NUM</tt> (may be followed by <tt>h</tt>, <tt>H</tt>, or <tt>'</tt> to indicate a hardened step) path elements indicating BIP 32 derivation steps to be taken after the given extended key.</li>
-<li>Followed by zero or one <tt>/&lt;NUM;NUM</tt> (each <tt>NUM</tt> may be followed by <tt>h</tt>, <tt>H</tt>, or <tt>'</tt> to indicate a hardened step) path element indicating a tuple of BIP 32 derivation steps to be taken after the given extended key.
-<ul>
-<li>Followed by zero or more <tt>;NUM</tt> (may be followed by <tt>h</tt>, <tt>H</tt>, or <tt>'</tt> to indicate a hardened step) additional tuple values of BIP 32 derivation steps</li>
-<li>Followed by a single <tt>&gt;/</tt></li>
-</ul>
-</li>
-<li>Followed by zero or more <tt>/NUM</tt> (may be followed by <tt>h</tt>, <tt>H</tt>, or <tt>'</tt> to indicate a hardened step) path elements indicating BIP 32 derivation steps to be taken after the given extended key.</li>
-<li>Optionally followed by a single <tt>/*</tt> (may be followed by <tt>h</tt>, <tt>H</tt>, or <tt>'</tt> to indicate a hardened step) final step to denote all direct unhardened or hardened children.</li>
-</ul>
-</li>
-</ul>
-<p>When a <tt>/&lt;NUM;NUM;...;NUM&gt;</tt> is encountered, parsers should account for a presence of multiple descriptors where the first descriptor uses the first <tt>NUM</tt>, and a second descriptor uses the second <tt>NUM</tt>, and so on, until each <tt>NUM</tt> is accounted for in the production of public keys, scripts, and addresses, as well as descriptor import and export operations.
-Descriptors that contain multiple Key Expressions that each have a <tt>/&lt;NUM;NUM;...;NUM&gt;</tt> must have tuples of exactly the same length so that they are derived in lockstep in the same way that <tt>/*</tt> paths in multiple Key expressions are handled.</p>
-<p>The common use case for this is to represent descriptors for producing receiving and change addresses.
-When interpreting for this use case, wallets should use the first descriptor for producing receiving addresses, and the second descriptor for producing change addresses.
-For this use case, the element will commonly be the value <tt>/&lt;0;1&gt;</tt></p>
-<p>Note that only one <tt>/&lt;NUM;NUM;...;NUM&gt;</tt> specifier is allowed in a Key Expression.</p>
-<h2>Test Vectors</h2>
-<p>Valid multipath descriptors followed by the descriptors they expand into as sub-bullets</p>
-<ul>
-<li><tt>pk(xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/&lt;0;1&gt;)</tt>
-<ul>
-<li><tt>pk(xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/0)</tt></li>
-<li><tt>pk(xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/1)</tt></li>
-</ul>
-</li>
-<li><tt>pkh(xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/&lt;2147483647h;0&gt;/0)</tt>
-<ul>
-<li><tt>pkh(xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647h/0)</tt></li>
-<li><tt>pkh(xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/0/0)</tt></li>
-</ul>
-</li>
-<li><tt>wpkh([ffffffff/13h]xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/&lt;1;3&gt;/2/*</tt>
-<ul>
-<li><tt>wpkh([ffffffff/13h]xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/1/2/*)</tt></li>
-<li><tt>wpkh([ffffffff/13h]xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/3/2/*)</tt></li>
-</ul>
-</li>
-<li><tt>multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/&lt;1;2&gt;/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/&lt;3;4&gt;/0/</em>)</tt>
-<ul>
-<li><tt>multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/1/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/3/0/</em>)</tt></li>
-<li><tt>multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/2/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/4/0/</em>)</tt></li>
-</ul>
-</li>
-<li><tt>pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/&lt;0;1;2&gt;)</tt>
-<ul>
-<li><tt>pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/0)</tt></li>
-<li><tt>pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/1)</tt></li>
-<li><tt>pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/2)</tt></li>
-</ul>
-</li>
-<li><tt>sh(multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/&lt;1;2;3&gt;/0/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/0/</em>,xpub661MyMwAqRbcGDZQUKLqmWodYLcoBQnQH33yYkkF3jjxeLvY8qr2wWGEWkiKFaaQfJCoi3HeEq3Dc5DptfbCyjD38fNhSqtKc1UHaP4ba3t/0/0/&lt;3;4;5&gt;/*))</tt>
-<ul>
-<li><tt>sh(multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/1/0/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/0/</em>,xpub661MyMwAqRbcGDZQUKLqmWodYLcoBQnQH33yYkkF3jjxeLvY8qr2wWGEWkiKFaaQfJCoi3HeEq3Dc5DptfbCyjD38fNhSqtKc1UHaP4ba3t/0/0/3/*))</tt></li>
-<li><tt>sh(multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/2/0/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/0/</em>,xpub661MyMwAqRbcGDZQUKLqmWodYLcoBQnQH33yYkkF3jjxeLvY8qr2wWGEWkiKFaaQfJCoi3HeEq3Dc5DptfbCyjD38fNhSqtKc1UHaP4ba3t/0/0/4/*))</tt></li>
-<li><tt>sh(multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/0/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/0/</em>,xpub661MyMwAqRbcGDZQUKLqmWodYLcoBQnQH33yYkkF3jjxeLvY8qr2wWGEWkiKFaaQfJCoi3HeEq3Dc5DptfbCyjD38fNhSqtKc1UHaP4ba3t/0/0/5/*))</tt></li>
-</ul>
-</li>
-</ul>
-<p>Invalid descriptors</p>
-<ul>
-<li>Multiple multipath specifiers: <tt>pkh(xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/&lt;0;1&gt;/&lt;2;3&gt;)</tt></li>
-<li>Multipath specifier in origin: <tt>pkh([deadbeef/&lt;0;1&gt;]xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/0)</tt></li>
-<li>Multipath specifiers of mismatched lengths: <tt>tr(xpub661MyMwAqRbcF3yVrV2KyYetLMYA5mCbv4BhrKwUrFE9LZM6JRR1AEt8Jq4V4C8LwtTke6YEEdCZqgXp85YRk2j74EfJKhe3QybQ9kcUjs4/&lt;6;7;8;9&gt;/<em>,{pk(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/&lt;1;2;3&gt;/0/</em>),pk(xpub661MyMwAqRbcGDZQUKLqmWodYLcoBQnQH33yYkkF3jjxeLvY8qr2wWGEWkiKFaaQfJCoi3HeEq3Dc5DptfbCyjD38fNhSqtKc1UHaP4ba3t/0/0/&lt;3;4;5&gt;/*)})</tt></li>
-<li>Multipath specifiers of mismatched lengths: <tt>sh(multi(2,xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/&lt;1;2;3&gt;/0/<em>,xprv9uPDJpEQgRQfDcW7BkF7eTya6RPxXeJCqCJGHuCJ4GiRVLzkTXBAJMu2qaMWPrS7AANYqdq6vcBcBUdJCVVFceUvJFjaPdGZ2y9WACViL4L/0/</em>,xprv9s21ZrQH143K3jUwNHoqQNrtzJnJmx4Yup8NkNLdVQCymYbPbJXnPhwkfTfxZfptcs3rLAPUXS39oDLgrNKQGwbGsEmJJ8BU3RzQuvShEG4/0/0/&lt;3;4&gt;/*))</tt></li>
-<li>Empty multipath specifier: <tt>wpkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/&lt;&gt;/*)</tt></li>
-<li>Missing multipath start: <tt>wpkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/0&gt;/*)</tt></li>
-<li>Missing multipath end: <tt>wpkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/&lt;0/*)</tt></li>
-<li>Missing index in multipath specifier: <tt>wpkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/&lt;0;&gt;/*)</tt></li>
-</ul>
-<h2>Backwards Compatibility</h2>
-<p>This is an addition to the Key Expressions defined in BIP 380.
-Key Expressions using the format described in BIP 380 are compatible with this modification and parsers that implement this will still be able to parse such descriptors.
-However as this is an addition to Key Expressions, older parsers will not be able to understand such descriptors.</p>
-<p>This modification to Key Expressions uses two new characters: <tt>&lt;</tt> and <tt>;</tt>.
-These are part of the descriptor character set and so are covered by the checksum algorithm.
-As these are previously unused characters, old parsers will not accidentally mistake them for indicating something else.</p>
-<p>This proposal is in contrast to similar proposals such as BIP 88 which allow for multiple derivation indexes in a single element.
-This limitation exists in order to reduce the number of descriptors that are expanded, avoid confusion about how to expand the descriptor, and avoid having expanded descriptors that users are not expecting.</p>
-<h2>Reference Implementation</h2>
-<p>https://github.com/bitcoin/bitcoin/pull/22838</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

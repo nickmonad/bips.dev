@@ -22,10 +22,13 @@
     <title>BIP 72: bitcoin: uri extensions for Payment Protocol</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 72: bitcoin: uri extensions for Payment Protocol</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 72: bitcoin: uri extensions for Payment Protocol</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2013-07-29</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0072.mediawiki" target="_blank">View on GitHub</a>
@@ -122,98 +162,10 @@ r parameter and will initiate a payment to bitcoin address.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 72: bitcoin: uri extensions for Payment Protocol
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2013-07-29</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0072.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 72
-  Layer: Applications
-  Title: bitcoin: uri extensions for Payment Protocol
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0072
-  Status: Final
-  Type: Standards Track
-  Created: 2013-07-29
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP describes an extension to the bitcoin: URI scheme (BIP 21) to
-support the payment protocol (BIP 70).</p>
-<h2>Motivation</h2>
-<p>Allow users to click on a link in a web page or email to initiate the
-payment protocol, while being backwards-compatible with existing
-bitcoin wallets.</p>
-<h2>Specification</h2>
-<p>The bitcoin: URI scheme is extended with an additional, optional
-&quot;r&quot; parameter, whose value is a URL from which a PaymentRequest
-message should be fetched (characters not allowed within the scope
-of a query parameter must be percent-encoded as described in RFC 3986
-and bip-0021).</p>
-<p>If the &quot;r&quot; parameter is provided and backwards compatibility
-is not required, then the bitcoin address portion of the URI may be
-omitted (the URI will be of the form: bitcoin:?r=... ).</p>
-<p>When Bitcoin wallet software that supports this BIP receives a
-bitcoin: URI with a request parameter, it should ignore the bitcoin
-address/amount/label/message in the URI and instead fetch a
-PaymentRequest message and then follow the payment protocol, as
-described in BIP 70.</p>
-<p>Bitcoin wallets must support fetching PaymentRequests via http and
-https protocols; they may support other protocols. Wallets must
-include an &quot;Accept&quot; HTTP header in HTTP(s) requests (as defined
-in RFC 2616):</p>
-<pre>Accept: application/bitcoin-paymentrequest</pre>
-<p>If a PaymentRequest cannot be obtained (perhaps the server is
-unavailable), then the customer should be informed that the merchant's
-payment processing system is unavailable. In the case of an HTTP
-request, status codes which are neither success nor error (such as
-redirect) should be handled as outlined in RFC 2616.</p>
-<h2>Compatibility</h2>
-<p>Wallet software that does not support this BIP will simply ignore the
-r parameter and will initiate a payment to bitcoin address.</p>
-<h2>Examples</h2>
-<p>A backwards-compatible request:</p>
-<pre><code>bitcoin:mq7se9wy2egettFxPbmn99cK8v5AFq55Lx?amount=0.11&amp;r=https:&#x2F;&#x2F;merchant.com&#x2F;pay.php?h%3D2a8628fc2fbe
-</code></pre>
-<p>Non-backwards-compatible equivalent:</p>
-<pre><code>bitcoin:?r=https:&#x2F;&#x2F;merchant.com&#x2F;pay.php?h%3D2a8628fc2fbe
-</code></pre>
-<h2>References</h2>
-<p><a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html" target="_blank">RFC 2616</a> : Hypertext Transfer Protocol -- HTTP/1.1 </p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

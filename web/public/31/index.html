@@ -22,10 +22,13 @@
     <title>BIP 31: Pong message</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 31: Pong message</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 31: Pong message</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2012-04-11</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0031.mediawiki" target="_blank">View on GitHub</a>
@@ -102,78 +142,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 31: Pong message
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2012-04-11</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0031.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 31
-  Layer: Peer Services
-  Title: Pong message
-  Author: Mike Hearn &lt;hearn@google.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0031
-  Status: Final
-  Type: Standards Track
-  Created: 2012-04-11
-</code></pre>
-<h2>Abstract</h2>
-<p>This document describes a trivial protocol extension that makes it easier for clients to detect dead peer connections.</p>
-<h2>Motivation</h2>
-<p>Today there are a few network related problems that can degrade the Bitcoin user experience:</p>
-<ol>
-<li>
-<p>Some Bitcoin clients run on platforms that can go to sleep and essentially stop running at any time without warning. Notably, this is very common on both mobiles and laptops (shut the lid). When the system comes back, TCP connections that existed before the sleep still exist but may no longer function correctly, eg, because the IP address has changed, or because the remote peer went away or the connection was timed out by some other system. Currently it can often take a while to notice this has happened.</p>
-</li>
-<li>
-<p>The reference Satoshi client is largely single threaded and when placed under heavy load (e.g., because it is downloading the block chain) becomes very slow to respond to network messages. There's no easy way to detect this has occurred, especially if you are just passively waiting for broadcasts from that peer. A way to detect overloaded remote peers and avoid them would both help balance load and provide a better, more responsive system.</p>
-</li>
-<li>
-<p>When downloading large data structures like the block chain it is efficient to choose a peer that is near to you network-wise, in order to reduce load on often congested trans-national links and ensure lower latency. Currently it is difficult to measure the latency to a remote peer so clients don't bother, and instead just select a random peer to download from.</p>
-</li>
-</ol>
-<p>All of these can be solved by a backwards compatible protocol modification.</p>
-<h2>Specification</h2>
-<p>When the protocol version as negotiated in the &quot;ver&quot; message is greater than 60000, the &quot;ping&quot; message must contain a uint64 field called &quot;nonce&quot;. A peer sending &quot;ping&quot; should set the nonce to a random value, and it is then echoed back by the recipient in a new &quot;pong&quot; message that also contains a single uint64 field.</p>
-<p>In this way, the client can send a ping and measure the time taken to receive the corresponding pong. If a client sends two pings before hearing back the first pong, the responses can be distinguished using the nonce. If the client chooses to never overlap pings in this way it should simply set the nonce value to zero.</p>
-<h2>Backward compatibility</h2>
-<p>Clients must opt-in to the new feature by advertising a protocol version &gt; 60000. Clients with older protocol versions are not expected to provide a nonce in the ping message and will not be sent a pong.</p>
-<h2>Implementation</h2>
-<p>https://github.com/bitcoin/bitcoin/pull/932/files</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

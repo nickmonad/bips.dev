@@ -22,10 +22,13 @@
     <title>BIP 122: URI scheme for Blockchain references &#x2F; exploration</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 122: URI scheme for Blockchain references &#x2F; exploration</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 122: URI scheme for Blockchain references &#x2F; exploration</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-08-29</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0122.mediawiki" target="_blank">View on GitHub</a>
@@ -161,137 +201,10 @@ This document is placed in the public domain.
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 122: URI scheme for Blockchain references &#x2F; exploration
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-08-29</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0122.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 122
-  Layer: Applications
-  Title: URI scheme for Blockchain references &#x2F; exploration
-  Author: Marco Pontello &lt;marcopon@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0122
-  Status: Draft
-  Type: Standards Track
-  Created: 2015-08-29
-  License: PD
-  Post-History: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2015-August&#x2F;010712.html
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP proposes a URI scheme for looking up blocks, transactions and addresses on a Blockchain explorer, or in general to make proper Blockchain references.</p>
-<h2>Motivation</h2>
-<p>The purpose of this URI scheme is to enable users to handle all the requests for details about blocks, transactions, etc. with their preferred tool (being that a web service or a local application).
-Currently a Bitcoin client usually points to an arbitrary blockchain explorer when the user looks for the details of a transaction or allows the user to choose from a set of alternatives.
-Resorting to copy + paste into a browser is often required.
-The same happens with posts and messages that reference some particular txs or blocks, if they provide links at all.</p>
-<h2>Specification</h2>
-<p>The URI follow this form:</p>
-<pre><code> &lt;nowiki&gt;blockchain:[&#x2F;&#x2F;&lt;chain&gt;]&#x2F;&lt;tx|block|address&gt;&#x2F;&lt;hash&gt;&lt;&#x2F;nowiki&gt;
-</code></pre>
-<p>Where:</p>
-<p>|style=&quot;text-align: center;&quot; | Element|Required?|
-|-|-|
-|chain|optional|
-|rowspan=&quot;3&quot; | type|tx|for transactions.|rowspan=&quot;3&quot; | required|
-|block|for blocks (supports both hash or height).|
-|address|for addresses.|
-|hash|required|</p>
-<h4>ABNF grammar</h4>
-<pre><code>blockchainuri = &quot;blockchain:&quot; [&quot;&#x2F;&#x2F;&quot; chain] &quot;&#x2F;&quot; object
-object = (&quot;tx&quot; &quot;&#x2F;&quot; hash) &#x2F; (&quot;block&quot; &quot;&#x2F;&quot; (hash &#x2F; blockheight)) &#x2F;
-         (&quot;address&quot; &quot;&#x2F;&quot; address)
-chain = hash
-hash = 64HEXDIG
-blockheight = 1*15DIGIT ; 15 is somehow arbitrary, i.e. a &quot;small&quot; int.
-address = base58 ; https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Base58
-</code></pre>
-<hr />
-<h3>Definition of chain ID</h3>
-<p>The <strong>chain ID</strong> of a chain is the block hash of the corresponding genesis block. For forked chains, it's the block hash of the first block after fork.</p>
-<p>So, for example:</p>
-<pre><code>Bitcoin main   : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f 
-Bitcoin test   : 000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943
-Bitcoin regtest: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206 
-</code></pre>
-<p>An example of forked chain (Feathercoin, that forked Litecoin):</p>
-<p><img src=bip-0122/chainid.png></img></p>
-<pre><code>Litecoin   : 12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2
-Feathercoin: fdbe99b90c90bae7505796461471d89ae8388ab953997aa06a355bbda8d915cb
-&lt;&#x2F;pre&gt;  
-
-
-==Examples==
-
-A transaction on Bitcoin main net:
- blockchain:&#x2F;tx&#x2F;b462ae6eb8bdae2e060239a2a3ea5d9c3e0f9ef34d9717beb2dcf0ed42cee7da
-
-A block on Bitcoin main net:
- blockchain:&#x2F;block&#x2F;00000000000000000119af5bcae2926df54ae262e9071a94a99c913cc217cc72
-or
- blockchain:&#x2F;block&#x2F;372338
-
-An address on Bitcoin main net:
- blockchain:&#x2F;address&#x2F;16EW6Rv9P9AxFDBrZV816dD4sj1EAYUX3f
-
-A transaction on Bitcoin test net:
- blockchain:&#x2F;&#x2F;000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943&#x2F;tx&#x2F;3b95a766d7a99b87188d6875c8484cb2b310b78459b7816d4dfc3f0f7e04281a
-
-==Rationale==
-
-From the point of view of a wallet (or other Blockchain related tool) developers which need to reference Blockchain data, using this scheme mean that he can simply make it a `blockchain:` link without having to worry about any specific Blockchain explorer or provide a means for the user to select one.
-
-Blockchain explorers in turn will simply offer to handle the `blockchain:` URI schema, the first time the user visit their website, or launch&#x2F;install the application, or even set themselves if there isn&#x27;t already one.
-
-Users can link directly to their preferred block explorer (avoiding copy + paste which can be awkward on mobile devices).
-
-== Sample implementation ==
-
-[https:&#x2F;&#x2F;github.com&#x2F;MarcoPon&#x2F;blockchain-exploration Demo Blockchain: URI handler on GitHub]
-
-==Acknowledgements==
-
-Thanks to Btc Drak for suggesting support for different networks and Jorge Timon for the suggestion that we could identify each network by its genesis block hash.
-Thanks to Richard Moore, Matt Whitlock, Andreas Schildbach for help with the structure and hierarchy of the URI scheme.
-
-==Copyright==
-
-This document is placed in the public domain.
-</code></pre>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

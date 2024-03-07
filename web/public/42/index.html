@@ -22,10 +22,13 @@
     <title>BIP 42: A finite monetary supply for Bitcoin</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 42: A finite monetary supply for Bitcoin</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 42: A finite monetary supply for Bitcoin</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2014-04-01</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0042.mediawiki" target="_blank">View on GitHub</a>
@@ -119,95 +159,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 42: A finite monetary supply for Bitcoin
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2014-04-01</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0042.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 42
-  Layer: Consensus (soft fork)
-  Title: A finite monetary supply for Bitcoin
-  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: Unanimously Recommended for implementation
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0042
-  Status: Final
-  Type: Standards Track
-  Created: 2014-04-01
-  License: PD
-</code></pre>
-<h2>Abstract</h2>
-<p>Although it is widely believed that Satoshi was an inflation-hating goldbug he never said this, and in fact programmed Bitcoin's money supply to grow indefinitely, forever. He modeled the monetary supply as 4 gold mines being discovered per mibillenium (1024 years), with equal intervals between them, each one being depleted over the course of 140 years.</p>
-<p>This poses obvious problems, however. Prominent among them is the discussion on what to call 1 billion Bitcoin, which symbol color to use for it, and when wallet clients should switch to it by default.</p>
-<p>To combat this, this document proposes a controversial change: making Bitcoin's monetary supply finite.</p>
-<h2>Details</h2>
-<p>As is well known, Satoshi was a master programmer whose knowledge of C++ was surpassed only by his knowledge of Japanese culture. The code below:</p>
-<pre><code>    int64_t nSubsidy = 50 * COIN;
-    &#x2F;&#x2F; Subsidy is cut in half every 210,000 blocks
-    &#x2F;&#x2F; which will occur approximately every 4 years.
-    nSubsidy &gt;&gt;= (nHeight &#x2F; 210000);
-</code></pre>
-<p>is carefully written to rely on undefined behaviour in the C++ specification - perhaps so it can be hardware accelerated in future.</p>
-<p>The block number is divided by 210000 (the &quot;apparent&quot; subsidy halving interval in blocks), and the result is used as input for a binary shift, applied to the original payout (50 BTC), expressed in base units. Thanks to the new-goldmine interval being exactly 64 times the halving interval, and 64 being the size in bits of the currency datatype, the cycle repeats itself every 64 halvings on all currently supported platforms.</p>
-<p>Despite the nice showoff of underhanded programming skills - we want Bitcoin to be well-specified. Otherwise, we're clearly in for a bumpy ride:</p>
-<p><img src="bip-0042/inflation.png"></img></p>
-<p>Note that several other programming languages do not exhibit this behaviour, making new implementations likely to be slower and generally more bogus than Bitcoin Core. For example, Python unexpectedly returns 0 when shifting an integer beyond its size.</p>
-<h2>Other solutions</h2>
-<h3>Floating-point approximation</h3>
-<p>An obvious solution would be to reimplement the shape of the subsidy curve using floating-point approximations, such as simulated annealing or quantitative easing, which have already proven their worth in consensus systems. Unfortunately, since the financial crisis everyone considers numbers with decimal points in them fishy, and integers are not well supported by Javascript. </p>
-<h3>Truncation</h3>
-<p>An alternative solution would be to represent the total number of bitcoins as a string:</p>
-<pre><code>    &quot;21000000000000000000000&quot;
-</code></pre>
-<p>and then use string manipulation to remove the rightmost zero every 4 years, give or take a leap-year:</p>
-<pre><code>    strSubsidy = strSubsidy.substr(0, strSubsidy.size() - 2);
-</code></pre>
-<p>This style relies less heavily on clever C++ and is more familiar to the Core Dev Team who are primarily PHP programmers.</p>
-<h2>Proposal</h2>
-<p>Instead, how about we stop thinking about long term issues when we'll all be dead (barring near lightspeed travel, cryogenic revival, or other technology— like cryptocurrency— which only exists in science fiction).</p>
-<p>A softfork (see BIP16, BIP34, BIP62) will take place on april 1st 2214, permanently setting the subsidy to zero. The result of this will be that the total currency supply will be limited to 42 halfmillion (including the genesis coinbase output, which is not actually spendable).</p>
-<h2>Implementation</h2>
-<p>An implementation for the reference client can be found on https://github.com/bitcoin/bitcoin/pull/3842 .</p>
-<h2>Compatibility</h2>
-<p>Given the moderate time frame over which this change is to be implemented, we expect all miners to choose to screw themselves and deploy this change before 2214.</p>
-<p>If they don't, and a minority remains on the old code base, a fork may occur. Essentially, they'll be mining fool's gold after that time.</p>
-<h2>Acknowledgements</h2>
-<p>Thanks to Gregory Maxwell for proposing this solution, and to Mike Hearn for insights into web development. Also thanks to &quot;ditto-b&quot; on github to implement a prototype ahead of time.</p>
-<h2>Copyright</h2>
-<p>This document is placed in the public domain.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

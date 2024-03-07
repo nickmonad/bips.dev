@@ -22,10 +22,13 @@
     <title>BIP 100: Dynamic maximum block size by miner vote</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 100: Dynamic maximum block size by miner vote</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 100: Dynamic maximum block size by miner vote</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-06-11</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0100.mediawiki" target="_blank">View on GitHub</a>
@@ -142,118 +182,10 @@ https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398</br></p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 100: Dynamic maximum block size by miner vote
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-06-11</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0100.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 100
-  Layer: Consensus (hard fork)
-  Title: Dynamic maximum block size by miner vote
-  Author: Jeff Garzik &lt;jgarzik@gmail.com&gt;
-          Tom Harding &lt;tomh@thinlink.com&gt;
-          Dagur Valberg Johannsson &lt;dagurval@pvv.ntnu.no&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0100
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-06-11
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>Replace the static 1M block size hard limit with a hard limit set by coinbase vote, conducted on the same schedule as difficulty retargeting.</p>
-<h2>Motivation</h2>
-<p>Miners directly feel the effects, both positive and negative, of any maximum block size change imposed by their peers.  Larger blocks allow more growth in the on-chain ecosystem, while smaller blocks reduce resource requirements network-wide.  Miners also act as an efficient proxy for the rest of the ecosystem, since they are paid in the tokens collected for the blocks they create.</p>
-<p>A simple deterministic system is specified, whereby a 75% mining supermajority may activate a change to the maximum block size each 2016 blocks.  Each change is limited to a 5% increase from the previous block size hard limit, or a decrease of similar magnitude.  Among adopting nodes, there will be no disagreement on the evolution of the maximum block size.</p>
-<p>The system is compatible with emergent consensus, but whereas under that system a miner may choose to accept any size block, a miner following BIP100 observes the 75% supermajority rule, and the 5% change limit rule.  Excessive-block values signaled by emergent consensus blocks are considered in the calculation of the BIP100 block size hard limit, and the BIP100 calculated maximum block size is signaled as an excessive-block value for the benefit of all observers.</p>
-<h2>Specification</h2>
-<h3>Dynamic Maximum Block Size</h3>
-<ol>
-<li>Initial value of <code>hardLimit</code> is 1000000 bytes, preserving current system.</li>
-<li>Changing <code>hardLimit</code> is accomplished by encoding a proposed value, a vote, within a block's coinbase scriptSig, and by processing the votes contained in the previous retargeting period.<br /><br />
-<ol>
-<li>Vote encoding
-<ol>
-<li>A vote is represented as a megabyte value using the BIP100 pattern<br /><br /><code>/BIP100/B[0-9]+/</code><br /><br />Example: <code>/BIP100/B8/</code> is a vote for a 8000000-byte <code>hardLimit</code>.<br /><br /></li>
-<li>If the block height is encoded at the start of the coinbase scriptSig, as per BIP34, it is ignored.</li>
-<li>Only the first BIP100 pattern match is processed in &quot;Maximum block size recalculation&quot; below.</li>
-<li>A megabyte value is represented by consecutive base-ten digits.</li>
-<li>If no BIP100 pattern is matched, the first matching emergent consensus pattern <code>/EB[0-9]+/</code>, if any, is accepted as the megabyte vote.<br /><br /></li>
-</ol>
-</li>
-<li>Maximum block size recalculation
-<ol>
-<li>A <code>new hardLimit</code> is calculated after each difficulty adjustment period of 2016 blocks, and applies to the next 2016 blocks.</li>
-<li>Absent/zero-valued votes are counted as votes for the <code>current hardLimit</code>.</li>
-<li>The votes of the previous 2016 blocks are sorted by megabyte vote.</li>
-<li>Raising <code>hardLimit</code><br /><br />
-1.  The <code>raise value</code> is defined as the vote of the 1512th highest block, converted to bytes.
-1.  If the resultant <code>raise value</code> is greater than (<code>current hardLimit</code> * 1.05) rounded down, it is set to that value.
-1.  If the resultant <code>raise value</code> is greater than <code>current hardLimit</code>, the <code>raise value</code> becomes the <code>new hardLimit</code> and the recalculation is complete.<br /><br /></li>
-<li>Lowering <code>hardLimit</code><br /><br />
-1.  The <code>lower value</code> is defined as the vote of the 1512th lowest block, converted to bytes.
-1.  If the resultant <code>lower value</code> is less than (<code>current hardLimit</code> / 1.05) rounded down, it is set to that value.
-1.  If the resultant <code>lower value</code> is less than <code>current hardLimit</code>, the <code>lower value</code> becomes the <code>new hardLimit</code> and the recalculation is complete.<br /><br /></li>
-<li>Otherwise, <code>new hardLimit</code> remains the same as <code>current hardLimit</code>.</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<h3>Signature Hashing Operations Limits</h3>
-<ol>
-<li>The per-block signature hashing operations limit is scaled to (actual block size, fractional megabyte rounded to next higher megabyte) / 50.</li>
-<li>A maximum serialized transaction size of 1000000 bytes is imposed.</li>
-</ol>
-<h2>Recommendations</h2>
-<h3>Publication of <code>hardLimit</code></h3>
-<ol>
-<li>For the benefit of all observers, it is recommended that <code>hardLimit</code> be published.  Example: a complete coinbase string might read <br /><br /><code>/BIP100/B8/EB2.123456/</code><br /><br /> which indicates a vote for 8M maximum block size, and an enforced <code>hardLimit</code> of 2.123456 megabytes for the block containing the coinbase string.</li>
-</ol>
-<h2>Deployment</h2>
-<p>This BIP is presumed deployed and activated as of block height 449568 by implementing nodes on the bitcoin mainnet. It has no effect until a raise value different from 1M is observed, which requires at least 1512 of 2016 blocks to vote differently from 1M.</p>
-<h2>Backward compatibility</h2>
-<p>The first block larger than 1M will create a network partition, as nodes with a fixed 1M hard limit reject that block.</p>
-<h2>Implementations</h2>
-<p>https://github.com/bitcoinxt/bitcoinxt/pull/188</br>
-https://github.com/bitcoinxt/bitcoin/pull/1</br>
-https://github.com/BitcoinUnlimited/BitcoinUnlimited/pull/398</br></p>
-<h2>Copyright</h2>
-<p>This document is licensed under the BSD 2-clause license.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

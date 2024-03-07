@@ -22,10 +22,13 @@
     <title>BIP 14: Protocol Version and User Agent</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 14: Protocol Version and User Agent</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 14: Protocol Version and User Agent</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2011-11-10</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0014.mediawiki" target="_blank">View on GitHub</a>
@@ -133,109 +173,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 14: Protocol Version and User Agent
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2011-11-10</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0014.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 14
-  Layer: Peer Services
-  Title: Protocol Version and User Agent
-  Author: Amir Taaki &lt;genjix@riseup.net&gt;
-          Patrick Strateman &lt;bitcoin-bips@covertinferno.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0014
-  Status: Final
-  Type: Standards Track
-  Created: 2011-11-10
-  Post-History: 2011-11-02
-</code></pre>
-<p>In this document, bitcoin will be used to refer to the protocol while Satoshi will refer to the current client in order to prevent confusion.</p>
-<h2> Past Situation </h2>
-<p>Bitcoin as a protocol began life with the Satoshi client. Now that the community is diversifying, a number of alternative clients with their own codebases written in a variety of languages (Java, Python, Javascript, C++) are rapidly developing their own feature-sets.</p>
-<p>Embedded in the protocol is a version number. Primarily this version number is in the &quot;version&quot; and &quot;getblocks&quot; messages, but is also in the &quot;block&quot; message to indicate the software version that created that block. Currently this version number is the same version number as that of the client. This document is a proposal to separate the protocol version from the client version, together with a proposed method to do so.</p>
-<h2> Rationale </h2>
-<p>With non-separated version numbers, every release of the Satoshi client will increase its internal version number. Primarily this holds every other client hostage to a game of catch-up with Satoshi version number schemes. This plays against the decentralised nature of bitcoin, by forcing every software release to remain in step with the release schedule of one group of bitcoin developers.</p>
-<p>Version bumping can also introduce incompatibilities and fracture the network. In order that the health of the network is maintained, the development of the protocol as a shared common collaborative process requires being split off from the implementation of that protocol. Neutral third entities to guide the protocol with representatives from all groups, present the chance for bitcoin to grow in a positive manner with minimal risks.</p>
-<p>By using a protocol version, we set all implementations on the network to a common standard. Everybody is able to agree within their confines what is protocol and what is implementation-dependent. A user agent string is offered as a 'vanity-plate' for clients to distinguish themselves in the network.</p>
-<p>Separation of the network protocol from the implemention, and forming development of said protocol by means of a mutual consensus among participants, has the democratic disadvantage when agreement is hard to reach on contentious issues. To mitigate this issue, strong communication channels and fast release schedules are needed, and are outside the scope of this document (concerning a process-BIP type).</p>
-<p>User agents provide extra tracking information that is useful for keeping tabs on network data such as client implementations used or common architectures/operating-systems. In the rare case they may even provide an emergency method of shunning faulty clients that threaten network health- although this is strongly unrecommended and extremely bad form. The user agent does not provide a method for clients to work around and behave differently to different implementations, as this will lead to protocol fracturing.</p>
-<p>In short:</p>
-<ul>
-<li>Protocol version: way to distinguish between nodes and behave different accordingly.</li>
-<li>User agent: simple informational tool. Protocol should not be modified depending on user agent.</li>
-</ul>
-<h2> Browser User-Agents </h2>
-<p><a href="http://tools.ietf.org/html/rfc1945" target="_blank">RFC 1945</a> vaguely specifies a user agent to be a string of the product with optional comments.</p>
-<pre><code>  Mozilla&#x2F;5.0 (X11; U; Linux i686; en-US; rv:1.9.1.6) Gecko&#x2F;20100127 Gentoo Shiretoko&#x2F;3.5.6
-</code></pre>
-<p>User agents are most often parsed by computers more than humans. The space delimited format, does not provide an easy, fast or efficient way for parsing. The data contains no structure indicating hierarchy in this placement.</p>
-<p>The most immediate pieces of information there are the browser product, rendering engine and the build (Gentoo Shiretoko) together with version number. Various other pieces of information as included as comments such as desktop environment, platform, language and revision number of the build.</p>
-<h2> Proposal </h2>
-<p>The version field in &quot;version&quot; and &quot;getblocks&quot; packets will become the protocol version number. The version number in the &quot;blocks&quot; reflects the protocol version from when that block was created.</p>
-<p>The currently unused sub_version_num field in &quot;version&quot; packets will become the new user-agent string.</p>
-<p>Bitcoin user agents are a modified browser user agent with more structure to aid parsers and provide some coherence. In bitcoin, the software usually works like a stack starting from the core code-base up to the end graphical interface. Therefore the user agent strings codify this relationship.</p>
-<p>Basic format:</p>
-<pre><code>  &#x2F;Name:Version&#x2F;Name:Version&#x2F;...&#x2F;
-</code></pre>
-<p>Example:</p>
-<pre><code>  &#x2F;Satoshi:5.64&#x2F;bitcoin-qt:0.4&#x2F;
-  &#x2F;Satoshi:5.12&#x2F;Spesmilo:0.8&#x2F;
-</code></pre>
-<p>Here bitcoin-qt and Spesmilo may use protocol version 5.0, however the internal codebase they use are different versions of the same software. The version numbers are not defined to any strict format, although this guide recommends:</p>
-<ul>
-<li>Version numbers in the form of Major.Minor.Revision (2.6.41)</li>
-<li>Repository builds using a date in the format of YYYYMMDD (20110128)</li>
-</ul>
-<p>For git repository builds, implementations are free to use the git commitish. However the issue lies in that it is not immediately obvious without the repository which version precedes another. For this reason, we lightly recommend dates in the format specified above, although this is by no means a requirement.</p>
-<p>Optional -r1, -r2, ... can be appended to user agent version numbers. This is another light recommendation, but not a requirement. Implementations are free to specify version numbers in whatever format needed insofar as it does not include (, ), : or / to interfere with the user agent syntax.</p>
-<p>An optional comments field after the version number is also allowed. Comments should be delimited by brackets (...). The contents of comments is entirely implementation defined although this BIP recommends the use of semi-colons ; as a delimiter between pieces of information.</p>
-<p>Example:</p>
-<pre><code>  &#x2F;BitcoinJ:0.2(iPad; U; CPU OS 3_2_1)&#x2F;AndroidBuild:0.8&#x2F;
-</code></pre>
-<p>Reserved symbols are therefore: / : ( )</p>
-<p>They should not be misused beyond what is specified in this section.</p>
-<ul>
-<li>/ separates the code-stack</li>
-<li>: specifies the implementation version of the particular stack</li>
-<li>( and ) delimits a comment which optionally separates data using ;</li>
-</ul>
-<h2> Timeline </h2>
-<p>When this document was published, the bitcoin protocol and Satoshi client versions were currently at 0.5 and undergoing changes. In order to minimise disruption and allow the undergoing changes to be completed, the next protocol version at 0.6 became peeled from the client version (also at 0.6). As of that time (January 2012), protocol and implementation version numbers are distinct from each other.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

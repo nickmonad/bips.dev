@@ -22,10 +22,13 @@
     <title>BIP 149: Segregated Witness (second deployment)</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 149: Segregated Witness (second deployment)</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 149: Segregated Witness (second deployment)</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2017-04-14</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0149.mediawiki" target="_blank">View on GitHub</a>
@@ -109,85 +149,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 149: Segregated Witness (second deployment)
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2017-04-14</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0149.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 149
-  Layer: Consensus (soft fork)
-  Title: Segregated Witness (second deployment)
-  Author: Shaolin Fry &lt;shaolinfry@protonmail.ch&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0149
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2017-04-14
-  License: BSD-3-Clause
-           CC0-1.0
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies a user activated soft fork for <a href="/141" target="_blank">BIP141</a>, <a href="/143" target="_blank">BIP143</a> and <a href="/147" target="_blank">BIP147</a> using versionbits with guaranteed lock-in.</p>
-<h2>Motivation</h2>
-<p>Miners have been reluctant to signal the BIP9 segwit deployment despite a large portion of the Bitcoin ecosystem who want the soft fork activated. This BIP specifies a user activated soft fork (UASF) that deploys segwit again using versionbits with guaranteed lock-in on timeout if the BIP is not already locked-in or activated by the timeout. This ensures users have sufficient time to prepare and no longer require a miner supermajority, while still allowing for an earlier miner activated soft fork (MASF).</p>
-<h2>Reference implementation</h2>
-<p>The reference implementation will refuse to run on Bitcoin mainnet before 7 November 2017, and can only be run on testnet and regtest until then.</p>
-<p>https://github.com/bitcoin/bitcoin/compare/master...shaolinfry:uasegwit-flagday</p>
-<h2>Specification</h2>
-<p>This deployment will set service bit (1&lt;&lt;5) as NODE_UAWITNESS.</p>
-<h2>Deployment</h2>
-<p>This BIP should only be deployed if BIP9-segwit fails to lock-in or activate before timeout on 15 November 2017. This BIP cannot be deployed before 15 November 2017.</p>
-<p>This BIP will be deployed by BIP8 with the name &quot;segwit&quot; and using bit 1.</p>
-<p>For Bitcoin mainnet, the BIP8 starttime will be midnight 16 November 2017 UTC (Epoch timestamp 1510790400) and BIP8 timeout will be 4 July 2018 UTC (Epoch timestamp 1530662400).</p>
-<p>For Bitcoin testnet, segwit is already activated so no deployment is specified.</p>
-<h2>Backwards Compatibility</h2>
-<p>This deployment reuses the GBT deployment name &quot;segwit&quot; to maintain compatibility with existing mining software.</p>
-<p>This deployment is incompatible with the BIP9-segwit deployment and should not be run concurrently with it.</p>
-<h2>Rationale</h2>
-<p>The <strong>starttime</strong> of this BIP is after the BIP9-segwit timeout to remove compatibility issues with old nodes.</p>
-<h2>References</h2>
-<p><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-April/014234.html" target="_blank">Mailing list discussion</a></p>
-<p><a href="/8" target="_blank">BIP8</a></p>
-<p><a href="/9" target="_blank">BIP9</a></p>
-<p><a href="/141" target="_blank">BIP141</a></p>
-<p><a href="/143" target="_blank">BIP143</a></p>
-<p><a href="/147" target="_blank">BIP147</a></p>
-<h2>Copyright</h2>
-<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

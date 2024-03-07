@@ -22,10 +22,13 @@
     <title>BIP 39: Mnemonic code for generating deterministic keys</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 39: Mnemonic code for generating deterministic keys</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 39: Mnemonic code for generating deterministic keys</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2013-09-10</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0039.mediawiki" target="_blank">View on GitHub</a>
@@ -259,235 +299,10 @@ passphrase &quot;TREZOR&quot; is used for all vectors.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 39: Mnemonic code for generating deterministic keys
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2013-09-10</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0039.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 39
-  Layer: Applications
-  Title: Mnemonic code for generating deterministic keys
-  Author: Marek Palatinus &lt;slush@satoshilabs.com&gt;
-          Pavol Rusnak &lt;stick@satoshilabs.com&gt;
-          Aaron Voisine &lt;voisine@gmail.com&gt;
-          Sean Bowe &lt;ewillbefull@gmail.com&gt;
-  Comments-Summary: Unanimously Discourage for implementation
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0039
-  Status: Proposed
-  Type: Standards Track
-  Created: 2013-09-10
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP describes the implementation of a mnemonic code or mnemonic sentence --
-a group of easy to remember words -- for the generation of deterministic wallets.</p>
-<p>It consists of two parts: generating the mnemonic and converting it into a
-binary seed. This seed can be later used to generate deterministic wallets using
-BIP-0032 or similar methods.</p>
-<h2>Motivation</h2>
-<p>A mnemonic code or sentence is superior for human interaction compared to the
-handling of raw binary or hexadecimal representations of a wallet seed. The
-sentence could be written on paper or spoken over the telephone.</p>
-<p>This guide is meant to be a way to transport computer-generated randomness with
-a human-readable transcription. It's not a way to process user-created
-sentences (also known as brainwallets) into a wallet seed.</p>
-<h2>Generating the mnemonic</h2>
-<p>The mnemonic must encode entropy in a multiple of 32 bits. With more entropy
-security is improved but the sentence length increases. We refer to the
-initial entropy length as ENT. The allowed size of ENT is 128-256 bits.</p>
-<p>First, an initial entropy of ENT bits is generated. A checksum is generated by
-taking the first <code>ENT / 32</code> bits of its SHA256 hash. This checksum is
-appended to the end of the initial entropy. Next, these concatenated bits
-are split into groups of 11 bits, each encoding a number from 0-2047, serving
-as an index into a wordlist. Finally, we convert these numbers into words and
-use the joined words as a mnemonic sentence.</p>
-<p>The following table describes the relation between the initial entropy
-length (ENT), the checksum length (CS), and the length of the generated mnemonic
-sentence (MS) in words.</p>
-<pre><code>CS = ENT &#x2F; 32
-MS = (ENT + CS) &#x2F; 11
-
-|  ENT  | CS | ENT+CS |  MS  |
-+-------+----+--------+------+
-|  128  |  4 |   132  |  12  |
-|  160  |  5 |   165  |  15  |
-|  192  |  6 |   198  |  18  |
-|  224  |  7 |   231  |  21  |
-|  256  |  8 |   264  |  24  |
-</code></pre>
-<h2>Wordlist</h2>
-<p>An ideal wordlist has the following characteristics:</p>
-<p>a) smart selection of words</p>
-<pre><code>   - the wordlist is created in such a way that it&#x27;s enough to type the first four
-     letters to unambiguously identify the word
-</code></pre>
-<p>b) similar words avoided</p>
-<pre><code>   - word pairs like &quot;build&quot; and &quot;built&quot;, &quot;woman&quot; and &quot;women&quot;, or &quot;quick&quot; and &quot;quickly&quot;
-     not only make remembering the sentence difficult but are also more error
-     prone and more difficult to guess
-</code></pre>
-<p>c) sorted wordlists</p>
-<pre><code>   - the wordlist is sorted which allows for more efficient lookup of the code words
-     (i.e. implementations can use binary search instead of linear search)
-   - this also allows trie (a prefix tree) to be used, e.g. for better compression
-</code></pre>
-<p>The wordlist can contain native characters, but they must be encoded in UTF-8
-using Normalization Form Compatibility Decomposition (NFKD).</p>
-<h2>From mnemonic to seed</h2>
-<p>A user may decide to protect their mnemonic with a passphrase. If a passphrase is not
-present, an empty string &quot;&quot; is used instead.</p>
-<p>To create a binary seed from the mnemonic, we use the PBKDF2 function with a mnemonic
-sentence (in UTF-8 NFKD) used as the password and the string &quot;mnemonic&quot; + passphrase (again
-in UTF-8 NFKD) used as the salt. The iteration count is set to 2048 and HMAC-SHA512 is used as
-the pseudo-random function. The length of the derived key is 512 bits (= 64 bytes).</p>
-<p>This seed can be later used to generate deterministic wallets using BIP-0032 or
-similar methods.</p>
-<p>The conversion of the mnemonic sentence to a binary seed is completely independent
-from generating the sentence. This results in a rather simple code; there are no
-constraints on sentence structure and clients are free to implement their own
-wordlists or even whole sentence generators, allowing for flexibility in wordlists
-for typo detection or other purposes.</p>
-<p>Although using a mnemonic not generated by the algorithm described in &quot;Generating the
-mnemonic&quot; section is possible, this is not advised and software must compute a
-checksum for the mnemonic sentence using a wordlist and issue a warning if it is
-invalid.</p>
-<p>The described method also provides plausible deniability, because every passphrase
-generates a valid seed (and thus a deterministic wallet) but only the correct one
-will make the desired wallet available.</p>
-<h2>Wordlists</h2>
-<p>Since the vast majority of BIP39 wallets supports only the English wordlist,
-it is <strong>strongly discouraged</strong> to use non-English wordlists for generating
-the mnemonic sentences.</p>
-<p>If you still feel your application really needs to use a localized wordlist,
-use one of the following instead of inventing your own.</p>
-<ul>
-<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0039/bip-0039-wordlists.md" target="_blank">Wordlists</a></li>
-</ul>
-<h2>Test vectors</h2>
-<p>The test vectors include input entropy, mnemonic and seed. The
-passphrase &quot;TREZOR&quot; is used for all vectors.</p>
-<p>https://github.com/trezor/python-mnemonic/blob/master/vectors.json</p>
-<p>Also see https://github.com/bip32JP/bip32JP.github.io/blob/master/test_JP_BIP39.json</p>
-<p>(Japanese wordlist test with heavily normalized symbols as passphrase)</p>
-<h2>Reference Implementation</h2>
-<p>Reference implementation including wordlists is available from</p>
-<p>http://github.com/trezor/python-mnemonic</p>
-<h2>Other Implementations</h2>
-<p>Go:</p>
-<ul>
-<li>https://github.com/tyler-smith/go-bip39</li>
-</ul>
-<p>Python:</p>
-<ul>
-<li>https://github.com/meherett/python-hdwallet</li>
-</ul>
-<p>Elixir:</p>
-<ul>
-<li>https://github.com/aerosol/mnemo</li>
-</ul>
-<p>Objective-C:</p>
-<ul>
-<li>https://github.com/nybex/NYMnemonic</li>
-</ul>
-<p>Haskell:</p>
-<ul>
-<li>https://github.com/haskoin/haskoin</li>
-</ul>
-<p>.NET (Standard):</p>
-<ul>
-<li>https://www.nuget.org/packages/dotnetstandard-bip39/</li>
-</ul>
-<p>.NET C# (PCL):</p>
-<ul>
-<li>https://github.com/Thashiznets/BIP39.NET</li>
-</ul>
-<p>.NET C# (PCL):</p>
-<ul>
-<li>https://github.com/NicolasDorier/NBitcoin</li>
-</ul>
-<p>JavaScript:</p>
-<ul>
-<li>https://github.com/bitpay/bitcore/tree/master/packages/bitcore-mnemonic</li>
-<li>https://github.com/bitcoinjs/bip39 (used by <a href="https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/hd-wallet.js L121-L146" target="_blank">blockchain.info</a>)</li>
-<li>https://github.com/dashhive/DashPhrase.js</li>
-<li>https://github.com/hujiulong/web-bip39</li>
-</ul>
-<p>Java:</p>
-<ul>
-<li>https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/crypto/MnemonicCode.java</li>
-</ul>
-<p>Ruby:</p>
-<ul>
-<li>https://github.com/sreekanthgs/bip_mnemonic</li>
-</ul>
-<p>Rust:</p>
-<ul>
-<li>https://github.com/maciejhirsz/tiny-bip39/</li>
-<li>https://github.com/koushiro/bip0039-rs</li>
-</ul>
-<p>Smalltalk:</p>
-<ul>
-<li>https://github.com/eMaringolo/pharo-bip39mnemonic</li>
-</ul>
-<p>Swift:</p>
-<ul>
-<li>https://github.com/CikeQiu/CKMnemonic</li>
-<li>https://github.com/yuzushioh/WalletKit</li>
-<li>https://github.com/pengpengliu/BIP39</li>
-<li>https://github.com/matter-labs/web3swift/blob/develop/Sources/web3swift/KeystoreManager/BIP39.swift</li>
-<li>https://github.com/zcash-hackworks/MnemonicSwift</li>
-<li>https://github.com/ShenghaiWang/BIP39</li>
-<li>https://github.com/anquii/BIP39</li>
-</ul>
-<p>C++:</p>
-<ul>
-<li>https://github.com/libbitcoin/libbitcoin-system/blob/master/include/bitcoin/system/wallet/mnemonic.hpp</li>
-</ul>
-<p>C (with Python/Java/Javascript bindings):</p>
-<ul>
-<li>https://github.com/ElementsProject/libwally-core</li>
-</ul>
-<p>Python:</p>
-<ul>
-<li>https://github.com/scgbckbone/btc-hd-wallet</li>
-</ul>
-<p>Dart:</p>
-<ul>
-<li>https://github.com/dart-bitcoin/bip39</li>
-</ul>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

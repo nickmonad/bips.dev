@@ -22,10 +22,13 @@
     <title>BIP 30: Duplicate transactions</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 30: Duplicate transactions</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 30: Duplicate transactions</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2012-02-22</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0030.mediawiki" target="_blank">View on GitHub</a>
@@ -113,89 +153,10 @@ There have been additional commits to refine the implementation of this BIP.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 30: Duplicate transactions
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2012-02-22</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0030.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 30
-  Layer: Consensus (soft fork)
-  Title: Duplicate transactions
-  Author: Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0030
-  Status: Final
-  Type: Standards Track
-  Created: 2012-02-22
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>This document gives a specification for dealing with duplicate transactions in the block chain, in an attempt to solve certain problems the reference implementation has with them.</p>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the 2-clause BSD license.</p>
-<h2>Motivation</h2>
-<p>So far, the Bitcoin reference implementation always assumed duplicate transactions (transactions with the same identifier) didn't exist. This is not true; in particular coinbases are easy to duplicate, and by building on duplicate coinbases, duplicate normal transactions are possible as well. Recently, an attack that exploits the reference implementation's dealing with duplicate transactions was described and demonstrated. It allows reverting fully-confirmed transactions to a single confirmation, making them vulnerable to become unspendable entirely. Another attack is possible that allows forking the block chain for a subset of the network.</p>
-<h2>Specification</h2>
-<p>To counter this problem, the following network rule is introduced:</p>
-<ul>
-<li>Blocks are not allowed to contain a transaction whose identifier matches that of an earlier, not-fully-spent transaction in the same chain.</li>
-</ul>
-<p>This rule initially applied to all blocks whose timestamp is after March 15, 2012, 00:00 UTC (testnet: February 20, 2012 00:00 UTC). It was later extended by Commit <a href="https://github.com/bitcoin/bitcoin/commit/ab91bf39b7c11e9c86bb2043c24f0f377f1cf514" target="_blank">Apply BIP30 checks to all blocks except the two historic violations.</a> to apply to all blocks except the two historic blocks at heights 91842 and 91880 on the main chain that had to be grandfathered in.</p>
-<h2>Rationale</h2>
-<p>Whatever solution is used, the following law must be obeyed to guarantee sane behaviour: the set of usable
-transactions outputs must not be modified by adding blocks to the chain and removing them again. This happens during
-a reorganisation, and the current Bitcoin reference implementation does not obey this law in case the temporarily
-added blocks contain a duplicate transaction.</p>
-<p>There are several potential solutions to this problem:</p>
-<ol>
-<li>Guarantee that all coinbases are unique, making duplicate transactions very hard to create.</li>
-<li>Remember previous remaining outputs of a given transaction identifier, in case a new transaction with the same identifier is added.</li>
-<li>Only allow duplicate transactions in case the previous instance of the transaction had no spendable outputs left. Removing a block from the chain can then safely reset the removed transaction's outputs to nothing.</li>
-</ol>
-<p>The first option is probably the most complete one, as it also guarantees transaction identifiers are unique. However, implementing it requires several changes that need to be accepted throughout the network. Furthermore, it does not prevent duplicate transactions based on earlier duplicate coinbases. The second option is impossible to implement in a forward-compatible way, as it potentially renders currently-invalid blocks valid. In this document we choose for the third option, because it only requires a trivial change.</p>
-<p>Fully-spent transactions are allowed to be duplicated in order not to hinder pruning at some point in the future. Not allowing any transaction to be duplicated would require evidence to be kept for each transaction ever made.</p>
-<h2>Backward compatibility</h2>
-<p>The addition of this rule only makes some previously-valid blocks invalid. This implies that if the rule is implemented by a supermajority of miners, it is not possible to fork the block chain in a permanent way between nodes with and without the new rule.</p>
-<h2>Implementation</h2>
-<p>A patch for the reference client can be found on https://github.com/sipa/bitcoin/tree/nooverwritetx</p>
-<p>This BIP was implemented in Commit <a href="https://github.com/bitcoin/bitcoin/commit/a206b0ea12eb4606b93323268fc81a4f1f952531" target="_blank">Do not allow overwriting unspent transactions (BIP 30)</a>
-There have been additional commits to refine the implementation of this BIP.</p>
-<h2>Acknowledgements</h2>
-<p>Thanks to Russell O'Connor for finding and demonstrating this problem, and helping test the patch.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

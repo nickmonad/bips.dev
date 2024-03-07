@@ -22,10 +22,13 @@
     <title>BIP 68: Relative lock-time using consensus-enforced sequence numbers</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 68: Relative lock-time using consensus-enforced sequence numbers</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 68: Relative lock-time using consensus-enforced sequence numbers</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-05-28</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0068.mediawiki" target="_blank">View on GitHub</a>
@@ -286,262 +326,10 @@ bool CheckSequenceLocks(const CTransaction &amp;tx, int flags)
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 68: Relative lock-time using consensus-enforced sequence numbers
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-05-28</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0068.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 68
-  Layer: Consensus (soft fork)
-  Title: Relative lock-time using consensus-enforced sequence numbers
-  Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
-          BtcDrak &lt;btcdrak@gmail.com&gt;
-          Nicolas Dorier &lt;nicolas.dorier@gmail.com&gt;
-          kinoshitajona &lt;kinoshitajona@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0068
-  Status: Final
-  Type: Standards Track
-  Created: 2015-05-28
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP introduces relative lock-time (RLT) consensus-enforced semantics of the sequence number field to enable a signed transaction input to remain invalid for a defined period of time after confirmation of its corresponding outpoint.</p>
-<h2>Motivation</h2>
-<p>Bitcoin transactions have a sequence number field for each input. The original idea appears to have been that a transaction in the mempool would be replaced by using the same input with a higher sequence value. Although this was not properly implemented, it assumes miners would prefer higher sequence numbers even if the lower ones were more profitable to mine. However, a miner acting on profit motives alone would break that assumption completely. The change described by this BIP repurposes the sequence number for new use cases without breaking existing functionality. It also leaves room for future expansion and other use cases.</p>
-<p>The transaction nLockTime is used to prevent the mining of a transaction until a certain date. nSequence will be repurposed to prevent mining of a transaction until a certain age of the spent output in blocks or timespan. This, among other uses, allows bi-directional payment channels as used in <a href="https://github.com/ElementsProject/lightning/raw/master/doc/deployable-lightning.pdf" target="_blank">Hashed Timelock Contracts (HTLCs)</a> and <a href="/112" target="_blank">BIP112</a>.</p>
-<h2>Specification</h2>
-<p>This specification defines the meaning of sequence numbers for transactions with an nVersion greater than or equal to 2 for which the rest of this specification relies on.</p>
-<p>All references to median-time-past (MTP) are as defined by BIP113.</p>
-<p>If bit (1 &lt;&lt; 31) of the sequence number is set, then no consensus meaning is applied to the sequence number and can be included in any block under all currently possible circumstances.</p>
-<p>If bit (1 &lt;&lt; 31) of the sequence number is not set, then the sequence number is interpreted as an encoded relative lock-time.</p>
-<p>The sequence number encoding is interpreted as follows: </p>
-<p>Bit (1 &lt;&lt; 22) determines if the relative lock-time is time-based or block based: If the bit is set, the relative lock-time specifies a timespan in units of 512 seconds granularity. The timespan starts from the median-time-past of the output’s previous block, and ends at the MTP of the previous block. If the bit is not set, the relative lock-time specifies a number of blocks.</p>
-<p>The flag (1&lt;&lt;22) is the highest order bit in a 3-byte signed integer for use in bitcoin scripts as a 3-byte PUSHDATA with OP_CHECKSEQUENCEVERIFY (BIP 112).</p>
-<p>This specification only interprets 16 bits of the sequence number as relative lock-time, so a mask of 0x0000ffff MUST be applied to the sequence field to extract the relative lock-time. The 16-bit specification allows for a year of relative lock-time and the remaining bits allow for future expansion.</p>
-<p><img src=bip-0068/encoding.png></img></p>
-<p>For time based relative lock-time, 512 second granularity was chosen because bitcoin blocks are generated every 600 seconds. So when using block-based or time-based, the same amount of time can be encoded with the available number of bits. Converting from a sequence number to seconds is performed by multiplying by 512 = 2^9, or equivalently shifting up by 9 bits.</p>
-<p>When the relative lock-time is time-based, it is interpreted as a minimum block-time constraint over the input's age. A relative time-based lock-time of zero indicates an input which can be included in any block. More generally, a relative time-based lock-time n can be included into any block produced 512 * n seconds after the mining date of the output it is spending, or any block thereafter.
-The mining date of the output is equal to the median-time-past of the previous block which mined it.</p>
-<p>The block produced time is equal to the median-time-past of its previous block.</p>
-<p>When the relative lock-time is block-based, it is interpreted as a minimum block-height constraint over the input's age. A relative block-based lock-time of zero indicates an input which can be included in any block. More generally, a relative block lock-time n can be included n blocks after the mining date of the output it is spending, or any block thereafter.</p>
-<p>The new rules are not applied to the nSequence field of the input of the coinbase transaction.</p>
-<h2>Implementation</h2>
-<p>A reference implementation is provided by the following pull request</p>
-<p>https://github.com/bitcoin/bitcoin/pull/7184</p>
-<pre><code>enum {
-    &#x2F;* Interpret sequence numbers as relative lock-time constraints. *&#x2F;
-    LOCKTIME_VERIFY_SEQUENCE = (1 &lt;&lt; 0),
-};
-    
-&#x2F;* Setting nSequence to this value for every input in a transaction
- * disables nLockTime. *&#x2F;
-static const uint32_t SEQUENCE_FINAL = 0xffffffff;
-
-&#x2F;* Below flags apply in the context of BIP 68*&#x2F;
-&#x2F;* If this flag set, CTxIn::nSequence is NOT interpreted as a
- * relative lock-time. *&#x2F;
-static const uint32_t SEQUENCE_LOCKTIME_DISABLE_FLAG = (1 &lt;&lt; 31);
-
-&#x2F;* If CTxIn::nSequence encodes a relative lock-time and this flag
- * is set, the relative lock-time has units of 512 seconds,
- * otherwise it specifies blocks with a granularity of 1. *&#x2F;
-static const uint32_t SEQUENCE_LOCKTIME_TYPE_FLAG = (1 &lt;&lt; 22);
-
-&#x2F;* If CTxIn::nSequence encodes a relative lock-time, this mask is
- * applied to extract that lock-time from the sequence field. *&#x2F;
-static const uint32_t SEQUENCE_LOCKTIME_MASK = 0x0000ffff;
-
-&#x2F;* In order to use the same number of bits to encode roughly the
- * same wall-clock duration, and because blocks are naturally
- * limited to occur every 600s on average, the minimum granularity
- * for time-based relative lock-time is fixed at 512 seconds.
- * Converting from CTxIn::nSequence to seconds is performed by
- * multiplying by 512 = 2^9, or equivalently shifting up by
- * 9 bits. *&#x2F;
-static const int SEQUENCE_LOCKTIME_GRANULARITY = 9;
-
-&#x2F;**
- * Calculates the block height and previous block&#x27;s median time past at
- * which the transaction will be considered final in the context of BIP 68.
- * Also removes from the vector of input heights any entries which did not
- * correspond to sequence locked inputs as they do not affect the calculation.
- *&#x2F;
-static std::pair&lt;int, int64_t&gt; CalculateSequenceLocks(const CTransaction &amp;tx, int flags, std::vector&lt;int&gt;* prevHeights, const CBlockIndex&amp; block)
-{
-    assert(prevHeights-&gt;size() == tx.vin.size());
-
-    &#x2F;&#x2F; Will be set to the equivalent height- and time-based nLockTime
-    &#x2F;&#x2F; values that would be necessary to satisfy all relative lock-
-    &#x2F;&#x2F; time constraints given our view of block chain history.
-    &#x2F;&#x2F; The semantics of nLockTime are the last invalid height&#x2F;time, so
-    &#x2F;&#x2F; use -1 to have the effect of any height or time being valid.
-    int nMinHeight = -1;
-    int64_t nMinTime = -1;
-
-    &#x2F;&#x2F; tx.nVersion is signed integer so requires cast to unsigned otherwise
-    &#x2F;&#x2F; we would be doing a signed comparison and half the range of nVersion
-    &#x2F;&#x2F; wouldn&#x27;t support BIP 68.
-    bool fEnforceBIP68 = static_cast&lt;uint32_t&gt;(tx.nVersion) &gt;= 2
-                      &amp;&amp; flags &amp; LOCKTIME_VERIFY_SEQUENCE;
-
-    &#x2F;&#x2F; Do not enforce sequence numbers as a relative lock time
-    &#x2F;&#x2F; unless we have been instructed to
-    if (!fEnforceBIP68) {
-        return std::make_pair(nMinHeight, nMinTime);
-    }
-
-    for (size_t txinIndex = 0; txinIndex &lt; tx.vin.size(); txinIndex++) {
-        const CTxIn&amp; txin = tx.vin[txinIndex];
-
-        &#x2F;&#x2F; Sequence numbers with the most significant bit set are not
-        &#x2F;&#x2F; treated as relative lock-times, nor are they given any
-        &#x2F;&#x2F; consensus-enforced meaning at this point.
-        if (txin.nSequence &amp; CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG) {
-            &#x2F;&#x2F; The height of this input is not relevant for sequence locks
-            (*prevHeights)[txinIndex] = 0;
-            continue;
-        }
-
-        int nCoinHeight = (*prevHeights)[txinIndex];
-
-        if (txin.nSequence &amp; CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG) {
-            int64_t nCoinTime = block.GetAncestor(std::max(nCoinHeight-1, 0))-&gt;GetMedianTimePast();
-            &#x2F;&#x2F; NOTE: Subtract 1 to maintain nLockTime semantics
-            &#x2F;&#x2F; BIP 68 relative lock times have the semantics of calculating
-            &#x2F;&#x2F; the first block or time at which the transaction would be
-            &#x2F;&#x2F; valid. When calculating the effective block time or height
-            &#x2F;&#x2F; for the entire transaction, we switch to using the
-            &#x2F;&#x2F; semantics of nLockTime which is the last invalid block
-            &#x2F;&#x2F; time or height.  Thus we subtract 1 from the calculated
-            &#x2F;&#x2F; time or height.
-
-            &#x2F;&#x2F; Time-based relative lock-times are measured from the
-            &#x2F;&#x2F; smallest allowed timestamp of the block containing the
-            &#x2F;&#x2F; txout being spent, which is the median time past of the
-            &#x2F;&#x2F; block prior.
-            nMinTime = std::max(nMinTime, nCoinTime + (int64_t)((txin.nSequence &amp; CTxIn::SEQUENCE_LOCKTIME_MASK) &lt;&lt; CTxIn::SEQUENCE_LOCKTIME_GRANULARITY) - 1);
-        } else {
-            nMinHeight = std::max(nMinHeight, nCoinHeight + (int)(txin.nSequence &amp; CTxIn::SEQUENCE_LOCKTIME_MASK) - 1);
-        }
-    }
-
-    return std::make_pair(nMinHeight, nMinTime);
-}
-
-static bool EvaluateSequenceLocks(const CBlockIndex&amp; block, std::pair&lt;int, int64_t&gt; lockPair)
-{
-    assert(block.pprev);
-    int64_t nBlockTime = block.pprev-&gt;GetMedianTimePast();
-    if (lockPair.first &gt;= block.nHeight || lockPair.second &gt;= nBlockTime)
-        return false;
-
-    return true;
-}
-
-bool SequenceLocks(const CTransaction &amp;tx, int flags, std::vector&lt;int&gt;* prevHeights, const CBlockIndex&amp; block)
-{
-    return EvaluateSequenceLocks(block, CalculateSequenceLocks(tx, flags, prevHeights, block));
-}
-
-bool CheckSequenceLocks(const CTransaction &amp;tx, int flags)
-{
-    AssertLockHeld(cs_main);
-    AssertLockHeld(mempool.cs);
-
-    CBlockIndex* tip = chainActive.Tip();
-    CBlockIndex index;
-    index.pprev = tip;
-    &#x2F;&#x2F; CheckSequenceLocks() uses chainActive.Height()+1 to evaluate
-    &#x2F;&#x2F; height based locks because when SequenceLocks() is called within
-    &#x2F;&#x2F; ConnectBlock(), the height of the block *being*
-    &#x2F;&#x2F; evaluated is what is used.
-    &#x2F;&#x2F; Thus if we want to know if a transaction can be part of the
-    &#x2F;&#x2F; *next* block, we need to use one more than chainActive.Height()
-    index.nHeight = tip-&gt;nHeight + 1;
-
-    &#x2F;&#x2F; pcoinsTip contains the UTXO set for chainActive.Tip()
-    CCoinsViewMemPool viewMemPool(pcoinsTip, mempool);
-    std::vector&lt;int&gt; prevheights;
-    prevheights.resize(tx.vin.size());
-    for (size_t txinIndex = 0; txinIndex &lt; tx.vin.size(); txinIndex++) {
-        const CTxIn&amp; txin = tx.vin[txinIndex];
-        CCoins coins;
-        if (!viewMemPool.GetCoins(txin.prevout.hash, coins)) {
-            return error(&quot;%s: Missing input&quot;, __func__);
-        }
-        if (coins.nHeight == MEMPOOL_HEIGHT) {
-            &#x2F;&#x2F; Assume all mempool transaction confirm in the next block
-            prevheights[txinIndex] = tip-&gt;nHeight + 1;
-        } else {
-            prevheights[txinIndex] = coins.nHeight;
-        }
-    }
-
-    std::pair&lt;int, int64_t&gt; lockPair = CalculateSequenceLocks(tx, flags, &amp;prevheights, index);
-    return EvaluateSequenceLocks(index, lockPair);
-}
-</code></pre>
-<h2>Acknowledgments</h2>
-<p>Credit goes to Gregory Maxwell for providing a succinct and clear description of the behavior of this change, which became the basis of this BIP text.</p>
-<p>This BIP was edited by BtcDrak, Nicolas Dorier and kinoshitajona.</p>
-<h2>Deployment</h2>
-<p>This BIP is to be deployed by &quot;versionbits&quot; BIP9 using bit 0.</p>
-<p>For Bitcoin <strong>mainnet</strong>, the BIP9 <strong>starttime</strong> will be midnight 1st May 2016 UTC (Epoch timestamp 1462060800) and BIP9 <strong>timeout</strong> will be midnight 1st May 2017 UTC (Epoch timestamp 1493596800).</p>
-<p>For Bitcoin <strong>testnet</strong>, the BIP9 <strong>starttime</strong> will be midnight 1st March 2016 UTC (Epoch timestamp 1456790400) and BIP9 <strong>timeout</strong> will be midnight 1st May 2017 UTC (Epoch timestamp 1493596800).</p>
-<p>This BIP must be deployed simultaneously with BIP112 and BIP113 using the same deployment mechanism.</p>
-<h2>Compatibility</h2>
-<p>The only use of sequence numbers by the Bitcoin Core reference client software is to disable checking the nLockTime constraints in a transaction. The semantics of that application are preserved by this BIP.</p>
-<p>As can be seen from the specification section, a number of bits are undefined by this BIP to allow for other use cases by setting bit (1 &lt;&lt; 31) as the remaining 31 bits have no meaning under this BIP. Additionally, bits (1 &lt;&lt; 23) through (1 &lt;&lt; 30) inclusive have no meaning at all when bit (1 &lt;&lt; 31) is unset.</p>
-<p>Additionally, this BIP specifies only 16 bits to actually encode relative lock-time meaning a further 6 are unused (1 &lt;&lt; 16 through 1 &lt;&lt; 21 inclusive). This allows the possibility to increase granularity by soft-fork, or for increasing the maximum possible relative lock-time in the future.</p>
-<p>The most efficient way to calculate sequence number from relative lock-time is with bit masks and shifts:</p>
-<pre><code>    &#x2F;&#x2F; 0 &lt;= nHeight &lt; 65,535 blocks (1.25 years)
-    nSequence = nHeight;
-    nHeight = nSequence &amp; 0x0000ffff;
-    
-    &#x2F;&#x2F; 0 &lt;= nTime &lt; 33,554,431 seconds (1.06 years)
-    nSequence = (1 &lt;&lt; 22) | (nTime &gt;&gt; 9);
-    nTime = (nSequence &amp; 0x0000ffff) &lt;&lt; 9;
-</code></pre>
-<h2>References</h2>
-<p>Bitcoin mailing list discussion: https://www.mail-archive.com/bitcoin-development@lists.sourceforge.net/msg07864.html</p>
-<p>BIP9: https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki</p>
-<p>BIP112: https://github.com/bitcoin/bips/blob/master/bip-0112.mediawiki</p>
-<p>BIP113: https://github.com/bitcoin/bips/blob/master/bip-0113.mediawiki</p>
-<p>Hashed Timelock Contracts (HTLCs): https://github.com/ElementsProject/lightning/raw/master/doc/deployable-lightning.pdf</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

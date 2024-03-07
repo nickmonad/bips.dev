@@ -22,10 +22,13 @@
     <title>BIP 385: raw() and addr() Output Script Descriptors</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 385: raw() and addr() Output Script Descriptors</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 385: raw() and addr() Output Script Descriptors</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2021-06-27</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0385.mediawiki" target="_blank">View on GitHub</a>
@@ -138,114 +178,10 @@ The reuse of existing Bitcoin addresses allows for this to be more easily implem
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 385: raw() and addr() Output Script Descriptors
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2021-06-27</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0385.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 385
-  Layer: Applications
-  Title: raw() and addr() Output Script Descriptors
-  Author: Pieter Wuille &lt;pieter@wuille.net&gt;
-          Ava Chow &lt;me@achow101.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0385
-  Status: Draft
-  Type: Informational
-  Created: 2021-06-27
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies <tt>raw()</tt> and <tt>addr()</tt> output script descriptors.
-<tt>raw()</tt> encapsulates a raw script as a descriptor.
-<tt>addr()</tt> encapsulates an address as a descriptor.</p>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2>Motivation</h2>
-<p>In order to make descriptors maximally compatible with scripts in use today, it is useful to be able to wrap any arbitrary output script or an address into a descriptor.</p>
-<h2>Specification</h2>
-<p>Two new script expressions are defined: <tt>raw()</tt> and <tt>addr()</tt>.</p>
-<h3><tt>raw()</tt></h3>
-<p>The <tt>raw(HEX)</tt> expression can only be used as a top level descriptor.
-As the argument, it takes a hex string representing a Bitcoin script.
-The output script produced by this descriptor is the script represented by <tt>HEX</tt>.</p>
-<h3><tt>addr()</tt></h3>
-<p>The <tt>addr(ADDR)</tt> expression can only be used as a top level descriptor.
-It takes an address as its single argument.
-The output script produced by this descriptor is the output script produced by the address <tt>ADDR</tt>.</p>
-<h2>Test Vectors</h2>
-<p>Valid descriptors followed by the scripts they produce.</p>
-<ul>
-<li><tt>raw(deadbeef)</tt>
-<ul>
-<li><tt>deadbeef</tt></li>
-</ul>
-</li>
-<li><tt>raw(512103a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd4104a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea23552ae)</tt>
-<ul>
-<li><tt>512103a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd4104a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea23552ae</tt></li>
-</ul>
-</li>
-<li><tt>raw(a9149a4d9901d6af519b2a23d4a2f51650fcba87ce7b87)</tt>
-<ul>
-<li><tt>a9149a4d9901d6af519b2a23d4a2f51650fcba87ce7b87</tt></li>
-</ul>
-</li>
-<li><tt>addr(3PUNyaW7M55oKWJ3kDukwk9bsKvryra15j)</tt>
-<ul>
-<li><tt>a914eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee87</tt></li>
-</ul>
-</li>
-</ul>
-<p>Invalid descriptors</p>
-<ul>
-<li>Non-hex script: <tt>raw(asdf)</tt></li>
-<li>Invalid address: <tt>addr(asdf)</tt></li>
-<li><tt>raw</tt> nested in <tt>sh</tt>: <tt>sh(raw(deadbeef))</tt></li>
-<li><tt>raw</tt> nested in <tt>wsh</tt>: <tt>wsh(raw(deadbeef))</tt></li>
-<li><tt>addr</tt> nested in <tt>sh</tt>: <tt>sh(addr(3PUNyaW7M55oKWJ3kDukwk9bsKvryra15j))</tt></li>
-<li><tt>addr</tt> nested in <tt>wsh</tt>: <tt>wsh(addr(3PUNyaW7M55oKWJ3kDukwk9bsKvryra15j))</tt></li>
-</ul>
-<h2>Backwards Compatibility</h2>
-<p><tt>raw()</tt> and <tt>addr()</tt> descriptors use the format and general operation specified in <a href="/380" target="_blank">380</a>.
-As this is a wholly new descriptor, it is not compatible with any implementation.
-The reuse of existing Bitcoin addresses allows for this to be more easily implemented.</p>
-<h2>Reference Implementation</h2>
-<p><tt>raw()</tt> and <tt>addr()</tt> descriptors have been implemented in Bitcoin Core since version 0.17.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

@@ -22,10 +22,13 @@
     <title>BIP 329: Wallet Labels Export Format</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 329: Wallet Labels Export Format</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 329: Wallet Labels Export Format</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2022-08-23</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0329.mediawiki" target="_blank">View on GitHub</a>
@@ -151,127 +191,10 @@ However, importing wallets complying to this specification may ignore types not 
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 329: Wallet Labels Export Format
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2022-08-23</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0329.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 329
-  Layer: Applications
-  Title: Wallet Labels Export Format
-  Author: Craig Raw &lt;craig@sparrowwallet.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0329
-  Status: Draft
-  Type: Informational
-  Created: 2022-08-23
-  License: BSD-2-Clause
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies a format for the export of labels that may be attached to various common types of records in a wallet.</p>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the BSD 2-clause license.</p>
-<h2>Motivation</h2>
-<p>The export and import of funds across different Bitcoin wallet applications is well defined through standards such as BIP39, BIP32, BIP44 etc.
-These standards are well supported and allow users to move easily between different wallets.
-There is, however, no defined standard to transfer any labels the user may have applied to the transactions, addresses, public keys, inputs, outputs or xpubs in their wallet.
-The UTXO model that Bitcoin uses makes these labels particularly valuable as they may indicate the source of funds, whether received externally or as a result of change from a prior transaction.
-In both cases, care must be taken when spending to avoid undesirable leaks of private information.</p>
-<p>Labels provide valuable guidance in this regard, and have even become mandatory when spending in several Bitcoin wallets.
-Allowing users to import and export their labels in a standardized way ensures that they do not experience lock-in to a particular wallet application.
-In addition, many wallets allow unspent outputs to be frozen or made unspendable within the wallet. Since this wallet-related metadata is similar to labels and not captured elsewhere, it is also included in this format.</p>
-<h2>Rationale</h2>
-<p>While there is currently no widely accepted format for exporting and importing labels, there are existing formats in use.
-SLIP-0015<ref><a href="https://github.com/satoshilabs/slips/blob/master/slip-0015.md" target="_blank">SLIP-0015</a></ref> defines a format for exporting address and output labels, but requires encryption using a private key associated with the wallet seed, and thus cannot be used independently by coordinator wallets which cannot access private keys.
-The Electrum wallet imports and exports address and transaction labels in a JSON format which could be used with other record types, but the format used is not self describing making record type identification difficult.</p>
-<h2>Specification</h2>
-<p>In order to be lightweight, human readable and well structured, this BIP uses a JSON format. 
-Further, the JSON Lines format is used (also called newline-delimited JSON)<ref><a href="https://jsonlines.org/" target="_blank">jsonlines.org</a></ref>. 
-This allows a document to be split, streamed, or incrementally added to, and limits the potential for formatting errors to invalidate an entire import.
-It is also a convenient format for command-line processing, which is often line-oriented.</p>
-<p>Further to the JSON Lines specification, an export of labels from a wallet must be a UTF-8 encoded text file, containing one record per line consisting of a valid JSON object.
-Lines are separated by <tt>\n</tt>. Multiline values are not permitted.
-Each JSON object must contain 3 or 4 key/value pairs, defined as follows:</p>
-<table><thead><tr><th>Key</th><th>Description</th></tr></thead><tbody>
-<tr><td><tt>type</tt></td><td>One of <tt>tx</tt>, <tt>addr</tt>, <tt>pubkey</tt>, <tt>input</tt>, <tt>output</tt> or <tt>xpub</tt></td></tr>
-<tr><td><tt>ref</tt></td><td>Reference to the transaction, address, public key, input, output or extended public key</td></tr>
-<tr><td><tt>label</tt></td><td>The label applied to the reference</td></tr>
-<tr><td><tt>origin</tt></td><td>Optional key origin information referencing the wallet associated with the label</td></tr>
-<tr><td><tt>spendable</tt></td><td>One of <tt>true</tt> or <tt>false</tt>, denoting if an output should be spendable by the wallet</td></tr>
-</tbody></table>
-<p>The reference is defined for each <tt>type</tt> as follows:</p>
-<table><thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead><tbody>
-<tr><td><tt>tx</tt></td><td>Transaction id in hexadecimal format</td><td><tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd</tt></td></tr>
-<tr><td><tt>addr</tt></td><td>Address in base58 or bech32 format</td><td><tt>bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c</tt></td></tr>
-<tr><td><tt>pubkey</tt></td><td>32, 33 or 65 byte public key in hexadecimal format</td><td><tt>0283409659355b6d1cc3c32decd5d561abaac86c37a353b52895a5e6c196d6f448</tt></td></tr>
-<tr><td><tt>input</tt></td><td>Transaction id and input index separated by a colon</td><td><tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0</tt></td></tr>
-<tr><td><tt>output</tt></td><td>Transaction id and output index separated by a colon</td><td><tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1</tt></td></tr>
-<tr><td><tt>xpub</tt></td><td>Extended public key as defined by BIP32</td><td><tt>xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8Nq...</tt></td></tr>
-</tbody></table>
-<p>Each JSON object must contain both <tt>type</tt> and <tt>ref</tt> properties. The <tt>label</tt>, <tt>origin</tt> and <tt>spendable</tt> properties are optional. If the <tt>label</tt> or <tt>spendable</tt> properties are omitted, the importing wallet should not alter these values. The <tt>origin</tt> property should only appear where type is <tt>tx</tt>, and the <tt>spendable</tt> property only where type is <tt>output</tt>.</p>
-<p>If present, the optional <tt>origin</tt> property must contain an abbreviated output descriptor (as defined by BIP380<ref><a href="/380" target="_blank">BIP-0380</a></ref>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
-This property should be used to disambiguate transaction labels from different wallets contained in the same export, particularly when exporting multiple accounts derived from the same seed.</p>
-<p>Care should be taken when exporting due to the privacy sensitive nature of the data. 
-Encryption in transit over untrusted networks is highly recommended, and encryption at rest should also be considered.
-Unencrypted exports should be deleted as soon as possible.
-For security reasons no private key types are defined.</p>
-<h2>Importing</h2>
-<ul>
-<li>An importing wallet may ignore records it does not store, and truncate labels if necessary. A suggested default for maximum label length is 255 characters, and an importing wallet should consider warning the user if truncation is applied.</li>
-<li>Wallets importing public key records may derive addresses from them to match against known wallet addresses.</li>
-<li>Wallets importing extended public keys may match them against signers, for example in a multisig setup.</li>
-</ul>
-<h2>Backwards Compatibility</h2>
-<p>The nature of this format makes it naturally extensible to handle other record types. 
-However, importing wallets complying to this specification may ignore types not defined here.</p>
-<h2>Test Vectors</h2>
-<p>The following fragment represents a wallet label export:</p>
-<pre><code>{ &quot;type&quot;: &quot;tx&quot;, &quot;ref&quot;: &quot;f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd&quot;, &quot;label&quot;: &quot;Transaction&quot;, &quot;origin&quot;: &quot;wpkh([d34db33f&#x2F;84&#x27;&#x2F;0&#x27;&#x2F;0&#x27;])&quot; }
-{ &quot;type&quot;: &quot;addr&quot;, &quot;ref&quot;: &quot;bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c&quot;, &quot;label&quot;: &quot;Address&quot; }
-{ &quot;type&quot;: &quot;pubkey&quot;, &quot;ref&quot;: &quot;0283409659355b6d1cc3c32decd5d561abaac86c37a353b52895a5e6c196d6f448&quot;, &quot;label&quot;: &quot;Public Key&quot; }
-{ &quot;type&quot;: &quot;input&quot;, &quot;ref&quot;: &quot;f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0&quot;, &quot;label&quot;: &quot;Input&quot; }
-{ &quot;type&quot;: &quot;output&quot;, &quot;ref&quot;: &quot;f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1&quot;, &quot;label&quot;: &quot;Output&quot; , &quot;spendable&quot; : &quot;false&quot; }
-{ &quot;type&quot;: &quot;xpub&quot;, &quot;ref&quot;: &quot;xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8&quot;, &quot;label&quot;: &quot;Extended Public Key&quot; }
-{ &quot;type&quot;: &quot;tx&quot;, &quot;ref&quot;: &quot;f546156d9044844e02b181026a1a407abfca62e7ea1159f87bbeaa77b4286c74&quot;, &quot;label&quot;: &quot;Account #1 Transaction&quot;, &quot;origin&quot;: &quot;wpkh([d34db33f&#x2F;84&#x27;&#x2F;0&#x27;&#x2F;1&#x27;])&quot; }
-</code></pre>
-<h2>Reference Implementation</h2>
-<p>TBD</p>
-<h2>References</h2>
-<references />
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

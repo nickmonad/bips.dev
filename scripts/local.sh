@@ -6,3 +6,4 @@
 ./scripts/generate.sh
 
 cd web && zola build && cd ..
+pagefind --site web/public

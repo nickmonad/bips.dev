@@ -22,10 +22,13 @@
     <title>BIP 147: Dealing with dummy stack element malleability</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 147: Dealing with dummy stack element malleability</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 147: Dealing with dummy stack element malleability</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2016-09-02</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0147.mediawiki" target="_blank">View on GitHub</a>
@@ -100,76 +140,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 147: Dealing with dummy stack element malleability
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2016-09-02</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0147.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 147
-  Layer: Consensus (soft fork)
-  Title: Dealing with dummy stack element malleability
-  Author: Johnson Lau &lt;jl2012@xbt.hk&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0147
-  Status: Final
-  Type: Standards Track
-  Created: 2016-09-02
-  License: PD
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies proposed changes to the Bitcoin transaction validity rules to fix a malleability vector in the extra stack element consumed by <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code>.</p>
-<h2>Motivation</h2>
-<p>Signature malleability refers to the ability of any relay node on the network to transform the signature in transactions, with no access to the relevant private keys required. For non-segregated witness transactions, signature malleability will change the <code>txid</code> and invalidate any unconfirmed child transactions. Although the <code>txid</code> of segregated witness (<a href="/141" target="_blank">BIP141</a>) transactions is not third party malleable, this malleability vector will change the <code>wtxid</code> and may reduce the efficiency of compact block relay (<a href="/152" target="_blank">BIP152</a>).</p>
-<p>A design flaw in <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> causes them to consume an extra stack element (&quot;dummy element&quot;) after signature validation. The dummy element is not inspected in any manner, and could be replaced by any value without invalidating the script. This document specifies a new rule to fix this signature malleability.</p>
-<h2>Specification</h2>
-<p>To fix the dummy element malleability, a new consensus rule (&quot;<code>NULLDUMMY</code>&quot;) is deployed to require that the dummy element MUST be the empty byte array. Anything else makes the script evaluate to false immediately. The <code>NULLDUMMY</code> rule applies to <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> in pre-segregated scripts, and also pay-to-witness-script-hash scripts described in BIP141.</p>
-<h2>Deployment</h2>
-<p>This BIP will be deployed by &quot;version bits&quot; <a href="/9" target="_blank">BIP9</a> using the same parameters for BIP141 and BIP143, with the name &quot;segwit&quot; and using bit 1.</p>
-<p>For Bitcoin mainnet, the BIP9 starttime is midnight 15 November 2016 UTC (Epoch timestamp 1479168000) and BIP9 timeout is midnight 15 November 2017 UTC (Epoch timestamp 1510704000).</p>
-<p>For Bitcoin testnet, the BIP9 starttime is midnight 1 May 2016 UTC (Epoch timestamp 1462060800) and BIP9 timeout is midnight 1 May 2017 UTC (Epoch timestamp 1493596800).</p>
-<h2>Compatibility</h2>
-<p>The reference client has produced compatible signatures from the beginning, and the <code>NULLDUMMY</code> rule has been enforced as relay policy by the reference client since v0.10.0. There has been no transactions violating the requirement being added to the chain since at least August 2015.</p>
-<p>For all scriptPubKey types in actual use, non-compliant signatures can trivially be converted into compliant ones, so there is no loss of functionality by this requirement. Users MUST pay extra attention to this new rule when designing exotic scripts.</p>
-<h2>Implementation</h2>
-<p>An implementation for the reference client is available at https://github.com/bitcoin/bitcoin/pull/8636</p>
-<h2>Acknowledgements</h2>
-<p>Peter Todd is the original author of NULLDUMMY. This document is extracted from the previous <a href="/62" target="_blank">BIP62</a> proposal, which was composed by Pieter Wuille and had input from various people.</p>
-<h2>Copyright</h2>
-<p>This document is placed in the public domain.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

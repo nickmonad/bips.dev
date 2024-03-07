@@ -22,10 +22,13 @@
     <title>BIP 155: addrv2 message</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 155: addrv2 message</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 155: addrv2 message</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2019-02-27</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0155.mediawiki" target="_blank">View on GitHub</a>
@@ -170,146 +210,10 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 155: addrv2 message
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2019-02-27</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0155.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 155
-  Layer: Peer Services
-  Title: addrv2 message
-  Author: Wladimir J. van der Laan &lt;laanwj@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0155
-  Status: Draft
-  Type: Standards Track
-  Created: 2019-02-27
-  License: BSD-2-Clause
-</code></pre>
-<h2>Introduction</h2>
-<h3>Abstract</h3>
-<p>This document proposes a new P2P message to gossip longer node addresses over the P2P network.
-This is required to support new-generation Onion addresses, I2P, and potentially other networks
-that have longer endpoint addresses than fit in the 128 bits of the current <code>addr</code> message.</p>
-<h3>Copyright</h3>
-<p>This BIP is licensed under the 2-clause BSD license.</p>
-<h3>Motivation</h3>
-<p>Tor v3 hidden services are part of the stable release of Tor since version 0.3.2.9. They have
-various advantages compared to the old hidden services, among which better encryption and privacy
-<ref><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3</a></ref>.
-These services have 256 bit addresses and thus do not fit in the existing <code>addr</code> message, which encapsulates onion addresses in OnionCat IPv6 addresses.</p>
-<p>Other transport-layer protocols such as I2P have always used longer
-addresses. This change would make it possible to gossip such addresses over the
-P2P network, so that other peers can connect to them.</p>
-<h2>Specification</h2>
-<blockquote>
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in RFC 2119<ref><a href="https://tools.ietf.org/html/rfc2119" target="_blank">RFC 2119</a></ref>.
-</blockquote>
-<p>The <code>addrv2</code> message is defined as a message where <code>pchCommand == &quot;addrv2&quot;</code>.
-It is serialized in the standard encoding for P2P messages.
-Its format is similar to the current <code>addr</code> message format, with the difference that the 
-fixed 16-byte IP address is replaced by a network ID and a variable-length address, and the services format has been changed to <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</p>
-<p>This means that the message contains a serialized <code>std::vector</code> of the following structure:</p>
-<table><thead><tr><th>Type</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>uint32_t</code></td><td><code>time</code></td><td>Time that this node was last seen as connected to the network. A time in Unix epoch time format.</td></tr>
-<tr><td><code>CompactSize</code></td><td><code>services</code></td><td>Service bits. A bit field that is 64 bits wide, encoded in <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.</td></tr>
-<tr><td><code>uint8_t</code></td><td><code>networkID</code></td><td>Network identifier. An 8-bit value that specifies which network is addressed.</td></tr>
-<tr><td><code>std::vector&lt;uint8_t&gt;</code></td><td><code>addr</code></td><td>Network address. The interpretation depends on networkID.</td></tr>
-<tr><td><code>uint16_t</code></td><td><code>port</code></td><td>Network port. If not relevant for the network this MUST be 0.</td></tr>
-</tbody></table>
-<p>One message can contain up to 1,000 addresses. Clients SHOULD reject messages with more addresses.</p>
-<p>Field <code>addr</code> has a variable length, with a maximum of 512 bytes (4096 bits).
-Clients SHOULD reject messages with longer addresses, irrespective of the network ID.</p>
-<p>The list of reserved network IDs is as follows:</p>
-<table><thead><tr><th>Network ID</th><th>Enumeration</th><th>Address length (bytes)</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>0x01</code></td><td><code>IPV4</code></td><td>4</td><td>IPv4 address (globally routed internet)</td></tr>
-<tr><td><code>0x02</code></td><td><code>IPV6</code></td><td>16</td><td>IPv6 address (globally routed internet)</td></tr>
-<tr><td><code>0x03</code></td><td><code>TORV2</code></td><td>10</td><td>Tor v2 hidden service address</td></tr>
-<tr><td><code>0x04</code></td><td><code>TORV3</code></td><td>32</td><td>Tor v3 hidden service address</td></tr>
-<tr><td><code>0x05</code></td><td><code>I2P</code></td><td>32</td><td>I2P overlay network address</td></tr>
-<tr><td><code>0x06</code></td><td><code>CJDNS</code></td><td>16</td><td>Cjdns overlay network address</td></tr>
-</tbody></table>
-<p>Clients are RECOMMENDED to gossip addresses from all known networks even if they are currently not connected to some of them. That could help multi-homed nodes and make it more difficult for an observer to tell which networks a node is connected to.</p>
-<p>Clients SHOULD NOT gossip addresses from unknown networks because they have no means to validate those addresses and so can be tricked to gossip invalid addresses.</p>
-<p>Further network ID numbers MUST be reserved in a new BIP document.</p>
-<p>Clients SHOULD reject messages that contain addresses that have a different length than specified in this table for a specific network ID, as these are meaningless.</p>
-<p>See the appendices for the address encodings to be used for the various networks.</p>
-<h2>Signaling support and compatibility</h2>
-<p>Introduce a new message type <code>sendaddrv2</code>. Sending such a message indicates that a node can understand and prefers to receive <code>addrv2</code> messages instead of <code>addr</code> messages. I.e. &quot;Send me addrv2&quot;. Sending or not sending this message does not imply any preference with respect to receiving unrequested address messages.</p>
-<p>The <code>sendaddrv2</code> message MUST only be sent in response to the <code>version</code> message from a peer and prior to sending the <code>verack</code> message.</p>
-<p>For older peers, that did not emit <code>sendaddrv2</code>, keep sending the legacy <code>addr</code> message, ignoring addresses with the newly introduced address types.</p>
-<h2>Reference implementation</h2>
-<p>The reference implementation is available at (to be done)</p>
-<h2>Acknowledgements</h2>
-<ul>
-<li>
-<p>Jonas Schnelli: change <code>services</code> field to <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>, to make the message more compact in the likely case instead of always using 8 bytes.</p>
-</li>
-<li>
-<p>Gregory Maxwell: various suggestions regarding extensibility</p>
-</li>
-</ul>
-<h2>Appendix A: Tor v2 address encoding</h2>
-<p>The new message introduces a separate network ID for <code>TORV2</code>.</p>
-<p>Clients MUST send Tor hidden service addresses with this network ID, with the 80-bit hidden service ID in the address field. This is the same as the representation in the legacy <code>addr</code> message, minus the 6 byte prefix of the OnionCat wrapping.</p>
-<p>Clients SHOULD ignore OnionCat (<code>fd87:d87e:eb43::/48</code>) addresses on receive if they come with the <code>IPV6</code> network ID.</p>
-<h2>Appendix B: Tor v3 address encoding</h2>
-<p>According to the spec <ref><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3: Encoding onion addresses</a></ref>, next-gen <code>.onion</code> addresses are encoded as follows:</p>
-<pre><code>onion_address = base32(PUBKEY | CHECKSUM | VERSION) + &quot;.onion&quot;
- CHECKSUM = H(&quot;.onion checksum&quot; | PUBKEY | VERSION)[:2]
-
- where:
-   - PUBKEY is the 32 bytes ed25519 master pubkey of the hidden service
-   - VERSION is a one byte version field (default value &#x27;\x03&#x27;)
-   - &quot;.onion checksum&quot; is a constant string
-   - CHECKSUM is truncated to two bytes before inserting it in onion_address
-   - H() is the SHA3-256 cryptographic hash function
-</code></pre>
-<p>Tor v3 addresses MUST be sent with the <code>TORV3</code> network ID, with the 32-byte PUBKEY part in the address field. As VERSION will always be '\x03' in the case of v3 addresses, this is enough to reconstruct the onion address.</p>
-<h2>Appendix C: I2P address encoding</h2>
-<p>Like Tor, I2P naming uses a base32-encoded address format<ref><a href="https://geti2p.net/en/docs/naming#base32" target="_blank">I2P: Naming and address book</a></ref>.</p>
-<p>I2P uses 52 characters (256 bits) to represent the full SHA-256 hash, followed by <code>.b32.i2p</code>.</p>
-<p>I2P addresses MUST be sent with the <code>I2P</code> network ID, with the decoded SHA-256 hash as address field.</p>
-<h2>Appendix D: Cjdns address encoding</h2>
-<p>Cjdns addresses are simply IPv6 addresses in the <code>fc00::/8</code> range<ref><a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together" target="_blank">Cjdns whitepaper: Pulling It All Together</a></ref>. They MUST be sent with the <code>CJDNS</code> network ID.</p>
-<h2>References</h2>
-<references/>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

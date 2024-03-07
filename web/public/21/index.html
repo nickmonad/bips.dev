@@ -22,10 +22,13 @@
     <title>BIP 21: URI Scheme</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 21: URI Scheme</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 21: URI Scheme</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2012-01-29</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0021.mediawiki" target="_blank">View on GitHub</a>
@@ -173,149 +213,10 @@ Please see the BNF grammar above for the normative syntax.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 21: URI Scheme
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2012-01-29</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0021.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 21
-  Layer: Applications
-  Title: URI Scheme
-  Author: Nils Schneider &lt;nils.schneider@gmail.com&gt;
-          Matt Corallo &lt;bip21@bluematt.me&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0021
-  Status: Final
-  Type: Standards Track
-  Created: 2012-01-29
-</code></pre>
-<p>This BIP is a modification of an earlier <a href="/20" target="_blank">BIP 0020</a> by Luke Dashjr. BIP 0020 was based off an earlier document by Nils Schneider. The alternative payment amounts in BIP 0020 have been removed.</p>
-<h2>Abstract</h2>
-<p>This BIP proposes a URI scheme for making Bitcoin payments.</p>
-<h2>Motivation</h2>
-<p>The purpose of this URI scheme is to enable users to easily make payments by simply clicking links on webpages or scanning QR Codes.</p>
-<h2>Specification</h2>
-<h3> General rules for handling (important!) </h3>
-<p>Bitcoin clients MUST NOT act on URIs without getting the user's authorization.
-They SHOULD require the user to manually approve each payment individually, though in some cases they MAY allow the user to automatically make this decision.</p>
-<h3> Operating system integration </h3>
-<p>Graphical bitcoin clients SHOULD register themselves as the handler for the &quot;bitcoin:&quot; URI scheme by default, if no other handler is already registered. If there is already a registered handler, they MAY prompt the user to change it once when they first run the client.</p>
-<h3> General Format </h3>
-<p>Bitcoin URIs follow the general format for URIs as set forth in RFC 3986. The path component consists of a bitcoin address, and the query component provides additional payment options.</p>
-<p>Elements of the query component may contain characters outside the valid range. These must first be encoded according to UTF-8, and then each octet of the corresponding UTF-8 sequence must be percent-encoded as described in RFC 3986.</p>
-<h3> ABNF grammar </h3>
-<p>(See also <a href="#Simpler syntax" target="_blank">a simpler representation of syntax</a>)</p>
-<pre><code> bitcoinurn     = &quot;bitcoin:&quot; bitcoinaddress [ &quot;?&quot; bitcoinparams ]
- bitcoinaddress = *base58
- bitcoinparams  = bitcoinparam [ &quot;&amp;&quot; bitcoinparams ]
- bitcoinparam   = [ amountparam &#x2F; labelparam &#x2F; messageparam &#x2F; otherparam &#x2F; reqparam ]
- amountparam    = &quot;amount=&quot; *digit [ &quot;.&quot; *digit ]
- labelparam     = &quot;label=&quot; *qchar
- messageparam   = &quot;message=&quot; *qchar
- otherparam     = qchar *qchar [ &quot;=&quot; *qchar ]
- reqparam       = &quot;req-&quot; qchar *qchar [ &quot;=&quot; *qchar ]
-</code></pre>
-<p>Here, &quot;qchar&quot; corresponds to valid characters of an RFC 3986 URI query component, excluding the &quot;=&quot; and &quot;&amp;&quot; characters, which this BIP takes as separators.</p>
-<p>The scheme component (&quot;bitcoin:&quot;) is case-insensitive, and implementations must accept any combination of uppercase and lowercase letters. The rest of the URI is case-sensitive, including the query parameter keys.</p>
-<h3> Query Keys </h3>
-<ul>
-<li>label: Label for that address (e.g. name of receiver)</li>
-<li>address: bitcoin address</li>
-<li>message: message that describes the transaction to the user (<a href=" Examples" target="_blank">see examples below</a>)</li>
-<li>(others): optional, for future extensions</li>
-</ul>
-<h4> Transfer amount </h4>
-<p>If an amount is provided, it MUST be specified in decimal BTC.
-All amounts MUST contain no commas and use a period (.) as the separating character to separate whole numbers and decimal fractions.
-I.e. amount=50.00 or amount=50 is treated as 50 BTC, and amount=50,000.00 is invalid.</p>
-<p>Bitcoin clients MAY display the amount in any format that is not intended to deceive the user.
-They SHOULD choose a format that is foremost least confusing, and only after that most reasonable given the amount requested.
-For example, so long as the majority of users work in BTC units, values should always be displayed in BTC by default, even if mBTC or TBC would otherwise be a more logical interpretation of the amount.</p>
-<h2> Rationale </h2>
-<h3>Payment identifiers, not person identifiers</h3>
-<p>Current best practices are that a unique address should be used for every transaction.
-Therefore, a URI scheme should not represent an exchange of personal information, but a one-time payment.</p>
-<h3>Accessibility (URI scheme name)</h3>
-<p>Should someone from the outside happen to see such a URI, the URI scheme name already gives a description.
-A quick search should then do the rest to help them find the resources needed to make their payment.
-Other proposed names sound much more cryptic; the chance that someone googles that out of curiosity are much slimmer.
-Also, very likely, what he will find are mostly technical specifications - not the best introduction to bitcoin.</p>
-<h2>Forward compatibility</h2>
-<p>Variables which are prefixed with a req- are considered required.  If a client does not implement any variables which are prefixed with req-, it MUST consider the entire URI invalid.  Any other variables which are not implemented, but which are not prefixed with a req-, can be safely ignored.</p>
-<h2>Backward compatibility</h2>
-<p>As this BIP is written, several clients already implement a bitcoin: URI scheme similar to this one, however usually without the additional &quot;req-&quot; prefix requirement.  Thus, it is recommended that additional variables prefixed with req- not be used in a mission-critical way until a grace period of 6 months from the finalization of this BIP has passed in order to allow client developers to release new versions, and users of old clients to upgrade.</p>
-<h2> Appendix </h2>
-<h3> Simpler syntax </h3>
-<p>This section is non-normative and does not cover all possible syntax.
-Please see the BNF grammar above for the normative syntax.</p>
-<p>[foo] means optional, &lt;bar&gt; are placeholders</p>
-<pre><code> &lt;nowiki&gt;bitcoin:&lt;address&gt;[?amount=&lt;amount&gt;][?label=&lt;label&gt;][?message=&lt;message&gt;]&lt;&#x2F;nowiki&gt;
-</code></pre>
-<h3> Examples </h3>
-<p>Just the address:</p>
-<pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W
-</code></pre>
-<p>Address with name:</p>
-<pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr
-</code></pre>
-<p>Request 20.30 BTC to &quot;Luke-Jr&quot;:</p>
-<pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&amp;label=Luke-Jr
-</code></pre>
-<p>Request 50 BTC with message:</p>
-<pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&amp;label=Luke-Jr&amp;message=Donation%20for%20project%20xyz
-</code></pre>
-<p>Some future version that has variables which are (currently) not understood and required and thus invalid:</p>
-<pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&amp;req-somethingelseyoudontget=999
-</code></pre>
-<p>Some future version that has variables which are (currently) not understood but not required and thus valid:</p>
-<pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&amp;somethingelseyoudontget=999
-</code></pre>
-<p>Characters must be URI encoded properly.</p>
-<h2> Reference Implementations </h2>
-<h3> Bitcoin clients </h3>
-<ul>
-<li>Bitcoin-Qt supports the old version of Bitcoin URIs (ie without the req- prefix), with Windows and KDE integration as of commit 70f55355e29c8e45b607e782c5d76609d23cc858.</li>
-</ul>
-<h3> Libraries </h3>
-<ul>
-<li>Javascript - https://github.com/bitcoinjs/bip21</li>
-<li>Java - https://github.com/SandroMachado/BitcoinPaymentURI</li>
-<li>Swift - https://github.com/SandroMachado/BitcoinPaymentURISwift</li>
-</ul>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

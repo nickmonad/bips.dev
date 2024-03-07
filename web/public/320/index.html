@@ -22,10 +22,13 @@
     <title>BIP 320: nVersion bits for general purpose use</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 320: nVersion bits for general purpose use</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 320: nVersion bits for general purpose use</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2018-03-01</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0320.mediawiki" target="_blank">View on GitHub</a>
@@ -108,84 +148,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 320: nVersion bits for general purpose use
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2018-03-01</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0320.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 320
-  Title: nVersion bits for general purpose use
-  Author: BtcDrak &lt;btcdrak@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0320
-  Status: Draft
-  Type: Standards Track
-  Created: 2018-03-01
-  License: BSD-3-Clause
-           CC0-1.0
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP reserves 16 bits of the block header nVersion field for general purpose use and removes their meaning for the purpose of version bits soft-fork signalling.</p>
-<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in RFC 2119.</p>
-<h2>Motivation</h2>
-<p>There are a variety of things that miners may desire to use some of the nVersion field bits for. However, due to their use to coordinate miner activated soft-forks, full node software will generate false warnings about unknown soft forks if those bits are used for non soft fork signalling purposes. By reserving bits from the nVersion field for general use, node software can be updated to ignore those bits and therefore will not emit false warnings. Reserving 16 bits for general use leaves enough for 13 parallel soft-forks using version bits.</p>
-<h3>Example Uses</h3>
-<p>The following are example cases that would benefit from using some of the bits from the nVersion field. This list is not exhaustive.</p>
-<p>Bitcoin mining hardware currently can exhaust the 32 bit nonce field in less than 200ms requiring the controller to distribute new jobs very frequently to each mining chip consuming a lot of bandwidth and CPU time. This can be greatly reduced by rolling more bits. Rolling too many bits from nTime is not ideal because it may distort the timestamps over a longer period.</p>
-<p>Version-rolling AsicBoost requires two bits from the nVersion field to calculate 4-way collisions. Any two bits can be used and mining equipment can negotiate which bits are to be used with mining pools via the Stratum &quot;version-rolling&quot; extension.</p>
-<h2>Specification</h2>
-<p>Sixteen bits from the block header nVersion field, starting from 13 and ending at 28 inclusive (0x1fffe000), are reserved for general use and removed from BIP8 and BIP9 specifications. A mask of 0xe0001fff should be applied to nVersion bits so bits 13-28 inclusive will be ignored for soft-fork signalling and unknown soft-fork warnings.</p>
-<p>This specification does not reserve specific bits for specific purposes.</p>
-<h2>Reference Implementation</h2>
-<p>https://github.com/btcdrak/bitcoin/commit/d12516e136d4a8952904a13eedc9f4225f35dc3b</p>
-<h2>Backwards Compatibility</h2>
-<p>Non-upgraded nodes will interpret the reserved bits of this proposal as signals for soft forks, and may additionally activate the warning system for unknown soft forks.</p>
-<p>This proposal does not require a soft fork to implement.</p>
-<p>At the time of writing no known soft forks are pending using any of 16 bits reserved in this BIP, and given that a non-trivial percentage of the  hashrate is already making uses of those bits, future soft forks SHOULD NOT utilise those bits for activation signalling.</p>
-<h2>Acknowledgements</h2>
-<p>Timo Hanke and Sergio Lerner for originally proposing 15-bit extra nNonce2.</p>
-<h2>References</h2>
-<p><a href="/8" target="_blank">BIP8</a></p>
-<p><a href="/9" target="_blank">BIP9</a></p>
-<p><a href="https://arxiv.org/pdf/1604.00575.pdf" target="_blank">AsicBoost white paper</a></p>
-<p><a href="https://github.com/BlockheaderNonce2/bitcoin/wiki" target="_blank">Blockheader Extra nNonce2 proposal</a></p>
-<p><a href="https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki" target="_blank">Stratum protocol extension BIP for version-rolling</a></p>
-<h2>Copyright</h2>
-<p>This document is dual licensed as BSD 3-clause, and Creative Commons CC0 1.0 Universal.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

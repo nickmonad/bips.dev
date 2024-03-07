@@ -22,10 +22,13 @@
     <title>BIP 372: Pay-to-contract tweak fields for PSBT</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 372: Pay-to-contract tweak fields for PSBT</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 372: Pay-to-contract tweak fields for PSBT</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2022-01-16</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0372.mediawiki" target="_blank">View on GitHub</a>
@@ -193,169 +233,10 @@ was designed.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 372: Pay-to-contract tweak fields for PSBT
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2022-01-16</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0372.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 372
-  Layer: Applications
-  Title: Pay-to-contract tweak fields for PSBT
-  Author: Maxim Orlovsky &lt;orlovsky@lnp-bp.org&gt;
-  Discussions-To: &lt;bitcoin-dev@lists.linuxfoundation.org&gt;
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0372
-  Status: Draft
-  Type: Standards Track
-  Created: 2022-01-16
-  License: BSD-2-Clause
-  Requires: BIP-174
-</code></pre>
-<h2>Introduction</h2>
-<h3>Abstract</h3>
-<p>This document proposes additional fields for BIP 174 PSBTv0 and BIP 370 PSBTv2
-that allow for pay-to-contract key tweaking data data to be included in a PSBT
-of any version. These will represent an extra-transaction information required
-for the signer to produce valid signatures spending previous outputs.</p>
-<h3>Copyright</h3>
-<p>This BIP is licensed under the 2-clause BSD license.</p>
-<h3>Background</h3>
-<p>Key tweaking is a procedure for creating a cryptographic commitment to some
-message using elliptic curve properties. The procedure uses the discrete log
-problem (DLP) to commit to an extra-transaction message. This is done by adding
-to a public key (for which the output owner knows the corresponding private key)
-a hash of the message multiplied on the generator point G of the elliptic curve.
-This produces a tweaked public key, containing the commitment. Later, in order
-to spend an output containing P2C commitment, the same commitment should be
-added to the corresponding private key.</p>
-<p>This type of commitment was originally proposed as a part of the pay to contract
-concept by Ilja Gerhardt and Timo Hanke in [1] and later used by Eternity Wall
-[2] for the same purpose. Since that time multiple different protocols for P2C
-has been developed, including OpenTimeStamps [3], Elements sidechain P2C tweaks
-[4] and LNPBP-1 [5], used in for constructing Peter Todd's single-use-seals [6]
-in client-side-validation protocols like RGB.</p>
-<h3>Motivation</h3>
-<p>P2C outputs can be detected onchain and spent only if the output owner
-not just knows the corresponding original private key, but also is aware about
-P2C tweak applied to the public key. In order to produce a valid signature, the
-same tweak value must be added (modulo group order) to the original private key
-by a signer device. This represents a challenge for external signers, which may
-not have any information about such commitment. This proposal addresses this
-issue by adding relevant fields to the PSBT input information.</p>
-<p>The proposal abstracts details of specific P2C protocols and provides universal
-method for spending previous outputs containing P2C tweaks, applied to the public
-key contained within any standard form of the <tt>scriptPubkey</tt>, including
-bare scripts and P2PK, P2PKH, P2SH, witness v0 P2WPKH, P2WSH, nested witness v0
-P2WPKH-P2SH, P2WSH-P2SH and witness v1 P2TR outputs.</p>
-<h2>Design</h2>
-<p>P2C-tweaked public keys are already exposed in the
-<tt>PSBT_IN_REDEEM_SCRIPT</tt>, <tt>PSBT_IN_WITNESS_SCRIPT</tt>,
-<tt>PSBT_IN_TAP_INTERNAL_KEY</tt> and <tt>PSBT_IN_TAP_LEAF_SCRIPT</tt> fields;
-the only information signer is needed to recognize which keys it should sign
-with is from which of the original keys they were generated. This is achieved by
-introducing new <code>PSBT_IN_P2C_TWEAK</code> field which has the original key as a field
-key and the tweak as a field value. The signer will recognize the keys which are
-available to it, apply the tweak to them and see in which scripts it was used --
-and use this information to apply tweaks for the corresponding private keys and
-produce valid signatures.</p>
-<h2>Specification</h2>
-<p>The new per-input type is defined as follows:</p>
-<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>P2C Key Tweak</td><td><tt>PSBT_IN_P2C_TWEAK = 0x19</tt></td><td><tt><pubkey></tt></td><td>33 bytes of compact public key serialization specifying to which of keys the</td><td><tt><tweak></tt></td><td>The 32 byte value which MUST be added to a private key to produce correct</td><td></td><td></td><td>0, 2</td></tr>
-</tbody></table>
-<h2>Security considerations</h2>
-<p>The scope of this proposal is deliberately kept narrow; it addresses
-only spending of transaction outputs containing P2C tweaks - and does not
-addresses construction of a new P2C commitments or transactions containing them
-in their outputs.<ref><strong>Why only spending of P2C tweaked outputs is covered</strong>
-P2C tweaks commit to external data, some of which may represent certain value
-(like in some sidechains, single-use-seal applications like RGB etc). Creation
-of such outputs much allow hardware devices to understand the structure of such
-extra-transaction data, which may be in different formats and constantly
-involve. Thus, this should be addresses with a separate standards (or be a
-vendor-based). The current proposal only touches the question of spending an
-output which contained previously created P2C commitment, which does not creates
-a new commitment and does not provides that kind of risk of extra-blockchain
-value loses.</ref></p>
-<h2>Rationale</h2>
-<references/>
-<h2>Compatibility</h2>
-<p>The proposal is compatible with the existing consensus rules and does not
-require any of their modifications.</p>
-<p>The proposed P2C PSBT fields provides sufficient information for creating a
-valid signatures for spendings of the following output types containing tweaked
-public keys:</p>
-<ul>
-<li>bare scripts,</li>
-<li>P2PK,</li>
-<li>P2PKH,</li>
-<li>P2SH,</li>
-<li>witness v0 P2WPKH and P2WSH,</li>
-<li>nested witness v0 P2WPKH-P2SH and P2WSH-P2SH,</li>
-</ul>
-<p>Post-0 witness versions, including taproot outputs and future witness versions,
-may not be supported or covered by this BIP and may require addition of new
-fields to the PSBT inputs.</p>
-<h2>Reference implementation</h2>
-<p>WIP</p>
-<h2>Acknowledgements</h2>
-<p>Author is grateful to Andrew Poelstra, who provided an initial set of ideas
-and information on his previous work on the topic basing on which this standard
-was designed.</p>
-<h2>Test vectors</h2>
-<p>TBD</p>
-<h2>References</h2>
-<p>[1] Ilja Gerhardt, Timo Hanke. Homomorphic Payment Addresses and the</p>
-<pre><code>    Pay-to-Contract Protocol. arXiv:1212.3257 \[cs.CR\]
-    &lt;https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1212.3257.pdf&gt;
-[2] Eternity Wall&#x27;s &quot;sign-to-contract&quot; article.
-    &lt;https:&#x2F;&#x2F;blog.eternitywall.com&#x2F;2018&#x2F;04&#x2F;13&#x2F;sign-to-contract&#x2F;&gt;
-[3] Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed
-    Timestamping with Bitcoin.
-    &lt;https:&#x2F;&#x2F;petertodd.org&#x2F;2016&#x2F;opentimestamps-announcement&gt;
-[4] Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain
-    Innovations with Pegged Sidechains (commit5620e43). Appenxix A.
-    &lt;https:&#x2F;&#x2F;blockstream.com&#x2F;sidechains.pdf&gt;;.
-[5] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. Key
-    tweaking: collision- resistant elliptic curve-based commitments.
-    LNPBP-1 Standard.
-    &lt;https:&#x2F;&#x2F;github.com&#x2F;LNP-BP&#x2F;LNPBPs&#x2F;blob&#x2F;master&#x2F;lnpbp-0001.md&gt;
-[6] Peter Todd. Single-use-seals. LNPBP-8 Standard.
-    &lt;https:&#x2F;&#x2F;github.com&#x2F;LNP-BP&#x2F;LNPBPs&#x2F;blob&#x2F;master&#x2F;lnpbp-0008.md&gt;
-</code></pre>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

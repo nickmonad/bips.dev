@@ -22,10 +22,13 @@
     <title>BIP 330: Transaction announcements reconciliation</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 330: Transaction announcements reconciliation</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 330: Transaction announcements reconciliation</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2019-09-25</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0330.mediawiki" target="_blank">View on GitHub</a>
@@ -285,261 +325,10 @@ We would like to thank Ben Woosley for contributions to the high-level descripti
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 330: Transaction announcements reconciliation
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2019-09-25</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0330.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 330
-  Layer: Peer Services
-  Title: Transaction announcements reconciliation
-  Author: Gleb Naumenko &lt;naumenko.gs@gmail.com&gt;
-          Pieter Wuille &lt;pieter.wuille@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0330
-  Status: Draft
-  Type: Standards Track
-  Created: 2019-09-25
-  License: CC0-1.0
-  License-Code: MIT
-</code></pre>
-<h2>Abstract</h2>
-<p>This document specifies a P2P protocol extension for reconciliation of transaction announcements <b>between 2 nodes</b>, which is a building block for efficient transaction relay protocols (e.g., <a href="https://arxiv.org/pdf/1905.10518.pdf" target="_blank">Erlay</a>). This is a step towards increasing the connectivity of the network for almost no bandwidth cost.</p>
-<h2>Motivation</h2>
-<p>Currently in the Bitcoin network, every 32-byte transaction ID is announced in at least one direction between every pair of connected peers, via INV messages. This results in high cost of announcing transactions: <em>O(nodes * connections_per_node)</em>.</p>
-<p>A <b>reconciliation-based protocol</b> which uses the technique suggested in this document can have better scaling properties than INV-based flooding.</p>
-<p>Increasing the connectivity of the network makes the network more robust to partitioning attacks; thus, improving the bandwidth scaling of transaction relay to <em>O(nodes)</em> (and without a high constant overhead) would allow us to improve the security of the network by increasing connectivity. It would also reduce the bandwidth required to run a Bitcoin node and potentially enable more users to run full nodes.</p>
-<h3>Erlay</h3>
-<p><a href="https://arxiv.org/pdf/1905.10518.pdf" target="_blank">Erlay</a> is an example of a high-level transaction relay protocol which employs set reconciliation for bandwidth efficiency.</p>
-<p>Note that what we are going to describe here is a modified version from the protocol (it is different from what is presented in the paper).</p>
-<p>Erlay uses both flooding (announcing using INV messages to all peers) and reconciliation to announce transactions.
-Flooding is expensive, so Erlay seeks to use it only when necessary to facilitate rapid relay over a small subset of connections.</p>
-<p>Efficient set reconciliation is meant to deliver transactions to those nodes which didn't receive a transaction via flooding, and also just make sure remaining connections are in sync (directly connected pairs of nodes are aware they have nothing to learn from each other).</p>
-<p>Efficient set reconciliation works as follows:</p>
-<ol>
-<li>every node keeps a reconciliation set for each peer, in which transactions are placed which would have been announced using INV messages absent this protocol</li>
-<li>once in a while every node chooses a peer from its reconciliation queue to reconcile with, resulting in both sides learning the transactions known to the other side</li>
-<li>after every reconciliation round, the corresponding reconciliation set is cleared</li>
-</ol>
-<p>A more detailed description of a set reconciliation round can be found below.</p>
-<p>Erlay allows us to:</p>
-<ul>
-<li>save a significant portion of the bandwidth consumed by a node</li>
-<li>increase network connectivity for almost no bandwidth or latency cost</li>
-<li>keep transaction propagation latency at the same level</li>
-</ul>
-<p>This document proposes a P2P-layer extension which is required to enable efficient reconciliation-based protocols (like Erlay) for transaction relay.</p>
-<h2>Specification</h2>
-<h3>New data structures</h3>
-<p>Several new data structures are introduced to the P2P protocol first, to aid with efficient transaction relay.</p>
-<h4>32-bit short transaction IDs</h4>
-<h1></h1>
-<p>Short IDs are computed as follows:</p>
-<ul>
-<li>Let <em>salt<sub>1</sub></em> and <em>salt<sub>2</sub></em> be the entropy contributed by both sides; see the &quot;sendtxrcncl&quot; message further for details how they are exchanged.</li>
-<li>Sort the two salts such that <em>salt<sub>1</sub> ≤ salt<sub>2</sub></em> (which side sent what doesn't matter).</li>
-<li>Compute <em>h = TaggedHash(&quot;Tx Relay Salting&quot;, salt<sub>1</sub>, salt<sub>2</sub>)</em>, where the two salts are encoded in 64-bit little-endian byte order, and TaggedHash is specified by <a href="/340" target="_blank">BIP-340</a>.</li>
-<li>Let <em>k<sub>0</sub></em> be the 64-bit integer obtained by interpreting the first 8 bytes of <em>h</em> in little-endian byte order.</li>
-<li>Let <em>k<sub>1</sub></em> be the 64-bit integer obtained by interpreting the second 8 bytes of <em>h</em> in little-endian byte order.</li>
-<li>Let <em>s = SipHash-2-4((k<sub>0</sub>,k<sub>1</sub>),wtxid)</em>, where <em>wtxid</em> is the transaction hash including witness data as defined by BIP141.</li>
-<li>The short ID is equal to <em>1 + (s mod 0xFFFFFFFF)</em>.</li>
-</ul>
-<p>This results in approximately uniformly distributed IDs in the range <em>[1..0xFFFFFFFF]</em>, which is a requirement for using them as elements in 32-bit sketches. See the next paragraph for details.</p>
-<h4>Short transaction ID sketches</h4>
-<p>Reconciliation-based relay uses <a href="https://www.cs.bu.edu/~reyzin/code/fuzzy.html" target="_blank">PinSketch</a> BCH-based secure sketches as introduced by the <a href="https://www.cs.bu.edu/~reyzin/fuzzy.html" target="_blank">Fuzzy Extractors paper</a>. They are a form of set checksums with the following properties:</p>
-<ul>
-<li>Sketches have a predetermined capacity, and when the number of elements in the set does not exceed the capacity, it is always possible to recover the entire set from the sketch by decoding the sketch. A sketch of nonzero b-bit elements with capacity c can be stored in bc bits.</li>
-<li>A sketch of the <a href="https://en.wikipedia.org/wiki/Symmetric_difference" target="_blank">symmetric difference</a> between the two sets (i.e., all elements that occur in one but not both input sets), can be obtained by combining the sketches of those sets.</li>
-</ul>
-<p>The sketches used here consists of elements of the <a href="https://en.wikipedia.org/wiki/Finite_field" target="_blank">finite field</a> <em>GF(2<sup>32</sup>)</em>. Specifically, we represent finite field elements as polynomials in <em>x</em> over <em>GF(2)</em> modulo <em>x<sup>32&lt;/sup + x<sup>7</sup> + x<sup>3</sup> + x<sup>2</sup> + 1</em>. To map integers to finite field elements, simply treat each bit <em>i</em> (with value <em>2<sup>i</sup></em>) in the integer as the coefficient of <em>x<sup>i</sup></em> in the polynomial representation. For example the integer <em>101 = 2<sup>6</sup> + 2<sup>5</sup> + 2<sup>2</sup> + 1</em> is mapped to field element <em>x<sup>6</sup> + x<sup>5</sup> + x<sup>2</sup> + 1</em>. These field elements can be added and multiplied together, but the specifics of that are out of scope for this document.</p>
-<p>A short ID sketch with capacity <em>c</em> consists of a sequence of <em>c</em> field elements. The first is the sum of all short IDs in the set, the second is the sum of the 3rd powers of all short IDs, the third is the sum of the 5th powers etc., up to the last element with is the sum of the _(2c-1)_th powers. These elements are then encoded as 32-bit integers in little endian byte order, resulting in a <em>4c</em>-byte serialization.</p>
-<p>The following Python 3.2+ code implements the creation of sketches: <pre>
-FIELD_BITS = 32
-FIELD_MODULUS = (1 &lt;&lt; FIELD_BITS) + 0b10001101</p>
-<p>def mul2(x):</p>
-<pre><code>    &quot;&quot;&quot;Compute 2*x in GF(2^FIELD_BITS)&quot;&quot;&quot;
-    return (x &lt;&lt; 1) ^ (FIELD_MODULUS if x.bit_length() &gt;= FIELD_BITS else 0)
-</code></pre>
-<p>def mul(x, y):</p>
-<pre><code>    &quot;&quot;&quot;Compute x*y in GF(2^FIELD_BITS)&quot;&quot;&quot;
-    ret = 0
-    for bit in [(x &gt;&gt; i) &amp; 1 for i in range(x.bit_length())]:
-        ret, y = ret ^ bit * y, mul2(y)
-    return ret
-</code></pre>
-<p>def create_sketch(shortids, capacity):</p>
-<pre><code>    &quot;&quot;&quot;Compute the bytes of a sketch for given shortids and given capacity.&quot;&quot;&quot;
-    odd_sums = [0 for _ in range(capacity)]
-    for shortid in shortids:
-        squared = mul(shortid, shortid)
-        for i in range(capacity):
-            odd_sums[i] ^= shortid
-            shortid = mul(shortid, squared)
-    return b&#x27;&#x27;.join(elem.to_bytes(4, &#x27;little&#x27;) for elem in odd_sums)
-&lt;&#x2F;pre&gt;
-</code></pre>
-<p>The <a href="https://github.com/sipa/minisketch/" target="_blank">minisketch</a> library implements the construction, merging, and decoding of these sketches efficiently.</p>
-<h3>Intended Protocol Flow</h3>
-<p>Set reconciliation primarily consists of the transmission and decoding of a reconciliation set sketch upon request.</p>
-<p>Since sketches are based on the WTXIDs, the negotiation and support of Erlay should be enabled only if both peers signal <a href="/339" target="_blank">BIP-339</a> support.</p>
-<img src="bip-0330/recon_scheme_merged.png" />
-<h4>Sketch extension</h4>
-<p>If a node is unable to reconstruct the set difference from the received sketch, the node then makes a request for sketch extension. The peer would then send an extension, which is a sketch of a higher capacity (allowing to decode more differences) over the same transactions minus the sketch part which was already sent initially (to save bandwidth).
-To allow this optimization, the initiator is supposed to locally store a sketch received initially.
-This optimization is possible because extending a sketch is just concatenating new elements to an array.</p>
-<h3>New messages</h3>
-<p>Several new protocol messages are added: sendtxrcncl, reqrecon, sketch, reqsketchext, reconcildiff. This section describes their serialization, contents, and semantics.</p>
-<p>In what follows, all integers are serialized in little-endian byte order. Boolean values are encoded as a single byte that must be 0 or 1 exactly. Arrays are serialized with the CompactSize prefix that encodes their length, as is common in other P2P messages.</p>
-<h4>sendtxrcncl</h4>
-<p>The sendtxrcncl message announces support for the reconciliation protocol. It is expected to be only sent once, and ignored by nodes that don't support it.</p>
-<p>Should be sent before &quot;verack&quot; and accompanied by &quot;wtxidrelay&quot; (in any order).</p>
-<p>If &quot;sendtxrcncl&quot; was sent after &quot;verack&quot;, the sender should be disconnected.</p>
-<p>If &quot;sendtxrcncl&quot; was sent before &quot;verack&quot;, but by &quot;verack&quot; the &quot;wtxidrelay&quot; message was not received,
-&quot;sendtxrcncl&quot; should be ignored. The connection should proceed normally, but as if reconciliation
-was not supported.</p>
-<p>Must not be sent if peer specified no support for transaction relay (fRelay=0) in &quot;version&quot;.
-Otherwise, the sender should be disconnected.</p>
-<p>Its payload consists of:</p>
-<table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>uint32</td><td>version</td><td>Sender must set this to 1 currently, otherwise receiver should ignore the message. v1 is the lowest protocol version, everything below that is a protocol violation.</td></tr>
-<tr><td>uint64</td><td>salt</td><td>The salt used in the short transaction ID computation.</td></tr>
-</tbody></table>
-<p>After both peers have confirmed support by sending &quot;sendtxrcncl&quot;, the initiator of the P2P connection assumes the role of reconciliation initiator (will send &quot;reqrecon&quot; messages) and the other peer assumes the role of reconciliation responder (will respond to &quot;reqrecon&quot; messages).
-&quot;reqrecon&quot; messages can only be sent by the reconciliation initiator.</p>
-<h4>reqrecon</h4>
-<p>The reqrecon message initiates a reconciliation round.</p>
-<table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>uint16</td><td>set_size</td><td>Size of the sender's reconciliation set, used to estimate set difference.</td></tr>
-<tr><td>uint16</td><td>q</td><td>Coefficient used to estimate set difference. Multiplied by PRECISION=(2^15) - 1 and rounded up by the sender and divided by PRECISION by the receiver.</td></tr>
-</tbody></table>
-<p>Upon receipt of a &quot;reqrecon&quot; message, the receiver:</p>
-<ul>
-<li>Constructs and sends a &quot;sketch&quot; message (see below), with a sketch of certain <em>capacity=f(set_size, local_set_size, q)</em> (the exact function is suggested below), where <em>local_set_size</em> represents size of the receiver's reconciliation set.</li>
-<li>Makes a snapshot of their current reconciliation set, and clears the set itself. The snapshot is kept until a &quot;reconcildiff&quot; message is received by the node.</li>
-</ul>
-<p>No new &quot;reqrecon&quot; message can be sent until a &quot;reconcildiff&quot; message is sent.</p>
-<h4>sketch</h4>
-<p>The sketch message is used to communicate a sketch required to perform set reconciliation.</p>
-<table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>byte[]</td><td>skdata</td><td>The sketch of the sender's reconciliation snapshot</td></tr>
-</tbody></table>
-<p>The sketch message may be received in two cases.</p>
-<ol>
-<li>Initial sketch. Upon receipt of a &quot;sketch&quot; message, a node computes the difference sketch by combining the received sketch with a sketch computed locally for a corresponding reconciliation set. The receiving node then tries to decode the difference sketch and based on the result:</li>
-</ol>
-<ul>
-<li>If the decoding failed, the receiving node requests an extension sketch by sending a &quot;reqsketchext&quot; message. Alternatively, the node may terminate the reconciliation right away by sending a &quot;reconcildiff&quot; message is sent with the failure flag set (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
-</ul>
-<p>The receiver also makes snapshot of their current reconciliation set, and clears the set itself. The snapshot is kept until a &quot;reconcildiff&quot; message is sent by the node. It is needed to enable sketch extension.</p>
-<ol start="2">
-<li>Sketch extension. By combining the sketch extension with the initially received sketch, an extended sketch is obtained. The receiving node then computes the extended difference sketch by combining the received extended sketch with an extended sketch computed locally over a corresponding reconciliation set snapshot. The receiving node then tries to decode the extended difference sketch and based on the result:</li>
-</ol>
-<ul>
-<li>If the decoding failed, the receiving node terminates the reconciliation right away by sending a &quot;reconcildiff&quot; message is sent with the failure flag set (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
-</ul>
-<p>In either cases, a &quot;reconcildiff&quot; with success=false should also be accompanied with announcing all transactions from the reconciliation set (or set snapshot if failed after extension) as a fallback to flooding.
-A &quot;reconcildiff&quot; with success=true should contain unknown short IDs of the transactions from the decoded difference, corresponding to the transactions missing on the sender's side. Known short IDs from the difference correspond to what the receiver of the message is missing, and they should be announced via an &quot;inv&quot; message.</p>
-<h4>reqsketchext</h4>
-<p>The reqsketchext message is used by reconciliation initiator to signal that initial set reconciliation has failed and a sketch extension is needed to find set difference.</p>
-<p>It has an empty payload.</p>
-<p>Upon receipt of a &quot;reqsketchext&quot; message, a node responds to it with a &quot;sketch&quot; message, which contains a sketch extension: a sketch (of the same transactions sketched initially) of higher capacity without the part sent initially.</p>
-<h4>reconcildiff</h4>
-<p>The reconcildiff message is used by reconciliation initiator to announce transactions which are found to be missing during set reconciliation on the sender's side.</p>
-<table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>uint8</td><td>success</td><td>Indicates whether sender of the message succeeded at set difference decoding.</td></tr>
-<tr><td>uint32[]</td><td>ask_shortids</td><td>The short IDs that the sender did not have.</td></tr>
-</tbody></table>
-<p>Upon receipt a &quot;reconcildiff&quot; message with <em>success=1</em> (reconciliation success), a node sends an &quot;inv&quot; message for the transactions requested by 32-bit IDs (first vector) containing their wtxids (with parent transactions occuring before their dependencies).
-If <em>success=0</em> (reconciliation failure), receiver should announce all transactions from the reconciliation set via an &quot;inv&quot; message.
-In both cases, transactions the sender of the message thinks the receiver is missing are announced via an &quot;inv&quot; message.
-The regular &quot;inv&quot; deduplication should apply.</p>
-<p>The <b>snapshot</b> of the corresponding reconciliation set is cleared by the sender and the receiver of the message.</p>
-<p>The sender should also send their own &quot;inv&quot; message along with the reconcildiff message to announce transactions which are missing on the receiver's side.</p>
-<h2>Local state</h2>
-<p>This BIP suggests a stateful protocol and it requires storing several variables at every node to operate properly.</p>
-<h4>Reconciliation salt</h4>
-<p>When negotiating reconciliation support, peers send each other their contribution to the reconciliation salt (see how we construct short IDs above). These salts (or just the resulting salt) should be stored on both sides of the connection.</p>
-<h4>Reconciliation sets</h4>
-<p>Every node stores a set of wtxids for every peer which supports transaction reconciliation, representing the transactions which would have been sent according to the regular flooding protocol.
-Incoming transactions are added to sets when those transactions are received (if they satisfy the policies such as minimum fee set by a peer).
-A reconciliation set is moved to the corresponding set snapshot after the transmission of the initial sketch.</p>
-<h4>Reconciliation set snapshot</h4>
-<p>After transmitting the initial sketch (either sending or receiving of the reconcildiff message), every node should store the snapshot of the current reconciliation set, and clear the set.
-This is important to make sketch extension more stable (extension should be computed over the set snapshot). Otherwise, extension would contain transactions received after sending out the initial sketch.
-The snapshot is cleared after the end of the reconciliation round (sending or receiving of the reconcildiff message).</p>
-<h4>Sketch capacity estimation and q-coefficient</h4>
-<p>Earlier we suggested that upon receiving a reconciliation request, a node should estimate the sketch capacity it should send: <em>capacity=f(set_size, local_set_size, q)</em>.</p>
-<p>We suggest the following function: <em>capacity=|set_size - local_set_size| + q * min(set_size, local_set_size) + c</em>.</p>
-<p>Intuitively, <em>q</em> represents the discrepancy in sets: the closer the sets are, the lower optimal <em>q</em> is.
-Per the Erlay paper, <em>q</em> should be derived as an optimal <em>q</em> value for the previous reconciliation with a given peer, once the actual set sizes and set difference are known.
-For example, if in previous round <em>set_size=30</em> and <em>local_set_size=20</em>, and the <em>actual</em> difference was <em>12</em>, then a node should compute <em>q</em> as following:
-<em>q=(12 - |30-20|) / min(30, 20)=0.1</em></p>
-<p>The derivation of <em>q</em> can be changed according to the version of the protocol. For example, a static value could be chosen for simplicity. However, we suggest that <em>q</em> remains a parameter sent in every reconciliation request to enable future compatibility with more sophisticated (non-static) choices of this parameter.</p>
-<p>As for the <em>c</em> parameter, it is suggested to use <em>c=1</em> to avoid sending empty sketches and reduce the overhead caused by under-estimations.</p>
-<h2>Backward compatibility</h2>
-<p>Older clients remain fully compatible and interoperable after this change.</p>
-<p>Clients which do not implement this protocol remain fully compatible after this change using existing protocols, because transaction announcement reconciliation is used only for peers that negotiate support for it.</p>
-<h2>Rationale</h2>
-<h4>Why use PinSketch for set reconciliation?</h4>
-<p>PinSketch is more bandwidth efficient than IBLT, especially for the small differences in sets we expect to operate over.
-PinSketch is as bandwidth efficient as CPISync, but PinSketch has quadratic decoding complexity, while CPISync have cubic decoding complexity. This makes PinSketch significantly faster.</p>
-<h4>Why use 32-bit short transaction IDs?</h4>
-<p>To use Minisketch in practice, transaction IDs should be shortened (ideally, not more than 64 bits per element).
-A small number of bits per transaction also allows saving extra bandwidth and make operations over sketches faster.
-According to our estimates, 32 bits provides low collision rate in a non-adversarial model (which is enabled by using independent salts per-link).</p>
-<h4>Why use sketch extensions instead of bisection?</h4>
-<p>Bisection is an alternative to sketch extensions, per which a second sketch with the same initial capacity is computed over half of the txID space.
-Due to the linearity of sketches, transmitting just this one allows a reconciliation initiator to compute the sketch of the same capacity of another half. Two sketches allow the initiator to reconstruct twice as many differences as was allowed by an initial sketch.</p>
-<p>In practice this allows the initiator to amortize the bandwidth overhead of initial reconciliation failure, similarly to extension sketches, making the overhead negligible.</p>
-<p>The main benefit of sketch extensions is a much simpler implementation. Implementing bisection is hard (see <a href="https://github.com/naumenkogs/bitcoin/commit/b5c92a41e4cc0599504cf838d20212f1a403e573" target="_blank">implementation</a>) because, in the end, we have to operate with two sketches and handle scenarios where one sketch decoded and another sketch failed.</p>
-<p>It becomes even more difficult if in the future we decide to allow more than one extension/bisection. Bisection in this case have to be recursive (and spawn 4/8/16/... sketches), while for extensions we always end up with one extended sketch.</p>
-<p>Sketch extensions are also more flexible: extending a sketch of capacity 10 with 4 more means just computing a sketch of capacity 14 and sending the extension, while for bisection increasing the capacity to something different than 10<em>2/10</em>4/10*8/... is sophisticated implementation-wise.</p>
-<p>The only advantage of bisection is that it doesn't require computing sketches of higher capacities (exponential cost). We believe that since
-the protocol is currently designed to operate in the conditions where sketches usually have at most the capacity of 20, this efficiency is not crucial.</p>
-<h2>Implementation</h2>
-<p>https://github.com/bitcoin/bitcoin/pull/21515</p>
-<h2>Acknowledgments</h2>
-<p>A large fraction of this proposal was done during designing Erlay with Gregory Maxwell, Sasha Fedorova and Ivan Beschastnikh.
-We would like to thank Suhas Daftuar for contributions to the design and BIP structure.
-We would like to thank Ben Woosley for contributions to the high-level description of the idea.</p>
-<h2>Copyright</h2>
-<p>This document is licensed under the Creative Commons CC0 1.0 Universal license.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

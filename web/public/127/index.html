@@ -22,10 +22,13 @@
     <title>BIP 127: Simple Proof-of-Reserves Transactions</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 127: Simple Proof-of-Reserves Transactions</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 127: Simple Proof-of-Reserves Transactions</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2019-01-28</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0127.mediawiki" target="_blank">View on GitHub</a>
@@ -277,253 +317,10 @@ https://github.com/stevenroose/reserves</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 127: Simple Proof-of-Reserves Transactions
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2019-01-28</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0127.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 127
-  Layer: Applications
-  Title: Simple Proof-of-Reserves Transactions
-  Author: Steven Roose &lt;steven@stevenroose.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0127
-  Status: Draft
-  Type: Standards Track
-  Created: 2019-01-28
-  License: CC0-1.0
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP describes a simple way to construct proof-of-reserves transactions.
-This proposal formalizes a standard format for constructing such proofs, easing
-their construction with existing wallet infrastructure and enabling general
-proof-verification software.  It relies on existing standards such as regular
-Bitcoin transaction serialization/validation and the BIP 174 PSBT format.
-The proposal also includes the description of a PSBT extension for a better
-user experience.</p>
-<h2>Copyright</h2>
-<p>This BIP is licensed under the Creative Commons CC0 1.0 Universal license.</p>
-<h2>Motivation</h2>
-<p>From the very early days in the history of Bitcoin, there have been companies
-managing bitcoins for their users.  These users give up control over their coins
-in return for a certain service.  Inevitably, there have been many cases of
-companies losing their users' bitcoins without timely disclosing such events to
-the public.  Proofs of Reserves are a way for companies managing large amounts
-of bitcoins to prove ownership over a given amount of funds.  The regular proof
-of control helps to ensure that no significant loss has occurred.</p>
-<p>While the term proof-of-reserves is not new by any means, the procedure is not
-very common among high-value custodian companies.  One of the reasons for this
-is that every company that wants to perform a proof-of-reserves has to construct
-its own way to do so.  Accordingly, their users have to understand the
-construction of the proof in order to be able to verify it.  This raises the bar
-of entry both for custodians and for users.</p>
-<h3>What this BIP is not doing</h3>
-<p>The proof-of-reserve construction described in this document has some known
-shortcomings, mostly with regards to its privacy properties.  While there exists
-research about improved proof-of-reserves mechanisms that have much better
-privacy properties<ref>Dagher, Gaby G., Benedikt Bünz, Joseph Bonneau, Jeremy
-Clark, and Dan Boneh. &quot;Provisions: Privacy-preserving proofs of solvency for
-Bitcoin exchanges.&quot; (2015).</ref>, this BIP intentionally only formalizes
-the de-facto existing method.</p>
-<h2>Specification</h2>
-<p>Our specification consists of two parts:</p>
-<ol>
-<li>the format for the actual proofs</li>
-<li>a file format used to package a set of proofs and relevant metadata</li>
-</ol>
-<p>The final construction should have the following properties:</p>
-<ul>
-<li>flexible proof construction to support complex wallet infrastructures</li>
-<li>easy integration with existing wallet solutions (both hardware and software wallets)</li>
-<li>support for verification via a standard procedure, regardless of publisher of the proof</li>
-<li>proof prevents reuse of proofs by other parties by committing to a message</li>
-<li>allow validating that the issuer had the funds under his control at a certain block, regardless of what happened after that block</li>
-</ul>
-<h3>Proof Format</h3>
-<p>To allow for maximal compatibility with existing systems, proofs are formatted as regular Bitcoin
-transactions.  However, one small adaptation to the transaction is made that has two functions:</p>
-<ol>
-<li>make the transaction unspendable to avoid putting funds at risk</li>
-<li>link the proof to the issuer of the proof to prevent copying proofs from other custodians</li>
-</ol>
-<p>The resulting construction is a Bitcoin transaction with the following
-characteristics:</p>
-<ul>
-<li>The first input (the &quot;commitment input&quot;)
-<ul>
-<li>MUST have the txid part of the previous outpoint set to the SHA-256 hash of the commitment message prefixed with &quot;Proof-of-Reserves: &quot;<ref>If the message is &quot;Some Message&quot;, the txid part should be <tt>SHA-256(&quot;Proof-of-Reserves: Some Message&quot;)</tt> with the string encoded as UTF-8.</ref> and index 0.</li>
-</ul>
-</li>
-<li>The remaining inputs
-<ul>
-<li>MUST have signatures that commit to the commitment input (e.g. using <tt>SIGHASH_ALL</tt>).</li>
-</ul>
-</li>
-<li>The transaction MUST have a single output that is the exact sum of all the inputs, assuming the commitment input to have 0 value; this means the transaction has no miner fee.</li>
-</ul>
-<p>The existence of the first input (which is just a commitment hash) ensures
-that this transaction is invalid and can never be confirmed.</p>
-<h3>Proof File Format</h3>
-<p>In theory, the first part of the specification would be sufficient as a minimum
-viable standard.  However, there are a number of motivations to extend the
-standard with an extra layer of metadata:</p>
-<ol>
-<li>constructing and combining multiple proofs</li>
-<li>:Having thousands of UTXOs spread across different offline and online wallets could make it difficult to construct a single proof transaction with all UTXOs.  Allowing multiple proof transactions with the same commitment message and block number gives extra flexibility to custodians with complex wallet infrastructure without making the combined proof less secure.</li>
-<li>metadata for verification</li>
-<li>:Not all systems that will be used for verification have access to a full index of all transactions.  However, proofs should be easily verifiable even after some of the UTXOs used in the proof are no longer unspent.  Metadata present in the proof allows for relatively efficient verification of proofs even if no transaction index is available.</li>
-<li>potential future improvements</li>
-<li>:The extensible metadata format allows for amending the standard in the future.  One potential improvement would be having UTXO set commitments.  These would allow the proofs-of-reserves to come with accompanying proofs-of-inclusion of all used UTXOs in the UTXO set at the block of proof construction (making validation even more efficient).</li>
-</ol>
-<p>The proposed proof-file format provides a standard way of combining multiple
-proofs and associated metadata.  The specification of the format is in the
-Protocol Buffers<ref>https://github.com/protocolbuffers/protobuf/</ref> format.</p>
-<pre><code>syntax = &quot;proto3&quot;;
-import &quot;google&#x2F;protobuf&#x2F;any.proto&quot;;
-
-message OutputMeta {
-	&#x2F;&#x2F; Identify the outpoint.
-	bytes txid = 1;
-	uint32 vout = 2;
-
-	&#x2F;&#x2F; The block hash of the block where this output was created.
-	bytes block_hash = 3;
-}
-
-message FinalProof {
-	&#x2F;&#x2F; The proof transaction.  Should be able to be parsed like a regular
-	&#x2F;&#x2F; Bitcoin transaction.
-	bytes proof_tx = 1;
-
-	&#x2F;&#x2F; The metadata of the ouputs used in the proof transaction.
-	repeated OutputMeta output_metadata = 2;
-}
-
-message ProofOfReserves {
-	&#x2F;&#x2F; A version number for this format to enable extending it with
-	&#x2F;&#x2F; additional fields.
-	uint32 version = 1;
-
-	&#x2F;&#x2F; The network magic for the network in which the proofs are valid.
-	&#x2F;&#x2F; 0xD9B4BEF9 for mainnet, 0x0709110B for testnet
-	&#x2F;&#x2F;TODO consider BIP44 coin type ids instead:
-	&#x2F;&#x2F; https:&#x2F;&#x2F;github.com&#x2F;satoshilabs&#x2F;slips&#x2F;blob&#x2F;master&#x2F;slip-0044.md
-	uint32 network_magic = 2;
-
-	&#x2F;&#x2F; The commitment message for this proof-of-reserves.
-	&#x2F;&#x2F; This message is global for all the proofs.
-	string message = 3;
-
-	&#x2F;&#x2F; The block at which this proof is supposed to be validated.
-	&#x2F;&#x2F; Verification should take into account unspentness of outputs at this
-	&#x2F;&#x2F; block height.
-	bytes block_hash = 4;
-
-	&#x2F;&#x2F; The set of final proof transactions with their output metadata.
-	repeated FinalProof final_proofs = 5;
-
-	&#x2F;&#x2F; Reserved field that can potentially be used by proof-construction tools.
-	&#x2F;&#x2F; It can be ignored for verification.
-	repeated google.protobuf.Any pending_proofs = 6;
-}
-</code></pre>
-<p>The last field, <tt>pending_proofs</tt>, leaves open some space in the same
-file that can be used by proof-construction tools.  This allows them to
-construct different proofs incrementally without having to switch between file
-formats.</p>
-<h3>PSBT (BIP 174) extension</h3>
-<p>The &quot;commitment input&quot; detailed in the proof format section does not spend an
-existing UTXO and thus shouldn't be signed (empty <tt>scriptSig</tt> and
-witness).  This can cause some problems when signing this type of transactions.
-For example, hardware wallets often require the signer to provide information
-about all inputs of transactions they are signing, such as the previous output
-or previous transaction; this data obviously doesn't exist for the commitment
-inputs.</p>
-<p>For most existing devices, it's possible to circumvent these requirements by
-providing dummy data or by instructing the device to ignore this specific
-input.  However, there is still a UX problem.  Because the hardware wallet
-device doesn't recognize the transaction as a proof-of-reserves transaction it
-will think it is signing a regular transaction that is spending all the money
-in the UTXOs.  Most devices will ask for confirmation with a message along the
-lines of &quot;Are you sure you want to send XXX BTC to address [...]?&quot;.  This is
-not the best user experience.</p>
-<p>An addition to the BIP 174 PSBT format could help signing devices to recognize proof-of-reserve transactions.
-The following field is added to the BIP 174 <tt>INPUT</tt> map:</p>
-<ul>
-<li>Type: Proof-of-reserves commitment <tt>PSBT_IN_POR_COMMITMENT = 0x09</tt>
-<ul>
-<li>Key: None. The key must only contain the 1 byte type.
-<ul>
-<li><tt>{0x09}</tt></li>
-</ul>
-</li>
-<li>Value: The UTF-8 encoded commitment message string for the proof-of-reserves.
-<ul>
-<li><tt>{porCommitment}</tt></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>Wallets processing an input that has this field set</p>
-<ul>
-<li>MUST make sure the txid of the previous outpoint is set to the SHA-256 hash of the prefixed commitment message string, as detailed above;</li>
-<li>MUST assume the input value to be 0 (without requiring the previous output or transaction to be provided);</li>
-<li>SHOULD display the commitment message to ask the user for confirmation before signing any inputs;</li>
-<li>SHOULD only provide signatures with a signature hash that commits to this input;</li>
-<li>SHOULD accept an empty <tt>scriptSig</tt> for this input (as if the <tt>scriptPubKey</tt> was <tt>OP_TRUE</tt>).</li>
-</ul>
-<h2>Compatibility</h2>
-<p>The proof transaction specification is based on the Bitcoin transaction
-serialization protocol and will thus always be compatible with serializers
-that can interpret Bitcoin transactions.  The protobuf file format is custom
-to this BIP and has a version byte to enable updates while attempting to remain
-backwards compatible.</p>
-<h2>Implementations</h2>
-<p>A proof-of-concept implementation of the PSBT extension in the
-<a href="https://github.com/rust-bitcoin/rust-bitcoin" target="_blank">rust-bitcoin</a> project can be
-found in the <tt>psbt-por</tt> branch here:
-https://github.com/stevenroose/rust-bitcoin/tree/psbt-por</p>
-<p>A work-in-progress implementation of a tool that produces and verifies proofs
-in the described format can be found here:
-https://github.com/stevenroose/reserves</p>
-<p>An implementation of the custom proof PSBTs is part of the <a href="https://bitcoindevkit.org/" target="_blank">BDK</a>, and can be found here: https://crates.io/crates/bdk-reserves</p>
-<h2> Footnotes </h2>
-<references />
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

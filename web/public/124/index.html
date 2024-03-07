@@ -22,10 +22,13 @@
     <title>BIP 124: Hierarchical Deterministic Script Templates</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 124: Hierarchical Deterministic Script Templates</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 124: Hierarchical Deterministic Script Templates</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-11-20</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0124.mediawiki" target="_blank">View on GitHub</a>
@@ -148,124 +188,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 124: Hierarchical Deterministic Script Templates
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-11-20</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0124.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 124
-  Layer: Applications
-  Title: Hierarchical Deterministic Script Templates
-  Author: Eric Lombrozo &lt;eric@ciphrex.com&gt;
-          William Swanson &lt;swansontec@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0124
-  Status: Rejected
-  Type: Informational
-  Created: 2015-11-20
-  License: PD
-  Post-History: http:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2015-November&#x2F;011795.html
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP defines a script template format that can be used by wallets to deterministically generate scripts with specific authorization policies using the key derivation mechanism defined in BIP32.</p>
-<h2>Motivation</h2>
-<p>Currently existing wallets typically issue scripts in only a tiny handful of widely used formats. The most popular formats are pay-to-pubkey-hash and m-of-n pay-to-script-hash (BIP16). However, different wallets tend to use mutually incompatible derivation schemes to generate signing keys and construct scripts from them. Moreover, with the advent of hashlocked and timelocked contracts (BIP65, BIP112), it is necessary for different wallets to be able to cooperatively generate even more sophisticated scripts.</p>
-<p>In addition, there's a lot of ongoing work in the development of multilayered protocols that use the blockchain as a settlement layer (i.e. the Lightning Network). These efforts require sufficiently generalized templates to allow for rapidly evolving script designs.</p>
-<p>This BIP provides a generalized format for constructing a script template that guarantees that different wallets will all produce the same scripts for a given set of derivation paths according to BIP32.</p>
-<h2>Specification</h2>
-<h3>Keys</h3>
-<p>An individual key is determined by a BIP32 derivation path and an index. For convenience, we introduce the following notation:</p>
-<p><strong>A</strong><sub>k</sub> = (derivation path for A)/k</p>
-<h3>Key Groups</h3>
-<p>Let <strong>m</strong><sub>i</sub> denote distinct BIP32 derivation paths. We define a key group of n keys as a set of key derivation paths with a free index k:</p>
-<p>{<strong>K</strong><sub>k</sub>} = { <strong>m</strong><sub>1</sub>/k, <strong>m</strong><sub>2</sub>/k, <strong>m</strong><sub>3</sub>/k, ..., <strong>m</strong><sub>n</sub>/k }</p>
-<p>Key groups are useful for constructing scripts that are symmetric in a set of keys. Scripts are symmetric in a set of keys if the semantics of the script is unaffected by permutations of the keys. Key groups enforce a canonical form and can improve privacy.</p>
-<h3>Sorting</h3>
-<p>We define a lexicographic sorting of the keys. (TODO: specification of sorting conventions - compressed pubkeys, encoding, etc...)</p>
-<p>Define {<strong>K</strong><sub>k</sub>}<sub>j</sub> to be the jth element of the sorted keys for derivation index k.</p>
-<h3>Script Templates</h3>
-<p>We construct script templates by inserting placeholders for data into a script. To denote a placeholder, we use the following notation:</p>
-<p><em>Script</em>(<strong>A</strong>) = opcodes [<strong>A</strong>] opcodes</p>
-<p>We extend this notation to an arbitrary number of placeholders:</p>
-<p><em>Script</em>(<strong>X1</strong>, <strong>X2</strong>, ..., <strong>Xn</strong>) = opcodes [<strong>X1</strong>] opcodes [<strong>X2</strong>] opcodes ... opcodes [<strong>Xn</strong>] opcodes</p>
-<p>We introduce the following convenient notation for sorted key groups:</p>
-<p>[{<strong>K</strong><sub>k</sub>}] = [{<strong>K</strong><sub>k</sub>}<sub>1</sub>] [{<strong>K</strong><sub>k</sub>}<sub>2</sub>] ... [{<strong>K</strong><sub>k</sub>}<sub>n</sub>]</p>
-<h3>Operations on Keys</h3>
-<p>In some applications, we might want to insert the result of some operation performed on a key rather than the key itself into the script. For example, we might want to insert a Hash160 of key <strong>A</strong><sub>k</sub>. We can use the following notation:</p>
-<p>[<em>Hash160</em>(<strong>A</strong><sub>k</sub>)]</p>
-<h3>Encoding</h3>
-<p>TODO</p>
-<h2>Examples</h2>
-<h3>2-of-3 Multisig</h3>
-<p>The script template is defined by:</p>
-<p><em>Script</em>(<strong>X</strong>) = 2 [<strong>X</strong>] 3 OP_CHECKMULTISIG</p>
-<p>Letting <strong>K</strong><sub>k</sub> = { <strong>m</strong><sub>1</sub>/k, <strong>m</strong><sub>2</sub>/k, <strong>m</strong><sub>3</sub>/k }, the _k_th script for this key group is denoted by <em>Script</em>({<strong>K</strong><sub>k</sub>}).</p>
-<h3>1-of-1 or 2-of-3</h3>
-<p>The script template is defined by:</p>
-<p><em>Script</em>(<strong>A</strong>, <strong>B</strong>) = <br>
-        OP_DUP [<strong>A</strong>] OP_CHECKSIG<br>
-        OP_NOTIF<br>
-                2 [<strong>B</strong>] 3 OP_CHECKMULTISIGVERIFY <br>
-        OP_NOTIF<br>
-        OP_ENDIF<br>
-        OP_TRUE<br></p>
-<p>Let <strong>M</strong><sub>k</sub> = <strong>m</strong>/k be a key of a superuser that can authorize all transactions and {<strong>K</strong><sub>k</sub>} be a key group of three users that can only authorize transactions if at least two of them agree.</p>
-<p>The _k_th script is given by <em>Script</em>(<strong>M</strong><sub>k</sub>, {<strong>K</strong><sub>k</sub>}).</p>
-<h3>Timelocked Contract</h3>
-<p>The output is payable to Alice immediately if she knows the private key for <strong>A</strong><sub>k</sub>. Bob must know the private key for <strong>B</strong><sub>k</sub> and also wait for a timeout <strong>t</strong> before being able to spend the output.</p>
-<p>The script template is defined by:</p>
-<p><em>Script</em>(<strong>A</strong>, <strong>B</strong>, <strong>T</strong>) = <br>
-        OP_IF <br>
-                OP_DUP OP_HASH160 [<em>Hash160</em>(<strong>A</strong>)] OP_EQUALVERIFY OP_CHECKSIG <br>
-        OP_ELSE <br>
-                [<strong>T</strong>] OP_CHECKLOCKTIMEVERIFY OP_DROP <br>
-                OP_DUP OP_HASH160 [<em>Hash160</em>(<strong>B</strong>)] OP_EQUALVERIFY OP_CHECKSIG <br>
-        OP_ENDIF</p>
-<p>The _k_th script with timeout <strong>t</strong> is given by <em>Script</em>(<strong>A</strong><sub>k</sub>, <strong>B</strong><sub>k</sub>, <strong>t</strong>).</p>
-<h2>References</h2>
-<ul>
-<li><a href="/16" target="_blank">BIP16 - Pay to Script Hash</a></li>
-<li><a href="/32" target="_blank">BIP32 - Hierarchical Deterministic Wallets</a></li>
-<li><a href="/65" target="_blank">BIP65 - OP_CHECKLOCKTIMEVERIFY</a></li>
-<li><a href="/112" target="_blank">BIP112 - CHECKSEQUENCEVERIFY</a></li>
-<li><a href="https://lightning.network/lightning-network-paper.pdf" target="_blank">Lightning Network Whitepaper</a></li>
-</ul>
-<h2>Copyright</h2>
-<p>This document is placed in the public domain.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

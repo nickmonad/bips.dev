@@ -22,10 +22,13 @@
     <title>BIP 104: &#x27;Block75&#x27; - Max block size like difficulty</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 104: &#x27;Block75&#x27; - Max block size like difficulty</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 104: &#x27;Block75&#x27; - Max block size like difficulty</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2017-01-13</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0104.mediawiki" target="_blank">View on GitHub</a>
@@ -131,107 +171,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 104: &#x27;Block75&#x27; - Max block size like difficulty
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2017-01-13</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0104.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 104
-  Layer: Consensus (hard fork)
-  Title: &#x27;Block75&#x27; - Max block size like difficulty
-  Author: t.khan &lt;teekhan42@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0104
-  Status: Rejected
-  Type: Standards Track
-  Created: 2017-01-13
-  License: BSD-2-Clause
-           GNU-All-Permissive
-</code></pre>
-<h2>Abstract</h2>
-<p>Automatic adjustment of max block size with the target of keeping blocks 75% full, based on the average block size of the previous 2016 blocks. This would be done on the same schedule as difficulty.</p>
-<h2>Motivation</h2>
-<p>Blocks are already too full and cannot support further transaction growth. While SegWit and Lightning (and other off-chain solutions) will help, they will not solve this problem.</p>
-<p>Bitcoin needs a reasonably effective and predictable way of managing the maximum block size which allows moderate growth, keeps max block size as small as possible, and prevents wild swings in transaction fees.</p>
-<p>The every two-week and automatic adjustment of difficulty has proven to be a reasonably effective and predictable way of managing how quickly blocks are mined. It works well because humans aren’t involved  (except for setting the original target of a 10 minute per block average), and therefore it isn’t political or contentious. It’s simply a response to changing network resources.</p>
-<p>It’s clear at this point that human beings should not be involved in the determination of max block size, just as they’re not involved in deciding the difficulty. Therefore, it is logical and consistent with Bitcoin’s design to implement a permanent solution which, as with the difficulty adjustment, is simply an automatic response to changing transaction volumes. With the target of keeping blocks 75% full on average, this is the goal of Block75.</p>
-<h2>Specification</h2>
-<p>The max block size will be recalculated every 2016 blocks, along with difficulty, using Block75’s simple algorithm:</p>
-<p><code>new max block size = x + (x * (AVERAGE_CAPACITY - TARGET_CAPACITY))</code></p>
-<ul>
-<li>TARGET_CAPACITY = 0.75    //Block75's target of keeping blocks 75% full</li>
-<li>AVERAGE_CAPACITY = average percentage full of the last 2016 blocks, as a decimal</li>
-<li>x = current max block size</li>
-</ul>
-<p>All code which generates/validates blocks or uses/references the current hardcoded limits will need to be changed to support Block75.</p>
-<h2>Rationale</h2>
-<p>The 75% full block target was selected because:</p>
-<ul>
-<li>it is the middle ground between blocks being too small (average 100% full) and blocks being unnecessarily large (average 50% full)</li>
-<li>it can handle short-term spikes in transaction volume of up to 33%</li>
-<li>it limits the growth of max block size to less than 25% over the previous period</li>
-<li>it will maintain average transaction fees at a stable level similar to that of May/June 2016</li>
-</ul>
-<p>The 2016 block (~2 weeks) period was selected because:</p>
-<ul>
-<li>it has been shown to be reasonably adaptive to changing network resources (re: difficulty)</li>
-<li>the frequent and gradual adjustments that result will be relatively easy for miners and node operators to predict and adapt to, as any unforeseen consequences will be visible well in advance</li>
-<li>it minimizes any effect a malicious party could have in an attempt to manipulate max block size</li>
-</ul>
-<p>The Block75 algorithm will adjust the max block size up and down in response to transaction volume, including changes brought on by SegWit and Lightning. This is important as it will keep average transaction fees stable, thereby allowing miners and businesses using Bitcoin more certainty regarding future income/expenses.</p>
-<h2>Other solutions considered</h2>
-<p>A hardcoded increase to max block size (2MB, 8MB, etc.), rejected because:</p>
-<ul>
-<li>only a temporary solution, whatever limit was chosen would inevitably become a problem again</li>
-<li>would cause transaction fees to vary wildly over time</li>
-</ul>
-<p>Allow miners to vote for max block size, rejected because:</p>
-<ul>
-<li>overly complex and political</li>
-<li>human involvement makes this slow to respond to changing transaction volumes</li>
-<li>focuses power over max block size to a relatively small group of people </li>
-<li>unpredictable transaction fees caused by this would create uncertainty in the ecosystem</li>
-</ul>
-<h2>Backward Compatibility</h2>
-<p>This BIP is not backward compatible (hard fork). Any code which fully validates blocks must be upgraded prior to activation, as failure to do so will result in rejection of blocks over the current 1MB limit.</p>
-<h2>Activation</h2>
-<p>To help negate some of the risks associated with a hard fork and to prevent a single relatively small mining pool from preventing Block75's adoption, activation would occur at the next difficulty adjustment once 900 of the last 1,000 blocks mined signal support and a grace period of 4,032 blocks (~1 month) has elapsed.</p>
-<h2>Copyright</h2>
-<p>This BIP is dual-licensed under the BSD 2-clause license and the GNU All-Permissive License.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

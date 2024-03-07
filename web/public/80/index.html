@@ -22,10 +22,13 @@
     <title>BIP 80: Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 80: Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 80: Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2014-08-11</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0080.mediawiki" target="_blank">View on GitHub</a>
@@ -118,94 +158,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 80: Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2014-08-11</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0080.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 80
-  Title: Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets
-  Author: Justus Ranvier &lt;justus@opentransactions.org&gt;
-          Jimmy Song &lt;jimmy@monetas.net&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0080
-  Status: Deferred
-  Type: Informational
-  Created: 2014-08-11
-  License: PD
-</code></pre>
-<h2>Abstract</h2>
-<p>This BIP defines a logical hierarchy for non-colored voting pool deterministic multisig wallets based on an algorithm described in BIP-0032 (BIP32 from now on) and purpose scheme described in BIP-0043 (BIP43 from now on).</p>
-<p>This BIP is a particular application of BIP43 and is based on BIP44.</p>
-<h2>Motivation</h2>
-<p>The hierarchy proposed in this paper allows the handling of multiple coins and multiple series from a single seed.</p>
-<h2>Path levels</h2>
-<p>We define the following 4 levels in BIP32 path:</p>
-<pre><code>m &#x2F; purpose&#x27; &#x2F; coin_type&#x27; &#x2F; series&#x27; &#x2F; address_index
-</code></pre>
-<p>Apostrophe in the path indicates that BIP32 hardened derivation is used.</p>
-<p>Each level has a special meaning, described in the chapters below.</p>
-<h3>Purpose</h3>
-<p>Purpose is a constant set following the BIP43 recommendation to: the ASCII value of &quot;80&quot; with the most signifigant bit set to indicate hardened derivation (0x80000050). It indicates that the subtree of this node is used according to this specification.</p>
-<p>Hardened derivation is used at this level.</p>
-<h3>Coin type</h3>
-<p>One master node (seed) can be used for unlimited number of independent cryptocoins such as Bitcoin, Litecoin or Namecoin. However, sharing the same space for various cryptocoins has some disadvantages.</p>
-<p>This level creates a separate subtree for every cryptocoin, avoiding reusing addresses across cryptocoins and improving privacy issues.</p>
-<p>Coin type is a constant, set for each cryptocoin. The list of registered coin type constants should be obtained from BIP44.</p>
-<p>Hardened derivation is used at this level.</p>
-<h3>Series</h3>
-<p>Series are used by voting pools in order to implement FIFO cold storage. By directing deposits into multiple series, the private keys for most of the deposits can be kept offline, and a limited portion can be brought online to process withdrawals.</p>
-<p>Hardened derivation is used at this level.</p>
-<h3>Index</h3>
-<p>Public/private keypairs are numbered from index 0 in sequentially increasing manner. This number is used as child index in BIP32 derivation.</p>
-<p>Public keys obtained at this level of the hierarchy are used to construct multisig deposit scripts, using a schema that is shared between the members as an out-of-band contract.</p>
-<p>Public derivation is used at this level.</p>
-<h2>Compatible wallets</h2>
-<ul>
-<li><a href="https://github.com/btcsuite/btcwallet" target="_blank">btcwallet</a> is the reference Bitcoin wallet for voting pools.</li>
-</ul>
-<h2>Copyright</h2>
-<p>This document is placed in the public domain.</p>
-<h2>Reference</h2>
-<ul>
-<li><a href="/32" target="_blank">BIP32 - Hierarchical Deterministic Wallets</a></li>
-<li><a href="/43" target="_blank">BIP43 - Purpose Field for Deterministic Wallets</a></li>
-<li><a href="/44" target="_blank">BIP44 - Multi-Account Hierarchy for Deterministic Wallets</a></li>
-</ul>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

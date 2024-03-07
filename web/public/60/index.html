@@ -22,10 +22,13 @@
     <title>BIP 60: Fixed Length &quot;version&quot; Message (Relay-Transactions Field)</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 60: Fixed Length &quot;version&quot; Message (Relay-Transactions Field)</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 60: Fixed Length &quot;version&quot; Message (Relay-Transactions Field)</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2013-06-16</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0060.mediawiki" target="_blank">View on GitHub</a>
@@ -126,102 +166,10 @@
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 60: Fixed Length &quot;version&quot; Message (Relay-Transactions Field)
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2013-06-16</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0060.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 60
-  Layer: Peer Services
-  Title: Fixed Length &quot;version&quot; Message (Relay-Transactions Field)
-  Author: Amir Taaki &lt;genjix@riseup.net&gt;
-  Comments-Summary: Discouraged for implementation (one person)
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0060
-  Status: Draft
-  Type: Standards Track
-  Created: 2013-06-16
-  License: PD
-</code></pre>
-<h2>Abstract</h2>
-<p><a href="BIP 0037" target="_blank">BIP 0037</a> introduced a new flag to version messages which says whether to relay new transaction messages to that node.</p>
-<p>The protocol version was upgraded to 70001, and the (now accepted) BIP 0037 became implemented.</p>
-<p>The implementation is problematic because the RelayTransactions flag is an optional part of the version message stream.</p>
-<h2>Motivation</h2>
-<p>One property of Bitcoin messages is their fixed number of fields. This keeps the format simple and easily understood. Adding optional fields to messages will cause deserialisation issues when other fields come after the optional one.</p>
-<p>As an example, the length of version messages might be checked to ensure the byte stream is consistent. With optional fields, this checking is no longer possible. This is desirable to check for consistency inside internal deserialization code, and proper formatting of version messages originating from other nodes. In the future with diversification of the Bitcoin network, it will become desirable to enforce this kind of strict adherance to standard messages with field length compliance with every protocol version.</p>
-<p>Another property of fixed-length field messages is the ability to pass stream operators around for deserialization. This property is also lost, as now the deserialisation code must know the remaining length of bytes to parse. The parser now requires an additional piece of information (remaining size of the stream) for parsing instead of being a dumb reader.</p>
-<h2>Specification</h2>
-<h3> version </h3>
-<p>When a node creates an outgoing connection, it will immediately advertise its version. The remote node will respond with its version. No futher communication is possible until both peers have exchanged their version.</p>
-<p>Payload:</p>
-<table><thead><tr><th>Field Size</th><th>Description</th><th>Data type</th><th>Comments</th></tr></thead><tbody>
-<tr><td>4</td><td>version</td><td>int32_t</td><td>Identifies protocol version being used by the node</td></tr>
-<tr><td>8</td><td>services</td><td>uint64_t</td><td>bitfield of features to be enabled for this connection</td></tr>
-<tr><td>8</td><td>timestamp</td><td>int64_t</td><td>standard UNIX timestamp in seconds</td></tr>
-<tr><td>26</td><td>addr_recv</td><td>net_addr</td><td>The network address of the node receiving this message</td></tr>
-<tr><td>26</td><td>addr_from</td><td>net_addr</td><td>The network address of the node emitting this message</td></tr>
-<tr><td>8</td><td>nonce</td><td>uint64_t</td><td>Node random nonce, randomly generated every time a version packet is sent. This nonce is used to detect connections to self.</td></tr>
-<tr><td>?</td><td>user_agent</td><td>var_str</td><td><a href="/14" target="_blank">User Agent</a> (0x00 if string is 0 bytes long)</td></tr>
-<tr><td>4</td><td>start_height</td><td>int32_t</td><td>The last block received by the emitting node</td></tr>
-<tr><td>1</td><td>relay</td><td>bool</td><td>Whether the remote peer should announce relayed transactions or not, see <a href="/37" target="_blank">BIP 0037</a>, since version &gt;= 70001</td></tr>
-</tbody></table>
-<p>A &quot;verack&quot; packet shall be sent if the version packet was accepted.</p>
-<p>The following services are currently assigned:</p>
-<table><thead><tr><th>Value</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>1</td><td>NODE_NETWORK</td><td>This node can be asked for full blocks instead of just headers.</td></tr>
-</tbody></table>
-<h3> Code Updates </h3>
-<p>fRelayTx is added to the PushMessage() call inside PushVersion() (net.cpp)</p>
-<pre><code>void CNode::PushVersion()
-{
-    &#x2F;&#x2F;&#x2F; when NTP implemented, change to just nTime = GetAdjustedTime()
-    int64 nTime = (fInbound ? GetAdjustedTime() : GetTime());
-    CAddress addrYou = (addr.IsRoutable() &amp;&amp; !IsProxy(addr) ? addr : CAddress(CService(&quot;0.0.0.0&quot;,0)));
-    CAddress addrMe = GetLocalAddress(&amp;addr);
-    RAND_bytes((unsigned char*)&amp;nLocalHostNonce, sizeof(nLocalHostNonce));
-    printf(&quot;send version message: version %d, blocks=%d, us=%s, them=%s, peer=%s\n&quot;, PROTOCOL_VERSION, nBestHeight, addrMe.ToString().c_str(), addrYou.ToString().c_str(), addr.ToString().c_str());
-    PushMessage(&quot;version&quot;, PROTOCOL_VERSION, nLocalServices, nTime, addrYou, addrMe,
-                nLocalHostNonce, FormatSubVersion(CLIENT_NAME, CLIENT_VERSION, std::vector&lt;string&gt;()),
-                nBestHeight, true);
-}
-</code></pre>
-<p>Additionally the protocol version is increased from 70001 to 70002.</p>
-<h2>Copyright</h2>
-<p>This document is placed in the public domain.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>

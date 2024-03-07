@@ -22,10 +22,13 @@
     <title>BIP 105: Consensus based block size retargeting algorithm</title>
 
     <link rel="stylesheet" href="/style.css" />
-    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
 
-    <!-- dark mode: https://tailwindcss.com/docs/dark-mode -->
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
@@ -33,14 +36,51 @@
                 document.documentElement.classList.remove('dark')
             }
         }
+        window.setTheme();
 
-        window.setTheme()
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-zinc-900">
     <div class="container mx-auto flex justify-center">
-        <div class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
             
     <div class="flex flex-col space-y-4 pt-4 md:pt-8">
         <div class="flex justify-between">
@@ -57,7 +97,7 @@
             </div>
         </div>
         <div class="flex flex-col space-y-2">
-            <div class="text-2xl font-extrabold">BIP 105: Consensus based block size retargeting algorithm</div>
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 105: Consensus based block size retargeting algorithm</div>
             <div class="flex justify-between">
                 <div class="text-xl font-semibold">2015-08-21</div>
                 <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0105.mediawiki" target="_blank">View on GitHub</a>
@@ -146,122 +186,10 @@ Meni Rosenfeld and Gregory Maxwell.</p>
         </article>
     </div>
 
-    <!--
-    <div class="level">
-        <div class="level-left">
-            <div class="level-item">
-                <a href="/"><img src="/bips-dev-header.png" width="375", height="100" /></a>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="/">Back to BIPs</a>
-            </div>
-        </div>
-    </div>
-
-    <p class="is-size-3 has-text-weight-bold mb-0">
-      BIP 105: Consensus based block size retargeting algorithm
-    </p>
-    <div class="level is-mobile">
-        <div class="level-left">
-            <div class="level-item">
-                <p class="subtitle"><strong>2015-08-21</strong></p>
-            </div>
-        </div>
-        <div class="level-right">
-            <div class="level-item">
-                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0105.mediawiki">View on GitHub</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-      <pre><code>  BIP: 105
-  Layer: Consensus (hard fork)
-  Title: Consensus based block size retargeting algorithm
-  Author: BtcDrak &lt;btcdrak@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0105
-  Status: Rejected
-  Type: Standards Track
-  Created: 2015-08-21
-  License: PD
-</code></pre>
-<h2>Abstract</h2>
-<p>A method of altering the maximum allowed block size of the Bitcoin protocol 
-using a consensus based approach.</p>
-<h2>Motivation</h2>
-<p>There is a belief that Bitcoin cannot easily respond to raising the 
-blocksize limit if popularity was to suddenly increase due to a mass adoption 
-curve, because co-ordinating a hard fork takes considerable time, and being 
-unable to respond in a timely manner would irreparably harm the credibility of 
-bitcoin.</p>
-<p>Additionally, predetermined block size increases are problematic because they
-attempt to predict the future, and if too large could have unintended 
-consequences like damaging the possibility for a fee market to develop 
-as block subsidy decreases substantially over the next 9 years; introducing 
-or exacerbating mining attack vectors; or somehow affect the network in unknown
-or unpredicted ways. Since fixed changes are hard to deploy, the damage could be
-extensive.</p>
-<p>Dynamic block size adjustments also suffer from the potential to be gamed by the
-larger hash power.</p>
-<p>Free voting as suggested by BIP100 allows miners to sell their votes out of band
-at no risk, and enable the sponsor the ability to manipulate the blocksize. 
-It also provides a cost free method or the larger pools to vote in ways to
-manipulate the blocksize such to disadvantage or attack smaller pools.</p>
-<h2>Rationale</h2>
-<p>By introducing a cost to increase the block size ensures the mining community 
-will collude to increase it only when there is a clear necessity, and reduce it
-when it is unnecessary. Larger miners cannot force their wishes so easily
-because not only will they have to pay extra a difficulty target, then can be
-downvoted at no cost by the objecting hash power.</p>
-<p>Using difficulty as a penalty is better than a fixed cost in bitcoins because it
-is less predictable.</p>
-<p>In order to prevent miners having complete control over blocksize, an upper
-limit is required at protocol level. This feature ensures full nodes retain
-control over consensus, remembering full nodes are the mechanism to keep miners
-honest.</p>
-<h2>Specification</h2>
-<p>The initial block size limit shall be 1MB.</p>
-<p>Each time a miner creates a block, they may vote to increase or decrease the
-blocksize by a maximum of 10% of the current block size limit. These votes will 
-be used to recalculate the new block size limit every 2016 blocks.</p>
-<p>Votes are cast using the block's coinbase transaction scriptSig.</p>
-<p>As per BIP34, the coinbase transaction scriptSig starts with a push of the block
-height. The next push is a little-endian number representing the preferred block
-size in bytes. For example, 0x4c(OP_PUSHDATA1) 0x03(size of constant) 0x80 0x84 0x1e(2MB)
-or 0x4c(OP_PUSHDATA1) 0x04(size of constant) 0x80 0x96 0x98 0x00(10MB).</p>
-<p>If a miner votes for an increase, the block hash must meet a difficulty target
-which is proportionally larger than the standard difficulty target based on the
-percentage increase they voted for.</p>
-<p>Votes proposing decreasing the block size limit do not need to meet a higher 
-difficulty target.</p>
-<p>Miners can vote for no change by voting for the current block size.</p>
-<p>For blocks to be valid the blockhash must meet the required difficulty target
-for the vote otherwise the block is invalid and will be rejected.</p>
-<p>Every 2016 blocks, the block size limit will be recalculated by the median of
-all votes in the last 2016 blocks. This will redefine the block size limit for
-the next 2016 blocks.</p>
-<p>Blocks that are larger than the calculated base block size limit are invalid and
-will be rejected.</p>
-<p>The base block size limit may not reduce below 1MB or increase above 8MB (the exact
-number for the upper limit requires further discussion).</p>
-<h2>Acknowledgements</h2>
-<p>This proposal is based on ideas and concepts derived from the writings of
-Meni Rosenfeld and Gregory Maxwell.</p>
-<h2>References</h2>
-<p><a href="/34" target="_blank">BIP34</a></p>
-<h2>Copyright</h2>
-<p>This work is placed in the public domain.</p>
-
-    </div>
-    -->
-
 
             <hr class="border-slate-700" />
 
-            <div class="w-full flex flex-col items-center space-y-2 text-center">
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
                     <p class="font-bold">2024-03-07</p>
