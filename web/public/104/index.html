@@ -27,6 +27,9 @@
     <script defer data-domain="bips.dev" src="/js/script.js"></script>
     <script src="/pagefind/pagefind-ui.js"></script>
     <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
         // setup and initialize dark mode
         // https://tailwindcss.com/docs/dark-mode
         window.setTheme = function() {
@@ -48,11 +51,12 @@
                 showSubResults: true,
                 translations: {
                     placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
                 }
             });
-
-            // add css class to search form for tracking search usage
-            document.querySelector('form').classList.add('plausible-event-name=Search');
         });
     </script>
 
