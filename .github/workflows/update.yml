@@ -1,9 +1,9 @@
 name: update-and-publish
 
-on:
-  schedule:
-  # run every 12 hours
-  - cron: '0 */12 * * *'
+on: push
+  #schedule:
+  ## run every 12 hours
+  #- cron: '0 */12 * * *'
 
 env:
   CARGO_TERM_COLOR: always
@@ -33,6 +33,7 @@ jobs:
 
     - name: pagefind
       run: |
+        mkdir -p web/public/pagefind
         RUST_BACKTRACE=full pagefind --site web/public
 
     - name: commit and push
