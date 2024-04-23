@@ -216,6 +216,10 @@ JavaScript:
 *  https://github.com/hujiulong/web-bip39
 
 
+TypeScript:
+*  https://github.com/bitauth/libauth
+
+
 Java:
 *  https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/crypto/MnemonicCode.java
 
