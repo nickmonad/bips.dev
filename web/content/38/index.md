@@ -208,7 +208,7 @@ To recalculate the address:
 1.  Derive _passfactor_ using scrypt with _ownerentropy_ and the user's passphrase and use it to recompute _passpoint_
 1.  Derive decryption key for _pointb_ using scrypt with _passpoint_, _addresshash_, and _ownerentropy_
 1.  Decrypt _encryptedpointb_ to yield _pointb_
-1.  ECMultiply _pointb_ by _passfactor_. Use the resulting EC point as a public key and hash it into _address_ using either compressed or uncompressed public key methodology as specifid in _flagbyte_.
+1.  ECMultiply _pointb_ by _passfactor_. Use the resulting EC point as a public key and hash it into _address_ using either compressed or uncompressed public key methodology as specified in _flagbyte_.
 
 
 <h5>Decryption</h5>

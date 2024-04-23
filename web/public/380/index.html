@@ -137,7 +137,7 @@ This document describes the general syntax for descriptors, descriptor checksums
 <h2>Motivation</h2>
 <p>Bitcoin wallets traditionally have stored a set of keys which are later serialized and mutated to produce the output scripts that the wallet watches and the addresses it provides to users.
 Typically backups have consisted of solely the private keys, nowadays primarily in the form of BIP 39 mnemonics.
-However this backup solution is insuffient, especially since the introduction of Segregated Witness which added new output types.
+However this backup solution is insufficient, especially since the introduction of Segregated Witness which added new output types.
 Given just the private keys, it is not possible for restored wallets to know which kinds of output scripts and addresses to produce.
 This has lead to incompatibilities between wallets when restoring a backup or exporting data for a watch only wallet.</p>
 <p>Further complicating matters are BIP 32 derivation paths.
@@ -337,7 +337,7 @@ This means that a change that only affects the position within a group, or only 
 <li>Extended private key with hardened derivation and children: <tt>xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h</tt></li>
 <li>Extended private key with key origin, hardened derivation and children: <tt>[deadbeef/0h/1h/2]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h</tt></li>
 </ul>
-<p>Invalid expressiosn:</p>
+<p>Invalid expression:</p>
 <ul>
 <li>Children indicator in key origin: <tt>[deadbeef/0h/0h/0h/*]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
 <li>Trailing slash in key origin: <tt>[deadbeef/0h/0h/0h/]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
@@ -348,8 +348,8 @@ This means that a change that only affects the position within a group, or only 
 <li>Invalid hardened indicators: <tt>[deadbeef/-0/-0/-0]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt></li>
 <li>Private key with derivation: <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/0</tt></li>
 <li>Private key with derivation children: <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/*</tt></li>
-<li>Derivation index out of range: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483648)&quot;, &quot;pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/2147483648</tt></li>
-<li>Invalid derivation index: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/1aa)&quot;, &quot;pkh(xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/1aa</tt></li>
+<li>Derivation index out of range: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483648</tt></li>
+<li>Invalid derivation index: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/1aa</tt></li>
 <li>Multiple key origins: <tt>[aaaaaaaa][aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt></li>
 <li>Missing key origin start: <tt>aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt></li>
 <li>Non hex fingerprint: <tt>[gaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt></li>
@@ -396,7 +396,7 @@ This Table lists all available Script expressions and the BIPs specifying them.<
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-22</p>
+                    <p class="font-bold">2024-04-23</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

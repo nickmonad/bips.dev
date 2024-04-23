@@ -61,7 +61,7 @@ Elements of the query component may contain characters outside the valid range. 
 <h3> ABNF grammar </h3>
 
 
-(See also <a href="#Simpler syntax" target="_blank">a simpler representation of syntax</a>)
+(See also <a href="#simpler-syntax" target="_blank">a simpler representation of syntax</a>)
 
 ```
  bitcoinurn     = "bitcoin:" bitcoinaddress [ "?" bitcoinparams ]

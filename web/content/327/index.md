@@ -152,7 +152,7 @@ This is by design: All algorithms in this proposal handle multiple signers who (
 and applications are not required to check for duplicate individual public keys.
 In fact, applications are recommended to omit checks for duplicate individual public keys in order to simplify error handling.
 Moreover, it is often impossible to tell at key aggregation which signer is to blame for the duplicate, i.e., which signer came up with an individual public key honestly and which disruptive signer copied it.
-In contrast, MuSig2 is designed to identify disruptive signers at signing time (see <a href="#identifiying-disruptive-signers" target="_blank">Identifiying Disruptive Signers</a>).
+In contrast, MuSig2 is designed to identify disruptive signers at signing time (see <a href="#identifying-disruptive-signers" target="_blank">Identifying Disruptive Signers</a>).
 
 While the algorithms in this proposal are able to handle duplicate individual public keys, there are scenarios where applications may choose to abort when encountering duplicates.
 For example, we can imagine a scenario where a single entity creates a MuSig2 setup with multiple signing devices.
@@ -246,7 +246,7 @@ The bit can be obtained with _GetPlainPubkey(keyagg_ctx)[0] & 1_.
 
 The following specification of the algorithms has been written with a focus on clarity.
 As a result, the specified algorithms are not always optimal in terms of computation and space.
-In particular, some values are recomputed but can be cached in actual implementations (see <a href="#signing-flow" target="_blank">Signing Flow</a>).
+In particular, some values are recomputed but can be cached in actual implementations (see <a href="#general-signing-flow" target="_blank">General Signing Flow</a>).
 
 <h3> Notation </h3>
 
@@ -425,7 +425,7 @@ Algorithm _ApplyTweak(keyagg_ctx, tweak, is_xonly_t)_:
 Algorithm _NonceGen(sk, pk, aggpk, m, extra_in)_:
 *  Inputs:
     *  The secret signing key _sk_: a 32-byte array (optional argument)
-    *  The individual public key _pk_: a 33-byte array (see <a href=" modifications-to-nonce-generation" target="_blank">Modifications to Nonce Generation</a> for the reason that this argument is mandatory)
+    *  The individual public key _pk_: a 33-byte array (see <a href=" signing-with-tweaked-individual-keys" target="_blank">Signing with Tweaked Individual Keys</a> for the reason that this argument is mandatory)
     *  The x-only aggregate public key _aggpk_: a 32-byte array (optional argument)
     *  The message _m_: a byte array (optional argument)<ref name="mlen">In theory, the allowed message size is restricted because SHA256 accepts byte strings only up to size of 2^61-1 bytes (and because of the 8-byte length encoding).</ref>
     *  The auxiliary input _extra_in_: a byte array with _0 &le; len(extra_in) &le; 2<sup>32</sup>-1_ (optional argument)
@@ -532,7 +532,7 @@ Algorithm _Sign(secnonce, sk, session_ctx)_:
 *  Fail if _pk &ne; secnonce[64:97]_
 *  Let _a = GetSessionKeyAggCoeff(session_ctx, P)_; fail if that fails<ref>Failing _Sign_ when _GetSessionKeyAggCoeff(session_ctx, P)_ fails is not necessary for unforgeability. It merely indicates to the caller that the scheme is not being used correctly.</ref>
 *  Let _g = 1_ if _has_even_y(Q)_, otherwise let _g = -1 mod n_
-*  <div id="Sign negation"></div>Let _d = g⋅gacc⋅d' mod n_ (See <a href="negation-of-the-secret-key-when-signing" target="_blank">Negation Of The Secret Key When Signing</a>)
+*  <div id="Sign negation"></div>Let _d = g⋅gacc⋅d' mod n_ (See <a href=" negation-of-the-secret-key-when-signing" target="_blank">Negation Of The Secret Key When Signing</a>)
 *  Let _s = (k<sub>1</sub> + b⋅k<sub>2</sub> + e⋅a⋅d) mod n_
 *  Let _psig = bytes(32, s)_
 *  Let _pubnonce = cbytes(k<sub>1</sub>'⋅G) || cbytes(k<sub>2</sub>'⋅G)_
