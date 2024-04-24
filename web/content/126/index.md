@@ -76,7 +76,7 @@ Applications which wish to comply both with this procedure and BIP69 should appl
 
 A HIT is Standard form if it adheres to all of the following rules:
 
-1.  The number of unique output scripts must be equal to the number of unique inputs scripts (irrespective of the number of inputs and outputs).
+1.  The number of unique output scripts must be equal to the number of unique input scripts (irrespective of the number of inputs and outputs).
 1.  All output scripts must be unique.
 1.  At least one pair of outputs must be of equal value.
 1.  The largest output in the transaction is a member of a set containing at least two identically-sized outputs.
@@ -121,7 +121,7 @@ Clients which create intentional HITs must have the capability to form alternate
 
 An HIT formed via the preceding procedure will adhere to the following conditions:
 
-1.  The number of unique inputs scripts must exceed the number of output scripts.
+1.  The number of unique input scripts must exceed the number of output scripts.
 1.  All output scripts must be unique.
 1.  At least one pair of outputs must be of equal value.
     1.  "Standard outputs" refers to the set of outputs with equal value

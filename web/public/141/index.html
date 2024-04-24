@@ -188,7 +188,7 @@
 <p>If there are more than one <code>scriptPubKey</code> matching the pattern, the one with highest output index is assumed to be the commitment.</p>
 <p>If all transactions in a block do not have witness data, the commitment is optional.</p>
 <h3> Witness program </h3>
-<p>A <code>scriptPubKey</code> (or <code>redeemScript</code> as defined in BIP16/P2SH) that consists of a 1-byte push opcode (for 0 to 16) followed by a data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the &quot;version byte&quot;. The following byte vector pushed is called the &quot;witness program&quot;.</p>
+<p>A <code>scriptPubKey</code> (or <code>redeemScript</code> as defined in BIP16/P2SH) that consists of a select subset of opcodes (<code>OP_0,OP_1,OP_2,...,OP_16</code>) followed by a data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the &quot;version byte&quot;. The following byte vector pushed is called the &quot;witness program&quot;.</p>
 <p>There are two cases in which witness validation logic are triggered. Each case determines the location of the witness version byte and program, as well as the form of the scriptSig:</p>
 <ol>
 <li>Triggered by a <code>scriptPubKey</code> that is exactly a push of a version byte, plus a push of a witness program. The scriptSig must be exactly empty or validation fails. (<em>&quot;native witness program&quot;</em>)</li>
@@ -322,7 +322,7 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
 <p>These commitments could be included in the extensible commitment structure through a soft fork and will be transparent to nodes that do not understand such new rules.</p>
 <h3> New script system </h3>
 <p>Since a version byte is pushed before a witness program, and programs with unknown versions are always considered as anyone-can-spend script, it is possible to introduce any new script system with a soft fork. The witness as a structure is not restricted by any existing script semantics and constraints, the 520-byte push limit in particular, and therefore allows arbitrarily large scripts and signatures.</p>
-<p>Examples of new script system include Schnorr signatures which reduce the size of multisig transactions dramatically, Lamport signature which is quantum computing resistance, and Merklized abstract syntax trees which allow very compact witness for conditional scripts with extreme complexity.</p>
+<p>Examples of new script systems include Schnorr signatures, which reduce the size of multisig transactions dramatically; Lamport signatures, which are quantum computing resistant; and Merklized abstract syntax trees, which allow very compact witnesses for conditional scripts with extreme complexity.</p>
 <h3> Per-input lock-time and relative-lock-time </h3>
 <p>Currently there is only one nLockTime field in a transaction and all inputs must share the same value. <a href="/68" target="_blank">BIP68</a> enables per-input relative-lock-time using the nSequence field, however, with a limited lock-time period and resolution.</p>
 <p>With a soft fork, it is possible to introduce a separate witness structure to allow per-input lock-time and relative-lock-time, and a new script system that could sign and manipulate the new data (like <a href="/65" target="_blank">BIP65</a> and <a href="/112" target="_blank">BIP112</a>).</p>
@@ -341,7 +341,7 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
 </ul>
 <h2> Deployment </h2>
 <p>This BIP will be deployed by &quot;version bits&quot; BIP9 with the name &quot;segwit&quot; and using bit 1.</p>
-<p>For Bitcoin mainnet, the BIP9 starttime will be midnight 15 november 2016 UTC (Epoch timestamp 1479168000) and BIP9 timeout will be midnight 15 november 2017 UTC (Epoch timestamp 1510704000).</p>
+<p>For Bitcoin mainnet, the BIP9 starttime will be midnight 15 November 2016 UTC (Epoch timestamp 1479168000) and BIP9 timeout will be midnight 15 November 2017 UTC (Epoch timestamp 1510704000).</p>
 <p>For Bitcoin testnet, the BIP9 starttime will be midnight 1 May 2016 UTC (Epoch timestamp 1462060800) and BIP9 timeout will be midnight 1 May 2017 UTC (Epoch timestamp 1493596800).</p>
 <h2> Credits </h2>
 <p>Special thanks to Gregory Maxwell for originating many of the ideas in this BIP and Luke-Jr for figuring out how to deploy this as a soft fork.</p>
@@ -368,7 +368,7 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-23</p>
+                    <p class="font-bold">2024-04-24</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

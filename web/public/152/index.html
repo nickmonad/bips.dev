@@ -311,7 +311,7 @@
 <li><strong>Collision resistance</strong> It should be hard for network participants to create transactions that cause collisions. If an attacker were able to cause such collisions, filling mempools (and, thus, blocks) with them would cause poor network propagation of new (or non-attacker, in the case of a miner) blocks.</li>
 </ul>
 <p>SipHash is a secure, fast, and simple 64-bit MAC designed for network traffic authentication and collision-resistant hash tables. We truncate the output from SipHash-2-4 to 48 bits (see next section) in order to minimize space. The resulting 48-bit hash is certainly not large enough to avoid intentionally created individual collisons, but by using the block hash as a key to SipHash, an attacker cannot predict what keys will be used once their transactions are actually included in a relayed block. We mix in a per-connection 64-bit nonce to obtain independent short IDs on every connection, so that even block creators cannot control where collisions occur, and random collisions only ever affect a small number of connections at any given time. The mixing is done using SHA256(block_header || nonce), which is slow compared to SipHash, but only done once per block. It also adds the ability for nodes to choose the nonce in a better than random way to minimize collisions, though that is not necessary for correct behaviour. Conversely, nodes can also abuse this ability to increase their ability to introduce collisions in the blocks they relay themselves. However, they can already cause more problems by simply refusing to relay blocks. That is inevitable, and this design only seeks to prevent network-wide misbehavior.</p>
-<h4>Random collision probabilty</h4>
+<h4>Random collision probability</h4>
 <p>Thanks to the block-header-based SipHash keys, we can assume that the only collisions on links between honest nodes are random ones.</p>
 <p>For each of the <em>t</em> block transactions, the receiver will compare its received short ID with that of a set of <em>m</em> mempool transactions. We assume that each of those <em>t</em> has a chance <em>r</em> to be included in that set of <em>m</em>. If we use <em>B</em> bits short IDs, for each comparison between a received short ID and a mempool transaction, there is a chance of <em>P = 1 - 1 / 2^B</em> that a mismatch is detected as such.</p>
 <p>When comparing a given block transaction to the whole set of mempool transactions, there are 5 cases to distinguish:</p>
@@ -354,7 +354,7 @@ Thanks to Nicolas Dorier for the protocol flow diagram.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-23</p>
+                    <p class="font-bold">2024-04-24</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

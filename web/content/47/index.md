@@ -188,7 +188,7 @@ It is assumed that Alice can easily obtain Bob's payment code via a suitable met
 
 Prior to the first time Alice initiates a transaction to Bob, Alice MUST inform Bob of her payment code via the following procedure:
 
-Note: this procedure is used if Bob uses a version 1 payment code (regardless of the the version of Alice's payment code). If Bob's payment code is not version 1, see the appropriate section in this specification.
+Note: this procedure is used if Bob uses a version 1 payment code (regardless of the version of Alice's payment code). If Bob's payment code is not version 1, see the appropriate section in this specification.
 
 1.  Alice constructs a transaction which sends a small quantity of bitcoins to Bob's notification address (notification transaction)
     1.  The inputs selected for this transaction MUST NOT be easily associated with Alice's notification address

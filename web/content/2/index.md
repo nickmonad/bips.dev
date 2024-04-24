@@ -89,8 +89,12 @@ If you are interested in assuming ownership of a BIP, send a message asking to t
 
 The current BIP editors are:
 
+*  Bryan Bishop (<a href="mailto:kanzure@gmail.com" target="_blank">kanzure@gmail.com</a>)
+*  Jon Atack (<a href="mailto:jon@atack.com" target="_blank">jon@atack.com</a>)
 *  Luke Dashjr (<a href="mailto:luke_bipeditor@dashjr.org" target="_blank">luke_bipeditor@dashjr.org</a>)
-*  Kalle Alm (<a href="mailto:karljohan-alm@garage.co.jp" target="_blank">karljohan-alm@garage.co.jp</a>)
+*  Mark "Murch" Erhardt (<a href="mailto:murch@murch.one" target="_blank">murch@murch.one</a>)
+*  Olaoluwa Osuntokun (<a href="mailto:laolu32@gmail.com" target="_blank">laolu32@gmail.com</a>)
+*  Ruben Somsen (<a href="mailto:rsomsen@gmail.com" target="_blank">rsomsen@gmail.com</a>)
 
 
 <h3>BIP Editor Responsibilities & Workflow</h3>

@@ -60,7 +60,7 @@ A modern standardization is needed for multisig derivation paths.  There are som
 m / purpose' / cosigner_index / change / address_index
 ```
 
-BIP45 unecessarily demands a single script type (here, P2SH).  In addition, BIP45 sets `cosigner_index` in order to sort the `purpose'` public keys of each cosigner.  This too is redundant, as descriptors can set the order of the public keys with `multi` or have them sorted lexicographically (as described in <a href="/67" target="_blank">BIP67</a>) with `sortedmulti`.  Sorting public keys between cosigners in order to create the full derivation path, prior to sending the key record to the coordinator to create the descriptor, merely adds additional unnecessary communication rounds.
+BIP45 unnecessarily demands a single script type (here, P2SH).  In addition, BIP45 sets `cosigner_index` in order to sort the `purpose'` public keys of each cosigner.  This too is redundant, as descriptors can set the order of the public keys with `multi` or have them sorted lexicographically (as described in <a href="/67" target="_blank">BIP67</a>) with `sortedmulti`.  Sorting public keys between cosigners in order to create the full derivation path, prior to sending the key record to the coordinator to create the descriptor, merely adds additional unnecessary communication rounds.
 
 The second multisignature "standard" in use is m/48', which specifies:
 

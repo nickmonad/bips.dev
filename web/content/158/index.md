@@ -338,6 +338,8 @@ complete serialization of a filter is:
 *  The bytes of the compressed filter itself
 
 
+A zero element filter MUST be written as one byte containing zeroes.
+
 <h4> Signaling </h4>
 
 

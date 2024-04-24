@@ -116,7 +116,7 @@ If all transactions in a block do not have witness data, the commitment is optio
 <h3> Witness program </h3>
 
 
-A `scriptPubKey` (or `redeemScript` as defined in BIP16/P2SH) that consists of a 1-byte push opcode (for 0 to 16) followed by a data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the "version byte". The following byte vector pushed is called the "witness program".
+A `scriptPubKey` (or `redeemScript` as defined in BIP16/P2SH) that consists of a select subset of opcodes (`OP_0,OP_1,OP_2,...,OP_16`) followed by a data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the "version byte". The following byte vector pushed is called the "witness program".
 
 There are two cases in which witness validation logic are triggered. Each case determines the location of the witness version byte and program, as well as the form of the scriptSig:
 1.  Triggered by a `scriptPubKey` that is exactly a push of a version byte, plus a push of a witness program. The scriptSig must be exactly empty or validation fails. (_"native witness program"_)
@@ -361,7 +361,7 @@ These commitments could be included in the extensible commitment structure throu
 
 Since a version byte is pushed before a witness program, and programs with unknown versions are always considered as anyone-can-spend script, it is possible to introduce any new script system with a soft fork. The witness as a structure is not restricted by any existing script semantics and constraints, the 520-byte push limit in particular, and therefore allows arbitrarily large scripts and signatures.
 
-Examples of new script system include Schnorr signatures which reduce the size of multisig transactions dramatically, Lamport signature which is quantum computing resistance, and Merklized abstract syntax trees which allow very compact witness for conditional scripts with extreme complexity.
+Examples of new script systems include Schnorr signatures, which reduce the size of multisig transactions dramatically; Lamport signatures, which are quantum computing resistant; and Merklized abstract syntax trees, which allow very compact witnesses for conditional scripts with extreme complexity.
 
 <h3> Per-input lock-time and relative-lock-time </h3>
 
@@ -393,7 +393,7 @@ As a soft fork, older software will continue to operate without modification.  N
 
 This BIP will be deployed by "version bits" BIP9 with the name "segwit" and using bit 1.
 
-For Bitcoin mainnet, the BIP9 starttime will be midnight 15 november 2016 UTC (Epoch timestamp 1479168000) and BIP9 timeout will be midnight 15 november 2017 UTC (Epoch timestamp 1510704000).
+For Bitcoin mainnet, the BIP9 starttime will be midnight 15 November 2016 UTC (Epoch timestamp 1479168000) and BIP9 timeout will be midnight 15 November 2017 UTC (Epoch timestamp 1510704000).
 
 For Bitcoin testnet, the BIP9 starttime will be midnight 1 May 2016 UTC (Epoch timestamp 1462060800) and BIP9 timeout will be midnight 1 May 2017 UTC (Epoch timestamp 1493596800).
 

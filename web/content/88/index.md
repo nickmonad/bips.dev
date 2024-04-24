@@ -112,7 +112,7 @@ installation of malicious or incorrect profiles, though.
 <h2>Specification</h2>
 
 
-The format for the template was choosen to make it easy to read, convenient and visually unambigous. 
+The format for the template was chosen to make it easy to read, convenient and visually unambigous. 
 
 Template starts with optional prefix `m/`, and then one or more sections delimited by the slash character (`/`).
 
@@ -152,14 +152,14 @@ Constraints:
 1.  To avoid ambiguity, an index range that matches a single value MUST be specified as Unit range.
 1.  To avoid ambiguity, an index range `0-2147483647` is not allowed, and MUST be specified as Wildcard index template instead
 1.  For Non-unit range, range_end MUST be larger than range_start.
-1.  If there is more than one index range within the Ranged index template, range_start of the second and any subsequent range MUST be larger than the range_end of the preceeding range.
+1.  If there is more than one index range within the Ranged index template, range_start of the second and any subsequent range MUST be larger than the range_end of the preceding range.
 1.  To avoid ambiguity, all representations of integer values larger than 0 MUST NOT start with character `0` (no leading zeroes allowed).
 1.  If hardened marker appears within any section in the path template, all preceding sections MUST also specify hardened matching.
 1.  To avoid ambiguity, if a hardened marker appears within any section in the path template, all preceding sections MUST also use the same hardened marker (either `h` or `'`).
 1.  To avoid ambiguity, trailing slashes (for example, `1/2/`) and duplicate slashes (for example, `0//1`) MUST NOT appear in the template.
 
 
-It may be desireable to have fully unambiguous encoding, where for each valid path template string, there is no other valid template string that matches the exact same set of paths. This would enable someone to compare templates for equality through a simple string equality check, without any parsing.
+It may be desirable to have fully unambiguous encoding, where for each valid path template string, there is no other valid template string that matches the exact same set of paths. This would enable someone to compare templates for equality through a simple string equality check, without any parsing.
 
 To achieve this, two extra rules are needed:
 
