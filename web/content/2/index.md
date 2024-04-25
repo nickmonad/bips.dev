@@ -130,6 +130,8 @@ The BIP editor will:
 
 The BIP editors are intended to fulfill administrative and editorial responsibilities. The BIP editors monitor BIP changes, and update BIP headers as appropriate.
 
+BIP editors may also, at their option, unilaterally make and merge strictly-editorial changes to BIPs, such as correcting misspellings, fixing broken links, etc.
+
 <h2>BIP format and structure</h2>
 
 

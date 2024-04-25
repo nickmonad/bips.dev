@@ -118,9 +118,9 @@
         <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <p>RECENT CHANGES:</p>
 <ul>
+<li>(15 Feb 2021) Finalize specification</li>
+<li>(28 Sep 2017) Adjust text to match test vectors</li>
 <li>(19 Apr 2016) Define version 2 payment codes</li>
-<li>(17 Apr 2016) Clarify usage of outpoints in notification transactions</li>
-<li>(18 Dec 2015) Update explanations to resolve FAQs</li>
 </ul>
 <pre><code>  BIP: 47
   Layer: Applications
@@ -128,10 +128,13 @@
   Author: Justus Ranvier &lt;justus@openbitcoinprivacyproject.org&gt;
   Comments-Summary: Unanimously Discourage for implementation
   Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0047
-  Status: Draft
+  Status: Final
   Type: Informational
   Created: 2015-04-24
 </code></pre>
+<h2>Status</h2>
+<p>This BIP can be be considered final in terms of enabling compatibility with wallets that implement version 1 and version 2 reusable payment codes, however future developments of the reusable payment codes specification will not be distributed via the BIP process.</p>
+<p>The Open Bitcoin Privacy Project RFC repo should be consulted for specifications related to version 3 or higher payment codes: https://github.com/OpenBitcoinPrivacyProject/rfc</p>
 <h2>Abstract</h2>
 <p>This BIP defines a technique for creating a payment code which can be publicly advertised and associated with a real-life identity without creating the loss of security or privacy inherent to P2PKH address reuse.</p>
 <p>This BIP is a particular application of BIP43 and is intended to supplement HD wallets which implement BIP44.</p>
@@ -236,7 +239,7 @@
 <li>Alice selects the private key corresponding to the designated pubkey: <pre>a</pre></li>
 <li>Alice selects the public key associated with Bob's notification address: <pre>B, where B = bG</pre></li>
 <li>Alice calculates a secret point: <pre>S = aB</pre></li>
-<li>Alice calculates a 64 byte blinding factor: <pre>s = HMAC-SHA512(x, o)</pre>
+<li>Alice calculates a 64 byte blinding factor: <pre>s = HMAC-SHA512(o, x)</pre>
 <ol>
 <li>&quot;x&quot; is the x value of the secret point</li>
 <li>&quot;o&quot; is the outpoint being spent by the designated input</li>
@@ -328,7 +331,7 @@
 <img src="bip-0047/reusable_payment_codes-04.png" />
 <img src="bip-0047/reusable_payment_codes-05.png" />
 1.  Bob is watching for incoming payments on B' ever since he received the notification transaction from Alice.
-    1.  Bob calculates n shared secrets with Alice, using the 0<sup>th</sup> public key derived Alice's payment code, and private keys 0 - n derived from Bob's payment code, where n is his desired lookahead window.
+    1.  Bob calculates n shared secrets with Alice, using the 0<sup>th</sup> public key derived from Alice's payment code, and private keys 0 - n derived from Bob's payment code, where n is his desired lookahead window.
     1.  Bob calculates the ephemeral deposit addresses using the same procedure as Alice: <pre>B' = B + sG</pre>
     1.  Bob calculate the private key for each ephemeral address as: <pre>b' = b + s</pre>
 <img src="bip-0047/reusable_payment_codes-02.png" />
@@ -471,7 +474,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-24</p>
+                    <p class="font-bold">2024-04-25</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

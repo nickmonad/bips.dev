@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 331: Ancestor Package Relay" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 331: Ancestor Package Relay" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 331: Ancestor Package Relay</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 331: Ancestor Package Relay</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2022-08-08</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0331.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 331
+  Layer: Peer Services
+  Title: Ancestor Package Relay
+  Author: Gloria Zhao &lt;gloriajzhao@gmail.com&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0331
+  Status: Draft
+  Type: Standards Track
+  Created: 2022-08-08
+  License: BSD-3-Clause
+  Post-History: 2022-05-17 https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2022-May&#x2F;020493.html [bitcoin-dev] post
+</code></pre>
+<h2>Abstract</h2>
+<p>Peer-to-peer protocol messages enabling nodes to request and relay the unconfirmed ancestor package
+of a given transaction, and to request and relay transactions in batches.</p>
+<h2>Motivation</h2>
+<h3>Propagate High Feerate Transactions</h3>
+<p>Since v0.13, Bitcoin Core has used ancestor packages instead of individual transactions to evaluate
+the incentive compatibility of transactions in the mempool
+<ref><a href="https://github.com/bitcoin/bitcoin/pull/7594" target="_blank">Add tracking of ancestor packages</a></ref> and
+selecting them for inclusion in blocks
+<ref><a href="https://github.com/bitcoin/bitcoin/pull/7600" target="_blank">Select transactions using feerate-with-ancestors</a></ref>.
+Incentive-compatible mempool and miner policies help create a fair, fee-based market for block
+space. While miners maximize transaction fees in order to earn higher block rewards, non-mining
+users participating in transaction relay reap many benefits from employing policies that result in a
+mempool with similar contents, including faster compact block relay and more accurate fee
+estimation. Additionally, users may take advantage of mempool and miner policy to bump the priority
+of their transactions by attaching high-fee descendants (Child Pays for Parent or CPFP).</p>
+<p>Only individually considering transactions for submission to the mempool creates a limitation in
+the node's ability to determine which transactions to include in the mempool, since it cannot take
+into account descendants until all the transactions are in the mempool. Similarly, it cannot use a
+transaction's descendants when considering which of two conflicting transactions to keep (Replace by
+Fee or RBF).</p>
+<p>When a user's transaction does not meet a mempool's minimum feerate and they cannot create a
+replacement transaction directly, their transaction will simply be rejected by this mempool or
+evicted if already included. They also cannot attach a descendant to pay for replacing a conflicting
+transaction; it would be rejected for spending inputs that do not exist.</p>
+<p>This limitation harms users' ability to fee-bump their transactions. Further, it presents security and complexity
+issues in contracting protocols which rely on presigned, time-sensitive transactions<ref><strong>Examples of time-sensitive pre-signed transactions in L2 protocols.</strong></p>
+<ul>
+<li><a href="https://github.com/lightning/bolts/blob/master/03-transactions.md" target="_blank">htlc-timeout-and-htlc-success-transactions HTCL-Timeout in LN Penalty</a></li>
+<li><a href="https://github.com/revault/practical-revault/blob/master/transactions.md" target="_blank">cancel_tx Unvault Cancel in Revault</a></li>
+<li><a href="https://github.com/discreetlogcontracts/dlcspecs/blob/master/Transactions.md" target="_blank">refund-transaction Refund Transaction in Discreet Log Contracts</a></li>
+<li><a href="https://gist.github.com/instagibbs/60264606e181451e977e439a49f69fe1" target="_blank">Updates in Eltoo</a></li>
+<li><a href="https://github.com/ElementsProject/peerswap/blob/master/docs/peer-protocol.md" target="_blank">claim-transaction Claim Transactions in PeerSwap</a></li>
+</ul>
+<p></ref> to prevent cheating.
+In other words, a key security assumption of many contracting protocols is that all parties can
+propagate and confirm transactions in a timely manner.  Increasing attention has been brought to
+&quot;pinning attacks,&quot; a type of censorship in which the attacker uses mempool policy restrictions to
+prevent a transaction from being relayed or getting mined.
+<ref><strong>Concerns for pinning attacks in L2 protocols</strong></p>
+<ul>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020458.html" target="_blank">Greg Sanders, &quot;Bringing a nuke to a knife fight: Transaction introspection to stop RBF pinning&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-April/002639.html" target="_blank">Matt Corallo, &quot;RBF Pinning with Counterparties and Competing Interest&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-June/002758.html" target="_blank">Antoine Riard, &quot;Pinning : The Good, The Bad, The Ugly&quot;</a></li>
+<li><a href="https://github.com/t-bast/lightning-docs/blob/master/pinning-attacks.md" target="_blank">Bastien Teinturier, &quot;Pinning Attacks&quot;</a></li>
+<li><a href="https://gist.github.com/instagibbs/60264606e181451e977e439a49f69fe1" target="_blank">Greg Sanders, &quot;Eltoo Pinning&quot;</a></li>
+</ul>
+</ref>
+<p>These transactions must meet a certain confirmation target to be effective, but their feerates
+are negotiated well ahead of broadcast time. If the forecast feerate was too low and no
+fee-bumping options are available, attackers can steal money from their counterparties.  Always
+overestimating fees may sidestep this issue (but only while mempool traffic is low and
+predictable), but this solution is not guaranteed to work and wastes users' money. For some attacks,
+the available defenses require nodes to have a bird's-eye view of Bitcoin nodes' mempools, which is
+an unreasonable security requirement.</p>
+<p>Part of the solution is to enable nodes to consider packages of transactions as a unit, e.g. one or
+more low-fee ancestor transactions with a high-fee descendant, instead of separately. A package-aware
+mempool policy can help determine if it would actually be economically rational to accept a
+transaction to the mempool if it doesn't meet fee requirements individually. Network-wide adoption
+of these policies would create a more purely-feerate-based market for block space and allow
+contracting protocols to adjust fees (and therefore mining priority) at broadcast time.</p>
+<p>Theoretically, developing a safe and incentive-compatible package mempool acceptance policy is
+sufficient to solve this issue. Nodes could opportunistically accept packages (e.g. by trying
+combinations of transactions rejected from their mempools), but this practice would likely be
+inefficient at best and open new Denial of Service attacks at worst.  As such, this proposal
+suggests adding new p2p messages enabling nodes to request and share package-validation-related
+information with one another, resulting in a more efficient and reliable way to propagate packages.</p>
+<h3>Handle Orphans Better</h3>
+<p>Txid-based transaction relay is problematic since a transaction's witness may be malleated without
+changing its txid; a node cannot use txid to deduplicate transactions it has already downloaded
+or validated. Ideally, two nodes that both support BIP339 wtxid-based transaction relay shouldn't
+ever need to use txid-based transaction relay.</p>
+<p>A single use case of txid-based relay remains: handling &quot;orphan&quot; transactions that spend output(s)
+from an unconfirmed transaction the receiving node is unaware of. Orphan transactions are very
+common for new nodes that have just completed Initial Block Download and do not have an up-to-date
+mempool. Nodes also download transactions from multiple peers. If the peer from which a child
+transaction was requested responds faster than the peer from which its parent was requested, that
+child is seen as an orphan transaction.</p>
+<p>Nodes may handle orphans by storing them in a cache and requesting any missing parent(s) by txid
+(prevouts specify txid, not wtxid). These parents may end up being orphans as well, if they also
+spend unconfirmed inputs that the node is unaware of. This method of handling orphans is problematic
+for two reasons: it requires nodes to allocate memory for unvalidated data received on the p2p
+network and it relies on txid-based relay between two wtxid-relay peers.</p>
+<p>This proposal makes orphan resolution more efficient and no longer require txid-based relay.</p>
+<h2>Definitions</h2>
+<p>Given any two transactions Tx0 and Tx1 where Tx1 spends an output of Tx0, Tx0 is a <strong>parent</strong> of
+Tx1 and Tx1 is a <strong>child</strong> of Tx0.</p>
+<p>A transaction's <strong>ancestors</strong> include, recursively, its parents, the parents of its parents, etc.
+A transaction's <strong>descendants</strong> include, recursively, its children, the children of its children,
+etc. A transaction's parent is its ancestor, but an ancestor is not necessarily a parent.</p>
+<p>A <strong>package</strong> is a list of transactions, representable by a connected Directed Acyclic
+Graph (a directed edge exists between a transaction that spends the output of another transaction).
+In this proposal, a package is limited to unconfirmed transactions.</p>
+<p>An <strong>ancestor package</strong> consists of an unconfirmed transaction with all of its unconfirmed
+ancestors.</p>
+<p>In a <strong>topologically sorted</strong> package, each parent appears somewhere in the list before its child.</p>
+<h2>Specification</h2>
+<p>Ancestor Package Relay includes two parts: a package information round and a transaction data
+download round.
+The package information round is used to help a receiver learn what transactions are in a package and
+decide whether they want to download them. The transaction data round is used to help a node download
+multiple transactions in one message instead of as separate messages.
+<ref><strong>Why are package information and transaction data rounds both necessary?</strong></p>
+<p>Several alternative designs were considered. One should measure alternative solutions based on the
+resources used to communicate (not necessarily trustworthy) information: We would like to minimize
+network bandwidth, avoid downloading a transaction more than once, avoid downloading transactions
+that are eventually rejected, and minimize storage allocated for not-yet-validated transactions.</p>
+<br />
+<p><strong>No Package Information Round:</strong> One proposal is to just use the child's wtxid to refer to the
+package and always send the entire package together, skipping the package information round.
+However, this protocol would make it very likely for honest nodes to redownload duplicate
+transactions. See the following example, where the high-feerate ancestors were already downloaded
+and accepted individually.</p>
+<img src="./bip-0331/no_package_info.png" />
+<br />
+<p><strong>Package Information Only:</strong> Just having package information gives enough information for the
+receiver to accept the packages. That is, rather than using &quot;getpkgtxns&quot; and &quot;pkgtxns&quot; messages,
+send &quot;getdata&quot; and download the transactions individually. While this option is a potential fallback
+if batched transaction download fails for some reason, it shouldn't be used as the default because
+it always requires storage of unvalidated transactions.
+<img src="./bip-0331/package_info_only.png" />
+</ref></p>
+<p>Package relay is negotiated between two peers during the version handshake using a &quot;sendpackages&quot;
+message. The versions field within &quot;sendpackages&quot; is interpreted as a bitfield; peers may relay
+multiple versions of packages. Package relay requires both peers to support wtxid-based relay
+because package transactions are referenced by their wtxids.
+<ref><strong>Why do we need multiple versions? Why can't we just support arbitrary packages?</strong>
+Attempting to support arbitrary packages in mempool validation may result in very complex logic, new
+Denial of Service attack vectors, and policy limitations that could be leveraged to censor
+transactions (aka &quot;pinning attacks&quot;). This protocol is extensible to support other types of
+packages based on future desired use cases. Future package information messages may describe
+different types of packages and/or contain more information than a list of wtxids, e.g. feerate or
+relationships between transactions.</ref>
+<ref><strong>Why use a bitfield instead of a numbering system?</strong>
+It should be possible to support some subset of the existing package types.</ref></p>
+<img src="./bip-0331/version_negotiation.png" />
+<p>Nodes indicate support for batched transaction data round (&quot;getpkgtxns&quot;, &quot;pkgtxns&quot;, and
+&quot;MSG_PKGTXNS&quot;) using the <code>PKG_RELAY_PKGTXNS = (1 &lt;&lt; 0)</code> bit in their &quot;sendpackages&quot;
+messages during version handshake. They indicate support for the ancestor package information
+round (&quot;ancpkginfo&quot;, &quot;MSG_ANCPKGINFO&quot;) using the <code>PKG_RELAY_ANC = (1 &lt;&lt; 1)</code> bit in their
+&quot;sendpackages&quot; messages during version handshake.</p>
+<h3>Protocol Flow Examples</h3>
+<p>This package relay protocol satisfies both use cases (orphan transaction handling and high-feerate
+transaction paying for low-feerate ancestors).</p>
+<h4>Orphan Transaction Handling</h4>
+<p>Upon receiving an orphan transaction, a node may request ancestor package information delineating
+the wtxids of the transaction's unconfirmed ancestors. This is done without using txid-based relay.
+The package information can be used to request transaction data. As these transactions are dependent
+upon one another to be valid, the transactions can be requested and sent as a batch.</p>
+<p>Contrast this protocol with legacy orphan handling, which requires requesting the missing
+transactions by their txids and may require new round trips for each generation of missing parents.
+<img src="./bip-0331/orphan_handling_flow.png" /></p>
+<h4>Fee-Bumped Transactions</h4>
+<p>Too-low-feerate transactions (i.e. below the node's minimum mempool feerate) with high-feerate
+descendants can also be relayed this way. If the peers are using BIP133 fee filters and a
+low-feerate transaction is below the node's fee filter, the sender will not announce it. The
+high-feerate transaction will be sent by the sender, and received and handled as an orphan by the
+receiver, the transactions are validated as a package, and so the protocol naturally works for this
+use case.</p>
+<p>This does not mean BIP133 is required for package relay to work, provided that nodes do not
+immediately reject transactions previously found to be too low feerate. If the low-feerate
+transaction was sent and rejected, the receiver should later re-request and accept it after learning
+that it is the ancestor of another transaction, and that they meet the receiver's mempool policy
+requirements when validated together.</p>
+<img src="./bip-0331/package_cpfp_flow.png" />
+<p>This protocol is receiver-initiated only; nodes do not proactively announce packages to their peers.
+<ref><strong>Why no sender-initiated protocol?</strong> Sender-initiated package
+relay can, theoretically, save a round trip by notifying the receiver ahead of time that they will
+probably need to request and validate a group of transactions together in order for them to be
+accepted. As with any proactive communication, there is a chance that the receiver already knows
+this information, so this network bandwidth may be wasted. Shortened latency is less significant
+than wasted bandwidth.</p>
+<p>The logic used to decide when to announce a package proactively determines whether it is a net
+increase or decrease for overall bandwidth usage. However, it is difficult to design anything to
+save bandwidth without any idea of what its bandwidth usage actually looks like in practice. No
+historical data is available, as one of the primary goals of this protocol is to enable
+currently-rejected transactions to propagate. After deploying receiver-initiated package relay, we
+can observe its usage and then introduce a sender-initiated package relay protocol informed by data
+collected from the p2p network.</ref></p>
+<h3>Combined Hash</h3>
+<p>A &quot;combined hash&quot; serves as a unique &quot;package id&quot; for some list of transactions and helps provide a
+meaningful but short &quot;notfound&quot; response to &quot;getpkgtxns.&quot;</p>
+<p>The combined hash of a package of transactions is equal to the sha256 hash of each transaction's
+wtxid concatenated in lexicographical order.</p>
+<h3>New Messages</h3>
+<p>Four new protocol messages and two inv types are added.</p>
+<h4>sendpackages</h4>
+<table><thead><tr><th>Field Name</th><th>Type</th><th>Size</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>versions</td><td>uint64_t</td><td>4</td><td>Bit field that is 64 bits wide, denoting the package versions supported by the sender.</td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<ol>
+<li>
+<p>The &quot;sendpackages&quot; message has the structure defined above, with pchCommand == &quot;sendpackages&quot;.</p>
+</li>
+<li>
+<p>During version handshake, nodes should send one &quot;sendpackages&quot; message indicating they support package relay, with the versions field indicating which versions they support.</p>
+</li>
+<li>
+<p>The &quot;sendpackages&quot; message MUST be sent before sending a &quot;verack&quot; message. If a &quot;sendpackages&quot; message is received after &quot;verack&quot;, the sender may be disconnected.</p>
+</li>
+<li>
+<p>Upon successful connection (&quot;verack&quot; sent by both peers), a node may relay packages with the peer if they did not set &quot;fRelay&quot; to false in the &quot;version&quot; message, both peers sent &quot;wtxidrelay&quot;, and both peers sent &quot;sendpackages&quot; for matching version bit(s). Unknown bits (including versions==0) should be ignored. Peers should relay packages corresponding to versions that both sent &quot;sendpackages&quot; for.<ref><strong>Is it ok to send &quot;sendpackages&quot; to a peer that specified fRelay=false in their &quot;version&quot; message?</strong></p>
+</li>
+</ol>
+<p>Yes, this is allowed in order to reduce the number of negotiation steps. This means nodes can
+announce features without first checking what the other peer has sent, and then apply negotiation
+logic at the end based on what was sent and received. See <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020510.html" target="_blank">this discussion</a>.
+</ref></p>
+<h4>ancpkginfo</h4>
+<table><thead><tr><th>Field Name</th><th>Type</th><th>Size</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>txns_length</td><td>CompactSize</td><td>1 or 3 bytes</td><td>The number of transactions provided.</td></tr>
+<tr><td>txns</td><td>List of wtxids</td><td>txns_length * 32</td><td>The wtxids of each transaction in the package.</td></tr>
+</tbody></table>
+<ol>
+<li>
+<p>The &quot;ancpkginfo&quot; message has the structure defined above, with pchCommand == &quot;ancpkginfo&quot;.</p>
+</li>
+<li>
+<p>The &quot;txns&quot; field should contain a list of wtxids which constitute the ancestor package of the last wtxid. For the receiver's convenience, the sender should - but is not required to - sort the wtxids in topological order. The topological sort can be achieved by sorting the transactions by mempool acceptance order (if parents are always accepted before children). Apart from the last wtxid which is used to learn which transaction the message corresponds to, there is no enforced ordering. Nodes should not disconnect or punish a peer who provides a list not sorted in topological order.<ref><strong>Why not include feerate information to help the receiver decide whether these transactions are worth downloading?</strong></p>
+</li>
+</ol>
+<p>A simple feerate is typically insufficient; the receiver must also know the dependency
+relationships between transactions and their respective sizes.
+</ref><ref><strong>Should a peer be punished if they provide incorrect package info, e.g. a list of unrelated transactions?</strong>
+Ideally, there should be a way to enforce that peers are providing correct information to each
+other. However, two peers may have different views of what a transaction's unconfirmed ancestors
+are based on their chainstate. For example, during a reorg or when two blocks are found at the same
+time, one peer may see a transaction as confirmed while the other peer does not.
+As such, it is impossible to accurately enforce this without also knowing the peer's chainstate.
+It was <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020493.html" target="_blank">originally proposed</a>
+to include a block hash in &quot;ancpkginfo&quot; to avoid unwarranted disconnections. However, it does not
+make much sense to stop or delay transaction data requests due to mismatched chainstates, and the
+chainstate may change again between package information and transaction data rounds. Instead,
+differences in chainstate should be handled at the validation level. The node has already spent
+network bandwidth downloading these transactions; it should make a best effort to validate them.
+See <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020558.html" target="_blank">discussion</a>.
+</ref><ref><strong>Why not require topological order?</strong>
+It is not possible to determine whether a list of transactions is topologically sorted without first
+establishing that the list contains a full ancestor package. It is not possible to determine whether
+a list of transactions contains a full ancestor package without knowing what the chainstate is.
+</ref></p>
+<ol>
+<li>
+<p>Upon receipt of a &quot;ancpkginfo&quot; message, the node may use it to request the transactions it does not already have (e.g. using &quot;getpkgtxns&quot; or &quot;tx&quot;).</p>
+</li>
+<li>
+<p>Upon receipt of a malformed &quot;ancpkginfo&quot; message, the sender may be disconnected. An &quot;ancpkginfo&quot; message is malformed if it contains duplicate wtxids or conflicting transactions (spending the same inputs). The receiver may learn that a package info was malformed after downloading the transactions.</p>
+</li>
+<li>
+<p>A node MUST NOT send a &quot;ancpkginfo&quot; message that has not been requested by the recipient. Upon receipt of an unsolicited &quot;ancpkginfo&quot;, a node may disconnect the sender.</p>
+</li>
+<li>
+<p>This message must only be used if both peers set <code>PKG_RELAY_ANC</code> in their &quot;sendpackages&quot; message. If an &quot;ancpkginfo&quot; message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+</li>
+</ol>
+<h4>MSG_ANCPKGINFO</h4>
+<ol>
+<li>
+<p>A new inv type (MSG_ANCPKGINFO == 0x7) is added, for use only in getdata requests pertaining to ancestor packages.</p>
+</li>
+<li>
+<p>As a getdata request type, it indicates that the sender wants an &quot;ancpkginfo&quot; containing all of the unconfirmed ancestors of a transaction, referenced by wtxid.</p>
+</li>
+<li>
+<p>Upon receipt of a &quot;getdata(MSG_ANCPKGINFO)&quot; request, the node should respond with an &quot;ancpkginfo&quot; message corresponding to the transaction's unconfirmed ancestor package, or with &quot;notfound&quot;.  The wtxid of the requested transaction must be the last item in the &quot;ancpkginfo&quot; response list, as the last item is used to determine which transaction the &quot;ancpkginfo&quot; pertains to.</p>
+</li>
+<li>
+<p>The inv type must only be used in a &quot;getdata&quot; message. An &quot;inv(MSG_ANCPKGINFO)&quot; must never be sent.  If an &quot;inv(MSG_ANCPKGINFO)&quot; is received, the sender may be disconnected.</p>
+</li>
+<li>
+<p>This inv type must only be used if both peers set <code>PKG_RELAY_ANC</code> in their &quot;sendpackages&quot; message. If a &quot;getdata&quot; message with type MSG_ANCPKGINFO is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+</li>
+</ol>
+<h4>getpkgtxns</h4>
+<table><thead><tr><th>Field Name</th><th>Type</th><th>Size</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>txns_length</td><td>CompactSize</td><td>1 or 3 bytes</td><td>The number of transactions requested.</td></tr>
+<tr><td>txns</td><td>List of wtxids</td><td>txns_length * 32</td><td>The wtxids of each transaction in the package.</td></tr>
+</tbody></table>
+<ol>
+<li>
+<p>The &quot;getpkgtxns&quot; message has the structure defined above, with pchCommand == &quot;getpkgtxns&quot;.</p>
+</li>
+<li>
+<p>A &quot;getpkgtxns&quot; message should be used to request some list of transactions specified by witness transaction id. It indicates that the node wants to receive either all the specified transactions or none of them. This message is intended to allow nodes to avoid downloading and storing transactions that cannot be validated without each other. The list of transactions does not need to correspond to a previously-received ancpkginfo message.</p>
+</li>
+<li>
+<p>Upon receipt of a &quot;getpkgtxns&quot; message, a node should respond with either a &quot;pkgtxns&quot; containing all of the requested transactions in the same order specified in the &quot;getpkgtxns&quot; request or one &quot;notfound&quot; message of type MSG_PKGTXNS and combined hash of all of the wtxids in the &quot;getpkgtxns&quot; request (only one &quot;notfound&quot; message and nothing else), indicating one or more of the transactions is unavailable.</p>
+</li>
+<li>
+<p>A &quot;getpkgtxns&quot; message must contain at most 100 wtxids. Upon receipt of a &quot;getpkgtxns&quot; message with more than 100 wtxids, a node may ignore the message (to avoid calculating the combined hash) and disconnect the sender.</p>
+</li>
+<li>
+<p>This message must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their &quot;sendpackages&quot; message. If a &quot;getpkgtxns&quot; message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+</li>
+</ol>
+<h4>pkgtxns</h4>
+<table><thead><tr><th>Field Name</th><th>Type</th><th>Size</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>txns_length</td><td>CompactSize</td><td>1 or 3 bytes</td><td>The number of transactions provided.</td></tr>
+<tr><td>txns</td><td>List of transactions</td><td>variable</td><td>The transactions in the package.</td></tr>
+</tbody></table>
+<ol>
+<li>
+<p>The &quot;pkgtxns&quot; message has the structure defined above, with pchCommand == &quot;pkgtxns&quot;.</p>
+</li>
+<li>
+<p>A &quot;pkgtxns&quot; message should contain the transaction data requested using &quot;getpkgtxns&quot;.</p>
+</li>
+<li>
+<p>A &quot;pkgtxns&quot; message should only be sent to a peer that requested the package using &quot;getpkgtxns&quot;. If a node receives an unsolicited package, it may choose to validate the transactions or not, and the sender may be disconnected.</p>
+</li>
+<li>
+<p>This message must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their &quot;sendpackages&quot; message. If a &quot;pkgtxns&quot; message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+</li>
+</ol>
+<h4>MSG_PKGTXNS</h4>
+<ol>
+<li>
+<p>A new inv type (MSG_PKGTXNS == 0x6) is added, for use only in &quot;notfound&quot; messages pertaining to package transactions.</p>
+</li>
+<li>
+<p>As a &quot;notfound&quot; type, it indicates that the sender is unable to send all the transactions requested in a prior &quot;getpkgtxns&quot; message. The hash used is equal to the combined hash of the wtxids in the getpkgtxns request.</p>
+</li>
+<li>
+<p>This inv type should only be used in &quot;notfound&quot; messages, i.e. &quot;inv(MSG_PKGTXNS)&quot; and &quot;getdata(MSG_PKGTXNS)&quot; must never be sent. Upon receipt of an &quot;inv&quot; or &quot;getdata&quot; message of this type, the sender may be disconnected.</p>
+</li>
+<li>
+<p>This inv type must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their &quot;sendpackages&quot; message.</p>
+</li>
+</ol>
+<h2>Compatibility</h2>
+<p>Older clients remain fully compatible and interoperable after this change. Clients implementing this
+protocol will only attempt to send and request packages if agreed upon during the version handshake.
+<ref><strong>Will package relay cause non-package relay nodes to waste bandwidth on low-feerate transactions?</strong>
+If a node supports package relay, it may accept low-feerate transactions (e.g. paying zero fees)
+into its mempool, but non-package relay nodes would most likely reject them. To mitigate bandwidth
+waste, a package relay node should not announce descendants of below-fee-filter transactions to
+non-package relay peers.
+</ref>
+<ref><strong>Is Package Erlay possible?</strong>
+A client using BIP330 reconciliation-based transaction relay (Erlay) is able to use package relay
+without interference. After reconciliation, any transaction with unconfirmed ancestors may have
+those ancestors resolved using ancestor package relay.
+<img src="./bip-0331/package_erlay.png" />
+</ref></p>
+<h2>Extensibility</h2>
+<p>This protocol can be extended to include more types of package information in the future, while
+continuing to use the same messages for transaction data download. One would define a new package
+information message (named &quot;*pkginfo&quot; in the diagram below), allocate its corresponding inv
+type (named &quot;<em>PKGINFO&quot; in the diagram below), and specify how to signal support using the
+versions field of &quot;sendpackages&quot; (an additional bit named &quot;PKG_RELAY_</em>&quot; in the diagram below). A
+future version of package relay may allow a sender-initiated dialogue by specifying that the package
+info type inv type can be used in an &quot;inv&quot; message.
+<br />
+<img src="./bip-0331/sender_init_future_version.png" /></p>
+<h2>Implementation</h2>
+<p>Sample implementation for Bitcoin Core: https://github.com/bitcoin/bitcoin/pull/27742</p>
+<p>A prerequisite for implementing a safe
+package relay protocol is a mempool acceptance policy that safely validates packages of
+transactions.
+<ref><strong>Package Mempool Acceptance Policy</strong>
+Accepting packages from peers should not significantly increase a node's DoS attack surface;
+processing packages should not permit waste or exhaustion of the node and network's resources.
+Additionally, a sensible mempool acceptance policy should result in the most incentive-compatible
+subset of the package in the mempool in order to avoid adding more pinning attacks or censorship
+vectors. For example, It should not be assumed that packages are CPFPs. An ancestor package may
+include a high-feerate parent and low-feerate child; the policy may choose to accept the parent but
+not the child. If one or more transactions are policy-invalid, other transactions that are not
+dependent upon them should still be considered.
+</ref></p>
+<h2>Acknowledgements</h2>
+<p>Thank you to Suhas Daftuar, John Newbery, Anthony Towns, Martin Zumsande, and others for input on the design.</p>
+<p>Thank you to Will Clark, Sergi Delgado, Fabian Jahr, John Newbery, Greg Sanders, Stéphan Vuylsteke, Pieter Wuille, and others for input on this document.</p>
+<p>Much of this work is inspired by ideas and code by Suhas Daftuar and Antoine Riard.
+<ref><strong>Prior Work on Package Relay</strong></p>
+<ul>
+<li><a href="https://gist.github.com/sdaftuar/8756699bfcad4d3806ba9f3396d4e66a" target="_blank">Strawman Proposal</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/issues/14895" target="_blank">Package relay design questions</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/pull/16401" target="_blank">Add package acceptance logic to mempool</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/pull/19621" target="_blank">[RFC] Package-relay: sender-initiated</a></li>
+</ul>
+</ref>
+<h2>References and Rationale</h2>
+<references/>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-04-25</p>
+                </div>
+                <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
