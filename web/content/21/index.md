@@ -179,15 +179,7 @@ Some future version that has variables which are (currently) not understood but 
 
 Characters must be URI encoded properly.
 
-<h2> Reference Implementations </h2>
-
-<h3> Bitcoin clients </h3>
-
-*  Bitcoin-Qt supports the old version of Bitcoin URIs (ie without the req- prefix), with Windows and KDE integration as of commit 70f55355e29c8e45b607e782c5d76609d23cc858.
+<h2> Reference Implementation </h2>
 
 
-<h3> Libraries </h3>
-
-*  Javascript - https://github.com/bitcoinjs/bip21
-*  Java - https://github.com/SandroMachado/BitcoinPaymentURI
-*  Swift - https://github.com/SandroMachado/BitcoinPaymentURISwift
+Bitcoin-Qt supports the old version of Bitcoin URIs (ie without the req- prefix), with Windows and KDE integration as of commit 70f55355e29c8e45b607e782c5d76609d23cc858.
