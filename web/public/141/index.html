@@ -188,20 +188,26 @@
 <p>If there are more than one <code>scriptPubKey</code> matching the pattern, the one with highest output index is assumed to be the commitment.</p>
 <p>If all transactions in a block do not have witness data, the commitment is optional.</p>
 <h3> Witness program </h3>
-<p>A <code>scriptPubKey</code> (or <code>redeemScript</code> as defined in BIP16/P2SH) that consists of a select subset of opcodes (<code>OP_0,OP_1,OP_2,...,OP_16</code>) followed by a data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the &quot;version byte&quot;. The following byte vector pushed is called the &quot;witness program&quot;.</p>
+<p>A <code>scriptPubKey</code> (or <code>redeemScript</code> as defined in BIP16/P2SH) that consists of a 1-byte push opcode (one of <code>OP_0,OP_1,OP_2,...,OP_16</code>) followed by a direct data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the &quot;version byte&quot;. The following byte vector pushed is called the &quot;witness program&quot;.
+In more detail, this means a <code>scriptPubKey</code> or <code>redeemScript</code> which consists of (in order):</p>
+<ul>
+<li>First, byte 0x00 (<code>OP_0</code>) or any byte between 0x51 (<code>OP_1</code>) and 0x60 (<code>OP_16</code>) inclusive (the version byte).</li>
+<li>Then, a byte <em>L</em> between 0x02 (push of 2 bytes) and 0x28 (push of 40 bytes) inclusive.</li>
+<li>Finally, <em>L</em> arbitrary bytes (the witness program).</li>
+</ul>
 <p>There are two cases in which witness validation logic are triggered. Each case determines the location of the witness version byte and program, as well as the form of the scriptSig:</p>
 <ol>
 <li>Triggered by a <code>scriptPubKey</code> that is exactly a push of a version byte, plus a push of a witness program. The scriptSig must be exactly empty or validation fails. (<em>&quot;native witness program&quot;</em>)</li>
 <li>Triggered when a <code>scriptPubKey</code> is a P2SH script, and the BIP16 <code>redeemScript</code> pushed in the <code>scriptSig</code> is exactly a push of a version byte plus a push of a witness program. The <code>scriptSig</code> must be exactly a push of the BIP16 <code>redeemScript</code> or validation fails. (<em>&quot;P2SH witness program&quot;</em>)</li>
 </ol>
-<p>If the version byte is 0, and the witness program is 20 bytes:</p>
+<p>If the version byte is 0, and the witness program is 20 bytes (<em>L = 20</em>):</p>
 <ul>
 <li>It is interpreted as a pay-to-witness-public-key-hash (P2WPKH) program.</li>
 <li>The witness must consist of exactly 2 items (≤ 520 bytes each). The first one a signature, and the second one a public key.</li>
 <li>The HASH160 of the public key must match the 20-byte witness program.</li>
 <li>After normal script evaluation, the signature is verified against the public key with CHECKSIG operation. The verification must result in a single TRUE on the stack.</li>
 </ul>
-<p>If the version byte is 0, and the witness program is 32 bytes:</p>
+<p>If the version byte is 0, and the witness program is 32 bytes (<em>L = 32</em>):</p>
 <ul>
 <li>It is interpreted as a pay-to-witness-script-hash (P2WSH) program.</li>
 <li>The witness must consist of an input stack to feed to the script, followed by a serialized script (<code>witnessScript</code>).</li>
@@ -368,7 +374,7 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-26</p>
+                    <p class="font-bold">2024-04-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

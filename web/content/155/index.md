@@ -97,6 +97,7 @@ The list of reserved network IDs is as follows:
 |`0x04`|`TORV3`|32|Tor v3 hidden service address|
 |`0x05`|`I2P`|32|I2P overlay network address|
 |`0x06`|`CJDNS`|16|Cjdns overlay network address|
+|`0x07`|`YGGDRASIL`|16|Yggdrasil overlay network address|
 
 
 Clients are RECOMMENDED to gossip addresses from all known networks even if they are currently not connected to some of them. That could help multi-homed nodes and make it more difficult for an observer to tell which networks a node is connected to.
@@ -170,6 +171,11 @@ I2P addresses MUST be sent with the `I2P` network ID, with the decoded SHA-256 h
 
 
 Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range<ref><a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together" target="_blank">Cjdns whitepaper: Pulling It All Together</a></ref>. They MUST be sent with the `CJDNS` network ID.
+
+<h2>Appendix E: Yggdrasil address encoding</h2>
+
+
+Yggdrasil addresses are simply IPv6 addresses in the `0200::/7` range<ref><a href="https://yggdrasil-network.github.io/faq.html#will-yggdrasil-conflict-with-my-network-routing" target="_blank">Yggdrasil FAQ</a></ref>. They MUST be sent with the `YGGDRASIL` network ID.
 
 <h2>References</h2>
 

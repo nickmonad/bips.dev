@@ -116,21 +116,26 @@ If all transactions in a block do not have witness data, the commitment is optio
 <h3> Witness program </h3>
 
 
-A `scriptPubKey` (or `redeemScript` as defined in BIP16/P2SH) that consists of a select subset of opcodes (`OP_0,OP_1,OP_2,...,OP_16`) followed by a data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the "version byte". The following byte vector pushed is called the "witness program".
+A `scriptPubKey` (or `redeemScript` as defined in BIP16/P2SH) that consists of a 1-byte push opcode (one of `OP_0,OP_1,OP_2,...,OP_16`) followed by a direct data push between 2 and 40 bytes gets a new special meaning. The value of the first push is called the "version byte". The following byte vector pushed is called the "witness program".
+In more detail, this means a `scriptPubKey` or `redeemScript` which consists of (in order):
+*  First, byte 0x00 (`OP_0`) or any byte between 0x51 (`OP_1`) and 0x60 (`OP_16`) inclusive (the version byte).
+*  Then, a byte _L_ between 0x02 (push of 2 bytes) and 0x28 (push of 40 bytes) inclusive.
+*  Finally, _L_ arbitrary bytes (the witness program).
+
 
 There are two cases in which witness validation logic are triggered. Each case determines the location of the witness version byte and program, as well as the form of the scriptSig:
 1.  Triggered by a `scriptPubKey` that is exactly a push of a version byte, plus a push of a witness program. The scriptSig must be exactly empty or validation fails. (_"native witness program"_)
 1.  Triggered when a `scriptPubKey` is a P2SH script, and the BIP16 `redeemScript` pushed in the `scriptSig` is exactly a push of a version byte plus a push of a witness program. The `scriptSig` must be exactly a push of the BIP16 `redeemScript` or validation fails. (_"P2SH witness program"_)
 
 
-If the version byte is 0, and the witness program is 20 bytes:
+If the version byte is 0, and the witness program is 20 bytes (_L = 20_):
 *  It is interpreted as a pay-to-witness-public-key-hash (P2WPKH) program.
 *  The witness must consist of exactly 2 items (≤ 520 bytes each). The first one a signature, and the second one a public key.
 *  The HASH160 of the public key must match the 20-byte witness program.
 *  After normal script evaluation, the signature is verified against the public key with CHECKSIG operation. The verification must result in a single TRUE on the stack.
 
 
-If the version byte is 0, and the witness program is 32 bytes:
+If the version byte is 0, and the witness program is 32 bytes (_L = 32_):
 *  It is interpreted as a pay-to-witness-script-hash (P2WSH) program.
 *  The witness must consist of an input stack to feed to the script, followed by a serialized script (`witnessScript`).
 *  The `witnessScript` (≤ 10,000 bytes) is popped off the initial witness stack. SHA256 of the `witnessScript` must match the 32-byte witness program.
