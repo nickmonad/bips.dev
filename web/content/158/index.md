@@ -59,9 +59,6 @@ that is designed to reduce the filter size for regular wallets.
 _CompactSize_ is a compact encoding of unsigned integers used in the Bitcoin
 P2P protocol.
 
-_Data pushes_ are byte vectors pushed to the stack according to the rules of
-Bitcoin script.
-
 _Bit streams_ are readable and writable streams of individual bits. The
 following functions are used in the pseudocode in this document:
 *  `new_bit_stream` instantiates a new writable bit stream
