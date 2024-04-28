@@ -152,9 +152,11 @@
 <p>Concerns #4 and #5 should be handled by Signers and are out of scope of this proposal.</p>
 <h2>Specification</h2>
 <h3>Prerequisites</h3>
-<p>This proposal assumes the parties in the multisig support <a href="/32" target="_blank">BIP-0032</a>, <a href="/322" target="_blank">BIP-0322</a>, <a href="https://github.com/bitcoin/bitcoin/blob/master/doc/descriptors.md" target="_blank">the descriptor language</a> and <a href="https://tools.ietf.org/html/rfc3686" target="_blank">AES encryption</a>.</p>
+<p>This proposal assumes the parties in the multisig support <a href="/32" target="_blank">BIP-0032</a>, <a href="/322" target="_blank">BIP-0322</a>, <a href="/380" target="_blank">BIP-0380 Output Script Descriptors</a> (<a href="/381" target="_blank">BIP-0381</a>,<a href="/382" target="_blank">BIP-0382</a>,<a href="/383" target="_blank">BIP-0383</a>) and <a href="https://tools.ietf.org/html/rfc3686" target="_blank">AES encryption</a>.</p>
 <h3>File Extensions</h3>
 <p>All descriptor and key records should have a <tt>.bsms</tt> file extension. Encrypted data should have a <tt>.dat</tt> extension.</p>
+<h3>Newline</h3>
+<p>This specification uses line feed (LF) control character <tt>\n</tt>.</p>
 <h3>Roles</h3>
 <h4>Coordinator</h4>
 <p>The Coordinator initiates the multisig setup. The Coordinator determines what type of multisig is used and the exact policy script. If encryption is enabled, the Coordinator also distributes a shared secret or shared secrets to the parties involved for secure communication. The Coordinator gathers information from the Signers to generate a descriptor record. The Coordinator distributes the descriptor record back to the Signers.</p>
@@ -233,7 +235,7 @@
 <li>Password = &quot;No SPOF&quot;</li>
 <li>Salt = <tt>TOKEN</tt></li>
 <li>c = 2048</li>
-<li>dkLen = 256</li>
+<li>dkLen = 256 bits (32 bytes)</li>
 <li>DKey = Derived <tt>ENCRYPTION_KEY</tt></li>
 </ul>
 <h4>Encryption Scheme</h4>
@@ -655,7 +657,7 @@ sh(wsh(multi(2,[793cc70b/48'/0'/0'/1']xpub6ErVmcYYHmavsMgxEcTZyzN5sqth1ZyRpFNJC2
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-27</p>
+                    <p class="font-bold">2024-04-28</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

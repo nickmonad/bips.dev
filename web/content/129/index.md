@@ -71,11 +71,15 @@ Concerns #4 and #5 should be handled by Signers and are out of scope of this pro
 
 <h3>Prerequisites</h3>
 
-This proposal assumes the parties in the multisig support <a href="/32" target="_blank">BIP-0032</a>, <a href="/322" target="_blank">BIP-0322</a>, <a href="https://github.com/bitcoin/bitcoin/blob/master/doc/descriptors.md" target="_blank">the descriptor language</a> and <a href="https://tools.ietf.org/html/rfc3686" target="_blank">AES encryption</a>.
+This proposal assumes the parties in the multisig support <a href="/32" target="_blank">BIP-0032</a>, <a href="/322" target="_blank">BIP-0322</a>, <a href="/380" target="_blank">BIP-0380 Output Script Descriptors</a> (<a href="/381" target="_blank">BIP-0381</a>,<a href="/382" target="_blank">BIP-0382</a>,<a href="/383" target="_blank">BIP-0383</a>) and <a href="https://tools.ietf.org/html/rfc3686" target="_blank">AES encryption</a>.
 
 <h3>File Extensions</h3>
 
 All descriptor and key records should have a <tt>.bsms</tt> file extension. Encrypted data should have a <tt>.dat</tt> extension.
+
+<h3>Newline</h3>
+
+This specification uses line feed (LF) control character <tt>\n</tt>.
 
 <h3>Roles</h3>
 
@@ -185,7 +189,7 @@ Whereas:
 *  Password = "No SPOF"
 *  Salt = <tt>TOKEN</tt>
 *  c = 2048
-*  dkLen = 256
+*  dkLen = 256 bits (32 bytes)
 *  DKey = Derived <tt>ENCRYPTION_KEY</tt>
 
 
