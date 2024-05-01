@@ -63,12 +63,12 @@ A new transaction digest algorithm is defined, but only applicable to sigops in 
 ```
 
 
-Semantics of the original sighash types remain unchanged, except the followings:
+Semantics of the original sighash types remain unchanged, except the following:
 1.  The way of serialization is changed;
 1.  All sighash types commit to the amount being spent by the signed input;
 1.  `FindAndDelete` of the signature is not applied to the `scriptCode`;
 1.  `OP_CODESEPARATOR`(s) after the last executed `OP_CODESEPARATOR` are not removed from the `scriptCode` (the last executed `OP_CODESEPARATOR` and any script before it are always removed);
-1.  `SINGLE` does not commit to the input index. When `ANYONECANPAY` is not set, the semantics are unchanged since `hashPrevouts` and `outpoint` together implictly commit to the input index. When `SINGLE` is used with `ANYONECANPAY`, omission of the index commitment allows permutation of the input-output pairs, as long as each pair is located at an equivalent index.
+1.  `SINGLE` does not commit to the input index. When `ANYONECANPAY` is not set, the semantics are unchanged since `hashPrevouts` and `outpoint` together implicitly commit to the input index. When `SINGLE` is used with `ANYONECANPAY`, omission of the index commitment allows permutation of the input-output pairs, as long as each pair is located at an equivalent index.
 
 
 The items 1, 4, 7, 9, 10 have the same meaning as the original algorithm. <ref name=wiki></ref>

@@ -72,7 +72,7 @@ The author doesn't believe this is a problem because a BIP cannot be forced on c
 <h2> Process </h2>
 
 
-*  **Submit for Comments.** The first BIP champion named in the proposal can call a &quot;submit for comments&quot; at any time by posting to the <a href="https://lists.linuxfoundation.org/mailman/listinfo/bitcoin-dev" target="_blank">Dev Mailing List</a> mailling with the BIP number and a statement that the champion intends to immediately submit the BIP for comments.
+*  **Submit for Comments.** The first BIP champion named in the proposal can call a &quot;submit for comments&quot; at any time by posting to the <a href="https://lists.linuxfoundation.org/mailman/listinfo/bitcoin-dev" target="_blank">Dev Mailing List</a> mailing with the BIP number and a statement that the champion intends to immediately submit the BIP for comments.
     *  The BIP must have been assigned BIP-number (i.e. been approved by the BIP editor) to be submitted for comments.
 *  **Comments.**
     *  After a BIP has been submitted for comments, a two-week waiting period begins in which the community should transition from making suggestions about a proposal to publishing their opinions or concerns on the proposal.

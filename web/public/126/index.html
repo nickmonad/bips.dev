@@ -128,28 +128,28 @@
 </code></pre>
 <h2>Abstract</h2>
 <p>When a Bitcoin transaction contains inputs that reference previous transaction outputs sent to different Bitcoin addresses, personally identifiable information of the user will leak into the blockchain in an uncontrolled manner. While undesirable, these transactions are frequently unavoidable due to the natural fragmentation of wallet balances over time.</p>
-<p>This document proposes a set of best practice guidelines which minimize the uncontrolled disclosure of personally identifiable information by defining standard forms for transactions containing heterogenous input scripts.</p>
+<p>This document proposes a set of best practice guidelines which minimize the uncontrolled disclosure of personally identifiable information by defining standard forms for transactions containing heterogeneous input scripts.</p>
 <h2>Copyright</h2>
 <p>This BIP is in the public domain.</p>
 <h2>Definitions</h2>
 <ul>
 <li><strong>Heterogenous input script transaction (HIT)</strong>: A transaction containing multiple inputs where the scripts of the previous transaction outputs being consumed are not identical (e.g. a transaction spending outputs which were sent to more than one Bitcoin address)</li>
-<li><strong>Unavoidable heterogenous input script transaction</strong>: A HIT created as a result of a user’s desire to create a new output with a value larger than the value of his wallet's largest existing unspent output</li>
-<li><strong>Intentional heterogenous input script transaction</strong>: A HIT created as part of a user protection protocol for reducing uncontrolled disclosure of personally-identifying information (PII)</li>
+<li><strong>Unavoidable heterogeneous input script transaction</strong>: A HIT created as a result of a user’s desire to create a new output with a value larger than the value of his wallet's largest existing unspent output</li>
+<li><strong>Intentional heterogeneous input script transaction</strong>: A HIT created as part of a user protection protocol for reducing uncontrolled disclosure of personally-identifying information (PII)</li>
 </ul>
 <p>Throughout this procedure, when input scripts are evaluated for uniqueness, &quot;input script&quot; should be interpreted to mean, &quot;the script of the previous output referenced by an input to a transaction&quot;.</p>
 <h2>Motivations</h2>
 <p>The recommendations in this document are designed to accomplish three goals:</p>
 <ol>
 <li>Maximise the effectiveness of user-protecting protocols: Users may find that protection protocols are counterproductive if such transactions have a distinctive fingerprint which renders them ineffective.</li>
-<li>Minimise the adverse consequences of unavoidable heterogenous input transactions: If unavoidable HITs are indistinguishable from intentional HITs, a user creating an unavoidable HIT benefits from ambiguity with respect to graph analysis.</li>
+<li>Minimise the adverse consequences of unavoidable heterogeneous input transactions: If unavoidable HITs are indistinguishable from intentional HITs, a user creating an unavoidable HIT benefits from ambiguity with respect to graph analysis.</li>
 <li>Limiting the effect on UTXO set growth: To date, non-standardized intentional HITs tend to increase the network's UTXO set with each transaction; this standard attempts to minimize this effect by standardizing unavoidable and intentional HITs to limit UTXO set growth.</li>
 </ol>
-<p>In order to achieve these goals, this specification proposes a set of best practices for heterogenous input script transaction creation. These practices accommodate all applicable requirements of both intentional and unavoidable HITs while maximising the effectiveness of both in terms of preventing uncontrolled disclosure of PII.</p>
+<p>In order to achieve these goals, this specification proposes a set of best practices for heterogeneous input script transaction creation. These practices accommodate all applicable requirements of both intentional and unavoidable HITs while maximising the effectiveness of both in terms of preventing uncontrolled disclosure of PII.</p>
 <p>In order to achieve this, two forms of HIT are proposed: Standard form and alternate form.</p>
 <h2>Interaction with Other Procedures</h2>
 <p>Applications which wish to comply both with this procedure and BIP69 should apply this procedure prior to applying BIP69.</p>
-<h2>Standard form heterogenous input script transaction</h2>
+<h2>Standard form heterogeneous input script transaction</h2>
 <h3>Rules</h3>
 <p>A HIT is Standard form if it adheres to all of the following rules:</p>
 <ol>
@@ -162,7 +162,7 @@
 <p>The requirement for equal numbers of unique input/output scripts instead of equal number of inputs/outputs accommodates user-protecting UTXO selection behavior. Wallets may contain spendable outputs with identical scripts due to intentional or accidental address reuse, or due to dusting attacks. In order to minimise the adverse consequences of address reuse, any time a UTXO is included in a transaction as an input, all UTXOs with the same spending script should also be included in the transaction.</p>
 <p>The requirement that all output scripts are unique prevents address reuse. Restricting the number of outputs to the number of unique input scripts prevents this policy from growing the network’s UTXO set. A standard form HIT transaction will always have a number of inputs greater than or equal to the number of outputs.</p>
 <p>The requirement for at least one pair of outputs in an intentional HIT to be of equal value results in optimal behavior, and causes intentional HITs to resemble unavoidable HITs.</p>
-<h2>Alternate form heterogenous input script transactions</h2>
+<h2>Alternate form heterogeneous input script transactions</h2>
 <p>The formation of a standard form HIT is not possible in the following cases:</p>
 <ol>
 <li>The HIT is unavoidable, and the user’s wallet contains an insufficient number or size of UTXOs to create a standard form HIT.</li>
@@ -204,7 +204,7 @@
 </ol>
 </li>
 </ol>
-<h2>Non-compliant heterogenous input script transactions</h2>
+<h2>Non-compliant heterogeneous input script transactions</h2>
 <p>If a user wishes to create an output that is larger than half the total size of their spendable outputs, or if their inputs are not distributed in a manner in which the alternate form procedure can be completed, then the user can not create a transaction which is compliant with this procedure.</p>
 <h2>Reference</h2>
 <ul>
@@ -220,7 +220,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-30</p>
+                    <p class="font-bold">2024-05-01</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

@@ -147,7 +147,7 @@ Since this format includes P2PKH keys, it is backwards compatible, but keep in m
 <h2>Implications</h2>
 
 
-Message signing is an important use case and potentially underused due to the fact that, up until now, there has not been a formal specification for how wallets can sign messages using Bitcoin private keys. Bitcoin wallets should be interoperable and use the same conventions for determing a signature's validity. This BIP can also be updated as new signature formats emerge.
+Message signing is an important use case and potentially underused due to the fact that, up until now, there has not been a formal specification for how wallets can sign messages using Bitcoin private keys. Bitcoin wallets should be interoperable and use the same conventions for determining a signature's validity. This BIP can also be updated as new signature formats emerge.
 
 <h2>Acknowledgements</h2>
 

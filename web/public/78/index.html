@@ -245,7 +245,7 @@ If not specified, the receiver will assume the sender is <code>v=1</code>.</p>
 }
 </code></pre>
 <ul>
-<li><code>additionalfeeoutputindex=</code>, if the sender is willing to pay for increased fee, this indicate output can have its value substracted to pay for it.</li>
+<li><code>additionalfeeoutputindex=</code>, if the sender is willing to pay for increased fee, this indicate output can have its value subtracted to pay for it.</li>
 </ul>
 <p>If the <code>additionalfeeoutputindex</code> is out of bounds or pointing to the payment output meant for the receiver, the receiver should ignore the parameter. See <a href="#fee-output" target="_blank">fee output</a> for more information.</p>
 <ul>
@@ -284,7 +284,7 @@ Instead those errors or messages can only appear in debug logs.</p>
 <p>It is advised to hard code the description of the well known error codes into the sender's software.</p>
 <h3><span id"fee-output"></span>Fee output</h3>
 <p>In some situation, the sender might want to pay some additional fee in the payjoin proposal.
-If such is the case, the sender must use both <a href="#optional-params" target="_blank">optional parameters</a> <code>additionalfeeoutputindex=</code> and <code>maxadditionalfeecontribution=</code> to indicate which output and how much the receiver can substract fee.</p>
+If such is the case, the sender must use both <a href="#optional-params" target="_blank">optional parameters</a> <code>additionalfeeoutputindex=</code> and <code>maxadditionalfeecontribution=</code> to indicate which output and how much the receiver can subtract fee.</p>
 <p>There is several cases where a fee output is useful:</p>
 <ul>
 <li>The sender's original transaction's fee rate is at the minimum accepted by the network, aka <code>minimum relay transaction fee rate</code>, which is typically 1 satoshi per vbyte.</li>
@@ -354,7 +354,7 @@ To prevent this, the sender can agree to pay more fee so the receiver make sure 
 <li>Verify that no keypaths is in the PSBT output</li>
 <li>If the output is the <a href=" fee-output" target="_blank">fee output</a>:
 <ul>
-<li>The amount that was substracted from the output's value is less than or equal to <code>maxadditionalfeecontribution</code>. Let's call this amount <code>actual contribution</code>.</li>
+<li>The amount that was subtracted from the output's value is less than or equal to <code>maxadditionalfeecontribution</code>. Let's call this amount <code>actual contribution</code>.</li>
 <li>Make sure the actual contribution is only paying fee: The <code>actual contribution</code> is less than or equals to the difference of absolute fee between the payjoin proposal and the original PSBT.</li>
 <li>Make sure the actual contribution is only paying for fee incurred by additional inputs: <code>actual contribution</code> is less than or equals to <code>originalPSBTFeeRate * vsize(sender_input_type) * (count(payjoin_proposal_inputs) - count(original_psbt_inputs))</code>. (see <a href=" fee-output" target="_blank">Fee output</a> section)</li>
 </ul>
@@ -414,7 +414,7 @@ We also recommend the sender to set <code>minfeerate=</code>, as the sender's no
 <p>However, if you donate via payjoin, it will look like a normal transaction.</p>
 <p>On top of this the receiver can poison analysis by randomly faking a round amount of satoshi for the additional output.</p>
 <h3><span id"output-substitution"></span>Payment output substitution</h3>
-<p>Unless disallowed by sender explicitely via <code>disableoutputsubstitution=true</code> or by the BIP21 url via query parameter the <code>pjos=0</code>, the receiver is free to decrease the amount, remove, or change the scriptPubKey output paying to himself.
+<p>Unless disallowed by sender explicitly via <code>disableoutputsubstitution=true</code> or by the BIP21 url via query parameter the <code>pjos=0</code>, the receiver is free to decrease the amount, remove, or change the scriptPubKey output paying to himself.
 Note that if payment output substitution is disallowed, the reveiver can still increase the amount of the output. (See <a href="#reference-impl" target="_blank">the reference implementation</a>)</p>
 <p>For example, if the sender's scriptPubKey type is P2WPKH while the receiver's payment output in the original PSBT is P2SH, then the receiver can substitute the payment output to be P2WPKH to match the sender's scriptPubKey type.</p>
 <h3><span id"unsecured-payjoin"></span>Unsecured payjoin server</h3>
@@ -460,7 +460,7 @@ Note that the sender can disallow <a href="#output-substitution" target="_blank"
 <code>RequestPayjoin</code> takes the bip21 URI of the payment, the wallet and the <code>signedPSBT</code>.</p>
 <p>The <code>signedPSBT</code> represents a PSBT which has been fully signed, but not yet finalized.
 We then prepare <code>originalPSBT</code> from the <code>signedPSBT</code> via the <code>CreateOriginalPSBT</code> function and get back the <code>proposal</code>.</p>
-<p>While we verify the <code>proposal</code>, we also import into it informations about our own inputs and outputs from the <code>signedPSBT</code>.
+<p>While we verify the <code>proposal</code>, we also import into it information about our own inputs and outputs from the <code>signedPSBT</code>.
 At the end of this <code>RequestPayjoin</code>, the proposal is verified and ready to be signed.</p>
 <p>We logged the different PSBT involved, and show the result in our <a href="#test-vectors" target="_blank">test vectors</a>.</p>
 <pre><code>public async Task&lt;PSBT&gt; RequestPayjoin(
@@ -602,7 +602,7 @@ At the end of this <code>RequestPayjoin</code>, the proposal is verified and rea
             if (output.OriginalTxOut == feeOutput)
             {
                 var actualContribution = feeOutput.Value - proposedPSBTOutput.Value;
-                &#x2F;&#x2F; The amount that was substracted from the output&#x27;s value is less than or equal to maxadditionalfeecontribution
+                &#x2F;&#x2F; The amount that was subtracted from the output&#x27;s value is less than or equal to maxadditionalfeecontribution
                 if (actualContribution &gt; optionalParameters.MaxAdditionalFeeContribution)
                     throw new PayjoinSenderException(&quot;The actual contribution is more than maxadditionalfeecontribution&quot;);
                 &#x2F;&#x2F; Make sure the actual contribution is only paying fee
@@ -682,7 +682,7 @@ PSBT CreateOriginalPSBT(PSBT signedPSBT)
 </code></pre>
 <h2><span id"test-vectors"></span>Test vectors</h2>
 <p>A successful exchange with:</p>
-<table><thead><tr><th>InputScriptType</th><th>Orginal PSBT Fee rate</th><th>maxadditionalfeecontribution</th><th>additionalfeeoutputindex</th></tr></thead><tbody>
+<table><thead><tr><th>InputScriptType</th><th>Original PSBT Fee rate</th><th>maxadditionalfeecontribution</th><th>additionalfeeoutputindex</th></tr></thead><tbody>
 <tr><td>P2SH-P2WPKH</td><td>2 sat/vbyte</td><td>0.00000182</td><td>0</td></tr>
 </tbody></table>
 <p><code>Unfinalized signed PSBT</code></p>
@@ -717,7 +717,7 @@ Thanks again to RHavar who wrote the <a href="/79" target="_blank">BIP79 Bustapa
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-04-30</p>
+                    <p class="font-bold">2024-05-01</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

@@ -180,7 +180,7 @@ If the receiver does not support the version of the sender, they should send an 
 }
 ```
 
-*  `additionalfeeoutputindex=`, if the sender is willing to pay for increased fee, this indicate output can have its value substracted to pay for it.
+*  `additionalfeeoutputindex=`, if the sender is willing to pay for increased fee, this indicate output can have its value subtracted to pay for it.
 
 
 If the `additionalfeeoutputindex` is out of bounds or pointing to the payment output meant for the receiver, the receiver should ignore the parameter. See <a href="#fee-output" target="_blank">fee output</a> for more information.
@@ -233,7 +233,7 @@ It is advised to hard code the description of the well known error codes into th
 
 
 In some situation, the sender might want to pay some additional fee in the payjoin proposal.
-If such is the case, the sender must use both <a href="#optional-params" target="_blank">optional parameters</a> `additionalfeeoutputindex=` and `maxadditionalfeecontribution=` to indicate which output and how much the receiver can substract fee.
+If such is the case, the sender must use both <a href="#optional-params" target="_blank">optional parameters</a> `additionalfeeoutputindex=` and `maxadditionalfeecontribution=` to indicate which output and how much the receiver can subtract fee.
 
 There is several cases where a fee output is useful:
 
@@ -306,7 +306,7 @@ The sender should check the payjoin proposal before signing it to prevent a mali
 *  For each outputs in the proposal:
     *  Verify that no keypaths is in the PSBT output
     *  If the output is the <a href=" fee-output" target="_blank">fee output</a>:
-        *  The amount that was substracted from the output's value is less than or equal to `maxadditionalfeecontribution`. Let's call this amount `actual contribution`.
+        *  The amount that was subtracted from the output's value is less than or equal to `maxadditionalfeecontribution`. Let's call this amount `actual contribution`.
         *  Make sure the actual contribution is only paying fee: The `actual contribution` is less than or equals to the difference of absolute fee between the payjoin proposal and the original PSBT.
         *  Make sure the actual contribution is only paying for fee incurred by additional inputs: `actual contribution` is less than or equals to `originalPSBTFeeRate * vsize(sender_input_type) * (count(payjoin_proposal_inputs) - count(original_psbt_inputs))`. (see <a href=" fee-output" target="_blank">Fee output</a> section)
     *  If the output is the payment output and payment output substitution is allowed.
@@ -386,7 +386,7 @@ On top of this the receiver can poison analysis by randomly faking a round amoun
 <h3><span id"output-substitution"></span>Payment output substitution</h3>
 
 
-Unless disallowed by sender explicitely via `disableoutputsubstitution=true` or by the BIP21 url via query parameter the `pjos=0`, the receiver is free to decrease the amount, remove, or change the scriptPubKey output paying to himself.
+Unless disallowed by sender explicitly via `disableoutputsubstitution=true` or by the BIP21 url via query parameter the `pjos=0`, the receiver is free to decrease the amount, remove, or change the scriptPubKey output paying to himself.
 Note that if payment output substitution is disallowed, the reveiver can still increase the amount of the output. (See <a href="#reference-impl" target="_blank">the reference implementation</a>)
 
 For example, if the sender's scriptPubKey type is P2WPKH while the receiver's payment output in the original PSBT is P2SH, then the receiver can substitute the payment output to be P2WPKH to match the sender's scriptPubKey type.
@@ -465,7 +465,7 @@ Here is pseudo code of a sender implementation.
 The `signedPSBT` represents a PSBT which has been fully signed, but not yet finalized.
 We then prepare `originalPSBT` from the `signedPSBT` via the `CreateOriginalPSBT` function and get back the `proposal`.
 
-While we verify the `proposal`, we also import into it informations about our own inputs and outputs from the `signedPSBT`.
+While we verify the `proposal`, we also import into it information about our own inputs and outputs from the `signedPSBT`.
 At the end of this `RequestPayjoin`, the proposal is verified and ready to be signed.
 
 We logged the different PSBT involved, and show the result in our <a href="#test-vectors" target="_blank">test vectors</a>.
@@ -609,7 +609,7 @@ public async Task<PSBT> RequestPayjoin(
             if (output.OriginalTxOut == feeOutput)
             {
                 var actualContribution = feeOutput.Value - proposedPSBTOutput.Value;
-                // The amount that was substracted from the output's value is less than or equal to maxadditionalfeecontribution
+                // The amount that was subtracted from the output's value is less than or equal to maxadditionalfeecontribution
                 if (actualContribution > optionalParameters.MaxAdditionalFeeContribution)
                     throw new PayjoinSenderException("The actual contribution is more than maxadditionalfeecontribution");
                 // Make sure the actual contribution is only paying fee
@@ -694,7 +694,7 @@ PSBT CreateOriginalPSBT(PSBT signedPSBT)
 A successful exchange with:
 
 
-|InputScriptType|Orginal PSBT Fee rate|maxadditionalfeecontribution|additionalfeeoutputindex|
+|InputScriptType|Original PSBT Fee rate|maxadditionalfeecontribution|additionalfeeoutputindex|
 |-|-|-|-|
 |P2SH-P2WPKH|2 sat/vbyte|0.00000182|0|
 

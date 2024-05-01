@@ -35,7 +35,7 @@ Make a network node's transaction memory pool accessible via a new "mempool" mes
 <h2>Motivation</h2>
 
 
-Several use cases make it desireable to expose a network node's transaction memory pool:
+Several use cases make it desirable to expose a network node's transaction memory pool:
 1.  SPV clients, wishing to obtain zero-confirmation transactions sent or received.
 1.  Miners, to avoid missing lucrative fees, downloading existing network transactions after a restart.
 1.  Remote network diagnostics.
