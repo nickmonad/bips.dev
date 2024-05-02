@@ -112,7 +112,7 @@ The Seizable Collateral script takes the following form:
 <h2>Compatibility</h2>
 
 
-BIP 197 is compatible with <a href="ERC" target="_blank">1850</a>(https://github.com/ethereum/EIPs/pull/1850) for <a href="atomic" target="_blank">loans</a>(https://arxiv.org/pdf/1901.05117.pdf) with Ethereum. Can be extended in the future to be compatible with other HTLC and smart contract compatible chains.
+BIP 197 is compatible with <a href="https://github.com/ethereum/EIPs/pull/1850" target="_blank">ERC 1850</a> for <a href="https://arxiv.org/pdf/1901.05117.pdf" target="_blank">atomic loans</a> with Ethereum. Can be extended in the future to be compatible with other HTLC and smart contract compatible chains.
 
 <h2>Motivation</h2>
 

@@ -111,8 +111,6 @@ A full signature consists of the base64-encoding of the `to_sign` transaction in
 
 A signer may construct a proof of funds, demonstrating control of a set of UTXOs, by constructing a full signature as above, with the following modifications.
 
-*  `message_challenge` is unused and shall be set to `OP_TRUE`
-*  Similarly, `message_signature` is then empty.
 *  All outputs that the signer wishes to demonstrate control of are included as additional inputs of `to_sign`, and their witness and scriptSig data should be set as though these outputs were actually being spent.
 
 

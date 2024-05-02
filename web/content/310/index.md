@@ -233,7 +233,7 @@ send the mask, in this case a default full mask is used.
 *  **"version-rolling.mask"** (REQUIRED, _TMask_)
 
 - Bits set to 1 are allowed to be changed by the miner. If a miner changes bits with mask value 0, the server will reject the submit.
-- The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="Draft" target="_blank">BIP</a>(https://github.com/bitcoin/bips/pull/661/files) describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.
+- The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="https://github.com/bitcoin/bips/pull/661/files" target="_blank">Draft BIP</a> describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.
 
 *  **"version-rolling.min-bit-count"** (REQUIRED, _TMask_)
 
