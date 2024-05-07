@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 347: OP_CAT in Tapscript" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 347: OP_CAT in Tapscript" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 347: OP_CAT in Tapscript</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 347: OP_CAT in Tapscript</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2023-12-11</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0347.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 347
+  Layer: Consensus (soft fork)
+  Title: OP_CAT in Tapscript
+  Author: Ethan Heilman &lt;ethan.r.heilman@gmail.com&gt;
+          Armin Sabouri &lt;arminsdev@gmail.com&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0347
+  Status: Draft
+  Type: Standards Track
+  Created: 2023-12-11
+  License: BSD-3-Clause
+  Post-History: 2023-10-21: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2023-October&#x2F;022049.html [bitcoin-dev] Proposed BIP for OP_CAT
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP introduces OP_CAT as a tapscript opcode which allows the concatenation of two values on the stack. OP_CAT would be activated via a soft fork by redefining the opcode OP_SUCCESS126 (126 in decimal and 0x7e in hexadecimal). This is the same opcode value used by the original OP_CAT.</p>
+<h2> Copyright </h2>
+<p>This document is licensed under the 3-clause BSD license.</p>
+<h2>Specification</h2>
+<p>When evaluated, the OP_CAT instruction:</p>
+<ol>
+<li>Pops the top two values off the stack,</li>
+<li>concatenates the popped values together in stack order,</li>
+<li>and then pushes the concatenated value on the top of the stack.</li>
+</ol>
+<p>Given the stack <em><nowiki><a href="x1," target="_blank">x2</a></nowiki></em>, where <em>x2</em> is at the top of the stack, OP_CAT will push <em>x1 || x2</em> onto the stack. By <em>||</em> we denote concatenation. OP_CAT fails if there are fewer than two values on the stack or if a concatenated value would have a combined size greater than the maximum script element size of 520 bytes.</p>
+<p>This opcode would be activated via a soft fork by redefining the tapscript opcode OP_SUCCESS126 (126 in decimal and 0x7e in hexadecimal) to OP_CAT.</p>
+<h2>Motivation</h2>
+<p>Bitcoin Tapscript lacks a general purpose way of combining objects on the stack, restricting the expressiveness and power of Tapscript. This prevents, among many other things, the ability to construct and evaluate merkle trees and other hashed data structures in Tapscript. OP_CAT, by adding a general purpose way to concatenate stack values, would overcome this limitation and greatly increase the functionality of Tapscript.</p>
+<p>OP_CAT aims to expand the toolbox of the tapscript developer with a simple, modular, and useful opcode in the spirit of Unix <ref>R. Pike and B. Kernighan, &quot;Program design in the UNIX environment&quot;, 1983, https://harmful.cat-v.org/cat-v/unix_prog_design.pdf</ref>. To demonstrate the usefulness of OP_CAT below we provide a non-exhaustive list of some usecases that OP_CAT would enable:</p>
+<ul>
+<li>Bitstream, a protocol for the atomic swap (fair exchange) of bitcoins for decryption keys, that enables decentralized file hosting systems paid in Bitcoin. While such swaps are currently possible on Bitcoin without OP_CAT, they require the use of complex and computationally expensive Verifiable Computation cryptographic techniques. OP_CAT would remove this requirement on Verifiable Computation, making such protocols far more practical to build in Bitcoin. <ref>R. Linus, &quot;BitStream: Decentralized File Hosting Incentivised via Bitcoin Payments&quot;, 2023, https://robinlinus.com/bitstream.pdf</ref></li>
+<li>Tree signatures provide a multisignature script whose size can be logarithmic in the number of public keys and can encode spend conditions beyond n-of-m. For instance a transaction less than 1KB in size could support tree signatures with up to 4,294,967,296 public keys. This also enables generalized logical spend conditions. <ref> P. Wuille, &quot;Multisig on steroids using tree signatures&quot;, 2015, https://blog.blockstream.com/en-treesignatures/</ref></li>
+<li>Post-Quantum Lamport signatures in Bitcoin transactions. Lamport signatures merely require the ability to hash and concatenate values on the stack. <ref>J. Rubin, &quot;[bitcoin-dev] OP_CAT Makes Bitcoin Quantum Secure <a href="was" target="_blank">CheckSigFromStack for Arithmetic Values</a>&quot;, 2021, https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-July/019233.html</ref> It has been proposed that if ECDSA is broken or a powerful computer was on the horizon, there might be an effort to protect ownership of bitcoins by allowing people to mark their taproot outputs as &quot;script-path only&quot; and then move their coins into such outputs with a leaf in the script tree requiring a Lamport signature. It is an open question if a tapscript commitment would preserve the quantum resistance of Lamport signatures. Beyond this question, the use of Lamport Signatures in taproot outputs is unlikely to be quantum resistant even if the script spend-path is made quantum resistant. This is because taproot outputs can also be spent with a key. An attacker with a sufficiently powerful quantum computer could bypass the taproot script spend-path by finding the discrete log of the taproot output and thus spending the output using the key spend-path. The use of &quot;Nothing Up My Sleeve&quot; (NUMS) points as described in <a href="/341" target="_blank">BIP341</a> to disable the key spend-path does not disable the key spend-path against a quantum attacker as NUMS relies on the hardness of finding discrete logs. We are not aware of any mechanism which could disable the key spend-path in a taproot output without a softfork change to taproot.</li>
+<li>Non-equivocation contracts <ref>T. Ruffing, A. Kate, D. Schröder, &quot;Liar, Liar, Coins on Fire: Penalizing Equivocation by Loss of Bitcoins&quot;, 2015, https://web.archive.org/web/20221023121048/https://publications.cispa.saarland/565/1/penalizing.pdf</ref> in tapscript provide a mechanism to punish equivocation/double spending in Bitcoin payment channels. OP_CAT enables this by enforcing rules on the spending transaction's nonce. The capability is a useful building block for payment channels and other Bitcoin protocols.</li>
+<li>Vaults <ref>M. Moser, I. Eyal, and E. G. Sirer, Bitcoin Covenants, http://fc16.ifca.ai/bitcoin/papers/MES16.pdf</ref> which are a specialized covenant that allows a user to block a malicious party who has compromised the user's secret key from stealing the funds in that output. As shown in <ref>A. Poelstra, &quot;CAT and Schnorr Tricks II&quot;, 2021, https://www.wpsoftware.net/andrew/blog/cat-and-schnorr-tricks-ii.html</ref> OP_CAT is sufficient to build vaults in Bitcoin.</li>
+<li>Replicating CheckSigFromStack <ref>A. Poelstra, &quot;CAT and Schnorr Tricks I&quot;, 2021, https://medium.com/blockstream/cat-and-schnorr-tricks-i-faf1b59bd298</ref> which would allow the creation of simple covenants and other advanced contracts without having to presign spending transactions, possibly reducing complexity and the amount of data that needs to be stored. Originally shown to work with Schnorr signatures, this result has been extended to ECDSA signatures <ref>R. Linus, &quot;Covenants with CAT and ECDSA&quot;, 2023, https://gist.github.com/RobinLinus/9a69f5552be94d13170ec79bf34d5e85 file-covenants_cat_ecdsa-md</ref>.</li>
+</ul>
+<p>OP_CAT was available in early versions of Bitcoin. 
+In 2010, a single commit disabled OP_CAT, along with another 15 opcodes.
+Folklore states that OP_CAT was removed in this commit because it enabled the construction of a script whose evaluation could have memory usage exponential in the size of the script.
+For example, a script that pushed a 1-byte value on the stack and then repeated the opcodes OP_DUP, OP_CAT 40 times would result in a stack element whose size was greater than 1 terabyte assuming no maximum stack element size. As Bitcoin at that time had a maximum stack element size of 5000 bytes, the effect of this expansion was limited to 5000 bytes.
+This is no longer an issue because tapscript enforces a maximum stack element size of 520 bytes.</p>
+<h2>Rationale</h2>
+<p>Our decision to reenable OP_CAT by redefining a tapscript OP_SUCCESSx opcode to OP_CAT was motivated to leverage the tapscript softfork opcode upgrade path introduced in <a href="/342" target="_blank">BIP342</a>.</p>
+<p>We specifically choose to use OP_SUCCESS126 rather than another OP_SUCCESSx as OP_SUCCESS126 uses the same opcode value (126 in decimal and 0x7e in hexadecimal) that was used for OP_CAT prior to it being disabled in Bitcoin. This removes a potential source of confusion that would exist if we had a opcode value different from the one used in the original OP_CAT opcode.</p>
+<p>While the OP_SUCCESSx opcode upgrade path could enable us to increase the stack element size while reenabling OP_CAT, we wanted to separate the decision to change the stack element size limit from the decision to reenable OP_CAT. This BIP takes no position in favor or against increasing the stack element size limit.</p>
+<h2>Backwards Compatibility</h2>
+<p>OP_CAT usage in a non-tapscript script will continue to trigger the SCRIPT_ERR_DISABLED_OPCODE. The only change would be to OP_CAT usage in tapscript. This change to tapscript would be activated as a soft fork that redefines an OP_SUCCESSx opcode (OP_SUCCESS126) to OP_CAT.</p>
+<h2>Reference implementation</h2>
+<pre><code>case OP_CAT:
+{
+  if (stack.size() &lt; 2)
+    return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
+  valtype&amp; vch1 = stacktop(-2);
+  valtype&amp; vch2 = stacktop(-1);
+  if (vch1.size() + vch2.size() &gt; MAX_SCRIPT_ELEMENT_SIZE)
+    return set_error(serror, SCRIPT_ERR_PUSH_SIZE);
+  vch1.insert(vch1.end(), vch2.begin(), vch2.end());
+  stack.pop_back();
+}
+break;
+</code></pre>
+<p>The value of <code>MAX_SCRIPT_ELEMENT_SIZE</code> is 520.</p>
+<p>This implementation is inspired by the original implementation of <a href="https://github.com/bitcoin/bitcoin/blob/01cd2fdaf3ac6071304ceb80fb7436ac02b1059e/script.cpp#L381-L393" target="_blank">OP_CAT as it existed in the Bitcoin codebase</a> prior to the commit &quot;misc changes&quot; 4bd188c<ref>S. Nakamoto, &quot;misc changes&quot;, Aug 25 2010, https://github.com/bitcoin/bitcoin/commit/4bd188c4383d6e614e18f79dc337fbabe8464c82#diff-27496895958ca30c47bbb873299a2ad7a7ea1003a9faa96b317250e3b7aa1fefR94</ref> which disabled it:</p>
+<pre><code>case OP_CAT:
+{
+    &#x2F;&#x2F; (x1 x2 -- out)
+    if (stack.size() &lt; 2)
+        return false;
+    valtype&amp; vch1 = stacktop(-2);
+    valtype&amp; vch2 = stacktop(-1);
+    vch1.insert(vch1.end(), vch2.begin(), vch2.end());
+    stack.pop_back();
+    if (stacktop(-1).size() &gt; 5000)
+        return false;
+}
+break;
+</code></pre>
+<p>An alternative implementation of OP_CAT can be found in Elements <ref>Roose S., Elements Project, &quot;Re-enable several disabled opcodes&quot;, 2019, https://github.com/ElementsProject/elements/commit/13e1103abe3e328c5a4e2039b51a546f8be6c60a#diff-a0337ffd7259e8c7c9a7786d6dbd420c80abfa1afdb34ebae3261109d9ae3c19R740-R759</ref>.</p>
+<h2>References</h2>
+<references/>
+<h2>Acknowledgements</h2>
+<p>We wish to acknowledge Dan Gould for encouraging and helping review this effort. We also want to thank Madars Virza, Jeremy Rubin, Andrew Poelstra, Bob Summerwill, 
+Tim Ruffing and Johan T. Halseth for their feedback, review and helpful comments.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-05-07</p>
+                </div>
+                <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
