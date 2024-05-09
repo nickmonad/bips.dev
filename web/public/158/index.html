@@ -184,7 +184,7 @@ one is able to select both Parameters independently, then more optimal values
 can be
 selected<ref>https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</ref>.
 Set membership queries against the hash outputs will have a false positive rate
-of <code>M</code>. To avoid integer overflow, the number of items <code>N</code>
+of <code>1 / M</code>. To avoid integer overflow, the number of items <code>N</code>
 MUST be &lt;2^32 and <code>M</code> MUST be &lt;2^32.</p>
 <p>The items are first passed through the pseudorandom function <em>SipHash</em>, which
 takes a 128-bit key <code>k</code> and a variable-sized byte vector and produces
@@ -266,7 +266,7 @@ golomb_decode(stream, P: uint) -&gt; uint64:
 <ul>
 <li><code>L</code>, a vector of <code>N</code> raw items</li>
 <li><code>P</code>, the bit parameter of the Golomb-Rice coding</li>
-<li><code>M</code>, the target false positive rate</li>
+<li><code>M</code>, the inverse of the target false positive rate</li>
 <li><code>k</code>, the 128-bit key used to randomize the SipHash outputs</li>
 </ul>
 <p>The result is a byte vector with a minimum size of <code>N * (P + 1)</code>
@@ -481,7 +481,7 @@ easier to understand.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-05-08</p>
+                    <p class="font-bold">2024-05-09</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

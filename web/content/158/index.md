@@ -107,7 +107,7 @@ one is able to select both Parameters independently, then more optimal values
 can be
 selected<ref>https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</ref>.
 Set membership queries against the hash outputs will have a false positive rate
-of `M`. To avoid integer overflow, the number of items `N`
+of `1 / M`. To avoid integer overflow, the number of items `N`
 MUST be <2^32 and `M` MUST be <2^32.
 
 The items are first passed through the pseudorandom function _SipHash_, which
@@ -204,7 +204,7 @@ golomb_decode(stream, P: uint) -> uint64:
 A GCS is constructed from four parameters:
 *  `L`, a vector of `N` raw items
 *  `P`, the bit parameter of the Golomb-Rice coding
-*  `M`, the target false positive rate
+*  `M`, the inverse of the target false positive rate
 *  `k`, the 128-bit key used to randomize the SipHash outputs
 
 
