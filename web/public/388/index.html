@@ -122,7 +122,7 @@
   Author: Salvatore Ingala &lt;salvatoshi@protonmail.com&gt;
   Comments-Summary: No comments yet.
   Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0388
-  Status: Draft
+  Status: Proposed
   Type: Standards Track
   Created: 2022-11-16
   License: BSD-2-Clause
@@ -171,14 +171,14 @@ The hardware signing device must guarantee that the user knows precisely what &q
 <li>After inspecting the policy and comparing it with a trusted source (for example a printed backup), the user approves the policy.</li>
 <li>If stateful, the hardware signing device persists the policy in its permanent memory; if stateless, it returns a &quot;proof of registration&quot;.</li>
 </ol>
-<p>The proof of registration will allow the hardware signer to verify that a certain policy was indeed previously approved by the user, and is therefore safe to use without repeating the expensive user verification procedure. The details of how to create a proof of registration are out of scope for this document; using a Message Authentication Code on a hash committing to the wallet policy, its name and any additional metadata is an effective solution if correctly executed.</p>
+<p>The <strong>proof of registration</strong> will allow the hardware signer to verify that a certain policy was indeed previously approved by the user, and is therefore safe to use without repeating the expensive user verification procedure. The details of how to create a proof of registration are out of scope for this document; using a Message Authentication Code on a hash committing to the wallet policy, its name and any additional metadata is an effective solution if correctly executed.</p>
 <p>Once a policy is registered, the hardware signing device can perform the typical operations securely:</p>
 <ul>
 <li>generating receive and change addresses;</li>
 <li>showing addresses on the secure screen;</li>
 <li>sign transactions spending from a wallet, while correctly identifying change addresses and computing the transaction fees.</li>
 </ul>
-<p>Before any of the actions mentioned above, the hardware signing device will retrieve the policy from its permanent storage if stateful; if stateless it will validate the <strong>proof of registration</strong> before using the wallet policy provided by the client.</p>
+<p>Before any of the actions mentioned above, the hardware signing device will retrieve the policy from its permanent storage if stateful; if stateless it will validate the proof of registration before using the wallet policy provided by the client.</p>
 <p>Once the previously registered policy is correctly identified and approved by the user (for example by showing its name), and as long as the policy registration was executed securely, hardware signing devices can provide a user experience similar to the usual one for single-signature transactions.</p>
 <h3> Avoiding blowup in descriptor size </h3>
 <p>While reusing a pubkey in different branches of a miniscript is explicitly forbidden by miniscript (as it has certain negative security implications), it is still reasonable to reuse the same xpub in multiple places, albeit with different final steps of derivation (so that the actual pubkeys that are used in the script are indeed different).</p>
@@ -229,7 +229,7 @@ The hardware signing device must guarantee that the user knows precisely what &q
 </li>
 </ul>
 <p>The <tt>/**</tt> in the placeholder template represents commonly used paths for receive/change addresses, and is equivalent to <tt>&lt;0;1&gt;/*</tt>.</p>
-<p>Note that while <a href="/389" target="_blank">BIP-389</a> allows multipath <code>/&lt;NUM;NUM;...;NUM&gt;</code> expressions with an arbitrary number of options, this specification restricts it to exactly 2 choices (with the typical meaning of receive/change addresses).</p>
+<p>Note that while <a href="/389" target="_blank">BIP-389</a> allows multipath <tt>/&lt;NUM;NUM;...;NUM&gt;</tt> expressions with an arbitrary number of options, this specification restricts it to exactly 2 choices (with the typical meaning of receive/change addresses).</p>
 <p>The placeholder <tt>@i</tt> for some number <em>i</em> represents the <em>i</em>-th key in the vector of key information items (which must be of size at least <em>i + 1</em>, or the wallet policy is invalid).</p>
 <p>Note: while descriptor templates for miniscript are not formally defined in this version of the document (pending standardization), it is straightforward to adapt this approach by adding additional <tt>SCRIPT</tt> expressions.</p>
 <h4> Key information vector </h4>
@@ -272,7 +272,7 @@ produces the following multipath descriptor:</p>
 <p>In order to allow supporting legacy derivation schemes (for example, using simply <tt>/<em></tt> instead of the more common <tt>/&lt;M;N&gt;/</em></tt> scheme most software wallets use today), or other schemes that are not covered in this document, implementations might choose to permit additional derivation patterns for the key placeholder (<tt>KP</tt>) expressions.</p>
 <p>However, care needs to be taken in view of the following considerations:</p>
 <ul>
-<li>Allowing derivation schemes with a different length or cardinality in the same wallet policy would make it difficult to guarantee that there are no repeated pubkeys for every possible address generated by the policy. For example, <code>@0/&lt;0;1&gt;/*</code> and <code>@1/*</code> would generate the same pubkeys if the second public key in the key information vector is one of the first two unhardened children of the first public key. This could cause malleability with potential security implications (for example, in policies containing miniscript).</li>
+<li>Allowing derivation schemes with a different length or cardinality in the same wallet policy would make it difficult to guarantee that there are no repeated pubkeys for every possible address generated by the policy. For example, <tt>@0/&lt;0;1&gt;/<em></tt> and <tt>@1/</em></tt> would generate the same pubkeys if the second public key in the key information vector is one of the first two unhardened children of the first public key. This could cause malleability with potential security implications (for example, in policies containing miniscript).</li>
 <li>Allowing naked pubkeys with no <tt>/<em></tt> suffix (for example a descriptor template like <tt>wsh(multi(2,@0,@1/&lt;0;1&gt;/</em>))</tt>) would cause a pubkey to be repeated in every output generated from the policy, which would result in a total loss of privacy.</li>
 </ul>
 <h2> Examples </h2>
@@ -300,45 +300,45 @@ produces the following multipath descriptor:</p>
 <p><a href="/44" target="_blank">BIP-44</a>, first account</p>
 <pre><code> Descriptor template: pkh(@0&#x2F;**)
  Keys info: [&quot;[6738736c&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;]xpub6Br37sWxruYfT8ASpCjVHKGwgdnYFEn98DwiN76i2oyY6fgH1LAPmmDcF46xjxJr22gw4jmVjTE2E3URMnRPEPYyo1zoPSUba563ESMXCeb&quot;]
- Descriptor:pkh([6738736c&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;]xpub6Br37sWxruYfT8ASpCjVHKGwgdnYFEn98DwiN76i2oyY6fgH1LAPmmDcF46xjxJr22gw4jmVjTE2E3URMnRPEPYyo1zoPSUba563ESMXCeb)
+ Descriptor: pkh([6738736c&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;]xpub6Br37sWxruYfT8ASpCjVHKGwgdnYFEn98DwiN76i2oyY6fgH1LAPmmDcF46xjxJr22gw4jmVjTE2E3URMnRPEPYyo1zoPSUba563ESMXCeb)
 &lt;br&gt;
 [[bip-0049.mediawiki|BIP-49]], second account
  Descriptor template: sh(wpkh(@0&#x2F;**))
  Keys info: [&quot;[6738736c&#x2F;49&#x27;&#x2F;0&#x27;&#x2F;1&#x27;]xpub6Bex1CHWGXNNwGVKHLqNC7kcV348FxkCxpZXyCWp1k27kin8sRPayjZUKDjyQeZzGUdyeAj2emoW5zStFFUAHRgd5w8iVVbLgZ7PmjAKAm9&quot;]
- Descriptor:sh(wpkh([6738736c&#x2F;49&#x27;&#x2F;0&#x27;&#x2F;1&#x27;]xpub6Bex1CHWGXNNwGVKHLqNC7kcV348FxkCxpZXyCWp1k27kin8sRPayjZUKDjyQeZzGUdyeAj2emoW5zStFFUAHRgd5w8iVVbLgZ7PmjAKAm9))
+ Descriptor: sh(wpkh([6738736c&#x2F;49&#x27;&#x2F;0&#x27;&#x2F;1&#x27;]xpub6Bex1CHWGXNNwGVKHLqNC7kcV348FxkCxpZXyCWp1k27kin8sRPayjZUKDjyQeZzGUdyeAj2emoW5zStFFUAHRgd5w8iVVbLgZ7PmjAKAm9))
 &lt;br&gt;
 [[bip-0084.mediawiki|BIP-84]], third account
  Descriptor template: wpkh(@0&#x2F;**)
  Keys info: [&quot;[6738736c&#x2F;84&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6CRQzb8u9dmMcq5XAwwRn9gcoYCjndJkhKgD11WKzbVGd932UmrExWFxCAvRnDN3ez6ZujLmMvmLBaSWdfWVn75L83Qxu1qSX4fJNrJg2Gt&quot;]
- Descriptor:wpkh([6738736c&#x2F;84&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6CRQzb8u9dmMcq5XAwwRn9gcoYCjndJkhKgD11WKzbVGd932UmrExWFxCAvRnDN3ez6ZujLmMvmLBaSWdfWVn75L83Qxu1qSX4fJNrJg2Gt)
+ Descriptor: wpkh([6738736c&#x2F;84&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6CRQzb8u9dmMcq5XAwwRn9gcoYCjndJkhKgD11WKzbVGd932UmrExWFxCAvRnDN3ez6ZujLmMvmLBaSWdfWVn75L83Qxu1qSX4fJNrJg2Gt)
 &lt;br&gt;
 [[bip-0086.mediawiki|BIP-86]], first account
  Descriptor template: tr(@0&#x2F;**)
  Keys info: [&quot;[6738736c&#x2F;86&#x27;&#x2F;0&#x27;&#x2F;0&#x27;]xpub6CryUDWPS28eR2cDyojB8G354izmx294BdjeSvH469Ty3o2E6Tq5VjBJCn8rWBgesvTJnyXNAJ3QpLFGuNwqFXNt3gn612raffLWfdHNkYL&quot;]
- Descriptor:tr([6738736c&#x2F;86&#x27;&#x2F;0&#x27;&#x2F;0&#x27;]xpub6CryUDWPS28eR2cDyojB8G354izmx294BdjeSvH469Ty3o2E6Tq5VjBJCn8rWBgesvTJnyXNAJ3QpLFGuNwqFXNt3gn612raffLWfdHNkYL)
+ Descriptor: tr([6738736c&#x2F;86&#x27;&#x2F;0&#x27;&#x2F;0&#x27;]xpub6CryUDWPS28eR2cDyojB8G354izmx294BdjeSvH469Ty3o2E6Tq5VjBJCn8rWBgesvTJnyXNAJ3QpLFGuNwqFXNt3gn612raffLWfdHNkYL)
 &lt;br&gt;
 [[bip-0048.mediawiki|BIP-48]] P2WSH multisig
  Descriptor template: wsh(sortedmulti(2,@0&#x2F;**,@1&#x2F;**))
  Keys info: [&quot;[6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6FC1fXFP1GXLX5TKtcjHGT4q89SDRehkQLtbKJ2PzWcvbBHtyDsJPLtpLtkGqYNYZdVVAjRQ5kug9CsapegmmeRutpP7PW4u4wVF9JfkDhw&quot;, &quot;[b2b1f0cf&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6EWhjpPa6FqrcaPBuGBZRJVjzGJ1ZsMygRF26RwN932Vfkn1gyCiTbECVitBjRCkexEvetLdiqzTcYimmzYxyR1BZ79KNevgt61PDcukmC7&quot;]
- Descriptor:wsh(sortedmulti(2,[6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6FC1fXFP1GXLX5TKtcjHGT4q89SDRehkQLtbKJ2PzWcvbBHtyDsJPLtpLtkGqYNYZdVVAjRQ5kug9CsapegmmeRutpP7PW4u4wVF9JfkDhw,[b2b1f0cf&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6EWhjpPa6FqrcaPBuGBZRJVjzGJ1ZsMygRF26RwN932Vfkn1gyCiTbECVitBjRCkexEvetLdiqzTcYimmzYxyR1BZ79KNevgt61PDcukmC7))
+ Descriptor: wsh(sortedmulti(2,[6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6FC1fXFP1GXLX5TKtcjHGT4q89SDRehkQLtbKJ2PzWcvbBHtyDsJPLtpLtkGqYNYZdVVAjRQ5kug9CsapegmmeRutpP7PW4u4wVF9JfkDhw,[b2b1f0cf&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;2&#x27;]xpub6EWhjpPa6FqrcaPBuGBZRJVjzGJ1ZsMygRF26RwN932Vfkn1gyCiTbECVitBjRCkexEvetLdiqzTcYimmzYxyR1BZ79KNevgt61PDcukmC7))
 &lt;br&gt;
 </code></pre>
 <p>Miniscript: A 3-of-3 that becomes a 2-of-3 after 90 days</p>
 <pre><code> Descriptor template: wsh(thresh(3,pk(@0&#x2F;**),s:pk(@1&#x2F;**),s:pk(@2&#x2F;**),sln:older(12960)))
  Keys info: [&quot;[6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&quot;, &quot;[b2b1f0cf&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6EYajCJHe2CK53RLVXrN14uWoEttZgrRSaRztujsXg7yRhGtHmLBt9ot9Pd5ugfwWEu6eWyJYKSshyvZFKDXiNbBcoK42KRZbxwjRQpm5Js&quot;, &quot;[a666a867&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dgsze3ujLi1EiHoCtHFMS9VLS1UheVqxrHGfP7sBJ2DBfChEUHV4MDwmxAXR2ayeytpwm3zJEU3H3pjCR6q6U5sP2p2qzAD71x9z5QShK2&quot;]
- Descriptor:wsh(thresh(3,pk([6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&#x2F;&lt;0,1&gt;&#x2F;*),s:pk([b2b1f0cf&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6EYajCJHe2CK53RLVXrN14uWoEttZgrRSaRztujsXg7yRhGtHmLBt9ot9Pd5ugfwWEu6eWyJYKSshyvZFKDXiNbBcoK42KRZbxwjRQpm5Js&#x2F;&lt;0,1&gt;&#x2F;*),s:pk([a666a867&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dgsze3ujLi1EiHoCtHFMS9VLS1UheVqxrHGfP7sBJ2DBfChEUHV4MDwmxAXR2ayeytpwm3zJEU3H3pjCR6q6U5sP2p2qzAD71x9z5QShK2&#x2F;&lt;0,1&gt;&#x2F;*),sln:older(12960)))
+ Descriptor: wsh(thresh(3,pk([6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&#x2F;&lt;0,1&gt;&#x2F;*),s:pk([b2b1f0cf&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6EYajCJHe2CK53RLVXrN14uWoEttZgrRSaRztujsXg7yRhGtHmLBt9ot9Pd5ugfwWEu6eWyJYKSshyvZFKDXiNbBcoK42KRZbxwjRQpm5Js&#x2F;&lt;0,1&gt;&#x2F;*),s:pk([a666a867&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dgsze3ujLi1EiHoCtHFMS9VLS1UheVqxrHGfP7sBJ2DBfChEUHV4MDwmxAXR2ayeytpwm3zJEU3H3pjCR6q6U5sP2p2qzAD71x9z5QShK2&#x2F;&lt;0,1&gt;&#x2F;*),sln:older(12960)))
 &lt;br&gt;
 </code></pre>
 <p>Miniscript: A singlesig wallet with automatic inheritance to a timelocked 2-of-3 multisig</p>
 <pre><code> Descriptor template: wsh(or_d(pk(@0&#x2F;**),and_v(v:multi(2,@1&#x2F;**,@2&#x2F;**,@3&#x2F;**),older(65535))))
  Keys info: [&quot;[6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&quot;, &quot;[b2b1f0cf&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6EYajCJHe2CK53RLVXrN14uWoEttZgrRSaRztujsXg7yRhGtHmLBt9ot9Pd5ugfwWEu6eWyJYKSshyvZFKDXiNbBcoK42KRZbxwjRQpm5Js&quot;, &quot;[a666a867&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dgsze3ujLi1EiHoCtHFMS9VLS1UheVqxrHGfP7sBJ2DBfChEUHV4MDwmxAXR2ayeytpwm3zJEU3H3pjCR6q6U5sP2p2qzAD71x9z5QShK2&quot;, &quot;[bb641298&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dz8PHFmXkYkykQ83ySkruky567XtJb9N69uXScJZqweYiQn6FyieajdiyjCvWzRZ2GoLHMRE1cwDfuJZ6461YvNRGVBJNnLA35cZrQKSRJ&quot;]
- Descriptor:wsh(or_d(pk([6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa),and_v(v:multi(2,[b2b1f0cf&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6EYajCJHe2CK53RLVXrN14uWoEttZgrRSaRztujsXg7yRhGtHmLBt9ot9Pd5ugfwWEu6eWyJYKSshyvZFKDXiNbBcoK42KRZbxwjRQpm5Js,[a666a867&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dgsze3ujLi1EiHoCtHFMS9VLS1UheVqxrHGfP7sBJ2DBfChEUHV4MDwmxAXR2ayeytpwm3zJEU3H3pjCR6q6U5sP2p2qzAD71x9z5QShK2,[bb641298&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dz8PHFmXkYkykQ83ySkruky567XtJb9N69uXScJZqweYiQn6FyieajdiyjCvWzRZ2GoLHMRE1cwDfuJZ6461YvNRGVBJNnLA35cZrQKSRJ),older(65535))))
+ Descriptor: wsh(or_d(pk([6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa),and_v(v:multi(2,[b2b1f0cf&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6EYajCJHe2CK53RLVXrN14uWoEttZgrRSaRztujsXg7yRhGtHmLBt9ot9Pd5ugfwWEu6eWyJYKSshyvZFKDXiNbBcoK42KRZbxwjRQpm5Js,[a666a867&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dgsze3ujLi1EiHoCtHFMS9VLS1UheVqxrHGfP7sBJ2DBfChEUHV4MDwmxAXR2ayeytpwm3zJEU3H3pjCR6q6U5sP2p2qzAD71x9z5QShK2,[bb641298&#x2F;44&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6Dz8PHFmXkYkykQ83ySkruky567XtJb9N69uXScJZqweYiQn6FyieajdiyjCvWzRZ2GoLHMRE1cwDfuJZ6461YvNRGVBJNnLA35cZrQKSRJ),older(65535))))
 &lt;br&gt;
 </code></pre>
 <p>Taproot wallet policy with sortedmulti_a and a miniscript leaf</p>
 <pre><code> Descriptor template: tr(@0&#x2F;**,{sortedmulti_a(1,@0&#x2F;&lt;2;3&gt;&#x2F;*,@1&#x2F;**),or_b(pk(@2&#x2F;**),s:pk(@3&#x2F;**))})
  Keys info: [&quot;[6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&quot;, &quot;xpub6Fc2TRaCWNgfT49nRGG2G78d1dPnjhW66gEXi7oYZML7qEFN8e21b2DLDipTZZnfV6V7ivrMkvh4VbnHY2ChHTS9qM3XVLJiAgcfagYQk6K&quot;, &quot;xpub6GxHB9kRdFfTqYka8tgtX9Gh3Td3A9XS8uakUGVcJ9NGZ1uLrGZrRVr67DjpMNCHprZmVmceFTY4X4wWfksy8nVwPiNvzJ5pjLxzPtpnfEM&quot;, &quot;xpub6GjFUVVYewLj5no5uoNKCWuyWhQ1rKGvV8DgXBG9Uc6DvAKxt2dhrj1EZFrTNB5qxAoBkVW3wF8uCS3q1ri9fueAa6y7heFTcf27Q4gyeh6&quot;]
- Descriptor:tr([6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&#x2F;&lt;0;1&gt;&#x2F;*,{sortedmulti_a(1,xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&#x2F;&lt;2;3&gt;&#x2F;*,xpub6Fc2TRaCWNgfT49nRGG2G78d1dPnjhW66gEXi7oYZML7qEFN8e21b2DLDipTZZnfV6V7ivrMkvh4VbnHY2ChHTS9qM3XVLJiAgcfagYQk6K&#x2F;&lt;0;1&gt;&#x2F;*),or_b(pk(xpub6GxHB9kRdFfTqYka8tgtX9Gh3Td3A9XS8uakUGVcJ9NGZ1uLrGZrRVr67DjpMNCHprZmVmceFTY4X4wWfksy8nVwPiNvzJ5pjLxzPtpnfEM&#x2F;&lt;0;1&gt;&#x2F;*),s:pk(xpub6GjFUVVYewLj5no5uoNKCWuyWhQ1rKGvV8DgXBG9Uc6DvAKxt2dhrj1EZFrTNB5qxAoBkVW3wF8uCS3q1ri9fueAa6y7heFTcf27Q4gyeh6&#x2F;&lt;0;1&gt;&#x2F;*))})
+ Descriptor: tr([6738736c&#x2F;48&#x27;&#x2F;0&#x27;&#x2F;0&#x27;&#x2F;100&#x27;]xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&#x2F;&lt;0;1&gt;&#x2F;*,{sortedmulti_a(1,xpub6FC1fXFP1GXQpyRFfSE1vzzySqs3Vg63bzimYLeqtNUYbzA87kMNTcuy9ubr7MmavGRjW2FRYHP4WGKjwutbf1ghgkUW9H7e3ceaPLRcVwa&#x2F;&lt;2;3&gt;&#x2F;*,xpub6Fc2TRaCWNgfT49nRGG2G78d1dPnjhW66gEXi7oYZML7qEFN8e21b2DLDipTZZnfV6V7ivrMkvh4VbnHY2ChHTS9qM3XVLJiAgcfagYQk6K&#x2F;&lt;0;1&gt;&#x2F;*),or_b(pk(xpub6GxHB9kRdFfTqYka8tgtX9Gh3Td3A9XS8uakUGVcJ9NGZ1uLrGZrRVr67DjpMNCHprZmVmceFTY4X4wWfksy8nVwPiNvzJ5pjLxzPtpnfEM&#x2F;&lt;0;1&gt;&#x2F;*),s:pk(xpub6GjFUVVYewLj5no5uoNKCWuyWhQ1rKGvV8DgXBG9Uc6DvAKxt2dhrj1EZFrTNB5qxAoBkVW3wF8uCS3q1ri9fueAa6y7heFTcf27Q4gyeh6&#x2F;&lt;0;1&gt;&#x2F;*))})
 &lt;br&gt;
 </code></pre>
 <h3> Invalid policies </h3>
@@ -355,7 +355,7 @@ produces the following multipath descriptor:</p>
 </ul>
 <p>Remark: some of the examples of invalid descriptor templates may be valid via optional extensions.</p>
 <h2> Backwards Compatibility </h2>
-<p>The <tt>@</tt> character used for key placeholders is not part of the syntax of output script descriptors, therefore any valid descriptor with at least one <code>KEY</code> expression is not a valid descriptor template. Vice versa, any descriptor template with at least one key placeholder is not a valid output script descriptor.</p>
+<p>The <tt>@</tt> character used for key placeholders is not part of the syntax of output script descriptors, therefore any valid descriptor with at least one <tt>KEY</tt> expression is not a valid descriptor template. Vice versa, any descriptor template with at least one key placeholder is not a valid output script descriptor.</p>
 <p>Adoption of wallet policies in software and hardware wallets is opt-in. Conversion from wallet policies to the corresponding descriptors is programmatically extremely easy, and conversion from descriptors to wallet policies (when respecting the required patterns) can be automated. See the reference implementation below for some examples of conversion.</p>
 <p>Software wallets are recommended to allow exporting plain descriptors for the purposes of interoperability with software not using wallet policies.</p>
 <h2> Reference Implementation </h2>
@@ -381,7 +381,7 @@ The reference implementation is for demonstration purposes only and not to be us
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-05-12</p>
+                    <p class="font-bold">2024-05-13</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
