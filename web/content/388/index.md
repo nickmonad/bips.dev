@@ -171,7 +171,7 @@ A _wallet descriptor template_ is a <tt>SCRIPT</tt> expression.
 *  _always_ followed by either:
     *  the string  <tt>/**</tt>, or
     *  a string of the form <tt>/<NUM;NUM>/*</tt>, for two distinct decimal numbers <tt>NUM</tt> representing unhardened derivations, or
-    *  any of the additional, implementation-specific valid derivation path patterns (see <a href=" Optional_derivation_paths" target="_blank">Optional derivation paths</a> below).
+    *  any of the additional, implementation-specific valid derivation path patterns (see <a href=" optional-derivation-paths" target="_blank">Optional derivation paths</a> below).
 
 
 The <tt>/**</tt> in the placeholder template represents commonly used paths for receive/change addresses, and is equivalent to <tt><0;1>/*</tt>.
@@ -362,7 +362,7 @@ Wallet policies are implemented in
 *  <a href="https://github.com/Blockstream/Jade" target="_blank">Blockstream Jade</a> since version v1.0.24, via <a href="https://github.com/ElementsProject/libwally-core" target="_blank">libwally-core</a> v1.0.0.
 
 
-For development and testing purposes, we provide a <a href="bip-wallet-policies/wallet_policies.py" target="_blank">Python 3.7 reference implementation</a> of simple classes to handle wallet policies, and the conversion to/from output script descriptors.
+For development and testing purposes, we provide a <a href="https://github.com/bitcoin/bips/blob/master/bip-0388/wallet_policies.py" target="_blank">Python 3.7 reference implementation</a> of simple classes to handle wallet policies, and the conversion to/from output script descriptors.
 The reference implementation is for demonstration purposes only and not to be used in production environments.
 
 <h2>Footnotes</h2>

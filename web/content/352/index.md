@@ -568,7 +568,7 @@ Wallet designers can choose which tradeoffs they find appropriate. For example, 
 <h2> Acknowledgements </h2>
 
 
-This document is the result of many discussions and contains contributions by a number of people. The authors wish to thank all those who provided valuable feedback and reviews, including the participants of the <a href="https://gist.github.com/RubenSomsen/21c477c90c942acf45f8e8f5c1ad4fae" target="_blank">BIP47 Prague discussion</a>, the <a href="https://github.com/josibake/silent-payments-workshop" target="_blank">Advancing Bitcoin silent payments Workshop</a>, and <a href="https://btctranscripts.com/bitcoin-core-dev-tech/2023-04-26-silent-payments/" target="_blank">coredev</a>. The authors would like to also thank <a href="https://github.com/w0xlt" target="_blank">w0xlt</a> for writing the initial implementation of silent payments.
+This document is the result of many discussions and contains contributions by a number of people. The authors wish to thank all those who provided valuable feedback and reviews, including the participants of the <a href="https://gist.github.com/RubenSomsen/21c477c90c942acf45f8e8f5c1ad4fae" target="_blank">BIP47 Prague discussion</a>, the <a href="https://github.com/josibake/silent-payments-workshop" target="_blank">Advancing Bitcoin silent payments Workshop</a>, and <a href="https://btctranscripts.com/bitcoin-core-dev-tech/2023-04/2023-04-26-silent-payments/" target="_blank">coredev</a>. The authors would like to also thank <a href="https://github.com/w0xlt" target="_blank">w0xlt</a> for writing the initial implementation of silent payments.
 
 <h2> Rationale and References </h2>
 

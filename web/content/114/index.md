@@ -150,7 +150,7 @@ The advantages of the current proposal are:
 *  If they are willing to share the actual scripts, they may combine them into one `Subscript` for each branch, saving some `nOpCount` and a few bytes of witness space.
 
 
-The are some disadvantages, but only when the redemption condition is very complicated:
+There are some disadvantages, but only when the redemption condition is very complicated:
 *  It may require more branches than a general MAST design (as shown in the previous example) and take more witness space in redemption
 *  Creation and storage of the MAST structure may take more time and space. However, such additional costs affect only the related parties in the contract but not any other Bitcoin users.
 
