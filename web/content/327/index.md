@@ -901,6 +901,8 @@ An exception to this rule is `MAJOR` version zero (0.y.z) which is for developme
 The `MINOR` version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
 The `PATCH` version is incremented for other changes that are noteworthy (bug fixes, test vectors, important clarifications, etc.).
 
+*  **1.0.1** (2024-05-14):
+    *  Fix minor issue in _PartialSigVerify_ vectors.
 *  **1.0.0** (2023-03-26):
     *  Number 327 was assigned to this BIP.
 *  **1.0.0-rc.4** (2023-03-02):
