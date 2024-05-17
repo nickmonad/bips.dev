@@ -255,16 +255,10 @@ The preliminary values of 16384, 8, and 8 are hoped to offer the following prope
 
 Added to alpha version of Casascius Bitcoin Address Utility for Windows available at:
 
-*  via https: https://casascius.com/btcaddress-alpha.zip
-*  at github: https://github.com/casascius/Bitcoin-Address-Utility
+*  https://github.com/casascius/Bitcoin-Address-Utility
 
 
 Click "Tools" then "PPEC Keygen" (provisional name)
-
-<h2>Other implementations</h2>
-
-*  Javascript - https://github.com/bitcoinjs/bip38
-
 
 <h2>Test vectors</h2>
 

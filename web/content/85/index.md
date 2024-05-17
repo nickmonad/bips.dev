@@ -135,24 +135,6 @@ OUTPUT
 *  JavaScript library implementation: [https://github.com/hoganri/bip85-js]
 
 
-<h3>Other Implementations</h3>
-
-
-*  JavaScript library implementation: [https://github.com/hoganri/bip85-js]
-
-
-*  Coldcard Firmware: [https://github.com/Coldcard/firmware/pull/39]
-
-
-*  Ian Coleman's Mnemonic Code Converter: [https://github.com/iancoleman/bip39] and [https://iancoleman.io/bip39/]
-
-
-*  AirGap Vault: [https://github.com/airgap-it/airgap-vault/commit/d64332fc2f332be622a1229acb27f621e23774d6]
-
-
-*  btc_hd_wallet: [https://github.com/scgbckbone/btc-hd-wallet]
-
-
 <h2>Applications</h2>
 
 
