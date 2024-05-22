@@ -69,14 +69,14 @@ This proposal makes use of the following functions and definitions:
 * **AES256Encrypt, AES256Decrypt**: the simple form of the well-known AES block cipher without consideration for initialization vectors or block chaining.  Each of these functions takes a 256-bit key and 16 bytes of input, and deterministically yields 16 bytes of output.
 * **SHA256**, a well-known hashing algorithm that takes an arbitrary number of bytes as input and deterministically yields a 32-byte hash.
 * **scrypt**: A well-known key derivation algorithm.  It takes the following parameters: (string) password, (string) salt, (int) n, (int) r, (int) p, (int) length, and deterministically yields an array of bytes whose length is equal to the length parameter.
-* **ECMultiply**: Multiplication of an elliptic curve point by a scalar integer with respect to the <a href="secp256k1" target="_blank">secp256k1</a> elliptic curve.
-* **G, N**: Constants defined as part of the <a href="secp256k1" target="_blank">secp256k1</a> elliptic curve.  G is an elliptic curve point, and N is a large positive integer.
-* **<a href="Base58Check" target="_blank">Base58Check</a>**: a method for encoding arrays of bytes using 58 alphanumeric characters commonly used in the Bitcoin ecosystem.
+* **ECMultiply**: Multiplication of an elliptic curve point by a scalar integer with respect to the secp256k1 elliptic curve.
+* **G, N**: Constants defined as part of the secp256k1 elliptic curve.  G is an elliptic curve point, and N is a large positive integer.
+* **Base58Check**: a method for encoding arrays of bytes using 58 alphanumeric characters commonly used in the Bitcoin ecosystem.
 
 
 <h3>Prefix</h3>
 
-It is proposed that the resulting Base58Check-encoded string start with a '6'.  The number '6' is intended to represent, from the perspective of the user, "a private key that needs something else to be usable" - an umbrella definition that could be understood in the future to include keys participating in multisig transactions, and was chosen with deference to the existing prefix '5' most commonly observed in <a href="Wallet Import Format" target="_blank">Wallet Import Format</a> which denotes an unencrypted private key.
+It is proposed that the resulting Base58Check-encoded string start with a '6'.  The number '6' is intended to represent, from the perspective of the user, "a private key that needs something else to be usable" - an umbrella definition that could be understood in the future to include keys participating in multisig transactions, and was chosen with deference to the existing prefix '5' most commonly observed in Wallet Import Format which denotes an unencrypted private key.
 
 It is proposed that the second character ought to give a hint as to what is needed as a second factor, and for an encrypted key requiring a passphrase, the uppercase letter P is proposed.
 
@@ -226,7 +226,7 @@ To recalculate the address:
 
 <h2>Backwards compatibility</h2>
 
-Backwards compatibility is minimally applicable since this is a new standard that at most extends <a href="Wallet Import Format" target="_blank">Wallet Import Format</a>.  It is assumed that an entry point for private key data may also accept existing formats of private keys (such as hexadecimal and <a href="Wallet Import Format" target="_blank">Wallet Import Format</a>); this draft uses a key format that cannot be mistaken for any existing one and preserves auto-detection capabilities.
+Backwards compatibility is minimally applicable since this is a new standard that at most extends Wallet Import Format. It is assumed that an entry point for private key data may also accept existing formats of private keys (such as hexadecimal and Wallet Import Format); this draft uses a key format that cannot be mistaken for any existing one and preserves auto-detection capabilities.
 
 <h2>Suggestions for implementers of proposal with alt-chains</h2>
 
