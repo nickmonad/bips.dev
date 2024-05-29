@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 337: Compressed Transactions" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 337: Compressed Transactions" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 337: Compressed Transactions</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 337: Compressed Transactions</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2024-02-01</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0337.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 337
+  Layer: API&#x2F;RPC
+  Title: Compressed Transactions
+  Author: Tom Briar &lt;tombriar11@protonmail.com&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0337
+  Status: Draft
+  Type: Standards Track
+  Created: 2024-02-01
+  License: BSD-3-Clause
+  Post-History: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bitcoin&#x2F;pull&#x2F;29134
+                https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2023-August&#x2F;021924.html
+</code></pre>
+<h2> Introduction </h2>
+<h3> Abstract </h3>
+<p>This document proposes a serialization scheme for compressing Bitcoin transactions. The compressed Bitcoin transactions can reach a serialized size of less than 50% of the original serialized transaction. One method for compressing involves reducing the transaction outpoints in a potentially lossy way. Therefore, it is an optional path for compression. Compressing the outpoints is necessary for compressed transactions to reach less than 70% of the original size.</p>
+<h3> Motivation </h3>
+<p>Typical Bitcoin transactions usually contain a large amount of white space and padding due to specific fields that are often one of a minimal number of possibilities. We can use this fact and a few similar methods to create an encoding for 90% of Bitcoin transactions that are roughly 25-50% smaller.</p>
+<p>There exists a working-in-progress app that allows the use of steganography to encode data in images to be passed around via various social media groups. When used in conjunction with this compression scheme and an elligator squared encryption, this would allow for a very secure and private form of broadcasting bitcoin transactions.</p>
+<h3> Rationale </h3>
+<p>The four main methods to achieve a lower transaction size are:</p>
+<ol>
+<li>
+<p>Packing transaction metadata before it and each of its inputs and outputs to determine the following data structure.</p>
+</li>
+<li>
+<p>Replacing 32-bit numeric values with either variable-length integers (VarInts) or compact integers (CompactSizes).</p>
+</li>
+<li>
+<p>Using compressed signatures and public key recovery upon decompression.</p>
+</li>
+<li>
+<p>Replacing the 36-byte Outpoint txid/vout pair with a block height and index.</p>
+</li>
+</ol>
+<h3> Backwards Compatibility </h3>
+<p>There are no concerns with backwards compatibility.</p>
+<h3> Specification </h3>
+<h4> Primitives </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>CompactSize</td><td>1-5 Bytes</td><td>For 0-253, encode the value directly in one byte. For 254-65535, encode 254 followed by two little-endian bytes. For 65536-(2^32-1), encode 255 followed by four little-endian bytes.</td></tr>
+<tr><td>CompactSize Flag</td><td>2 Bits</td><td>1, 2, or 3 indicate literal values. 0 indicates that a CompactSize encoding of the value will follow.</td></tr>
+<tr><td>VarInt</td><td>1+ Bytes</td><td>7-bit little-endian encoding, with each 7-bit word encoded in a byte. The highest bit of each byte is one if more bytes follow, and 0 for the last byte.</td></tr>
+<tr><td>VLP-Bytestream</td><td>2+ Bytes</td><td>A VarInt Length Prefixed Bytestream. It uses the prefixed VarInt to determine the length of the following byte stream.</td></tr>
+</tbody></table>
+<h4> General Schema </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Transaction metadata</td><td>1 Bytes</td><td>Information on the structure of the transaction. See <a href="#transaction-metadata" target="_blank">Transaction Metadata</a></td></tr>
+<tr><td>Version</td><td>0-5 Bytes</td><td>If present according to the metadata field, a CompactSize encoding of the transaction version.</td></tr>
+<tr><td>Input Count</td><td>0-5 Bytes</td><td>If present according to the metadata field, a CompactSize encoding of the transaction input count.</td></tr>
+<tr><td>Output Count</td><td>0-5 Bytes</td><td>If present according to the metadata field, a CompactSize encoding of the transaction output count.</td></tr>
+<tr><td>LockTime</td><td>0-5 Bytes</td><td>If present according to the metadata field, a CompactSize encoding of the transaction LockTime.</td></tr>
+<tr><td>Minimum Blockheight</td><td>1-5 Bytes</td><td>If present according to the metadata field, a VarInt encoding of the minimum block height for transaction compressed inputs and LockTime.</td></tr>
+<tr><td>Input Metadata+Output Metadata</td><td>1+ Bytes</td><td>An encoding containing the metadata for all the inputs followed by all the outputs of the transaction. For each input, see <a href="#input-metadata" target="_blank">Input Metadata</a>, and for each output, see <a href="#output-metadata" target="_blank">Output Metadata</a>.</td></tr>
+<tr><td>Input Data</td><td>66+ Bytes</td><td>See <a href="#input-data" target="_blank">Input Data</a>.</td></tr>
+<tr><td>Output Data</td><td>3+ Bytes</td><td>See <a href="#output-data" target="_blank">Output Data</a>.</td></tr>
+</tbody></table>
+<p><span id="transaction-metadata"></span></p>
+<h4> Transaction Metadata </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Version</td><td>2 Bits</td><td>A CompactSize flag for the transaction version.</td></tr>
+<tr><td>Input Count</td><td>2 Bits</td><td>A CompactSize flag for the transaction input count.</td></tr>
+<tr><td>Output Count</td><td>2 Bits</td><td>A CompactSize flag for the transaction output count.</td></tr>
+<tr><td>LockTime</td><td>1 Bit</td><td>A boolean to indicate if the transaction has a LockTime.</td></tr>
+<tr><td>Minimum Blockheight</td><td>1 Bit</td><td>A boolean to indicate if the transaction minimum block height is greater than zero.</td></tr>
+</tbody></table>
+<p><span id="input-metadata"></span></p>
+<h4> Input Metadata </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Compressed Signature</td><td>1 Bit</td><td>A Boolean do determine if this input's signature is compressed. The signature is only compressed for P2TR on a key spend and for P2SH when it is a wrapped P2SH-WPKH.</td></tr>
+<tr><td>Standard Hash</td><td>1 Bit</td><td>A Boolean to determine if this input's signature hash type is standard (0x00 for Taproot, 0x01 for Legacy/Segwit).</td></tr>
+<tr><td>Standard Sequence</td><td>2 Bits</td><td>A CompactSize flag for this input's sequence. Encode literal values as follows: 1 = 0x00000000, 2 = 0xFFFFFFFE, 3 = 0xFFFFFFFF.</td></tr>
+<tr><td>Compressed OutPoint</td><td>1 bit</td><td>A Boolean to determine if the input's outpoint is compressed.</td></tr>
+</tbody></table>
+<p><span id="output-metadata"></span></p>
+<h4> Output Metadata </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Encoded Script Type</td><td>3 Bits</td><td><a href="#script-type-encoding" target="_blank">Encoded Script Type</a>.</td></tr>
+</tbody></table>
+<p><span id="script-type-encoding"></span></p>
+<h4> Script Type Encoding </h4>
+<table><thead><tr><th>Script Type</th><th>Value</th></tr></thead><tbody>
+<tr><td>Uncompressed Custom Script</td><td>0b000</td></tr>
+<tr><td>Uncompressed P2PK</td><td>0b001</td></tr>
+<tr><td>Compressed P2PK</td><td>0b010</td></tr>
+<tr><td>P2PKH</td><td>0b011</td></tr>
+<tr><td>P2SH</td><td>0b100</td></tr>
+<tr><td>P2WPKH</td><td>0b101</td></tr>
+<tr><td>P2WSH</td><td>0b110</td></tr>
+<tr><td>P2TR</td><td>0b111</td></tr>
+</tbody></table>
+<p><span id="input-data"></span></p>
+<h4> Input Data </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Outpoint</td><td>2-37 Bytes</td><td>The Outpoint Txid/Vout are determined to be compressed or otherwise by the &quot;Compressed Outpoint&quot; Boolean in the input metadata. For each compressed outpoint see <a href="#compressed-outpoint" target="_blank">Compressed Outpoint</a>. For each uncompressed signature see <a href="#uncompressed-outpoint" target="_blank">Uncompressed Outpoint</a>.</td></tr>
+<tr><td>Signature</td><td>64+ Bytes</td><td>The Signature is determined to be compressed or otherwise by the output script of the previous transaction. For each compressed signature see <a href="#compressed-signature" target="_blank">Compressed Signature</a>. For each uncompressed signature see <a href="#uncompressed-signature" target="_blank">Uncompressed Signature</a>.</td></tr>
+<tr><td>Sequence</td><td>0-5 Bytes</td><td>If present due to a non-standard sequence, a VarInt encoding of the sequence.</td></tr>
+</tbody></table>
+<p><span id="compressed-outpoint"></span></p>
+<h4> Compressed Outpoint </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Txid Block Height</td><td>1-5 Bytes</td><td>A VarInt containing the offset from Minimum Blockheight for this Txid.</td></tr>
+<tr><td>Txid Block Index</td><td>1-5 Bytes</td><td>A VarInt containing the flattened index from the Txid block height for the Vout.</td></tr>
+</tbody></table>
+<p><span id="uncompressed-outpoint"></span></p>
+<h4> Uncompressed Outpoint </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Txid</td><td>32 Bytes</td><td>Contains the 32 Byte Txid.</td></tr>
+<tr><td>Vout</td><td>1-5 Bytes</td><td>A CompactSize Containing the Vout of the Txid.</td></tr>
+</tbody></table>
+<p><span id="compressed-signature"></span></p>
+<h4> Compressed Signature </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Signature</td><td>64 Bytes</td><td>Contains the 64 Byte signature.</td></tr>
+<tr><td>Pubkey Hash</td><td>0-20 Bytes</td><td>If input is P2SH-P2WPKH contains the 20 byte hash of the public key.</td></tr>
+<tr><td>Hash Type</td><td>0-1 Bytes</td><td>An Optional Byte containing the Hash Type if it was non-standard.</td></tr>
+</tbody></table>
+<p><span id="uncompressed-signature"></span></p>
+<h4> Uncompressed Signature </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Signature</td><td>2+ Bytes</td><td>A VLP-Bytestream containing the signature.</td></tr>
+</tbody></table>
+<p><span id="output-data"></span></p>
+<h4> Output Data </h4>
+<table><thead><tr><th>Name</th><th>Width</th><th>Description</th></tr></thead><tbody>
+<tr><td>Output Script</td><td>2+ Bytes</td><td>A VLP-Bytestream containing the output script.</td></tr>
+<tr><td>Amount</td><td>1-9 Bytes</td><td>A VarInt containing the output amount.</td></tr>
+</tbody></table>
+<h4> Ideal Transaction </h4>
+<p>The compression scheme was designed to be optimal for a &quot;typical&quot; transaction, spending a few close-in-age inputs and having one or two outputs. Here are size
+values for such a transaction, which demonstrate the effectiveness of the compression.</p>
+<table><thead><tr><th>Field</th><th>Requirements</th><th>Savings Up To</th></tr></thead><tbody>
+<tr><td>Version</td><td>Less than four</td><td>30 Bits</td></tr>
+<tr><td>Input Count</td><td>Less than four</td><td>30 Bits</td></tr>
+<tr><td>Output Count</td><td>Less than four</td><td>30 Bits</td></tr>
+<tr><td>LockTime</td><td>0</td><td>30 Bits</td></tr>
+<tr><td>Input Sequence</td><td>0x00, 0xFFFFFFFE, or 0xFFFFFFFF</td><td>62 Bits For Each Input</td></tr>
+<tr><td>Input Txid</td><td>Compressed Outpoint</td><td>23 - 31 Bytes For Each Input</td></tr>
+<tr><td>Input Vout</td><td>Compressed Outpoint</td><td>(-1) - 3 Bytes For Each Input</td></tr>
+<tr><td>Input Signature</td><td>Non-custom Script Signing</td><td>40 - 72 Bytes For Each Legacy Input</td></tr>
+<tr><td>Input Hash Type</td><td>0x00 for Taproot, 0x01 for Legacy</td><td>7 Bits For Each Input</td></tr>
+<tr><td>Output Script</td><td>Non-custom Scripts</td><td>2 - 5 Bytes For Each Output</td></tr>
+<tr><td>Output Amount</td><td>No Restrictions</td><td>(-1) - 7 Bytes For Each Output</td></tr>
+</tbody></table>
+<h3> Reference Implementation </h3>
+<p>This reference implementation adds two new RPC endpoints, compressrawtransaction and decompressrawtransaction. The first accepts a raw hex-encoded transaction and returns a compact hex-encoded transaction; also included in the output is a list of warnings to help ensure there are no unexpected uncompressed values. The second accepts a compact hex transaction and returns the uncompressed raw hex-encoded transaction.</p>
+<p>https://github.com/bitcoin/bitcoin/pull/29134</p>
+<h3> Test Vectors </h3>
+<h4> Taproot </h4>
+<h5> Uncompressed </h5>
+<p><code>020000000001017ad1d0cc314504ec06f1b5c786c50cf3cda30bd5be88cf08ead571b0ce7481fb0000000000fdffffff0188130000000000001600142da377ed4978fefa043a58489912f8e28e16226201408ce65b3170d3fbc68e3b6980650514dc53565f915d14351f83050ff50c8609495b7aa96271c3c99cdac1a92b1b45e77a4a870251fc1673596793adf2494565e500000000</code></p>
+<h5> Compressed </h5>
+<p><code>96b1ec7f968001b0218ce65b3170d3fbc68e3b6980650514dc53565f915d14351f83050ff50c8609495b7aa96271c3c99cdac1a92b1b45e77a4a870251fc1673596793adf2494565e58efefefe7d2da377ed4978fefa043a58489912f8e28e162262a608</code></p>
+<h4> P2WPKH </h4>
+<h5> Uncompressed </h5>
+<p><code>0200000000010144bcf05ab48b8789268a7ca07133241ad654c0739ac7165015b2d669eadb10ea0000000000fdffffff0188130000000000001600142da377ed4978fefa043a58489912f8e28e16226202473044022043ab639a98dfbc704f16a35bf25b8b72acb4cb928fd772285f1fcf63725caa85022001c9ff354504e7024708bce61f30370c8db13da8170cef4e8e4c4cdad0f71bfe0121030072484c24705512bfb1f7f866d95f808d81d343e552bc418113e1b9a1da0eb400000000</code></p>
+<h5> Compressed </h5>
+<p><code>96b1ec71968001932643ab639a98dfbc704f16a35bf25b8b72acb4cb928fd772285f1fcf63725caa8501c9ff354504e7024708bce61f30370c8db13da8170cef4e8e4c4cdad0f71bfe8efefefe7d2da377ed4978fefa043a58489912f8e28e162262a608</code></p>
+<h4> P2SH-P2WPKH </h4>
+<h5> Uncompressed </h5>
+<p><code>0200000000010192fb2e4332b43dc9a73febba67f3b7d97ba890673cb08efde2911330f77bbdfc00000000171600147a1979232206857167b401fdac1ffbf33f8204fffdffffff0188130000000000001600142da377ed4978fefa043a58489912f8e28e16226202473044022041eb682e63c25b85a5a400b11d41cf4b9c25f309090a5f3e0b69dc15426da90402205644ddc3d5179bab49cce4bf69ebfaeab1afa34331c1a0a70be2927d2836b0e8012103c483f1b1bd24dd23b3255a68d87ef9281f9d080fd707032ccb81c1cc56c5b00200000000</code></p>
+<h5> Compressed </h5>
+<p><code>96b1ec7c9e8001981641eb682e63c25b85a5a400b11d41cf4b9c25f309090a5f3e0b69dc15426da9045644ddc3d5179bab49cce4bf69ebfaeab1afa34331c1a0a70be2927d2836b0e87a1979232206857167b401fdac1ffbf33f8204ff8efefefe7d2da377ed4978fefa043a58489912f8e28e162262a608</code></p>
+<h4> P2PKH </h4>
+<h5> Uncompressed </h5>
+<p><code>02000000015f5be26862482fe2fcc900f06ef26ee256fb205bc4773e5a402d0c1b88b82043000000006a473044022031a20f5d9212023b510599c9d53d082f8e07faaa2d51482e078f8e398cb50d770220635abd99220ad713a081c4f20b83cb3f491ed8bd032cb151a3521ed144164d9c0121027977f1b6357cead2df0a0a19570088a1eb9115468b2dfa01439493807d8f1294fdffffff0188130000000000001600142da377ed4978fefa043a58489912f8e28e16226200000000</code></p>
+<h5> Compressed </h5>
+<p><code>96b1ec7c968001981431a20f5d9212023b510599c9d53d082f8e07faaa2d51482e078f8e398cb50d77635abd99220ad713a081c4f20b83cb3f491ed8bd032cb151a3521ed144164d9c8efefefe7d2da377ed4978fefa043a58489912f8e28e162262a608</code></p>
+<h2> Acknowledgements </h2>
+<p>Thank you to Andrew Poelstra, who helped invent and develop the ideas in the proposal and the code for reference implementation.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-05-29</p>
+                </div>
+                <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
