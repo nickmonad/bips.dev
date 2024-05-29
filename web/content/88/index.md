@@ -62,7 +62,7 @@ addresses differently than the one they used before.
 The problem is common enough to warrant the creation of a dedicated website
 (<a href="https://walletsrecovery.org/" target="_blank">walletsrecovery.org</a>) that tracks paths used by different wallets.
 
-At the time of writing, this website has used their own format to succintly describe multiple
+At the time of writing, this website has used their own format to succinctly describe multiple
 derivation paths. As far as author knows, it was the only publicitly used format to describe
 path templates before introduction of this BIP. The format was not specified anywhere beside
 the main page of the website. It used `|` to denote alternative derivation indexes
@@ -73,7 +73,7 @@ an ad-hoc format only intended for illustration. In contrast to this ad-hoc form
 described in this BIP is intended for unambigouos parsing by software, and to be easily read by humans
 at the same time. Humans can visually detect the 'templated' parts of the path more easily than the use
 of `|` in the template could allow. Wider range of paths can be defined in a single template more
-succintly and unambiguously.
+succinctly and unambiguously.
 
 <h3>Intended use and advantages</h3>
 
@@ -93,7 +93,7 @@ into using well-known paths, or convince other vendors to support their custom p
 scales poorly.
 
 A flexible approach proposed in this document is to define a standard notation for "BIP32 path templates"
-that succintly describes the constraints to impose on the derivation path.
+that succinctly describes the constraints to impose on the derivation path.
 
 Wide support for these path templates will increase interoperability and flexibility of solutions,
 and will allow vendors and individual developers to easily define their own custom restrictions.
@@ -112,7 +112,7 @@ installation of malicious or incorrect profiles, though.
 <h2>Specification</h2>
 
 
-The format for the template was chosen to make it easy to read, convenient and visually unambigous. 
+The format for the template was chosen to make it easy to read, convenient and visually unambiguous. 
 
 Template starts with optional prefix `m/`, and then one or more sections delimited by the slash character (`/`).
 

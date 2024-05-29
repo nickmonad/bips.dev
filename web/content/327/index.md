@@ -630,7 +630,7 @@ influence whether _sk<sub>1</sub>_ or _sk<sub>2</sub>_ is provided to _Sign_.
 This degree of freedom may allow the adversary to perform a generalized birthday attack and thereby forge a signature
 (see <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-October/021000.html" target="_blank">bitcoin-dev mailing list post</a> and <a href="https://github.com/jonasnick/musig2-tweaking" target="_blank">writeup</a> for details).
 
-Checking _pk_ against _InvidualPubkey(sk)_ is a simple way to ensure
+Checking _pk_ against _IndividualPubkey(sk)_ is a simple way to ensure
 that the secret key provided to _Sign_ is fully determined already when _NonceGen_ is invoked.
 This removes the adversary's ability to influence the secret key after having seen the _pubnonce_
 and thus rules out the attack.<ref>Ensuring that the secret key provided to _Sign_ is fully determined already when _NonceGen_ is invoked is a simple policy to rule out the attack,

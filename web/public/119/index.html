@@ -286,7 +286,7 @@ def is_pay_to_bare_default_check_template_verify_hash(self):
 The Bitcoin Core reference implementation includes the below parameters,
 configured to match Speedy Trial, as that is the current activation mechanism
 implemented in Bitcoin Core. Should another method become favored by the wider
-Bitcoin comminity, that might be used instead.</p>
+Bitcoin community, that might be used instead.</p>
 <p>The start time and bit in the implementation are currently set to bit 5 and
 NEVER_ACTIVE/NO_TIMEOUT, but this is subject to change while the BIP is a draft.</p>
 <p>For the avoidance of unclarity, the parameters to be determined are:</p>
@@ -375,7 +375,7 @@ to construct DefaultCheckTemplateVerifyHash from script.</p>
 to <code>MAX_SIZE=33554432</code> and that is larger than <code>uint16_t</code> and smaller than <code>uint32_t</code>. 32 bits is also
 friendly for manipulation using Bitcoin's current math opcodes, should <code>OP_CAT</code> be added. Note that
 the max inputs in a block is further restricted by the block size to around 25,000, which would fit
-into a <code>uint16_t</code>, but that is an uneccessary abstraction leak.</p>
+into a <code>uint16_t</code>, but that is an unnecessary abstraction leak.</p>
 <h5>Committing to the Sequences Hash</h5>
 <p>If we don't commit to the sequences, then the TXID can be malleated. This also allows us to enforce
 a relative sequence lock without an OP_CSV. It is insufficient to just pair CHECKTEMPLATEVERIFY
@@ -408,7 +408,7 @@ As CHECKTEMPLATEVERIFY scripts commit to being spent at particular index, reused
 scripts cannot be spent at the same index, which implies that they cannot be spent in the same transaction.
 This makes it safer to design wallet vault contracts without half-spend vulnerabilities.</p>
 <p>Committing to the current index doesn't prevent one from expressing a CHECKTEMPLATEVERIFY which can
-be spent at multiple indicies. In current script, the CHECKTEMPLATEVERIFY operation can be wrapped
+be spent at multiple indices. In current script, the CHECKTEMPLATEVERIFY operation can be wrapped
 in an OP_IF for each index (or Tapscript branches in the future). If OP_CAT or OP_SHA256STREAM are
 added to Bitcoin, the index may simply be passed in by the witness before hashing.</p>
 <h5>Committing to Values by Hash</h5>
@@ -495,7 +495,7 @@ is O(T) (the size of the transaction).</p>
 <p>An example of a script that could experience an DoS issue without caching is:</p>
 <pre><code>    &lt;H&gt; CTV CTV CTV... CTV
 </code></pre>
-<p>Such a script would cause the intepreter to compute hashes (supposing N CTV's) over O(N*T) data.
+<p>Such a script would cause the interpreter to compute hashes (supposing N CTV's) over O(N*T) data.
 If the scriptSigs non-nullity is not cached, then the O(T) transaction could be scanned over O(N)
 times as well (although cheaper than hashing, still a DoS). As such, CTV caches hashes and computations
 over all variable length fields in a transaction.</p>
@@ -607,7 +607,7 @@ sponsors might be considered.</p>
 <h5>OP_AMOUNTVERIFY</h5>
 <p>An opcode which verifies the exact amount that is being spent in the
 transaction, the amount paid as fees, or made available in a given output could
-be used to make safer OP_CHECKTEMPLATEVERIFY addressses. For instance, if the
+be used to make safer OP_CHECKTEMPLATEVERIFY addresses. For instance, if the
 OP_CHECKTEMPLATEVERIFY program P expects exactly S satoshis, sending S-1
 satoshis would result in a frozen UTXO and sending S+n satoshis would result in
 n satoshis being paid to fee. A range check could restrict the program to only

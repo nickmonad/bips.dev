@@ -92,7 +92,7 @@ This is the standard _m-of-n_ script defined in <a href="/11" target="_blank">BI
 The existing `OP_CHECKMULTISIG` and `OP_CHECKMULTISIGVERIFY` have a bug<ref><a href="https://bitcoin.org/en/developer-guide#multisig" target="_blank">Developer Documentation - Multisig</a></ref> that pops one argument too many from the stack. This bug is not reproduced in the implementation of OP_CHECKSIGEX, so the canonical solution of pushing a dummy value onto the stack is not necessary.
 
 The normalization is achieved by normalizing the transaction before computing the signaturehash, i.e., the hash that is signed.
-The transaction must be normalized by replacing all transaction IDs in the inputs by their normalized variants and stripping the signature scripts. The normalized transction IDs are computed as described in the previous section. This normalization step is performed both when creating the signatures as well as when checking the signatures.
+The transaction must be normalized by replacing all transaction IDs in the inputs by their normalized variants and stripping the signature scripts. The normalized transaction IDs are computed as described in the previous section. This normalization step is performed both when creating the signatures as well as when checking the signatures.
 
 <h3> Tracking Normalized Transaction IDs </h3>
 

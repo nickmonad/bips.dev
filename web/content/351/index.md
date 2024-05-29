@@ -51,7 +51,7 @@ A recipient that wishes to receive funds privately has several options. Each has
 *  The BIP uses a notification mechanism that relies on publicly known per-recipient notification addresses. If Alice wants to send funds to Bob, she has to use the same notification address that everyone else uses to notify Bob. If Alice is not careful with coin selection, i.e. ensuring that her notification UTXO is not linked to her, she will publicly expose herself as someone who is trying to send funds to Bob and their relationship becomes permanently visible on the blockchain.
 
 
-*  The BIP does not say anything about address types. Receiving wallets therefore have to watch all address types that can be created from a single public key. Even then, a sender could send to a script that a receipient cannot spend from.
+*  The BIP does not say anything about address types. Receiving wallets therefore have to watch all address types that can be created from a single public key. Even then, a sender could send to a script that a recipient cannot spend from.
 
 
 <h2>Method</h2>
@@ -141,7 +141,7 @@ _search_key | notification_code | N<sub>x</sub> | address_type_
 *  _search_key_ equals "PP" and is a static ASCII-encoded string (2 bytes)
 *  _notification_code_ is _H(n<sub>x</sub> * P)[0..4]_ (4 bytes)
 *  _N<sub>x</sub>_ is the unique public key a sender is using for a particular recipient (33 bytes)
-*  _address_type_ is the **ordinal** value of a single address type that a sender wants to send to (1 byte). This must be selected from the recepient's accepted address types.
+*  _address_type_ is the **ordinal** value of a single address type that a sender wants to send to (1 byte). This must be selected from the recipient's accepted address types.
 
 
 When Alice wants to notify Bob that he will receive future payments from her, she performs the following procedure:
