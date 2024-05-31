@@ -36,7 +36,7 @@ RECENT CHANGES:
 <h2>Status</h2>
 
 
-This BIP can be be considered final in terms of enabling compatibility with wallets that implement version 1 and version 2 reusable payment codes, however future developments of the reusable payment codes specification will not be distributed via the BIP process.
+This BIP can be considered final in terms of enabling compatibility with wallets that implement version 1 and version 2 reusable payment codes, however future developments of the reusable payment codes specification will not be distributed via the BIP process.
 
 The Open Bitcoin Privacy Project RFC repo should be consulted for specifications related to version 3 or higher payment codes: https://github.com/OpenBitcoinPrivacyProject/rfc
 
@@ -417,14 +417,14 @@ Version 2 payment codes behave identifically to version 1 payment codes, except 
 <h4>Definitions</h4>
 
 
-*  Notification change output: the change output from a notification transaction which which resides in the sender's wallet, but can be automatically located by the intended recipient
+*  Notification change output: the change output from a notification transaction which resides in the sender's wallet, but can be automatically located by the intended recipient
 *  Payment code identifier: a 33 byte representation of a payment code constructed by prepending 0x02 to the SHA256 hash of the binary serialization of the payment code
 
 
 <h4>Notification Transaction</h4>
 
 
-Note: this procedure is used if Bob uses a version 2 payment code (regardless of the the version of Alice's payment code). If Bob's payment code is not version 2, see the appropriate section in this specification.
+Note: this procedure is used if Bob uses a version 2 payment code (regardless of the version of Alice's payment code). If Bob's payment code is not version 2, see the appropriate section in this specification.
 
 1.  Construct a notification transaction as per the version 1 instructions, except do not create the output to Bob's notification address
 1.  Create a notification change address as follows:
