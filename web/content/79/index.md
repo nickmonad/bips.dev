@@ -114,7 +114,7 @@ After adding inputs to the transaction, the receiver generally will want to adju
 <h3> Returning the partial transaction </h3>
 
 
-The receiver must sign all contributed inputs in the partial transaction. The partial transaction should also remove all witnesses from the the original template transaction as they are no longer valid, and need to be recalculated by the sender. The receiver returns the partial transaction as a binary-encoded HTTP response with a status code of 200. To ensure compatibility with web-wallets and browser-based-tools, all responses (including errors) must contain the HTTP header "Access-Control-Allow-Origin: *"
+The receiver must sign all contributed inputs in the partial transaction. The partial transaction should also remove all witnesses from the original template transaction as they are no longer valid, and need to be recalculated by the sender. The receiver returns the partial transaction as a binary-encoded HTTP response with a status code of 200. To ensure compatibility with web-wallets and browser-based-tools, all responses (including errors) must contain the HTTP header "Access-Control-Allow-Origin: *"
 
 
 <h3> Sender Validation </h3>
