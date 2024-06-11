@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="bips.dev - BIPs by Bastien Teinturier" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="bips.dev - BIPs by Bastien Teinturier" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>bips.dev - BIPs by Bastien Teinturier</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col items-center space-y-8">
+
+        <div class="flex flex-col items-center">
+            <div class="flex w-full justify-end">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+            <img class="hidden dark:block self-start" src="/bips-header-dark.png" width="750" height="200" />
+            <img class="dark:hidden self-start" src="/bips-header-light.png" width="750" height="200" />
+        </div>
+
+        <div class="flex w-full justify-between">
+            <div class="font-bold text-2xl">BIPs by Bastien Teinturier</div>
+            <a href="/authors">Back to Authors</a>
+        </div>
+
+        <div class="w-full flex flex-col space-y-4">
+            <div class="text-xl"><a href="/authors/bastien-teinturier">Bastien Teinturier</a></div>
+            <div class="flex flex-col space-y-1 truncate">
+                
+                    <div class="font-mono hover:text-bitcoin">
+                        <span class="inline-block text-right w-10">353</span>
+                        <a class="bip-link" href="https://bips.dev/353/">DNS Payment Instructions</a>
+                    </div>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-06-11</p>
+                </div>
+                <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

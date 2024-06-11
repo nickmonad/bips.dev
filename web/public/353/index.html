@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 353: DNS Payment Instructions" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 353: DNS Payment Instructions" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 353: DNS Payment Instructions</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 353: DNS Payment Instructions</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2024-02-10</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0353.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 353
+  Layer: Applications
+  Title: DNS Payment Instructions
+  Author: Matt Corallo &lt;bip353@bluematt.me&gt;
+          Bastien Teinturier &lt;bastien@acinq.fr&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0353
+  Status: Draft
+  Type: Standards Track
+  Created: 2024-02-10
+  License: CC0-1.0
+  Post-History: 2024-02-13: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;uATaflkYglQ [bitcoin-dev] Mapping Human-Readable Names to Payment Instructions
+</code></pre>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the CC0-1.0 license.</p>
+<h2>Abstract</h2>
+<p>This BIP proposes a standard format for encoding <a href="/21" target="_blank">BIP 21</a> URI schemes in DNS TXT records.</p>
+<h2>Motivation</h2>
+<p>Various Bitcoin and other cryptocurrency applications have developed human-readable names for payment instructions over time, with marketplace adoption signaling strong demand for it from users.</p>
+<p>The DNS provides a standard, global, hierarchical namespace mapping human-readable labels to records of various forms. Using DNSSEC, the DNS provides cryptographic guarantees using a straightforward PKI which follows the hierarchical nature of the DNS, allowing for stateless and even offline validation of DNS records from a single trusted root.</p>
+<p>Further, because DNS queries are generally proxied through ISP-provided or other resolvers, DNS queries usually do not directly expose the queryer's IP address. Further, because of the prevalence of open resolvers, the simplicity of the protocol, and broad availability of DNS recursive resolver implementations, finding a proxy for DNS records is trivial.</p>
+<p>Thus, using TXT records to store Bitcoin payment instructions allows for human-readable Bitcoin payment destinations which can be trivially verified on hardware wallets and which can be resolved relatively privately.</p>
+<h2>Specification</h2>
+<h3> General rules for handling </h3>
+<p>Bitcoin wallets MUST NOT prefer to use DNS-based resolving when methods with explicit public keys or addresses are available. In other words, if a standard Bitcoin address or direct BIP 21 URI is available or would suffice, Bitcoin wallets MUST prefer to use that instead.</p>
+<h3> Records </h3>
+<p>Payment instructions are indexed by both a user and a domain. Instructions for a given <code>user</code> and <code>domain</code> are stored at <code>user</code>.user._bitcoin-payment.<code>domain</code> in a single TXT record.</p>
+<p>All payment instructions MUST be DNSSEC-signed.</p>
+<p>Payment instructions MAY resolve through CNAME or DNAME records as long as all such records and the ultimate records pointed to by them are DNSSEC signed.</p>
+<p>User and domain names which are not expressible using standard printable ASCII MUST be encoded using the punycode IDN encoding defined in <a href="https://datatracker.ietf.org/doc/html/rfc3492" target="_blank">RFC 3492</a> and <a href="https://datatracker.ietf.org/doc/html/rfc5891" target="_blank">RFC 5891</a>.</p>
+<p>Note that because resolvers are not required to support resolving non-ASCII identifiers, wallets SHOULD avoid using non-ASCII identifiers.</p>
+<h3> Resolution </h3>
+<p>Clients resolving Bitcoin payment instructions MUST ignore any TXT records at the same label which do not begin with (ignoring case) &quot;bitcoin:&quot;. Resolvers encountering multiple &quot;bitcoin:&quot;-matching TXT records at the same label MUST treat the records as invalid and refuse to use any payment instructions therein.</p>
+<p>Clients resolving Bitcoin payment instructions MUST fully validate DNSSEC signatures leading to the DNS root (including any relevant CNAME or DNAME records) and MUST NOT accept DNSSEC signatures which use SHA-1 or RSA with keys shorter than 1024 bits. Resolvers MAY accept SHA-1 DS records.</p>
+<p>Clients resolving Bitcoin payment instructions MUST NOT trust a remote resolver to validate DNSSEC records on their behalf.</p>
+<p>Clients resolving Bitcoin payment instructions MUST support resolving through CNAME or DNAME records.</p>
+<p>Resolvers MAY support resolving non-ASCII user and domain identifiers. Resolvers which do support non-ASCII user and domain identifiers MUST take precautions to prevent homograph attacks and SHOULD consider denying paste functionality when entering non-ASCII identifiers. Wallets which do not take any such precautions MUST instead display non-ASCII user and domain identifiers using their raw punycode. As such, wallets SHOULD NOT create identifiers which are not entirely printable ASCII.</p>
+<p>While clients MAY cache the payment instructions they receive from the DNS, clients MUST NOT cache the payment instructions received from the DNS for longer than the TTL provided by their DNS resolver, and further MUST NOT cache the payment instructions for longer than the lowest initial TTL (which is signed as a part of DNSSEC signatures) received in the full DNSSEC chain leading from the DNS root to the resolved TXT record.</p>
+<h3> Address Reuse </h3>
+<p>Payment instructions with on-chain addresses which will be re-used SHOULD be rotated as regularly as possible to reduce address reuse. Such payment instructions SHOULD also use a relatively short DNS TTL to ensure regular rotation takes effect quickly. In cases where this is not practical, payment instructions SHOULD NOT contain on-chain addresses (i.e. the URI path SHOULD be empty).</p>
+<p>Payment instructions which do contain on-chain addresses which will be re-used SHOULD be rotated after any transaction to such an address is confirmed on-chain.</p>
+<h3> Display </h3>
+<p>Wallets SHOULD parse recipient information in the form <code>user</code>@<code>domain</code> or ₿<code>user</code>@<code>domain</code> and resolve such entry into recipient information using the above record. Similarly, wallets accepting payment information from external devices (e.g. hardware wallets) SHOULD accept RFC 9102-formatted proofs (as a series of unsorted <code>AuthenticationChain</code> records) and, if they verify, SHOULD display the recipient in the form ₿<code>user</code>@<code>domain</code>. For the avoidance of doubt, the ₿ is <em>not</em> included in the DNS label which is resolved.</p>
+<p>Wallets providing users the ability to &quot;copy&quot; their address information generally SHOULD copy the underlying URI directly in order to avoid the DNS indirection. However, wallets providing users the ability to copy their human-readable address information MUST include the ₿ prefix (i.e. copy it in the form ₿<code>user</code>@<code>domain</code>).</p>
+<h2> Rationale </h2>
+<h3> Display </h3>
+<p>There are several ways in which human-readable payment instructions could be displayed in wallets. In order to ensure compatibility with existing human-readable names schemes, @ is used as the separator between the <code>user</code> and <code>domain</code> parts. However, simply using the @ separator can lead to confusion between email addresses on a given domain and payment instructions on a domain. In order to somewhat reduce the incidence of such confusion, a ₿ prefix is used.</p>
+<h3> Rotation </h3>
+<p>On-chain addresses which are re-used (i.e. not including schemes like <a href="/352" target="_blank">Silent Payments</a>) need to be rotated to avoid contributing substantially to address reuse. However, rotating them on a timer or any time a transaction enters the mempool could lead to substantial overhead from excess address generation. Instead, rotating addresses any time a transaction is confirmed on-chain ensures address rotation happens often while bounding the maximum number of addresses needed to one per block, which grows very slowly and will not generate an address set too large to handle while scanning the chain going forward.</p>
+<h3> Alternatives </h3>
+<p>There are many existing schemes to resolve human-readable names to cryptocurrency payment instructions. Sadly, these current schemes suffer from a myriad of drawbacks, including (a) lacking succinct proofs of namespace to public key mappings, (b) revealing sender IP addresses to recipients or other intermediaries as a side-effect of payment, (c) relying on the bloated TLS Certificate Authority infrastructure, or (d) lacking open access, not allowing anyone to create a namespace mapping.</p>
+<h4> DNS Rather than blockchain-based solutions </h4>
+<p>There are many blockchain-based alternatives to the DNS which feature better censorship-resistance and, in many cases, security. However, here we chose to use the standard ICANN-managed DNS namespace as many blockchain-based schemes suffer from (a), above (though in some cases this could be addressed with cryptographic SNARK schemes). Further, because they do not have simple client-side querying ability, many of these schemes use trusted intermediaries which resolve names on behalf of clients. This reintroduces drawbacks (b) and often (c) as well.</p>
+<p>Finally, it is worth noting that none of the blockchain-based alternatives to the DNS have had material adoption outside of their specific silos, and committing Bitcoin wallets to rely on a separate system which doesn't see broad adoption may not be sustainable.</p>
+<h4> DNS Rather than HTTP-based solutions </h4>
+<p>HTTP(s)-based payment instruction resolution protocols suffer from drawbacks (a), (b), and (c), above, and generally shouldn't be considered a serious alternative for payment instruction resolution.</p>
+<h4> Private DNS Querying </h4>
+<p>While public recursive DNS resolvers are very common (e.g. 1.1.1.1, 8.8.8.8, and 9.9.9.9), using such resolvers directly (even after validating DNSSEC signatures) introduces drawback (b), at least in regard to a centralized intermediary. Resolving payment instructions recursively locally using a resolver on the same local network or in the paying application would instead introduce drawback (b) directly to the recipient, which may well be worse.</p>
+<p>For payers not using VPN or other proxying technologies, they generally trust their ISP to not snoop on their DNS requests anyway, so using ISP-provided recursive DNS resolvers is likely the best option.</p>
+<p>However, for the best privacy, payers are encouraged to perform DNS resolution over Tor or another VPN technology.</p>
+<p>Lightning payers should consider utilizing DNS resolution over native onion messages, using the protocol described in <a href="https://github.com/lightning/blips/blob/master/blip-0032.md" target="_blank">BLIP 32</a></p>
+<h3> DNS Enumeration </h3>
+<p>In most cases where payments are accepted from any third-party, user enumeration is practical by simply attempting to send small value payments to a list of possible user names. However, storing all valid users in the DNS directly may make such enumeration marginally more practical. Thus, those wishing to avoid such enumeration should carefully ensure all DNS names return valid payment instructions. Note when doing so that wildcard records are identified as such by the DNSSEC RRSIG labels counter and are differentiable from non-wildcard records.</p>
+<h2> Backwards Compatibility </h2>
+<p>This work is intended to extend and subsume the existing &quot;Lightning Address&quot; scheme, which maps similar names (without the ₿ prefix) using HTTPS servers to Lightning BOLT 11 payment instructions. Wallets implementing this scheme MAY fall back to existing &quot;Lightning Address&quot; logic if DNS resolution fails but SHOULD NOT do so after this scheme is sufficiently broadly deployed to avoid leaking sender IP address information.</p>
+<h2> Examples </h2>
+<p><code>matt@mattcorallo.com</code> resolves to
+<code>matt.user._bitcoin-payment.mattcorallo.com. 3600 IN TXT	&quot;bitcoin:?lno=lno1qsgqmqvgm96frzdg8m0gc6nzeqffvzsqzrxqy32afmr3jn9ggkwg3egfwch2hy0l6jut6vfd8vpsc3h89l6u3dm4q2d6nuamav3w27xvdmv3lpgklhg7l5teypqz9l53hj7zvuaenh34xqsz2sa967yzqkylfu9xtcd5ymcmfp32h083e805y7jfd236w9afhavqqvl8uyma7x77yun4ehe9pnhu2gekjguexmxpqjcr2j822xr7q34p078gzslf9wpwz5y57alxu99s0z2ql0kfqvwhzycqq45ehh58xnfpuek80hw6spvwrvttjrrq9pphh0dpydh06qqspp5uq4gpyt6n9mwexde44qv7lstzzq60nr40ff38u27un6y53aypmx0p4qruk2tf9mjwqlhxak4znvna5y&quot;</code>
+Note that <code>lno</code> indicates a value containing a lightning BOLT12 offer.</p>
+<h2> Reference Implementations </h2>
+<ul>
+<li>A DNSSEC proof generation and validation implementation can be found at https://git.bitcoin.ninja/index.cgi?p=dnssec-prover;a=summary</li>
+<li>A lightning-specific name to payment instruction resolver can be found at https://git.bitcoin.ninja/index.cgi?p=lightning-resolver;a=summary</li>
+<li>Reference implementations for parsing the URI contents can be found in <a href="/21" target="_blank">BIP 21</a>.</li>
+</ul>
+<h2> Acknowledgements </h2>
+<p>Thanks to Rusty Russell for the concrete address rotation suggestion.</p>
+<p>Thanks to the Bitcoin Design Community, and especially Christoph Ono for lots of discussion, analysis, and UX mockups in how human-readable payment instructions should be displayed.</p>
+<p>Thanks to Andrew Kaizer for the suggestion to explicitly restrict cache lifetime to the relevant DNS TTLs.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-06-11</p>
+                </div>
+                <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
