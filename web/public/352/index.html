@@ -196,9 +196,8 @@
 <p>In our simplified example we have been referring to Alice's transactions as having only one input <em>A</em>, but in reality a Bitcoin transaction can have many inputs. Instead of requiring Alice to pick a particular input and requiring Bob to check each input separately, we can instead require Alice to perform the tweak with the sum of the input public keys<ref name="other_inputs"><strong>What about inputs without public keys?</strong> Inputs without public keys can still be spent in the transaction but are simply ignored in the silent payments protocol.</ref>. This significantly reduces Bob's scanning requirement, makes light client support more feasible<ref name="using_all_inputs"><strong>How does using all inputs help light clients?</strong> If Alice uses a random input for the tweak, Bob necessarily has to have access to and check all transaction inputs, which requires performing an ECC multiplication per input. If instead Alice performs the tweak with the sum of the input public keys, Bob only needs the summed 33 byte public key per transaction and only does one ECC multiplication per transaction. Bob can then use BIP158 block filters to determine if any of the outputs exist in a block and thus avoids downloading transactions which don't belong to him. It is still an open question as to how Bob can source the 33 bytes per transaction in a trustless manner, see <a href="#appendix-a-light-client-support" target="_blank">Appendix A: Light Client Support</a> for more details.</ref>, and protects Alice's privacy in collaborative transaction protocols such as CoinJoin&lt;ref name=&quot;&quot;all_inputs_and_coinjoin&quot;&gt;<strong>Why does using all inputs matter for CoinJoin?</strong> If Alice uses a random input to create the output for Bob, this necessarily reveals to Bob which input Alice has control of. If Alice is paying Bob as part of a CoinJoin, this would reveal which input belongs to her, degrading the anonymity set of the CoinJoin and giving Bob more information about Alice. If instead all inputs are used, Bob has no way of knowing which input(s) belong to Alice. This comes at the cost of increased complexity as the CoinJoin participants now need to coordinate to create the silent payment output and would need to use <a href="https://gist.github.com/RubenSomsen/be7a4760dd4596d06963d67baf140406" target="_blank">Blind Diffie–Hellman</a> to prevent the other participants from learning who Alice is paying. Note it is currently not recommended to use this protocol for CoinJoins due to a lack of a formal security proof.</ref>.</p>
 <p>Alice performs the tweak with the sum of her input private keys in the following manner:</p>
 <ul>
-<li>Let <em>A = A<sub>1</sub> + A<sub>2</sub> + ... + A<sub>n</sub></em></li>
-<li>Let <em>input_hash = hash(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest outpoint lexicographically<ref name="why_smallest_outpoint"><strong>Why use the lexicographically smallest outpoint for the hash?</strong> Recall that the purpose of including the input hash is so that the sender and receiver can both come up with a deterministic nonce that ensures that a unique address is generated each time, even when reusing the same scriptPubKey as an input. Choosing the smallest outpoint lexicographically satisifes this requirement, while also ensuring that the generated output is not dependent on the final ordering of inputs in the transaction. Using a single outpoint also works well with memory constrained devices (such as hardware signing devices) as it does not require the device to have the entire transaction in memory in order to generate the silent payment output.</ref></li>
 <li>Let <em>a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub></em></li>
+<li>Let <em>input_hash = hash(outpoint<sub>L</sub> || (a·G))</em>, where <em>outpoint<sub>L</sub></em> is the smallest outpoint lexicographically<ref name="why_smallest_outpoint"><strong>Why use the lexicographically smallest outpoint for the hash?</strong> Recall that the purpose of including the input hash is so that the sender and receiver can both come up with a deterministic nonce that ensures that a unique address is generated each time, even when reusing the same scriptPubKey as an input. Choosing the smallest outpoint lexicographically satisifes this requirement, while also ensuring that the generated output is not dependent on the final ordering of inputs in the transaction. Using a single outpoint also works well with memory constrained devices (such as hardware signing devices) as it does not require the device to have the entire transaction in memory in order to generate the silent payment output.</ref></li>
 <li>Let <em>P<sub>0</sub> = B + hash(input_hash·a·B || 0)·G</em></li>
 </ul>
 <p>** Spend and Scan Key **</p>
@@ -341,7 +340,6 @@
 <h3> Input hash </h3>
 <p>The sender and receiver MUST calculate an input hash for the transaction in the following manner:</p>
 <ul>
-<li>Let <em>A = A<sub>1</sub> + A<sub>2</sub> + ... + A<sub>n</sub></em>, where each <em>A<sub>i</sub></em> is the public key of an input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list<ref name="why_include_A"></ref></li>
 <li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest outpoint lexicographically by txid and vout used in the transaction<ref name="why_smallest_outpoint"></ref></li>
 </ul>
 <h3> Sender </h3>
@@ -355,10 +353,10 @@
 <h4> Creating outputs </h4>
 <p>After the inputs have been selected, the sender can create one or more outputs for one or more silent payment addresses in the following manner:</p>
 <ul>
-<li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically, using the method described above</li>
 <li>Collect the private keys for each input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list</li>
 <li>For each private key <em>a<sub>i</sub></em> corresponding to a <a href="/341" target="_blank">BIP341</a> taproot output, check that the private key produces a point with an even Y coordinate and negate the private key if not<ref name="why_negate_taproot_private_keys"><strong>Why do taproot private keys need to be checked?</strong> Recall from <a href="/340" target="_blank">BIP340</a> that each X-only public key has two corresponding private keys, <em>d</em> and <em>n - d</em>. To maintain parity between sender and receiver, it is necessary to use the private key corresponding to the even Y coordinate when performing the ECDH step since the receiver will assume the even Y coordinate when summing the taproot X-only public keys.</ref></li>
 <li>Let <em>a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub></em>, where each <em>a<sub>i</sub></em> has been negated if necessary</li>
+<li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically and <em>A = a·G</em>, using the method described above</li>
 <li>Group receiver silent payment addresses by <em>B<sub>scan</sub></em> (e.g. each group consists of one <em>B<sub>scan</sub></em> and one or more <em>B<sub>m</sub></em>)</li>
 <li>For each group:
 <ul>
@@ -389,8 +387,8 @@
 <h4> Scanning </h4>
 <p>If each of the checks in <em><a href="#scanning-silent-payment-eligible-transactions" target="_blank">Scanning silent payment eligible transactions</a></em> passes, the receiving wallet must:</p>
 <ul>
-<li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically, using the method described above</li>
 <li>Let <em>A = A<sub>1</sub> + A<sub>2</sub> + ... + A<sub>n</sub></em>, where each <em>A<sub>i</sub></em> is the public key of an input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list</li>
+<li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically and <em>A</em>, using the method described above</li>
 <li>Let <em>ecdh_shared_secret = input_hash·b<sub>scan</sub>·A</em></li>
 <li>Check for outputs:
 <ul>
@@ -539,7 +537,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-06-21</p>
+                    <p class="font-bold">2024-06-22</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
