@@ -355,7 +355,11 @@
 <ul>
 <li>Collect the private keys for each input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list</li>
 <li>For each private key <em>a<sub>i</sub></em> corresponding to a <a href="/341" target="_blank">BIP341</a> taproot output, check that the private key produces a point with an even Y coordinate and negate the private key if not<ref name="why_negate_taproot_private_keys"><strong>Why do taproot private keys need to be checked?</strong> Recall from <a href="/340" target="_blank">BIP340</a> that each X-only public key has two corresponding private keys, <em>d</em> and <em>n - d</em>. To maintain parity between sender and receiver, it is necessary to use the private key corresponding to the even Y coordinate when performing the ECDH step since the receiver will assume the even Y coordinate when summing the taproot X-only public keys.</ref></li>
-<li>Let <em>a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub></em>, where each <em>a<sub>i</sub></em> has been negated if necessary</li>
+<li>Let <em>a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub></em>, where each <em>a<sub>i</sub></em> has been negated if necessary
+<ul>
+<li>If <em>a = 0</em>, fail</li>
+</ul>
+</li>
 <li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically and <em>A = a·G</em>, using the method described above</li>
 <li>Group receiver silent payment addresses by <em>B<sub>scan</sub></em> (e.g. each group consists of one <em>B<sub>scan</sub></em> and one or more <em>B<sub>m</sub></em>)</li>
 <li>For each group:
@@ -387,7 +391,11 @@
 <h4> Scanning </h4>
 <p>If each of the checks in <em><a href="#scanning-silent-payment-eligible-transactions" target="_blank">Scanning silent payment eligible transactions</a></em> passes, the receiving wallet must:</p>
 <ul>
-<li>Let <em>A = A<sub>1</sub> + A<sub>2</sub> + ... + A<sub>n</sub></em>, where each <em>A<sub>i</sub></em> is the public key of an input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list</li>
+<li>Let <em>A = A<sub>1</sub> + A<sub>2</sub> + ... + A<sub>n</sub></em>, where each <em>A<sub>i</sub></em> is the public key of an input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list
+<ul>
+<li>If <em>A</em> is the point at infinity, skip the transaction</li>
+</ul>
+</li>
 <li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically and <em>A</em>, using the method described above</li>
 <li>Let <em>ecdh_shared_secret = input_hash·b<sub>scan</sub>·A</em></li>
 <li>Check for outputs:
@@ -523,6 +531,23 @@
 </li>
 </ul>
 <p>Wallet designers can choose which tradeoffs they find appropriate. For example, a wallet could check the block filter to at least probabilistically confirm the likely existence of the UTXO, thus efficiently cutting down on spam. The payment could then be marked as unconfirmed until a scan is performed and the existence of the UTXO in accordance to the silent payment specification is verified.</p>
+<h2> Change Log </h2>
+<p>To help implementers understand updates to this document, we attach a version number that resembles <em>semantic versioning</em> (<code>MAJOR.MINOR.PATCH</code>).
+The <code>MAJOR</code> version is incremented if changes to the BIP are introduced that are incompatible with prior versions.
+The <code>MINOR</code> version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
+The <code>PATCH</code> version is incremented for other changes that are noteworthy (bug fixes, test vectors, important clarifications, etc.).</p>
+<ul>
+<li><strong>1.0.1</strong> (2024-06-22):
+<ul>
+<li>Add steps to fail if private key sum is zero (for sender) or public key sum is point at infinity (for receiver), add corresponding test vectors.</li>
+</ul>
+</li>
+<li><strong>1.0.0</strong> (2024-05-08):
+<ul>
+<li>Initial version, merged as BIP-352.</li>
+</ul>
+</li>
+</ul>
 <h2> Acknowledgements </h2>
 <p>This document is the result of many discussions and contains contributions by a number of people. The authors wish to thank all those who provided valuable feedback and reviews, including the participants of the <a href="https://gist.github.com/RubenSomsen/21c477c90c942acf45f8e8f5c1ad4fae" target="_blank">BIP47 Prague discussion</a>, the <a href="https://github.com/josibake/silent-payments-workshop" target="_blank">Advancing Bitcoin silent payments Workshop</a>, and <a href="https://btctranscripts.com/bitcoin-core-dev-tech/2023-04/2023-04-26-silent-payments/" target="_blank">coredev</a>. The authors would like to also thank <a href="https://github.com/w0xlt" target="_blank">w0xlt</a> for writing the initial implementation of silent payments.</p>
 <h2> Rationale and References </h2>
@@ -537,7 +562,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-06-22</p>
+                    <p class="font-bold">2024-06-23</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
