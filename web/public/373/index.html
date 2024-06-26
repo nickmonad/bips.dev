@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 373: MuSig2 PSBT Fields" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 373: MuSig2 PSBT Fields" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 373: MuSig2 PSBT Fields</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 373: MuSig2 PSBT Fields</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2024-01-15</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0373.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 373
+  Layer: Applications
+  Title: MuSig2 PSBT Fields
+  Author: Ava Chow &lt;me@achow101.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0373
+  Status: Draft
+  Type: Standards Track
+  Created: 2024-01-15
+  License: CC0-1.0
+</code></pre>
+<h2>Introduction</h2>
+<h3>Abstract</h3>
+<p>This document proposes additional fields for BIP 174 PSBTv0 and BIP 370 PSBTv2 that allow for BIP
+327 MuSig2 Multi-Signature data to be included in a PSBT of any version. These will be fields for
+the participants' keys, the public nonces, and the partial signatures produced with MuSig2.</p>
+<h3>Copyright</h3>
+<p>This BIP is licensed under the Creative Commons CC0 1.0 Universal license.</p>
+<h3>Motivation</h3>
+<p>BIP 327 specifies a way to create BIP 340 compatible public keys and signatures using the MuSig2
+Multi-Signature scheme. The existing PSBT fields are unable to support MuSig2 as it introduces new
+concepts and additional rounds of communication. Therefore new fields must be defined to allow PSBTs
+to carry the information necessary to produce a valid signature with MuSig2.</p>
+<h2>Specification</h2>
+<p>The new per-input types are defined as follows:</p>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><valuedata></tt></th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>rowspan=&quot;2&quot;</td><td>MuSig2 Participant Public Keys</td><td>rowspan=&quot;2&quot;</td><td><tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS = 0x1a</tt></td><td><tt>&lt;33 byte plain aggregate pubkey&gt;</tt></td><td><tt>&lt;33 byte compressed pubkey&gt;*</tt></td><td>rowspan=&quot;2&quot;</td></tr>
+<tr><td>The MuSig2 aggregate plain public key<ref><strong>Why the plain aggregate public key instead of x-only?</strong></td><td>A list of the compressed public keys of the participants in the MuSig2 aggregate key in the order</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>MuSig2 Public Nonce</td><td>rowspan=&quot;2&quot;</td><td><tt>PSBT_IN_MUSIG2_PUB_NONCE = 0x1b</tt></td><td><tt>&lt;33 byte compressed pubkey&gt; &lt;33 byte plain pubkey&gt; &lt;32 byte hash or omitted&gt;</tt></td><td><tt>&lt;66 byte public nonce&gt;</tt></td><td>rowspan=&quot;2&quot;</td></tr>
+<tr><td>The compressed public key of the participant providing this nonce, followed by the plain public</td><td>The public nonce produced by the <tt>NonceGen</tt> algorithm.</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>rowspan=&quot;2&quot;</td><td>MuSig2 Participant Partial Signature</td><td>rowspan=&quot;2&quot;</td><td><tt>PSBT_IN_MUSIG2_PARTIAL_SIG = 0x1c</tt></td><td><tt>&lt;33 byte compressed pubkey&gt; &lt;33 byte plain pubkey&gt; &lt;32 byte hash or omitted&gt;</tt></td><td><tt>&lt;32 byte partial signature&gt;</tt></td><td>rowspan=&quot;2&quot;</td></tr>
+<tr><td>The compressed public key of the participant providing this partial signature, followed by the</td><td>The partial signature produced by the <tt>Sign</tt> algorithm.</td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<p>The new per-output types are defined as follows:</p>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><valuedata></tt></th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>rowspan=&quot;2&quot;</td><td>MuSig2 Participant Public Keys</td><td>rowspan=&quot;2&quot;</td><td><tt>PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS = 0x08</tt></td><td><tt>&lt;33 byte compressed pubkey&gt;</tt></td><td><tt>&lt;33 byte compressed pubkey&gt;*</tt></td><td>rowspan=&quot;2&quot;</td></tr>
+<tr><td>The MuSig2 aggregate plain public key from the <tt>KeyAgg</tt> algorithm. This key may or may not</td><td>A list of the compressed public keys of the participants in the MuSig2 aggregate key in the order</td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<h2>Roles</h2>
+<h3>Updater</h3>
+<p>When an updater observes a Taproot output which involves a MuSig2 aggregate public key that it is
+aware if, it can add a <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt> field containing the public keys
+of the participants. This aggregate public key may be directly in the script, the Taproot internal
+key, the Taproot output key, or a public key from which the key in the script was derived from.</p>
+<p>An aggregate public key that appears directly in the script or internal key may be from the result
+of deriving child pubkeys from participant xpubs. If the updater has this derivation information, it
+should also add <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> for each participant public key.</p>
+<p>If the public key found was derived from an aggregate public key, then all MuSig2 PSBT fields for
+that public key should contain the aggregate public key rather than the found pubkey itself. The
+updater should also add <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> that contains the derivation path used
+to derive the found pubkey from the aggregate pubkey.
+Derivation from the aggregate pubkey can be assumed to follow <a href="/328" target="_blank">BIP 328</a>
+if there is no <tt>PSBT_IN_GLOBAL_XPUB</tt> that specifies the synthetic xpub for the aggregate
+public key.</p>
+<p>Updaters should add <tt>PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS</tt> and
+<tt>PSBT_OUT_TAP_BIP32_DERIVATION</tt> similarly to inputs to aid in change detection.</p>
+<h3>Signer</h3>
+<p>To determine whether a signer is a participant in the MuSig2 aggregate key, the signer should first
+look at all <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt> and see if any key which it knows the
+private key for appears as a participant in any aggregate pubkey. Signers should also check whether
+any of the keys in <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> belong to it, and if any of those keys
+appear in as a participant in <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt>.</p>
+<p>For each aggregate public key that the signer is a participant of that it wants
+to produce a signature for, if the signer does not find an existing
+<tt>PSBT_IN_MUSIG2_PUB_NONCE</tt> field for its key, then it should add one using
+the <tt>NonceGen</tt> algorithm (or one of its variations) to produce a public
+nonce that is added in a <tt>PSBT_IN_MUSIG2_PUB_NONCE</tt> field. However
+signers must keep in mind that <strong>improper nonce usage can compromise private
+keys.</strong> Please see BIP 327 for best practices on nonce generation and usage.</p>
+<p>Once all signers have added their <tt>PSBT_IN_MUSIG2_PUB_NONCE</tt> fields, each signer will perform
+the <tt>NonceAgg</tt> algorithm followed by the <tt>Sign</tt> algorithm in order to produce the
+partial signature for their key. The result will be added to the PSBT in a
+<tt>PSBT_IN_MUSIG2_PARTIAL_SIG</tt> field.</p>
+<p>Signers must remember to apply any relevant tweaks such as a tweak that is the result of performing
+BIP 32 unhardened dervation with the aggregate public key as the parent key.</p>
+<p>If all other signers have provided a <tt>PSBT_IN_MUSIG2_PARTIAL_SIG</tt>, then the final signer may
+perform the <tt>PartialSigAgg</tt> algorithm and produce a BIP 340 compatible signature that can be
+placed into a <tt>PSBT_IN_TAP_KEY_SIG</tt> or a <tt>PSBT_IN_TAP_SCRIPT_SIG</tt>.</p>
+<h3>Finalizer</h3>
+<p>A finalizer may perform the same <tt>PartialSigAgg</tt> step as the final signer if it has not
+already been done.</p>
+<p>Otherwise, the resulting signature is a BIP 340 compatible signature and finalizers should treat it
+as such.</p>
+<h2>Backwards Compatibility</h2>
+<p>These are simply new fields added to the existing PSBT format. Because PSBT is designed to be
+extensible, old software will ignore the new fields.</p>
+<p>Reusing <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> to provide derivation paths for participant public
+keys may cause software unaware of MuSig2 to produce a signature for that public key. This is still
+safe. If that public key does not directly appear in the leaf script that was signed, then the
+signature produced will not be useful and so cannot be replayed. If the public key does directly
+appear in the leaf script, then the signer will have validated the script as if it did not involve a
+MuSig2 and will have found it acceptable in order for it to have produced a signature. In either
+case, producing a signature does not give rise to the possibility of losing funds.</p>
+<h2>Test Vectors</h2>
+<p>TBD</p>
+<h2>Rationale</h2>
+<references/>
+<h2>Reference implementation</h2>
+<p>The reference implementation of the PSBT format is available at TBD.</p>
+<h2>Acknowledgements</h2>
+<p>Thanks to Sanket Kanjalkar whose notes on this topic formed the initial basis of this BIP. Also
+thanks to Pieter Wuille, Jonas Nick, Tim Ruffing, Marko Bencun, Salvatore Ingala, and all others who
+have participated in discussions about these fields.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-06-26</p>
+                </div>
+                <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

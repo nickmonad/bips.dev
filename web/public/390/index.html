@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 390: musig() Descriptor Key Expression" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 390: musig() Descriptor Key Expression" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 390: musig() Descriptor Key Expression</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 390: musig() Descriptor Key Expression</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2024-01-15</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0390.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 390
+  Layer: Applications
+  Title: musig() Descriptor Key Expression
+  Author: Ava Chow &lt;me@achow101.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0390
+  Status: Draft
+  Type: Informational
+  Created: 2024-01-15
+  License: CC0-1.0
+</code></pre>
+<h2>Abstract</h2>
+<p>This document specifies a <tt>musig()</tt> key expression for output script descriptors.
+<tt>musig()</tt> expressions take multiple keys and produce an aggregate public key using BIP 327.</p>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the Creative Commons CC0 1.0 Universal license.</p>
+<h2>Motivation</h2>
+<p>BIP 327 introduces the MuSig2 Multi-Signature scheme. It is useful to have a way for keys to be used
+in a MuSig2 aggregate key to be expressed in descriptors so that wallets can more easily use MuSig2.</p>
+<h2>Specification</h2>
+<p>A new key expression is defined: <tt>musig()</tt>.</p>
+<h3><tt>musig(KEY, KEY, ..., KEY)</tt></h3>
+<p>The <tt>musig(KEY, KEY, ..., KEY)</tt> expression can only be used inside of a <tt>tr()</tt>
+expression as a key expression. It additionally cannot be nested within another <tt>musig()</tt>
+expression. Repeated participant public keys are not allowed. The aggregate public key is produced
+by using the <tt>KeyAgg</tt> algorithm on all KEYs specified in the expression after performing all
+specified derivation. As with script expressions, KEY can contain child derivation specified by
+<tt>/*</tt>. A new aggregate public key will be computed for each child index. Keys must be sorted
+with the <tt>KeySort</tt> algorithm after all derivation and prior to aggregation<ref><strong>Why must
+the keys be sorted prior to aggregation?</strong> Although the descriptor's written form sets an order
+for the keys that could be used for aggregation, the order should not matter as MuSig2 philosophically
+operates over a set of keys, with the order merely being an implementation detail in aggregation
+itself. Requiring sorting of keys prior to aggregation enforces this philosophy as keys can be
+written in the descriptor in any order with the end result still being the same. Furthermore, this
+aids with recovery where the descriptor was not backed up as users will not need to also have
+backed up, or guess, the correct order of keys.</ref>.</p>
+<h3><tt>musig(KEY, KEY, ..., KEY)/NUM/.../*</tt></h3>
+<p><tt>musig(KEY, KEY, ..., KEY)/NUM/.../<em></tt> expressions are also allowed, with the same usage
+restrictions as in the previous section. The aggregate public key
+is first computed as described above, with the keys also being sorted after all derivation and prior
+to aggreation. Then further BIP 32 derivation will be performed on the aggregate public key as described in
+<a href="/328" target="_blank">BIP 328</a>. As there is no aggregate private key,
+only unhardened derivation from the aggregate public key is allowed, and thus the derivation steps
+following the <tt>musig()</tt> expression cannot contain
+<tt>/NUMh</tt> or <tt>/NUM'</tt> derivation steps nor <tt>/<em>h</tt>, or <tt>/</em>'</tt> child derivation.
+For these <tt>musig()</tt> expressions, the KEY expressions contained within must be xpubs or derived from
+xpubs, and cannot contain child derivation as specified by a <tt>/</em></tt>, <tt>/*'</tt>, or <tt>/*h</tt>.</p>
+<h2>Test Vectors</h2>
+<p>Valid descriptors containing followed by the scripts they produce. Descriptors involving derived child keys
+will have the 0th, 1st, and 2nd scripts listed.</p>
+<ul>
+<li><tt>rawtr(musig(KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU74sHUHy8S,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt>
+<ul>
+<li><tt>5120789d937bade6673538f3e28d8368dda4d0512f94da44cf477a505716d26a1575</tt></li>
+</ul>
+</li>
+<li><tt>tr(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt>
+<ul>
+<li><tt>512079e6c3e628c9bfbce91de6b7fb28e2aec7713d377cf260ab599dcbc40e542312</tt></li>
+</ul>
+</li>
+<li><tt>rawtr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0/*)</tt>
+<ul>
+<li><tt>51209508c08832f3bb9d5e8baf8cb5cfa3669902e2f2da19acea63ff47b93faa9bfc</tt></li>
+<li><tt>51205ca1102663025a83dd9b5dbc214762c5a6309af00d48167d2d6483808525a298</tt></li>
+<li><tt>51207dbed1b89c338df6a1ae137f133a19cae6e03d481196ee6f1a5c7d1aeb56b166</tt></li>
+</ul>
+</li>
+<li><tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0/*,pk(f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9))</tt>
+<ul>
+<li><tt>51201d377b637b5c73f670f5c8a96a2c0bb0d1a682a1fca6aba91fe673501a189782</tt></li>
+<li><tt>51208950c83b117a6c208d5205ffefcf75b187b32512eb7f0d8577db8d9102833036</tt></li>
+<li><tt>5120a49a477c61df73691b77fcd563a80a15ea67bb9c75470310ce5c0f25918db60d</tt></li>
+</ul>
+</li>
+<li><tt>tr(f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,pk(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0/*))</tt>
+<ul>
+<li><tt>512068983d461174afc90c26f3b2821d8a9ced9534586a756763b68371a404635cc8</tt></li>
+<li><tt>5120368e2d864115181bdc8bb5dc8684be8d0760d5c33315570d71a21afce4afd43e</tt></li>
+<li><tt>512097a1e6270b33ad85744677418bae5f59ea9136027223bc6e282c47c167b471d5</tt></li>
+</ul>
+</li>
+</ul>
+<p>Invalid descriptors</p>
+<ul>
+<li><tt>musig()</tt> is not allowed in <tt>pk()</tt>: <tt>pk(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt></li>
+<li><tt>musig()</tt> is not allowed in <tt>pkh()</tt>: <tt>pkh(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt></li>
+<li><tt>musig()</tt> is not allowed in <tt>wpkh()</tt>: <tt>wpkh(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt></li>
+<li><tt>musig()</tt> is not allowed in <tt>combo()</tt>: <tt>combo(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt></li>
+<li><tt>musig()</tt> is not allowed in <tt>sh(wpkh())</tt>: <tt>sh(wpkh(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66)))</tt></li>
+<li><tt>musig()</tt> is not allowed in <tt>sh(wsh())</tt>: <tt>sh(wsh(pk(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))))</tt></li>
+<li><tt>musig()</tt> is not allowed in <tt>wsh()</tt>: <tt>wsh(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt></li>
+<li><tt>musig()</tt> is not allowed in <tt>sh()</tt>: <tt>sh(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt></li>
+<li>Ranged <tt>musig()</tt> requires all participants to be xpubs: <tt>tr(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66)/0/0)</tt></li>
+<li>Cannot have ranged participants if <tt>musig()</tt> is also ranged: <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/<em>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0/</em>)</tt></li>
+<li><tt>musig()</tt> cannot have hardened derivation steps: <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0h/*)</tt></li>
+<li><tt>musig()</tt> cannot have hardened child derivation: <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0/*h)</tt></li>
+</ul>
+<h2>Backwards Compatibility</h2>
+<p><tt>musig()</tt> expressions use the format and general operation specified in
+<a href="/380" target="_blank">BIP 380</a>. As these are a set of wholly new expressions, they are not compatible
+with any implementation. However the keys are produced using a standard process so existing software
+are likely to be familiar with them.</p>
+<h2>Rationale</h2>
+<references/>
+<h2>Reference Implementation</h2>
+<p>TBD</p>
+<h2>Acknowledgements</h2>
+<p>Thanks to Pieter Wuille, Andrew Poelstra, Sanket Kanjalkar, Salvatore Ingala, and all others who
+participated in discussions on this topic.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-06-26</p>
+                </div>
+                <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p>Stay humble. Stack sats.</p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

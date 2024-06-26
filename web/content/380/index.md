@@ -336,4 +336,5 @@ This Table lists all available Script expressions and the BIPs specifying them.
 |<tt>raw(HEX)</tt>|<a href="/385" target="_blank">385</a>|
 |<tt>addr(ADDR)</tt>|<a href="/385" target="_blank">385</a>|
 |<tt>tr(KEY)</tt>, <tt>tr(KEY, TREE)</tt>|<a href="/386" target="_blank">386</a>|
+|<tt>musig(KEY, KEY, ..., KEY)</tt>|<a href="/390" target="_blank">390</a>|
 
