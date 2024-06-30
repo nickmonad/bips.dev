@@ -337,11 +337,6 @@
                   (0x76A914{20-byte-key-hash}88AC)
 </code></pre>
 <p>The receiver obtains the public key from the <em>scriptSig</em>. The receiver MUST parse the <em>scriptSig</em> for the public key, even if the <em>scriptSig</em> does not match the template specified (e.g. <code>&lt;dummy&gt; OP_DROP &lt;Signature&gt; &lt;Public Key&gt;</code>). This is to address the <a href="https://en.bitcoin.it/wiki/Transaction_malleability" target="_blank">third-party malleability of <em>P2PKH</em> <em>scriptSigs</em></a>.</p>
-<h3> Input hash </h3>
-<p>The sender and receiver MUST calculate an input hash for the transaction in the following manner:</p>
-<ul>
-<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest outpoint lexicographically by txid and vout used in the transaction<ref name="why_smallest_outpoint"></ref></li>
-</ul>
 <h3> Sender </h3>
 <h4> Selecting inputs </h4>
 <p>The sending wallet performs coin selection as usual with the following restrictions:</p>
@@ -360,7 +355,7 @@
 <li>If <em>a = 0</em>, fail</li>
 </ul>
 </li>
-<li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically and <em>A = a·G</em>, using the method described above</li>
+<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref> and <em>A = a·G</em></li>
 <li>Group receiver silent payment addresses by <em>B<sub>scan</sub></em> (e.g. each group consists of one <em>B<sub>scan</sub></em> and one or more <em>B<sub>m</sub></em>)</li>
 <li>For each group:
 <ul>
@@ -396,7 +391,7 @@
 <li>If <em>A</em> is the point at infinity, skip the transaction</li>
 </ul>
 </li>
-<li>Generate the <em>input_hash</em> with the smallest outpoint lexicographically and <em>A</em>, using the method described above</li>
+<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref></li>
 <li>Let <em>ecdh_shared_secret = input_hash·b<sub>scan</sub>·A</em></li>
 <li>Check for outputs:
 <ul>
@@ -562,7 +557,7 @@ The <code>PATCH</code> version is incremented for other changes that are notewor
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-06-29</p>
+                    <p class="font-bold">2024-06-30</p>
                 </div>
                 <p>See an issue with rendering or formatting? Please submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>

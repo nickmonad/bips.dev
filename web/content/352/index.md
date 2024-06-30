@@ -320,14 +320,6 @@ The sender performs the tweak using the private key for the nested _P2WPKH_ outp
 
 The receiver obtains the public key from the _scriptSig_. The receiver MUST parse the _scriptSig_ for the public key, even if the _scriptSig_ does not match the template specified (e.g. `<dummy> OP_DROP <Signature> <Public Key>`). This is to address the <a href="https://en.bitcoin.it/wiki/Transaction_malleability" target="_blank">third-party malleability of _P2PKH_ _scriptSigs_</a>.
 
-<h3> Input hash </h3>
-
-
-The sender and receiver MUST calculate an input hash for the transaction in the following manner:
-
-*  Let _input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)_, where _outpoint<sub>L</sub>_ is the smallest outpoint lexicographically by txid and vout used in the transaction<ref name="why_smallest_outpoint"></ref>
-
-
 <h3> Sender </h3>
 
 
@@ -350,7 +342,7 @@ After the inputs have been selected, the sender can create one or more outputs f
 *  For each private key _a<sub>i</sub>_ corresponding to a <a href="/341" target="_blank">BIP341</a> taproot output, check that the private key produces a point with an even Y coordinate and negate the private key if not<ref name="why_negate_taproot_private_keys">**Why do taproot private keys need to be checked?** Recall from <a href="/340" target="_blank">BIP340</a> that each X-only public key has two corresponding private keys, _d_ and _n - d_. To maintain parity between sender and receiver, it is necessary to use the private key corresponding to the even Y coordinate when performing the ECDH step since the receiver will assume the even Y coordinate when summing the taproot X-only public keys.</ref>
 *  Let _a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub>_, where each _a<sub>i</sub>_ has been negated if necessary
     *  If _a = 0_, fail
-*  Generate the _input_hash_ with the smallest outpoint lexicographically and _A = a·G_, using the method described above
+*  Let _input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)_, where _outpoint<sub>L</sub>_ is the smallest _outpoint_ lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref> and _A = a·G_
 *  Group receiver silent payment addresses by _B<sub>scan</sub>_ (e.g. each group consists of one _B<sub>scan</sub>_ and one or more _B<sub>m</sub>_)
 *  For each group:
     *  Let _ecdh_shared_secret = input_hash·a·B<sub>scan</sub>_
@@ -390,7 +382,7 @@ If each of the checks in _<a href="#scanning-silent-payment-eligible-transaction
 
 *  Let _A = A<sub>1</sub> + A<sub>2</sub> + ... + A<sub>n</sub>_, where each _A<sub>i</sub>_ is the public key of an input from the _<a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a>_ list
     *  If _A_ is the point at infinity, skip the transaction
-*  Generate the _input_hash_ with the smallest outpoint lexicographically and _A_, using the method described above
+*  Let _input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)_, where _outpoint<sub>L</sub>_ is the smallest _outpoint_ lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref>
 *  Let _ecdh_shared_secret = input_hash·b<sub>scan</sub>·A_
 *  Check for outputs:
     *  Let _outputs_to_check_ be the taproot output keys from all taproot outputs in the transaction (spent and unspent).
