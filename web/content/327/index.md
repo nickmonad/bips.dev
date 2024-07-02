@@ -224,9 +224,6 @@ The aggregate public key can be _tweaked_, which modifies the key as defined in 
 In order to apply a tweak, the KeyAgg Context output by _KeyAgg_ is provided to the _ApplyTweak_ algorithm with the _is_xonly_t_ argument set to false for plain tweaking and true for X-only tweaking.
 The resulting KeyAgg Context can be used to apply another tweak with _ApplyTweak_ or obtain the aggregate public key with _GetXonlyPubkey_ or _GetPlainPubkey_.
 
-In addition to individual public keys, the _KeyAgg_ algorithm accepts tweaks, which modify the aggregate public key as defined in the <a href="#tweaking-definition" target="_blank">Tweaking Definition</a> subsection.
-For example, if _KeyAgg_ is run with _v = 2_, _is_xonly_t<sub>1</sub> = false_, _is_xonly_t<sub>2</sub> = true_, then the aggregate key is first plain tweaked with _tweak<sub>1</sub>_ and then X-only tweaked with _tweak<sub>2</sub>_.
-
 The purpose of supporting tweaking is to ensure compatibility with existing uses of tweaking, i.e., that the result of signing is a valid signature for the tweaked public key.
 The MuSig2 algorithms take arbitrary tweaks as input but accepting arbitrary tweaks may negatively affect the security of the scheme.<ref>It is an open question whether allowing arbitrary tweaks from an adversary affects the unforgeability of MuSig2.</ref>
 Instead, signers should obtain the tweaks according to other specifications.
