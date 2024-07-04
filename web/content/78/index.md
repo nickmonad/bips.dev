@@ -123,7 +123,7 @@ The payjoin proposal PSBT is sent in the HTTP response body, base64 serialized w
 
 To ensure compatibility with web-wallets and browser-based-tools, all responses (including errors) must contain the HTTP header `Access-Control-Allow-Origin: *`.
 
-The sender must ensure that the url refers to a scheme or protocol using authenticated encryption, for example TLS with certificate validation, or a .onion link to a hidden service whose public key identifier has already been communicated via a TLS connection. Senders SHOULD NOT accept a url representing an unencrypted or unauthenticated connection.
+The sender must ensure that the URL refers to a scheme or protocol using authenticated encryption, for example TLS with certificate validation, or a .onion link to a hidden service whose public key identifier has already been communicated via a TLS connection. Senders SHOULD NOT accept a URL representing an unencrypted or unauthenticated connection.
 
 The original PSBT MUST:
 *  Have all the `witnessUTXO` or `nonWitnessUTXO` information filled in.
@@ -138,7 +138,7 @@ The original PSBT MAY:
 
 The payjoin proposal MUST:
 *  Use all the inputs from the original PSBT.
-*  Use all the outputs which do not belongs to the receiver from the original PSBT.
+*  Use all the outputs which do not belong to the receiver from the original PSBT.
 *  Only finalize the inputs added by the receiver. (Referred later as `additional inputs`)
 *  Only fill the `witnessUTXO` or `nonWitnessUTXO` for the additional inputs.
 
@@ -221,10 +221,10 @@ The well-known error codes are:
 |original-psbt-rejected|The receiver rejected the original PSBT.|
 
 
-The receiver is allowed to return implementation specific errors which may assist the sender to diagnose any issue.
+The receiver is allowed to return implementation-specific errors which may assist the sender to diagnose any issue.
 
 However, it is important that error codes that are not well-known and that the message do not appear on the sender's software user interface.
-Such error codes or messages could be used maliciously to phish a non technical user.
+Such error codes or messages could be used maliciously to phish a non-technical user.
 Instead those errors or messages can only appear in debug logs.
 
 It is advised to hard code the description of the well known error codes into the sender's software.
@@ -251,7 +251,7 @@ To prevent this, the sender can agree to pay more fee so the receiver make sure 
 *  The sender's transaction is time sensitive.
 
 
-When a sender pick a specific fee rate, the sender expects the transaction to be confirmed after a specific amount of time. But if the receiver adds an input without bumping the fee of the transaction, the payjoin transaction fee rate will be lower, and thus, longer to confirm.
+When a sender picks a specific fee rate, the sender expects the transaction to be confirmed after a specific amount of time. But if the receiver adds an input without bumping the fee of the transaction, the payjoin transaction fee rate will be lower, and thus, longer to confirm.
 
 Our recommendation for `maxadditionalfeecontribution=` is `originalPSBTFeeRate * vsize(sender_input_type)`.
 
@@ -275,8 +275,8 @@ The receiver needs to do some check on the original PSBT before proceeding:
 *  If the sender included inputs in the original PSBT owned by the receiver, the receiver must either return error `original-psbt-rejected` or make sure they do not sign those inputs in the payjoin proposal.
 *  If the sender's inputs are all from the same scriptPubKey type, the receiver must match the same type. If the receiver can't match the type, they must return error `unavailable`.
 *  Make sure that the inputs included in the original transaction have never been seen before.
-    *  This prevent <a href=" probing-attack" target="_blank">probing attacks</a>.
-    *  This prevent reentrant payjoin, where a sender attempts to use payjoin transaction as a new original transaction for a new payjoin.
+    *  This prevents <a href=" probing-attack" target="_blank">probing attacks</a>.
+    *  This prevents reentrant payjoin, where a sender attempts to use payjoin transaction as a new original transaction for a new payjoin.
 
 
 `*`: Interactive receivers are not required to validate the original PSBT because they are not exposed to <a href="#probing-attack" target="_blank">probing attacks</a>.
@@ -290,26 +290,26 @@ The sender should check the payjoin proposal before signing it to prevent a mali
 *  If the receiver's BIP21 signalled `pjos=0`, disable payment output substitution.
 *  Verify that the transaction version, and the nLockTime are unchanged.
 *  Check that the sender's inputs' sequence numbers are unchanged.
-*  For each inputs in the proposal:
-    *  Verify that no keypaths is in the PSBT input
+*  For each input in the proposal:
+    *  Verify that no keypaths are in the PSBT input
     *  Verify that no partial signature has been filled
-    *  If it is one of the sender's input
+    *  If it is one of the sender's inputs:
         *  Verify that input's sequence is unchanged.
         *  Verify the PSBT input is not finalized
         *  Verify that `non_witness_utxo` and `witness_utxo` are not specified.
-    *  If it is one of the receiver's input
+    *  If it is one of the receiver's inputs:
         *  Verify the PSBT input is finalized
         *  Verify that `non_witness_utxo` or `witness_utxo` are filled in.
-    *  Verify that the payjoin proposal did not introduced mixed input's sequence.
-    *  Verify that the payjoin proposal did not introduced mixed input's type.
+    *  Verify that the payjoin proposal inputs all specify the same sequence value.
+    *  Verify that the payjoin proposal did not introduce mixed input's type.
     *  Verify that all of sender's inputs from the original PSBT are in the proposal.
-*  For each outputs in the proposal:
-    *  Verify that no keypaths is in the PSBT output
+*  For each output in the proposal:
+    *  Verify that no keypaths are in the PSBT output
     *  If the output is the <a href=" fee-output" target="_blank">fee output</a>:
         *  The amount that was subtracted from the output's value is less than or equal to `maxadditionalfeecontribution`. Let's call this amount `actual contribution`.
-        *  Make sure the actual contribution is only paying fee: The `actual contribution` is less than or equals to the difference of absolute fee between the payjoin proposal and the original PSBT.
-        *  Make sure the actual contribution is only paying for fee incurred by additional inputs: `actual contribution` is less than or equals to `originalPSBTFeeRate * vsize(sender_input_type) * (count(payjoin_proposal_inputs) - count(original_psbt_inputs))`. (see <a href=" fee-output" target="_blank">Fee output</a> section)
-    *  If the output is the payment output and payment output substitution is allowed.
+        *  Make sure the actual contribution is only going towards fees: The `actual contribution` is less than or equals to the difference of absolute fee between the payjoin proposal and the original PSBT.
+        *  Make sure the actual contribution is only paying for fees incurred by additional inputs: `actual contribution` is less than or equal to `originalPSBTFeeRate * vsize(sender_input_type) * (count(payjoin_proposal_inputs) - count(original_psbt_inputs))`. (see <a href=" fee-output" target="_blank">Fee output</a> section)
+    *  If the output is the payment output and payment output substitution is allowed,
         *  Do not make any check
     *  Else
         *  Make sure the output's value did not decrease.
@@ -321,8 +321,8 @@ The sender must be careful to only sign the inputs that were present in the orig
 
 Note:
 *  The sender must allow the receiver to add/remove or modify the receiver's own outputs. (if payment output substitution is disabled, the receiver's outputs must not be removed or decreased in value)
-*  The sender should allow the receiver to not add any inputs. This is useful for the receiver to change the paymout output scriptPubKey type.
-*  If no input have been added, the sender's wallet implementation should accept the payjoin proposal, but not mark the transaction as an actual payjoin in the user interface.
+*  The sender should allow the receiver to not add any inputs. This is useful for the receiver to change the payment output scriptPubKey type.
+*  If the receiver added no inputs, the sender's wallet implementation should accept the payjoin proposal, but not mark the transaction as an actual payjoin in the user interface.
 
 
 Our method of checking the fee allows the receiver and the sender to batch payments in the payjoin transaction.
@@ -386,7 +386,7 @@ On top of this the receiver can poison analysis by randomly faking a round amoun
 <h3><span id"output-substitution"></span>Payment output substitution</h3>
 
 
-Unless disallowed by sender explicitly via `disableoutputsubstitution=true` or by the BIP21 url via query parameter the `pjos=0`, the receiver is free to decrease the amount, remove, or change the scriptPubKey output paying to himself.
+Unless disallowed by the sender explicitly via `disableoutputsubstitution=true` or by the BIP21 URL via the query parameter `pjos=0`, the receiver is free to decrease the amount, remove, or change the scriptPubKey output paying to himself.
 Note that if payment output substitution is disallowed, the reveiver can still increase the amount of the output. (See <a href="#reference-impl" target="_blank">the reference implementation</a>)
 
 For example, if the sender's scriptPubKey type is P2WPKH while the receiver's payment output in the original PSBT is P2SH, then the receiver can substitute the payment output to be P2WPKH to match the sender's scriptPubKey type.
@@ -402,7 +402,7 @@ A compromised payjoin server could steal the hot wallet outputs of the receiver,
 <h3>Impacted heuristics</h3>
 
 
-Our proposal of payjoin is breaking the following blockchain heuristics:
+Our proposal of payjoin breaks the following blockchain heuristics:
 
 *  Common inputs heuristics.
 
@@ -460,7 +460,7 @@ With payjoin, the maximum amount of money that can be lost is equal to two payme
 
 
 Here is pseudo code of a sender implementation.
-`RequestPayjoin` takes the bip21 URI of the payment, the wallet and the `signedPSBT`.
+`RequestPayjoin` takes the BIP21 URI of the payment, the wallet and the `signedPSBT`.
 
 The `signedPSBT` represents a PSBT which has been fully signed, but not yet finalized.
 We then prepare `originalPSBT` from the `signedPSBT` via the `CreateOriginalPSBT` function and get back the `proposal`.
@@ -724,7 +724,7 @@ A successful exchange with:
 <h2>Backward compatibility</h2>
 
 
-The receivers are advertising payjoin capabilities through <a href="/21" target="_blank">BIP21's URI Scheme</a>.
+The receivers advertise payjoin capabilities through <a href="/21" target="_blank">BIP21's URI Scheme</a>.
 
 Senders not supporting payjoin will just ignore the `pj` variable and thus, will proceed to normal payment.
 
