@@ -158,8 +158,9 @@
 <p>Payment instructions with on-chain addresses which will be re-used SHOULD be rotated as regularly as possible to reduce address reuse. Such payment instructions SHOULD also use a relatively short DNS TTL to ensure regular rotation takes effect quickly. In cases where this is not practical, payment instructions SHOULD NOT contain on-chain addresses (i.e. the URI path SHOULD be empty).</p>
 <p>Payment instructions which do contain on-chain addresses which will be re-used SHOULD be rotated after any transaction to such an address is confirmed on-chain.</p>
 <h3> Display </h3>
-<p>Wallets SHOULD parse recipient information in the form <code>user</code>@<code>domain</code> or ₿<code>user</code>@<code>domain</code> and resolve such entry into recipient information using the above record. Similarly, wallets accepting payment information from external devices (e.g. hardware wallets) SHOULD accept RFC 9102-formatted proofs (as a series of unsorted <code>AuthenticationChain</code> records) and, if they verify, SHOULD display the recipient in the form ₿<code>user</code>@<code>domain</code>. For the avoidance of doubt, the ₿ is <em>not</em> included in the DNS label which is resolved.</p>
-<p>Wallets providing users the ability to &quot;copy&quot; their address information generally SHOULD copy the underlying URI directly in order to avoid the DNS indirection. However, wallets providing users the ability to copy their human-readable address information MUST include the ₿ prefix (i.e. copy it in the form ₿<code>user</code>@<code>domain</code>).</p>
+<p>When displaying a verified human-readable address, wallets SHOULD prefix it with ₿, i.e. ₿<code>user</code>@<code>domain</code>. They SHOULD parse recipient information in both <code>user</code>@<code>domain</code> and ₿<code>user</code>@<code>domain</code> forms and resolve such entry into recipient information using the above record. For the avoidance of doubt, the ₿ is <em>not</em> included in the DNS label which is resolved.</p>
+<p>Wallets providing the ability for users to &quot;copy&quot; their address information SHOULD copy the underlying URI directly, rather than the human-readable address. This avoids an additional DNS lookup by the application in which it is pasted. Wallets that nevertheless provide users the ability to copy their human-readable address, MUST include the ₿ prefix (i.e. copy it in the form ₿<code>user</code>@<code>domain</code>).</p>
+<p>Wallets accepting payment information from external devices (e.g. hardware wallets) SHOULD accept RFC 9102-formatted proofs (as a series of unsorted <code>AuthenticationChain</code> records) and, if verification succeeds, SHOULD display the recipient in the form ₿<code>user</code>@<code>domain</code>.</p>
 <h2> Rationale </h2>
 <h3> Display </h3>
 <p>There are several ways in which human-readable payment instructions could be displayed in wallets. In order to ensure compatibility with existing human-readable names schemes, @ is used as the separator between the <code>user</code> and <code>domain</code> parts. However, simply using the @ separator can lead to confusion between email addresses on a given domain and payment instructions on a domain. In order to somewhat reduce the incidence of such confusion, a ₿ prefix is used.</p>
@@ -205,7 +206,7 @@ Note that <code>lno</code> indicates a value containing a lightning BOLT12 offer
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-07-12</p>
+                    <p class="font-bold">2024-07-13</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
