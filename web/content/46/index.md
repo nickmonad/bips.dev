@@ -123,7 +123,7 @@ To derive the address from the above calculated public key and timelock, we crea
 
 ```
     witnessScript: <timelock> OP_CHECKLOCKTIMEVERIFY OP_DROP <derived_key> OP_CHECKSIG
-    witness:      <signature> <pubkey>
+    witness:      <signature> <witnessScript>
     scriptSig:    (empty)
     scriptPubKey: 0 <32-byte-hash>
                   (0x0020{32-byte-hash})
