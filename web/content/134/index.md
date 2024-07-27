@@ -78,7 +78,7 @@ various decades ago with the XML format. The idea is that we give each
 field a name and this means that new fields can be added or optional fields
 can be omitted from individual transactions. Some other ideas are the
 standardization of data-formats (like integer and string encoding) so
-we create a more consistent system.  
+we create a more consistent system.
 One thing we shall not inherit from XML is its text-based format. Instead
 we use the <a href="https://github.com/bitcoinclassic/documentation/blob/master/spec/compactmessageformat.md" target="_blank">Compact Message Format</a>
 (CMF) which is optimized to keep the size small and fast to parse.

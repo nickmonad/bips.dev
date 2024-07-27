@@ -44,18 +44,18 @@ To define standard payment address for native segregated witness (segwit) transa
 The new Bitcoin address format defined is for the Pay-to-Witness-Public-Key-Hash (P2WPKH) and Pay-to-Witness-Script-Hash (P2WSH) transaction described in segregated witness soft fork (BIP141). The scriptPubKey is an OP_0 followed by a push of 20-byte-hash (P2WPKH) or 32-byte hash (P2WSH).
 
 The new address is encoded in a way similar to existing address formats:
+
 ```
-  
   base58-encode:
     [1-byte address version]
     [1-byte witness program version]
     [0x00]
     [20/32-byte-hash]
     [4-byte checksum]
-  
 ```
-For P2WPKH address, the address version is 6 (0x06) for a main-network address or 3 (0x03) for a testnet address.
 
+
+For P2WPKH address, the address version is 6 (0x06) for a main-network address or 3 (0x03) for a testnet address.
 
 For P2WSH address, the address version is 10 (0x0A) for a main-network address or 40 (0x28) for a testnet address.
 
@@ -126,40 +126,41 @@ This proposal is forward-compatible with future versions of witness programs of 
 
 
 The following public key,
+
 ```
-  
     0450863AD64A87AE8A2FE83C1AF1A8403CB53F53E486D8511DAD8A04887E5B23522CD470243453A299FA9E77237716103ABC11A1DF38855ED6F2EE187E9C582BA6
- 
 ```
+
+
 when encoded as a P2PKH template, would become:
 
 ```
-  
     DUP HASH160 <010966776006953D5567439E5E39F86A0D273BEE> EQUALVERIFY CHECKSIG
 ```
 
 
 With the corresponding version 1 Bitcoin address being:
-```
-  
-    16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM
- 
-```
-When the same public key is encoded as P2WPKH, the scriptPubKey becomes: 
 
 ```
-  
+    16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM
+```
+
+
+When the same public key is encoded as P2WPKH, the scriptPubKey becomes:
+
+```
     OP_0 <010966776006953D5567439E5E39F86A0D273BEE>
 ```
 
 
 Using 0x06 as address version, followed by 0x00 as witness program version, and a 0x00 padding, the equivalent P2WPKH address is:
+
 ```
-  
     p2xtZoXeX5X8BP8JfFhQK2nD3emtjch7UeFm
- 
-== Reference implementation ==
 ```
+
+
+<h2> Reference implementation </h2>
 
 
 https://github.com/theuni/bitcoin/commit/ede1b57058ac8efdefe61f67395affb48f2c0d80

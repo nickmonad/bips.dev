@@ -95,13 +95,13 @@ address with the following redeemscript.
 ```
 
 
-At any time funds can be spent using signatures from any two of Alice, 
+At any time funds can be spent using signatures from any two of Alice,
 Bob or the Escrow.
 
 After 30 days Alice can sign alone.
 
 The clock does not start ticking until the payment to the escrow address
-confirms. 
+confirms.
 
 
 <h3>Retroactive Invalidation</h3>
@@ -277,7 +277,7 @@ The 2-way pegged sidechain requires a new REORGPROOFVERIFY opcode, the semantics
 <h2>Specification</h2>
 
 
-Refer to the reference implementation, reproduced below, for the precise 
+Refer to the reference implementation, reproduced below, for the precise
 semantics and detailed rationale for those semantics.
 
 ```
@@ -294,7 +294,7 @@ static const uint32_t SEQUENCE_LOCKTIME_TYPE_FLAG = (1 << 22);
 /* If CTxIn::nSequence encodes a relative lock-time, this mask is
  * applied to extract that lock-time from the sequence field. */
 static const uint32_t SEQUENCE_LOCKTIME_MASK = 0x0000ffff;
-   
+
 case OP_NOP3:
 {
     if (!(flags & SCRIPT_VERIFY_CHECKSEQUENCEVERIFY)) {
@@ -337,7 +337,7 @@ case OP_NOP3:
 
     break;
 }
-    
+
 bool TransactionSignatureChecker::CheckSequence(const CScriptNum& nSequence) const
 {
     // Relative lock times are supported by comparing the passed

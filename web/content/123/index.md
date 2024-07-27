@@ -100,7 +100,7 @@ There's room at this layer to allow for competing standards without breaking bas
 <h3>4. Applications Layer</h3>
 
 
-The applications layer specifies high level structures, abstractions, and conventions that allow different applications to support similar features and share data. 
+The applications layer specifies high level structures, abstractions, and conventions that allow different applications to support similar features and share data.
 
 <h2>Classification of existing BIPs</h2>
 

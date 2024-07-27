@@ -65,20 +65,20 @@ By removing this data from the transaction structure committed to the transactio
 A new data structure, `witness`, is defined. Each transaction will have 2 IDs.
 
 Definition of `txid` remains unchanged: the double SHA256 of the traditional serialization format:
+
 ```
-  
   [nVersion][txins][txouts][nLockTime]
-  
 ```
+
+
 A new `wtxid` is defined: the double SHA256 of the new serialization with witness data:
 
 ```
-  
   [nVersion][marker][flag][txins][txouts][witness][nLockTime]
-  
 ```
-Format of `nVersion`, `txins`, `txouts`, and `nLockTime` are same as traditional serialization.
 
+
+Format of `nVersion`, `txins`, `txouts`, and `nLockTime` are same as traditional serialization.
 
 The `marker` MUST be a 1-byte zero value: `0x00`.
 
@@ -96,18 +96,21 @@ A new block rule is added which requires a commitment to the `wtxid`. The `wtxid
 A `witness root hash` is calculated with all those `wtxid` as leaves, in a way similar to the `hashMerkleRoot` in the block header.
 
 The commitment is recorded in a `scriptPubKey` of the coinbase transaction. It must be at least 38 bytes, with the first 6-byte of `0x6a24aa21a9ed`, that is:
+
 ```
-  
    1-byte - OP_RETURN (0x6a)
    1-byte - Push the following 36 bytes (0x24)
    4-byte - Commitment header (0xaa21a9ed)
   32-byte - Commitment hash: Double-SHA256(witness root hash|witness reserved value)
-  
-  39th byte onwards: Optional data with no consensus meaning
-  
 ```
-and the coinbase's input's witness must consist of a single 32-byte array for the `witness reserved value`.
 
+
+```
+  39th byte onwards: Optional data with no consensus meaning
+```
+
+
+and the coinbase's input's witness must consist of a single 32-byte array for the `witness reserved value`.
 
 If there are more than one `scriptPubKey` matching the pattern, the one with highest output index is assumed to be the commitment.
 

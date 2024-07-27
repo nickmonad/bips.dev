@@ -74,7 +74,7 @@ Pruned peers following this BIP may consume more outbound bandwidth.
 
 Light clients (and such) who are not checking the `nServiceFlags` (service bits) from a relayed `addr`-message may unwillingly connect to a pruned peer and ask for (filtered) blocks at a depth below their pruned depth. Light clients should therefore check the service bits (and eventually connect to peers signaling `NODE_NETWORK_LIMITED` if they require [filtered] blocks around the tip). Light clients obtaining peer IPs though DNS seed should use the DNS filtering option.
 
-<h2> Compatibility  </h2>
+<h2> Compatibility </h2>
 
 
 This proposal is backward compatible.

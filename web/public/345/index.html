@@ -158,20 +158,20 @@ usable for custodians of any size with minimal complication.</p>
 signature and passphrase&quot; using a hardware wallet. A user with such a
 configuration might be concerned about the risk associated with relying on a
 single manufacturer for key management, as well as physical access to the
-hardware. </p>
+hardware.</p>
 <p>This individual can use <code>OP_VAULT</code> to make use of a highly secure
 key as the unlikely recovery path, while using their existing signing procedure
-as the withdrawal trigger key with a configured spend delay of e.g. 1 day. </p>
+as the withdrawal trigger key with a configured spend delay of e.g. 1 day.</p>
 <p>The recovery path key can be of a highly secure nature that might otherwise
 make it impractical for daily use. For example, the key could be generated in
 some analog fashion, or on an old computer that is then destroyed, with the
 private key replicated only in paper form. Or the key could be a 2-of-3
 multisig using devices from different manufacturers. Perhaps the key is
-geographically or socially distributed. </p>
+geographically or socially distributed.</p>
 <p>Since it can be any Bitcoin script policy, the recovery key can include a
 number of spending conditions, e.g. a time-delayed fallback to an &quot;easier&quot;
 recovery method, in case the highly secure key winds up being <em>too</em> highly
-secure. </p>
+secure.</p>
 <p>The user can run software on their mobile device that monitors the blockchain
 for spends of the vault outpoints. If the vaulted coins move in an unexpected
 way, the user can immediately sweep them to the recovery path, but spending the
@@ -179,7 +179,7 @@ coins on a daily basis works in the same way it did prior to vaulting (aside
 from the spend delay).</p>
 <p>Institutional custodians of Bitcoin may use vaults in similar fashion.</p>
 <h5> Provable timelocks </h5>
-<p>This proposal provides a mitigation to the 
+<p>This proposal provides a mitigation to the
 <a href="https://web.archive.org/web/20230210123933/https://xkcd.com/538/" target="_blank">&quot;$5 wrench attack.&quot;</a> By
 setting the spend delay to, say, a week, and using as the recovery path a
 script that enforces a longer relative timelock, the owner of the vault can
@@ -191,7 +191,7 @@ timelocked coins for perpetuity or relying on a trusted third party.</p>
 <p>Vaults in Bitcoin have been discussed formally since 2016
 (<a href="http://fc16.ifca.ai/bitcoin/papers/MES16.pdf" target="_blank">MES16</a>) and informally since <a href="https://web.archive.org/web/20160220215151/https://bitcointalk.org/index.php?topic=511881.0" target="_blank">2014</a>. The value of
 having a configurable delay period with recovery capability in light of an
-unexpected spend has been widely recognized. </p>
+unexpected spend has been widely recognized.</p>
 <p>The only way to implement vaults given the existing consensus rules, aside from
 [https://github.com/revault emulating vaults with large multisig
 configurations], is to use presigned transactions created with a one-time-use
@@ -209,7 +209,7 @@ key. This approach was first demonstrated
 </ul>
 <p>The deployment of a &quot;precomputed&quot; covenant mechanism like
 <a href="/119" target="_blank">OP_CHECKTEMPLATEVERIFY</a> or
-<a href="/118" target="_blank">SIGHASH_ANYPREVOUT</a> 
+<a href="/118" target="_blank">SIGHASH_ANYPREVOUT</a>
 would both remove the necessity to use an ephemeral key, since the
 covenant is enforced on-chain, and lessen the burden of sensitive data storage,
 since the necessary transactions can be generated from a set of compact
@@ -232,7 +232,7 @@ operational overhead using a specialized covenant.</p>
 <p>The design goals of the proposal are:</p>
 <ul>
 <li>
-<p><strong>efficient reuse of an existing vault configuration.</strong><ref><strong>Why does this support address reuse?</strong> The proposal doesn't rely on or encourage address reuse, but certain uses are unsafe if address reuse cannot be handled - for example, if a custodian gives its users a vault address to deposit to, it cannot enforce that those users make a single deposit for each address.</ref> A single vault configuration, whether the same literal <code>scriptPubKey</code> or not, should be able to “receive” multiple deposits. </p>
+<p><strong>efficient reuse of an existing vault configuration.</strong><ref><strong>Why does this support address reuse?</strong> The proposal doesn't rely on or encourage address reuse, but certain uses are unsafe if address reuse cannot be handled - for example, if a custodian gives its users a vault address to deposit to, it cannot enforce that those users make a single deposit for each address.</ref> A single vault configuration, whether the same literal <code>scriptPubKey</code> or not, should be able to “receive” multiple deposits.</p>
 </li>
 <li>
 <p><strong>batched operations</strong> for recovery and withdrawal to allow managing multiple vault coins efficiently.</p>
@@ -256,7 +256,7 @@ of outputs created as well as script sizes.</p>
 taptree <a href="/341" target="_blank">(BIP-341)</a>
 containing at least two leaves: one with an <code>OP_VAULT</code>-containing script that
 facilitates the expected withdrawal process, and another leaf with
-<code>OP_VAULT_RECOVER</code> which ensures the coins can be recovered 
+<code>OP_VAULT_RECOVER</code> which ensures the coins can be recovered
 at any time prior to withdrawal finalization.</p>
 <p>The rules of <code>OP_VAULT</code> ensure the timelocked, interruptible
 withdrawal by allowing a spending transaction to replace the
@@ -264,7 +264,7 @@ withdrawal by allowing a spending transaction to replace the
 some parameters to be set at spend (trigger) time. All other leaves in the
 taptree must be unchanged in the destination output, which preserves the recovery path as well as any
 other spending conditions originally included in the vault. This is similar to
-the <code>TAPLEAF_UPDATE_VERIFY</code> design that was proposed 
+the <code>TAPLEAF_UPDATE_VERIFY</code> design that was proposed
 <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-September/019419.html" target="_blank">in 2021</a>.</p>
 <p>These tapleaf replacement rules, described more precisely below, ensure a
 timelocked withdrawal, where the timelock is fixed by the original
@@ -294,14 +294,14 @@ facilitate other kinds of withdrawal processes.</p>
 </ul>
 <h3> Fee management </h3>
 <p>A primary consideration of this proposal is how fee management is handled.
-Providing dynamic fee management is critical to the operation of a vault, since </p>
+Providing dynamic fee management is critical to the operation of a vault, since</p>
 <ul>
 <li>precalculated fees are prone to making transactions unconfirmable in high fee environments, and</li>
 <li>a fee wallet that is prespecified might be compromised or lost before use.</li>
 </ul>
 <p>But dynamic fee management can introduce
 <a href="https://bitcoinops.org/en/topics/transaction-pinning/" target="_blank">pinning vectors</a>. Care
-has been taken to avoid unnecessarily introducing these vectors when using the new 
+has been taken to avoid unnecessarily introducing these vectors when using the new
 destination-based spending policies that this proposal introduces.</p>
 <p>Originally, this proposal had a hard dependency on reformed transaction
 nVersion=3 policies, including ephemeral anchors, but it has since been revised
@@ -318,7 +318,7 @@ respectively.</p>
 <pre><code>&lt;leaf-update-script-body&gt;
 &lt;push-count&gt;
 [ &lt;push-count&gt; leaf-update script data items ... ]
-&lt;trigger-vout-idx&gt; 
+&lt;trigger-vout-idx&gt;
 &lt;revault-vout-idx&gt;
 &lt;revault-amount&gt;
 </code></pre>
@@ -511,10 +511,10 @@ unauthorized recovery transaction is limited.</p>
 that contains a taptree of the form</p>
 <pre><code>tr(&lt;internal-pubkey&gt;,
   leaves = {
-    recover: 
+    recover:
       &lt;recovery-sPK-hash&gt; OP_VAULT_RECOVER,
 
-    trigger: 
+    trigger:
       &lt;trigger-auth-pubkey&gt; OP_CHECKSIGVERIFY                     (i)
       &lt;spend-delay&gt; 2 $leaf-update-script-body OP_VAULT,          (ii)
 
@@ -536,12 +536,12 @@ that contains a taptree of the form</p>
 that it is controlled by the same descriptor as the recovery path, which
 facilitates another (though probably unused) means of recovering the vault
 output to the recovery path. This has the potential advantage of recovering the
-coin without ever revealing it was a vault. </p>
+coin without ever revealing it was a vault.</p>
 <p>Otherwise, the internal key can be chosen to be an unspendable NUMS point to
 force execution of the taptree contents.</p>
 <h3> Triggering a withdrawal </h3>
 <p>To make use of the vault, and spend it towards some output, we construct a spend
-of the above <code>tr()</code> output that simply replaces the &quot;trigger&quot; leaf with the 
+of the above <code>tr()</code> output that simply replaces the &quot;trigger&quot; leaf with the
 full leaf-update script (in this case, a timelocked CTV script):</p>
 <pre><code>Witness stack:
 
@@ -558,17 +558,17 @@ Output scripts:
 [
   tr(&lt;internal-pubkey&gt;,
     leaves = {
-      recover: 
+      recover:
         &lt;recovery-sPK-hash&gt; OP_VAULT_RECOVER,               &lt;--  unchanged
 
       trigger:
-        &lt;target-CTV-hash&gt; &lt;spend-delay&gt; 
-        OP_CHECKSEQUENCEVERIFY OP_DROP OP_CHECKTEMPLATEVERIFY  &lt;--  changed per the 
+        &lt;target-CTV-hash&gt; &lt;spend-delay&gt;
+        OP_CHECKSEQUENCEVERIFY OP_DROP OP_CHECKTEMPLATEVERIFY  &lt;--  changed per the
                                                                     leaf-update
                                                                     rules of OP_VAULT
        ... [ possibly other leaves ]
      }
-   ),                                                               
+   ),
 
    [ optional revault output with the
      same sPK as the original vault output ],
@@ -588,7 +588,7 @@ recovery process gated by a script fragment prefixing the
 <code>OP_VAULT_RECOVER</code> instruction in the &quot;recover&quot; leaf. Its use
 entails trade-offs.</p>
 <h4> Unauthorized recovery </h4>
-<p>Unauthorized recovery simplifies vault use in that recovery never requires additional information aside from the location of the vault outpoints and the recovery path - the &quot;authorization&quot; is simply the reveal of the recovery path, i.e. the preimage of <code>&lt;recovery-sPK-hash&gt;</code>. </p>
+<p>Unauthorized recovery simplifies vault use in that recovery never requires additional information aside from the location of the vault outpoints and the recovery path - the &quot;authorization&quot; is simply the reveal of the recovery path, i.e. the preimage of <code>&lt;recovery-sPK-hash&gt;</code>.</p>
 <p>But because this reveal is the only authorization necessary to spend the vault coins to recovery, the user must expect to recover all such vaults at once, since an observer can replay this recovery (provided they know the outpoints).</p>
 <p>Additionally, unauthorized recovery across multiple distinct recovery paths
 cannot be done in the same transaction, and fee control is more constrained:
@@ -597,11 +597,11 @@ management relies either on inputs which are completely spent to fees or the
 use of the optional ephemeral anchor and package relay.</p>
 <p>These limitations are to avoid pinning attacks.</p>
 <h4> Authorized recovery </h4>
-<p>With authorized recovery, the user must keep track of an additional piece of information: how to solve the recovery authorization script fragment when recovery is required. </p>
+<p>With authorized recovery, the user must keep track of an additional piece of information: how to solve the recovery authorization script fragment when recovery is required.</p>
 <p>If this key is lost, the user will be unable to initiate the recovery process for their coins. If an attacker obtains the recovery key, they may grief the user during the recovery process by constructing a low fee rate recovery transaction and broadcasting it (though they will not be able to pin because of the replaceability requirement on recovery transactions).</p>
 <p>However, authorized recovery configurations have significant benefits. Batched recoveries are possible for vaults with otherwise incompatible recovery parameters. Fee management is much more flexible, since authorized recovery transactions are &quot;free form&quot; and unrelated inputs and outputs can be added, potentially to handle fees.</p>
 <h4> Recommendation: use a simple, offline recovery authorization key seed </h4>
-<p>The benefits of batching and fee management that authorized recovery provides are significant. If the recovery authorization key falls into the hands of an attacker, the outcome is not catastrophic, whereas if the user loses their recovery authorization key as well as their trigger key, the result is likely coin loss. Consequently, the author's recommendation is to use a simple seed for the recovery authorization key that can be written down offline and replicated. </p>
+<p>The benefits of batching and fee management that authorized recovery provides are significant. If the recovery authorization key falls into the hands of an attacker, the outcome is not catastrophic, whereas if the user loses their recovery authorization key as well as their trigger key, the result is likely coin loss. Consequently, the author's recommendation is to use a simple seed for the recovery authorization key that can be written down offline and replicated.</p>
 <p>Note that the recovery authorization key <strong>is not</strong> the recovery path key, and
 this is <strong>much different</strong> than any recommendation on how to generate the
 recovery path key itself.</p>
@@ -619,7 +619,7 @@ the trigger authorization pubkeys.</p>
 <p>Note that when using unauthorized recovery, the reveal of the
 recovery scriptPubKey will allow any observer to initiate the recovery process
 for any vault with matching recovery params, provided they are able to locate
-the vault outpoints. As a result, it is recommended to expect that 
+the vault outpoints. As a result, it is recommended to expect that
 <strong>all outputs sharing an identical unauthorized <code>&lt;recovery-sPK-hash&gt;</code> should be recovered together</strong>.</p>
 <p>This situation can be avoided with a comparable key management model by varying
 the generation of each vault's recovery scriptPubKey along a single descriptor,
@@ -655,7 +655,7 @@ are essentially dependent on v3 transaction relay policy being deployed.</p>
 <h4> During trigger </h4>
 <p><code>OP_VAULT</code> outputs with the same taptree, aside from slightly
 different trigger leaves, can be batched together in the same withdrawal
-process. Two &quot;trigger&quot; leaves are compatible if they have the same 
+process. Two &quot;trigger&quot; leaves are compatible if they have the same
 <code>OP_VAULT</code> arguments.</p>
 <p>Note that this allows the trigger authorization -- the script prefixing the
 <code>OP_VAULT</code> invocation -- to differ while still allowing batching.</p>
@@ -675,7 +675,7 @@ withdrawals.</p>
 can be recovered into the same output.</p>
 <p>Recovery-incompatible vaults which have authorized recovery can be recovered in
 the same transaction, so long as each set (grouped by
-<code>&lt;recovery-sPK-hash&gt;</code>) has an associated <em>recoveryOut</em>. This allows 
+<code>&lt;recovery-sPK-hash&gt;</code>) has an associated <em>recoveryOut</em>. This allows
 unrelated recoveries to share common fee management.</p>
 <h3> Watchtowers </h3>
 <p>The value of vaults is contingent upon having monitoring in place that will
@@ -737,7 +737,7 @@ deployments for OP_CHECKSEQUENCEVERIFY and OP_CHECKLOCKTIMEVERIFY (see
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-07-26</p>
+                    <p class="font-bold">2024-07-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

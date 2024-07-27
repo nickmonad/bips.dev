@@ -227,7 +227,7 @@
 <li>An M2 is already in this block.</li>
 <li>It tries to ACK two different M1s for the same slot.</li>
 </ul>
-<p>Otherwise: </p>
+<p>Otherwise:</p>
 <ul>
 <li>The sidechain is &quot;ACK&quot;ed and does NOT get a &quot;fail&quot; for this block. (As it otherwise would.)</li>
 </ul>
@@ -245,7 +245,7 @@
 <h5> What are Bundles? </h5>
 <p>Sidechain withdrawals take the form of &quot;Bundles&quot; -- named because they &quot;bundle up&quot; many individual withdrawal-requests into a single rare layer1 transaction.</p>
 <p>Sidechain full nodes aggregate the withdrawal-requests into a big set. The sidechain calculates what M6 would have to look like, to pay all of these withdrawal-requests out. Finally, the sidechain calculates what the hash of this M6 would be. This 32-byte hash identifies the Bundle.</p>
-<p>This 32-byte hash is what miners will be slowly ACKing over 3-6 months, not the M6 itself (nor any sidechain data, of course). </p>
+<p>This 32-byte hash is what miners will be slowly ACKing over 3-6 months, not the M6 itself (nor any sidechain data, of course).</p>
 <p>A bundle either pays all its withdrawals out (via M6), or else it fails (and pays nothing out).</p>
 <h5> Bundle Hash  Blinded TxID of M6 </h5>
 <p>The Bundle hash is static as it is being ACKed. Unfortunately, the M6 TxID will be constantly changing -- as users deposit to the sidechain, the input to M6 will change.</p>
@@ -274,7 +274,7 @@
     1-byte - Version
     n-byte - The &quot;upvote vector&quot; -- describes which bundle-choice is &quot;upvoted&quot;, for each sidechain.
 </code></pre>
-<p>The upvote vector will code &quot;abstain&quot; as 0xFF (or 0xFFFF); it will code &quot;alarm&quot; as 0xFE (or 0xFFFE). Otherwise it simply indicates which withdrawal-bundle in the list, is the one to be &quot;upvoted&quot;. </p>
+<p>The upvote vector will code &quot;abstain&quot; as 0xFF (or 0xFFFF); it will code &quot;alarm&quot; as 0xFE (or 0xFFFE). Otherwise it simply indicates which withdrawal-bundle in the list, is the one to be &quot;upvoted&quot;.</p>
 <p>For example: if there are two sidechains, and we wish to upvote the 7th bundle on sidechain #1 plus the 4th bundle on sidechain #2, then the upvote vector would be { 07, 04 }. And M4 would be [0x6A,D77D1776,00,0006,0003].</p>
 <p>The version number allows us to shrink the upvote vector in many cases.
 Version 0x00 omits the upvote vector entirely (ie, 6 bytes for the whole M4) and sets this block's M4 equal to the previous block's M4.
@@ -329,7 +329,7 @@ Version 0x03 omits the upvote vector, and instead upvotes only those withdrawals
 <li>The txn fee of M6 is NOT exactly equal to the amount of the previous bullet point.</li>
 <li>There are additional OP_DRIVECHAIN outputs after the first one.</li>
 </ul>
-<p>Else, M6 is valid. </p>
+<p>Else, M6 is valid.</p>
 <p>(The point of the latter two bullet points, is to allow the bundle hash to cover the L1 transaction fee.)</p>
 <h3>OP_DRIVECHAIN</h3>
 <p>This proposal adds a single new opcode, OP_DRIVECHAIN, which has strict semantics for usage.
@@ -395,7 +395,7 @@ As a soft fork, older software will continue to operate without modification. No
 &lt;h2&gt;Deployment&lt;&#x2F;h2&gt;
 
 
-This BIP will be deployed via UASF-style block height activation. Block height TBD. 
+This BIP will be deployed via UASF-style block height activation. Block height TBD.
 
 
 &lt;h2&gt;Reference Implementation&lt;&#x2F;h2&gt;
@@ -435,7 +435,7 @@ This BIP is licensed under the BSD 2-clause license.
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-07-26</p>
+                    <p class="font-bold">2024-07-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

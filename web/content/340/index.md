@@ -84,7 +84,7 @@ encodings and operations.
 1.  Signatures are pairs _(R, s)_ that satisfy _s⋅G = R + hash(R || m)⋅P_. This supports batch verification, as there are no elliptic curve operations inside the hashes. Batch verification enables significant speedups.<ref>The speedup that results from batch verification can be demonstrated with the cryptography library <a href="https://github.com/jonasnick/secp256k1/blob/schnorrsig-batch-verify/doc/speedup-batch.md" target="_blank">libsecp256k1</a>.</ref>
 
 
-Since we would like to avoid the fragility that comes with short hashes, the _e_ variant does not provide significant advantages. We choose the _R_-option, which supports batch verification. 
+Since we would like to avoid the fragility that comes with short hashes, the _e_ variant does not provide significant advantages. We choose the _R_-option, which supports batch verification.
 
 **Key prefixing** Using the verification rule above directly makes Schnorr signatures vulnerable to "related-key attacks" in which a third party can convert a signature _(R, s)_ for public key _P_ into a signature _(R, s + a⋅hash(R || m))_ for public key _P + a⋅G_ and the same message _m_, for any given additive tweak _a_ to the signing key. This would render signatures insecure when keys are generated using <a href="/32" target="_blank">BIP32's unhardened derivation</a> and other methods that rely on additive tweaks to existing keys such as Taproot.
 

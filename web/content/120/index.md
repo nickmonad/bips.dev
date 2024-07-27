@@ -103,7 +103,7 @@ An illustration of the PoP data structure and its original payment is shown belo
  |input2 4,ffffffff     | 1,pay to B              |
  |                      | 4,pay to C              |
  +------------------------------------------------+
- 
+
   PoP(T)
  +-------------------------------------------------------------+
  | inputs               | outputs                              |

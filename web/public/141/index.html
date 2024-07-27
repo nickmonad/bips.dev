@@ -157,14 +157,10 @@
 <h3> Transaction ID </h3>
 <p>A new data structure, <code>witness</code>, is defined. Each transaction will have 2 IDs.</p>
 <p>Definition of <code>txid</code> remains unchanged: the double SHA256 of the traditional serialization format:</p>
-<pre><code>  
-  [nVersion][txins][txouts][nLockTime]
-  
+<pre><code>  [nVersion][txins][txouts][nLockTime]
 </code></pre>
 <p>A new <code>wtxid</code> is defined: the double SHA256 of the new serialization with witness data:</p>
-<pre><code>  
-  [nVersion][marker][flag][txins][txouts][witness][nLockTime]
-  
+<pre><code>  [nVersion][marker][flag][txins][txouts][witness][nLockTime]
 </code></pre>
 <p>Format of <code>nVersion</code>, <code>txins</code>, <code>txouts</code>, and <code>nLockTime</code> are same as traditional serialization.</p>
 <p>The <code>marker</code> MUST be a 1-byte zero value: <code>0x00</code>.</p>
@@ -175,14 +171,12 @@
 <p>A new block rule is added which requires a commitment to the <code>wtxid</code>. The <code>wtxid</code> of coinbase transaction is assumed to be <code>0x0000....0000</code>.</p>
 <p>A <code>witness root hash</code> is calculated with all those <code>wtxid</code> as leaves, in a way similar to the <code>hashMerkleRoot</code> in the block header.</p>
 <p>The commitment is recorded in a <code>scriptPubKey</code> of the coinbase transaction. It must be at least 38 bytes, with the first 6-byte of <code>0x6a24aa21a9ed</code>, that is:</p>
-<pre><code>  
-   1-byte - OP_RETURN (0x6a)
+<pre><code>   1-byte - OP_RETURN (0x6a)
    1-byte - Push the following 36 bytes (0x24)
    4-byte - Commitment header (0xaa21a9ed)
   32-byte - Commitment hash: Double-SHA256(witness root hash|witness reserved value)
-  
-  39th byte onwards: Optional data with no consensus meaning
-  
+</code></pre>
+<pre><code>  39th byte onwards: Optional data with no consensus meaning
 </code></pre>
 <p>and the coinbase's input's witness must consist of a single 32-byte array for the <code>witness reserved value</code>.</p>
 <p>If there are more than one <code>scriptPubKey</code> matching the pattern, the one with highest output index is assumed to be the commitment.</p>
@@ -374,7 +368,7 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-07-26</p>
+                    <p class="font-bold">2024-07-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

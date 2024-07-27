@@ -38,14 +38,14 @@ This BIP describes a script for generalized off-chain contract negotiation.
 <h2>Summary</h2>
 
 
-A Hashed Time-Locked Contract (HTLC) is a script that permits a designated party (the "seller") to spend funds by disclosing the preimage of a hash.  It also permits 
+A Hashed Time-Locked Contract (HTLC) is a script that permits a designated party (the "seller") to spend funds by disclosing the preimage of a hash.  It also permits
 a second party (the "buyer") to spend the funds after a timeout is reached, in a refund situation.
 
 The script takes the following form:
 
 ```
     OP_IF
-        [HASHOP] <digest> OP_EQUALVERIFY OP_DUP OP_HASH160 <seller pubkey hash>            
+        [HASHOP] <digest> OP_EQUALVERIFY OP_DUP OP_HASH160 <seller pubkey hash>
     OP_ELSE
         <num> [TIMEOUTOP] OP_DROP OP_DUP OP_HASH160 <buyer pubkey hash>
     OP_ENDIF
@@ -68,15 +68,15 @@ The script takes the following form:
     *  Victor recovers the funds after the timeout threshold.
 
 
-Victor is interested in a lower timeout to reduce the amount of time that his funds are encumbered in the event that Peggy does not reveal the preimage.  Peggy is 
-interested in a higher timeout to reduce the risk that she is unable to spend the funds before the threshold, or worse, that her transaction spending the funds does 
+Victor is interested in a lower timeout to reduce the amount of time that his funds are encumbered in the event that Peggy does not reveal the preimage.  Peggy is
+interested in a higher timeout to reduce the risk that she is unable to spend the funds before the threshold, or worse, that her transaction spending the funds does
 not enter the blockchain before Victor's but does reveal the preimage to Victor anyway.
 
 <h2>Motivation</h2>
 
 
-In many off-chain protocols, secret disclosure is used as part of a settlement mechanism.  In some others, the secrets themselves are valuable.  HTLC transactions are 
-a safe and cheap method of exchanging secrets for money over the blockchain, due to the ability to recover funds from an uncooperative counterparty, and the 
+In many off-chain protocols, secret disclosure is used as part of a settlement mechanism.  In some others, the secrets themselves are valuable.  HTLC transactions are
+a safe and cheap method of exchanging secrets for money over the blockchain, due to the ability to recover funds from an uncooperative counterparty, and the
 opportunity that the possessor of a secret has to receive the funds before such a refund can occur.
 
 <h3>Lightning network</h3>
@@ -84,15 +84,15 @@ opportunity that the possessor of a secret has to receive the funds before such 
 
 In the lightning network, HTLC scripts are used to perform atomic swaps between payment channels.
 
-Alice constructs K and hashes it to produce L.  She sends an HTLC payment to Bob for the preimage of L.  Bob sends an HTLC payment to Carol for the same preimage and 
-amount.  Only when Alice releases the preimage K does any exchange of value occur, and because the secret is divulged for each hop, all parties are compensated.  If 
+Alice constructs K and hashes it to produce L.  She sends an HTLC payment to Bob for the preimage of L.  Bob sends an HTLC payment to Carol for the same preimage and
+amount.  Only when Alice releases the preimage K does any exchange of value occur, and because the secret is divulged for each hop, all parties are compensated.  If
 at any point some parties become uncooperative, the process can be aborted via the refund conditions.
 
 <h3>Zero-knowledge contingent payments</h3>
 
 
-Various practical zero-knowledge proving systems exist which can be used to guarantee that a hash preimage derives valuable information.  As an example, a 
-zero-knowledge proof can be used to prove that a hash preimage acts as a decryption key for an encrypted sudoku puzzle solution.  (See 
+Various practical zero-knowledge proving systems exist which can be used to guarantee that a hash preimage derives valuable information.  As an example, a
+zero-knowledge proof can be used to prove that a hash preimage acts as a decryption key for an encrypted sudoku puzzle solution.  (See
 <a href="https://github.com/zcash/pay-to-sudoku" target="_blank">pay-to-sudoku</a> for a concrete example of such a protocol.)
 
 HTLC transactions can be used to exchange such decryption keys for money without risk, and they do not require large or expensive-to-validate transactions.

@@ -96,7 +96,7 @@ solve the challenge and reconnect, or discard it and find a different peer (or w
 
 There are two POW identifiers currently. When a new identifier is introduced, it should be added with an increment of 1
 to the last identifier in the list. When an identifier is deprecated, its status should be changed to `Deprecated` but it should
-retain its place in the list indefinitely. 
+retain its place in the list indefinitely.
 
 
 |ID|Algorithm Name|Work|Param size|Solution size|Provably Secure|SPH Resistance|Status|
@@ -192,7 +192,7 @@ Additional notes:
 There is only one Purpose Identifier currently. In the future, more Purpose Identifiers could be added for at-DoS-risk operations,
 such as bloom filters. When a new identifier is introduced, it should be added with an increment of 1 to the last identifier in the
 list. When an identifier is deprecated, its status should be changed to `Deprecated` but it should retain its place in
-the list indefinitely. 
+the list indefinitely.
 
 
 |ID|Purpose Name|Description|Status|

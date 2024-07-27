@@ -160,7 +160,7 @@ other one simultaneously transitions to STARTED, which would mean both would dem
 Note that a block's state never depends on its own nVersion; only on that of its ancestors.
 
 ```
-        case STARTED: 
+        case STARTED:
             if (GetMedianTimePast(block.parent) >= timeout) {
                 return FAILED;
             }

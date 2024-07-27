@@ -112,7 +112,7 @@ installation of malicious or incorrect profiles, though.
 <h2>Specification</h2>
 
 
-The format for the template was chosen to make it easy to read, convenient and visually unambiguous. 
+The format for the template was chosen to make it easy to read, convenient and visually unambiguous.
 
 Template starts with optional prefix `m/`, and then one or more sections delimited by the slash character (`/`).
 

@@ -139,7 +139,7 @@
 <p>All references to median-time-past (MTP) are as defined by BIP113.</p>
 <p>If bit (1 &lt;&lt; 31) of the sequence number is set, then no consensus meaning is applied to the sequence number and can be included in any block under all currently possible circumstances.</p>
 <p>If bit (1 &lt;&lt; 31) of the sequence number is not set, then the sequence number is interpreted as an encoded relative lock-time.</p>
-<p>The sequence number encoding is interpreted as follows: </p>
+<p>The sequence number encoding is interpreted as follows:</p>
 <p>Bit (1 &lt;&lt; 22) determines if the relative lock-time is time-based or block based: If the bit is set, the relative lock-time specifies a timespan in units of 512 seconds granularity. The timespan starts from the median-time-past of the output’s previous block, and ends at the MTP of the previous block. If the bit is not set, the relative lock-time specifies a number of blocks.</p>
 <p>The flag (1&lt;&lt;22) is the highest order bit in a 3-byte signed integer for use in bitcoin scripts as a 3-byte PUSHDATA with OP_CHECKSEQUENCEVERIFY (BIP 112).</p>
 <p>This specification only interprets 16 bits of the sequence number as relative lock-time, so a mask of 0x0000ffff MUST be applied to the sequence field to extract the relative lock-time. The 16-bit specification allows for a year of relative lock-time and the remaining bits allow for future expansion.</p>
@@ -157,7 +157,7 @@ The mining date of the output is equal to the median-time-past of the previous b
     &#x2F;* Interpret sequence numbers as relative lock-time constraints. *&#x2F;
     LOCKTIME_VERIFY_SEQUENCE = (1 &lt;&lt; 0),
 };
-    
+
 &#x2F;* Setting nSequence to this value for every input in a transaction
  * disables nLockTime. *&#x2F;
 static const uint32_t SEQUENCE_FINAL = 0xffffffff;
@@ -322,7 +322,7 @@ bool CheckSequenceLocks(const CTransaction &amp;tx, int flags)
 <pre><code>    &#x2F;&#x2F; 0 &lt;= nHeight &lt; 65,535 blocks (1.25 years)
     nSequence = nHeight;
     nHeight = nSequence &amp; 0x0000ffff;
-    
+
     &#x2F;&#x2F; 0 &lt;= nTime &lt; 33,554,431 seconds (1.06 years)
     nSequence = (1 &lt;&lt; 22) | (nTime &gt;&gt; 9);
     nTime = (nSequence &amp; 0x0000ffff) &lt;&lt; 9;
@@ -343,7 +343,7 @@ bool CheckSequenceLocks(const CTransaction &amp;tx, int flags)
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-07-26</p>
+                    <p class="font-bold">2024-07-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

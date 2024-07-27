@@ -118,7 +118,7 @@ https://github.com/bitcoin/bitcoin/pull/8391.
 <h2>References</h2>
 
 
-<a href="/34" target="_blank">BIP34 Block v2, Height in Coinbase</a> 
+<a href="/34" target="_blank">BIP34 Block v2, Height in Coinbase</a>
 
 <a href="/66" target="_blank">BIP66 Strict DER signatures</a>
 

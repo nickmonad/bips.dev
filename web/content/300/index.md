@@ -190,7 +190,7 @@ M2 is invalid if:
 *  It tries to ACK two different M1s for the same slot.
 
 
-Otherwise: 
+Otherwise:
 
 *  The sidechain is "ACK"ed and does NOT get a "fail" for this block. (As it otherwise would.)
 
@@ -223,7 +223,7 @@ Sidechain withdrawals take the form of "Bundles" -- named because they "bundle u
 
 Sidechain full nodes aggregate the withdrawal-requests into a big set. The sidechain calculates what M6 would have to look like, to pay all of these withdrawal-requests out. Finally, the sidechain calculates what the hash of this M6 would be. This 32-byte hash identifies the Bundle.
 
-This 32-byte hash is what miners will be slowly ACKing over 3-6 months, not the M6 itself (nor any sidechain data, of course). 
+This 32-byte hash is what miners will be slowly ACKing over 3-6 months, not the M6 itself (nor any sidechain data, of course).
 
 A bundle either pays all its withdrawals out (via M6), or else it fails (and pays nothing out).
 
@@ -274,7 +274,7 @@ M4 is a coinbase OP Return output containing the following:
 ```
 
 
-The upvote vector will code "abstain" as 0xFF (or 0xFFFF); it will code "alarm" as 0xFE (or 0xFFFE). Otherwise it simply indicates which withdrawal-bundle in the list, is the one to be "upvoted". 
+The upvote vector will code "abstain" as 0xFF (or 0xFFFF); it will code "alarm" as 0xFE (or 0xFFFE). Otherwise it simply indicates which withdrawal-bundle in the list, is the one to be "upvoted".
 
 For example: if there are two sidechains, and we wish to upvote the 7th bundle on sidechain #1 plus the 4th bundle on sidechain #2, then the upvote vector would be { 07, 04 }. And M4 would be [0x6A,D77D1776,00,0006,0003].
 
@@ -364,7 +364,7 @@ M6 is invalid if:
 *  There are additional OP_DRIVECHAIN outputs after the first one.
 
 
-Else, M6 is valid. 
+Else, M6 is valid.
 
 (The point of the latter two bullet points, is to allow the bundle hash to cover the L1 transaction fee.)
 
@@ -443,7 +443,7 @@ As a soft fork, older software will continue to operate without modification. No
 <h2>Deployment</h2>
 
 
-This BIP will be deployed via UASF-style block height activation. Block height TBD. 
+This BIP will be deployed via UASF-style block height activation. Block height TBD.
 
 
 <h2>Reference Implementation</h2>

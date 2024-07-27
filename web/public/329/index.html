@@ -145,8 +145,8 @@ In addition, many wallets allow unspent outputs to be frozen or made unspendable
 SLIP-0015<ref><a href="https://github.com/satoshilabs/slips/blob/master/slip-0015.md" target="_blank">SLIP-0015</a></ref> defines a format for exporting address and output labels, but requires encryption using a private key associated with the wallet seed, and thus cannot be used independently by coordinator wallets which cannot access private keys.
 The Electrum wallet imports and exports address and transaction labels in a JSON format which could be used with other record types, but the format used is not self describing making record type identification difficult.</p>
 <h2>Specification</h2>
-<p>In order to be lightweight, human readable and well structured, this BIP uses a JSON format. 
-Further, the JSON Lines format is used (also called newline-delimited JSON)<ref><a href="https://jsonlines.org/" target="_blank">jsonlines.org</a></ref>. 
+<p>In order to be lightweight, human readable and well structured, this BIP uses a JSON format.
+Further, the JSON Lines format is used (also called newline-delimited JSON)<ref><a href="https://jsonlines.org/" target="_blank">jsonlines.org</a></ref>.
 This allows a document to be split, streamed, or incrementally added to, and limits the potential for formatting errors to invalidate an entire import.
 It is also a convenient format for command-line processing, which is often line-oriented.</p>
 <p>Further to the JSON Lines specification, an export of labels from a wallet must be a UTF-8 encoded text file, containing one record per line consisting of a valid JSON object.
@@ -171,7 +171,7 @@ Each JSON object must contain 3 or 4 key/value pairs, defined as follows:</p>
 <p>Each JSON object must contain both <tt>type</tt> and <tt>ref</tt> properties. The <tt>label</tt>, <tt>origin</tt> and <tt>spendable</tt> properties are optional. If the <tt>label</tt> or <tt>spendable</tt> properties are omitted, the importing wallet should not alter these values. The <tt>origin</tt> property should only appear where type is <tt>tx</tt>, and the <tt>spendable</tt> property only where type is <tt>output</tt>.</p>
 <p>If present, the optional <tt>origin</tt> property must contain an abbreviated output descriptor (as defined by BIP380<ref><a href="/380" target="_blank">BIP-0380</a></ref>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
 This property should be used to disambiguate transaction labels from different wallets contained in the same export, particularly when exporting multiple accounts derived from the same seed.</p>
-<p>Care should be taken when exporting due to the privacy sensitive nature of the data. 
+<p>Care should be taken when exporting due to the privacy sensitive nature of the data.
 Encryption in transit over untrusted networks is highly recommended, and encryption at rest should also be considered.
 Unencrypted exports should be deleted as soon as possible.
 For security reasons no private key types are defined.</p>
@@ -182,7 +182,7 @@ For security reasons no private key types are defined.</p>
 <li>Wallets importing extended public keys may match them against signers, for example in a multisig setup.</li>
 </ul>
 <h2>Backwards Compatibility</h2>
-<p>The nature of this format makes it naturally extensible to handle other record types. 
+<p>The nature of this format makes it naturally extensible to handle other record types.
 However, importing wallets complying to this specification may ignore types not defined here.</p>
 <h2>Test Vectors</h2>
 <p>The following fragment represents a wallet label export:</p>
@@ -208,7 +208,7 @@ However, importing wallets complying to this specification may ignore types not 
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-07-26</p>
+                    <p class="font-bold">2024-07-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

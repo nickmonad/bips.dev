@@ -67,7 +67,7 @@ OP_CAT aims to expand the toolbox of the tapscript developer with a simple, modu
 *  Replicating CheckSigFromStack <ref>A. Poelstra, "CAT and Schnorr Tricks I", 2021, https://medium.com/blockstream/cat-and-schnorr-tricks-i-faf1b59bd298</ref> which would allow the creation of simple covenants and other advanced contracts without having to presign spending transactions, possibly reducing complexity and the amount of data that needs to be stored. Originally shown to work with Schnorr signatures, this result has been extended to ECDSA signatures <ref>R. Linus, "Covenants with CAT and ECDSA", 2023, https://gist.github.com/RobinLinus/9a69f5552be94d13170ec79bf34d5e85 file-covenants_cat_ecdsa-md</ref>.
 
 
-OP_CAT was available in early versions of Bitcoin. 
+OP_CAT was available in early versions of Bitcoin.
 In 2010, a single commit disabled OP_CAT, along with another 15 opcodes.
 Folklore states that OP_CAT was removed in this commit because it enabled the construction of a script whose evaluation could have memory usage exponential in the size of the script.
 For example, a script that pushed a 1-byte value on the stack and then repeated the opcodes OP_DUP, OP_CAT 40 times would result in a stack element whose size was greater than 1 terabyte assuming no maximum stack element size. As Bitcoin at that time had a maximum stack element size of 5000 bytes, the effect of this expansion was limited to 5000 bytes.
@@ -137,5 +137,5 @@ An alternative implementation of OP_CAT can be found in Elements <ref>Roose S., 
 <h2>Acknowledgements</h2>
 
 
-We wish to acknowledge Dan Gould for encouraging and helping review this effort. We also want to thank Madars Virza, Jeremy Rubin, Andrew Poelstra, Bob Summerwill, 
+We wish to acknowledge Dan Gould for encouraging and helping review this effort. We also want to thank Madars Virza, Jeremy Rubin, Andrew Poelstra, Bob Summerwill,
 Tim Ruffing and Johan T. Halseth for their feedback, review and helpful comments.

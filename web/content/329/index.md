@@ -61,8 +61,8 @@ The Electrum wallet imports and exports address and transaction labels in a JSON
 <h2>Specification</h2>
 
 
-In order to be lightweight, human readable and well structured, this BIP uses a JSON format. 
-Further, the JSON Lines format is used (also called newline-delimited JSON)<ref><a href="https://jsonlines.org/" target="_blank">jsonlines.org</a></ref>. 
+In order to be lightweight, human readable and well structured, this BIP uses a JSON format.
+Further, the JSON Lines format is used (also called newline-delimited JSON)<ref><a href="https://jsonlines.org/" target="_blank">jsonlines.org</a></ref>.
 This allows a document to be split, streamed, or incrementally added to, and limits the potential for formatting errors to invalidate an entire import.
 It is also a convenient format for command-line processing, which is often line-oriented.
 
@@ -98,7 +98,7 @@ Each JSON object must contain both <tt>type</tt> and <tt>ref</tt> properties. Th
 If present, the optional <tt>origin</tt> property must contain an abbreviated output descriptor (as defined by BIP380<ref><a href="/380" target="_blank">BIP-0380</a></ref>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
 This property should be used to disambiguate transaction labels from different wallets contained in the same export, particularly when exporting multiple accounts derived from the same seed.
 
-Care should be taken when exporting due to the privacy sensitive nature of the data. 
+Care should be taken when exporting due to the privacy sensitive nature of the data.
 Encryption in transit over untrusted networks is highly recommended, and encryption at rest should also be considered.
 Unencrypted exports should be deleted as soon as possible.
 For security reasons no private key types are defined.
@@ -114,7 +114,7 @@ For security reasons no private key types are defined.
 <h2>Backwards Compatibility</h2>
 
 
-The nature of this format makes it naturally extensible to handle other record types. 
+The nature of this format makes it naturally extensible to handle other record types.
 However, importing wallets complying to this specification may ignore types not defined here.
 
 <h2>Test Vectors</h2>

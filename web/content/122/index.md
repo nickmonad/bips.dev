@@ -85,9 +85,9 @@ The **chain ID** of a chain is the block hash of the corresponding genesis block
 
 So, for example:
 ```
-Bitcoin main   : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f 
+Bitcoin main   : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
 Bitcoin test   : 000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943
-Bitcoin regtest: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206 
+Bitcoin regtest: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206
 ```
 
 An example of forked chain (Feathercoin, that forked Litecoin):
@@ -97,26 +97,43 @@ An example of forked chain (Feathercoin, that forked Litecoin):
 ```
 Litecoin   : 12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2
 Feathercoin: fdbe99b90c90bae7505796461471d89ae8388ab953997aa06a355bbda8d915cb
-</pre>  
+```
 
 
-==Examples==
+<h2>Examples</h2>
+
 
 A transaction on Bitcoin main net:
+```
  blockchain:/tx/b462ae6eb8bdae2e060239a2a3ea5d9c3e0f9ef34d9717beb2dcf0ed42cee7da
+```
+
 
 A block on Bitcoin main net:
+```
  blockchain:/block/00000000000000000119af5bcae2926df54ae262e9071a94a99c913cc217cc72
+```
 or
+
+```
  blockchain:/block/372338
+```
+
 
 An address on Bitcoin main net:
+```
  blockchain:/address/16EW6Rv9P9AxFDBrZV816dD4sj1EAYUX3f
+```
+
 
 A transaction on Bitcoin test net:
+```
  blockchain://000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943/tx/3b95a766d7a99b87188d6875c8484cb2b310b78459b7816d4dfc3f0f7e04281a
+```
 
-==Rationale==
+
+<h2>Rationale</h2>
+
 
 From the point of view of a wallet (or other Blockchain related tool) developers which need to reference Blockchain data, using this scheme mean that he can simply make it a `blockchain:` link without having to worry about any specific Blockchain explorer or provide a means for the user to select one.
 
@@ -124,15 +141,18 @@ Blockchain explorers in turn will simply offer to handle the `blockchain:` URI s
 
 Users can link directly to their preferred block explorer (avoiding copy + paste which can be awkward on mobile devices).
 
-== Sample implementation ==
+<h2> Sample implementation </h2>
 
-[https://github.com/MarcoPon/blockchain-exploration Demo Blockchain: URI handler on GitHub]
 
-==Acknowledgements==
+<a href="https://github.com/MarcoPon/blockchain-exploration" target="_blank">Demo Blockchain: URI handler on GitHub</a>
+
+<h2>Acknowledgements</h2>
+
 
 Thanks to Btc Drak for suggesting support for different networks and Jorge Timon for the suggestion that we could identify each network by its genesis block hash.
 Thanks to Richard Moore, Matt Whitlock, Andreas Schildbach for help with the structure and hierarchy of the URI scheme.
 
-==Copyright==
+<h2>Copyright</h2>
+
 
 This document is placed in the public domain.

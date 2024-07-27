@@ -132,41 +132,37 @@
 <h2>Abstract</h2>
 <p>This BIP describes a method to deterministically generate multi-signature pay-to-script-hash transaction scripts.  It focuses on defining how the public keys must be encoded and sorted so that the redeem script and corresponding P2SH address are always the same for a given set of keys and number of required signatures.</p>
 <h2>Motivation</h2>
-<p>Pay-to-script-hash (BIP-0011<ref><a href="/11" target="_blank">BIP-0011</a></ref>) is a transaction type that allows funding of arbitrary scripts, where the recipient carries the cost of fee's associated with using longer, more complex scripts. </p>
+<p>Pay-to-script-hash (BIP-0011<ref><a href="/11" target="_blank">BIP-0011</a></ref>) is a transaction type that allows funding of arbitrary scripts, where the recipient carries the cost of fee's associated with using longer, more complex scripts.</p>
 <p>Multi-signature pay-to-script-hash transactions are defined in BIP-0016<ref><a href="/16" target="_blank">BIP-0016</a></ref>. The redeem script does not require a particular ordering or encoding for public keys.  This means that for a given set of keys and number of required signatures, there are as many as 2(n!) possible standard redeem scripts, each with its separate P2SH address.  Adhering to an ordering and key encoding would ensure that a multi-signature “account” (set of public keys and required signature count) has a canonical P2SH address.</p>
 <p>By adopting a sorting and encoding standard, compliant wallets will always produce the same P2SH address for the same given set of keys and required signature count, making it easier to recognize transactions involving that multi-signature account.  This is particularly attractive for multisignature hierarchical-deterministic wallets, as less state is required to setup multi-signature accounts:  only the number of required signatures and master public keys of participants need to be shared, and all wallets will generate the same addresses.</p>
 <p>While most web wallets do not presently facilitate the setup of multisignature accounts with users of a different service, conventions which ensure cross-compatibility should make it easier to achieve this.</p>
-<p>Many wallet as a service providers use a 2of3 multi-signature schema where the user stores 1 of the keys (offline) as backup while using the other key for daily use and letting the service cosign his transactions.<br />
+<p>Many wallet as a service providers use a 2of3 multi-signature schema where the user stores 1 of the keys (offline) as backup while using the other key for daily use and letting the service cosign his transactions.
 This standard will help in enabling a party other than the service provider to recover the wallet without any help from the service provider.</p>
 <h2>Specification</h2>
 <p>For a set of public keys, ensure that they have been received in compressed form:</p>
-<pre><code>    
-    022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da
-    03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9 
+<pre><code>    022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da
+    03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9
     021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18
- 
 </code></pre>
-<p>Sort them lexicographically according to their binary representation: </p>
-<pre><code>    
-    021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18
+<p>Sort them lexicographically according to their binary representation:</p>
+<pre><code>    021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18
     022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da
     03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9
 </code></pre>
 <p>..before using the resulting list of keys in a standard multisig redeem script:</p>
-<pre><code>    
-    OP_2 021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18 022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da 03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9 OP_3 OP_CHECKMULTISIG
+<pre><code>    OP_2 021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18 022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da 03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9 OP_3 OP_CHECKMULTISIG
 </code></pre>
 <p>Hash the redeem script according to BIP-0016 to get the P2SH address.</p>
-<pre><code>    
-    3Q4sF6tv9wsdqu2NtARzNCpQgwifm2rAba
-    
-==Compatibility==
-* Uncompressed keys are incompatible with this specification. A compatible implementation should not automatically compress keys.  Receiving an uncompressed key from a multisig participant should be interpreted as a sign that the user has an incompatible implementation.
-* P2SH addresses do not reveal information about the script that is receiving the funds. For this reason it is not technically possible to enforce this BIP as a rule on the network.  Also, it would cause a hard fork.
-* Implementations that do not conform with this BIP will have compatibility issues with strictly-compliant wallets.
-* Implementations which do adopt this standard will be cross-compatible when choosing multisig addresses.
-* If a group of users were not entirely compliant, there is the possibility that a participant will derive an address that the others will not recognize as part of the common multisig account.
+<pre><code>    3Q4sF6tv9wsdqu2NtARzNCpQgwifm2rAba
 </code></pre>
+<h2>Compatibility</h2>
+<ul>
+<li>Uncompressed keys are incompatible with this specification. A compatible implementation should not automatically compress keys.  Receiving an uncompressed key from a multisig participant should be interpreted as a sign that the user has an incompatible implementation.</li>
+<li>P2SH addresses do not reveal information about the script that is receiving the funds. For this reason it is not technically possible to enforce this BIP as a rule on the network.  Also, it would cause a hard fork.</li>
+<li>Implementations that do not conform with this BIP will have compatibility issues with strictly-compliant wallets.</li>
+<li>Implementations which do adopt this standard will be cross-compatible when choosing multisig addresses.</li>
+<li>If a group of users were not entirely compliant, there is the possibility that a participant will derive an address that the others will not recognize as part of the common multisig account.</li>
+</ul>
 <h2>Test vectors</h2>
 <p>Two signatures are required in each of these test vectors.</p>
 <p>Vector 1</p>
@@ -196,14 +192,14 @@ This standard will help in enabling a party other than the service provider to r
 </ul>
 <p>Vector 2 (Already sorted, no action required)</p>
 <ul>
-<li>List: 
+<li>List:
 <ul>
 <li>02632b12f4ac5b1d1b72b2a3b508c19172de44f6f46bcee50ba33f3f9291e47ed0</li>
 <li>027735a29bae7780a9755fae7a1c4374c656ac6a69ea9f3697fda61bb99a4f3e77</li>
 <li>02e2cc6bd5f45edd43bebe7cb9b675f0ce9ed3efe613b177588290ad188d11b404</li>
 </ul>
 </li>
-<li>Sorted: 
+<li>Sorted:
 <ul>
 <li>02632b12f4ac5b1d1b72b2a3b508c19172de44f6f46bcee50ba33f3f9291e47ed0</li>
 <li>027735a29bae7780a9755fae7a1c4374c656ac6a69ea9f3697fda61bb99a4f3e77</li>
@@ -231,7 +227,7 @@ This standard will help in enabling a party other than the service provider to r
 <li>030000000000000000000000000000000000004141414141414141414141414140</li>
 </ul>
 </li>
-<li>Sorted: 
+<li>Sorted:
 <ul>
 <li>020000000000000000000000000000000000004141414141414141414141414140</li>
 <li>020000000000000000000000000000000000004141414141414141414141414141</li>
@@ -252,14 +248,14 @@ This standard will help in enabling a party other than the service provider to r
 </ul>
 <p>Vector 4: (from bitcore)</p>
 <ul>
-<li>List: 
+<li>List:
 <ul>
 <li>022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da</li>
-<li>03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9 </li>
+<li>03e3818b65bcc73a7d64064106a859cc1a5a728c4345ff0b641209fba0d90de6e9</li>
 <li>021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18</li>
 </ul>
 </li>
-<li>Sorted: 
+<li>Sorted:
 <ul>
 <li>021f2f6e1e50cb6a953935c3601284925decd3fd21bc445712576873fb8c6ebc18</li>
 <li>022df8750480ad5b26950b25c7ba79d3e37d75f640f8e5d9bcd5b150a0f85014da</li>
@@ -278,13 +274,13 @@ This standard will help in enabling a party other than the service provider to r
 </li>
 </ul>
 <h2>Acknowledgements</h2>
-<p>The authors wish to thank BtcDrak and Luke-Jr for their involvement &amp; contributions in the early discussions of this BIP. </p>
-<h2>Usage & Implementations </h2>
+<p>The authors wish to thank BtcDrak and Luke-Jr for their involvement &amp; contributions in the early discussions of this BIP.</p>
+<h2>Usage & Implementations</h2>
 <ul>
-<li><a href="/45" target="_blank">BIP-0045</a> - Structure for Deterministic P2SH Multisignature Wallets </li>
-<li><a href="https://github.com/bitpay/bitcore/blob/50a868cb8cdf2be04bb1c5bf4bcc064cc06f5888/lib/script/script.js L541" target="_blank">Bitcore</a> </li>
+<li><a href="/45" target="_blank">BIP-0045</a> - Structure for Deterministic P2SH Multisignature Wallets</li>
+<li><a href="https://github.com/bitpay/bitcore/blob/50a868cb8cdf2be04bb1c5bf4bcc064cc06f5888/lib/script/script.js L541" target="_blank">Bitcore</a></li>
 <li><a href="https://github.com/haskoin/haskoin-core/blob/b41b1deb0989334a7ead6fc993fb8b02f0c00810/haskoin-core/Network/Haskoin/Script/Parser.hs L112-L122" target="_blank">Haskoin</a> - Bitcoin implementation in Haskell</li>
-<li><a href="https://github.com/etotheipi/BitcoinArmory/blob/268db0f3fa20c989057bd43343a43b2edbe89aeb/armoryengine/ArmoryUtils.py L1441" target="_blank">Armory</a> </li>
+<li><a href="https://github.com/etotheipi/BitcoinArmory/blob/268db0f3fa20c989057bd43343a43b2edbe89aeb/armoryengine/ArmoryUtils.py L1441" target="_blank">Armory</a></li>
 <li><a href="https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/script/ScriptBuilder.java L331" target="_blank">BitcoinJ</a></li>
 </ul>
 <h2> References </h2>
@@ -301,7 +297,7 @@ This standard will help in enabling a party other than the service provider to r
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-07-26</p>
+                    <p class="font-bold">2024-07-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

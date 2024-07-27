@@ -92,4 +92,4 @@ bitcoin:?r=https://merchant.com/pay.php?h%3D2a8628fc2fbe
 <h2>References</h2>
 
 
-<a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html" target="_blank">RFC 2616</a> : Hypertext Transfer Protocol -- HTTP/1.1 
+<a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html" target="_blank">RFC 2616</a> : Hypertext Transfer Protocol -- HTTP/1.1

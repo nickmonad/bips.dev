@@ -66,7 +66,7 @@ interpreted as described in RFC 2119<ref><a href="https://tools.ietf.org/html/rf
 
 The `addrv2` message is defined as a message where `pchCommand == "addrv2"`.
 It is serialized in the standard encoding for P2P messages.
-Its format is similar to the current `addr` message format, with the difference that the 
+Its format is similar to the current `addr` message format, with the difference that the
 fixed 16-byte IP address is replaced by a network ID and a variable-length address, and the services format has been changed to <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer" target="_blank">CompactSize</a>.
 
 This means that the message contains a serialized `std::vector` of the following structure:
