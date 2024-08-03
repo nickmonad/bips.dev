@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 94: Testnet 4" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 94: Testnet 4" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 94: Testnet 4</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 94: Testnet 4</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2024-05-27</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0094.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 94
+  Layer: Applications
+  Title: Testnet 4
+  Author: Fabian Jahr &lt;fjahr@protonmail.com&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0094
+  Status: Draft
+  Type: Standards Track
+  Created: 2024-05-27
+  License: CC0-1.0
+  Post-History: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;CADL_X_eXjbRFROuJU0b336vPVy5Q2RJvhcx64NSNPH-3fDCUfw@mail.gmail.com&#x2F;
+                https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;a6e3VPsXJf9p3gt_FmNF_Up-wrFuNMKTN30-xCSDHBKXzXnSpVflIZIj2NQ8Wos4PhQCzI2mWEMvIms_FAEs7rQdL15MpC_Phmu_fnR9iTg=@protonmail.com&#x2F;
+                https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bitcoin&#x2F;pull&#x2F;29775
+</code></pre>
+<h2> Abstract </h2>
+<p>A new test network with the goal to replace Testnet 3. This network comes with small but important improvements of the consensus rules, that should make it impractical to attack the network using only CPU mining.</p>
+<h2> Motivation </h2>
+<p>Quoting the original mailing list post from Jameson Lopp<ref>https://gnusha.org/pi/bitcoindev/CADL_X_eXjbRFROuJU0b336vPVy5Q2RJvhcx64NSNPH-3fDCUfw@mail.gmail.com/</ref>:</p>
+<blockquote><poem>
+Testnet3 has been running for 13 years. It's on block 2.5 million something and the block reward is down to ~0.014 TBTC, so mining is not doing a great job at distributing testnet coins anymore.
+<p>The reason the block height is insanely high is due to a rather amusing edge case bug that causes the difficulty to regularly get reset to 1, which causes a bit of havoc. If you want a deep dive into the quirk: https://blog.lopp.net/the-block-storms-of-bitcoins-testnet/</p>
+<p>Testnet3 is being actively used for scammy airdrops; those of us who tend to be generous with our testnet coins are getting hounded by non-developers chasing cheap gains.</p>
+<p>As a result, TBTC is being actively bought and sold; one could argue that the fundamental principle of testnet coins having no value has been broken.
+</poem></blockquote></p>
+<p>Since then the issue with block storms has been further demonstrated on Testnet 3 when three years' worth of blocks were mined in a few weeks while rendering the network practically unusable at the same time.</p>
+<h2> Specification </h2>
+<p>Consensus of Testnet 4 follows the same rules as mainnet with the exception of the three rules detailed below. Additionally all soft forks that are active on mainnet as of May 2024 are enforced from genesis.</p>
+<h3> 20-minute Exception </h3>
+<p>This rule was already previously implemented and active in Testnet 3<ref>https://github.com/bitcoin/bitcoin/pull/686</ref>.</p>
+<p>A block with a timestamp that is more than 20 minutes past the timestamp of the previous block must have a minimum difficulty of 1 (the network's minimum difficulty) instead of whatever the actual difficulty level currently is. This applies to all blocks in a difficulty period except for the first block. This means the blocks must change their <code>nBits</code> field from the actual difficulty level to the minimum difficulty value <code>0x1d00ffff</code>.</p>
+<p>This rule also led to the block storms<ref>https://blog.lopp.net/the-block-storms-of-bitcoins-testnet/</ref> which the following rule seeks to fix.</p>
+<h3> Block Storm Fix </h3>
+<p>The work required for a new difficulty period is calculated as multiplication factor to the difficulty of the previous period (but no less than 1/4th and no more than 4x), depending on the duration of the previous difficulty period. On Mainnet and Testnet 3, this factor is applied to the difficulty value of the last block.</p>
+<p>Block storms happen organically whenever the 20-minute exception is applied to a difficulty period’s last block, causing the block to be mined at a difficulty of 1. The difficulty adjustment rules then limit the subsequent period’s difficulty to a value between 1 (the minimum) and 4. Blocks will be generated rapidly in the subsequent low-difficulty periods while the difficulty climbs back to an adequate range. An arbitrarily large number of blocks can be generated quickly by repeatedly using the 20-minute exception on every last block of difficulty periods. The block storm is then bounded only by miner hash rate, the need for last blocks to have a timestamp 20 minutes after the second to last block, the Median-Time-Past nTime rule, and the requirement that blocks can't be more than 2 hours in the future. Overall a sustained attack would eventually be limited to a maximum cadence of six blocks per second.</p>
+<p>A block storm does not require a time warp attack, but one can be used to amplify<ref>A perpetual block storm attack with entire difficulty periods being authored in less than 3.5 days that resets the difficulty to the minimum in the last block of every difficulty period would adjust to a new actual difficulty of 4 every period. An attacker that additionally leverages a time warp attack would start their attack by holding back timestamps until the latest block’s timestamp is at least two weeks in the past, and then limiting their block rate to six blocks per second, incrementing the timestamp on every sixth block. Only on the last block they would use the current time, which both resets the difficulty to one per the 20-minute exception and would result in a difficulty adjustment keeping the difficulty at the minimum due to the elapsed time exceeding the target. This would allow lower the difficulty for all blocks to difficulty 1 instead of difficulty 4</ref> it.</p>
+<p>The mitigation consists of no longer applying the adjustment factor to the last block of the previous difficulty period. Instead, the first block of the difficulty period is used as the base.</p>
+<p>The first block must contain the actual difficulty of the network and can therefore be used as the base for the calculation of the new difficulty level. Note that the first block in new difficulty period does not allow usage of the 20-minute exception (this is prior behavior). This means that in each difficulty period the first block should always have the actual difficulty even if all other blocks were mined with the 20-minute exception.</p>
+<h3> Time Warp Fix </h3>
+<p>In addition to a time warp attack potentially exacerbating the perpetual block storm attack, a time warp attack provides an alternative way to increase the block production rate even if the unintended reset of the actual difficulty due to the 20-minute exception was mitigated.</p>
+<p>To protect against the time warp attack, the following rule proposed as part of The Great Consensus Cleanup<ref>https://github.com/TheBlueMatt/bips/blob/cleanup-softfork/bip-XXXX.mediawiki</ref> is enforced: &quot;The nTime field of each block whose height, mod 2016, is 0 must be greater than or equal to the nTime field of the immediately prior block minus 600. For the avoidance of doubt, such blocks must still comply with existing Median-Time-Past nTime restrictions.&quot;</p>
+<h2> Rationale </h2>
+<p>The applied changes were the result of discussions on the mailing list and the PR. The selected changes try to strike a balance between minimal changes to the network (keeping it as close to mainnet as possible) while making it more robust against attackers that try to disrupt the network. Several alternative designs were considered:</p>
+<ul>
+<li>For the block storm fix an alternative fix could have been to prevent the last block in a difficulty period from applying the existing difficulty exception. Both solutions were deemed acceptable and there was no clear preference among reviewers.</li>
+<li>Removal of the 20-minute exception was discussed but dismissed since several reviewers insisted that it was a useful feature allowing non-standard transactions to be mined with just a CPU. The 20-minute exception also allows CPU users to move the chain forward (except on the first block that needs to be mined at actual difficulty) in case a large amount of hash power suddenly leaves the network. This would allow the chain to recover to a normal difficulty level faster if left stranded at high difficulty.</li>
+<li>Increase of minimum difficulty was discussed but dismissed as it would categorically prevent participation in the network using a CPU miner (utilizing the 20-minute exception).</li>
+<li>Increase of the delay in the 20-minute exception was suggested but did not receive significant support.</li>
+<li>Re-enabling <code>acceptnonstdtxn</code> in bitcoin core by default was dismissed as it had led to confusion among layer-2s that had used testnet for transaction propagation tests and expected it to behave similar to mainnet.</li>
+<li>Motivating miners to re-org min difficulty blocks was suggested, but was considered out of scope for this BIP, since adoption of such a mining policy remains available after Testnet 4 is deployed. As 20-minute exception blocks only contribute work corresponding to difficulty one to the chaintip, and actual difficulty blocks should have a difficulty magnitudes higher, a block mined at actual difficulty could easily replace even multiple 20-minute exception blocks.</li>
+<li>Persisting the real difficulty in the version field was suggested to robustly prevent exploits of the 20-minute exception while allowing it to be used on any block, but did not receive a sufficient level of support to justify the more invasive change.</li>
+</ul>
+<p>One known downside of the chosen approach is that if the difficulty is gradually raised by a miner with significant hash rate, and this miner disappears, then each difficulty adjustment period requires one block at the actual difficulty.</p>
+<p>This would cause the network to stall once per difficulty adjustment period until the real difficulty is adjusted downwards enough for the remaining hash rate to find this block in reasonable time.</p>
+<h2> Network Parameters </h2>
+<h3> Consensus Rules </h3>
+<p>All consensus rules active on mainnet at the time of this proposal are enforced from block 1, the newest of these rules being the Taproot softfork.</p>
+<h3> Genesis Block </h3>
+<ul>
+<li>Message: <code>03/May/2024 000000000000000000001ebd58c244970b3aa9d783bb001011fbe8ea8e98e00e</code></li>
+<li>Pubkey: <code>000000000000000000000000000000000000000000000000000000000000000000</code></li>
+<li>Time stamp: 1714777860</li>
+<li>Nonce: 393743547</li>
+<li>Difficulty: <code>0x1d00ffff</code></li>
+<li>Version: 1</li>
+</ul>
+<p>The resulting genesis block hash is <code>00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043</code>, and the block hex is <code>01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5504ffff001d01044c4c30332f4d61792f323032342030303030303030303030303030303030303030303165626435386332343439373062336161396437383362623030313031316662653865613865393865303065ffffffff0100f2052a010000002321000000000000000000000000000000000000000000000000000000000000000000ac00000000</code>.</p>
+<h3> Message Start </h3>
+<p>The message start is defined as <code>0x1c163f28</code>. These four bytes were randomly generated and have no special meaning.</p>
+<h2> Backwards Compatibility </h2>
+<p>The rules used by Testnet 4 are backwards compatible to the rules of Testnet 3. Existing software that implements support for Testnet 3 would only require addition of the network parameters  (magic number, genesis block, etc.) to be able to follow Testnet 4. </p>
+<p>However, implementations that only implement Testnet 3’s rules would accept a chain that violates Testnet 4’s rules and are therefore susceptible to being forked off. It is recommended that any implementations check blocks in regard to all the new rules of Testnet 4 and reject blocks that fail to comply.</p>
+<h2> Reference implementation </h2>
+<p>Pull request at https://github.com/bitcoin/bitcoin/pull/29775</p>
+<h2> References </h2>
+<references/>
+<h2> Copyright </h2>
+<p>This document is licensed under the  Creative Commons CC0 1.0 Universal license.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2024-08-03</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
