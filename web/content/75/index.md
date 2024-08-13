@@ -233,7 +233,7 @@ message EncryptedProtocolMessage {
 
 The full process overview for using **InvoiceRequests** in the Payment Protocol is defined below.
 <br/><br/>
-All Payment Protocol messages MUST be encapsulated in either a <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> or <a href="#EncryptedProcotolMessage" target="_blank">EncryptedProtocolMessage</a>. Once the process begins using <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> messages, all subsequent communications MUST use <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessages</a>.
+All Payment Protocol messages MUST be encapsulated in either a <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> or <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a>. Once the process begins using <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> messages, all subsequent communications MUST use <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessages</a>.
 <br/><br/>
 All Payment Protocol messages SHOULD be communicated using <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> encapsulating messages with the exception that an <a href="#InvoiceRequest" target="_blank">InvoiceRequest</a> MAY be communicated using the <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> if the receiver's public key is unknown.
 <br/><br/>

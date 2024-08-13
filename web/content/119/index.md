@@ -435,7 +435,7 @@ transaction preimages.
 
 
 The Taproot/Schnorr BIPs use Tagged Hashes
-(`SHA256(SHA256(tag)||SHA256(tag)||msg)`) to prevent taproot leafs, branches,
+(`SHA256(SHA256(tag)||SHA256(tag)||msg)`) to prevent taproot leaves, branches,
 tweaks, and signatures from overlapping in a way that might introduce a security
 <a href="vulnerability" target="_blank">https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-June/016091.html</a>.
 
@@ -545,7 +545,7 @@ The preimage argument passed to CHECKTEMPLATEVERIFY may be unknown or otherwise 
 However, requiring knowledge that an address is spendable from is incompatible with sender's ability
 to spend to any address (especially, OP_RETURN). If a sender needs to know the template can be spent
 from before sending, they may request a signature of an provably non-transaction challenge string
-from the leafs of the CHECKTEMPLATEVERIFY tree.
+from the leaves of the CHECKTEMPLATEVERIFY tree.
 
 <h4>Forwarding Addresses</h4>
 
