@@ -129,8 +129,8 @@
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
-<p>Blind Merged Mining (BMM) allows miners to mine a Sidechain/Altcoin, without running its node software (ie, without &quot;looking&quot; at it, hence &quot;blind&quot;).</p>
-<p>Instead, a separate sidechain user runs their node and constructs the block, paying himself the transaction fees. He then uses an equivalent amount of money to &quot;buy&quot; the right to find this block, from the conventional layer1 Sha256d miners.</p>
+<p>Blind Merged Mining (BMM) allows SHA-256d miners to collect transaction fee revenue from other blockchains, without running any new software (i.e., without &quot;looking&quot; at those alt-chains, hence &quot;blind&quot;).</p>
+<p>Instead, this block-assembly work is done by alt-chain users. They choose the alt-chain block, and what txns go in it, the fees etc. Simultaneously, these users &quot;bid&quot; on L1 to win the right to be the sole creator of the alt-chain block. BIP-301 ensures that L1 miners only accept one bid (per 10 minutes, per L2 category), instead of taking all of them (which is what they would ordinarily do).</p>
 <h2>Motivation</h2>
 <p>&quot;Merged-Mining&quot; (MM) allows miners to reuse their hashing work to secure other chains (for example, as in Namecoin).</p>
 <p>However, traditional MM has two drawbacks:</p>
@@ -139,8 +139,8 @@
 <li>Miners are paid on the other chain, in Alt-currency. (Miners who MM Namecoin, will earn NMC.)</li>
 </ol>
 <h2>Notation and Example</h2>
-<p>Note: We use notation side:* and main:* in front of otherwise-ambiguous words (such as &quot;block&quot;, &quot;node&quot;, or &quot;chain&quot;), to sort the mainchain version from its sidechain counterpart. We name all sidechain users &quot;Simon&quot;, and name all mainchain miners &quot;Mary&quot;.</p>
-<p>Example: imagine that a sidechain block contains 20,000 txns, each paying a $0.10 fee; therefore, the block is worth $2000 of fee-revenue. As usual: the sidechain's coinbase txn will pay this $2000 to someone (in this case, &quot;Simon&quot;). Under Bip301, Simon does no hashing, but instead makes one layer1 txn paying $1999 to the layer1 miners (&quot;Mary&quot;).</p>
+<p>We use notation side:* and main:* in front of otherwise ambiguous words (such as &quot;block&quot;, &quot;node&quot;, or &quot;chain&quot;), to distinguish the mainchain version from its sidechain/alt-chain counterpart. We name all sidechain users &quot;Simon&quot;, and name all mainchain miners &quot;Mary&quot;.</p>
+<p>Furthermore, here is an example of BIP-301 in use. Imagine that a side:block contains 20,000 txns, each paying a $0.10 fee; therefore, the side:block is worth $2000 of fee revenue. In BIP-301, the sidechain's coinbase txn will pay this $2000 to &quot;Simon&quot;. Simon does no hashing, but instead makes one L1 txn paying $1999 to the L1 miners (&quot;Mary&quot;). Thus, Mary ends up with all of the fee revenue, even though she didn't do anything on the sidechain.</p>
 <table><thead><tr><th>Item</th><th>Layer1 Miner (&quot;Mary&quot;)</th><th>Sidechain User (&quot;Simon&quot;)</th></tr></thead><tbody>
 <tr><td>Runs a sidechain node?</td><td>No</td><td>Yes</td></tr>
 <tr><td>How much hashing?</td><td>100%</td><td>0%</td></tr>
@@ -149,68 +149,52 @@
 <tr><td>Coins rec'd, on Layer1</td><td>$1999</td><td>$0</td></tr>
 <tr><td>d(Net Worth)</td><td>+$1999</td><td>+$1</td></tr>
 </tbody></table>
-<p>Bip301 makes this specialization-of-labor trustless on layer1. If Mary takes Simon's money, then she must let Simon control the side:block.</p>
+<p>BIP-301 makes this specialization-of-labor trustless on L1. If Mary takes Simon's money, then she must let Simon control the side:block.</p>
 <h2>Specification</h2>
-<p>Bip301 consists of two messages: &quot;BMM Accept&quot; and &quot;BMM Request&quot;. These govern something called &quot;h*&quot;.</p>
-<p>So we will discuss:</p>
+<p>Each candidate for next side:block is defined by its unique side:blockhash &quot;h*&quot;. (Even if the entire rest of the L2 block is identical, different Simons will have different side:coinbases and therefore different h*.)</p>
+<p>BIP-301 consists of two messages: &quot;BMM Accept&quot; and &quot;BMM Request&quot;.</p>
 <ol>
-<li>h* -- The sidechain's hashMerkleRoot, and why it matters.</li>
-<li>&quot;BMM Accept&quot; -- How h* enters a main:coinbase. When Mary &quot;accepts&quot; a BMM Request, Mary is <em>endorsing a side:block</em>.</li>
-<li>&quot;BMM Request&quot; -- Simon offering money to Mary, if (and only if) she will Endorse a specific h*. When Simon broadcasts a BMM Request, Simon is <em>attempting a side:block</em>.</li>
+<li>&quot;BMM Accept&quot; -- A coinbase output in L1, which contains h*. Mary can only choose one h* to endorse.</li>
+<li>&quot;BMM Request&quot; -- A transaction where Simon offers to pay Mary, if (and only if) Mary's L1 block contains Simon's h*.</li>
 </ol>
-<h3> h* </h3>
-<p>h* (&quot;h star&quot;) is the sidechain's Merkle Root hash.</p>
-<p>In Bip301, a sidechain's coinbase txn acts as a header (it contains the hash of the previous side:block, and previous main:block). Thus, the MerkleRoot contains everything important.</p>
-<p>Note: in Bip301 sidechains, &quot;headers&quot; and &quot;block hashes&quot; do not have significant consensus meaning and are in the design mainly to help with IBD. (In the mainchain, in contrast, headers and block hashes determine the difficulty adjustments and cumulative PoW.)</p>
-<p><img src="bip-0301/sidechain-headers.png?raw=true" align="middle"></img></p>
-<p>Above: h* is located in the main:coinbase. h* contains all side:txns, including the side:coinbase. The side:coinbase contains many &quot;header-like&quot; fields, such as the hash of the previous side:block.</p>
-<p>Mary controls the main:coinbase, so she may select any h*. Her selection will determine which side:block is &quot;found&quot;.</p>
+<p>As a miner, Mary controls the main:coinbase, so she may select any h*. Her selection determines which side:block is &quot;found&quot; -- and which associated BMM Request she can collect.</p>
 <h3> BMM Accept  </h3>
-<p>To &quot;Accept&quot; the BMM proposal (and to accept Simon's money), Mary must endorse Simon's block.</p>
-<pre><code>For each side:block Mary wishes to endorse, Mary places the following into a main:coinbase OP_RETURN:
-    1-byte - OP_RETURN (0x6a)
+<p>To &quot;Accept&quot; a BMM proposal (endorsing Simon's side:block, and allowing Mary to accept Simon's money later in the block), Mary places an OP_RETURN output into the main:coinbase as follows:</p>
+<pre><code>    1-byte - OP_RETURN (0x6a)
     4-bytes - Message header (0xD1617368)
+    1-byte - Sidechain number (0-255)
     32-bytes - h* (obtained from Simon)
 </code></pre>
-<p><a href="https://github.com/drivechain-project/mainchain/blob/8901d469975752d799b6a7a61d4e00a9a124028f/src/validation.cpp#L3530-L3572" target="_blank">Code details here</a>.</p>
+<p><a href="https://github.com/LayerTwo-Labs/bip300301_messages/blob/master/src/lib.rs#L252-L264" target="_blank">Code details here</a>.</p>
 <p>If these OP_RETURN outputs are not present, then no Requests were accepted. (And, Mary would get no money from Requests.)</p>
-<p>It is possible for Mary and Simon to be the same person.They would trust each other completely, so the BMM process would stop here. There would only be Accepts; Requests would be unnecessary.</p>
+<p>It is possible for Mary and Simon to be the same person. They would trust each other completely, so the BMM process would stop here. There would only be Accepts; Requests would be unnecessary.</p>
 <p>When Simon and Mary are different people, Simon will need to use BMM Requests.</p>
 <h3> BMM Request </h3>
-<p>Simon will use BMM Requests to buy the right to find a sidechain block, from Mary.</p>
-<pre><code>For each side:block that Simon wants to attempt, he broadcasts a txn containing the following:
-        3-bytes - Message header (0x00bf00)
-        32-bytes  - h* (side:MerkleRoot)
-        1-byte  - nSidechain (sidechain ID number)
-        4-bytes - prevMainHeaderBytes (the last four bytes of the previous main:block)
+<p>Simon will use BMM Requests to buy the &quot;right&quot; to find a sidechain block, from Mary.</p>
+<p>For each side:block that Simon wants to attempt, he broadcasts a txn containing the following as an OP_RETURN:</p>
+<pre><code>    1-byte - OP_RETURN (0x6a)
+    3-bytes - Message header (0x00bf00)
+    1-byte - Sidechain number (0-255)
+    32-bytes  - h* (obtained from L2 node)
+    32-bytes  - prevMainBlock (the blockhash of the previous main:block)
 </code></pre>
-<p>We make use of the <a href="https://github.com/drivechain-project/mainchain/blob/8901d469975752d799b6a7a61d4e00a9a124028f/src/primitives/transaction.h#L224-L331" target="_blank">extended serialization format</a>. (SegWit used ESF to position scriptWitness data within txns; we use it here to position the five fields above.)</p>
-<p>The Message header identifies this txn as a BMM transaction. h* is chosen by Simon to correspond to his side:block. nSidechain is the number assigned to the sidechain when it was created. preSideBlockRef allows Simon to build on any preexisting side:block (allowing him to bypass one or more invalid blocks, details below). prevMainHeaderBytes are the last four bytes of the previous main:block (details below).</p>
+<p>h* is chosen by Simon to correspond to the side:block he wants to mine on the alt-chain. nSidechain is the number assigned to the sidechain/alt-chain when it was created.</p>
 <p>This txn is invalid if it fails any of the following checks:</p>
 <ol>
 <li>Each &quot;BMM Request&quot;, must match one corresponding &quot;BMM Accept&quot; (previous section).</li>
-<li>Only one BMM Request is allowed in each main:block, per sidechain. In other words, if 700 users broadcast BMM Requests for sidechain #4, then the main:miner singles out one BMM Request to include.</li>
-<li>The 4-bytes of prevMainHeaderBytes must match the last four bytes of the previous main:blockheader. Thus, Simon's txns are only valid for the current block, in the block history that he knows about (and therefore, the current sidechain history that he knows about).</li>
+<li>Only one BMM Request is allowed in each main:block, per nSidechain. In other words, if 700 users broadcast BMM Requests for sidechain #4, then the main:miner must single out one BMM_Request_4 to include in this L1 block.</li>
+<li>The 32-bytes of prevMainBlock must match the previous main:blockhash. Thus, Simon's txns are only valid for the current block, in the block history that he knows about.</li>
 </ol>
-<p>Most BMM Request txns will never make it into a block. Simon will make many BMM Requests, but only one will be accepted. Since only one BMM Request can become a bona fide transaction, Simon may feel comfortable making multiple offers all day long. This means Mary has many offers to choose from, and can choose the one which pays her the most.</p>
+<p>Most BMM Request txns will never make it into a block. Simon will make many BMM Requests, but only one will be accepted. Since only one BMM Request can enter the L1 block, Simon may feel comfortable making multiple offers all day long. This means Mary has many offers to choose from, and can choose the one that pays her the most.</p>
 <p>This BIP allows BMM Requests to take place over Lightning. One method is <a href="https://www.drivechain.info/media/bmm-note/bmm-lightning/" target="_blank">here</a>. (BMM Accepts cannot be over LN, since they reside in main:coinbase txns.)</p>
 <h2>Backward compatibility</h2>
-<p>As a soft fork, older software will continue to operate without modification. To enforce BMM trustlessly, nodes must watch &quot;pairs&quot; of transactions, and subject them to extra rules. Non-upgraded nodes will notice that this activity is present in the blockchain, but they will not understand any of it.</p>
-<p>Much like P2SH or a new OP Code, these old users can never be directly affected by the fork, as they will have no expectations of receiving payments of this kind. (As a matter of fact, the only people receiving BTC here, all happen to be miners. So there is less reason than ever to expect compatibility problems.)</p>
-<p>As with all previous soft forks, non-upgraded users are indirectly affected, in that they are no longer performing full validation.</p>
+<p>This soft fork can be deployed without modifying Bitcoin Core at all (ie, via <a href="https://bip300cusf.com/" target="_blank">CUSF</a>).</p>
 <h2>Deployment</h2>
-<p>This BIP will be deployed via UASF-style block height activation. Block height TBD.</p>
+<p>This BIP deploys when/if &gt;51% hashrate runs <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/" target="_blank">the enforcer client</a>.</p>
+<p>Ideally, a critical mass of users would also run the enforcer client -- this would strongly dissuade miners from ever de-activating it.</p>
 <h2>Reference Implementation</h2>
-<p>See: https://github.com/drivechain-project/mainchain</p>
-<p>Also, for interest, see an example sidechain here: https://github.com/drivechain-project/sidechains/tree/testchain</p>
-<h2>References</h2>
-<ul>
-<li>http://www.drivechain.info/literature/index.html</li>
-<li>http://www.truthcoin.info/blog/blind-merged-mining/</li>
-<li>http://www.truthcoin.info/images/bmm-outline.txt</li>
-</ul>
-<h2>Thanks</h2>
-<p>Thanks to everyone who contributed to the discussion, especially: ZmnSCPxj, Adam Back, Peter Todd, Dan Anderson, Sergio Demian Lerner, Matt Corallo, Sjors Provoost, Tier Nolan, Erik Aronesty, Jason Dreyzehner, Joe Miyamoto, Chris Stewart, Ben Goldhaber.</p>
+<p>The enforcer is <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/" target="_blank">here</a>.</p>
+<p>Also, several example L2s using BIP-301 are <a href="https://releases.drivechain.info/" target="_blank">here</a>.</p>
 <h2>Copyright</h2>
 <p>This BIP is licensed under the BSD 2-clause license.</p>
 
@@ -223,7 +207,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-09-23</p>
+                    <p class="font-bold">2024-09-24</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
