@@ -69,6 +69,8 @@ User and domain names which are not expressible using standard printable ASCII M
 
 Note that because resolvers are not required to support resolving non-ASCII identifiers, wallets SHOULD avoid using non-ASCII identifiers.
 
+For payment instructions that have a built-in expiry time (e.g. Lightning BOLT 12 offers), care must be taken to ensure that the DNS records expire prior to the expiry of the payment instructions. Otherwise, senders may have payment instructions cached locally which have expired, preventing payment.
+
 <h3> Resolution </h3>
 
 
