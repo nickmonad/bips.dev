@@ -446,7 +446,7 @@ In this case, only the acceptable license(s) should be listed in the License and
 *  BSD-2-Clause: <a href="https://opensource.org/licenses/BSD-2-Clause" target="_blank">OSI-approved BSD 2-clause license</a>
 *  BSD-3-Clause: <a href="https://opensource.org/licenses/BSD-3-Clause" target="_blank">OSI-approved BSD 3-clause license</a>
 *  CC0-1.0: <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">Creative Commons CC0 1.0 Universal</a>
-*  GNU-All-Permissive: <a href="http://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html" target="_blank">GNU All-Permissive License</a>
+*  GNU-All-Permissive: <a href="https://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html" target="_blank">GNU All-Permissive License</a>
 
 
 In addition, it is recommended that literal code included in the BIP be dual-licensed under the same license terms as the project it modifies. For example, literal code intended for Bitcoin Core would ideally be dual-licensed under the MIT license terms as well as one of the above with the rest of the BIP text.
@@ -454,15 +454,15 @@ In addition, it is recommended that literal code included in the BIP be dual-lic
 <h4>Not recommended, but acceptable licenses</h4>
 
 
-*  Apache-2.0: <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License, version 2.0</a>
-*  BSL-1.0: <a href="http://www.boost.org/LICENSE_1_0.txt" target="_blank">Boost Software License, version 1.0</a>
+*  Apache-2.0: <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License, version 2.0</a>
+*  BSL-1.0: <a href="https://www.boost.org/LICENSE_1_0.txt" target="_blank">Boost Software License, version 1.0</a>
 *  CC-BY-4.0: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International</a>
 *  CC-BY-SA-4.0: <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International</a>
 *  MIT: <a href="https://opensource.org/licenses/MIT" target="_blank">Expat/MIT/X11 license</a>
-*  AGPL-3.0+: <a href="http://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">GNU Affero General Public License (AGPL), version 3 or newer</a>
-*  FDL-1.3: <a href="http://www.gnu.org/licenses/fdl-1.3.en.html" target="_blank">GNU Free Documentation License, version 1.3</a>
-*  GPL-2.0+: <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" target="_blank">GNU General Public License (GPL), version 2 or newer</a>
-*  LGPL-2.1+: <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html" target="_blank">GNU Lesser General Public License (LGPL), version 2.1 or newer</a>
+*  AGPL-3.0+: <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">GNU Affero General Public License (AGPL), version 3 or newer</a>
+*  FDL-1.3: <a href="https://www.gnu.org/licenses/fdl-1.3.en.html" target="_blank">GNU Free Documentation License, version 1.3</a>
+*  GPL-2.0+: <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" target="_blank">GNU General Public License (GPL), version 2 or newer</a>
+*  LGPL-2.1+: <a href="https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html" target="_blank">GNU Lesser General Public License (LGPL), version 2.1 or newer</a>
 
 
 <h4>Not acceptable licenses</h4>
@@ -471,7 +471,7 @@ In addition, it is recommended that literal code included in the BIP be dual-lic
 All licenses not explicitly included in the above lists are not acceptable terms for a Bitcoin Improvement Proposal unless a later BIP extends this one to add them.
 However, BIPs predating the acceptance of this BIP were allowed under other terms, and should use these abbreviation when no other license is granted:
 
-*  OPL: <a href="http://opencontent.org/openpub/" target="_blank">Open Publication License, version 1.0</a>
+*  OPL: <a href="https://opencontent.org/openpub/" target="_blank">Open Publication License, version 1.0</a>
 *  PD: Released into the public domain
 
 
