@@ -120,18 +120,19 @@
   Layer: Applications
   Title: Deterministic Entropy From BIP32 Keychains
   Author: Ethan Kosakovsky &lt;ethankosakovsky@protonmail.com&gt;
+          Aneesh Karve &lt;dowsing.seaport0d@icloud.com&gt;
   Comments-Summary: No comments yet.
   Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0085
-  Status: Draft
+  Status: Final
   Type: Informational
   Created: 2020-03-20
   License: BSD-2-Clause
            OPL
 </code></pre>
 <h2>Abstract</h2>
-<p><em>&quot;One Seed to rule them all,</em>
-<em>One Key to find them,</em>
-<em>One Path to bring them all,</em>
+<p><em>&quot;One Seed to rule them all,</em><br>
+<em>One Key to find them,</em><br>
+<em>One Path to bring them all,</em><br>
 <em>And in cryptography bind them.&quot;</em></p>
 <p>It is not possible to maintain one single (mnemonic) seed backup for all keychains used across various wallets because there are a variety of incompatible standards. Sharing of seeds across multiple wallets is not desirable for security reasons. Physical storage of multiple seeds is difficult depending on the security and redundancy required.</p>
 <p>As HD keychains are essentially derived from initial entropy, this proposal provides a way to derive entropy from the keychain which can be fed into whatever method a wallet uses to derive the initial mnemonic seed or root key.</p>
@@ -143,15 +144,17 @@
 <li><strong>BIP39 mnemonic</strong> is the mnemonic phrase that is calculated from the entropy used before hashing of the mnemonic in BIP39.</li>
 <li><strong>BIP39 seed</strong> is the result of hashing the BIP39 mnemonic seed.</li>
 </ol>
+<p>When in doubt, assume big endian byte serialization, such that the leftmost
+byte is the most significant.</p>
 <h2>Motivation</h2>
-<p>Most wallets implement BIP32 which defines how a BIP32 root key can be used to derive keychains. As a consequence, a backup of just the BIP32 root key is sufficient to include all keys derived from it. BIP32 does not have a human friendly serialization of the BIP32 root key (or BIP32 extended keys in general) which makes paper backups or manually restoring the key more error-prone. BIP39 was designed to solve this problem but rather than serialize the BIP32 root key, it takes some entropy, encoded to a &quot;seed mnemonic&quot;, which is then hashed to derive the BIP39 seed which can be turned into the BIP32 root key. Saving the BIP39 mnemonic is enough to reconstruct the entire BIP32 keychain, but a BIP32 root key cannot be reversed back to the BIP39 mnemonic.</p>
-<p>Most wallets implement BIP39, so on initialization or restoration, the user must interact with a BIP39 mnemonic. Most wallets do not support BIP32 extended private keys, so each wallet must either share the same BIP39 mnemonic, or have a separate BIP39 mnemonic entirely. Neither scenarios are particularly satisfactory for security reasons. For example, some wallets may be inherently less secure like hot wallets on smartphones, Join Market servers, or Lightning Network nodes. Having multiple seeds is far from desirable, especially for those who rely on split key or redundancy backups in different geological locations. Adding is necessarily difficult and may result in users being more lazy with subsequent keys, resulting in compromised security or loss of keys.</p>
-<p>There is added complication with wallets that implement other standards, or no standards at all. Bitcoin Core wallet uses a WIF as the <em>hdseed</em>, and yet other wallets like Electrum use different mnemonic schemes to derive the BIP32 root key. Other cryptocurrencies like Monero also use an entirely different mnemonic scheme.</p>
+<p>Most wallets implement BIP32 which defines how a BIP32 root key can be used to derive keychains. As a consequence, a backup of just the BIP32 root key is sufficient to include all keys derived from it. BIP32 does not have a human-friendly serialization of the BIP32 root key (or BIP32 extended keys in general), which makes paper backups or manually restoring the key more error-prone. BIP39 was designed to solve this problem, but rather than serialize the BIP32 root key, it takes some entropy, encoded to a &quot;seed mnemonic&quot;, which is then hashed to derive the BIP39 seed, which can be turned into the BIP32 root key. Saving the BIP39 mnemonic is enough to reconstruct the entire BIP32 keychain, but a BIP32 root key cannot be reversed back to the BIP39 mnemonic.</p>
+<p>Most wallets implement BIP39, so on initialization or restoration, the user must interact with a BIP39 mnemonic. Most wallets do not support BIP32 extended private keys, so each wallet must either share the same BIP39 mnemonic, or have a separate BIP39 mnemonic entirely. Neither scenario is particularly satisfactory for security reasons. For example, some wallets may be inherently less secure, like hot wallets on smartphones, JoinMarket servers, or Lightning Network nodes. Having multiple seeds is far from desirable, especially for those who rely on split key or redundancy backups in different geological locations. Adding keys is necessarily difficult and may result in users being more lazy with subsequent keys, resulting in compromised security or loss of keys.</p>
+<p>There is an added complication with wallets that implement other standards, or no standards at all. The Bitcoin Core wallet uses a WIF as the <em>hdseed</em>, and yet other wallets, like Electrum, use different mnemonic schemes to derive the BIP32 root key. Other cryptocurrencies, like Monero, use an entirely different mnemonic scheme.</p>
 <p>Ultimately, all of the mnemonic/seed schemes start with some &quot;initial entropy&quot; to derive a mnemonic/seed, and then process the mnemonic into a BIP32 key, or private key. We can use BIP32 itself to derive the &quot;initial entropy&quot; to then recreate the same mnemonic or seed according to the specific application standard of the target wallet. We can use a BIP44-like categorization to ensure uniform derivation according to the target application type.</p>
 <h2>Specification</h2>
 <p>We assume a single BIP32 master root key. This specification is not concerned with how this was derived (e.g. directly or via a mnemonic scheme such as BIP39).</p>
-<p>For each application that requires its own wallet, a unique private key is derived from the BIP32 master root key using a fully hardened derivation path. The resulting private key (k) is then processed with HMAC-SHA512, where the key is &quot;bip-entropy-from-k&quot;, and the message payload is the private key k: <code>HMAC-SHA512(key=&quot;bip-entropy-from-k&quot;, msg=k)</code>. The result produces 512 bits of entropy. Each application SHOULD use up to the required number of bits necessary for their operation truncating the rest.</p>
-<p>The HMAC-SHA512 function is specified in <a href="http://tools.ietf.org/html/rfc4231" target="_blank">RFC 4231</a>.</p>
+<p>For each application that requires its own wallet, a unique private key is derived from the BIP32 master root key using a fully hardened derivation path. The resulting private key (k) is then processed with HMAC-SHA512, where the key is &quot;bip-entropy-from-k&quot;, and the message payload is the private key k: <code>HMAC-SHA512(key=&quot;bip-entropy-from-k&quot;, msg=k)</code>. The result produces 512 bits of entropy. Each application SHOULD use up to the required number of bits necessary for their operation, and truncate the rest.</p>
+<p>The HMAC-SHA512 function is specified in <a href="https://tools.ietf.org/html/rfc4231" target="_blank">RFC 4231</a>.</p>
 <h3>Test vectors</h3>
 <h4>Test case 1</h4>
 <p>INPUT:</p>
@@ -179,7 +182,7 @@
 <p>BIP85-DRNG-SHAKE256 is a deterministic random number generator for cryptographic functions that require deterministic outputs, but where the input to that function requires more than the 64 bytes provided by BIP85's HMAC output. BIP85-DRNG-SHAKE256 uses BIP85 to seed a SHAKE256 stream (from the SHA-3 standard). The input must be exactly 64 bytes long (from the BIP85 HMAC output).</p>
 <p>RSA key generation is an example of a function that requires orders of magnitude more than 64 bytes of random input. Further, it is not possible to precalculate the amount of random input required until the function has completed.</p>
 <pre><code>    drng_reader = BIP85DRNG.new(bip85_entropy)
-    rsa_key = RSA.generate_key(4096, drng_reader.read())
+    rsa_key = RSA.generate_key(4096, drng_reader.read)
 </code></pre>
 <h3>Test Vectors</h3>
 <p>INPUT:
@@ -201,12 +204,14 @@ xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu
 </ul>
 <h2>Reference Implementation</h2>
 <ul>
-<li>Python library implementation: [https://github.com/ethankosakovsky/bip85]</li>
-<li>JavaScript library implementation: [https://github.com/hoganri/bip85-js]</li>
+<li>1.3.0 Python 3.x library implementation: [https://github.com/akarve/bipsea]</li>
+<li>1.1.0 Python 2.x library implementation: [https://github.com/ethankosakovsky/bip85]</li>
+<li>1.0.0 JavaScript library implementation: [https://github.com/hoganri/bip85-js]</li>
 </ul>
 <h2>Applications</h2>
 <p>The Application number defines how entropy will be used post processing. Some basic examples follow:</p>
-<p>Derivation path uses the format <code>m/83696968'/{app_no}'/{index}'</code> where <em>{app_no}</em> is the path for the application, and <em>{index}</em> is the index.</p>
+<p>Derivation paths follow the format <code>m/83696968'/{app_no}'/{index}'</code>, where <em>{app_no}</em> is the path for the application, and <em>{index}</em> is the index.</p>
+<p>Application numbers should be semantic in some way, such as a BIP number or ASCII character code sequence.</p>
 <h3>BIP39</h3>
 <p>Application number: 39'</p>
 <p>Truncate trailing (least significant) bytes of the entropy to the number of bits required to map to the relevant word length: 128 bits for 12 words, 256 bits for 24 words.</p>
@@ -223,6 +228,8 @@ xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu
 <tr><td>French</td><td>6'</td></tr>
 <tr><td>Italian</td><td>7'</td></tr>
 <tr><td>Czech</td><td>8'</td></tr>
+<tr><td>Portuguese</td><td>9'</td></tr>
+<tr><td></td><td></td></tr>
 </tbody></table>
 <p>Words Table</p>
 <table><thead><tr><th>Words</th><th>Entropy</th><th>Code</th></tr></thead><tbody>
@@ -271,7 +278,16 @@ xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu
 </ul>
 <h3>HD-Seed WIF</h3>
 <p>Application number: 2'</p>
-<p>Uses 256 bits[1] of entropy as the secret exponent to derive a private key and encode as a compressed WIF which will be used as the hdseed for Bitcoin Core wallets.</p>
+<p>Uses the most significant 256 bits<ref name="curve-order">
+There is a very small chance that you'll make an invalid
+key that is zero or larger than the order of the curve. If this occurs, software
+should hard fail (forcing users to iterate to the next index). From BIP32:</p>
+<blockquote>
+In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or k<sub>i</sub> = 0, the resulting key is invalid, and one should proceed with the next value for i. (Note: this has probability lower than 1 in 2<sup>127</sup>.)
+</blockquote>
+</ref>
+of entropy as the secret exponent to derive a private key and encode as a compressed
+WIF that will be used as the hdseed for Bitcoin Core wallets.
 <p>Path format is <code>m/83696968'/2'/{index}'</code></p>
 <p>INPUT:</p>
 <ul>
@@ -285,7 +301,9 @@ xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu
 </ul>
 <h3>XPRV</h3>
 <p>Application number: 32'</p>
-<p>Taking 64 bytes of the HMAC digest, the first 32 bytes are the chain code, and second 32 bytes[1] are the private key for BIP32 XPRV value. Child number, depth, and parent fingerprint are forced to zero.</p>
+<p>Taking 64 bytes of the HMAC digest, the first 32 bytes are the chain code, and the second 32 bytes<ref name="curve-order" /> are the private key for the BIP32 XPRV value. Child number, depth, and parent fingerprint are forced to zero.</p>
+<p><em>Warning</em>: The above order reverses the order of BIP32, which takes the first 32 bytes as the private key, and the second 32 bytes as the chain code.</p>
+<p>Applications may support Testnet by emitting TPRV keys if and only if the input root key is a Testnet key.</p>
 <p>Path format is <code>m/83696968'/32'/{index}'</code></p>
 <p>INPUT:</p>
 <ul>
@@ -315,7 +333,7 @@ xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu
 <p>Application number: 707764'</p>
 <p>The derivation path format is: <code>m/83696968'/707764'/{pwd_len}'/{index}'</code></p>
 <p><code>20 &lt;= pwd_len &lt;= 86</code></p>
-<p><a href="https://datatracker.ietf.org/doc/html/rfc4648" target="_blank">Base64</a> encode the all 64 bytes of entropy.
+<p><a href="https://datatracker.ietf.org/doc/html/rfc4648" target="_blank">Base64</a> encode all 64 bytes of entropy.
 Remove any spaces or new lines inserted by Base64 encoding process. Slice base64 result string
 on index 0 to <code>pwd_len</code>. This slice is the password. As <code>pwd_len</code> is limited to 86, passwords will not contain padding.</p>
 <p>Entropy calculation:<br>
@@ -343,7 +361,7 @@ Entropy = log2(R ** L)<br></p>
 <p>Application number: 707785'</p>
 <p>The derivation path format is: <code>m/83696968'/707785'/{pwd_len}'/{index}'</code></p>
 <p><code>10 &lt;= pwd_len &lt;= 80</code></p>
-<p>Base85 encode the all 64 bytes of entropy.
+<p>Base85 encode all 64 bytes of entropy.
 Remove any spaces or new lines inserted by Base64 encoding process. Slice base85 result string
 on index 0 to <code>pwd_len</code>. This slice is the password. <code>pwd_len</code> is limited to 80 characters.</p>
 <p>Entropy calculation:<br>
@@ -386,6 +404,36 @@ Entropy = log2(R ** L)<br></p>
 <p>Note on GPG key capabilities on smartcard/hardware devices:</p>
 <p>GPG capable smart-cards SHOULD be loaded as follows: The encryption slot SHOULD be loaded with the ENCRYPTION capable key; the authentication slot SHOULD be loaded with the AUTHENTICATION capable key. The signature capable slot SHOULD be loaded with the SIGNATURE capable key.</p>
 <p>However, depending on available slots on the smart-card, and preferred policy, the CERTIFY capable key MAY be flagged with CERTIFY and SIGNATURE capabilities and loaded into the SIGNATURE capable slot (for example where the smart-card has only three slots and the CERTIFY capability is required on the same card). In this case, the SIGNATURE capable sub-key would be disregarded because the CERTIFY capable key serves a dual purpose.</p>
+<h3>DICE</h3>
+<p>Application number: 89101'</p>
+<p>The derivation path format is: <code>m/83696968'/89101'/{sides}'/{rolls}'/{index}'</code></p>
+<pre><code>    2 &lt;= sides &lt;= 2^32 - 1
+    1 &lt;= rolls &lt;= 2^32 - 1
+</code></pre>
+<p>Use this application to generate PIN numbers, numeric secrets, and secrets over custom alphabets.
+For example, applications could generate alphanumeric passwords from a 62-sided die (26 + 26 + 10).</p>
+<p>Roll values are zero-indexed, such that an N-sided die produces values in the range
+<code>&lt;a href=&quot;0,&quot; target=&quot;_blank&quot;&gt;N-1&lt;/a&gt;</code>, inclusive. Applications should separate printed rolls by a comma or similar.</p>
+<p>Create a BIP85 DRNG whose seed is the derived entropy.</p>
+<p>Calculate the following integers:</p>
+<pre><code>    bits_per_roll = ceil(log_2(sides))
+    bytes_per_roll = ceil(bits_per_roll &#x2F; 8)
+</code></pre>
+<p>Read <code>bytes_per_roll</code> bytes from the DRNG.
+Trim any bits in excess of <code>bits_per_roll</code> (retain the most
+significant bits). The resulting integer represents a single roll or trial.
+If the trial is greater than or equal to the number of sides, skip it and
+move on to the next one. Repeat as needed until all rolls are complete.</p>
+<p>INPUT:</p>
+<ul>
+<li>MASTER BIP32 ROOT KEY: xprv9s21ZrQH143K2LBWUUQRFXhucrQqBpKdRRxNVq2zBqsx8HVqFk2uYo8kmbaLLHRdqtQpUm98uKfu3vca1LqdGhUtyoFnCNkfmXRyPXLjbKb</li>
+<li>PATH: m/83696968'/89101'/6'/10'/0'</li>
+</ul>
+<p>OUTPUT</p>
+<ul>
+<li>DERIVED ENTROPY=5e41f8f5d5d9ac09a20b8a5797a3172b28c806aead00d27e36609e2dd116a59176a738804236586f668da8a51b90c708a4226d7f92259c69f64c51124b6f6cd2</li>
+<li>DERIVED ROLLS=1,0,0,2,0,1,5,5,2,4</li>
+</ul>
 <h2>Backwards Compatibility</h2>
 <p>This specification is not backwards compatible with any other existing specification.</p>
 <p>This specification relies on BIP32 but is agnostic to how the BIP32 root key is derived. As such, this standard is able to derive wallets with initialization schemes like BIP39 or Electrum wallet style mnemonics.</p>
@@ -393,12 +441,35 @@ Entropy = log2(R ** L)<br></p>
 <p>The reason for running the derived key through HMAC-SHA512 and truncating the result as necessary is to prevent leakage of the parent tree should the derived key (<em>k</em>) be compromised. While the specification requires the use of hardended key derivation which would prevent this, we cannot enforce hardened derivation, so this method ensures the derived entropy is hardened. Also, from a semantic point of view, since the purpose is to derive entropy and not a private key, we are required to transform the child key. This is done out of an abundance of caution, in order to ward off unwanted side effects should <em>k</em> be used for a dual purpose, including as a nonce <em>hash(k)</em>, where undesirable and unforeseen interactions could occur.</p>
 <h2>Acknowledgements</h2>
 <p>Many thanks to Peter Gray and Christopher Allen for their input, and to Peter for suggesting extra application use cases.</p>
+<h2>Change Log</h2>
+<h3>1.0.0 (2020-06-11)</h3>
+<ul>
+<li>Initial version</li>
+</ul>
+<h3>1.1.0 (2020-11-19)</h3>
+<h4>Added</h4>
+<ul>
+<li>BIP85-DRNG-SHAKE256</li>
+<li>RSA application 828365'</li>
+</ul>
+<h3>1.2.0 (2022-12-04)</h3>
+<h4>Added</h4>
+<ul>
+<li>Base64 application 707764'</li>
+<li>Base85 application 707785'</li>
+</ul>
+<h3>1.3.0 (2024-10-22)</h3>
+<h4>Added</h4>
+<ul>
+<li>Dice application 89101'</li>
+<li>Czech language code to application 39'</li>
+<li>TPRV guidance for application 32'</li>
+<li>Warning on application 32' key and chain code ordering</li>
+</ul>
 <h2>References</h2>
 <p>BIP32, BIP39</p>
 <h2>Footnotes</h2>
-<p>[1] There is a very small chance that you'll make an invalid key that is zero or bigger than the order of the curve. If this occurs, software should hard fail (forcing users to iterate to the next index).</p>
-<p>From BIP32:
-In case parse<sub>256</sub>(I<sub>L</sub>) is 0 or ≥ n, the resulting key is invalid, and one should proceed with the next value for i. (Note: this has probability lower than 1 in 2<sup>127</sup>.)</p>
+<references />
 <h2>Copyright</h2>
 <p>This BIP is dual-licensed under the Open Publication License and BSD 2-clause license.</p>
 
@@ -411,7 +482,7 @@ In case parse<sub>256</sub>(I<sub>L</sub>) is 0 or ≥ n, the resulting key is i
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2024-10-25</p>
+                    <p class="font-bold">2024-10-26</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
