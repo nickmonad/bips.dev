@@ -42,6 +42,11 @@ It is not possible to maintain one single (mnemonic) seed backup for all keychai
 
 As HD keychains are essentially derived from initial entropy, this proposal provides a way to derive entropy from the keychain which can be fed into whatever method a wallet uses to derive the initial mnemonic seed or root key.
 
+<h2>Copyright</h2>
+
+
+This BIP is dual-licensed under the Open Publication License and BSD 2-clause license.
+
 <h2>Definitions</h2>
 
 
@@ -73,7 +78,11 @@ Ultimately, all of the mnemonic/seed schemes start with some "initial entropy" t
 
 We assume a single BIP32 master root key. This specification is not concerned with how this was derived (e.g. directly or via a mnemonic scheme such as BIP39).
 
-For each application that requires its own wallet, a unique private key is derived from the BIP32 master root key using a fully hardened derivation path. The resulting private key (k) is then processed with HMAC-SHA512, where the key is "bip-entropy-from-k", and the message payload is the private key k: `HMAC-SHA512(key="bip-entropy-from-k", msg=k)`. The result produces 512 bits of entropy. Each application SHOULD use up to the required number of bits necessary for their operation, and truncate the rest.
+For each application that requires its own wallet, a unique private key is derived from the BIP32 master root key using a fully hardened derivation path. The resulting private key (k) is then processed with HMAC-SHA512, where the key is "bip-entropy-from-k", and the message payload is the private key k: `HMAC-SHA512(key="bip-entropy-from-k", msg=k)`
+<ref name="hmac-sha512">
+The reason for running the derived key through HMAC-SHA512 and truncating the result as necessary is to prevent leakage of the parent tree should the derived key (_k_) be compromised. While the specification requires the use of hardended key derivation which would prevent this, we cannot enforce hardened derivation, so this method ensures the derived entropy is hardened. Also, from a semantic point of view, since the purpose is to derive entropy and not a private key, we are required to transform the child key. This is done out of an abundance of caution, in order to ward off unwanted side effects should _k_ be used for a dual purpose, including as a nonce _hash(k)_, where undesirable and unforeseen interactions could occur.
+</ref>.
+The result produces 512 bits of entropy. Each application SHOULD use up to the required number of bits necessary for their operation, and truncate the rest.
 
 The HMAC-SHA512 function is specified in <a href="https://tools.ietf.org/html/rfc4231" target="_blank">RFC 4231</a>.
 
@@ -132,14 +141,6 @@ OUTPUT
 *  DRNG(80 bytes)=b78b1ee6b345eae6836c2d53d33c64cdaf9a696487be81b03e822dc84b3f1cd883d7559e53d175f243e4c349e822a957bbff9224bc5dde9492ef54e8a439f6bc8c7355b87a925a37ee405a7502991111
 
 
-<h2>Reference Implementation</h2>
-
-
-*  1.3.0 Python 3.x library implementation: [https://github.com/akarve/bipsea]
-*  1.1.0 Python 2.x library implementation: [https://github.com/ethankosakovsky/bip85]
-*  1.0.0 JavaScript library implementation: [https://github.com/hoganri/bip85-js]
-
-
 <h2>Applications</h2>
 
 
@@ -183,7 +184,9 @@ Words Table
 |Words|Entropy|Code|
 |-|-|-|
 |12 words|128 bits|12'|
+|15 words|160 bits|15'|
 |18 words|192 bits|18'|
+|21 words|224 bits|21'|
 |24 words|256 bits|24'|
 
 
@@ -466,43 +469,20 @@ This specification is not backwards compatible with any other existing specifica
 
 This specification relies on BIP32 but is agnostic to how the BIP32 root key is derived. As such, this standard is able to derive wallets with initialization schemes like BIP39 or Electrum wallet style mnemonics.
 
-<h2>Discussion</h2>
+<h2>References</h2>
 
 
-The reason for running the derived key through HMAC-SHA512 and truncating the result as necessary is to prevent leakage of the parent tree should the derived key (_k_) be compromised. While the specification requires the use of hardended key derivation which would prevent this, we cannot enforce hardened derivation, so this method ensures the derived entropy is hardened. Also, from a semantic point of view, since the purpose is to derive entropy and not a private key, we are required to transform the child key. This is done out of an abundance of caution, in order to ward off unwanted side effects should _k_ be used for a dual purpose, including as a nonce _hash(k)_, where undesirable and unforeseen interactions could occur.
+BIP32, BIP39
 
-<h2>Acknowledgements</h2>
-
-
-Many thanks to Peter Gray and Christopher Allen for their input, and to Peter for suggesting extra application use cases.
-
-<h2>Change Log</h2>
+<h2>Reference Implementations</h2>
 
 
-<h3>1.0.0 (2020-06-11)</h3>
+*  1.3.0 Python 3.x library implementation: [https://github.com/akarve/bipsea]
+*  1.1.0 Python 2.x library implementation: [https://github.com/ethankosakovsky/bip85]
+*  1.0.0 JavaScript library implementation: [https://github.com/hoganri/bip85-js]
 
 
-*  Initial version
-
-
-<h3>1.1.0 (2020-11-19)</h3>
-
-
-<h4>Added</h4>
-
-
-*  BIP85-DRNG-SHAKE256
-*  RSA application 828365'
-
-
-<h3>1.2.0 (2022-12-04)</h3>
-
-
-<h4>Added</h4>
-
-
-*  Base64 application 707764'
-*  Base85 application 707785'
+<h2>Changelog</h2>
 
 
 <h3>1.3.0 (2024-10-22)</h3>
@@ -517,17 +497,38 @@ Many thanks to Peter Gray and Christopher Allen for their input, and to Peter fo
 *  Warning on application 32' key and chain code ordering
 
 
-<h2>References</h2>
+<h3>1.2.0 (2022-12-04)</h3>
 
 
-BIP32, BIP39
+<h4>Added</h4>
+
+
+*  Base64 application 707764'
+*  Base85 application 707785'
+
+
+<h3>1.1.0 (2020-11-19)</h3>
+
+
+<h4>Added</h4>
+
+
+*  BIP85-DRNG-SHAKE256
+*  RSA application 828365'
+
+
+<h3>1.0.0 (2020-06-11)</h3>
+
+
+*  Initial version
+
 
 <h2>Footnotes</h2>
 
 
 <references />
 
-<h2>Copyright</h2>
+<h2>Acknowledgements</h2>
 
 
-This BIP is dual-licensed under the Open Publication License and BSD 2-clause license.
+Many thanks to Peter Gray and Christopher Allen for their input, and to Peter for suggesting extra application use cases.
