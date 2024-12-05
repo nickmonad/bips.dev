@@ -89,7 +89,7 @@ Additional registered version bytes are listed in <a href="https://github.com/sa
 <h2>Backwards Compatibility</h2>
 
 
-This BIP is not backwards compatible by design as described under [#considerations]. An incompatible wallet will not discover accounts at all and the user will notice that something is wrong.
+This BIP is not backwards compatible by design as described under <a href="#considerations" target="_blank">considerations</a>. An incompatible wallet will not discover accounts at all and the user will notice that something is wrong.
 
 <h2>Test vectors</h2>
 
