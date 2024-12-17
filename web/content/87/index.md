@@ -131,7 +131,7 @@ Hardened derivation is used at this level.
 
 It is crucial that this level is increased for each new wallet joined or private/public keys created; for both privacy and cryptographic purposes.
 For example, before sending a new key record to a coordinator, the wallet must increment the `account'` level.
-This prevents key reuse - across ECDSA and Schnorr signatures, across different script types, and inbetween the same wallet types.
+This prevents key reuse - across ECDSA and Schnorr signatures, across different script types, and in between the same wallet types.
 
 <h3>Change</h3>
 
