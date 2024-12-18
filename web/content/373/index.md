@@ -83,7 +83,7 @@ The new per-output types are defined as follows:
 
 
 When an updater observes a Taproot output which involves a MuSig2 aggregate public key that it is
-aware if, it can add a <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt> field containing the public keys
+aware of, it can add a <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt> field containing the public keys
 of the participants. This aggregate public key may be directly in the script, the Taproot internal
 key, the Taproot output key, or a public key from which the key in the script was derived from.
 
@@ -125,7 +125,7 @@ partial signature for their key. The result will be added to the PSBT in a
 <tt>PSBT_IN_MUSIG2_PARTIAL_SIG</tt> field.
 
 Signers must remember to apply any relevant tweaks such as a tweak that is the result of performing
-BIP 32 unhardened dervation with the aggregate public key as the parent key.
+BIP 32 unhardened derivation with the aggregate public key as the parent key.
 
 If all other signers have provided a <tt>PSBT_IN_MUSIG2_PARTIAL_SIG</tt>, then the final signer may
 perform the <tt>PartialSigAgg</tt> algorithm and produce a BIP 340 compatible signature that can be
