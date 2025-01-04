@@ -371,7 +371,7 @@ Light client: [https://github.com/lightninglabs/neutrino]
 
 Full-node indexing: https://github.com/Roasbeef/btcd/tree/segwit-cbf
 
-Golomb-Rice Coded sets: https://github.com/btcsuite/btcutil/blob/master/gcs
+Golomb-Rice Coded sets: https://github.com/btcsuite/btcd/tree/master/btcutil/gcs
 
 <h2> Appendix A: Alternatives </h2>
 
