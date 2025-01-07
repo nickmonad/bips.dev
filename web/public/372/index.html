@@ -131,35 +131,35 @@
 <h2>Introduction</h2>
 <h3>Abstract</h3>
 <p>This document proposes additional fields for BIP 174 PSBTv0 and BIP 370 PSBTv2
-that allow for pay-to-contract key tweaking data to be included in a PSBT
-of any version. These will represent an extra-transaction information required
+that allow for pay-to-contract (P2C) key tweaking data to be included in a PSBT
+of any version. These will represent extra-transaction information required
 for the signer to produce valid signatures spending previous outputs.</p>
 <h3>Copyright</h3>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
 <h3>Background</h3>
-<p>Key tweaking is a procedure for creating a cryptographic commitment to some
+<p>Key tweaking is a procedure for creating a cryptographic commitment to a
 message using elliptic curve properties. The procedure uses the discrete log
 problem (DLP) to commit to an extra-transaction message. This is done by adding
 to a public key (for which the output owner knows the corresponding private key)
 a hash of the message multiplied on the generator point G of the elliptic curve.
-This produces a tweaked public key, containing the commitment. Later, in order
-to spend an output containing P2C commitment, the same commitment should be
+This produces a tweaked public key containing the commitment. Later, in order
+to spend an output containing the P2C commitment, the same commitment should be
 added to the corresponding private key.</p>
 <p>This type of commitment was originally proposed as a part of the pay to contract
 concept by Ilja Gerhardt and Timo Hanke in [1] and later used by Eternity Wall
-[2] for the same purpose. Since that time multiple different protocols for P2C
-has been developed, including OpenTimeStamps [3], Elements sidechain P2C tweaks
-[4] and LNPBP-1 [5], used in for constructing Peter Todd's single-use-seals [6]
+[2] for the same purpose. Since that time, multiple different protocols for P2C
+have been developed, including OpenTimeStamps [3], Elements sidechain P2C tweaks
+[4] and LNPBP-1 [5], used for constructing Peter Todd's single-use-seals [6]
 in client-side-validation protocols like RGB.</p>
 <h3>Motivation</h3>
 <p>P2C outputs can be detected onchain and spent only if the output owner
-not just knows the corresponding original private key, but also is aware about
-P2C tweak applied to the public key. In order to produce a valid signature, the
+not only knows the corresponding original private key, but also is aware of
+a P2C tweak applied to the public key. In order to produce a valid signature, the
 same tweak value must be added (modulo group order) to the original private key
 by a signer device. This represents a challenge for external signers, which may
 not have any information about such commitment. This proposal addresses this
 issue by adding relevant fields to the PSBT input information.</p>
-<p>The proposal abstracts details of specific P2C protocols and provides universal
+<p>The proposal abstracts details of specific P2C protocols and provides a universal
 method for spending previous outputs containing P2C tweaks, applied to the public
 key contained within any standard form of the <tt>scriptPubkey</tt>, including
 bare scripts and P2PK, P2PKH, P2SH, witness v0 P2WPKH, P2WSH, nested witness v0
@@ -170,7 +170,7 @@ P2WPKH-P2SH, P2WSH-P2SH and witness v1 P2TR outputs.</p>
 <tt>PSBT_IN_TAP_INTERNAL_KEY</tt> and <tt>PSBT_IN_TAP_LEAF_SCRIPT</tt> fields;
 the only information signer is needed to recognize which keys it should sign
 with is from which of the original keys they were generated. This is achieved by
-introducing new <code>PSBT_IN_P2C_TWEAK</code> field which has the original key as a field
+introducing a new <code>PSBT_IN_P2C_TWEAK</code> field, which has the original key as a field
 key and the tweak as a field value. The signer will recognize the keys which are
 available to it, apply the tweak to them and see in which scripts it was used --
 and use this information to apply tweaks for the corresponding private keys and
@@ -178,29 +178,29 @@ produce valid signatures.</p>
 <h2>Specification</h2>
 <p>The new per-input type is defined as follows:</p>
 <table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>P2C Key Tweak</td><td><tt>PSBT_IN_P2C_TWEAK = 0x19</tt></td><td><tt><pubkey></tt></td><td>33 bytes of compact public key serialization specifying to which of keys the</td><td><tt><tweak></tt></td><td>The 32 byte value which MUST be added to a private key to produce correct</td><td></td><td></td><td>0, 2</td></tr>
+<tr><td>P2C Key Tweak</td><td><tt>PSBT_IN_P2C_TWEAK = 0x19</tt></td><td><tt><pubkey></tt></td><td>33 bytes of compact public key serialization specifying to which keys the</td><td><tt><tweak></tt></td><td>The 32 byte value which MUST be added to a private key to produce a correct</td><td></td><td></td><td>0, 2</td></tr>
 </tbody></table>
 <h2>Security considerations</h2>
 <p>The scope of this proposal is deliberately kept narrow; it addresses
 only spending of transaction outputs containing P2C tweaks - and does not
-addresses construction of a new P2C commitments or transactions containing them
+address construction of new P2C commitments or transactions containing them
 in their outputs.<ref><strong>Why only spending of P2C tweaked outputs is covered</strong>
-P2C tweaks commit to external data, some of which may represent certain value
-(like in some sidechains, single-use-seal applications like RGB etc). Creation
-of such outputs much allow hardware devices to understand the structure of such
+P2C tweaks commit to external data, some of which may represent certain values
+(like in some sidechains, single-use-seal applications like RGB, etc). Creation
+of such outputs may allow hardware devices to understand the structure of such
 extra-transaction data, which may be in different formats and constantly
-involve. Thus, this should be addresses with a separate standards (or be a
+evolve. Thus, this should be addressed with separate standards (or be
 vendor-based). The current proposal only touches the question of spending an
-output which contained previously created P2C commitment, which does not creates
-a new commitment and does not provides that kind of risk of extra-blockchain
-value loses.</ref></p>
+output that contained a previously created P2C commitment, which does not create
+a new commitment and does not provide that kind of risk of extra-blockchain
+value losses.</ref></p>
 <h2>Rationale</h2>
 <references/>
 <h2>Compatibility</h2>
 <p>The proposal is compatible with the existing consensus rules and does not
-require any of their modifications.</p>
-<p>The proposed P2C PSBT fields provides sufficient information for creating a
-valid signatures for spendings of the following output types containing tweaked
+require any modification to them.</p>
+<p>The proposed P2C PSBT fields provide sufficient information for creating
+valid signatures for spending the following output types containing tweaked
 public keys:</p>
 <ul>
 <li>bare scripts,</li>
@@ -211,13 +211,13 @@ public keys:</p>
 <li>nested witness v0 P2WPKH-P2SH and P2WSH-P2SH,</li>
 </ul>
 <p>Post-0 witness versions, including taproot outputs and future witness versions,
-may not be supported or covered by this BIP and may require addition of new
+may not be supported or covered by this BIP and may require the addition of new
 fields to the PSBT inputs.</p>
 <h2>Reference implementation</h2>
 <p>WIP</p>
 <h2>Acknowledgements</h2>
-<p>Author is grateful to Andrew Poelstra, who provided an initial set of ideas
-and information on his previous work on the topic basing on which this standard
+<p>The author is grateful to Andrew Poelstra, who provided an initial set of ideas
+and information with his previous work on the topic, on which this standard
 was designed.</p>
 <h2>Test vectors</h2>
 <p>TBD</p>
@@ -231,7 +231,7 @@ was designed.</p>
     Timestamping with Bitcoin.
     &lt;https:&#x2F;&#x2F;petertodd.org&#x2F;2016&#x2F;opentimestamps-announcement&gt;
 [4] Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain
-    Innovations with Pegged Sidechains (commit5620e43). Appenxix A.
+    Innovations with Pegged Sidechains (commit5620e43). Appendix A.
     &lt;https:&#x2F;&#x2F;blockstream.com&#x2F;sidechains.pdf&gt;;.
 [5] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. Key
     tweaking: collision- resistant elliptic curve-based commitments.
@@ -250,7 +250,7 @@ was designed.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-01-06</p>
+                    <p class="font-bold">2025-01-07</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
