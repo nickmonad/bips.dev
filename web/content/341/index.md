@@ -168,6 +168,8 @@ In summary, the semantics of the <a href="/143" target="_blank">BIP143</a> sigha
 <h4> Taproot key path spending signature validation </h4>
 
 
+A Taproot signature is a 64-byte Schnorr signature, as defined in <a href="/340" target="_blank">BIP340</a>, with the sighash byte appended in the usual Bitcoin fashion. This sighash byte is optional. If omitted, the resulting signatures are 64 bytes, and a SIGHASH_DEFAULT mode is implied.
+
 To validate a signature _sig_ with public key _q_:
 *  If the _sig_ is 64 bytes long, return _Verify(q, hash<sub>TapSighash</sub>(0x00 || SigMsg(0x00, 0)), sig)_<ref>**Why is the input to _hash<sub>TapSighash</sub>_ prefixed with 0x00?** This prefix is called the sighash epoch, and allows reusing the _hash<sub>TapSighash</sub>_ tagged hash in future signature algorithms that make invasive changes to how hashing is performed (as opposed to the _ext_flag_ mechanism that is used for incremental extensions). An alternative is having them use a different tag, but supporting a growing number of tags may become undesirable.</ref>, where _Verify_ is defined in <a href="/340" target="_blank">BIP340</a>.
 *  If the _sig_ is 65 bytes long, return _sig[64] &ne; 0x00<ref>**Why can the `hash_type` not be `0x00` in 65-byte signatures?** Permitting that would enable malleating (by third parties, including miners) 64-byte signatures into 65-byte ones, resulting in a different `wtxid` and a different fee rate than the creator intended.</ref> and Verify(q, hash<sub>TapSighash</sub>(0x00 || SigMsg(sig[64], 0)), sig[0:64])_.
