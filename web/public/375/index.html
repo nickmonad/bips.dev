@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 375: Sending Silent Payments with PSBTs" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 375: Sending Silent Payments with PSBTs" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 375: Sending Silent Payments with PSBTs</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 375: Sending Silent Payments with PSBTs</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2025-01-08</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0375.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 375
+  Layer: Applications
+  Title: Sending Silent Payments with PSBTs
+  Author: Andrew Toth &lt;andrewstoth@gmail.com&gt;
+          Ava Chow &lt;me@achow101.com&gt;
+          josibake &lt;josibake@protonmail.com&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0375
+  Status: Draft
+  Type: Standards Track
+  Created: 2025-01-08
+  License: BSD-2-Clause
+  Post-History: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;5G5wzqUXyk4
+  Requires: 352, 370, 374
+</code></pre>
+<h2>Introduction</h2>
+<h3>Abstract</h3>
+<p>This document proposes additional fields and updated role responsibilities for BIP370 PSBTv2
+which adds support for sending to silent payments as described in BIP352.</p>
+<h3>Copyright</h3>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+<h3>Motivation</h3>
+<p>Partially Signed Bitcoin Transaction Version 2 as described in BIP370 is not compatible with sending to silent payments as described in BIP352. 
+In particular, the output script of a silent payment cannot be computed until after all transaction inputs have been added.
+Additionally, the silent payment outputs computed by a signer must be verifiable by other entities, otherwise funds could be sent to an incorrect output script.
+Therefore, new fields and role responsibilities must be added to carry, compute, and verify the silent payment data.</p>
+<h2>Specification</h2>
+<p>This document specifies new fields and new field inclusion/exclusion requirements.</p>
+<p>The new global types are defined as follows:</p>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Silent Payment Global ECDH Share</td><td><tt>PSBT_GLOBAL_SP_ECDH_SHARE = 0x07</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this ECDH share is for.</td><td><tt>&lt;33 byte share&gt;</tt></td><td>An ECDH share for a scan key. The ECDH shared is computed with <em>a * B_scan</em>, where <em>a</em> is the sum of all private keys of all eligible inputs, and <em>B_scan</em> is the scan key of a recipient.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Silent Payment Global DLEQ Proof</td><td><tt>PSBT_GLOBAL_SP_DLEQ = 0x08</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this proof covers.</td><td><tt>&lt;64-byte proof&gt;</tt></td><td>A BIP374 DLEQ proof computed for the matching ECDH share.</td><td></td><td>0</td><td>2</td></tr>
+</tbody></table>
+<p>The new per-input types are defined as follows:</p>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Silent Payment Input ECDH Share</td><td><tt>PSBT_IN_SP_ECDH_SHARE = 0x1d</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this ECDH share is for.</td><td><tt>&lt;33 byte share&gt;</tt></td><td>An ECDH share for a scan key. The ECDH shared is computed with <em>a * B_scan</em>, where <em>a</em> is the private key of the corresponding prevout public key, and <em>B_scan</em> is the scan key of a recipient.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Silent Payment Input DLEQ Proof</td><td><tt>PSBT_IN_SP_DLEQ = 0x1e</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this proof covers.</td><td><tt>&lt;64-byte proof&gt;</tt></td><td>A BIP374 DLEQ proof computed for the matching ECDH share.</td><td></td><td>0</td><td>2</td></tr>
+</tbody></table>
+<p>The new per-output types are defined as follows:</p>
+<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Silent Payment Data</td><td><tt>PSBT_OUT_SP_V0_INFO = 0x09</tt></td><td>None</td><td>No key data</td><td><tt>&lt;33 byte scan key&gt; &lt;33 byte spend key&gt;</tt></td><td>The scan and spend public keys from the silent payments address.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Silent Payment Label</td><td><tt>PSBT_OUT_SP_V0_LABEL = 0x10</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint label&gt;</tt></td><td>The label to use to compute the spend key of the silent payments address to verify change.</td><td></td><td>0</td><td>2</td></tr>
+</tbody></table>
+<p><tt>PSBT_OUT_SCRIPT</tt> is modified to be optional for outputs in silent payments capable PSBTs. If this field is not included in the output, then the field PSBT_OUT_SP_V0_INFO must be included.
+If a PSBT_OUT_SCRIPT is not present for an output, then that output is being sent to a silent payment address represented by PSBT_OUT_SP_V0_INFO but the script has not yet been computed.
+If both PSBT_OUT_SCRIPT and PSBT_OUT_SP_V0_INFO are present for an output, then the PSBT_OUT_SCRIPT is the computed output script corresponding to the silent payment address in PSBT_OUT_SP_V0_INFO.
+If only PSBT_OUT_SCRIPT is present for an output, then the output is not being sent to a silent payment address.</p>
+<h3>Unique Identification</h3>
+<p>Silent payment capable PSBTs can be uniquely identified the same way as PSBTv2s, except when including silent payment outputs. If an output contains the the PSBT_OUT_SP_V0_INFO field, it must use that field instead of PSBT_OUT_SCRIPT as the output script when creating the unsigned transaction used for unique identification.<ref name="why_use_sp_info_field"> ** Why use PSBT_OUT_SP_V0_INFO when serializing for a unique identifier?** Since the same silent payment capable PSBT is valid whether or not a PSBT_OUT_SCRIPT is included in an output that has PSBT_OUT_SP_V0_INFO set, using the PSBT_OUT_SCRIPT if present for the unique identifier will cause malleability. The identifier will be different depending on whether PSBT_OUT_SCRIPT is present, so always using PSBT_OUT_SP_V0_INFO if it exists makes sure the PSBT is always identified uniquely.</ref>
+The PSBT_OUT_SP_V0_INFO should be serialized as a zero byte for the version, followed by the 33 bytes of the scan key and then 33 bytes for the spend key.</p>
+<h2>Roles</h2>
+<p>This document modifies some existing roles.</p>
+<h3>Constructor</h3>
+<p>All rules must be followed from PSBTv2 for this role, with the following exception:
+When an output is added, it must have either PSBT_OUT_SCRIPT or PSBT_OUT_SP_V0_INFO, or both, set.</p>
+<p>Additionally to PSBTv2, the Constructor must also follow additional rules:</p>
+<p>Inputs spending an output with script using Segwit version &gt; 1 may only be added if there are no outputs with PSBT_OUT_SP_V0_INFO set.
+Outputs with PSBT_OUT_SP_V0_INFO set may only be added if there are no inputs spending an output script using Segwit version &gt; 1.</p>
+<h3>Updater</h3>
+<p>The updater should add a PSBT_IN_BIP32_DERIVATION for any p2wpkh, p2sh-p2wpkh, or p2pkh input so the public key is available for creating the ecdh_shared_secret when the private key is not known. If the updater does not want to reveal the fingerprint or derivation path, it can set the value of the field to zero.</p>
+<h4>Change Detection</h4>
+<p>Updaters may add two PSBT_OUT_BIP32_DERIVATION key-value-pairs with the corresponding derivation path of both the scan and spend keys. A label can be specified in PSBT_OUT_SP_V0_LABEL. The Signer can then use these fields to verify that the silent payment code is change.</p>
+<h3>Signer</h3>
+<p>All rules must be followed from PSBTv2 for this role. If there are any outputs with PSBT_OUT_SP_V0_INFO set, then the following additional rules must also be adhered to:</p>
+<p>If any input is spending an output with script using Segwit version &gt; 1, the Signer must fail.</p>
+<p>For each output with PSBT_OUT_SP_V0_INFO set, the Signer should:</p>
+<ul>
+<li>Compute and set an ECDH share and DLEQ proof for each input it has the private key for, or set a global ECDH share and DLEQ proof if it has private keys for all eligible inputs.</li>
+<li>Verify the DLEQ proofs for all inputs it does not have the private keys for, or the global DLEQ proof if it is set.</li>
+<li>If all eligible inputs have an ECDH share or the global ECDH share is set, compute and set the PSBT_OUT_SCRIPT.</li>
+</ul>
+<p>If the Signer sets any missing PSBT_OUT_SCRIPTs, it must set the Inputs Modifiable and Outputs Modifiable flags to False.</p>
+<p>If any output does not have PSBT_OUT_SCRIPT set, the Signer must not yet add a signature.</p>
+<p>The Signer should additionally compute the silent payment addresses, optionally showing this data to the user instead of the computed segwit v1 addresses.</p>
+<p>If a sighash type is provided and there are silent payment outputs present, the signer must fail if the sighash type is not SIGHASH_ALL.
+If a sighash type is not provided and there are silent payment outputs present, the signer must sign using SIGHASH_ALL.<ref name="why_use_sighash_all"> ** Why use only SIGHASH_ALL?** BIP352 allows signing with SIGHASH_NONE and SIGHASH_SINGLE. However, silent payment capable PSBTs compute the output scripts deterministically based on the number and position of silent payment codes with the same scan key. SIGHASH_NONE and SIGHASH_SINGLE allow changing the amount or position of silent payment codes with the same scan and spend keys, which would invalidate computed output scripts.</ref></p>
+<h4>Computing the ECDH Shares and DLEQ Proofs</h4>
+<p>For each output with PSBT_OUT_SP_V0_INFO set, the Signer may generate a proof for other entities to generate the output scripts and verify that the output scripts were generated correctly.</p>
+<p>If the Signer has the private keys for all eligible inputs, the Signer should generate a global ECDH share for each scan key <em>B<sub>scan</sub></em> as follows:</p>
+<p>Using the notation from <a href="/352" target="_blank">BIP352</a></p>
+<ul>
+<li>Let <em>a<sub>n</sub></em> be the sum of the private keys <em>a</em> of all eligible inputs</li>
+<li>Let <em>C =  a<sub>n</sub>·B<sub>scan</sub></em></li>
+</ul>
+<p>Set the key as <em>B<sub>scan</sub></em> and the value as <em>C</em> for the PSBT_GLOBAL_SP_ECDH_SHARE field.</p>
+<p>Compute the DLEQ proof for <em>C</em> using <a href="/374" target="_blank">BIP374 GenerateProof</a> and passing <em>a<sub>n</sub></em> as <em>a</em> and <em>B<sub>scan</sub></em> as <em>B</em>.
+Set the key as <em>B<sub>scan</sub></em> and the value as the proof for the PSBT_GLOBAL_SP_DLEQ field.</p>
+<p>If the Signer has the private keys for some eligible inputs or does not want to create a global ECDH share, the Signer should generate a per-input ECDH share for each scan key <em>B<sub>scan</sub></em> as follows:</p>
+<p>Using the notation from <a href="/352" target="_blank">BIP352</a>, for each eligible input:</p>
+<ul>
+<li>Let <em>a</em> be the private key of the input</li>
+<li>Let <em>C =  a·B<sub>scan</sub></em></li>
+</ul>
+<p>Set the key as <em>B<sub>scan</sub></em> and the value as <em>C</em> for the PSBT_IN_SP_ECDH_SHARE field of the input.</p>
+<p>Compute the DLEQ proof for <em>C</em> using <a href="/374" target="_blank">BIP374 GenerateProof</a> and passing <em>B<sub>scan</sub></em> as <em>B</em>.
+Set the key as <em>B<sub>scan</sub></em> and the value as the proof for the PSBT_IN_SP_DLEQ field of the input.</p>
+<h4>Verifying the DLEQ Proof</h4>
+<p>For each output with PSBT_OUT_SP_V0_INFO set, the Signer should verify the ECDH shares for all eligible inputs it does not have the private key for using the proofs provided by other Signers.</p>
+<p>If PSBT_GLOBAL_SP_ECDH_SHARE and PSBT_GLOBAL_SP_DLEQ are set, verify as follows:</p>
+<ul>
+<li>Let <em>A<sub>n</sub></em> be the sum of the public keys <em>A</em> of all eligible inputs</li>
+</ul>
+<p>Using <a href="/374" target="_blank">BIP374 VerifyProof</a> and passing <em>A</em> as <em>A<sub>n</sub></em>, <em>B</em> as <em>B<sub>scan</sub></em>, <em>C</em> as the value of PSBT_GLOBAL_SP_ECDH_SHARE, and <em>proof</em> as the value of PSBT_GLOBAL_SP_DLEQ.</p>
+<p>If PSBT_IN_SP_ECDH_SHARE and PSBT_IN_SP_DLEQ are set for a particular input, verify as follows:</p>
+<p>Using <a href="/374" target="_blank">BIP374 VerifyProof</a> and passing <em>A</em> as the public key of the input, <em>B</em> as <em>B<sub>scan</sub></em>, <em>C</em> as the value of PSBT_IN_SP_ECDH_SHARE, and <em>proof</em> as the value of PSBT_IN_SP_DLEQ.</p>
+<h4>Computing the Output Scripts</h4>
+<p>Compute the PSBT_OUT_SCRIPT using the procedure in <a href="/352" target="_blank">BIP352</a> but substituting <em>a·B<sub>scan</sub></em> with the PSBT_GLOBAL_SP_ECDH_SHARE for that scan key if available, or the sum of all PSBT_IN_SP_ECDH_SHAREs for that scan key.
+If there are multiple silent payment codes with the same scan key, sort the codes lexicographically in ascending order to determine the ordering of the <em>k</em> value.
+If there are multiple silent payment codes with both the same scan and spend keys, sort the subgroup by output index in ascending order.</p>
+<h3>Transaction Extractor</h3>
+<p>For silent payment capable PSBTs, the transaction extractor should compute all output scripts for silent payment codes and verify they are correct using the ECDH shares and DLEQ proofs, otherwise fail.</p>
+<h2>Backwards Compatibility</h2>
+<p>Silent payment capable PSBTs are backwards compatible with PSBTv2 once all outputs have PSBT_OUT_SCRIPT set. Otherwise they are not backwards compatible.</p>
+<h2>Test Vectors</h2>
+<p>Todo</p>
+<h2>Rationale</h2>
+<references/>
+<h2>Reference implementation</h2>
+<p>Todo</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2025-01-14</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

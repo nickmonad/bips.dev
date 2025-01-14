@@ -336,7 +336,7 @@ If none of the conditions fail, a single true value (`0x01`) is left on the stac
 
 
 When evaluating `OP_VAULT_RECOVER` (`OP_SUCCESS188`,
-`0xbb`), the expected format of the stack, shown top to bottom, is:
+`0xbc`), the expected format of the stack, shown top to bottom, is:
 
 ```
 <recovery-sPK-hash>
