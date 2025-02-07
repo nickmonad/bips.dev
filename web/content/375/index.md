@@ -82,7 +82,7 @@ The new per-output types are defined as follows:
 |Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><keydata></tt> Description|<tt><valuedata></tt>|<tt><valuedata></tt> Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|-|-|
 |Silent Payment Data|<tt>PSBT_OUT_SP_V0_INFO = 0x09</tt>|None|No key data|<tt><33 byte scan key> <33 byte spend key></tt>|The scan and spend public keys from the silent payments address.||0|2|
-|Silent Payment Label|<tt>PSBT_OUT_SP_V0_LABEL = 0x10</tt>|None|No key data|<tt><32-bit little endian uint label></tt>|The label to use to compute the spend key of the silent payments address to verify change.||0|2|
+|Silent Payment Label|<tt>PSBT_OUT_SP_V0_LABEL = 0x0a</tt>|None|No key data|<tt><32-bit little endian uint label></tt>|The label to use to compute the spend key of the silent payments address to verify change.||0|2|
 
 
 <tt>PSBT_OUT_SCRIPT</tt> is modified to be optional for outputs in silent payments capable PSBTs. If this field is not included in the output, then the field PSBT_OUT_SP_V0_INFO must be included.
