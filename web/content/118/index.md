@@ -176,7 +176,7 @@ By design, `SIGHASH_ANYPREVOUT` and `SIGHASH_ANYPREVOUTANYSCRIPT` introduce addi
 Both `SIGHASH_ALL` and `SIGHASH_ANYONECANPAY` signatures prevent signature replay by committing to one or more inputs, so replay of the signature is only possible if the same input can be spent multiple times, which is not possible on the Bitcoin blockchain (due to enforcement of <a href="/30" target="_blank">BIP 30</a>).
 With `SIGHASH_ANYPREVOUT` signature replay is possible for different UTXOs with the same `scriptPubKey` and the same value, while with `SIGHASH_ANYPREVOUTANYSCRIPT` signature replay is possible for any UTXOs that reuse the same BIP 118 public key in one of their potential scripts.
 
-As a consequence, implementors MUST ensure that BIP 118 public keys are only reused when signature replay cannot cause loss of funds (eg due to other features of the protocol or other constraints on the transaction), or when such a loss of funds is acceptable.
+As a consequence, implementers MUST ensure that BIP 118 public keys are only reused when signature replay cannot cause loss of funds (eg due to other features of the protocol or other constraints on the transaction), or when such a loss of funds is acceptable.
 
 <h4> Malleability </h4>
 

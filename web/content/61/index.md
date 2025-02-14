@@ -169,7 +169,7 @@ The reject message is backwards-compatible; older peers that do not recognize th
 <h2> Implementation notes </h2>
 
 
-Implementors must consider what happens if an attacker either sends them
+Implementers must consider what happens if an attacker either sends them
 reject messages for valid transactions/blocks or sends them random
 reject messages, and should beware of possible denial-of-service attacks.
 For example, notifying the user of every reject message received
