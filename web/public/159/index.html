@@ -128,27 +128,29 @@
   License: BSD-2-Clause
 </code></pre>
 <h2> Abstract </h2>
-<p>Define a service bit that allow pruned peers to signal their limited services</p>
+<p>Define a service bit that allows pruned peers to signal their limited services.</p>
 <h2>Motivation</h2>
-<p>Pruned peers can offer the same services as traditional peer except of serving all historical blocks.
-Bitcoin right now only offers the NODE_NETWORK service bit which indicates that a peer can serve
+<p>Pruned peers can offer the same services as traditional peers, except that of serving all historical blocks.
+Bitcoin right now only offers the <code>NODE_NETWORK</code> service bit to indicate that a peer can serve
 all historical blocks.</p>
 <ol>
-<li>Pruned peers can relay blocks, headers, transactions, addresses and can serve a limited number of historical blocks, thus they should have a way how to announce their service(s)</li>
-<li>Peers no longer in initial block download should consider connecting some of its outbound connections to pruned peers to allow other peers to bootstrap from non-pruned peers</li>
+<li>Pruned peers can relay blocks, headers, transactions, and addresses, but they only guarantee serving a minimum number of historical blocks; thus, they should have a way to announce their service(s)</li>
+<li>Peers no longer in initial block download should consider connecting some of their outbound connections to pruned peers, to allow other peers to bootstrap from non-pruned peers</li>
 </ol>
 <h2> Specification </h2>
 <h3> New service bit </h3>
 <p>This BIP proposes a new service bit</p>
 <p>|NODE_NETWORK_LIMITED|bit 10 (0x400)|If signaled, the peer <I>MUST</I> be capable of serving at least the last 288 blocks (~2 days).|</p>
+<p>Pruned/limited peers <I>MUST NOT</I> set a service bit that signals serving the complete block chain (e.g., <code>NODE_NETWORK</code>). Rationale: nodes that signal serving the complete block chain may also signal <code>NODE_NETWORK_LIMITED</code>.</p>
 <p>A safety buffer of 144 blocks to handle chain reorganizations <I>SHOULD</I> be taken into account when connecting to a peer signaling the <code>NODE_NETWORK_LIMITED</code> service bit.</p>
 <h3> Address relay </h3>
 <p>Full nodes following this BIP <I>SHOULD</I> relay address/services (<code>addr</code> message) from peers they would connect to (including peers signaling <code>NODE_NETWORK_LIMITED</code>).</p>
 <h3> Counter-measures for peer fingerprinting </h3>
-<p>Peers may have different prune depths (depending on the peers configuration, disk space, etc.) which can result in a fingerprinting weakness (finding the prune depth through getdata requests). NODE_NETWORK_LIMITED supporting peers <I>SHOULD</I> avoid leaking the prune depth and therefore not serve blocks deeper than the signaled <code>NODE_NETWORK_LIMITED</code> threshold (288 blocks).</p>
+<p>Peers may have different prune depths (depending on their configuration, disk space, etc.), which can result in a fingerprinting weakness (finding the prune depth through getdata requests).</p>
+<p>Pruned nodes should therefore avoid leaking the prune depth and <I>SHOULD NOT</I> serve blocks deeper than the signaled <code>NODE_NETWORK_LIMITED</code> threshold of 288 blocks.</p>
 <h3> Risks </h3>
 <p>Pruned peers following this BIP may consume more outbound bandwidth.</p>
-<p>Light clients (and such) who are not checking the <code>nServiceFlags</code> (service bits) from a relayed <code>addr</code>-message may unwillingly connect to a pruned peer and ask for (filtered) blocks at a depth below their pruned depth. Light clients should therefore check the service bits (and eventually connect to peers signaling <code>NODE_NETWORK_LIMITED</code> if they require [filtered] blocks around the tip). Light clients obtaining peer IPs though DNS seed should use the DNS filtering option.</p>
+<p>Light clients (and such) who are not checking the <code>nServiceFlags</code> (service bits) from a relayed <code>addr</code>-message may unwittingly connect to a pruned peer and ask for (filtered) blocks at a depth below the peer’s pruned depth. Light clients should therefore check the service bits and either (1) connect to peers signaling <code>NODE_NETWORK_LIMITED</code> that preferably do not also signal serving the full block chain, if they only require (filtered) blocks around the tip, or (2) connect to peers signaling serving the full block chain if they need data older than the latest 288 blocks. Light clients obtaining peer IPs through DNS seeds should use the DNS filtering option.</p>
 <h2> Compatibility </h2>
 <p>This proposal is backward compatible.</p>
 <h2> Reference implementation </h2>
@@ -168,7 +170,7 @@ all historical blocks.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-02-26</p>
+                    <p class="font-bold">2025-02-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
