@@ -131,10 +131,15 @@ The resulting genesis block hash is `00000000da84f2bafbbc53dee25a72ae507ff4914b8
 
 The message start is defined as `0x1c163f28`. These four bytes were randomly generated and have no special meaning.
 
+<h3> Network Parameters </h3>
+
+
+The default p2p port for Testnet 4 is `48333`.
+
 <h2> Backwards Compatibility </h2>
 
 
-The rules used by Testnet 4 are backwards compatible to the rules of Testnet 3. Existing software that implements support for Testnet 3 would only require addition of the network parameters  (magic number, genesis block, etc.) to be able to follow Testnet 4. 
+The rules used by Testnet 4 are backwards compatible to the rules of Testnet 3. Existing software that implements support for Testnet 3 would only require addition of the network parameters  (magic number, genesis block, etc.) to be able to follow Testnet 4.
 
 However, implementations that only implement Testnet 3’s rules would accept a chain that violates Testnet 4’s rules and are therefore susceptible to being forked off. It is recommended that any implementations check blocks in regard to all the new rules of Testnet 4 and reject blocks that fail to comply.
 
