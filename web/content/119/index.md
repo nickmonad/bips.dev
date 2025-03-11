@@ -518,7 +518,7 @@ As such, evaluating a CTV hash during consensus is always O(1) computation when 
 These caches usually must be available due to similar issues in CHECKSIG behavior. Computing the caches
 is O(T) (the size of the transaction).
 
-An example of a script that could experience an DoS issue without caching is:
+An example of a script that could experience a DoS issue without caching is:
 
 ```
     <H> CTV CTV CTV... CTV
@@ -543,7 +543,7 @@ caching of all combinations of outputs would not be possible and would cause a q
 The preimage argument passed to CHECKTEMPLATEVERIFY may be unknown or otherwise unsatisfiable.
 However, requiring knowledge that an address is spendable from is incompatible with sender's ability
 to spend to any address (especially, OP_RETURN). If a sender needs to know the template can be spent
-from before sending, they may request a signature of an provably non-transaction challenge string
+from before sending, they may request a signature of a provably non-transaction challenge string
 from the leaves of the CHECKTEMPLATEVERIFY tree.
 
 <h4>Forwarding Addresses</h4>
@@ -585,7 +585,7 @@ the restrictions for standardness while tightening them for consensus with the u
 
 The standardness rules may lead an unscrupulous script developer to accidentally rely on the
 stricter standardness rules to be enforced during consensus. Should that developer submit a
-transaction directly to the network relying on standardness rejection, an standardness-invalid but
+transaction directly to the network relying on standardness rejection, a standardness-invalid but
 consensus-valid transaction may be caused, leading to a potential loss of funds.
 
 <h4>Feature Redundancy</h4>
