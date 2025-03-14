@@ -68,7 +68,7 @@ BIP-300 consists of six new blockchain messages:
 
 
 
-Nodes organize this data into <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/blob/master/src/bip300.rs#L79-L96" target="_blank">a few caches</a>, mainly these two:
+Nodes organize this data into <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/blob/13a4353c39a26d9d40180ea361b7580fd682e5b5/src/bip300.rs#L79-L96" target="_blank">a few caches</a>, mainly these two:
 
 *  D1. "The Sidechain List"
 *  D2. "The Withdrawal List"
@@ -200,7 +200,7 @@ Otherwise, the sidechain activates (Active is set to TRUE).
 
 Sidechain withdrawals take the form of "bundles" -- named because they "bundle up" many individual withdrawal-requests into a single rare L1 transaction.
 
-On the L2 side, individual withdrawal requests are periodically combined into a single CoinJoin-like withdrawal bundle. This bundle is hashed <a href="https://github.com/LayerTwo-Labs/bip300301_messages/blob/master/src/lib.rs#L374C1-L419C2" target="_blank">in a particular way</a> (on both L2 and L1) -- this "blinded hash" commits to its own L1 fee, but (notably) it does not commit to its first tx-input (in that way, it is like <a href="/118" target="_blank">BIP-118</a>).
+On the L2 side, individual withdrawal requests are periodically combined into a single CoinJoin-like withdrawal bundle. This bundle is hashed <a href="https://github.com/LayerTwo-Labs/bip300301_messages/blob/398b224981c7c236c8354704e655996d33685149/src/lib.rs#L374C1-L419C2" target="_blank">in a particular way</a> (on both L2 and L1) -- this "blinded hash" commits to its own L1 fee, but (notably) it does not commit to its first tx-input (in that way, it is like <a href="/118" target="_blank">BIP-118</a>).
 
 This hash is what L1 miners will slowly ACK over 3-6 months, not the M6 itself (nor any sidechain data, of course).
 
@@ -316,7 +316,7 @@ An upvote vector of { N/A, N/A, 4 } would be [0x6A,D77D1776,01,03].
 
 Finally, we describe Deposits (M5) and Withdrawals (M6). These are not coinbase outputs, they are txns on L1.
 
-We call a transaction "M5" if it spends from the escrow output and **increases** the quantity of coins. Conversely, we call a transaction "M6" if it spends from the escrow output and **decreases** the quantity of coins. See <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/blob/master/src/bip300.rs#L462C1-L462C47" target="_blank">here</a>.
+We call a transaction "M5" if it spends from the escrow output and **increases** the quantity of coins. Conversely, we call a transaction "M6" if it spends from the escrow output and **decreases** the quantity of coins. See <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/blob/13a4353c39a26d9d40180ea361b7580fd682e5b5/src/bip300.rs#L462C1-L462C47" target="_blank">here</a>.
 
 Every time a deposit/withdrawal is made, the old UTXO is spent and a single new UTXO is created. (Deposits/Withdrawals never cause UTXO bloat.) At all times, the specific treasury UTXO ("CTIP") of each sidechain is cached in D1 (above).
 
