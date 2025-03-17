@@ -159,7 +159,7 @@ The MuSig2 variant proposed below stands out by combining all the following feat
 <li><strong>Compatibility with BIP340</strong>: In this proposal, the aggregate public key is a BIP340 X-only public key, and the signature output at the end of the signing protocol is a BIP340 signature that passes BIP340 verification for the aggregate public key and a message. The individual public keys that are input to the key aggregation algorithm are <em>plain</em> public keys in compressed format.</li>
 <li><strong>Tweaking for BIP32 derivations and Taproot</strong>: This proposal supports tweaking aggregate public keys and signing for tweaked aggregate public keys. We distinguish two modes of tweaking: <em>Plain</em> tweaking can be used to derive child aggregate public keys per <a href="/32" target="_blank">BIP32</a>. <em>X-only</em> tweaking, on the other hand, allows creating a <a href="/341" target="_blank">BIP341</a> tweak to add script paths to a Taproot output. See <a href=" tweaking-the-aggregate-public-key" target="_blank">below</a> for details.</li>
 <li><strong>Non-interactive signing with preprocessing</strong>: The first communication round, exchanging the nonces, can happen before the message or the exact set of signers is determined. Once the parameters of the signing session are finalized, the signers can send partial signatures without additional interaction.</li>
-<li><strong>Key aggregation optionally independent of order</strong>: The output of the key aggregation algorithm depends on the order in which the individual public keys are provided as input. Key aggregation does not sort the individual public keys by default because applications often already have a canonical order of signers. Nonetheless, applications can mandate sorting before aggregation,<ref>Applications that sort individual public keys before aggregation should ensure that the implementation of sorting is reasonably efficient, and in particular does not degenerate to quadratic runtime on pathological inputs.</ref> and this proposal specifies a canonical order to sort the individual public keys before key aggregation. Sorting will ensure the same output, independent of the initial order.</li>
+<li><strong>Key aggregation optionally independent of order</strong>: The output of the key aggregation algorithm depends on the order in which the individual public keys are provided as input. Key aggregation does not sort the individual public keys by default because applications often already have a canonical order of signers. Nonetheless, applications can mandate sorting before aggregation,<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and this proposal specifies a canonical order to sort the individual public keys before key aggregation. Sorting will ensure the same output, independent of the initial order.</li>
 <li><strong>Third-party nonce and partial signature aggregation</strong>: Instead of every signer sending their nonce and partial signature to every other signer, it is possible to use an untrusted third-party <em>aggregator</em> in order to reduce the communication complexity from quadratic to linear in the number of signers. In each of the two rounds, the aggregator collects all signers' contributions (nonces or partial signatures), aggregates them, and broadcasts the aggregate back to the signers. A malicious aggregator can force the signing session to fail to produce a valid Schnorr signature but cannot negatively affect the unforgeability of the scheme.</li>
 <li><strong>Partial signature verification</strong>: If any signer sends a partial signature contribution that was not created by honestly following the signing protocol, the signing session will fail to produce a valid Schnorr signature. This proposal specifies a partial signature verification algorithm to identify disruptive signers. It is incompatible with third-party nonce aggregation because the individual nonce is required for partial verification.</li>
 <li><em><em>MuSig2</em> optimization</em>*: This proposal uses an optimized scheme MuSig2*, which allows saving a point multiplication in key aggregation as compared to MuSig2. MuSig2* is proven secure in the appendix of the <a href="https://eprint.iacr.org/2020/1261" target="_blank">MuSig2 paper</a>. The optimization consists of assigning the constant key aggregation coefficient <em>1</em> to the second distinct key in the list of individual public keys to be aggregated (as well as to any key identical to this key).</li>
@@ -184,7 +184,7 @@ Similarly, the test vectors that exercise the unimplemented features should be r
 <p>The signers start by exchanging their individual public keys and computing an aggregate public key using the <em>KeyAgg</em> algorithm.
 Whenever they want to sign a message, the basic order of operations to create a multi-signature is as follows:</p>
 <p><strong>First broadcast round:</strong>
-The signers start the signing session by running <em>NonceGen</em> to compute <em>secnonce</em> and <em>pubnonce</em>.<ref>We treat the <em>secnonce</em> and <em>pubnonce</em> as grammatically singular even though they include serializations of two scalars and two elliptic curve points, respectively. This treatment may be confusing for readers familiar with the MuSig2 paper. However, serialization is a technical detail that is irrelevant for users of MuSig2 interfaces.</ref>
+The signers start the signing session by running <em>NonceGen</em> to compute <em>secnonce</em> and <em>pubnonce</em>.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
 Then, the signers broadcast their <em>pubnonce</em> to each other and run <em>NonceAgg</em> to compute an aggregate nonce.</p>
 <p><strong>Second broadcast round:</strong>
 At this point, every signer has the required data to sign, which, in the algorithms specified below, is stored in a data structure called <a href="#session-context" target="_blank">Session Context</a>.
@@ -263,14 +263,14 @@ While this is possible for some particular misbehavior of the aggregator, it is 
 More specifically, a malicious aggregator (whose existence violates the second condition above) can always make signing abort and wrongly hold honest signers accountable for the abort (e.g., by claiming to have received an invalid contribution from a particular honest signer).</p>
 <p>The only purpose of the algorithm <em>PartialSigVerify</em> is to ensure identifiable aborts, and it is not necessary to use it when identifiable aborts are not desired.
 In particular, partial signatures are <em>not</em> signatures.
-An adversary can forge a partial signature, i.e., create a partial signature without knowing the secret key for the claimed individual public key.<ref>Assume an adversary wants to forge a partial signature for individual public key <em>P</em>. It joins the signing session pretending to be two different signers, one with individual public key <em>P</em> and one with another individual public key. The adversary can then set the second signer's nonce such that it will be able to produce a partial signature for <em>P</em> but not for the other claimed signer. An explanation of the individual steps required to create a partial signature forgery can be found in <a href="https://gist.github.com/AdamISZ/ca974ed67889cedc738c4a1f65ff620b" target="_blank">a write up by Adam Gibson</a>.</ref>
-However, if <em>PartialSigVerify</em> succeeds for all partial signatures then <em>PartialSigAgg</em> will return a valid Schnorr signature.<ref>Given a list of individual public keys, it is an open question whether a BIP-340 signature valid under the corresponding aggregate public key is a proof of knowledge of all secret keys of the individual public keys.</ref></p>
+An adversary can forge a partial signature, i.e., create a partial signature without knowing the secret key for the claimed individual public key.<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>
+However, if <em>PartialSigVerify</em> succeeds for all partial signatures then <em>PartialSigAgg</em> will return a valid Schnorr signature.<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup></p>
 <h3> Tweaking the Aggregate Public Key </h3>
 <p>The aggregate public key can be <em>tweaked</em>, which modifies the key as defined in the <a href="#tweaking-definition" target="_blank">Tweaking Definition</a> subsection.
 In order to apply a tweak, the KeyAgg Context output by <em>KeyAgg</em> is provided to the <em>ApplyTweak</em> algorithm with the <em>is_xonly_t</em> argument set to false for plain tweaking and true for X-only tweaking.
 The resulting KeyAgg Context can be used to apply another tweak with <em>ApplyTweak</em> or obtain the aggregate public key with <em>GetXonlyPubkey</em> or <em>GetPlainPubkey</em>.</p>
 <p>The purpose of supporting tweaking is to ensure compatibility with existing uses of tweaking, i.e., that the result of signing is a valid signature for the tweaked public key.
-The MuSig2 algorithms take arbitrary tweaks as input but accepting arbitrary tweaks may negatively affect the security of the scheme.<ref>It is an open question whether allowing arbitrary tweaks from an adversary affects the unforgeability of MuSig2.</ref>
+The MuSig2 algorithms take arbitrary tweaks as input but accepting arbitrary tweaks may negatively affect the security of the scheme.<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>
 Instead, signers should obtain the tweaks according to other specifications.
 This typically involves deriving the tweaks from a hash of the aggregate public key and some other information.
 Depending on the specific scheme that is used for tweaking, either the plain or the X-only aggregate public key is required.
@@ -336,7 +336,7 @@ In particular, some values are recomputed but can be cached in actual implementa
 <h3> Key Generation and Aggregation </h3>
 <h4> Key Generation of an Individual Signer </h4>
 <div>
-Algorithm _IndividualPubkey(sk)_:<ref>The _IndividualPubkey_ algorithm matches the key generation procedure traditionally used for ECDSA in Bitcoin</ref>
+Algorithm _IndividualPubkey(sk)_:<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>
 *  Inputs:
     *  The secret key _sk_: a 32-byte array, freshly generated uniformly at random
 *  Let _d' = int(sk)_.
@@ -406,7 +406,7 @@ Internal Algorithm _KeyAggCoeffInternal(pk<sub>1..u</sub>, pk', pk2)_:
 *  Let _L = HashKeys(pk<sub>1..u</sub>)_
 *  If _pk' = pk2_:
     *  Return 1
-*  Return _int(hash<sub>KeyAgg coefficient</sub>(L || pk')) mod n_<ref>The key aggregation coefficient is computed by hashing the individual public key instead of its index, which requires one more invocation of the SHA-256 compression function. However, it results in significantly simpler implementations because signers do not need to translate between public key indices before and after sorting.</ref>
+*  Return _int(hash<sub>KeyAgg coefficient</sub>(L || pk')) mod n_<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>
 </div>
 <h4> Applying Tweaks </h4>
 <div>
@@ -438,7 +438,7 @@ Algorithm _NonceGen(sk, pk, aggpk, m, extra_in)_:
     *  The auxiliary input _extra_in_: a byte array with _0 &le; len(extra_in) &le; 2<sup>32</sup>-1_ (optional argument)
 *  Let _rand' _ be a 32-byte array freshly drawn uniformly at random
 *  If the optional argument _sk_ is present:
-    *  Let _rand_ be the byte-wise xor of _sk_ and _hash<sub>MuSig/aux</sub>(rand')_<ref>The random data is hashed (with a unique tag) as a precaution against situations where the randomness may be correlated with the secret signing key itself. It is xored with the secret key (rather than combined with it in a hash) to reduce the number of operations exposed to the actual secret key.</ref>
+    *  Let _rand_ be the byte-wise xor of _sk_ and _hash<sub>MuSig/aux</sub>(rand')_<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup>
 *  Else:
     *  Let _rand = rand' _
 *  If the optional argument _aggpk_ is not present:
@@ -523,13 +523,13 @@ Algorithm _Sign(secnonce, sk, session_ctx)_:
 *  Let _P = d'⋅G_
 *  Let _pk = cbytes(P)_
 *  Fail if _pk &ne; secnonce[64:97]_
-*  Let _a = GetSessionKeyAggCoeff(session_ctx, P)_; fail if that fails<ref>Failing _Sign_ when _GetSessionKeyAggCoeff(session_ctx, P)_ fails is not necessary for unforgeability. It merely indicates to the caller that the scheme is not being used correctly.</ref>
+*  Let _a = GetSessionKeyAggCoeff(session_ctx, P)_; fail if that fails<sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>
 *  Let _g = 1_ if _has_even_y(Q)_, otherwise let _g = -1 mod n_
 *  <div id="Sign negation"></div>Let _d = g⋅gacc⋅d' mod n_ (See <a href=" negation-of-the-secret-key-when-signing" target="_blank">Negation Of The Secret Key When Signing</a>)
 *  Let _s = (k<sub>1</sub> + b⋅k<sub>2</sub> + e⋅a⋅d) mod n_
 *  Let _psig = bytes(32, s)_
 *  Let _pubnonce = cbytes(k<sub>1</sub>'⋅G) || cbytes(k<sub>2</sub>'⋅G)_
-*  If _PartialSigVerifyInternal(psig, pubnonce, pk, session_ctx)_ (see below) returns failure, fail<ref>Verifying the signature before leaving the signer prevents random or adversarially provoked computation errors. This prevents publishing invalid signatures which may leak information about the secret key. It is recommended but can be omitted if the computation cost is prohibitive.</ref>
+*  If _PartialSigVerifyInternal(psig, pubnonce, pk, session_ctx)_ (see below) returns failure, fail<sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>
 *  Return partial signature _psig_
 </div>
 <h3> Partial Signature Verification </h3>
@@ -558,7 +558,7 @@ Internal Algorithm _PartialSigVerifyInternal(psig, pubnonce, pk, session_ctx)_:
 *  Let _Re<sub>⁎</sub>' = R<sub>⁎,1</sub> + b⋅R<sub>⁎,2</sub>_
 *  Let effective nonce _Re<sub>⁎</sub> = Re<sub>⁎</sub>' _ if _has_even_y(R)_, otherwise let _Re<sub>⁎</sub> = -Re<sub>⁎</sub>' _
 *  Let _P = cpoint(pk)_; fail if that fails
-*  Let _a = GetSessionKeyAggCoeff(session_ctx, P)_<ref>_GetSessionKeyAggCoeff(session_ctx, P)_ cannot fail when called from _PartialSigVerifyInternal_.</ref>
+*  Let _a = GetSessionKeyAggCoeff(session_ctx, P)_<sup id="cite_ref_11"><a href="#cite_ref_11">11</a></sup>
 *  Let _g = 1_ if _has_even_y(Q)_, otherwise let _g = -1 mod n_
 *  <div id="SigVerify negation"></div>Let _g' = g⋅gacc mod n_ (See <a href=" negation-of-the-individual-public-key-when-partially-verifying" target="_blank">Negation Of The Individual Public Key When Partially Verifying</a>)
 *  Fail if _s⋅G &ne; Re<sub>⁎</sub> + e⋅a⋅g'⋅P_
@@ -866,7 +866,19 @@ The <code>PATCH</code> version is incremented for other changes that are notewor
 <li><strong>0.1.0</strong> (2022-05-19): Publication of draft BIP on the bitcoin-dev mailing list</li>
 </ul>
 <h2> Footnotes </h2>
-<references />
+<ol>
+<li><a href="https://bips.dev/327/#cite_ref_1">^</a> Applications that sort individual public keys before aggregation should ensure that the implementation of sorting is reasonably efficient, and in particular does not degenerate to quadratic runtime on pathological inputs.</li>
+<li><a href="https://bips.dev/327/#cite_ref_2">^</a> We treat the <em>secnonce</em> and <em>pubnonce</em> as grammatically singular even though they include serializations of two scalars and two elliptic curve points, respectively. This treatment may be confusing for readers familiar with the MuSig2 paper. However, serialization is a technical detail that is irrelevant for users of MuSig2 interfaces.</li>
+<li><a href="https://bips.dev/327/#cite_ref_3">^</a> Assume an adversary wants to forge a partial signature for individual public key <em>P</em>. It joins the signing session pretending to be two different signers, one with individual public key <em>P</em> and one with another individual public key. The adversary can then set the second signer's nonce such that it will be able to produce a partial signature for <em>P</em> but not for the other claimed signer. An explanation of the individual steps required to create a partial signature forgery can be found in <a href="https://gist.github.com/AdamISZ/ca974ed67889cedc738c4a1f65ff620b" target="_blank">a write up by Adam Gibson</a>.</li>
+<li><a href="https://bips.dev/327/#cite_ref_4">^</a> Given a list of individual public keys, it is an open question whether a BIP-340 signature valid under the corresponding aggregate public key is a proof of knowledge of all secret keys of the individual public keys.</li>
+<li><a href="https://bips.dev/327/#cite_ref_5">^</a> It is an open question whether allowing arbitrary tweaks from an adversary affects the unforgeability of MuSig2.</li>
+<li><a href="https://bips.dev/327/#cite_ref_6">^</a> The <em>IndividualPubkey</em> algorithm matches the key generation procedure traditionally used for ECDSA in Bitcoin</li>
+<li><a href="https://bips.dev/327/#cite_ref_7">^</a> The key aggregation coefficient is computed by hashing the individual public key instead of its index, which requires one more invocation of the SHA-256 compression function. However, it results in significantly simpler implementations because signers do not need to translate between public key indices before and after sorting.</li>
+<li><a href="https://bips.dev/327/#cite_ref_8">^</a> The random data is hashed (with a unique tag) as a precaution against situations where the randomness may be correlated with the secret signing key itself. It is xored with the secret key (rather than combined with it in a hash) to reduce the number of operations exposed to the actual secret key.</li>
+<li><a href="https://bips.dev/327/#cite_ref_9">^</a> Failing <em>Sign</em> when <em>GetSessionKeyAggCoeff(session_ctx, P)</em> fails is not necessary for unforgeability. It merely indicates to the caller that the scheme is not being used correctly.</li>
+<li><a href="https://bips.dev/327/#cite_ref_10">^</a> Verifying the signature before leaving the signer prevents random or adversarially provoked computation errors. This prevents publishing invalid signatures which may leak information about the secret key. It is recommended but can be omitted if the computation cost is prohibitive.</li>
+<li><a href="https://bips.dev/327/#cite_ref_11">^</a> <em>GetSessionKeyAggCoeff(session_ctx, P)</em> cannot fail when called from <em>PartialSigVerifyInternal</em>.</li>
+</ol>
 <h2> Acknowledgements </h2>
 <p>We thank Brandon Black, Riccardo Casatta, Sivaram Dhakshinamoorthy, Lloyd Fournier, Russell O'Connor, and Pieter Wuille for their contributions to this document.</p>
 
@@ -879,7 +891,7 @@ The <code>PATCH</code> version is incremented for other changes that are notewor
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

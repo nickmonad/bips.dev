@@ -164,7 +164,7 @@ operational overhead using a specialized covenant.
 
 The design goals of the proposal are:
 
-*  **efficient reuse of an existing vault configuration.**<ref>**Why does this support address reuse?** The proposal doesn't rely on or encourage address reuse, but certain uses are unsafe if address reuse cannot be handled - for example, if a custodian gives its users a vault address to deposit to, it cannot enforce that those users make a single deposit for each address.</ref> A single vault configuration, whether the same literal `scriptPubKey` or not, should be able to “receive” multiple deposits.
+*  **efficient reuse of an existing vault configuration.**<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> A single vault configuration, whether the same literal `scriptPubKey` or not, should be able to “receive” multiple deposits.
 
 
 *  **batched operations** for recovery and withdrawal to allow managing multiple vault coins efficiently.
@@ -207,7 +207,7 @@ the `TAPLEAF_UPDATE_VERIFY` design that was proposed
 These tapleaf replacement rules, described more precisely below, ensure a
 timelocked withdrawal, where the timelock is fixed by the original
 `OP_VAULT` parameters, to a fixed set of outputs (via
-`OP_CHECKTEMPLATEVERIFY`<ref>**Why is `OP_CHECKTEMPLATEVERIFY` (BIP-119) relied upon for this proposal?** During the withdrawal process, the proposed final destination for value being withdrawn must be committed to. `OP_CTV` is the simplest, safest way to commit the spend of some coins to a particular set of outputs. An earlier version of this proposal attempted to use a simpler, but similar method, of locking the spend of coins to a set of outputs, but this method introduced txid malleability.<br />Note that if some other method of locking spends to a particular set of outputs should be deployed, that method can be used in the `OP_VAULT` `<leaf-update-script-body>` with no changes.</ref>) which is chosen when the withdrawal
+`OP_CHECKTEMPLATEVERIFY`<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>) which is chosen when the withdrawal
 process is triggered.
 
 While `OP_CHECKTEMPLATEVERIFY` is used in this proposal as the
@@ -282,11 +282,11 @@ When evaluating `OP_VAULT` (`OP_SUCCESS187`,
 
 where
 
-*  `<leaf-update-script-body>` is a minimally-encoded data push of a serialized script. <ref>In conjunction with the leaf-update data items, it dictates the tapleaf script in the output taptree that will replace the one currently executing.</ref>
+*  `<leaf-update-script-body>` is a minimally-encoded data push of a serialized script. <sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>
     *  Otherwise, script execution MUST fail and terminate immediately.
 
 
-*  `<push-count>` is an up to 4-byte minimally encoded `CScriptNum` indicating how many leaf-update script items should be popped off the stack. <ref>**Why only prefix with data pushes?** Prefixing the `leaf-update-script-body` with opcodes opens up the door to prefix OP_SUCCESSX opcodes, to name a single issue only, side-stepping the validation that was meant to be run by the committed script.</ref>
+*  `<push-count>` is an up to 4-byte minimally encoded `CScriptNum` indicating how many leaf-update script items should be popped off the stack. <sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>
     *  If this value does not decode to a valid CScriptNum, script execution MUST fail and terminate immediately.
     *  If this value is less than 0, script execution MUST fail and terminate immediately.
     *  If there are fewer than 3 items following the `<push-count>` items on the stack, script execution MUST fail and terminate immediately. In other words, after popping `<leaf-update-script-body>`, there must be at least `3 + <push-count>` items remaining on the stack.
@@ -303,7 +303,7 @@ where
 *  `<revault-vout-idx>` is an up to 4-byte minimally encoded `CScriptNum` optionally indicating the index of an output which, in conjunction with the trigger output, carries forward the value of this input, and has an identical scriptPubKey to the current input.
     *  If this value does not decode to a valid CScriptNum, script execution MUST fail and terminate immediately.
     *  If this value is greater than or equal to the number of outputs, script execution MUST fail and terminate immediately.
-    *  If this value is negative and not equal to -1, script execution MUST fail and terminate immediately.<ref>**Why is -1 the only allowable negative value for revault-vout-idx?** A negative revault index indicates that no revault output exists; if this value were allowed to be any negative number, the witness could be malleated (and bloated) while a transaction is waiting for confirmation.</ref>
+    *  If this value is negative and not equal to -1, script execution MUST fail and terminate immediately.<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>
 
 
 *  `<revault-amount>` is an up to 7-byte minimally encoded CScriptNum indicating the number of satoshis being revaulted.
@@ -315,7 +315,7 @@ where
 
 After the stack is parsed, the following validation checks are performed:
 
-*  Decrement the per-script sigops budget (see <a href="/342" target="_blank">user-content-Resource_limits BIP-0342</a>) by 60<ref>**Why is the sigops cost for OP_VAULT set to 60?** To determine the validity of a trigger output, OP_VAULT must perform an EC multiplication and hashing proportional to the length of the control block in order to generate the output's expected TapTweak. This has been measured to have a cost in the worst case (max length control block) of roughly twice a Schnorr verification. Because the hashing cost could be mitigated by caching midstate, the cost is 60 and not 100.</ref>; if the budget is brought below zero, script execution MUST fail and terminate immediately.
+*  Decrement the per-script sigops budget (see <a href="/342" target="_blank">user-content-Resource_limits BIP-0342</a>) by 60<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>; if the budget is brought below zero, script execution MUST fail and terminate immediately.
 *  Let the output designated by `<trigger-vout-idx>` be called _triggerOut_.
 *  If the scriptPubKey of _triggerOut_ is not a version 1 witness program, script execution MUST fail and terminate immediately.
 *  Let the script constructed by taking the `<leaf-update-script-body>` and prefixing it with minimally-encoded data pushes of the `<push-count>` leaf-update script data items be called the _leaf-update-script_.
@@ -325,7 +325,7 @@ After the stack is parsed, the following validation checks are performed:
 *  If the scriptPubKey of _revaultOut_ is not equal to the scriptPubKey of the input being spent, script execution MUST fail and terminate immediately.
 *  Implementation recommendation: if the sum of the amounts of _triggerOut_ and _revaultOut_ (if any) are not greater than or equal to the value of this input, script execution SHOULD fail and terminate immediately. This ensures that (at a minimum) the vaulted value for this input is carried through.
     *  Amount checks are ultimately done with deferred checks, but this check can help short-circuit obviously invalid spends.
-*  Queue a deferred check<ref>**What is a deferred check and why does this proposal require them for correct script evaluation?** A deferred check is a validation check that is executed only after all input scripts have been validated, and is based on aggregate information collected during each input's EvalScript run.<br /><br />Currently, the validity of each input is (usually) checked concurrently across all inputs in a transaction. Because this proposal allows batching the spend of multiple vault inputs into a single recovery or withdrawal output, we need a mechanism to ensure that all expected values per output can be summed and then checked. This necessitates the introduction of an "aggregating" set of checks which can only be executed after each input's script is evaluated. Note that similar functionality would be required for batch input validation or cross-input signature aggregation.</ref> that ensures the satoshis for this input's `nValue` minus `<revault-amount>` are included within the output `nValue` found at `<trigger-vout-idx>`.
+*  Queue a deferred check<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup> that ensures the satoshis for this input's `nValue` minus `<revault-amount>` are included within the output `nValue` found at `<trigger-vout-idx>`.
 *  Queue a deferred check that ensures `<revault-amount>` satoshis, if non-zero, are included within the output's `nValue` found at `<revault-vout-idx>`.
     *  These deferred checks could be characterized in terms of the pseudocode below (in _Deferred checks_) as<br />`TriggerCheck(input_amount, <revault-amount>, <trigger-vout-idx>, <revault-vout-idx>)`.
 
@@ -357,7 +357,7 @@ After the stack is parsed, the following validation checks are performed:
 *  Let the output at index `<recovery-vout-idx>` be called _recoveryOut_.
 *  If the scriptPubKey of _recoveryOut_ does not have a tagged hash equal to `<recovery-sPK-hash>` (`tagged_hash("VaultRecoverySPK", recoveryOut.scriptPubKey) == recovery-sPK-hash`, where `tagged_hash()` is from the <a href="https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py" target="_blank">BIP-0340 reference code</a>), script execution MUST fail and terminate immediately.
     *  Implementation recommendation: if _recoveryOut_ does not have an `nValue` greater than or equal to this input's amount, the script SHOULD fail and terminate immediately.
-*  Queue a deferred check that ensures the `nValue` of _recoveryOut_ contains the entire `nValue` of this input.<ref>**How do recovery transactions pay for fees?** If the recovery is unauthorized, fees are attached either via CPFP with an ephemeral anchor or as inputs which are solely spent to fees (i.e. no change output). If the recovery is authorized, fees can be attached in any manner, e.g. unrelated inputs and outputs or CPFP via anchor.</ref>
+*  Queue a deferred check that ensures the `nValue` of _recoveryOut_ contains the entire `nValue` of this input.<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup>
     *  This deferred check could be characterized in terms of the pseudocode below as `RecoveryCheck(<recovery-vout-idx>, input_amount)`.
 
 
@@ -425,12 +425,12 @@ corresponding trigger or recovery outputs while preserving their entire input va
 
 In order to prevent possible pinning attacks, recovery transactions must be replaceable.
 
-*  When validating an `OP_VAULT_RECOVER` input being spent, the script MUST fail (by policy, not consensus) and terminate immediately if both<ref>**Why are recovery transactions required to be replaceable?** In the case of unauthorized recoveries, an attacker may attempt to pin recovery transactions by broadcasting a "rebundled" version with a low fee rate. Vault owners must be able to overcome this with replacement. In the case of authorized recovery, if an attacker steals the recovery authorization key, the attacker may try to pin the recovery transaction during theft. Requiring replaceability ensures that the owner can always raise the fee rate of the recovery transaction, even if they are RBF rule  3 griefed in the process.</ref>
+*  When validating an `OP_VAULT_RECOVER` input being spent, the script MUST fail (by policy, not consensus) and terminate immediately if both<sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>
 *   the input is not marked as opt-in replaceable by having an nSequence number less than `0xffffffff - 1`, per <a href="/125" target="_blank">BIP-0125</a>, and
 *   the version of the recovery transaction has an nVersion other than 3.
 
 
-If the script containing `OP_VAULT_RECOVER` is 34 bytes or less<ref>34 bytes is the length of a recovery script that consists solely of `<recovery-sPK-hash> OP_VAULT_RECOVER`.</ref>, let
+If the script containing `OP_VAULT_RECOVER` is 34 bytes or less<sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>, let
 it be called "unauthorized," because there is no script guarding the recovery
 process. In order to prevent pinning attacks in the case of unauthorized
 recovery - since the spend of the input (and the structure of the
@@ -439,7 +439,7 @@ unauthorized recovery transaction is limited.
 
 *  If the recovery is unauthorized, the recovery transaction MUST (by policy) abide by the following constraints:
     *  If the spending transaction has more than two outputs, the script MUST fail and terminate immediately.
-    *  If the spending transaction has two outputs, and the output which is not _recoveryOut_ is not an <a href="https://github.com/instagibbs/bips/blob/ephemeral_anchor/bip-ephemeralanchors.mediawiki" target="_blank">ephemeral anchor</a>, the script MUST fail and terminate immediately.<ref>**Why can unauthorized recoveries only process a single recovery path?** Because there is no signature required for unauthorized recoveries, if additional outputs were allowed, someone observing a recovery in the mempool would be able to rebundle and broadcast the recovery with a lower fee rate.</ref>
+    *  If the spending transaction has two outputs, and the output which is not _recoveryOut_ is not an <a href="https://github.com/instagibbs/bips/blob/ephemeral_anchor/bip-ephemeralanchors.mediawiki" target="_blank">ephemeral anchor</a>, the script MUST fail and terminate immediately.<sup id="cite_ref_11"><a href="#cite_ref_11">11</a></sup>
 
 
 <h2> Implementation </h2>
@@ -740,8 +740,17 @@ deployments for OP_CHECKSEQUENCEVERIFY and OP_CHECKLOCKTIMEVERIFY (see
 <h2> Rationale </h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) **Why does this support address reuse?** The proposal doesn't rely on or encourage address reuse, but certain uses are unsafe if address reuse cannot be handled - for example, if a custodian gives its users a vault address to deposit to, it cannot enforce that those users make a single deposit for each address.
+2. [^](#cite_ref_2) **Why is `OP_CHECKTEMPLATEVERIFY` (BIP-119) relied upon for this proposal?** During the withdrawal process, the proposed final destination for value being withdrawn must be committed to. `OP_CTV` is the simplest, safest way to commit the spend of some coins to a particular set of outputs. An earlier version of this proposal attempted to use a simpler, but similar method, of locking the spend of coins to a set of outputs, but this method introduced txid malleability.<br />Note that if some other method of locking spends to a particular set of outputs should be deployed, that method can be used in the `OP_VAULT` `<leaf-update-script-body>` with no changes.
+3. [^](#cite_ref_3) In conjunction with the leaf-update data items, it dictates the tapleaf script in the output taptree that will replace the one currently executing.
+4. [^](#cite_ref_4) **Why only prefix with data pushes?** Prefixing the `leaf-update-script-body` with opcodes opens up the door to prefix OP_SUCCESSX opcodes, to name a single issue only, side-stepping the validation that was meant to be run by the committed script.
+5. [^](#cite_ref_5) **Why is -1 the only allowable negative value for revault-vout-idx?** A negative revault index indicates that no revault output exists; if this value were allowed to be any negative number, the witness could be malleated (and bloated) while a transaction is waiting for confirmation.
+6. [^](#cite_ref_6) **Why is the sigops cost for OP_VAULT set to 60?** To determine the validity of a trigger output, OP_VAULT must perform an EC multiplication and hashing proportional to the length of the control block in order to generate the output's expected TapTweak. This has been measured to have a cost in the worst case (max length control block) of roughly twice a Schnorr verification. Because the hashing cost could be mitigated by caching midstate, the cost is 60 and not 100.
+7. [^](#cite_ref_7) **What is a deferred check and why does this proposal require them for correct script evaluation?** A deferred check is a validation check that is executed only after all input scripts have been validated, and is based on aggregate information collected during each input's EvalScript run.<br /><br />Currently, the validity of each input is (usually) checked concurrently across all inputs in a transaction. Because this proposal allows batching the spend of multiple vault inputs into a single recovery or withdrawal output, we need a mechanism to ensure that all expected values per output can be summed and then checked. This necessitates the introduction of an "aggregating" set of checks which can only be executed after each input's script is evaluated. Note that similar functionality would be required for batch input validation or cross-input signature aggregation.
+8. [^](#cite_ref_8) **How do recovery transactions pay for fees?** If the recovery is unauthorized, fees are attached either via CPFP with an ephemeral anchor or as inputs which are solely spent to fees (i.e. no change output). If the recovery is authorized, fees can be attached in any manner, e.g. unrelated inputs and outputs or CPFP via anchor.
+9. [^](#cite_ref_9) **Why are recovery transactions required to be replaceable?** In the case of unauthorized recoveries, an attacker may attempt to pin recovery transactions by broadcasting a "rebundled" version with a low fee rate. Vault owners must be able to overcome this with replacement. In the case of authorized recovery, if an attacker steals the recovery authorization key, the attacker may try to pin the recovery transaction during theft. Requiring replaceability ensures that the owner can always raise the fee rate of the recovery transaction, even if they are RBF rule  3 griefed in the process.
+10. [^](#cite_ref_10) 34 bytes is the length of a recovery script that consists solely of `<recovery-sPK-hash> OP_VAULT_RECOVER`.
+11. [^](#cite_ref_11) **Why can unauthorized recoveries only process a single recovery path?** Because there is no signature required for unauthorized recoveries, if additional outputs were allowed, someone observing a recovery in the mempool would be able to rebundle and broadcast the recovery with a lower fee rate.
 <h2> References </h2>
 
 

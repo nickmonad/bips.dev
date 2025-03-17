@@ -255,7 +255,6 @@ The following are invalid PSBTs
 <h2>Rationale</h2>
 
 
-<references/>
 
 <h2>Reference implementation</h2>
 

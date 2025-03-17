@@ -133,7 +133,7 @@
 <h2> Abstract </h2>
 <p>A new test network with the goal to replace Testnet 3. This network comes with small but important improvements of the consensus rules, that should make it impractical to attack the network using only CPU mining.</p>
 <h2> Motivation </h2>
-<p>Quoting the original mailing list post from Jameson Lopp<ref>https://gnusha.org/pi/bitcoindev/CADL_X_eXjbRFROuJU0b336vPVy5Q2RJvhcx64NSNPH-3fDCUfw@mail.gmail.com/</ref>:</p>
+<p>Quoting the original mailing list post from Jameson Lopp<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>:</p>
 <blockquote><poem>
 Testnet3 has been running for 13 years. It's on block 2.5 million something and the block reward is down to ~0.014 TBTC, so mining is not doing a great job at distributing testnet coins anymore.
 <p>The reason the block height is insanely high is due to a rather amusing edge case bug that causes the difficulty to regularly get reset to 1, which causes a bit of havoc. If you want a deep dive into the quirk: https://blog.lopp.net/the-block-storms-of-bitcoins-testnet/</p>
@@ -144,18 +144,18 @@ Testnet3 has been running for 13 years. It's on block 2.5 million something and 
 <h2> Specification </h2>
 <p>Consensus of Testnet 4 follows the same rules as mainnet with the exception of the three rules detailed below. Additionally all soft forks that are active on mainnet as of May 2024 are enforced from genesis.</p>
 <h3> 20-minute Exception </h3>
-<p>This rule was already previously implemented and active in Testnet 3<ref>https://github.com/bitcoin/bitcoin/pull/686</ref>.</p>
+<p>This rule was already previously implemented and active in Testnet 3<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.</p>
 <p>A block with a timestamp that is more than 20 minutes past the timestamp of the previous block must have a minimum difficulty of 1 (the network's minimum difficulty) instead of whatever the actual difficulty level currently is. This applies to all blocks in a difficulty period except for the first block. This means the blocks must change their <code>nBits</code> field from the actual difficulty level to the minimum difficulty value <code>0x1d00ffff</code>.</p>
-<p>This rule also led to the block storms<ref>https://blog.lopp.net/the-block-storms-of-bitcoins-testnet/</ref> which the following rule seeks to fix.</p>
+<p>This rule also led to the block storms<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup> which the following rule seeks to fix.</p>
 <h3> Block Storm Fix </h3>
 <p>The work required for a new difficulty period is calculated as multiplication factor to the difficulty of the previous period (but no less than 1/4th and no more than 4x), depending on the duration of the previous difficulty period. On Mainnet and Testnet 3, this factor is applied to the difficulty value of the last block.</p>
 <p>Block storms happen organically whenever the 20-minute exception is applied to a difficulty period’s last block, causing the block to be mined at a difficulty of 1. The difficulty adjustment rules then limit the subsequent period’s difficulty to a value between 1 (the minimum) and 4. Blocks will be generated rapidly in the subsequent low-difficulty periods while the difficulty climbs back to an adequate range. An arbitrarily large number of blocks can be generated quickly by repeatedly using the 20-minute exception on every last block of difficulty periods. The block storm is then bounded only by miner hash rate, the need for last blocks to have a timestamp 20 minutes after the second to last block, the Median-Time-Past nTime rule, and the requirement that blocks can't be more than 2 hours in the future. Overall a sustained attack would eventually be limited to a maximum cadence of six blocks per second.</p>
-<p>A block storm does not require a time warp attack, but one can be used to amplify<ref>A perpetual block storm attack with entire difficulty periods being authored in less than 3.5 days that resets the difficulty to the minimum in the last block of every difficulty period would adjust to a new actual difficulty of 4 every period. An attacker that additionally leverages a time warp attack would start their attack by holding back timestamps until the latest block’s timestamp is at least two weeks in the past, and then limiting their block rate to six blocks per second, incrementing the timestamp on every sixth block. Only on the last block they would use the current time, which both resets the difficulty to one per the 20-minute exception and would result in a difficulty adjustment keeping the difficulty at the minimum due to the elapsed time exceeding the target. This would allow lower the difficulty for all blocks to difficulty 1 instead of difficulty 4</ref> it.</p>
+<p>A block storm does not require a time warp attack, but one can be used to amplify<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup> it.</p>
 <p>The mitigation consists of no longer applying the adjustment factor to the last block of the previous difficulty period. Instead, the first block of the difficulty period is used as the base.</p>
 <p>The first block must contain the actual difficulty of the network and can therefore be used as the base for the calculation of the new difficulty level. Note that the first block in new difficulty period does not allow usage of the 20-minute exception (this is prior behavior). This means that in each difficulty period the first block should always have the actual difficulty even if all other blocks were mined with the 20-minute exception.</p>
 <h3> Time Warp Fix </h3>
 <p>In addition to a time warp attack potentially exacerbating the perpetual block storm attack, a time warp attack provides an alternative way to increase the block production rate even if the unintended reset of the actual difficulty due to the 20-minute exception was mitigated.</p>
-<p>To protect against the time warp attack, the following rule proposed as part of The Great Consensus Cleanup<ref>https://github.com/TheBlueMatt/bips/blob/cleanup-softfork/bip-XXXX.mediawiki</ref> is enforced: &quot;The nTime field of each block whose height, mod 2016, is 0 must be greater than or equal to the nTime field of the immediately prior block minus 600. For the avoidance of doubt, such blocks must still comply with existing Median-Time-Past nTime restrictions.&quot;</p>
+<p>To protect against the time warp attack, the following rule proposed as part of The Great Consensus Cleanup<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup> is enforced: &quot;The nTime field of each block whose height, mod 2016, is 0 must be greater than or equal to the nTime field of the immediately prior block minus 600. For the avoidance of doubt, such blocks must still comply with existing Median-Time-Past nTime restrictions.&quot;</p>
 <h2> Rationale </h2>
 <p>The applied changes were the result of discussions on the mailing list and the PR. The selected changes try to strike a balance between minimal changes to the network (keeping it as close to mainnet as possible) while making it more robust against attackers that try to disrupt the network. Several alternative designs were considered:</p>
 <ul>
@@ -192,7 +192,13 @@ Testnet3 has been running for 13 years. It's on block 2.5 million something and 
 <h2> Reference implementation </h2>
 <p>Pull request at https://github.com/bitcoin/bitcoin/pull/29775</p>
 <h2> References </h2>
-<references/>
+<ol>
+<li><a href="https://bips.dev/94/#cite_ref_1">^</a> https://gnusha.org/pi/bitcoindev/CADL_X_eXjbRFROuJU0b336vPVy5Q2RJvhcx64NSNPH-3fDCUfw@mail.gmail.com/</li>
+<li><a href="https://bips.dev/94/#cite_ref_2">^</a> https://github.com/bitcoin/bitcoin/pull/686</li>
+<li><a href="https://bips.dev/94/#cite_ref_3">^</a> https://blog.lopp.net/the-block-storms-of-bitcoins-testnet/</li>
+<li><a href="https://bips.dev/94/#cite_ref_4">^</a> A perpetual block storm attack with entire difficulty periods being authored in less than 3.5 days that resets the difficulty to the minimum in the last block of every difficulty period would adjust to a new actual difficulty of 4 every period. An attacker that additionally leverages a time warp attack would start their attack by holding back timestamps until the latest block’s timestamp is at least two weeks in the past, and then limiting their block rate to six blocks per second, incrementing the timestamp on every sixth block. Only on the last block they would use the current time, which both resets the difficulty to one per the 20-minute exception and would result in a difficulty adjustment keeping the difficulty at the minimum due to the elapsed time exceeding the target. This would allow lower the difficulty for all blocks to difficulty 1 instead of difficulty 4</li>
+<li><a href="https://bips.dev/94/#cite_ref_5">^</a> https://github.com/TheBlueMatt/bips/blob/cleanup-softfork/bip-XXXX.mediawiki</li>
+</ol>
 <h2> Copyright </h2>
 <p>This document is licensed under the  Creative Commons CC0 1.0 Universal license.</p>
 
@@ -205,7 +211,7 @@ Testnet3 has been running for 13 years. It's on block 2.5 million something and 
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

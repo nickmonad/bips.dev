@@ -60,7 +60,7 @@ To fix signature encoding malleability, the following new rules are applied to p
 <h3>LOW_S</h3>
 
 
-We require that the S value inside ECDSA signatures is at most the curve order divided by 2 (essentially restricting this value to its lower half range). Every signature passed to `OP_CHECKSIG`<ref>Including pay-to-witness-public-key-hash (P2WPKH) described in BIP141</ref>, `OP_CHECKSIGVERIFY`, `OP_CHECKMULTISIG`, or `OP_CHECKMULTISIGVERIFY`, to which ECDSA verification is applied, MUST use a S value between `0x1` and `0x7FFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 5D576E73 57A4501D DFE92F46 681B20A0` (inclusive) with strict DER encoding (see <a href="/66" target="_blank">BIP66</a>).
+We require that the S value inside ECDSA signatures is at most the curve order divided by 2 (essentially restricting this value to its lower half range). Every signature passed to `OP_CHECKSIG`<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>, `OP_CHECKSIGVERIFY`, `OP_CHECKMULTISIG`, or `OP_CHECKMULTISIGVERIFY`, to which ECDSA verification is applied, MUST use a S value between `0x1` and `0x7FFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 5D576E73 57A4501D DFE92F46 681B20A0` (inclusive) with strict DER encoding (see <a href="/66" target="_blank">BIP66</a>).
 
 If a signature passing to ECDSA verification does not pass the Low S value check and is not an empty byte array, the entire script evaluates to false immediately.
 
@@ -80,7 +80,7 @@ Otherwise, the entire script evaluates to false immediately.
 <h2>Examples</h2>
 
 
-The following examples are the combined results of the LOW_S and NULLFAIL rules.<ref>Please note that due to implementation details in reference client v0.13.1, some signatures with S value higher than the half curve order might pass the LOW_S test. However, such signatures are certainly invalid, and will fail later due to NULLFAIL test.</ref>
+The following examples are the combined results of the LOW_S and NULLFAIL rules.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
 
 Notation:
 
@@ -170,8 +170,8 @@ https://github.com/bitcoin/bitcoin/pull/8634
 <h2>Footnotes</h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) Including pay-to-witness-public-key-hash (P2WPKH) described in BIP141
+2. [^](#cite_ref_2) Please note that due to implementation details in reference client v0.13.1, some signatures with S value higher than the half curve order might pass the LOW_S test. However, such signatures are certainly invalid, and will fail later due to NULLFAIL test.
 
 <h2>Acknowledgements</h2>
 

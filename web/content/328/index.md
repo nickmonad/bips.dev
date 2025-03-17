@@ -110,7 +110,6 @@ derivation can be done, and the signers will be able to produce a signature for 
 <h2>Rationale</h2>
 
 
-<references/>
 
 <h2>Reference Implementation</h2>
 

@@ -43,7 +43,7 @@ It also describes a type of policy with adjusted topology limits which, combined
 
 
 Mempools typically accept and relay transactions that spend outputs from other unconfirmed transactions, but restrict package sizes through ancestor and descendant limits
-<ref>https://github.com/bitcoin/bitcoin/blob/632a2bb731804dffe52bd4cbd90bfee352d25ede/doc/policy/mempool-limits.md</ref>
+<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
 to limit the computational complexity of mempool operations and mitigate Denial of Service attacks.
 
 Users may also create unconfirmed transactions that conflict with -- or are "double spends" of -- each other by spending the same input(s) in both.
@@ -71,9 +71,9 @@ When the funds available to be redeemed by each party depend on a transaction co
 
 Imagine that counterparties Alice and Mallory have transactions (or packages) A and B, respectively, which conflict with each other. Alice broadcasts A and Mallory broadcasts B. RBF rules require the replacement transaction pay a higher absolute fee than the aggregate fees paid by all original transactions (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">"Rule 3"</a>). This means Mallory may increase the fees required to replace B beyond what Alice was planning to pay for A's fees.
 
-1. Adding transaction(s) that descend from B and pay a low feerate (too low to fee-bump B through CPFP)<ref>Example: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2023-December/022216.html</ref>.
+1. Adding transaction(s) that descend from B and pay a low feerate (too low to fee-bump B through CPFP)<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 
-2. Adding a high-fee descendant of B that also spends from another large, low-feerate mempool transaction (where the fee of the descendant is too low to fee-bump both B and its other parent through CPFP)<ref>Example: https://github.com/bitcoin/bitcoin/pull/25038#issuecomment-1320295394</ref>.
+2. Adding a high-fee descendant of B that also spends from another large, low-feerate mempool transaction (where the fee of the descendant is too low to fee-bump both B and its other parent through CPFP)<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>.
 
 <h3>RBF pinning through number of conflicts</h3>
 
@@ -83,9 +83,9 @@ RBF rules require that no replacement trigger the removal of more than 100 trans
 <h3>RBF incentive compatibility requirements</h3>
 
 
-There is currently no effective rule to enforce that a replacement transaction would be more incentive compatible to keep in the mempool. It is difficult to quantify the incentive compatibility of a set of transactions, especially in comparison with another set of transactions<ref>https://delvingbitcoin.org/t/mempool-incentive-compatibility/553</ref>, but the requirement of a feerate increase (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">"Rule 6"</a>) is far too simplistic.
+There is currently no effective rule to enforce that a replacement transaction would be more incentive compatible to keep in the mempool. It is difficult to quantify the incentive compatibility of a set of transactions, especially in comparison with another set of transactions<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>, but the requirement of a feerate increase (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">"Rule 6"</a>) is far too simplistic.
 
-For example, a user could create a replacement transaction that pays more fees and is higher feerate, but has a low feerate ancestor and would confirm slower than the original transaction. As a result, all transactions signed with SIGHASH_ANYONECANPAY are vulnerable to being replaced by a transaction that will confirm later than the original<ref>https://github.com/bitcoin/bitcoin/pull/23121#pullrequestreview-766271585</ref>.
+For example, a user could create a replacement transaction that pays more fees and is higher feerate, but has a low feerate ancestor and would confirm slower than the original transaction. As a result, all transactions signed with SIGHASH_ANYONECANPAY are vulnerable to being replaced by a transaction that will confirm later than the original<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>.
 
 <h3>Child fees don't count towards RBF rules</h3>
 
@@ -99,11 +99,11 @@ In LN Penalty, conflicting commitment transactions signed with the same fees can
 
 Mempool policies limit the number and total virtual size of an unconfirmed transaction's descendants. A fee-bumping child of an unconfirmed transaction (CPFP) may be rejected for exceeding the descendant limit. When a transaction has multiple outputs owned by different parties, a malicious party can prevent the other(s) from CPFPing their transaction by attaching enough descendants to monopolize the descendant limit (_package limit pinning_).
 
-LN commitment transactions rely on CPFP carve out <ref><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-November/016518.html" target="_blank">"CPFP Carve-Out for Fee-Prediction Issues in Contracting Applications (eg Lightning)"</a></ref> to avoid package limit pinning.
+LN commitment transactions rely on CPFP carve out <sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup> to avoid package limit pinning.
 
 There are weaknesses with this approach of using 2 anchors and CPFP Carve Out. This proposal helps address a few of them (see Related Work for how other weaknesses are addressed):
 
-*  Cluster Mempool necessitates the removal of CPFP Carve Out <ref>https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393 the-cpfp-carveout-rule-can-no-longer-be-supported-12</ref>.
+*  Cluster Mempool necessitates the removal of CPFP Carve Out <sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>.
 *  CPFP Carve Out only allows _one more_ child to be added to the transaction. This means it cannot guarantee the ability to CPFP for more than 2 parties of a shared transaction.
 
 
@@ -200,10 +200,10 @@ It also allows anchor outputs to have 0 value, eliminating the need to deduct va
 
 The <a href="https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393/7" target="_blank">Cluster Mempool</a> proposal makes fundamental changes to mempool structure and policy rules, enabling the accurate assessment of the incentive compatibility of accepting or removing a transaction, among other things. Notably, Cluster Mempool introduces a limit to all transactions' cluster size to make incentive compatibility calculations feasible. This cluster limit is similar to TRUC limits in that it bounds computation to enable improved policies, but is applied to all transactions (not just ones that opt in) and is much less restrictive than TRUC limits.
 
-Cluster Mempool provides a more holistic solution to some of the problems listed (such as adding an incentive compatibility requirement to RBF and safely enabling package RBF for more complex topologies). However, it does not help resolve all problems (such as RBF Pinning through absolute fees and number of conflicts). Also, since Cluster Mempool is incompatible with CPFP Carve Out<ref>https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393#the-cpfp-carveout-rule-can-no-longer-be-supported-12</ref>, TRUC with sibling eviction and package RBF provide an alternative solution to applications that rely on it.
+Cluster Mempool provides a more holistic solution to some of the problems listed (such as adding an incentive compatibility requirement to RBF and safely enabling package RBF for more complex topologies). However, it does not help resolve all problems (such as RBF Pinning through absolute fees and number of conflicts). Also, since Cluster Mempool is incompatible with CPFP Carve Out<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup>, TRUC with sibling eviction and package RBF provide an alternative solution to applications that rely on it.
 
 Building on top of Cluster Mempool, there are also various ideas for extending TRUC transactions and creating another anti-pinning policy
-<ref>https://delvingbitcoin.org/t/v3-and-some-possible-futures/523/3</ref>.
+<sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>.
 
 <a href="https://bitcoinops.org/en/topics/package-relay" target="_blank">Package Relay</a> includes changes in p2p protocol, transaction relay logic, and mempool policy to enable nodes to accept and relay packages of transactions. Much of this proposal's utility relies on the existence of package relay for 1-parent-1-child packages (the topology TRUC supports).
 
@@ -266,7 +266,7 @@ Add incentive compatibility requirement to RBF policy using some existing score 
 
 </ref>.
 
-As the incentive compatibility "score" of a transaction must be dynamically calculated given the structure of mempools today, there is no satisfactory solution. A full calculation is too computationally expensive. Static values can overestimate or underestimate, leading to more pinning problems <ref>Four examples of static calculations and an example in which they are all inaccurate: https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff#mining-score-of-a-mempool-transaction</ref>.
+As the incentive compatibility "score" of a transaction must be dynamically calculated given the structure of mempools today, there is no satisfactory solution. A full calculation is too computationally expensive. Static values can overestimate or underestimate, leading to more pinning problems <sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>.
 The ability to calculate incentive compatibility scores efficiently is a primary feature and motivation for both TRUC transactions and Cluster Mempool.
 
 <h3>Alternatives: replace by feerate</h3>
@@ -338,5 +338,13 @@ and Bastien Teinturier.
 <h2>References and Rationale</h2>
 
 
-<references/>
-
+1. [^](#cite_ref_1) https://github.com/bitcoin/bitcoin/blob/632a2bb731804dffe52bd4cbd90bfee352d25ede/doc/policy/mempool-limits.md
+2. [^](#cite_ref_2) Example: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2023-December/022216.html
+3. [^](#cite_ref_3) Example: https://github.com/bitcoin/bitcoin/pull/25038#issuecomment-1320295394
+4. [^](#cite_ref_4) https://delvingbitcoin.org/t/mempool-incentive-compatibility/553
+5. [^](#cite_ref_5) https://github.com/bitcoin/bitcoin/pull/23121#pullrequestreview-766271585
+6. [^](#cite_ref_6) <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-November/016518.html" target="_blank">"CPFP Carve-Out for Fee-Prediction Issues in Contracting Applications (eg Lightning)"</a>
+7. [^](#cite_ref_7) https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393 the-cpfp-carveout-rule-can-no-longer-be-supported-12
+8. [^](#cite_ref_8) https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393#the-cpfp-carveout-rule-can-no-longer-be-supported-12
+9. [^](#cite_ref_9) https://delvingbitcoin.org/t/v3-and-some-possible-futures/523/3
+10. [^](#cite_ref_10) Four examples of static calculations and an example in which they are all inaccurate: https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff#mining-score-of-a-mempool-transaction

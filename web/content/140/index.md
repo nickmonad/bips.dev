@@ -38,7 +38,7 @@ This BIP describes the use of normalized transaction IDs (NTXIDs) in order to el
 
 Transaction malleability refers to the fact that transactions can be modified, either by one of the signers by re-signing the transaction or a third-party by modifying the signature representation. This is a problem since any modification to the serialized representation also changes the hash of the transaction, which is used by spending transaction to reference the funds that are being transferred. If a transaction is modified and later confirmed by ending up in the blockchain all transactions that depended on the original transaction are no longer valid, and thus orphaned.
 
-BIPs 62<ref><a href="/62" target="_blank">BIP 62 - Dealing with malleability</a></ref> and 66<ref><a href="/66" target="_blank">BIP 66 - Strict DER signatures</a></ref> alleviate the problem of third-party modification by defining a canonical representation of the signatures. However, checking the canonical representation is complex and may not eliminate all sources of third-party malleability. Furthermore, these BIPs do not address modifications by one of the signers, i.e., re-signing the transaction, because signers can produce any number of signatures due to the random parameter in ECDSA.
+BIPs 62<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and 66<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup> alleviate the problem of third-party modification by defining a canonical representation of the signatures. However, checking the canonical representation is complex and may not eliminate all sources of third-party malleability. Furthermore, these BIPs do not address modifications by one of the signers, i.e., re-signing the transaction, because signers can produce any number of signatures due to the random parameter in ECDSA.
 
 This proposal eliminates malleability by removing the malleable signatures from the hash used to reference the outputs spent by a transaction. The new hash used to reference an output is called the _normalized transaction ID_. The integrity of all data that is used to reference the output is guaranteed by the signature itself, and any modification that would change the normalized transaction ID would also invalidate the signature itself.
 
@@ -57,7 +57,7 @@ The use of normalized transaction IDs is introduced as a softfork. The specifica
 <h3> Normalized Transaction ID computation </h3>
 
 
-In order to calculate the normalized transaction ID, the signature script is stripped from each input of the transaction of non-coinbase transactions and each input is normalized. Stripping the signature script is achieved by setting the script's length to 0 and removing the `uchar[]` array from the `TxIn`.<ref><a href="https://en.bitcoin.it/wiki/Protocol_Specification#tx" target="_blank">Protocol Specification: TX</a></ref>
+In order to calculate the normalized transaction ID, the signature script is stripped from each input of the transaction of non-coinbase transactions and each input is normalized. Stripping the signature script is achieved by setting the script's length to 0 and removing the `uchar[]` array from the `TxIn`.<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>
 Inputs are then normalized by replacing the hash of each previous transaction with its normalized version if available, i.e., the normalized hash of the previous transaction that created the output being spent in the current transaction. Version 1 transactions do not have a normalized transaction ID hence the non-normalized transaction ID is used for input normalization.
 
 The normalized transaction ID is then computed as the double `SHA 256` hash of the normalized transaction matching the existing transaction ID computation. The normalized transaction ID remains unchanged even if the signatures of the transaction are replaced/malleated and describe a class of semantically identical transactions. In the following we use _transaction instance ID_ to refer to the transaction ID computed on the transaction including signatures. Normalized transaction IDs for coinbase transactions are computed with the signature script in the coinbase input, in order to avoid hash collisions.
@@ -89,7 +89,7 @@ with matching scriptSig format:
 
 This is the standard _m-of-n_ script defined in <a href="/11" target="_blank">BIP 11</a> with an additional version parameter `v` and the new opcode. Singlesig transactions are encoded as _1-of-1_ transactions.
 
-The existing `OP_CHECKMULTISIG` and `OP_CHECKMULTISIGVERIFY` have a bug<ref><a href="https://bitcoin.org/en/developer-guide#multisig" target="_blank">Developer Documentation - Multisig</a></ref> that pops one argument too many from the stack. This bug is not reproduced in the implementation of OP_CHECKSIGEX, so the canonical solution of pushing a dummy value onto the stack is not necessary.
+The existing `OP_CHECKMULTISIG` and `OP_CHECKMULTISIGVERIFY` have a bug<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup> that pops one argument too many from the stack. This bug is not reproduced in the implementation of OP_CHECKSIGEX, so the canonical solution of pushing a dummy value onto the stack is not necessary.
 
 The normalization is achieved by normalizing the transaction before computing the signaturehash, i.e., the hash that is signed.
 The transaction must be normalized by replacing all transaction IDs in the inputs by their normalized variants and stripping the signature scripts. The normalized transaction IDs are computed as described in the previous section. This normalization step is performed both when creating the signatures as well as when checking the signatures.
@@ -112,7 +112,7 @@ Normalized transactions are secure as they still use cryptographic hashes over a
 There are a number of advantages to using normalized transaction IDs:
 
 *  Like BIP 62 and BIP 66 it solves the problem of third-parties picking transactions out of the network, modifying them and reinjecting them.
-*  _m-of-n_ multisig outputs are often used in higher level protocols<ref><a href="http://www.tik.ee.ethz.ch/file/716b955c130e6c703fac336ea17b1670/duplex-micropayment-channels.pdf" target="_blank">A Fast and Scalable Payment Network with Bitcoin Duplex Micropayment Channels </a></ref><ref>[[http://lightning.network/lightning-network-paper.pdf|The Bitcoin Lightning Network:
+*  _m-of-n_ multisig outputs are often used in higher level protocols<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup><ref>[[http://lightning.network/lightning-network-paper.pdf|The Bitcoin Lightning Network:
 
 Scalable Off-Chain Instant Payments]]</ref> in which several parties sign a transaction. Without normalized transaction IDs it is trivial for one party to re-sign a transaction, hence changing the transaction hash and invalidating any transaction built on top of its outputs. Normalized transaction IDs force the ID not to change, even if a party replaces its signature.
 *  Many higher level protocols build structures of transactions on top of multisig outputs that are not completely signed. This is currently not possible without one party holding a fully signed transaction and then calculating the ID. It is desirable to be able to build successive transactions without one party collecting all signatures, and thus possibly lock in funds unilaterally. Normalized transaction IDs allow the use of transaction templates, i.e., completely unsigned transactions upon which further transactions can be built, and only once every party is assured the structure matches its expectations it signs the template, thus validating the template.
@@ -126,7 +126,7 @@ Using version 2 for transactions is an explicit opt-in to the normalized ID trac
 
 Tracking the normalized transaction IDs in the UTXO requires the storage of an additional hash per transaction whose outputs are not completely spent, which at 7,000,000 transactions with unspent outputs amounts to 224MB additional storage on disk.
 
-The coinbase transactions have been checked for hash-collisions and no collisions were found except for the coinbase transactions in blocks at heights 91842 and 91880, which are known to be identical<ref><a href="/30" target="_blank">BIP 30 - Duplicate transactions</a></ref>, and motivated the introduction of BIP 34.<ref><a href="/34" target="_blank">Block v2, Height in Coinbase</a></ref> Since coinbase transactions are invalid if transmitted outside of a block it is not possible to modify them on the fly and since they only mature after being included for a long time in the blockchain they are considered safe.
+The coinbase transactions have been checked for hash-collisions and no collisions were found except for the coinbase transactions in blocks at heights 91842 and 91880, which are known to be identical<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>, and motivated the introduction of BIP 34.<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup> Since coinbase transactions are invalid if transmitted outside of a block it is not possible to modify them on the fly and since they only mature after being included for a long time in the blockchain they are considered safe.
 
 <h3> OP_CHECKSIGEX </h3>
 
@@ -152,8 +152,13 @@ This is a softfork which replaces `OP_NOP4` with the new implementation of `OP_C
 
 <h2> References </h2>
 
-<references>
-
+1. [^](#cite_ref_1) <a href="/62" target="_blank">BIP 62 - Dealing with malleability</a>
+2. [^](#cite_ref_2) <a href="/66" target="_blank">BIP 66 - Strict DER signatures</a>
+3. [^](#cite_ref_3) <a href="https://en.bitcoin.it/wiki/Protocol_Specification#tx" target="_blank">Protocol Specification: TX</a>
+4. [^](#cite_ref_4) <a href="https://bitcoin.org/en/developer-guide#multisig" target="_blank">Developer Documentation - Multisig</a>
+5. [^](#cite_ref_5) <a href="http://www.tik.ee.ethz.ch/file/716b955c130e6c703fac336ea17b1670/duplex-micropayment-channels.pdf" target="_blank">A Fast and Scalable Payment Network with Bitcoin Duplex Micropayment Channels </a>
+6. [^](#cite_ref_6) <a href="/30" target="_blank">BIP 30 - Duplicate transactions</a>
+7. [^](#cite_ref_7) <a href="/34" target="_blank">Block v2, Height in Coinbase</a>
 <h2>Copyright</h2>
 
 This document is placed in the public domain.

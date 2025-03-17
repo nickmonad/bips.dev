@@ -134,10 +134,10 @@
 <p>There are 4 ECDSA signature verification codes in the original Bitcoin script system: <code>CHECKSIG</code>, <code>CHECKSIGVERIFY</code>, <code>CHECKMULTISIG</code>, <code>CHECKMULTISIGVERIFY</code> (“sigops”). According to the sighash type (<code>ALL</code>, <code>NONE</code>, <code>SINGLE</code>, <code>ANYONECANPAY</code>), a transaction digest is generated with a double SHA256 of a serialized subset of the transaction, and the signature is verified against this digest with a given public key. The detailed procedure is described in a Bitcoin Wiki article. <ref name=wiki>[https://en.bitcoin.it/wiki/OP_CHECKSIG]</ref></p>
 <p>Unfortunately, there are at least 2 weaknesses in the original SignatureHash transaction digest algorithm:</p>
 <ul>
-<li>For the verification of each signature, the amount of data hashing is proportional to the size of the transaction. Therefore, data hashing grows in O(n<sup>2</sup>) as the number of sigops in a transaction increases. While a 1 MB block would normally take 2 seconds to verify with an average computer in 2015, a 1MB transaction with 5569 sigops may take 25 seconds to verify. This could be fixed by optimizing the digest algorithm by introducing some reusable “midstate”, so the time complexity becomes O(n). <ref><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292" target="_blank">CVE-2013-2292</a></ref><ref><a href="https://bitcointalk.org/?topic=140078" target="_blank">New Bitcoin vulnerability: A transaction that takes at least 3 minutes to verify</a></ref><ref><a href="http://rusty.ozlabs.org/?p=522" target="_blank">The Megatransaction: Why Does It Take 25 Seconds?</a></ref></li>
-<li>The algorithm does not involve the amount of Bitcoin being spent by the input. This is usually not a problem for online network nodes as they could request for the specified transaction to acquire the output value. For an offline transaction signing device (&quot;cold wallet&quot;), however, the unknowing of input amount makes it impossible to calculate the exact amount being spent and the transaction fee. To cope with this problem a cold wallet must also acquire the full transaction being spent, which could be a big obstacle in the implementation of lightweight, air-gapped wallet. By including the input value of part of the transaction digest, a cold wallet may safely sign a transaction by learning the value from an untrusted source. In the case that a wrong value is provided and signed, the signature would be invalid and no funding might be lost. <ref><a href="https://bitcointalk.org/index.php?topic=181734.0" target="_blank">SIGHASH_WITHINPUTVALUE: Super-lightweight HW wallets and offline data</a></ref></li>
+<li>For the verification of each signature, the amount of data hashing is proportional to the size of the transaction. Therefore, data hashing grows in O(n<sup>2</sup>) as the number of sigops in a transaction increases. While a 1 MB block would normally take 2 seconds to verify with an average computer in 2015, a 1MB transaction with 5569 sigops may take 25 seconds to verify. This could be fixed by optimizing the digest algorithm by introducing some reusable “midstate”, so the time complexity becomes O(n). <sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup><sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup><sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup></li>
+<li>The algorithm does not involve the amount of Bitcoin being spent by the input. This is usually not a problem for online network nodes as they could request for the specified transaction to acquire the output value. For an offline transaction signing device (&quot;cold wallet&quot;), however, the unknowing of input amount makes it impossible to calculate the exact amount being spent and the transaction fee. To cope with this problem a cold wallet must also acquire the full transaction being spent, which could be a big obstacle in the implementation of lightweight, air-gapped wallet. By including the input value of part of the transaction digest, a cold wallet may safely sign a transaction by learning the value from an untrusted source. In the case that a wrong value is provided and signed, the signature would be invalid and no funding might be lost. <sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup></li>
 </ul>
-<p>Deploying the aforementioned fixes in the original script system is not a simple task. That would be either a hardfork, or a softfork for new sigops without the ability to remove or insert stack items. However, the introduction of segregated witness softfork offers an opportunity to define a different set of script semantics without disrupting the original system, as the unupgraded nodes would always consider such a transaction output is spendable by arbitrary signature or no signature at all. <ref><a href="/141" target="_blank">BIP141: Segregated Witness (Consensus layer)</a></ref></p>
+<p>Deploying the aforementioned fixes in the original script system is not a simple task. That would be either a hardfork, or a softfork for new sigops without the ability to remove or insert stack items. However, the introduction of segregated witness softfork offers an opportunity to define a different set of script semantics without disrupting the original system, as the unupgraded nodes would always consider such a transaction output is spendable by arbitrary signature or no signature at all. <sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup></p>
 <h2> Specification </h2>
 <p>A new transaction digest algorithm is defined, but only applicable to sigops in version 0 witness program:</p>
 <pre><code>  Double SHA256 of the serialization of:
@@ -186,7 +186,7 @@
 <ul>
 <li>If the sighash type is neither <code>SINGLE</code> nor <code>NONE</code>, <code>hashOutputs</code> is the double SHA256 of the serialization of all output amount (8-byte little endian) with <code>scriptPubKey</code> (serialized as scripts inside CTxOuts);</li>
 <li>If sighash type is <code>SINGLE</code> and the input index is smaller than the number of outputs, <code>hashOutputs</code> is the double SHA256 of the output amount with <code>scriptPubKey</code> of the same index as the input;</li>
-<li>Otherwise, <code>hashOutputs</code> is a <code>uint256</code> of <code>0x0000......0000</code>.<ref>In the original algorithm, a <code>uint256</code> of <code>0x0000......0001</code> is committed if the input index for a <code>SINGLE</code> signature is greater than or equal to the number of outputs. In this BIP a <code>0x0000......0000</code> is committed, without changing the semantics.</ref></li>
+<li>Otherwise, <code>hashOutputs</code> is a <code>uint256</code> of <code>0x0000......0000</code>.<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup></li>
 </ul>
 <p>The <code>hashPrevouts</code>, <code>hashSequence</code>, and <code>hashOutputs</code> calculated in an earlier verification may be reused in other inputs of the same transaction, so that the time complexity of the whole hashing process reduces from O(n<sup>2</sup>) to O(n).</p>
 <p>Refer to the reference implementation, reproduced below, for the precise algorithm:</p>
@@ -703,7 +703,7 @@
                     21034ffc99dd9a79dd3cb31e2ab3e0b09e0e67db41ac068c625cd1f491576016c84e
                     9552af4830450220487fb382c4974de3f7d834c1b617fe15860828c7f96454490edd6d891556dcc9022100baf95feb48f845d5bfc9882eb6aeefa1bc3790e39f59eaa46ff7f15ae626c53e0148304502205286f726690b2e9b0207f0345711e63fa7012045b9eb0f19c2458ce1db90cf43022100e89f17f86abc5b149eba4115d4f128bcf45d77fb3ecdd34f594091340c0395960175
 </code></pre>
-<p>The new serialization format is described in BIP144 <ref><a href="/144" target="_blank">BIP144: Segregated Witness (Peer Services)</a></ref></p>
+<p>The new serialization format is described in BIP144 <sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup></p>
 <h2> Deployment </h2>
 <p>This proposal is deployed with Segregated Witness softfork (BIP 141)</p>
 <h2> Backward compatibility </h2>
@@ -711,7 +711,15 @@
 <h2> Reference Implementation </h2>
 <p>https://github.com/bitcoin/bitcoin/pull/8149</p>
 <h2> References </h2>
-<references />
+<ol>
+<li><a href="https://bips.dev/143/#cite_ref_1">^</a> <a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292" target="_blank">CVE-2013-2292</a></li>
+<li><a href="https://bips.dev/143/#cite_ref_2">^</a> <a href="https://bitcointalk.org/?topic=140078" target="_blank">New Bitcoin vulnerability: A transaction that takes at least 3 minutes to verify</a></li>
+<li><a href="https://bips.dev/143/#cite_ref_3">^</a> <a href="http://rusty.ozlabs.org/?p=522" target="_blank">The Megatransaction: Why Does It Take 25 Seconds?</a></li>
+<li><a href="https://bips.dev/143/#cite_ref_4">^</a> <a href="https://bitcointalk.org/index.php?topic=181734.0" target="_blank">SIGHASH_WITHINPUTVALUE: Super-lightweight HW wallets and offline data</a></li>
+<li><a href="https://bips.dev/143/#cite_ref_5">^</a> <a href="/141" target="_blank">BIP141: Segregated Witness (Consensus layer)</a></li>
+<li><a href="https://bips.dev/143/#cite_ref_6">^</a> In the original algorithm, a <code>uint256</code> of <code>0x0000......0001</code> is committed if the input index for a <code>SINGLE</code> signature is greater than or equal to the number of outputs. In this BIP a <code>0x0000......0000</code> is committed, without changing the semantics.</li>
+<li><a href="https://bips.dev/143/#cite_ref_7">^</a> <a href="/144" target="_blank">BIP144: Segregated Witness (Peer Services)</a></li>
+</ol>
 <h2> Copyright </h2>
 <p>This document is placed in the public domain.</p>
 
@@ -724,7 +732,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

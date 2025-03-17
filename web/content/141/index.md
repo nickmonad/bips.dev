@@ -146,9 +146,9 @@ If the version byte is 0, and the witness program is 32 bytes (_L = 32_):
 *  The script must not fail, and result in exactly a single TRUE on the stack.
 
 
-If the version byte is 0, but the witness program is neither 20 nor 32 bytes, the script must fail.<ref>For example, a scriptPubKey with OP_0 followed by a 40-byte non-zero data push will fail due to incorrect program size. However, a scriptPubKey with OP_0 followed by a 41-byte non-zero data push will pass, since it is not considered to be a witness program</ref>
+If the version byte is 0, but the witness program is neither 20 nor 32 bytes, the script must fail.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
 
-If the version byte is 1 to 16, no further interpretation of the witness program or witness stack happens, and there is no size restriction for the witness stack. These versions are reserved for future extensions.<ref>For backward compatibility, for any version byte from 0 to 16, the script must fail if the witness program has a `CastToBool` value of zero. However, having a hash like this is a successful preimage attack against the hash function, and the risk is negligible.</ref>
+If the version byte is 1 to 16, no further interpretation of the witness program or witness stack happens, and there is no size restriction for the witness stack. These versions are reserved for future extensions.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
 
 <h3> Other consensus critical limits </h3>
 
@@ -158,7 +158,7 @@ If the version byte is 1 to 16, no further interpretation of the witness program
 
 Blocks are currently limited to 1,000,000 bytes (1MB) total size. We change this restriction as follows:
 
-_Block weight_ is defined as _Base size_ * 3 + _Total size_. (rationale<ref>Rationale of using a single composite constraint, instead of two separate limits such as 1MB base data and 3MB witness data: Using two separate limits would make mining and fee estimation nearly impossible. Miners would need to solve a complex non-linear optimization problem to find the set of transactions that maximize fees given both constraints, and wallets would not be able to know what to pay as it depends on which of the two conditions is most constrained by the time miners try to produce blocks with their transactions in. Another problem with such an approach is freeloading. Once a set of transactions hit the base data 1MB constraint, up to 3MB extra data could be added to the witness by just minimally increasing the fee. The marginal cost for extra witness space effectively becomes zero in that case.</ref>)
+_Block weight_ is defined as _Base size_ * 3 + _Total size_. (rationale<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>)
 
 _Base size_ is the block size in bytes with the original transaction serialization without any witness-related data, as seen by a non-upgraded node.
 
@@ -202,7 +202,7 @@ A major difference at consensus level is described in <a href="/143" target="_bl
 Three relay and mining policies are also included in the first release of segregated witness at reference implementation version 0.13.1. Softforks based on these policies are likely to be proposed in the near future. To avoid indefinite delay in transaction confirmation and permanent fund loss in a potential softfork, users MUST observe the new semantics carefully:
 
 1.  Only compressed public keys are accepted in P2WPKH and P2WSH (See <a href="/143" target="_blank">BIP143</a>)
-1.  The argument of OP_IF/NOTIF in P2WSH must be minimal<ref>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html</ref>
+1.  The argument of OP_IF/NOTIF in P2WSH must be minimal<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>
 1.  Signature(s) must be null vector(s) if an OP_CHECKSIG or OP_CHECKMULTISIG is failed (for both pre-segregated witness script and P2WSH. See <a href="/146" target="_blank">BIP146</a>)
 
 
@@ -413,8 +413,10 @@ Special thanks to Gregory Maxwell for originating many of the ideas in this BIP 
 <h2> Footnotes </h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) For example, a scriptPubKey with OP_0 followed by a 40-byte non-zero data push will fail due to incorrect program size. However, a scriptPubKey with OP_0 followed by a 41-byte non-zero data push will pass, since it is not considered to be a witness program
+2. [^](#cite_ref_2) For backward compatibility, for any version byte from 0 to 16, the script must fail if the witness program has a `CastToBool` value of zero. However, having a hash like this is a successful preimage attack against the hash function, and the risk is negligible.
+3. [^](#cite_ref_3) Rationale of using a single composite constraint, instead of two separate limits such as 1MB base data and 3MB witness data: Using two separate limits would make mining and fee estimation nearly impossible. Miners would need to solve a complex non-linear optimization problem to find the set of transactions that maximize fees given both constraints, and wallets would not be able to know what to pay as it depends on which of the two conditions is most constrained by the time miners try to produce blocks with their transactions in. Another problem with such an approach is freeloading. Once a set of transactions hit the base data 1MB constraint, up to 3MB extra data could be added to the witness by just minimally increasing the fee. The marginal cost for extra witness space effectively becomes zero in that case.
+4. [^](#cite_ref_4) https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html
 <h2> Reference Implementation </h2>
 
 

@@ -95,7 +95,7 @@ Therefore, implementers must be careful not to display **TxRef**s to users prema
 <h3> TxRef Format </h3>
 
 
-**TxRef** MUST use the **Bech32m**<ref>**Why use Bech32 Encoding for Confirmed Transaction References?** The error detection and correction properties of this encoding format make it very attractive. We expect that it will be reasonable for software to correct a maximum of two characters; however, we haven’t specified this yet.</ref> encoding as defined in <a href="/173" target="_blank">BIP-0173</a> and later refined in <a href="/350" target="_blank">BIP-0350</a>. The Bech32m encoding consists of:
+**TxRef** MUST use the **Bech32m**<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> encoding as defined in <a href="/173" target="_blank">BIP-0173</a> and later refined in <a href="/350" target="_blank">BIP-0350</a>. The Bech32m encoding consists of:
 
 <h4> Human-Readable Part </h4>
 
@@ -123,8 +123,8 @@ _Please note: other specifications, such as <a href="https://w3c-ccg.github.io/d
 
 To increase portability and readability, additional separator characters SHOULD be added to the **TxRef**:
 
-*  A Colon<ref>**Why add a colon here?** This allows it to conform better with W3C URN/URL standards.</ref> **":"**  added after the separator character '1'.
-*  Hyphens<ref>**Why hyphens within the TxRef?** As **TxRef**s are short, we expect that they will be quoted via voice or written by hand. The inclusion of hyphens every 4 characters breaks up the string and means people don't lose their place so easily.</ref> **"-"** added after every 4 characters beyond the colon.
+*  A Colon<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup> **":"**  added after the separator character '1'.
+*  Hyphens<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup> **"-"** added after every 4 characters beyond the colon.
 
 
 <h3> Encoding </h3>
@@ -262,8 +262,9 @@ As of early 2021, **TxRef** has been in limited use for a couple of years and it
 <h2> Rationale </h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) **Why use Bech32 Encoding for Confirmed Transaction References?** The error detection and correction properties of this encoding format make it very attractive. We expect that it will be reasonable for software to correct a maximum of two characters; however, we haven’t specified this yet.
+2. [^](#cite_ref_2) **Why add a colon here?** This allows it to conform better with W3C URN/URL standards.
+3. [^](#cite_ref_3) **Why hyphens within the TxRef?** As **TxRef**s are short, we expect that they will be quoted via voice or written by hand. The inclusion of hyphens every 4 characters breaks up the string and means people don't lose their place so easily.
 <h2> Reference implementations </h2>
 
 

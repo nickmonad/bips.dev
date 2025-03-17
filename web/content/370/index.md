@@ -134,7 +134,7 @@ PSBTv2 introduces new roles and modifies some existing roles.
 In PSBTv2, the Creator initializes the PSBT with 0 inputs and 0 outputs.
 The PSBT version number is set to 2.
 The Creator should also set PSBT_GLOBAL_FALLBACK_LOCKTIME.
-If the Creator is not also a Constructor and will be giving the PSBT to others to add inputs and outputs, the PSBT_GLOBAL_TX_MODIFIABLE field must be present and the Inputs Modifiable and Outputs Modifiable flags set appropriately; moreover, the transaction version number must be set to at least 2. <ref>**Why does the transaction version number need to be at least 2?** The transaction version number is part of the validation rules for some features such as OP_CHECKSEQUENCEVERIFY. Since it is backwards compatible, and there are other ways to disable those features (e.g. through sequence numbers), it is easier to require transactions be able to support these features than to try to negotiate the transaction version number.</ref>
+If the Creator is not also a Constructor and will be giving the PSBT to others to add inputs and outputs, the PSBT_GLOBAL_TX_MODIFIABLE field must be present and the Inputs Modifiable and Outputs Modifiable flags set appropriately; moreover, the transaction version number must be set to at least 2. <sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
 If the Creator is a Constructor and no inputs and outputs will be added by other entities, PSBT_GLOBAL_TX_MODIFIABLE may be omitted.
 
 <h3>Constructor</h3>
@@ -442,8 +442,7 @@ The timelock for the following PSBTs cannot be computed:
 <h2>Rationale</h2>
 
 
-<references/>
-
+1. [^](#cite_ref_1) **Why does the transaction version number need to be at least 2?** The transaction version number is part of the validation rules for some features such as OP_CHECKSEQUENCEVERIFY. Since it is backwards compatible, and there are other ways to disable those features (e.g. through sequence numbers), it is easier to require transactions be able to support these features than to try to negotiate the transaction version number.
 <h2>Reference implementation</h2>
 
 

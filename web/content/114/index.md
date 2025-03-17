@@ -54,7 +54,7 @@ The idea of Merkelized Abstract Syntax Tree (MAST) is to use a Merkle tree to en
 
 <h2>Specification</h2>
 
-In <a href="/141" target="_blank">BIP141</a>, witness programs with a version byte of 1 or larger are considered to be anyone-can-spend scripts. The following new validation rules are applied if the witness program version byte is 1 and the program size is 32 bytes.<ref>If the version byte is 1, but the witness program is not 32 bytes, no further interpretation of the witness program or witness stack happens. This is reserved for future extensions.</ref> The witness program is the `MAST Root`.
+In <a href="/141" target="_blank">BIP141</a>, witness programs with a version byte of 1 or larger are considered to be anyone-can-spend scripts. The following new validation rules are applied if the witness program version byte is 1 and the program size is 32 bytes.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> The witness program is the `MAST Root`.
 
 To redeem an output of this kind, the witness must consist of the following items:
 
@@ -248,7 +248,7 @@ The following is the "Escrow with Timeout" example in <a href="/112" target="_bl
 
 Using compressed public key, the size of this script is 150 bytes.
 
-With MAST, this script could be broken down into 2 mutually exclusive branches:<ref>In BIPXXX, it is proposed that CHECKLOCKTIMEVERIFY and CHECKSEQUENCEVERIFY will pop the top stack item</ref>
+With MAST, this script could be broken down into 2 mutually exclusive branches:<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
 ```
     2 <Alice's pubkey> <Bob's pubkey> <Escrow's pubkey> 3 CHECKMULTISIGVERIFY (105 bytes)
     "30d" CHECKSEQUENCEVERIFY <Alice's pubkey> CHECKSIGVERIFY (42 bytes)

@@ -39,11 +39,11 @@ There are 4 ECDSA signature verification codes in the original Bitcoin script sy
 
 Unfortunately, there are at least 2 weaknesses in the original SignatureHash transaction digest algorithm:
 
-*  For the verification of each signature, the amount of data hashing is proportional to the size of the transaction. Therefore, data hashing grows in O(n<sup>2</sup>) as the number of sigops in a transaction increases. While a 1 MB block would normally take 2 seconds to verify with an average computer in 2015, a 1MB transaction with 5569 sigops may take 25 seconds to verify. This could be fixed by optimizing the digest algorithm by introducing some reusable “midstate”, so the time complexity becomes O(n). <ref><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292" target="_blank">CVE-2013-2292</a></ref><ref><a href="https://bitcointalk.org/?topic=140078" target="_blank">New Bitcoin vulnerability: A transaction that takes at least 3 minutes to verify</a></ref><ref><a href="http://rusty.ozlabs.org/?p=522" target="_blank">The Megatransaction: Why Does It Take 25 Seconds?</a></ref>
-*  The algorithm does not involve the amount of Bitcoin being spent by the input. This is usually not a problem for online network nodes as they could request for the specified transaction to acquire the output value. For an offline transaction signing device ("cold wallet"), however, the unknowing of input amount makes it impossible to calculate the exact amount being spent and the transaction fee. To cope with this problem a cold wallet must also acquire the full transaction being spent, which could be a big obstacle in the implementation of lightweight, air-gapped wallet. By including the input value of part of the transaction digest, a cold wallet may safely sign a transaction by learning the value from an untrusted source. In the case that a wrong value is provided and signed, the signature would be invalid and no funding might be lost. <ref><a href="https://bitcointalk.org/index.php?topic=181734.0" target="_blank">SIGHASH_WITHINPUTVALUE: Super-lightweight HW wallets and offline data</a></ref>
+*  For the verification of each signature, the amount of data hashing is proportional to the size of the transaction. Therefore, data hashing grows in O(n<sup>2</sup>) as the number of sigops in a transaction increases. While a 1 MB block would normally take 2 seconds to verify with an average computer in 2015, a 1MB transaction with 5569 sigops may take 25 seconds to verify. This could be fixed by optimizing the digest algorithm by introducing some reusable “midstate”, so the time complexity becomes O(n). <sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup><sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup><sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>
+*  The algorithm does not involve the amount of Bitcoin being spent by the input. This is usually not a problem for online network nodes as they could request for the specified transaction to acquire the output value. For an offline transaction signing device ("cold wallet"), however, the unknowing of input amount makes it impossible to calculate the exact amount being spent and the transaction fee. To cope with this problem a cold wallet must also acquire the full transaction being spent, which could be a big obstacle in the implementation of lightweight, air-gapped wallet. By including the input value of part of the transaction digest, a cold wallet may safely sign a transaction by learning the value from an untrusted source. In the case that a wrong value is provided and signed, the signature would be invalid and no funding might be lost. <sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>
 
 
-Deploying the aforementioned fixes in the original script system is not a simple task. That would be either a hardfork, or a softfork for new sigops without the ability to remove or insert stack items. However, the introduction of segregated witness softfork offers an opportunity to define a different set of script semantics without disrupting the original system, as the unupgraded nodes would always consider such a transaction output is spendable by arbitrary signature or no signature at all. <ref><a href="/141" target="_blank">BIP141: Segregated Witness (Consensus layer)</a></ref>
+Deploying the aforementioned fixes in the original script system is not a simple task. That would be either a hardfork, or a softfork for new sigops without the ability to remove or insert stack items. However, the introduction of segregated witness softfork offers an opportunity to define a different set of script semantics without disrupting the original system, as the unupgraded nodes would always consider such a transaction output is spendable by arbitrary signature or no signature at all. <sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>
 
 <h2> Specification </h2>
 
@@ -95,7 +95,7 @@ The item 6 is a 8-byte value of the amount of bitcoin spent in this input.
 `hashOutputs`:
 * If the sighash type is neither `SINGLE` nor `NONE`, `hashOutputs` is the double SHA256 of the serialization of all output amount (8-byte little endian) with `scriptPubKey` (serialized as scripts inside CTxOuts);
 * If sighash type is `SINGLE` and the input index is smaller than the number of outputs, `hashOutputs` is the double SHA256 of the output amount with `scriptPubKey` of the same index as the input;
-* Otherwise, `hashOutputs` is a `uint256` of `0x0000......0000`.<ref>In the original algorithm, a `uint256` of `0x0000......0001` is committed if the input index for a `SINGLE` signature is greater than or equal to the number of outputs. In this BIP a `0x0000......0000` is committed, without changing the semantics.</ref>
+* Otherwise, `hashOutputs` is a `uint256` of `0x0000......0000`.<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>
 
 
 The `hashPrevouts`, `hashSequence`, and `hashOutputs` calculated in an earlier verification may be reused in other inputs of the same transaction, so that the time complexity of the whole hashing process reduces from O(n<sup>2</sup>) to O(n).
@@ -866,7 +866,7 @@ These examples show that `FindAndDelete` for the signature is not applied. The t
 
 
 
-The new serialization format is described in BIP144 <ref><a href="/144" target="_blank">BIP144: Segregated Witness (Peer Services)</a></ref>
+The new serialization format is described in BIP144 <sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>
 
 <h2> Deployment </h2>
 
@@ -886,8 +886,13 @@ https://github.com/bitcoin/bitcoin/pull/8149
 <h2> References </h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) <a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2292" target="_blank">CVE-2013-2292</a>
+2. [^](#cite_ref_2) <a href="https://bitcointalk.org/?topic=140078" target="_blank">New Bitcoin vulnerability: A transaction that takes at least 3 minutes to verify</a>
+3. [^](#cite_ref_3) <a href="http://rusty.ozlabs.org/?p=522" target="_blank">The Megatransaction: Why Does It Take 25 Seconds?</a>
+4. [^](#cite_ref_4) <a href="https://bitcointalk.org/index.php?topic=181734.0" target="_blank">SIGHASH_WITHINPUTVALUE: Super-lightweight HW wallets and offline data</a>
+5. [^](#cite_ref_5) <a href="/141" target="_blank">BIP141: Segregated Witness (Consensus layer)</a>
+6. [^](#cite_ref_6) In the original algorithm, a `uint256` of `0x0000......0001` is committed if the input index for a `SINGLE` signature is greater than or equal to the number of outputs. In this BIP a `0x0000......0000` is committed, without changing the semantics.
+7. [^](#cite_ref_7) <a href="/144" target="_blank">BIP144: Segregated Witness (Peer Services)</a>
 <h2> Copyright </h2>
 
 

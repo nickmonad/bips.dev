@@ -75,7 +75,7 @@ The proposal _is_ backwards compatible in that new wallet software will always u
 <h2> Acknowledgements </h2>
 
 
-This BIP is based on the initial proposal by Thomas Voegtlin (thomasv at electrum dot org) on the Bitcoin Dev mailing list<ref>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html</ref> and the Electrum 3.0 implementation<ref>https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108</ref>
+This BIP is based on the initial proposal by Thomas Voegtlin (thomasv at electrum dot org) on the Bitcoin Dev mailing list<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and the Electrum 3.0 implementation<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
 
 <h2> Reference implementation </h2>
 
@@ -85,8 +85,8 @@ There is a partial implementation which adds, but does not use, the types descri
 <h2> References </h2>
 
 
-<references/>
-
+1. [^](#cite_ref_1) https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-September/015007.html
+2. [^](#cite_ref_2) https://github.com/spesmilo/electrum/blob/82e88cb89df35288b80dfdbe071da74247351251/RELEASE-NOTES#L95-L108
 <h2> Copyright </h2>
 
 

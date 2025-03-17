@@ -46,7 +46,7 @@ BIP 37 did not specify a service bit for the bloom filter service, thus
 implicitly assuming that all nodes that serve peers data support it.
 However, the connection filtering algorithm proposed in BIP 37, and
 implemented in several clients today, has been shown to provide little
-to no privacy<ref>http://eprint.iacr.org/2014/763</ref>, as well as being a large DoS risk on some nodes<ref>[http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-July/003044.html] is one example where the issues were found, though others independently discovered issues as well. Sample DoS exploit code available at https://github.com/petertodd/bloom-io-attack.</ref>.
+to no privacy<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>, as well as being a large DoS risk on some nodes<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 Thus, allowing node operators to disable connection bloom filtering is a
 much-needed feature.
 
@@ -111,4 +111,5 @@ This document is placed in the public domain.
 
 <h2> References </h2>
 
-<references>
+1. [^](#cite_ref_1) http://eprint.iacr.org/2014/763
+2. [^](#cite_ref_2) [http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-July/003044.html] is one example where the issues were found, though others independently discovered issues as well. Sample DoS exploit code available at https://github.com/petertodd/bloom-io-attack.

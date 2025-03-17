@@ -67,7 +67,7 @@ The rules for validating these outpoints when relaying transactions or consideri
 1.  {serialized script} is popped off the initial stack, and the transaction is validated again using the popped stack and the deserialized script as the scriptPubKey.
 
 
-These new rules should only be applied when validating transactions in blocks with timestamps >= 1333238400 (Apr 1 2012) <ref><a href="https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff" target="_blank">Remove -bip16 and -paytoscripthashtime command-line arguments</a></ref>. There are transactions earlier than 1333238400 in the block chain that fail these new validation rules. <ref><a href="https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192" target="_blank">Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192</a></ref>. Older transactions must be validated under the old rules. (see the Backwards Compatibility section for details).
+These new rules should only be applied when validating transactions in blocks with timestamps >= 1333238400 (Apr 1 2012) <sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>. There are transactions earlier than 1333238400 in the block chain that fail these new validation rules. <sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>. Older transactions must be validated under the old rules. (see the Backwards Compatibility section for details).
 
 For example, the scriptPubKey and corresponding scriptSig for a one-signature-required transaction is:
 
@@ -162,4 +162,5 @@ https://gist.github.com/gavinandresen/3966071
 
 <h2> References </h2>
 
-<references>
+1. [^](#cite_ref_1) <a href="https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff" target="_blank">Remove -bip16 and -paytoscripthashtime command-line arguments</a>
+2. [^](#cite_ref_2) <a href="https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192" target="_blank">Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192</a>

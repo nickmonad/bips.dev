@@ -42,9 +42,9 @@ of a given transaction, and to request and relay transactions in batches.
 
 Since v0.13, Bitcoin Core has used ancestor packages instead of individual transactions to evaluate
 the incentive compatibility of transactions in the mempool
-<ref><a href="https://github.com/bitcoin/bitcoin/pull/7594" target="_blank">Add tracking of ancestor packages</a></ref> and
+<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and
 selecting them for inclusion in blocks
-<ref><a href="https://github.com/bitcoin/bitcoin/pull/7600" target="_blank">Select transactions using feerate-with-ancestors</a></ref>.
+<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 Incentive-compatible mempool and miner policies help create a fair, fee-based market for block
 space. While miners maximize transaction fees in order to earn higher block rewards, non-mining
 users participating in transaction relay reap many benefits from employing policies that result in a
@@ -493,5 +493,5 @@ Much of this work is inspired by ideas and code by Suhas Daftuar and Antoine Ria
 <h2>References and Rationale</h2>
 
 
-<references/>
-
+1. [^](#cite_ref_1) <a href="https://github.com/bitcoin/bitcoin/pull/7594" target="_blank">Add tracking of ancestor packages</a>
+2. [^](#cite_ref_2) <a href="https://github.com/bitcoin/bitcoin/pull/7600" target="_blank">Select transactions using feerate-with-ancestors</a>

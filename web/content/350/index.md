@@ -111,7 +111,7 @@ which returns either None for failure, or one of the BECH32 / BECH32M enumeratio
 <h3>Addresses for segregated witness outputs</h3>
 
 
-Version 0 outputs (specifically, P2WPKH and P2WSH addresses) continue to use Bech32<ref>**Why not permit both Bech32 and Bech32m for v0 addresses?** Permitting both encodings reduces the error detection capabilities (it makes it equivalent to only have 29 bits of checksum).</ref> as specified in BIP173. Addresses for segregated witness outputs version 1 through 16 use Bech32m. Again, all other aspects of the encoding remain the same, including the 'bc' HRP.
+Version 0 outputs (specifically, P2WPKH and P2WSH addresses) continue to use Bech32<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> as specified in BIP173. Addresses for segregated witness outputs version 1 through 16 use Bech32m. Again, all other aspects of the encoding remain the same, including the 'bc' HRP.
 
 To generate an address for a segregated witness output:
 
@@ -119,7 +119,7 @@ To generate an address for a segregated witness output:
 *  If its witness version is 1 or higher, encode it using Bech32m.
 
 
-To decode an address, client software should either decode with both a Bech32 and a Bech32m decoder<ref>**Can a single string simultaneously be valid as Bech32 and Bech32m?** No, a valid Bech32 and Bech32m string will always differ by at least 3 characters if they are the same length.</ref>, or use a decoder that supports both simultaneously. In both cases, the address decoder has to verify that the encoding matches what is expected for the decoded witness version (Bech32 for version 0, Bech32m for others).
+To decode an address, client software should either decode with both a Bech32 and a Bech32m decoder<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>, or use a decoder that supports both simultaneously. In both cases, the address decoder has to verify that the encoding matches what is expected for the decoded witness version (Bech32 for version 0, Bech32m for others).
 
 The following code demonstrates the checks that need to be performed. Refer to the Python code linked in the reference implementation section below for full details of the called functions.
 
@@ -147,7 +147,7 @@ def decode(hrp, addr):
 
 **Error locating**
 
-Bech32m, like Bech32, does support locating<ref>**What about error correction?** As explained in BIP173, introducing error correction reduces the ability to detect errors. While it is technically possible to correct a small number of errors due to Bech32(m)'s nature as a BCH code, implementations should refrain from using this for more than indicating where an error may be present.</ref> the positions of a few substitution errors. To combine this functionality with
+Bech32m, like Bech32, does support locating<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup> the positions of a few substitution errors. To combine this functionality with
 the segregated witness addresses proposed by this document, simply try locating errors for both Bech32 and Bech32m. If only one finds error locations, report that one. If both do (which should be very rare),
 there are a number of options:
 *  Report the one that needs fewer corrections (if they differ).
@@ -274,12 +274,12 @@ The table below shows the error detection properties of Bech32m, and a compariso
 
 *  **errors** The maximum number of individual errors considered
 *  **of type** What type of errors are considered (either "subst. only" for just substitutions, or "any" to also include deletions, swaps, insertions, and duplications)
-*  **window** The maximum size of the window in which the errors have to occur<ref>**What is an error pattern’s window size?** The window size of an error pattern is the length of the smallest consecutive range of characters that contains all modified characters (on input or output; whichever is larger). For example, an error pattern that turns "abcdef" into "accdbef" has a window size of 4, as it is replacing "bcd" with "ccdb", a 4 character string. Window size is only meaningful when the pattern consists of two or more errors.</ref>
-*  **code/verifier** Whether this line is about Bech32 or Bech32m encoded strings, and whether those are evaluated regarding their probability of being accepted by either a Bech32 or a Bech32m verifier.<ref>**Why do we care about probability of accepting Bech32m strings in Bech32 verifiers?** For applications where Bech32m replaces an existing use of Bech32 (such as segregated witness addresses), we want to make sure that a Bech32m string created by new software won’t be erroneously accepted by old software that assumes Bech32 - even when a small number of errors were introduced as well.</ref><ref>**Should we also take into account failures that occur due to taking a valid Bech32m string, and after errors it becoming acceptable to a Bech32 verifier?** This situation may in theory occur for segregated witness addresses when errors occur that change the version number in a v1+ address to v0. Due to the specificity of this type of error, plus the additional constraints that apply for v0 addresses, this is both unlikely and hard to analyze.</ref>
+*  **window** The maximum size of the window in which the errors have to occur<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>
+*  **code/verifier** Whether this line is about Bech32 or Bech32m encoded strings, and whether those are evaluated regarding their probability of being accepted by either a Bech32 or a Bech32m verifier.<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup><sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>
 *  **error patterns with failure probability** For each probability (_0_, _2<sup>-30</sup>_, _2<sup>-25</sup>_, _2<sup>-20</sup>_, _2<sup>-15</sup>_, and _2<sup>-10</sup>_) this reports what percentage of error patterns restricted by the constraints in the previous columns have those probabilities of being incorrectly accepted.
 
 
-The properties are divided into two classes: those that hold over all strings when averaged over all possible HRPs (human readable parts), and those specific to the "bc1" HRP with the length restrictions imposed by segregated witness addresses<ref>**What restrictions were taken into account for the "bc1"-specific analysis?** The minimum length (due to witness programs being at least 2 bytes), the maximum length (due to witness programs being at most 40 bytes), and the fact that the witness programs are a multiple of 8 bits. The fact that the first data symbol cannot be over 16, or that the padding has to be 0, is not taken into account.</ref>.
+The properties are divided into two classes: those that hold over all strings when averaged over all possible HRPs (human readable parts), and those specific to the "bc1" HRP with the length restrictions imposed by segregated witness addresses<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>.
 
 
 |rowspan="2" | errors|rowspan="2" | of type|rowspan="2" | window|rowspan="2" | code/verifier|
@@ -306,16 +306,23 @@ The numbers in this table, as well as a comparison with the numbers for the ‘�
 
 The details of the selection process can be found <a href="https://gist.github.com/sipa/14c248c288c3880a3b191f978a34508e" target="_blank">here</a>, but in short:
 *  Start with the set of all _2<sup>30</sup>-1_ constants different from Bech32's _1_. All of these satisfy the properties marked <sup>(a)</sup> in the table above.
-*  Through exhaustive analysis, reject all constants that do not exhibit the properties<ref>**How were the properties to select for chosen?** All these properties are as strong as they can be without rejecting every constant: rejecting constants with lower probabilities, or more errors, or wider windows all result in nothing left.</ref> marked <sup>(b)</sup> in the table above (e.g. all constants that permit any error pattern of 2 errors or less in a window of 68 characters or less with a detection probability _&geq; 2<sup>-20</sup>_). This selection leaves us with 12054 candidates.
-*  Reject all constants that do not exhibit the <sup>(c)</sup> properties in the table above<ref>**Why optimize for segregated witness addresses (with HRP "bc1") specifically?** Our analysis for generic HRP has limitations (see the detailed description <a href="https://gist.github.com/sipa/14c248c288c3880a3b191f978a34508e" target="_blank">file-bech32m_mail-txt here</a>, under "Technical details"). We optimize for generic usage first, but optimize for segregated witness addresses as a tiebreaker.</ref>. This leaves us with 79 candidates.
+*  Through exhaustive analysis, reject all constants that do not exhibit the properties<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup> marked <sup>(b)</sup> in the table above (e.g. all constants that permit any error pattern of 2 errors or less in a window of 68 characters or less with a detection probability _&geq; 2<sup>-20</sup>_). This selection leaves us with 12054 candidates.
+*  Reject all constants that do not exhibit the <sup>(c)</sup> properties in the table above<sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>. This leaves us with 79 candidates.
 *  Finally, select the candidate that minimizes the number of error classes matching <sup>(d)</sup> in the table above as a final tiebreaker. The result is the single constant _0x2bc830a3_.
 
 
 <h2>Footnotes</h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) **Why not permit both Bech32 and Bech32m for v0 addresses?** Permitting both encodings reduces the error detection capabilities (it makes it equivalent to only have 29 bits of checksum).
+2. [^](#cite_ref_2) **Can a single string simultaneously be valid as Bech32 and Bech32m?** No, a valid Bech32 and Bech32m string will always differ by at least 3 characters if they are the same length.
+3. [^](#cite_ref_3) **What about error correction?** As explained in BIP173, introducing error correction reduces the ability to detect errors. While it is technically possible to correct a small number of errors due to Bech32(m)'s nature as a BCH code, implementations should refrain from using this for more than indicating where an error may be present.
+4. [^](#cite_ref_4) **What is an error pattern’s window size?** The window size of an error pattern is the length of the smallest consecutive range of characters that contains all modified characters (on input or output; whichever is larger). For example, an error pattern that turns "abcdef" into "accdbef" has a window size of 4, as it is replacing "bcd" with "ccdb", a 4 character string. Window size is only meaningful when the pattern consists of two or more errors.
+5. [^](#cite_ref_5) **Why do we care about probability of accepting Bech32m strings in Bech32 verifiers?** For applications where Bech32m replaces an existing use of Bech32 (such as segregated witness addresses), we want to make sure that a Bech32m string created by new software won’t be erroneously accepted by old software that assumes Bech32 - even when a small number of errors were introduced as well.
+6. [^](#cite_ref_6) **Should we also take into account failures that occur due to taking a valid Bech32m string, and after errors it becoming acceptable to a Bech32 verifier?** This situation may in theory occur for segregated witness addresses when errors occur that change the version number in a v1+ address to v0. Due to the specificity of this type of error, plus the additional constraints that apply for v0 addresses, this is both unlikely and hard to analyze.
+7. [^](#cite_ref_7) **What restrictions were taken into account for the "bc1"-specific analysis?** The minimum length (due to witness programs being at least 2 bytes), the maximum length (due to witness programs being at most 40 bytes), and the fact that the witness programs are a multiple of 8 bits. The fact that the first data symbol cannot be over 16, or that the padding has to be 0, is not taken into account.
+8. [^](#cite_ref_8) **How were the properties to select for chosen?** All these properties are as strong as they can be without rejecting every constant: rejecting constants with lower probabilities, or more errors, or wider windows all result in nothing left.
+9. [^](#cite_ref_9) **Why optimize for segregated witness addresses (with HRP "bc1") specifically?** Our analysis for generic HRP has limitations (see the detailed description <a href="https://gist.github.com/sipa/14c248c288c3880a3b191f978a34508e" target="_blank">file-bech32m_mail-txt here</a>, under "Technical details"). We optimize for generic usage first, but optimize for segregated witness addresses as a tiebreaker.
 <h2>Acknowledgements</h2>
 
 

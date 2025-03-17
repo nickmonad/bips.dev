@@ -145,7 +145,7 @@
 <h2>Specification</h2>
 <p>To fix signature encoding malleability, the following new rules are applied to pre-segregated witness and segregated witness scripts:</p>
 <h3>LOW_S</h3>
-<p>We require that the S value inside ECDSA signatures is at most the curve order divided by 2 (essentially restricting this value to its lower half range). Every signature passed to <code>OP_CHECKSIG</code><ref>Including pay-to-witness-public-key-hash (P2WPKH) described in BIP141</ref>, <code>OP_CHECKSIGVERIFY</code>, <code>OP_CHECKMULTISIG</code>, or <code>OP_CHECKMULTISIGVERIFY</code>, to which ECDSA verification is applied, MUST use a S value between <code>0x1</code> and <code>0x7FFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 5D576E73 57A4501D DFE92F46 681B20A0</code> (inclusive) with strict DER encoding (see <a href="/66" target="_blank">BIP66</a>).</p>
+<p>We require that the S value inside ECDSA signatures is at most the curve order divided by 2 (essentially restricting this value to its lower half range). Every signature passed to <code>OP_CHECKSIG</code><sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>, <code>OP_CHECKSIGVERIFY</code>, <code>OP_CHECKMULTISIG</code>, or <code>OP_CHECKMULTISIGVERIFY</code>, to which ECDSA verification is applied, MUST use a S value between <code>0x1</code> and <code>0x7FFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 5D576E73 57A4501D DFE92F46 681B20A0</code> (inclusive) with strict DER encoding (see <a href="/66" target="_blank">BIP66</a>).</p>
 <p>If a signature passing to ECDSA verification does not pass the Low S value check and is not an empty byte array, the entire script evaluates to false immediately.</p>
 <p>A high S value in signature could be trivially replaced by <code>S' = 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 - S</code>.</p>
 <h3>NULLFAIL</h3>
@@ -153,7 +153,7 @@
 <p>If an <code>OP_CHECKMULTISIG</code> is trying to return a <code>FALSE</code> value to the stack, we require that all signatures passing to this <code>OP_CHECKMULTISIG</code> must be empty byte arrays, even the processing of some signatures might have been skipped due to early termination of the signature verification.</p>
 <p>Otherwise, the entire script evaluates to false immediately.</p>
 <h2>Examples</h2>
-<p>The following examples are the combined results of the LOW_S and NULLFAIL rules.<ref>Please note that due to implementation details in reference client v0.13.1, some signatures with S value higher than the half curve order might pass the LOW_S test. However, such signatures are certainly invalid, and will fail later due to NULLFAIL test.</ref></p>
+<p>The following examples are the combined results of the LOW_S and NULLFAIL rules.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup></p>
 <p>Notation:</p>
 <pre><code>  CO       : curve order = 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141
   HCO      : half curve order = CO &#x2F; 2 = 0x7FFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 5D576E73 57A4501D DFE92F46 681B20A0
@@ -200,7 +200,10 @@
 <p>and</p>
 <p>https://github.com/bitcoin/bitcoin/pull/8634</p>
 <h2>Footnotes</h2>
-<references />
+<ol>
+<li><a href="https://bips.dev/146/#cite_ref_1">^</a> Including pay-to-witness-public-key-hash (P2WPKH) described in BIP141</li>
+<li><a href="https://bips.dev/146/#cite_ref_2">^</a> Please note that due to implementation details in reference client v0.13.1, some signatures with S value higher than the half curve order might pass the LOW_S test. However, such signatures are certainly invalid, and will fail later due to NULLFAIL test.</li>
+</ol>
 <h2>Acknowledgements</h2>
 <p>This document is extracted from the previous <a href="/62" target="_blank">BIP62</a> proposal which had input from various people.</p>
 <h2>Copyright</h2>
@@ -215,7 +218,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

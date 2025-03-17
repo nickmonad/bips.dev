@@ -577,5 +577,4 @@ This document is the result of many discussions and contains contributions by a 
 
 <h2> Rationale and References </h2>
 
-<references/>
 

@@ -195,7 +195,7 @@ All data on the wire after the garbage terminators takes the form of encrypted p
 Each packet consists of:
 *  A 3-byte encrypted **length** field, encoding the length of the **contents** (between _0_ and _2<sup>24</sup>-1_<ref name="max_packet_length">**Is _2<sup>24</sup>-1_ bytes sufficient as maximum content size?** The current Bitcoin P2P protocol has no messages which support more than 4000000 bytes of application payload. By supporting up to _2<sup>24</sup>-1_ we can accommodate future evolutions needing more than 4 times that value. Hypothetical protocol changes that have even more data to exchange than that should probably use multiple separate messages anyway, because of the per-peer receive buffer sizes involved, and the inability to start processing a message before it is fully received. Of course, future versions of the transport protocol could change the size of the length field, if this were really needed.</ref>, inclusive).
 *  An authenticated encryption of the **plaintext**, which consists of:
-    *  A 1-byte **header** which consists of transport layer protocol flags. Currently, only the highest bit is defined as the **ignore bit**. The other bits are ignored, but this may change in future versions<ref>**Why is the header a part of the plaintext and not included alongside the length field?** The packet length field is the minimum information that must be available before we can leverage the standard RFC8439 AEAD. Any other data, including metadata like the header being in the content encryption makes it easier to reason about the protocol security w.r.t. data being used before it is authenticated. If the ignore bit was not part of the content, another mechanism would be needed to authenticate it; for example, it could be fed as AAD to the AEAD cipher. We feel the complexity of such an approach outweighs the benefit of saving one byte per message.</ref>.
+    *  A 1-byte **header** which consists of transport layer protocol flags. Currently, only the highest bit is defined as the **ignore bit**. The other bits are ignored, but this may change in future versions<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.
     *  The variable-length **contents**.
 
 
@@ -610,7 +610,7 @@ Additional message types may be added separately after BIP finalization.
 
 <h4> Signaling v2 support </h4>
 
-Peers supporting the v2 transport protocol signal support by advertising the `NODE_P2P_V2 = (1 << 11)` service flag in addr relay. If met with immediate disconnection when establishing a v2 connection, clients implementing this proposal are encouraged to retry connecting using the v1 protocol.<ref>**Why are v2 clients met with immediate disconnection encouraged to retry with a v1 connection?** Service flags propagated through untrusted intermediaries using ADDR and ADDRV2 P2P messages and are OR'ed when received from multiple sources. An untrusted intermediary could falsely advertise a potential peer as supportive of v2 connections. Connection downgrades to v1 mitigate the risk of a network participant being blackholed via false advertising.</ref>
+Peers supporting the v2 transport protocol signal support by advertising the `NODE_P2P_V2 = (1 << 11)` service flag in addr relay. If met with immediate disconnection when establishing a v2 connection, clients implementing this proposal are encouraged to retry connecting using the v1 protocol.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
 
 
 <h2> Test Vectors </h2>
@@ -624,8 +624,8 @@ For development and testing purposes, we provide a collection of test vectors in
 
 <h2> Rationale and References </h2>
 
-<references/>
-
+1. [^](#cite_ref_1) **Why is the header a part of the plaintext and not included alongside the length field?** The packet length field is the minimum information that must be available before we can leverage the standard RFC8439 AEAD. Any other data, including metadata like the header being in the content encryption makes it easier to reason about the protocol security w.r.t. data being used before it is authenticated. If the ignore bit was not part of the content, another mechanism would be needed to authenticate it; for example, it could be fed as AAD to the AEAD cipher. We feel the complexity of such an approach outweighs the benefit of saving one byte per message.
+2. [^](#cite_ref_2) **Why are v2 clients met with immediate disconnection encouraged to retry with a v1 connection?** Service flags propagated through untrusted intermediaries using ADDR and ADDRV2 P2P messages and are OR'ed when received from multiple sources. An untrusted intermediary could falsely advertise a potential peer as supportive of v2 connections. Connection downgrades to v1 mitigate the risk of a network participant being blackholed via false advertising.
 <h2> Acknowledgements </h2>
 
 Thanks to everyone (last name order) that helped invent and develop the ideas in this proposal:

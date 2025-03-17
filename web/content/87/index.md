@@ -70,7 +70,7 @@ m / purpose' / coin_type' / account' / script_type' / change / address_index
 
 Rather than following in BIP 44/49/84's path and having a separate BIP per script after P2SH (BIP45), vendors decided to insert `script_type'` into the derivation path (where P2SH-P2WSH=1, P2WSH=2, Future_Script=3, etc). As described previously, this is unnecessary, as the descriptor sets the script.  While it attempts to reduce maintenance work by getting rid of new BIPs-per-script, it still requires maintaining an updated, redundant, `script_type` list.
 
-The structure proposed later in this paper solves these issues and is quite comprehensive. It allows for the handling of multiple accounts, external and internal chains per account, and millions of addresses per chain, in a multi-party, multisignature, hierarchical deterministic wallet regardless of the script type <ref>**Why propose this structure only for multisignature wallets?** Currently, single-sig wallets are able to restore funds using just the master private key data (in the format of BIP39 usually).  Even if the user doesn't recall the derivation used, the wallet implementation can iterate through common schemes (BIP44/49/84).  With this proposed hierarchy, the user would either have to now backup additional data (the descriptor), or the wallet would have to attempt all script types for every account level when restoring.  Because of this, even though the descriptor language handles the signature type just like it does the script type, it is best to restrict this script-agnostic hierarchy to multisignature wallets only.</ref>.
+The structure proposed later in this paper solves these issues and is quite comprehensive. It allows for the handling of multiple accounts, external and internal chains per account, and millions of addresses per chain, in a multi-party, multisignature, hierarchical deterministic wallet regardless of the script type <sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.
 
 This paper was inspired from BIP44.
 
@@ -189,8 +189,7 @@ As wallets complying with this BIP are descriptor wallets, this therefore necess
 <h2>Rationale</h2>
 
 
-<references/>
-
+1. [^](#cite_ref_1) **Why propose this structure only for multisignature wallets?** Currently, single-sig wallets are able to restore funds using just the master private key data (in the format of BIP39 usually).  Even if the user doesn't recall the derivation used, the wallet implementation can iterate through common schemes (BIP44/49/84).  With this proposed hierarchy, the user would either have to now backup additional data (the descriptor), or the wallet would have to attempt all script types for every account level when restoring.  Because of this, even though the descriptor language handles the signature type just like it does the script type, it is best to restrict this script-agnostic hierarchy to multisignature wallets only.
 <h2>Examples</h2>
 
 

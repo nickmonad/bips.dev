@@ -133,10 +133,10 @@
 <p>This BIP describes a new light client protocol in Bitcoin that improves upon
 currently available options. The standard light client protocol in use today,
 defined in BIP
-37<ref>https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki</ref>, has
+37<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>, has
 known flaws that weaken the security and privacy of clients and allow
 denial-of-service attack vectors on full
-nodes<ref>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html</ref>.
+nodes<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 The new protocol overcomes these issues by allowing light clients to obtain
 compact probabilistic filters of block content from full nodes and download full
 blocks if the filter matches relevant data.</p>
@@ -168,7 +168,7 @@ addresses and unspent outputs, and the filter size must be carefully tuned to
 balance the false positive rate with the amount of information leaked to peer. It
 has been shown, however, that most implementations available offer virtually
 <em>zero privacy</em> to wallets and other
-applications<ref>https://eprint.iacr.org/2014/763.pdf</ref><ref>https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/</ref>.
+applications<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup><sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>.
 Additionally, malicious full nodes serving light clients can omit critical data
 with little risk of detection, which is unacceptable for some applications
 (such as Lightning Network clients) that must respond to certain on-chain
@@ -176,7 +176,7 @@ events. Finally, honest nodes servicing BIP 37 light clients may incur
 significant I/O and CPU resource usage due to maliciously crafted Bloom filters,
 creating a denial-of-service (DoS) vector and disincentizing node operators from
 supporting the
-protocol<ref>https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki</ref>.</p>
+protocol<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>.</p>
 <p>The alternative detailed in this document can be seen as the opposite of BIP 37:
 instead of the client sending a filter to a full node peer, full nodes generate
 deterministic filters on block data that are served to the client. A light
@@ -192,7 +192,7 @@ blocks can be downloaded from <em>any source</em>, so that no one peer gets comp
 information on the data required by a client. Extremely privacy conscious light
 clients may opt to anonymously fetch blocks using advanced techniques such a
 Private Information
-Retrieval<ref>https://en.wikipedia.org/wiki/Private_information_retrieval</ref>.</p>
+Retrieval<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>.</p>
 <h2> Definitions </h2>
 <p><code>[]byte</code> represents a vector of bytes.</p>
 <p><code>[N]byte</code> represents a fixed-size byte array with length N.</p>
@@ -217,7 +217,7 @@ to signal support for them.</p>
 <h3> Filter Headers </h3>
 <p>This proposal draws inspiration from the headers-first mechanism that Bitcoin
 nodes use to sync the block
-chain<ref>https://bitcoin.org/en/developer-guide#headers-first</ref>. Similar to
+chain<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>. Similar to
 how block headers have a Merkle commitment to all transaction data in the block,
 we define filter headers that have commitments to the block filters. Also like
 block headers, filter headers each have a commitment to the preceding one.
@@ -418,7 +418,15 @@ Corallo for useful discussions.</p>
 <p>Full-node indexing: https://github.com/Roasbeef/btcd/tree/segwit-cbf</p>
 <p>Golomb-Rice Coded sets: https://github.com/Roasbeef/btcutil/tree/gcs/gcs</p>
 <h2> References </h2>
-<references/>
+<ol>
+<li><a href="https://bips.dev/157/#cite_ref_1">^</a> https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki</li>
+<li><a href="https://bips.dev/157/#cite_ref_2">^</a> https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-May/012636.html</li>
+<li><a href="https://bips.dev/157/#cite_ref_3">^</a> https://eprint.iacr.org/2014/763.pdf</li>
+<li><a href="https://bips.dev/157/#cite_ref_4">^</a> https://jonasnick.github.io/blog/2015/02/12/privacy-in-bitcoinj/</li>
+<li><a href="https://bips.dev/157/#cite_ref_5">^</a> https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki</li>
+<li><a href="https://bips.dev/157/#cite_ref_6">^</a> https://en.wikipedia.org/wiki/Private_information_retrieval</li>
+<li><a href="https://bips.dev/157/#cite_ref_7">^</a> https://bitcoin.org/en/developer-guide#headers-first</li>
+</ol>
 <h2> Copyright </h2>
 <p>This document is licensed under the  Creative Commons CC0 1.0 Universal license.</p>
 
@@ -431,7 +439,7 @@ Corallo for useful discussions.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

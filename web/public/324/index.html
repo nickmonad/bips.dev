@@ -313,7 +313,7 @@
 <li>A 3-byte encrypted <strong>length</strong> field, encoding the length of the <strong>contents</strong> (between <em>0</em> and <em>2<sup>24</sup>-1</em><ref name="max_packet_length"><strong>Is <em>2<sup>24</sup>-1</em> bytes sufficient as maximum content size?</strong> The current Bitcoin P2P protocol has no messages which support more than 4000000 bytes of application payload. By supporting up to <em>2<sup>24</sup>-1</em> we can accommodate future evolutions needing more than 4 times that value. Hypothetical protocol changes that have even more data to exchange than that should probably use multiple separate messages anyway, because of the per-peer receive buffer sizes involved, and the inability to start processing a message before it is fully received. Of course, future versions of the transport protocol could change the size of the length field, if this were really needed.</ref>, inclusive).</li>
 <li>An authenticated encryption of the <strong>plaintext</strong>, which consists of:
 <ul>
-<li>A 1-byte <strong>header</strong> which consists of transport layer protocol flags. Currently, only the highest bit is defined as the <strong>ignore bit</strong>. The other bits are ignored, but this may change in future versions<ref><strong>Why is the header a part of the plaintext and not included alongside the length field?</strong> The packet length field is the minimum information that must be available before we can leverage the standard RFC8439 AEAD. Any other data, including metadata like the header being in the content encryption makes it easier to reason about the protocol security w.r.t. data being used before it is authenticated. If the ignore bit was not part of the content, another mechanism would be needed to authenticate it; for example, it could be fed as AAD to the AEAD cipher. We feel the complexity of such an approach outweighs the benefit of saving one byte per message.</ref>.</li>
+<li>A 1-byte <strong>header</strong> which consists of transport layer protocol flags. Currently, only the highest bit is defined as the <strong>ignore bit</strong>. The other bits are ignored, but this may change in future versions<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.</li>
 <li>The variable-length <strong>contents</strong>.</li>
 </ul>
 </li>
@@ -685,7 +685,7 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
 <p>Additional message types may be added separately after BIP finalization.</p>
 <h3> Signaling specification </h3>
 <h4> Signaling v2 support </h4>
-<p>Peers supporting the v2 transport protocol signal support by advertising the <code>NODE_P2P_V2 = (1 &lt;&lt; 11)</code> service flag in addr relay. If met with immediate disconnection when establishing a v2 connection, clients implementing this proposal are encouraged to retry connecting using the v1 protocol.<ref><strong>Why are v2 clients met with immediate disconnection encouraged to retry with a v1 connection?</strong> Service flags propagated through untrusted intermediaries using ADDR and ADDRV2 P2P messages and are OR'ed when received from multiple sources. An untrusted intermediary could falsely advertise a potential peer as supportive of v2 connections. Connection downgrades to v1 mitigate the risk of a network participant being blackholed via false advertising.</ref></p>
+<p>Peers supporting the v2 transport protocol signal support by advertising the <code>NODE_P2P_V2 = (1 &lt;&lt; 11)</code> service flag in addr relay. If met with immediate disconnection when establishing a v2 connection, clients implementing this proposal are encouraged to retry connecting using the v1 protocol.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup></p>
 <h2> Test Vectors </h2>
 <p>For development and testing purposes, we provide a collection of test vectors in CSV format, and a naive, highly inefficient, <a href="https://github.com/bitcoin/bips/blob/master/bip-0324/reference.py" target="_blank">reference implementation</a> of the relevant algorithms. This code is for demonstration purposes only:</p>
 <ul>
@@ -694,7 +694,10 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
 <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0324/packet_encoding_test_vectors.csv" target="_blank">Packet encoding vectors</a> illustrate the lifecycle of the authenticated encryption scheme proposed in this document.</li>
 </ul>
 <h2> Rationale and References </h2>
-<references/>
+<ol>
+<li><a href="https://bips.dev/324/#cite_ref_1">^</a> <strong>Why is the header a part of the plaintext and not included alongside the length field?</strong> The packet length field is the minimum information that must be available before we can leverage the standard RFC8439 AEAD. Any other data, including metadata like the header being in the content encryption makes it easier to reason about the protocol security w.r.t. data being used before it is authenticated. If the ignore bit was not part of the content, another mechanism would be needed to authenticate it; for example, it could be fed as AAD to the AEAD cipher. We feel the complexity of such an approach outweighs the benefit of saving one byte per message.</li>
+<li><a href="https://bips.dev/324/#cite_ref_2">^</a> <strong>Why are v2 clients met with immediate disconnection encouraged to retry with a v1 connection?</strong> Service flags propagated through untrusted intermediaries using ADDR and ADDRV2 P2P messages and are OR'ed when received from multiple sources. An untrusted intermediary could falsely advertise a potential peer as supportive of v2 connections. Connection downgrades to v1 mitigate the risk of a network participant being blackholed via false advertising.</li>
+</ol>
 <h2> Acknowledgements </h2>
 <p>Thanks to everyone (last name order) that helped invent and develop the ideas in this proposal:</p>
 <ul>
@@ -713,7 +716,7 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

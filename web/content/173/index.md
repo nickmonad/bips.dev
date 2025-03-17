@@ -218,7 +218,7 @@ addresses) are ever introduced, having a fully generic old address type availabl
 permit reinterpreting the resulting scriptPubKeys using the old address
 format, with lost funds as a result if bitcoins are sent to them.</ref> is a Bech32 encoding of:
 
-*  The human-readable part "bc"<ref>**Why use 'bc' as human-readable part and not 'btc'?** 'bc' is shorter.</ref> for mainnet, and "tb"<ref>**Why use 'tb' as human-readable part for testnet?** It was chosen to
+*  The human-readable part "bc"<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> for mainnet, and "tb"<ref>**Why use 'tb' as human-readable part for testnet?** It was chosen to
 
 be of the same length as the mainnet counterpart (to simplify
 implementations' assumptions about lengths), but still be visually
@@ -265,8 +265,7 @@ P2PKH addresses can be used.
 <h2>Rationale</h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) **Why use 'bc' as human-readable part and not 'btc'?** 'bc' is shorter.
 <h2>Reference implementations</h2>
 
 

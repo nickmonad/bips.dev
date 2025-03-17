@@ -76,7 +76,7 @@ For payment instructions that have a built-in expiry time (e.g. Lightning BOLT 1
 
 Clients resolving Bitcoin payment instructions MUST ignore any TXT records at the same label which do not begin with (ignoring case) "bitcoin:". Resolvers encountering multiple "bitcoin:"-matching TXT records at the same label MUST treat the records as invalid and refuse to use any payment instructions therein.
 
-Clients resolving Bitcoin payment instructions MUST concatenate all strings in the TXT record before processing the complete URI.<ref>TXT records are defined as "one or more character-strings" in <a href="https://www.rfc-editor.org/rfc/rfc1035#section-3.3.14" target="_blank">RFC 1035</a>, and a "character-string" is a single byte (with a max value of 255) followed by that many characters.</ref>
+Clients resolving Bitcoin payment instructions MUST concatenate all strings in the TXT record before processing the complete URI.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
 
 Clients resolving Bitcoin payment instructions MUST fully validate DNSSEC signatures leading to the DNS root (including any relevant CNAME or DNAME records) and MUST NOT accept DNSSEC signatures which use SHA-1 or RSA with keys shorter than 1024 bits. Resolvers MAY accept SHA-1 DS records.
 

@@ -133,7 +133,6 @@ are likely to be familiar with them.
 <h2>Rationale</h2>
 
 
-<references/>
 
 <h2>Reference Implementation</h2>
 

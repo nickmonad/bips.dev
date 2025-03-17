@@ -38,9 +38,9 @@ This BIP describes a method to deterministically generate multi-signature pay-to
 <h2>Motivation</h2>
 
 
-Pay-to-script-hash (BIP-0011<ref><a href="/11" target="_blank">BIP-0011</a></ref>) is a transaction type that allows funding of arbitrary scripts, where the recipient carries the cost of fee's associated with using longer, more complex scripts.
+Pay-to-script-hash (BIP-0011<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>) is a transaction type that allows funding of arbitrary scripts, where the recipient carries the cost of fee's associated with using longer, more complex scripts.
 
-Multi-signature pay-to-script-hash transactions are defined in BIP-0016<ref><a href="/16" target="_blank">BIP-0016</a></ref>. The redeem script does not require a particular ordering or encoding for public keys.  This means that for a given set of keys and number of required signatures, there are as many as 2(n!) possible standard redeem scripts, each with its separate P2SH address.  Adhering to an ordering and key encoding would ensure that a multi-signature “account” (set of public keys and required signature count) has a canonical P2SH address.
+Multi-signature pay-to-script-hash transactions are defined in BIP-0016<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>. The redeem script does not require a particular ordering or encoding for public keys.  This means that for a given set of keys and number of required signatures, there are as many as 2(n!) possible standard redeem scripts, each with its separate P2SH address.  Adhering to an ordering and key encoding would ensure that a multi-signature “account” (set of public keys and required signature count) has a canonical P2SH address.
 
 By adopting a sorting and encoding standard, compliant wallets will always produce the same P2SH address for the same given set of keys and required signature count, making it easier to recognize transactions involving that multi-signature account.  This is particularly attractive for multisignature hierarchical-deterministic wallets, as less state is required to setup multi-signature accounts:  only the number of required signatures and master public keys of participants need to be shared, and all wallets will generate the same addresses.
 
@@ -172,8 +172,8 @@ The authors wish to thank BtcDrak and Luke-Jr for their involvement & contributi
 
 <h2> References </h2>
 
-<references>
-
+1. [^](#cite_ref_1) <a href="/11" target="_blank">BIP-0011</a>
+2. [^](#cite_ref_2) <a href="/16" target="_blank">BIP-0016</a>
 
 <h2> Copyright </h2>
 

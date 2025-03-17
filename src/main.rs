@@ -14,7 +14,7 @@ fn main() -> io::Result<()> {
     if let Some(cmd) = cmd {
         let stdin = io::stdin();
         let lines = stdin.lock().lines().collect::<io::Result<Vec<String>>>()?;
-        let input = lines
+        let input: Vec<(u32, String)> = lines
             .iter()
             .filter_map(|path| {
                 // parse the bip number from the path
@@ -26,7 +26,7 @@ fn main() -> io::Result<()> {
                     .parse::<u32>()
                     .map_or(None, |n| Some((n, path.clone())))
             })
-            .collect::<Vec<(u32, String)>>();
+            .collect();
 
         match &cmd[..] {
             "count" => return cmd_count(&input),

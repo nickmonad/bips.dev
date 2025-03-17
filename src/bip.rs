@@ -21,19 +21,20 @@ pub fn generate(bip: u32, path: &str) -> io::Result<()> {
     let dir = format!("web/content/{}", bip);
     let generated = format!("{}/index.md", dir);
 
-    match fs::create_dir(dir) {
-        Err(err) => {
-            if err.kind() != io::ErrorKind::AlreadyExists {
-                return Err(err);
-            }
+    if let Err(err) = fs::create_dir(dir) {
+        if err.kind() != io::ErrorKind::AlreadyExists {
+            return Err(err);
         }
-        _ => {}
     }
 
     let mut file = File::create(generated)?;
     // render mediawiki content as html
     let wikitext = wiki::Configuration::default().parse(&content);
-    let mut ctx = RenderContext::None;
+
+    let mut context = RenderContext {
+        tag: RenderTag::None,
+        refs: Vec::default(),
+    };
 
     // start by parsing out front matter for zola
     render_front_matter(&mut file, wikitext.nodes)?;
@@ -41,7 +42,7 @@ pub fn generate(bip: u32, path: &str) -> io::Result<()> {
     // render the rest of the document, line by line
     if let Ok(lines) = read_lines(path) {
         for line in lines.flatten() {
-            if let Some(output) = render(&mut ctx, &line) {
+            if let Some(output) = context.render(&line) {
                 write!(file, "{}", output)?;
             }
         }
@@ -50,7 +51,14 @@ pub fn generate(bip: u32, path: &str) -> io::Result<()> {
     Ok(())
 }
 
-enum RenderContext {
+struct RenderContext {
+    tag: RenderTag,
+
+    #[allow(dead_code)]
+    refs: Vec<String>,
+}
+
+enum RenderTag {
     None,
     PreTag,
     PreFormatted,
@@ -65,266 +73,284 @@ struct TableContext {
     row: Vec<String>,
 }
 
-fn render(context: &mut RenderContext, line: &str) -> Option<String> {
-    match context {
-        RenderContext::None => {
-            // preformatted, tag
-            // NOTE: see source for BIP 10 for a case where "</pre>" actually _starts_ preformatted
-            if line == "<pre>" || line == "</pre>" || line.starts_with("<source") {
-                *context = RenderContext::PreTag;
-                return Some("```\n".into());
+impl RenderContext {
+    fn render(&mut self, line: &str) -> Option<String> {
+        match self.tag {
+            RenderTag::None => {
+                // preformatted, tag
+                // NOTE: see source for BIP 10 for a case where "</pre>" actually _starts_ preformatted
+                if line == "<pre>" || line == "</pre>" || line.starts_with("<source") {
+                    self.tag = RenderTag::PreTag;
+                    return Some("```\n".into());
+                }
+
+                // preformatted, space
+                if line.starts_with(" ") {
+                    self.tag = RenderTag::PreFormatted;
+                    return Some(format!("```\n{}", self.render(line).unwrap_or("".into())));
+                }
+
+                // empty line, write new line
+                if line == "" {
+                    return Some("\n".into());
+                }
+
+                // heading
+                if line.starts_with("=") {
+                    return Some(format!("{}\n\n", render_heading(line)));
+                }
+
+                // ordered list
+                if line.starts_with("#") {
+                    self.tag = RenderTag::OrderedList;
+                    return self.render(line);
+                }
+
+                // unordered list
+                if line.starts_with("*") {
+                    self.tag = RenderTag::UnorderedList;
+                    return self.render(line);
+                }
+
+                // table
+                if line.starts_with("{|") {
+                    self.tag = RenderTag::Table(TableContext::default());
+
+                    // edge case
+                    // sometimes authors don't include a new line between
+                    // the last line and the start of the table
+                    return Some("\n".into());
+                }
+
+                // references
+                // only check for "beginning" of tag, not sure if there's a consistency in ending
+                if line.starts_with("<references") {
+                    let mut empty = Vec::default();
+
+                    return Some(
+                        self.refs
+                            .iter()
+                            .enumerate()
+                            .map(|(i, reference)| {
+                                format!(
+                                    "{}. [^](#{}) {}",
+                                    i + 1,
+                                    ref_id(i + 1),
+                                    render_line(reference, &mut empty).unwrap()
+                                )
+                            })
+                            .collect::<Vec<String>>()
+                            .join("\n"),
+                    );
+                }
+
+                // definition list? or indentation? ignore....
+                if line.starts_with(":") {
+                    return self.render(line.trim_start_matches(":").trim_start_matches(" "));
+                }
+
+                // no marker at beginning, render the line
+                Some(format!("{}\n", render_line(line, &mut self.refs).unwrap()))
             }
+            RenderTag::PreFormatted => {
+                // end preformatted
+                if line == "" || line.starts_with(char::is_alphanumeric) {
+                    // close out
+                    self.tag = RenderTag::None;
+                    return Some(format!("```\n{}\n", self.render(line).unwrap_or("".into())));
+                }
 
-            // preformatted, space
-            if line.starts_with(" ") {
-                *context = RenderContext::PreFormatted;
-
-                return Some(format!(
-                    "```\n{}",
-                    render(context, line).unwrap_or("".into())
-                ));
+                // write as is, no modification
+                Some(format!("{}\n", line))
             }
+            RenderTag::PreTag => {
+                // end preformatted
+                if line == "</pre>" || line == "</source>" {
+                    // close out
+                    self.tag = RenderTag::None;
+                    return Some("```\n".into());
+                }
 
-            // empty line, write new line
-            if line == "" {
-                return Some("\n".into());
+                // write as is, no modification
+                Some(format!("{}\n", line))
             }
-
-            // heading
-            if line.starts_with("=") {
-                return Some(format!("{}\n\n", render_heading(line)));
-            }
-
-            // ordered list
-            if line.starts_with("#") {
-                *context = RenderContext::OrderedList;
-                return render(context, line);
-            }
-
-            // unordered list
-            if line.starts_with("*") {
-                *context = RenderContext::UnorderedList;
-                return render(context, line);
-            }
-
-            // table
-            if line.starts_with("{|") {
-                *context = RenderContext::Table(TableContext::default());
+            RenderTag::OrderedList => {
+                // end ordered list
+                if !line.starts_with("#") {
+                    self.tag = RenderTag::None;
+                    return Some(format!("\n{}", self.render(line).unwrap_or("".into())));
+                }
 
                 // edge case
-                // sometimes authors don't include a new line between
-                // the last line and the start of the table
-                return Some("\n".into());
-            }
-
-            // definition list? or indentation? ignore....
-            if line.starts_with(":") {
-                return render(
-                    context,
-                    line.trim_start_matches(":").trim_start_matches(" "),
-                );
-            }
-
-            // no marker at beginning, render the line
-            Some(format!("{}\n", render_line(line).unwrap()))
-        }
-        RenderContext::PreFormatted => {
-            // end preformatted
-            if line == "" || line.starts_with(char::is_alphanumeric) {
-                // close out
-                *context = RenderContext::None;
-                return Some(format!(
-                    "```\n{}\n",
-                    render(context, line).unwrap_or("".into())
-                ));
-            }
-
-            // write as is, no modification
-            Some(format!("{}\n", line))
-        }
-        RenderContext::PreTag => {
-            // end preformatted
-            if line == "</pre>" || line == "</source>" {
-                // close out
-                *context = RenderContext::None;
-                return Some("```\n".into());
-            }
-
-            // write as is, no modification
-            Some(format!("{}\n", line))
-        }
-        RenderContext::OrderedList => {
-            // end ordered list
-            if !line.starts_with("#") {
-                *context = RenderContext::None;
-                return Some(format!("\n{}", render(context, line).unwrap_or("".into())));
-            }
-
-            // edge case
-            // BIP 36
-            if line.starts_with("#*") {
-                return Some(format!(
-                    "{}* {}\n",
-                    " ".repeat(4),
-                    render_line(&line["#*".len()..line.len()]).unwrap()
-                ));
-            }
-
-            // check for the list level (*, **, etc)
-            let level: usize = line
-                .chars()
-                .map_while(|c| if c == '#' { Some(1) } else { None })
-                .sum();
-
-            let indent = " ".repeat(if level > 1 {
-                usize::pow(2, level as u32)
-            } else {
-                0
-            });
-
-            let trimmed = line.trim_start_matches("#");
-            Some(format!("{}1. {}\n", indent, render_line(trimmed).unwrap()))
-        }
-        RenderContext::UnorderedList => {
-            if !line.starts_with("*") {
-                *context = RenderContext::None;
-                return Some(format!("\n{}", render(context, line).unwrap_or("".into())));
-            }
-
-            // edge case, BIP 107
-            let clean = line.replace("#", " ");
-
-            // check for the list level (*, **, etc)
-            let level: usize = clean
-                .chars()
-                .map_while(|c| if c == '*' { Some(1) } else { None })
-                .sum();
-
-            let indent = " ".repeat(if level > 1 {
-                usize::pow(2, level as u32)
-            } else {
-                0
-            });
-
-            // sometimes, an unordered list is written without any space after the '*' in the
-            // source document. The zola markdown to html rendering doesn't like that, so we have
-            // to "push out" all unordered lists by one space, so they render correctly
-            Some(format!(
-                "{}* {}\n",
-                indent,
-                render_line(&clean[level..line.len()]).unwrap()
-            ))
-        }
-        RenderContext::Table(ref mut table) => {
-            if line.starts_with("|}") {
-                // write any remaining row
-                let buffer = format!(
-                    "|{}|\n\n",
-                    table
-                        .row
-                        .iter()
-                        .map(|r| render_line(r).unwrap())
-                        .collect::<Vec<String>>()
-                        .join("|")
-                );
-
-                *context = RenderContext::None;
-                return Some(buffer);
-            }
-
-            if line.contains("colspan") {
-                // ignore for now
-                return None;
-            }
-
-            // table header
-            // convert to markdown format
-            if line.starts_with("!") {
-                let headers: Vec<&str> = line["!".len()..line.len()]
-                    .split("!!")
-                    .map(|s| s.trim())
-                    .collect();
-
-                if headers.len() > 1 {
-                    // multiple column values on a single line
-                    // collect and defer rendering
-                    table.row = headers.iter().map(|s| s.to_string()).collect();
-                    return None;
+                // BIP 36
+                if line.starts_with("#*") {
+                    return Some(format!(
+                        "{}* {}\n",
+                        " ".repeat(4),
+                        render_line(&line["#*".len()..line.len()], &mut self.refs).unwrap()
+                    ));
                 }
 
-                // columns are spread across multiple lines
-                // collect and defer rendering
-                table.row.push(headers[0].to_string());
-                return None;
-            }
+                // check for the list level (*, **, etc)
+                let level: usize = line
+                    .chars()
+                    .map_while(|c| if c == '#' { Some(1) } else { None })
+                    .sum();
 
-            // row separation
-            // write rows in buffer
-            // MUST be before check below for .starts_with("|")
-            if line.starts_with("|-") {
-                if table.row.is_empty() {
-                    // metadata before getting to table data, nothing to do
-                    return None;
-                }
-
-                let mut buffer = String::new();
-
-                // write rows
-                buffer.push_str(&format!(
-                    "|{}|\n",
-                    table
-                        .row
-                        .iter()
-                        .map(|r| render_line(r).unwrap())
-                        .collect::<Vec<String>>()
-                        .join("|")
-                ));
-
-                if !table.header {
-                    // write out "bottom" of header
-                    buffer.push_str(&format!("|{}\n", "-|".repeat(table.row.len())));
-                    table.header = true;
-                }
-
-                // reset rows
-                table.row = Vec::new();
-                return Some(buffer);
-            }
-
-            // table row
-            if line.starts_with("|") {
-                let columns: Vec<&str> = line["|".len()..line.len()]
-                    .split("||")
-                    .map(|s| {
-                        // edge case, see BIP 98
-                        // remove any leading metadata in the cell
-                        // "| scope="col"| A" ---> "A"
-                        let t = s.trim();
-                        if t.starts_with("scope=\"col\"|") || t.starts_with("scope=\"row\"|") {
-                            let marker = "scope=\"___\"";
-                            if marker.len() + 1 < t.len() {
-                                t[(marker.len() + 1)..t.len()].trim()
-                            } else {
-                                ""
-                            }
-                        } else {
-                            t
-                        }
-                    })
-                    .collect();
-
-                if columns.len() > 1 {
-                    // multiple column values on a single line
-                    // collect and defer rendering
-                    table.row = columns.iter().map(|s| s.to_string()).collect();
+                let indent = " ".repeat(if level > 1 {
+                    usize::pow(2, level as u32)
                 } else {
+                    0
+                });
+
+                let trimmed = line.trim_start_matches("#");
+                Some(format!(
+                    "{}1. {}\n",
+                    indent,
+                    render_line(trimmed, &mut self.refs).unwrap()
+                ))
+            }
+            RenderTag::UnorderedList => {
+                if !line.starts_with("*") {
+                    self.tag = RenderTag::None;
+                    return Some(format!("\n{}", self.render(line).unwrap_or("".into())));
+                }
+
+                // edge case, BIP 107
+                let clean = line.replace("#", " ");
+
+                // check for the list level (*, **, etc)
+                let level: usize = clean
+                    .chars()
+                    .map_while(|c| if c == '*' { Some(1) } else { None })
+                    .sum();
+
+                let indent = " ".repeat(if level > 1 {
+                    usize::pow(2, level as u32)
+                } else {
+                    0
+                });
+
+                // sometimes, an unordered list is written without any space after the '*' in the
+                // source document. The zola markdown to html rendering doesn't like that, so we have
+                // to "push out" all unordered lists by one space, so they render correctly
+                Some(format!(
+                    "{}* {}\n",
+                    indent,
+                    render_line(&clean[level..line.len()], &mut self.refs).unwrap()
+                ))
+            }
+            RenderTag::Table(ref mut table) => {
+                if line.starts_with("|}") {
+                    // write any remaining row
+                    let buffer = format!(
+                        "|{}|\n\n",
+                        table
+                            .row
+                            .iter()
+                            .map(|r| render_line(r, &mut self.refs).unwrap())
+                            .collect::<Vec<String>>()
+                            .join("|")
+                    );
+
+                    self.tag = RenderTag::None;
+                    return Some(buffer);
+                }
+
+                if line.contains("colspan") {
+                    // ignore for now
+                    return None;
+                }
+
+                // table header
+                // convert to markdown format
+                if line.starts_with("!") {
+                    let headers: Vec<&str> = line["!".len()..line.len()]
+                        .split("!!")
+                        .map(|s| s.trim())
+                        .collect();
+
+                    if headers.len() > 1 {
+                        // multiple column values on a single line
+                        // collect and defer rendering
+                        table.row = headers.iter().map(|s| s.to_string()).collect();
+                        return None;
+                    }
+
                     // columns are spread across multiple lines
                     // collect and defer rendering
-                    table.row.push(columns[0].to_string());
+                    table.row.push(headers[0].to_string());
+                    return None;
                 }
-            }
 
-            None
+                // row separation
+                // write rows in buffer
+                // MUST be before check below for .starts_with("|")
+                if line.starts_with("|-") {
+                    if table.row.is_empty() {
+                        // metadata before getting to table data, nothing to do
+                        return None;
+                    }
+
+                    let mut buffer = String::new();
+
+                    // write rows
+                    buffer.push_str(&format!(
+                        "|{}|\n",
+                        table
+                            .row
+                            .iter()
+                            .map(|r| render_line(r, &mut self.refs).unwrap())
+                            .collect::<Vec<String>>()
+                            .join("|")
+                    ));
+
+                    if !table.header {
+                        // write out "bottom" of header
+                        buffer.push_str(&format!("|{}\n", "-|".repeat(table.row.len())));
+                        table.header = true;
+                    }
+
+                    // reset rows
+                    table.row = Vec::new();
+                    return Some(buffer);
+                }
+
+                // table row
+                if line.starts_with("|") {
+                    let columns: Vec<&str> = line["|".len()..line.len()]
+                        .split("||")
+                        .map(|s| {
+                            // edge case, see BIP 98
+                            // remove any leading metadata in the cell
+                            // "| scope="col"| A" ---> "A"
+                            let t = s.trim();
+                            if t.starts_with("scope=\"col\"|") || t.starts_with("scope=\"row\"|") {
+                                let marker = "scope=\"___\"";
+                                if marker.len() + 1 < t.len() {
+                                    t[(marker.len() + 1)..t.len()].trim()
+                                } else {
+                                    ""
+                                }
+                            } else {
+                                t
+                            }
+                        })
+                        .collect();
+
+                    if columns.len() > 1 {
+                        // multiple column values on a single line
+                        // collect and defer rendering
+                        table.row = columns.iter().map(|s| s.to_string()).collect();
+                    } else {
+                        // columns are spread across multiple lines
+                        // collect and defer rendering
+                        table.row.push(columns[0].to_string());
+                    }
+                }
+
+                None
+            }
         }
     }
 }
@@ -339,13 +365,18 @@ fn render_heading(line: &str) -> String {
     format!("<h{}>{}</h{}>", level, heading, level)
 }
 
-fn render_line(line: &str) -> Result<String, Infallible> {
-    let buffer = line.into();
-    replace_internal_links(buffer)
+fn render_line(line: &str, refs: &mut Vec<String>) -> Result<String, Infallible> {
+    replace_nop(line.into())
+        .and_then(replace_internal_links)
+        .and_then(replace_references(refs))
         .and_then(replace_external_links)
         .and_then(replace_bold)
         .and_then(replace_italic)
         .and_then(replace_code_tag)
+}
+
+fn replace_nop(line: String) -> Result<String, Infallible> {
+    Ok(line)
 }
 
 fn replace_code_tag(line: String) -> Result<String, Infallible> {
@@ -359,7 +390,7 @@ fn replace_bold(line: String) -> Result<String, Infallible> {
     let mut ptr = 0;
     for (i, _) in bold {
         buffer.push_str(&line[ptr..i]);
-        buffer.push_str("**");
+        buffer.push_str("**"); // FIX THIS!!!
 
         ptr = i + "'''".len();
     }
@@ -370,10 +401,10 @@ fn replace_bold(line: String) -> Result<String, Infallible> {
 
 fn replace_italic(line: String) -> Result<String, Infallible> {
     let mut buffer = String::new();
-    let bold: Vec<(usize, &str)> = line.match_indices("''").collect();
+    let italic: Vec<(usize, &str)> = line.match_indices("''").collect();
 
     let mut ptr = 0;
-    for (i, _) in bold {
+    for (i, _) in italic {
         buffer.push_str(&line[ptr..i]);
         buffer.push_str("_");
 
@@ -382,6 +413,44 @@ fn replace_italic(line: String) -> Result<String, Infallible> {
 
     buffer.push_str(&line[ptr..line.len()]);
     Ok(buffer)
+}
+
+fn replace_references(
+    refs: &'_ mut Vec<String>,
+) -> impl FnMut(String) -> Result<String, Infallible> + '_ {
+    move |line: String| -> Result<String, Infallible> {
+        let mut buffer = String::new();
+        let tags: Vec<((usize, &str), (usize, &str))> = line
+            .match_indices("<ref>")
+            .zip(line.match_indices("</ref>"))
+            .collect();
+
+        let mut ptr = 0;
+        for ((start, _), (end, _)) in tags {
+            if start > end {
+                // edge case, BIP 331 split ref across line, fix later
+                continue;
+            }
+
+            let ref_n = refs.len() + 1;
+
+            buffer.push_str(&line[ptr..start]);
+            buffer.push_str(&format!(
+                "<sup id=\"{}\"><a href=\"#{}\">{}</a></sup>",
+                ref_id(ref_n),
+                ref_id(ref_n),
+                ref_n
+            ));
+
+            ptr = end + "</ref>".len();
+
+            // save reference
+            refs.push(line[(start + "<ref>".len())..end].into());
+        }
+
+        buffer.push_str(&line[ptr..line.len()]);
+        Ok(buffer)
+    }
 }
 
 // internal links "[[ ... ]]"
@@ -468,6 +537,10 @@ fn bip_link(link: &str) -> Option<u32> {
 
 fn bip_file(link: &str) -> bool {
     BIP_FILE.is_match(link)
+}
+
+fn ref_id(n: usize) -> String {
+    format!("cite_ref_{}", n)
 }
 
 // external links => [ ... ]
@@ -887,10 +960,14 @@ mod test {
     use super::*;
 
     fn run(input: Vec<String>) -> Vec<String> {
-        let mut context = RenderContext::None;
+        let mut context = RenderContext {
+            tag: RenderTag::None,
+            refs: Vec::default(),
+        };
+
         input
             .iter()
-            .filter_map(|line| render(&mut context, line))
+            .filter_map(|line| context.render(line))
             .collect()
     }
 
@@ -906,7 +983,7 @@ mod test {
     #[test]
     fn render_line_no_change() {
         assert_eq!(
-            render_line("this line will stay the same").unwrap(),
+            render_line("this line will stay the same", &mut Vec::default()).unwrap(),
             "this line will stay the same".to_string(),
         )
     }
@@ -914,7 +991,11 @@ mod test {
     #[test]
     fn render_line_bold_and_italic() {
         assert_eq!(
-            render_line("this is some '''bold''' and ''italic'' text").unwrap(),
+            render_line(
+                "this is some '''bold''' and ''italic'' text",
+                &mut Vec::default()
+            )
+            .unwrap(),
             "this is some **bold** and _italic_ text".to_string(),
         )
     }
@@ -924,7 +1005,7 @@ mod test {
     #[test]
     fn bold() {
         assert_eq!(
-            render_line("this is some '''bold''' text").unwrap(),
+            render_line("this is some '''bold''' text", &mut Vec::default()).unwrap(),
             "this is some **bold** text".to_string(),
         )
     }
@@ -934,9 +1015,45 @@ mod test {
     #[test]
     fn italic() {
         assert_eq!(
-            render_line("this is some ''italic'' text").unwrap(),
+            render_line("this is some ''italic'' text", &mut Vec::default()).unwrap(),
             "this is some _italic_ text".to_string(),
         )
+    }
+
+    // references
+
+    #[test]
+    fn reference() {
+        assert_eq!(
+            render_line("test<ref>[foo bar]</ref>", &mut Vec::default()).unwrap(),
+            "test<sup id=\"cite_ref_1\"><a href=\"#cite_ref_1\">1</a></sup>".to_string(),
+        )
+    }
+
+    #[test]
+    fn reference_surrounded() {
+        assert_eq!(
+            render_line("test<ref>[foo bar]</ref> more", &mut Vec::default()).unwrap(),
+            "test<sup id=\"cite_ref_1\"><a href=\"#cite_ref_1\">1</a></sup> more".to_string(),
+        )
+    }
+
+    #[test]
+    fn reference_multiple() {
+        let mut refs: Vec<String> = Vec::new();
+
+        assert_eq!(
+            render_line("first<ref>[foo bar]</ref> reference", &mut refs).unwrap(),
+            "first<sup id=\"cite_ref_1\"><a href=\"#cite_ref_1\">1</a></sup> reference".to_string(),
+        );
+
+        assert_eq!(
+            render_line("second<ref>[bar baz]</ref> reference", &mut refs).unwrap(),
+            "second<sup id=\"cite_ref_2\"><a href=\"#cite_ref_2\">2</a></sup> reference"
+                .to_string(),
+        );
+
+        assert_eq!(refs, vec!["[foo bar]".to_string(), "[bar baz]".to_string()],)
     }
 
     // internal links

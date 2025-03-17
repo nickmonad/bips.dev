@@ -209,12 +209,12 @@ In more detail, this means a <code>scriptPubKey</code> or <code>redeemScript</co
 <li>The <code>witnessScript</code> is deserialized, and executed after normal script evaluation with the remaining witness stack (≤ 520 bytes for each stack item).</li>
 <li>The script must not fail, and result in exactly a single TRUE on the stack.</li>
 </ul>
-<p>If the version byte is 0, but the witness program is neither 20 nor 32 bytes, the script must fail.<ref>For example, a scriptPubKey with OP_0 followed by a 40-byte non-zero data push will fail due to incorrect program size. However, a scriptPubKey with OP_0 followed by a 41-byte non-zero data push will pass, since it is not considered to be a witness program</ref></p>
-<p>If the version byte is 1 to 16, no further interpretation of the witness program or witness stack happens, and there is no size restriction for the witness stack. These versions are reserved for future extensions.<ref>For backward compatibility, for any version byte from 0 to 16, the script must fail if the witness program has a <code>CastToBool</code> value of zero. However, having a hash like this is a successful preimage attack against the hash function, and the risk is negligible.</ref></p>
+<p>If the version byte is 0, but the witness program is neither 20 nor 32 bytes, the script must fail.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup></p>
+<p>If the version byte is 1 to 16, no further interpretation of the witness program or witness stack happens, and there is no size restriction for the witness stack. These versions are reserved for future extensions.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup></p>
 <h3> Other consensus critical limits </h3>
 <h4> Block size </h4>
 <p>Blocks are currently limited to 1,000,000 bytes (1MB) total size. We change this restriction as follows:</p>
-<p><em>Block weight</em> is defined as <em>Base size</em> * 3 + <em>Total size</em>. (rationale<ref>Rationale of using a single composite constraint, instead of two separate limits such as 1MB base data and 3MB witness data: Using two separate limits would make mining and fee estimation nearly impossible. Miners would need to solve a complex non-linear optimization problem to find the set of transactions that maximize fees given both constraints, and wallets would not be able to know what to pay as it depends on which of the two conditions is most constrained by the time miners try to produce blocks with their transactions in. Another problem with such an approach is freeloading. Once a set of transactions hit the base data 1MB constraint, up to 3MB extra data could be added to the witness by just minimally increasing the fee. The marginal cost for extra witness space effectively becomes zero in that case.</ref>)</p>
+<p><em>Block weight</em> is defined as <em>Base size</em> * 3 + <em>Total size</em>. (rationale<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>)</p>
 <p><em>Base size</em> is the block size in bytes with the original transaction serialization without any witness-related data, as seen by a non-upgraded node.</p>
 <p><em>Total size</em> is the block size in bytes with transactions serialized as described in <a href="/144" target="_blank">BIP144</a>, including base data and witness data.</p>
 <p>The new rule is <em>block weight</em> ≤ 4,000,000.</p>
@@ -236,7 +236,7 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
 <p>Three relay and mining policies are also included in the first release of segregated witness at reference implementation version 0.13.1. Softforks based on these policies are likely to be proposed in the near future. To avoid indefinite delay in transaction confirmation and permanent fund loss in a potential softfork, users MUST observe the new semantics carefully:</p>
 <ol>
 <li>Only compressed public keys are accepted in P2WPKH and P2WSH (See <a href="/143" target="_blank">BIP143</a>)</li>
-<li>The argument of OP_IF/NOTIF in P2WSH must be minimal<ref>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html</ref></li>
+<li>The argument of OP_IF/NOTIF in P2WSH must be minimal<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup></li>
 <li>Signature(s) must be null vector(s) if an OP_CHECKSIG or OP_CHECKMULTISIG is failed (for both pre-segregated witness script and P2WSH. See <a href="/146" target="_blank">BIP146</a>)</li>
 </ol>
 <h2> Examples </h2>
@@ -346,7 +346,12 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
 <h2> Credits </h2>
 <p>Special thanks to Gregory Maxwell for originating many of the ideas in this BIP and Luke-Jr for figuring out how to deploy this as a soft fork.</p>
 <h2> Footnotes </h2>
-<references />
+<ol>
+<li><a href="https://bips.dev/141/#cite_ref_1">^</a> For example, a scriptPubKey with OP_0 followed by a 40-byte non-zero data push will fail due to incorrect program size. However, a scriptPubKey with OP_0 followed by a 41-byte non-zero data push will pass, since it is not considered to be a witness program</li>
+<li><a href="https://bips.dev/141/#cite_ref_2">^</a> For backward compatibility, for any version byte from 0 to 16, the script must fail if the witness program has a <code>CastToBool</code> value of zero. However, having a hash like this is a successful preimage attack against the hash function, and the risk is negligible.</li>
+<li><a href="https://bips.dev/141/#cite_ref_3">^</a> Rationale of using a single composite constraint, instead of two separate limits such as 1MB base data and 3MB witness data: Using two separate limits would make mining and fee estimation nearly impossible. Miners would need to solve a complex non-linear optimization problem to find the set of transactions that maximize fees given both constraints, and wallets would not be able to know what to pay as it depends on which of the two conditions is most constrained by the time miners try to produce blocks with their transactions in. Another problem with such an approach is freeloading. Once a set of transactions hit the base data 1MB constraint, up to 3MB extra data could be added to the witness by just minimally increasing the fee. The marginal cost for extra witness space effectively becomes zero in that case.</li>
+<li><a href="https://bips.dev/141/#cite_ref_4">^</a> https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2016-August/013014.html</li>
+</ol>
 <h2> Reference Implementation </h2>
 <p>https://github.com/bitcoin/bitcoin/pull/8149</p>
 <h2> References </h2>
@@ -368,7 +373,7 @@ The sigop limit is likewise quadrupled to ≤ 80,000.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

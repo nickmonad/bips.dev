@@ -106,7 +106,7 @@ The resulting construction is a Bitcoin transaction with the following
 characteristics:
 
 *  The first input (the "commitment input")
-    *  MUST have the txid part of the previous outpoint set to the SHA-256 hash of the commitment message prefixed with "Proof-of-Reserves: "<ref>If the message is "Some Message", the txid part should be <tt>SHA-256("Proof-of-Reserves: Some Message")</tt> with the string encoded as UTF-8.</ref> and index 0.
+    *  MUST have the txid part of the previous outpoint set to the SHA-256 hash of the commitment message prefixed with "Proof-of-Reserves: "<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and index 0.
 *  The remaining inputs
     *  MUST have signatures that commit to the commitment input (e.g. using <tt>SIGHASH_ALL</tt>).
 *  The transaction MUST have a single output that is the exact sum of all the inputs, assuming the commitment input to have 0 value; this means the transaction has no miner fee.
@@ -133,7 +133,7 @@ standard with an extra layer of metadata:
 
 The proposed proof-file format provides a standard way of combining multiple
 proofs and associated metadata.  The specification of the format is in the
-Protocol Buffers<ref>https://github.com/protocolbuffers/protobuf/</ref> format.
+Protocol Buffers<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup> format.
 
 ```
 syntax = "proto3";
@@ -258,5 +258,5 @@ An implementation of the custom proof PSBTs is part of the <a href="https://bitc
 <h2> Footnotes </h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) If the message is "Some Message", the txid part should be <tt>SHA-256("Proof-of-Reserves: Some Message")</tt> with the string encoded as UTF-8.
+2. [^](#cite_ref_2) https://github.com/protocolbuffers/protobuf/

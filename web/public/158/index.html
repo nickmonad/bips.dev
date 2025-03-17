@@ -130,7 +130,7 @@
 </code></pre>
 <h2> Abstract </h2>
 <p>This BIP describes a structure for compact filters on block data, for use in the
-BIP 157 light client protocol<ref>bip-0157.mediawiki</ref>. The filter
+BIP 157 light client protocol<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>. The filter
 construction proposed is an alternative to Bloom filters, as used in BIP 37,
 that minimizes filter size by using Golomb-Rice coding for compression. This
 document specifies one initial filter type based on this construction that
@@ -182,7 +182,7 @@ specifies values for <code>P</code> and <code>M</code>.</p>
 items in the set to the range <code>[0, F)</code>, where <code>F = N * M</code>. Customarily, <code>M</code> is set to <code>2^P</code>. However, if
 one is able to select both Parameters independently, then more optimal values
 can be
-selected<ref>https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</ref>.
+selected<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 Set membership queries against the hash outputs will have a false positive rate
 of <code>1 / M</code>. To avoid integer overflow, the number of items <code>N</code>
 MUST be &lt;2^32 and <code>M</code> MUST be &lt;2^32.</p>
@@ -194,7 +194,7 @@ SipHash parameters <code>c = 2</code> and <code>d = 4</code>.</p>
 multiplying with F and taking the top 64 bits of the 128-bit result. This
 algorithm is a faster alternative to modulo reduction, as it avoids the
 expensive division
-operation<ref>https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/</ref>.
+operation<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>.
 Note that care must be taken when implementing this reduction to ensure the
 upper 64 bits of the integer multiplication are not truncated; certain
 architectures and high level languages may require code that decomposes the
@@ -220,9 +220,9 @@ hashed_set_construct(raw_items: [][]byte, k: [16]byte, M: uint) -&gt; []uint64:
 compression is achieved by only writing the differences between successive
 items in sorted order. Since the items are distributed uniformly, it can be
 shown that the differences resemble a geometric
-distribution<ref>https://en.wikipedia.org/wiki/Geometric_distribution</ref>.
+distribution<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>.
 <em>Golomb-Rice</em>
-<em>coding</em><ref>https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding</ref>
+<em>coding</em><sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>
 is a technique that optimally compresses geometrically distributed values.</p>
 <p>With Golomb-Rice, a value is split into a quotient and remainder modulo
 <code>2^P</code>, which are encoded separately. The quotient <code>q</code> is
@@ -352,7 +352,7 @@ following items for each transaction in a block:</p>
 filters to easily be committed to in the future via a soft-fork. A likely area
 for future commitments is an additional <code>OP_RETURN</code> output in the
 coinbase transaction similar to the current witness commitment
-<ref>https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki</ref>. By
+<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>. By
 excluding all <code>OP_RETURN</code> outputs we avoid a circular dependency
 between the commitment, and the item being committed to.</p>
 <h4> Construction </h4>
@@ -362,7 +362,7 @@ parameters.</p>
 <code>M</code> MUST be set to <code>784931</code>. Analysis has shown that if
 one is able to select <code>P</code> and <code>M</code> independently, then
 setting <code>M=1.497137 * 2^P</code> is close to optimal
-<ref>https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</ref>.</p>
+<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>.</p>
 <p>Empirical analysis also shows that these parameters minimize the bandwidth
 utilized, considering both the expected number of blocks downloaded due to false
 positives and the size of the filters themselves.</p>
@@ -407,7 +407,7 @@ testing set membership, and were introduced into the Bitcoin protocol with BIP
 the same false positive rate, which is the main reason the option was rejected.</p>
 <h4> Cryptographic Accumulators </h4>
 <p>Cryptographic
-accumulators<ref>https://en.wikipedia.org/wiki/Accumulator_(cryptography)</ref>
+accumulators<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup>
 are a cryptographic data structures that enable (amongst other operations) a one
 way membership test. One advantage of accumulators are that they are constant
 size, independent of the number of elements inserted into the accumulator.
@@ -418,7 +418,7 @@ can be preemptively expensive.</p>
 <h4> Matrix Based Probabilistic Set Data Structures </h4>
 <p>There exist data structures based on matrix solving which are even more space
 efficient compared to Bloom
-filters<ref>https://arxiv.org/pdf/0804.1845.pdf</ref>. We instead opted for our
+filters<sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>. We instead opted for our
 GCS-based filters as they have a much lower implementation complexity and are
 easier to understand.</p>
 <h2> Appendix B: Pseudocode </h2>
@@ -468,7 +468,17 @@ easier to understand.</p>
 <h2> Appendix C: Test Vectors </h2>
 <p>Test vectors for basic block filters on five testnet blocks, including the filters and filter headers, can be found <a href="https://github.com/bitcoin/bips/blob/master/bip-0158/testnet-19.json" target="_blank">here</a>. The code to generate them can be found <a href="https://github.com/bitcoin/bips/blob/master/bip-0158/gentestvectors.go" target="_blank">here</a>.</p>
 <h2> References </h2>
-<references/>
+<ol>
+<li><a href="https://bips.dev/158/#cite_ref_1">^</a> bip-0157.mediawiki</li>
+<li><a href="https://bips.dev/158/#cite_ref_2">^</a> https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</li>
+<li><a href="https://bips.dev/158/#cite_ref_3">^</a> https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/</li>
+<li><a href="https://bips.dev/158/#cite_ref_4">^</a> https://en.wikipedia.org/wiki/Geometric_distribution</li>
+<li><a href="https://bips.dev/158/#cite_ref_5">^</a> https://en.wikipedia.org/wiki/Golomb_coding#Rice_coding</li>
+<li><a href="https://bips.dev/158/#cite_ref_6">^</a> https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki</li>
+<li><a href="https://bips.dev/158/#cite_ref_7">^</a> https://gist.github.com/sipa/576d5f09c3b86c3b1b75598d799fc845</li>
+<li><a href="https://bips.dev/158/#cite_ref_8">^</a> https://en.wikipedia.org/wiki/Accumulator_(cryptography)</li>
+<li><a href="https://bips.dev/158/#cite_ref_9">^</a> https://arxiv.org/pdf/0804.1845.pdf</li>
+</ol>
 <h2> Copyright </h2>
 <p>This document is licensed under the  Creative Commons CC0 1.0 Universal license.</p>
 
@@ -481,7 +491,7 @@ easier to understand.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

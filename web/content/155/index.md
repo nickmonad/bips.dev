@@ -48,7 +48,7 @@ This BIP is licensed under the 2-clause BSD license.
 
 Tor v3 hidden services are part of the stable release of Tor since version 0.3.2.9. They have
 various advantages compared to the old hidden services, among which better encryption and privacy
-<ref><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3</a></ref>.
+<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.
 These services have 256 bit addresses and thus do not fit in the existing `addr` message, which encapsulates onion addresses in OnionCat IPv6 addresses.
 
 Other transport-layer protocols such as I2P have always used longer
@@ -61,7 +61,7 @@ P2P network, so that other peers can connect to them.
 <blockquote>
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in RFC 2119<ref><a href="https://tools.ietf.org/html/rfc2119" target="_blank">RFC 2119</a></ref>.
+interpreted as described in RFC 2119<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 </blockquote>
 
 The `addrv2` message is defined as a message where `pchCommand == "addrv2"`.
@@ -143,7 +143,7 @@ Clients SHOULD ignore OnionCat (`fd87:d87e:eb43::/48`) addresses on receive if t
 <h2>Appendix B: Tor v3 address encoding</h2>
 
 
-According to the spec <ref><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3: Encoding onion addresses</a></ref>, next-gen `.onion` addresses are encoded as follows:
+According to the spec <sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>, next-gen `.onion` addresses are encoded as follows:
 ```
 onion_address = base32(PUBKEY | CHECKSUM | VERSION) + ".onion"
  CHECKSUM = H(".onion checksum" | PUBKEY | VERSION)[:2]
@@ -161,7 +161,7 @@ Tor v3 addresses MUST be sent with the `TORV3` network ID, with the 32-byte PUBK
 <h2>Appendix C: I2P address encoding</h2>
 
 
-Like Tor, I2P naming uses a base32-encoded address format<ref><a href="https://geti2p.net/en/docs/naming#base32" target="_blank">I2P: Naming and address book</a></ref>.
+Like Tor, I2P naming uses a base32-encoded address format<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>.
 
 I2P uses 52 characters (256 bits) to represent the full SHA-256 hash, followed by `.b32.i2p`.
 
@@ -170,14 +170,19 @@ I2P addresses MUST be sent with the `I2P` network ID, with the decoded SHA-256 h
 <h2>Appendix D: Cjdns address encoding</h2>
 
 
-Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range<ref><a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together" target="_blank">Cjdns whitepaper: Pulling It All Together</a></ref>. They MUST be sent with the `CJDNS` network ID.
+Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>. They MUST be sent with the `CJDNS` network ID.
 
 <h2>Appendix E: Yggdrasil address encoding</h2>
 
 
-Yggdrasil addresses are simply IPv6 addresses in the `0200::/7` range<ref><a href="https://yggdrasil-network.github.io/faq.html#will-yggdrasil-conflict-with-my-network-routing" target="_blank">Yggdrasil FAQ</a></ref>. They MUST be sent with the `YGGDRASIL` network ID.
+Yggdrasil addresses are simply IPv6 addresses in the `0200::/7` range<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>. They MUST be sent with the `YGGDRASIL` network ID.
 
 <h2>References</h2>
 
 
-<references/>
+1. [^](#cite_ref_1) <a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3</a>
+2. [^](#cite_ref_2) <a href="https://tools.ietf.org/html/rfc2119" target="_blank">RFC 2119</a>
+3. [^](#cite_ref_3) <a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3: Encoding onion addresses</a>
+4. [^](#cite_ref_4) <a href="https://geti2p.net/en/docs/naming#base32" target="_blank">I2P: Naming and address book</a>
+5. [^](#cite_ref_5) <a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together" target="_blank">Cjdns whitepaper: Pulling It All Together</a>
+6. [^](#cite_ref_6) <a href="https://yggdrasil-network.github.io/faq.html#will-yggdrasil-conflict-with-my-network-routing" target="_blank">Yggdrasil FAQ</a>

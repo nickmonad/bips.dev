@@ -130,7 +130,6 @@ value losses.</ref>
 <h2>Rationale</h2>
 
 
-<references/>
 
 
 <h2>Compatibility</h2>

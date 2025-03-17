@@ -233,7 +233,7 @@ Each element of the key origin information vector is a <tt>KEY_INFO</tt> express
 
 A wallet policy must have at least one key placeholder and the corresponding key.
 
-The public keys obtained by deserializing elements of the key information vector must be pairwise distinct<ref>**Why must public keys be distinct?** Reusing pubkeys could be insecure in the context of wallet policies containing <a href="https://bitcoin.sipa.be/miniscript/" target="_blank">miniscript</a>. Avoiding repeated public keys altogether avoids the problem at the source.</ref>.
+The public keys obtained by deserializing elements of the key information vector must be pairwise distinct<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.
 
 If two <tt>KEY</tt> are <tt>KP/<M;N>/*</tt> and <tt>KP/<P;Q>/*</tt> for the same key placeholder <tt>KP</tt>, then the sets <tt>{M, N}</tt> and <tt>{P, Q}</tt> must be disjoint. Two <tt>musig</tt> key placeholders are the same if they have exactly the same set of key indexes (regardless of the order).
 
@@ -417,8 +417,7 @@ The reference implementation is for demonstration purposes only and not to be us
 <h2> Footnotes </h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) **Why must public keys be distinct?** Reusing pubkeys could be insecure in the context of wallet policies containing <a href="https://bitcoin.sipa.be/miniscript/" target="_blank">miniscript</a>. Avoiding repeated public keys altogether avoids the problem at the source.
 <h2> Acknowledgments </h2>
 
 

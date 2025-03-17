@@ -55,14 +55,14 @@ In addition, many wallets allow unspent outputs to be frozen or made unspendable
 
 
 While there is currently no widely accepted format for exporting and importing labels, there are existing formats in use.
-SLIP-0015<ref><a href="https://github.com/satoshilabs/slips/blob/master/slip-0015.md" target="_blank">SLIP-0015</a></ref> defines a format for exporting address and output labels, but requires encryption using a private key associated with the wallet seed, and thus cannot be used independently by coordinator wallets which cannot access private keys.
+SLIP-0015<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> defines a format for exporting address and output labels, but requires encryption using a private key associated with the wallet seed, and thus cannot be used independently by coordinator wallets which cannot access private keys.
 The Electrum wallet imports and exports address and transaction labels in a JSON format which could be used with other record types, but the format used is not self describing making record type identification difficult.
 
 <h2>Specification</h2>
 
 
 In order to be lightweight, human readable and well structured, this BIP uses a JSON format.
-Further, the JSON Lines format is used (also called newline-delimited JSON)<ref><a href="https://jsonlines.org/" target="_blank">jsonlines.org</a></ref>.
+Further, the JSON Lines format is used (also called newline-delimited JSON)<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 This allows a document to be split, streamed, or incrementally added to, and limits the potential for formatting errors to invalidate an entire import.
 It is also a convenient format for command-line processing, which is often line-oriented.
 
@@ -95,7 +95,7 @@ The reference is defined for each <tt>type</tt> as follows:
 
 Each JSON object must contain both <tt>type</tt> and <tt>ref</tt> properties. The <tt>label</tt>, <tt>origin</tt> and <tt>spendable</tt> properties are optional. If the <tt>label</tt> or <tt>spendable</tt> properties are omitted, the importing wallet should not alter these values. The <tt>spendable</tt> property should only appear where type is <tt>output</tt>.
 
-If present, the optional <tt>origin</tt> property must contain an abbreviated output descriptor (as defined by BIP380<ref><a href="/380" target="_blank">BIP-0380</a></ref>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
+If present, the optional <tt>origin</tt> property must contain an abbreviated output descriptor (as defined by BIP380<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
 This property should be used to disambiguate transaction labels from different wallets contained in the same export, particularly when exporting multiple accounts derived from the same seed.
 
 Care should be taken when exporting due to the privacy sensitive nature of the data.
@@ -205,4 +205,6 @@ since that is a string with 5 characters and not a boolean.
 <h2>References</h2>
 
 
-<references />
+1. [^](#cite_ref_1) <a href="https://github.com/satoshilabs/slips/blob/master/slip-0015.md" target="_blank">SLIP-0015</a>
+2. [^](#cite_ref_2) <a href="https://jsonlines.org/" target="_blank">jsonlines.org</a>
+3. [^](#cite_ref_3) <a href="/380" target="_blank">BIP-0380</a>

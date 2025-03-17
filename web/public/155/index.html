@@ -137,7 +137,7 @@ that have longer endpoint addresses than fit in the 128 bits of the current <cod
 <h3>Motivation</h3>
 <p>Tor v3 hidden services are part of the stable release of Tor since version 0.3.2.9. They have
 various advantages compared to the old hidden services, among which better encryption and privacy
-<ref><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3</a></ref>.
+<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.
 These services have 256 bit addresses and thus do not fit in the existing <code>addr</code> message, which encapsulates onion addresses in OnionCat IPv6 addresses.</p>
 <p>Other transport-layer protocols such as I2P have always used longer
 addresses. This change would make it possible to gossip such addresses over the
@@ -146,7 +146,7 @@ P2P network, so that other peers can connect to them.</p>
 <blockquote>
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in RFC 2119<ref><a href="https://tools.ietf.org/html/rfc2119" target="_blank">RFC 2119</a></ref>.
+interpreted as described in RFC 2119<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.
 </blockquote>
 <p>The <code>addrv2</code> message is defined as a message where <code>pchCommand == &quot;addrv2&quot;</code>.
 It is serialized in the standard encoding for P2P messages.
@@ -198,7 +198,7 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 <p>Clients MUST send Tor hidden service addresses with this network ID, with the 80-bit hidden service ID in the address field. This is the same as the representation in the legacy <code>addr</code> message, minus the 6 byte prefix of the OnionCat wrapping.</p>
 <p>Clients SHOULD ignore OnionCat (<code>fd87:d87e:eb43::/48</code>) addresses on receive if they come with the <code>IPV6</code> network ID.</p>
 <h2>Appendix B: Tor v3 address encoding</h2>
-<p>According to the spec <ref><a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3: Encoding onion addresses</a></ref>, next-gen <code>.onion</code> addresses are encoded as follows:</p>
+<p>According to the spec <sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>, next-gen <code>.onion</code> addresses are encoded as follows:</p>
 <pre><code>onion_address = base32(PUBKEY | CHECKSUM | VERSION) + &quot;.onion&quot;
  CHECKSUM = H(&quot;.onion checksum&quot; | PUBKEY | VERSION)[:2]
 
@@ -211,15 +211,22 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 </code></pre>
 <p>Tor v3 addresses MUST be sent with the <code>TORV3</code> network ID, with the 32-byte PUBKEY part in the address field. As VERSION will always be '\x03' in the case of v3 addresses, this is enough to reconstruct the onion address.</p>
 <h2>Appendix C: I2P address encoding</h2>
-<p>Like Tor, I2P naming uses a base32-encoded address format<ref><a href="https://geti2p.net/en/docs/naming#base32" target="_blank">I2P: Naming and address book</a></ref>.</p>
+<p>Like Tor, I2P naming uses a base32-encoded address format<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>.</p>
 <p>I2P uses 52 characters (256 bits) to represent the full SHA-256 hash, followed by <code>.b32.i2p</code>.</p>
 <p>I2P addresses MUST be sent with the <code>I2P</code> network ID, with the decoded SHA-256 hash as address field.</p>
 <h2>Appendix D: Cjdns address encoding</h2>
-<p>Cjdns addresses are simply IPv6 addresses in the <code>fc00::/8</code> range<ref><a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together" target="_blank">Cjdns whitepaper: Pulling It All Together</a></ref>. They MUST be sent with the <code>CJDNS</code> network ID.</p>
+<p>Cjdns addresses are simply IPv6 addresses in the <code>fc00::/8</code> range<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>. They MUST be sent with the <code>CJDNS</code> network ID.</p>
 <h2>Appendix E: Yggdrasil address encoding</h2>
-<p>Yggdrasil addresses are simply IPv6 addresses in the <code>0200::/7</code> range<ref><a href="https://yggdrasil-network.github.io/faq.html#will-yggdrasil-conflict-with-my-network-routing" target="_blank">Yggdrasil FAQ</a></ref>. They MUST be sent with the <code>YGGDRASIL</code> network ID.</p>
+<p>Yggdrasil addresses are simply IPv6 addresses in the <code>0200::/7</code> range<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>. They MUST be sent with the <code>YGGDRASIL</code> network ID.</p>
 <h2>References</h2>
-<references/>
+<ol>
+<li><a href="https://bips.dev/155/#cite_ref_1">^</a> <a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3</a></li>
+<li><a href="https://bips.dev/155/#cite_ref_2">^</a> <a href="https://tools.ietf.org/html/rfc2119" target="_blank">RFC 2119</a></li>
+<li><a href="https://bips.dev/155/#cite_ref_3">^</a> <a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3: Encoding onion addresses</a></li>
+<li><a href="https://bips.dev/155/#cite_ref_4">^</a> <a href="https://geti2p.net/en/docs/naming#base32" target="_blank">I2P: Naming and address book</a></li>
+<li><a href="https://bips.dev/155/#cite_ref_5">^</a> <a href="https://github.com/cjdelisle/cjdns/blob/6e46fa41f5647d6b414612d9d63626b0b952746b/doc/Whitepaper.md#pulling-it-all-together" target="_blank">Cjdns whitepaper: Pulling It All Together</a></li>
+<li><a href="https://bips.dev/155/#cite_ref_6">^</a> <a href="https://yggdrasil-network.github.io/faq.html#will-yggdrasil-conflict-with-my-network-routing" target="_blank">Yggdrasil FAQ</a></li>
+</ol>
 
         </article>
     </div>
@@ -230,7 +237,7 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

@@ -160,7 +160,7 @@ _Verify_ is as defined in <a href="/340" target="_blank">BIP 340</a>.
 
 The key differences from <a href="/342" target="_blank">BIP 342</a> signature verification are:
 
-*  In all cases, `key_version` is set to the constant value `0x01` instead of `0x00`.<ref>**Why change key_version?** Changing `key_version` ensures that if the same private key is used to generate both a <a href="/342" target="_blank">BIP 342</a> key and a BIP 118 public key, that a signature for the <a href="/342" target="_blank">BIP 342</a> key is not also valid for the BIP 118 public key (and vice-versa).</ref>
+*  In all cases, `key_version` is set to the constant value `0x01` instead of `0x00`.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
 *  If `SIGHASH_ANYPREVOUT` is set, the digest is calculated as if `SIGHASH_ANYONECANPAY` was set, except `outpoint` is not included in the digest.
 *  If `SIGHASH_ANYPREVOUTANYSCRIPT` is set, the digest is calculated as if `SIGHASH_ANYONECANPAY` was set, except `outpoint`, `amount`, `scriptPubKey` and `tapleaf_hash` are not included in the digest.
 
@@ -208,8 +208,7 @@ Following this recommendation may require additional script branches, which may 
 <h2> Rationale </h2>
 
 
-<references />
-
+1. [^](#cite_ref_1) **Why change key_version?** Changing `key_version` ensures that if the same private key is used to generate both a <a href="/342" target="_blank">BIP 342</a> key and a BIP 118 public key, that a signature for the <a href="/342" target="_blank">BIP 342</a> key is not also valid for the BIP 118 public key (and vice-versa).
 <h2> Deployment </h2>
 
 

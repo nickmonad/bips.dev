@@ -136,7 +136,7 @@
 <p>It also describes a type of policy with adjusted topology limits which, combined with other policy rules, helps minimize the potential pinning problems.  These restrictions simplify the assessment of incentive compatibility of accepting or replacing such transactions, thus helping ensure any replacements are more profitable for the node. Within the context of nodes that implement this policy, fee-bumping is more reliable for users.</p>
 <h2>Motivation</h2>
 <p>Mempools typically accept and relay transactions that spend outputs from other unconfirmed transactions, but restrict package sizes through ancestor and descendant limits
-<ref>https://github.com/bitcoin/bitcoin/blob/632a2bb731804dffe52bd4cbd90bfee352d25ede/doc/policy/mempool-limits.md</ref>
+<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
 to limit the computational complexity of mempool operations and mitigate Denial of Service attacks.</p>
 <p>Users may also create unconfirmed transactions that conflict with -- or are &quot;double spends&quot; of -- each other by spending the same input(s) in both.
 Instead of always keeping the first-seen transaction, many mempools also have some kind of Replace by Fee (RBF) policy
@@ -160,26 +160,26 @@ When the funds available to be redeemed by each party depend on a transaction co
 <p>Imagine that counterparties Alice and Mallory have transactions (or packages) A and B, respectively, which conflict with each other. Alice broadcasts A and Mallory broadcasts B. RBF rules require the replacement transaction pay a higher absolute fee than the aggregate fees paid by all original transactions (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">&quot;Rule 3&quot;</a>). This means Mallory may increase the fees required to replace B beyond what Alice was planning to pay for A's fees.</p>
 <ol>
 <li>
-<p>Adding transaction(s) that descend from B and pay a low feerate (too low to fee-bump B through CPFP)<ref>Example: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2023-December/022216.html</ref>.</p>
+<p>Adding transaction(s) that descend from B and pay a low feerate (too low to fee-bump B through CPFP)<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.</p>
 </li>
 <li>
-<p>Adding a high-fee descendant of B that also spends from another large, low-feerate mempool transaction (where the fee of the descendant is too low to fee-bump both B and its other parent through CPFP)<ref>Example: https://github.com/bitcoin/bitcoin/pull/25038#issuecomment-1320295394</ref>.</p>
+<p>Adding a high-fee descendant of B that also spends from another large, low-feerate mempool transaction (where the fee of the descendant is too low to fee-bump both B and its other parent through CPFP)<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>.</p>
 </li>
 </ol>
 <h3>RBF pinning through number of conflicts</h3>
 <p>RBF rules require that no replacement trigger the removal of more than 100 transactions (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">&quot;Rule 5&quot;</a>). This number includes the descendants of the conflicted mempool transactions. Mallory can make it more difficult to replace transactions by attaching lots of descendants to them. For example, if Alice wants to batch-replace 5 transactions but each has 21 descendants, her replacement will be rejected regardless of its fees.</p>
 <h3>RBF incentive compatibility requirements</h3>
-<p>There is currently no effective rule to enforce that a replacement transaction would be more incentive compatible to keep in the mempool. It is difficult to quantify the incentive compatibility of a set of transactions, especially in comparison with another set of transactions<ref>https://delvingbitcoin.org/t/mempool-incentive-compatibility/553</ref>, but the requirement of a feerate increase (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">&quot;Rule 6&quot;</a>) is far too simplistic.</p>
-<p>For example, a user could create a replacement transaction that pays more fees and is higher feerate, but has a low feerate ancestor and would confirm slower than the original transaction. As a result, all transactions signed with SIGHASH_ANYONECANPAY are vulnerable to being replaced by a transaction that will confirm later than the original<ref>https://github.com/bitcoin/bitcoin/pull/23121#pullrequestreview-766271585</ref>.</p>
+<p>There is currently no effective rule to enforce that a replacement transaction would be more incentive compatible to keep in the mempool. It is difficult to quantify the incentive compatibility of a set of transactions, especially in comparison with another set of transactions<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>, but the requirement of a feerate increase (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">&quot;Rule 6&quot;</a>) is far too simplistic.</p>
+<p>For example, a user could create a replacement transaction that pays more fees and is higher feerate, but has a low feerate ancestor and would confirm slower than the original transaction. As a result, all transactions signed with SIGHASH_ANYONECANPAY are vulnerable to being replaced by a transaction that will confirm later than the original<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>.</p>
 <h3>Child fees don't count towards RBF rules</h3>
 <p>A transaction must meet all fee-related requirements (Rules 3, 4, 6) alone; its child's fees cannot be used. A <em>Package RBF</em> policy would allow a transaction's child to be used for its RBF requirements.</p>
 <p>In LN Penalty, conflicting commitment transactions signed with the same fees cannot replace each other, even if accompanied by a fee-bumping child. This limitation necessitates the presence of two anchor outputs, allowing both parties to fee-bump either commitment transaction that enters their mempool.</p>
 <h3>Package limit pinning and replacing CPFP Carve Out</h3>
 <p>Mempool policies limit the number and total virtual size of an unconfirmed transaction's descendants. A fee-bumping child of an unconfirmed transaction (CPFP) may be rejected for exceeding the descendant limit. When a transaction has multiple outputs owned by different parties, a malicious party can prevent the other(s) from CPFPing their transaction by attaching enough descendants to monopolize the descendant limit (<em>package limit pinning</em>).</p>
-<p>LN commitment transactions rely on CPFP carve out <ref><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-November/016518.html" target="_blank">&quot;CPFP Carve-Out for Fee-Prediction Issues in Contracting Applications (eg Lightning)&quot;</a></ref> to avoid package limit pinning.</p>
+<p>LN commitment transactions rely on CPFP carve out <sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup> to avoid package limit pinning.</p>
 <p>There are weaknesses with this approach of using 2 anchors and CPFP Carve Out. This proposal helps address a few of them (see Related Work for how other weaknesses are addressed):</p>
 <ul>
-<li>Cluster Mempool necessitates the removal of CPFP Carve Out <ref>https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393 the-cpfp-carveout-rule-can-no-longer-be-supported-12</ref>.</li>
+<li>Cluster Mempool necessitates the removal of CPFP Carve Out <sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>.</li>
 <li>CPFP Carve Out only allows <em>one more</em> child to be added to the transaction. This means it cannot guarantee the ability to CPFP for more than 2 parties of a shared transaction.</li>
 </ul>
 <h2>Topologically Restricted Until Confirmation</h2>
@@ -267,9 +267,9 @@ and sibling eviction
 It changes the anchor script to be anyone can spend, allowing anybody to add fees and reducing the onchain footprint and fee costs.
 It also allows anchor outputs to have 0 value, eliminating the need to deduct value from the input amount in order to create anchors.</p>
 <p>The <a href="https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393/7" target="_blank">Cluster Mempool</a> proposal makes fundamental changes to mempool structure and policy rules, enabling the accurate assessment of the incentive compatibility of accepting or removing a transaction, among other things. Notably, Cluster Mempool introduces a limit to all transactions' cluster size to make incentive compatibility calculations feasible. This cluster limit is similar to TRUC limits in that it bounds computation to enable improved policies, but is applied to all transactions (not just ones that opt in) and is much less restrictive than TRUC limits.</p>
-<p>Cluster Mempool provides a more holistic solution to some of the problems listed (such as adding an incentive compatibility requirement to RBF and safely enabling package RBF for more complex topologies). However, it does not help resolve all problems (such as RBF Pinning through absolute fees and number of conflicts). Also, since Cluster Mempool is incompatible with CPFP Carve Out<ref>https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393#the-cpfp-carveout-rule-can-no-longer-be-supported-12</ref>, TRUC with sibling eviction and package RBF provide an alternative solution to applications that rely on it.</p>
+<p>Cluster Mempool provides a more holistic solution to some of the problems listed (such as adding an incentive compatibility requirement to RBF and safely enabling package RBF for more complex topologies). However, it does not help resolve all problems (such as RBF Pinning through absolute fees and number of conflicts). Also, since Cluster Mempool is incompatible with CPFP Carve Out<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup>, TRUC with sibling eviction and package RBF provide an alternative solution to applications that rely on it.</p>
 <p>Building on top of Cluster Mempool, there are also various ideas for extending TRUC transactions and creating another anti-pinning policy
-<ref>https://delvingbitcoin.org/t/v3-and-some-possible-futures/523/3</ref>.</p>
+<sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>.</p>
 <p><a href="https://bitcoinops.org/en/topics/package-relay" target="_blank">Package Relay</a> includes changes in p2p protocol, transaction relay logic, and mempool policy to enable nodes to accept and relay packages of transactions. Much of this proposal's utility relies on the existence of package relay for 1-parent-1-child packages (the topology TRUC supports).</p>
 <h4>Backward Compatibility</h4>
 <p>Transactions with <code>nVersion=3</code> were previously nonstandard. There are no known conflicts with previous usage.</p>
@@ -320,7 +320,7 @@ A few popular ideas that were not incorporated into this work are summarized her
 <li>https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff?permalink_comment_id=4081349 gistcomment-4081349</li>
 </ul>
 <p></ref>.</p>
-<p>As the incentive compatibility &quot;score&quot; of a transaction must be dynamically calculated given the structure of mempools today, there is no satisfactory solution. A full calculation is too computationally expensive. Static values can overestimate or underestimate, leading to more pinning problems <ref>Four examples of static calculations and an example in which they are all inaccurate: https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff#mining-score-of-a-mempool-transaction</ref>.
+<p>As the incentive compatibility &quot;score&quot; of a transaction must be dynamically calculated given the structure of mempools today, there is no satisfactory solution. A full calculation is too computationally expensive. Static values can overestimate or underestimate, leading to more pinning problems <sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>.
 The ability to calculate incentive compatibility scores efficiently is a primary feature and motivation for both TRUC transactions and Cluster Mempool.</p>
 <h3>Alternatives: replace by feerate</h3>
 <p>&quot;Instead of using Rule 3 and/or 4 (requiring an increase in absolute fees), allow replacements with a higher feerate.&quot;</p>
@@ -379,7 +379,18 @@ Antoine Riard,
 Gregory Sanders,
 and Bastien Teinturier.</p>
 <h2>References and Rationale</h2>
-<references/>
+<ol>
+<li><a href="https://bips.dev/431/#cite_ref_1">^</a> https://github.com/bitcoin/bitcoin/blob/632a2bb731804dffe52bd4cbd90bfee352d25ede/doc/policy/mempool-limits.md</li>
+<li><a href="https://bips.dev/431/#cite_ref_2">^</a> Example: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2023-December/022216.html</li>
+<li><a href="https://bips.dev/431/#cite_ref_3">^</a> Example: https://github.com/bitcoin/bitcoin/pull/25038#issuecomment-1320295394</li>
+<li><a href="https://bips.dev/431/#cite_ref_4">^</a> https://delvingbitcoin.org/t/mempool-incentive-compatibility/553</li>
+<li><a href="https://bips.dev/431/#cite_ref_5">^</a> https://github.com/bitcoin/bitcoin/pull/23121#pullrequestreview-766271585</li>
+<li><a href="https://bips.dev/431/#cite_ref_6">^</a> <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-November/016518.html" target="_blank">&quot;CPFP Carve-Out for Fee-Prediction Issues in Contracting Applications (eg Lightning)&quot;</a></li>
+<li><a href="https://bips.dev/431/#cite_ref_7">^</a> https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393 the-cpfp-carveout-rule-can-no-longer-be-supported-12</li>
+<li><a href="https://bips.dev/431/#cite_ref_8">^</a> https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393#the-cpfp-carveout-rule-can-no-longer-be-supported-12</li>
+<li><a href="https://bips.dev/431/#cite_ref_9">^</a> https://delvingbitcoin.org/t/v3-and-some-possible-futures/523/3</li>
+<li><a href="https://bips.dev/431/#cite_ref_10">^</a> Four examples of static calculations and an example in which they are all inaccurate: https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff#mining-score-of-a-mempool-transaction</li>
+</ol>
 
         </article>
     </div>
@@ -390,7 +401,7 @@ and Bastien Teinturier.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

@@ -526,7 +526,6 @@ BIP32, BIP39
 <h2>Footnotes</h2>
 
 
-<references />
 
 <h2>Acknowledgements</h2>
 

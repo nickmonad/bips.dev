@@ -258,7 +258,7 @@ These keys are termed <strong>BIP 118 public keys</strong>.</p>
 <p><em>Verify</em> is as defined in <a href="/340" target="_blank">BIP 340</a>.</p>
 <p>The key differences from <a href="/342" target="_blank">BIP 342</a> signature verification are:</p>
 <ul>
-<li>In all cases, <code>key_version</code> is set to the constant value <code>0x01</code> instead of <code>0x00</code>.<ref><strong>Why change key_version?</strong> Changing <code>key_version</code> ensures that if the same private key is used to generate both a <a href="/342" target="_blank">BIP 342</a> key and a BIP 118 public key, that a signature for the <a href="/342" target="_blank">BIP 342</a> key is not also valid for the BIP 118 public key (and vice-versa).</ref></li>
+<li>In all cases, <code>key_version</code> is set to the constant value <code>0x01</code> instead of <code>0x00</code>.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup></li>
 <li>If <code>SIGHASH_ANYPREVOUT</code> is set, the digest is calculated as if <code>SIGHASH_ANYONECANPAY</code> was set, except <code>outpoint</code> is not included in the digest.</li>
 <li>If <code>SIGHASH_ANYPREVOUTANYSCRIPT</code> is set, the digest is calculated as if <code>SIGHASH_ANYONECANPAY</code> was set, except <code>outpoint</code>, <code>amount</code>, <code>scriptPubKey</code> and <code>tapleaf_hash</code> are not included in the digest.</li>
 </ul>
@@ -284,7 +284,9 @@ Protocol and wallet designers should aim to have their transactions use Taproot 
 <p>In order to maximise privacy, it is therefore recommended that protocol designers only use BIP 118 public keys in scripts that will be spent using at least one ANYPREVOUT signature, and either use key path spends or alternate scripts in the taproot merkle tree for any spends that can be authorised without ANYPREVOUT signatures.
 Following this recommendation may require additional script branches, which may mean disregarding this recommendation may result in a better tradeoff between cost and privacy in some circumstances.</p>
 <h2> Rationale </h2>
-<references />
+<ol>
+<li><a href="https://bips.dev/118/#cite_ref_1">^</a> <strong>Why change key_version?</strong> Changing <code>key_version</code> ensures that if the same private key is used to generate both a <a href="/342" target="_blank">BIP 342</a> key and a BIP 118 public key, that a signature for the <a href="/342" target="_blank">BIP 342</a> key is not also valid for the BIP 118 public key (and vice-versa).</li>
+</ol>
 <h2> Deployment </h2>
 <p>TODO</p>
 <p>This may be deployed as a soft-fork either concurrent with, or subsequent to the deployment of <a href="/340" target="_blank">BIP 340</a>, <a href="/341" target="_blank">BIP 341</a> and <a href="/342" target="_blank">BIP 342</a>.</p>
@@ -316,7 +318,7 @@ This document is the result of discussions with many people and had direct input
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-03-15</p>
+                    <p class="font-bold">2025-03-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
