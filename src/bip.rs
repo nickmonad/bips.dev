@@ -1,25 +1,24 @@
 use lazy_static::lazy_static;
-use parse_wiki_text_2 as wiki;
 use regex::Regex;
-use std::collections::{HashMap, HashSet};
 use std::convert::Infallible;
 use std::fs::{self, File};
 use std::io;
 use std::io::prelude::*;
 use std::path::Path;
 
+#[derive(Copy, Clone, PartialEq)]
+enum FileFormat {
+    Markdown,
+    Mediawiki,
+}
+
 /// Generate a BIP, converting from mediawiki to HTML.
 /// This creates a new content directory for Zola to serve, containing an index.md file,
 /// prepended with parsed front matter metadata.
-pub fn generate(bip: u32, path: &str) -> io::Result<()> {
-    // read input bip.mediawiki
-    let mut input = File::open(path)?;
-    let mut content = String::new();
-    input.read_to_string(&mut content)?;
-
+pub fn generate<P: AsRef<Path>>(bip: u32, path: P) -> io::Result<()> {
     // create output directory and file
     let dir = format!("web/content/{}", bip);
-    let generated = format!("{}/index.md", dir);
+    let markdown = format!("{}/index.md", dir);
 
     if let Err(err) = fs::create_dir(dir) {
         if err.kind() != io::ErrorKind::AlreadyExists {
@@ -27,24 +26,66 @@ pub fn generate(bip: u32, path: &str) -> io::Result<()> {
         }
     }
 
-    let mut file = File::create(generated)?;
-    // render mediawiki content as html
-    let wikitext = wiki::Configuration::default().parse(&content);
+    // collect front matter
+    let mut pre = false;
+    let mut pre_lines = Vec::new();
+    let lines = read_lines(&path)?;
+    for line in lines.flatten() {
+        if !pre {
+            if line.trim() == "```" || line.trim() == "<pre>" {
+                pre = true;
+                continue;
+            }
+        }
 
+        if pre {
+            if line.trim() == "```" || line.trim() == "</pre>" {
+                // end of front matter, bail
+                break;
+            }
+        }
+
+        pre_lines.push(line);
+    }
+
+    let format = if let Some(ext) = path.as_ref().extension() {
+        if ext == "md" {
+            FileFormat::Markdown
+        } else if ext == "mediawiki" {
+            FileFormat::Mediawiki
+        } else {
+            return Err(io::Error::new(io::ErrorKind::Other, "unknown file type"));
+        }
+    } else {
+        return Err(io::Error::new(io::ErrorKind::Other, "no extension"));
+    };
+
+    let mut output = File::create(&markdown)?;
+    let fm = front_matter(&pre_lines, format);
+    write!(output, "{}\n\n", fm)?;
+
+    // markdown files do not need rendered, write as is
+    if format == FileFormat::Markdown {
+        let lines = read_lines(&path)?;
+        for line in lines.flatten() {
+            write!(output, "{}\n", line)?;
+        }
+
+        return Ok(());
+    }
+
+    // mediawiki
+    // start rendering
     let mut context = RenderContext {
         tag: RenderTag::None,
         refs: Vec::default(),
     };
 
-    // start by parsing out front matter for zola
-    render_front_matter(&mut file, wikitext.nodes)?;
-
     // render the rest of the document, line by line
-    if let Ok(lines) = read_lines(path) {
-        for line in lines.flatten() {
-            if let Some(output) = context.render(&line) {
-                write!(file, "{}", output)?;
-            }
+    let lines = read_lines(&path)?;
+    for line in lines.flatten() {
+        if let Some(rendered) = context.render(&line) {
+            write!(output, "{}", rendered)?;
         }
     }
 
@@ -600,321 +641,6 @@ fn replace_external_links(line: String) -> Result<String, Infallible> {
     Ok(buffer)
 }
 
-fn render_front_matter(f: &mut File, nodes: Vec<wiki::Node>) -> io::Result<()> {
-    let mut front = FrontMatter::default();
-
-    for node in nodes {
-        if let wiki::Node::Preformatted { nodes, .. } = node {
-            let mut nodes = nodes.iter().peekable();
-            while let Some(node) = nodes.next() {
-                if let wiki::Node::Text { value, .. } = node {
-                    let split = value.trim().splitn(2, ':').collect::<Vec<&str>>();
-                    if split.len() < 2 {
-                        continue;
-                    }
-
-                    let (k, v) = (&split[0][..], split[1].trim());
-                    match k {
-                        "BIP" => front.bip = v.parse::<u32>().unwrap(),
-                        "Title" => front.title = v.to_string(),
-                        "Created" => front.created = v.to_string(),
-                        "Status" => front.status = vec![format!("{}", v)],
-                        "Author" => {
-                            let mut authors = vec![clean_author(v)];
-                            loop {
-                                if let Some(n) = nodes.peek() {
-                                    if is_new_section(n) {
-                                        break;
-                                    }
-                                }
-
-                                if let Some(n) = nodes.next() {
-                                    if let wiki::Node::Text { value, .. } = n {
-                                        authors.push(clean_author(value))
-                                    }
-                                }
-                            }
-
-                            front.authors = authors;
-                        }
-                        _ => {}
-                    }
-                }
-            }
-
-            break;
-        }
-    }
-
-    // apply github link
-    front.github = format!(
-        "https://github.com/bitcoin/bips/blob/master/bip-{:04}.mediawiki",
-        front.bip
-    );
-
-    // yes, this format is wonky...
-    // need to prevent leading whitespace from each line
-    write!(
-        f,
-        r#"
-+++
-title = "{title}"
-date = {created}
-weight = {bip}
-
-[taxonomies]
-authors = {authors:?}
-status = {status:?}
-
-[extra]
-bip = {bip}
-status = {status:?}
-github = "{github}"
-note = "THIS FILE IS AUTOMATICALLY GENERATED - NOT MEANT FOR EDITING"
-+++
-
-"#,
-        title = front.title.replace("\"", "\\\""),
-        created = front.created,
-        bip = front.bip,
-        authors = front.authors,
-        status = front.status,
-        github = front.github
-    )?;
-
-    Ok(())
-}
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
-}
-
-/// Recursively find all wiki::Node elements in the given bip, by file path
-/// results in a map of wiki::Node "name" to the total count,
-/// and a set of bips that node type is found in
-pub fn count(bip: u32, path: &str, stats: &mut Stats) -> io::Result<()> {
-    // read input bip.mediawiki
-    let mut input = File::open(path)?;
-    let mut content = String::new();
-    input.read_to_string(&mut content)?;
-
-    // parse mediawiki content
-    let wikitext = wiki::Configuration::default().parse(&content);
-    for node in wikitext.nodes {
-        record_node(bip, &node, stats);
-    }
-
-    Ok(())
-}
-
-/// Display a "pretty-printed" version of the wikitext.
-pub fn show(path: &str) -> io::Result<()> {
-    // read input bip.mediawiki
-    let mut input = File::open(path)?;
-    let mut content = String::new();
-    input.read_to_string(&mut content)?;
-
-    // parse mediawiki content
-    let wikitext = wiki::Configuration::default().parse(&content);
-    for node in wikitext.nodes {
-        println!("{:#?}", node);
-    }
-
-    Ok(())
-}
-
-pub struct Stats {
-    pub nodes: HashMap<String, (u32, HashSet<u32>)>,
-}
-
-impl Stats {
-    pub fn new() -> Self {
-        Self {
-            nodes: HashMap::new(),
-        }
-    }
-
-    fn record(&mut self, bip: u32, name: &str) {
-        if let Some((count, bips)) = self.nodes.get_mut(name) {
-            bips.insert(bip);
-            *count = *count + 1;
-        } else {
-            let mut set = HashSet::new();
-            set.insert(bip);
-
-            self.nodes.insert(name.into(), (1, set));
-        }
-    }
-}
-
-fn record_node(bip: u32, node: &wiki::Node, s: &mut Stats) {
-    match node {
-        wiki::Node::Bold { .. } => s.record(bip, "Bold"),
-        wiki::Node::BoldItalic { .. } => s.record(bip, "BoldItalic"),
-        wiki::Node::Category { ordinal, .. } => {
-            s.record(bip, "Category");
-
-            for node in ordinal {
-                record_node(bip, &node, s);
-            }
-        }
-        wiki::Node::CharacterEntity { .. } => s.record(bip, "CharacterEntity"),
-        wiki::Node::Comment { .. } => s.record(bip, "Comment"),
-        wiki::Node::DefinitionList { .. } => s.record(bip, "DefinitionList"),
-        wiki::Node::EndTag { .. } => s.record(bip, "EndTag"),
-        wiki::Node::ExternalLink { nodes, .. } => {
-            s.record(bip, "ExternalLink");
-
-            for node in nodes {
-                record_node(bip, &node, s);
-            }
-        }
-        wiki::Node::Heading { nodes, .. } => {
-            s.record(bip, "Heading");
-
-            for node in nodes {
-                record_node(bip, &node, s);
-            }
-        }
-        wiki::Node::HorizontalDivider { .. } => s.record(bip, "HorizontalDivider"),
-        wiki::Node::Image { text, .. } => {
-            s.record(bip, "Image");
-
-            for node in text {
-                record_node(bip, &node, s);
-            }
-        }
-        wiki::Node::Italic { .. } => s.record(bip, "Italic"),
-        wiki::Node::Link { text, .. } => {
-            s.record(bip, "Link");
-
-            for node in text {
-                record_node(bip, &node, s);
-            }
-        }
-        wiki::Node::MagicWord { .. } => s.record(bip, "MagicWord"),
-        wiki::Node::OrderedList { items, .. } => {
-            s.record(bip, "OrderedList");
-
-            for item in items {
-                for node in &item.nodes {
-                    record_node(bip, node, s);
-                }
-            }
-        }
-        wiki::Node::ParagraphBreak { .. } => s.record(bip, "ParagraphBreak"),
-        wiki::Node::Parameter { default, name, .. } => {
-            s.record(bip, "Parameter");
-
-            if let Some(nodes) = default {
-                for node in nodes {
-                    record_node(bip, node, s);
-                }
-            }
-
-            for node in name {
-                record_node(bip, node, s);
-            }
-        }
-        wiki::Node::Preformatted { nodes, .. } => {
-            s.record(bip, "Preformatted");
-
-            for node in nodes {
-                record_node(bip, node, s);
-            }
-        }
-        wiki::Node::Redirect { .. } => s.record(bip, "Redirect"),
-        wiki::Node::StartTag { .. } => s.record(bip, "StartTag"),
-        wiki::Node::Table {
-            attributes,
-            captions,
-            rows,
-            ..
-        } => {
-            s.record(bip, "Table");
-
-            // table.attributes
-            for node in attributes {
-                record_node(bip, node, s);
-            }
-
-            // table.captions
-            for caption in captions {
-                if let Some(attributes) = &caption.attributes {
-                    for node in attributes {
-                        record_node(bip, node, s);
-                    }
-                }
-
-                for node in &caption.content {
-                    record_node(bip, node, s);
-                }
-            }
-
-            // table.rows
-            for row in rows {
-                for node in &row.attributes {
-                    record_node(bip, node, s);
-                }
-
-                for cell in &row.cells {
-                    if let Some(attributes) = &cell.attributes {
-                        for node in attributes {
-                            record_node(bip, node, s);
-                        }
-                    }
-
-                    for node in &cell.content {
-                        record_node(bip, node, s);
-                    }
-                }
-            }
-        }
-        wiki::Node::Tag { nodes, .. } => {
-            s.record(bip, "Tag");
-
-            for node in nodes {
-                record_node(bip, node, s);
-            }
-        }
-        wiki::Node::Template {
-            name, parameters, ..
-        } => {
-            s.record(bip, "Template");
-
-            for node in name {
-                record_node(bip, node, s);
-            }
-
-            for p in parameters {
-                if let Some(name) = &p.name {
-                    for node in name {
-                        record_node(bip, node, s);
-                    }
-                }
-
-                for node in &p.value {
-                    record_node(bip, node, s);
-                }
-            }
-        }
-        wiki::Node::Text { .. } => s.record(bip, "Text"),
-        wiki::Node::UnorderedList { items, .. } => {
-            s.record(bip, "UnorderedList");
-
-            for item in items {
-                for node in &item.nodes {
-                    record_node(bip, node, s);
-                }
-            }
-        }
-    }
-}
-
 #[derive(Debug)]
 pub struct FrontMatter {
     bip: u32,
@@ -938,17 +664,97 @@ impl Default for FrontMatter {
     }
 }
 
+fn front_matter<T: AsRef<str>>(pre: &[T], format: FileFormat) -> String {
+    let mut fm = FrontMatter::default();
+    let mut lines = pre.iter().peekable();
+
+    while let Some(line) = lines.next() {
+        let split = line.as_ref().trim().splitn(2, ':').collect::<Vec<&str>>();
+        if split.len() < 2 {
+            continue;
+        }
+
+        let (key, value) = (&split[0][..], split[1].trim());
+        match key {
+            "BIP" => fm.bip = value.parse::<u32>().unwrap(),
+            "Title" => fm.title = value.to_string(),
+            "Created" => fm.created = value.to_string(),
+            "Status" => fm.status = vec![format!("{}", value)],
+            "Author" => {
+                let mut authors = vec![clean_author(value)];
+
+                loop {
+                    if let Some(line) = lines.peek() {
+                        if is_new_section_s(line.as_ref()) {
+                            break;
+                        }
+                    }
+
+                    if let Some(line) = lines.next() {
+                        authors.push(clean_author(line.as_ref()));
+                    }
+                }
+
+                fm.authors = authors;
+            }
+            // skip all other keys
+            _ => {}
+        }
+    }
+
+    // apply github link
+    fm.github = format!(
+        "https://github.com/bitcoin/bips/blob/master/bip-{:04}.{}",
+        fm.bip,
+        match format {
+            FileFormat::Markdown => "md",
+            FileFormat::Mediawiki => "mediawiki",
+        },
+    );
+
+    // yes, this format is wonky...
+    // need to prevent leading whitespace from each line
+    format!(
+        r#"
++++
+title = "{title}"
+date = {created}
+weight = {bip}
+
+[taxonomies]
+authors = {authors:?}
+status = {status:?}
+
+[extra]
+bip = {bip}
+status = {status:?}
+github = "{github}"
+note = "THIS FILE IS AUTOMATICALLY GENERATED - NOT MEANT FOR EDITING"
++++"#,
+        title = fm.title.replace("\"", "\\\""),
+        created = fm.created,
+        bip = fm.bip,
+        authors = fm.authors,
+        status = fm.status,
+        github = fm.github
+    )
+}
+
+fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+where
+    P: AsRef<Path>,
+{
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
+}
+
 fn clean_author(author: &str) -> String {
     let split = author.trim().splitn(2, '<').collect::<Vec<&str>>();
     format!("{}", &split[0][..].trim())
 }
 
-fn is_new_section(node: &wiki::Node) -> bool {
-    if let wiki::Node::Text { value, .. } = node {
-        return value.trim().splitn(2, ':').collect::<Vec<&str>>().len() >= 2;
-    }
-
-    false
+fn is_new_section_s(s: &str) -> bool {
+    return s.trim().splitn(2, ':').collect::<Vec<&str>>().len() >= 2;
 }
 
 fn a_href(target: &str, link: &str) -> String {
@@ -976,6 +782,91 @@ mod test {
             .map(|s| s.trim_start())
             .map(|s| s.to_string())
             .collect()
+    }
+
+    // front matter
+
+    #[test]
+    fn front_matter_one_author() {
+        let pre = [
+            "BIP: 420",
+            "Layer: Applications",
+            "Title: Test BIP",
+            "Author: Nick Miller <test@test.com>",
+            "Comments-Summary: No comments yet.",
+            "Comments-URI: https://notused.com",
+            "Status: Draft",
+            "Type: Informational",
+            "Created: 2025-01-01",
+        ];
+
+        let expected = [
+            "",
+            "+++",
+            "title = \"Test BIP\"",
+            "date = 2025-01-01",
+            "weight = 420",
+            "",
+            "[taxonomies]",
+            "authors = [\"Nick Miller\"]",
+            "status = [\"Draft\"]",
+            "",
+            "[extra]",
+            "bip = 420",
+            "status = [\"Draft\"]",
+            "github = \"https://github.com/bitcoin/bips/blob/master/bip-0420.mediawiki\"",
+            "note = \"THIS FILE IS AUTOMATICALLY GENERATED - NOT MEANT FOR EDITING\"",
+            "+++",
+        ];
+
+        assert_eq!(
+            front_matter(&pre, FileFormat::Mediawiki)
+                .split("\n")
+                .collect::<Vec<_>>(),
+            expected,
+        );
+    }
+
+    #[test]
+    fn front_matter_multiple_authors() {
+        let pre = [
+            "BIP: 420",
+            "Layer: Applications",
+            "Title: Test BIP",
+            "Author: Nick Miller <test@test.com>",
+            "        Satoshi Nakamoto <lol@test.com>",
+            "Comments-Summary: No comments yet.",
+            "Comments-URI: https://notused.com",
+            "Status: Draft",
+            "Type: Informational",
+            "Created: 2025-01-01",
+        ];
+
+        let expected = [
+            "",
+            "+++",
+            "title = \"Test BIP\"",
+            "date = 2025-01-01",
+            "weight = 420",
+            "",
+            "[taxonomies]",
+            "authors = [\"Nick Miller\", \"Satoshi Nakamoto\"]",
+            "status = [\"Draft\"]",
+            "",
+            "[extra]",
+            "bip = 420",
+            "status = [\"Draft\"]",
+            "github = \"https://github.com/bitcoin/bips/blob/master/bip-0420.mediawiki\"",
+            "note = \"THIS FILE IS AUTOMATICALLY GENERATED - NOT MEANT FOR EDITING\"",
+            "+++",
+        ];
+
+        assert_eq!(
+            front_matter(&pre, FileFormat::Mediawiki)
+                .split("\n")
+                .collect::<Vec<_>>(),
+            expected,
+        );
     }
 
     // render_line

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 3: Updated BIP Process" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 3: Updated BIP Process" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 3: Updated BIP Process</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 3: Updated BIP Process</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2025-01-09</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0003.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 3
+  Title: Updated BIP Process
+  Author: Murch &lt;murch@murch.one&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0003
+  Status: Draft
+  Type: Process
+  Created: 2025-01-09
+  License: BSD-2-Clause
+  Post-History: https:&#x2F;&#x2F;github.com&#x2F;murchandamus&#x2F;bips&#x2F;pull&#x2F;2
+                https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;59fa94cea6f70e02b1ce0da07ae230670730171c.camel@timruffing.de&#x2F;#t
+  Requires: 123
+  Replaces: 2
+</code></pre>
+<h2 id="Abstract">Abstract</h2>
+<p>This <em>Bitcoin Improvement Proposal (BIP)</em> provides information about the preparation of BIPs and policies relating to
+the publication of BIPs. It replaces <a href="https://bips.dev/3/bip-0002.mediawiki">BIP 2</a> with a streamlined process, and may be amended to
+address the evolving needs of the BIP process.</p>
+<h2 id="Motivation">Motivation</h2>
+<p>BIP 2 was written in 2016.
+This BIP revisits aspects of the BIP 2 process
+that did not achieve broad adoption, reduces the judgment calls assigned to the BIP Editor role, delineates the
+BIP Types more clearly, and generalizes the BIP process to meet the community’s use of the repository.</p>
+<h2 id="Fundamentals">Fundamentals</h2>
+<h3 id="What_is_a_BIP?">What is a BIP?</h3>
+<p>BIPs cover the range of interests of the Bitcoin<sup class="footnote-reference"><a href="#capitalization">1</a></sup> community. The main topic is information and technologies that support and expand the utility of the bitcoin
+currency. Most BIPs provide a concise, self-contained, technical description of one new concept, feature, or standard.
+Some BIPs describe processes, implementation guidelines, best practices, incident reports (e.g.,
+<a href="https://bips.dev/3/bip-0050.mediawiki">BIP 50</a>), or other information relevant to the Bitcoin community. However, any topics related to
+the Bitcoin protocol, peer-to-peer network, and client software may be acceptable.</p>
+<p>BIPs are intended to be a means for proposing new protocol features, coordinating client standards, and
+documenting design decisions that have gone into implementations. BIPs may be submitted by anyone.</p>
+<p>The scope of the BIP
+repository is limited to BIPs that do not oppose the fundamental principle that Bitcoin constitutes a peer-to-peer
+electronic cash system for the bitcoin currency.</p>
+<h3 id="BIP_Ownership">BIP Ownership</h3>
+<p>Each BIP is primarily owned by its authors and represents the authors’ opinion or recommendation. The authors are
+expected to foster discussion, address feedback and dissenting opinions, and, if applicable, advance the adoption of
+their proposal within the Bitcoin community. As a BIP progresses through the workflow, it becomes increasingly
+co-owned by the Bitcoin community.</p>
+<h4 id="Authors_and_Deputies">Authors and Deputies</h4>
+<p>Authors may want additional help with the BIP process after writing an initial draft. In that case, they may assign
+one or more Deputies to their BIP. Deputies are stand-in owners of a BIP who were not involved in writing the
+document. They support the authors in advancing the proposal, or act as a point of contact for the BIP in the absence of the
+authors. Deputies may perform the role of Authors for any aspect of the BIP process unless overruled by an Author.
+Deputies share ownership of the BIP at the discretion of the Authors.</p>
+<h3 id="What_is_the_Significance_of_BIPs?">What is the Significance of BIPs?</h3>
+<p>BIPs do not define what Bitcoin is: individual BIPs do not represent Bitcoin community consensus or a general
+recommendation for implementation. A BIP represents a personal recommendation by the BIP authors to the Bitcoin
+community. Some BIPs may never be adopted. Some BIPs may be adopted by one or more Bitcoin clients or other related
+software. Some may even end up changing the consensus rules that the Bitcoin ecosystem jointly enforces.</p>
+<h3 id="What_is_the_Purpose_of_the_BIPs_Repository?">What is the Purpose of the BIPs Repository?</h3>
+<p>The <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/">BIPs repository</a> serves as a publication medium and archive for mature proposals.
+Through its high visibility, it facilitates the community-wide consideration of BIPs and provides a well-established
+source to retrieve the latest version of any BIP. The repository transparently records all changes to each BIP and
+allows any community member to retain a complete copy of the archive easily.</p>
+<p>The BIPs repository is not a tool to track acceptance<sup class="footnote-reference"><a href="#acceptance">2</a></sup>, adoption, or community consensus on BIPs, beyond
+providing a brief overview of BIP statuses (see <a href="https://bips.dev/3/#workflow">Workflow</a> below) to the audience.
+There is no formal or informal decision body that governs Bitcoin development or decides acceptance of BIPs. Bitcoin
+development emerges from the participation of shareholders across the ecosystem.</p>
+<h2 id="BIP_Format_and_Structure">BIP Format and Structure</h2>
+<h3 id="Specification">Specification</h3>
+<p>Authors may choose to submit BIPs in MediaWiki or Markdown<sup class="footnote-reference"><a href="#markdown">3</a></sup> format.</p>
+<p>Each BIP must have a <em>Preamble</em>, an <em>Abstract</em>, a <em>Copyright</em>, and a <em>Motivation</em> section. Authors should consider all issues in the
+following list and address each as appropriate.</p>
+<ul>
+<li>Preamble — Headers containing metadata about the BIP (see the section <a href="https://bips.dev/3/#bip-header-preamble">BIP Header Preamble</a>
+below).</li>
+<li>Abstract — A short description of the issue being addressed.</li>
+<li>Motivation — Why is this BIP being written? Clearly explain how the existing situation presents a problem and why the proposed idea resolves the
+issue or improves upon the current situation.</li>
+<li>Specification — The technical specification should describe the syntax and semantics of any new feature. The
+specification should be detailed enough to enable any Bitcoin project to create an interoperable implementation.</li>
+<li>Rationale — The rationale fleshes out the specification by describing what inspired the design and why particular
+design decisions were made. It should describe related work and alternate designs that were considered. The rationale
+should record relevant objections or important concerns that were raised and addressed as this proposal was developed.</li>
+<li>Backward Compatibility — Any BIP that introduces incompatibilities must include a section describing these incompatibities and their severity as well as provide instructions on how
+implementers and users should deal with these incompatibilities.</li>
+<li>Reference Implementation — Where applicable, a reference implementation, test vectors, and documentation must be
+finished before the BIP can be given the status &quot;Complete&quot;. Test vectors must be provided in the BIP or
+as auxiliary files (see <a href="https://bips.dev/3/#auxiliary-files">Auxiliary Files</a>) under an acceptable license. The reference implementation can be provided in the BIP, as an auxiliary file, or per reference to a pull request that is expected to remain available permanently.</li>
+<li>Changelog — A section to track modifications to a BIP after reaching Complete status.</li>
+<li>Copyright — The BIP must be placed under an acceptable license (see <a href="https://bips.dev/3/#bip-licensing">BIP Licensing</a> below).</li>
+</ul>
+<h4 id="BIP_Header_Preamble">BIP Header Preamble</h4>
+<p>Each BIP must begin with an <a rel="noopener" target="_blank" href="https://www.w3.org/Protocols/rfc822/">RFC 822-style header preamble</a>. The headers must
+appear in the following order. Headers marked with &quot;*&quot; are optional. All other headers are required.</p>
+<h5 id="Overview">Overview</h5>
+<pre><code>  BIP: &lt;BIP number, or &quot;?&quot;&gt;
+* Layer: &lt;Consensus (soft fork) | Consensus (hard fork) | Peer Services | API&#x2F;RPC | Applications&gt;
+  Title: &lt;BIP title (≤ 50 characters)&gt;
+  Authors: &lt;Authors’ names and email addresses&gt;
+* Deputies: &lt;Deputies’ names and email addresses&gt;
+  Status: &lt;Draft | Complete | Deployed | Closed&gt;
+  Type: &lt;Specification | Informational | Process&gt;
+  Created: &lt;Date of number assignment (yyyy-mm-dd), or &quot;?&quot;&gt;
+  License: &lt;Identifier(s) of acceptable license(s)&gt;
+* License-Code: &lt;Identifier(s) for Code under different acceptable license(s)&gt;
+* Discussion: &lt;Noteworthy discussion threads in &quot;yyyy-mm-dd: URL&quot; format&gt;
+* Version: &lt;MAJOR.MINOR.PATCH&gt;
+* Requires: &lt;BIP number(s)&gt;
+* Replaces: &lt;BIP number(s)&gt;
+* Proposed-Replacement: &lt;BIP number(s)&gt;
+</code></pre>
+<h5 id="Header_Descriptions">Header Descriptions</h5>
+<ul>
+<li>
+<p>BIP — The assigned number of the BIP. Please use &quot;?&quot; before a number has been assigned by the BIP Editors.</p>
+</li>
+<li>
+<p>Layer — The layer of Bitcoin the BIP applies to using the BIP classification defined in <a href="https://bips.dev/3/bip-0123.mediawiki">BIP 123</a>.</p>
+</li>
+<li>
+<p>Authors — The names (or pseudonyms) and email addresses of all authors of the BIP. The format of each authors header
+value must be</p>
+<pre><code>Random J. User &lt;address@dom.ain&gt;
+</code></pre>
+<p>Multiple authors are recorded on separate lines:</p>
+<pre><code>Authors: Random J. User &lt;address@dom.ain&gt;
+         Anata Sample &lt;anata@domain.example&gt;
+</code></pre>
+</li>
+<li>
+<p>Deputies — Additional owners of the BIP that are not authors. The Deputies header uses the same format as the
+Authors header. See the <a href="https://bips.dev/3/#bip-ownership">BIP Ownership</a> section above.</p>
+</li>
+<li>
+<p>Status — The stage of the workflow of the proposal. See the <a href="https://bips.dev/3/#workflow">Workflow</a> section below.</p>
+</li>
+<li>
+<p>Type — See the <a href="https://bips.dev/3/#bip-types">BIP Types</a> section below for a description of the three BIP types.</p>
+</li>
+<li>
+<p>License and License-Code — These headers list SPDX License Identifier(s) of the acceptable licenses under which the
+BIP and corresponding code are available. See the <a href="https://bips.dev/3/#bip-licensing">BIP Licensing</a> section below for a description of
+the Licenses and their SPDX License Identifiers. If there are multiple acceptable licenses, each should be on a
+separate line.</p>
+</li>
+<li>
+<p>Discussion — The Discussion header points the audience to relevant discussions of the BIP, e.g., the mailing list
+thread in which the idea for the BIP was discussed, a thread where a new version of the BIP was presented, or relevant
+discussion threads on other platforms. Entries take the format &quot;yyyy-mm-dd: URL&quot;, e.g., <code>2009-01-09: https://www.mail-archive.com/cryptography@metzdowd.com/msg10142.html</code>, using the date and URL of the start of the
+conversation. Multiple discussions should be listed on separate lines.</p>
+</li>
+<li>
+<p>Version — The current version number of this BIP. See the <a href="https://bips.dev/3/#changelog">Changelog</a> section below.</p>
+</li>
+<li>
+<p>Requires — A list of existing BIPs the new proposal depends on. If multiple BIPs
+are required, they should be listed in one line separated by a comma and space (e.g., &quot;1, 2&quot;).</p>
+</li>
+<li>
+<p>Replaces — BIP authors may place the numbers of one or more prior BIPs in the Replaces header to recommend that their
+BIP succeeds, supersedes, or renders obsolete those prior BIPs.</p>
+</li>
+<li>
+<p>Proposed-Replacement<sup class="footnote-reference"><a href="#superseded-by-proposed-replacement">4</a></sup> — When a later BIP indicates that it intends to supersede an
+existing BIP, the later BIP’s number is added to the Proposed-Replacement header of the existing BIP to indicate the
+potential successor BIP.</p>
+</li>
+</ul>
+<h4 id="Auxiliary_Files">Auxiliary Files</h4>
+<p>BIPs may include auxiliary files such as diagrams and source code. Auxiliary files must be included in a subdirectory
+for that BIP named <code>bip-XXXX</code>, where &quot;XXXX&quot; is the BIP number zero-padded to four digits. File names in the subdirectory
+do not need to adhere to a specific convention.</p>
+<h3 id="BIP_Types">BIP Types</h3>
+<ul>
+<li>A <strong>Specification BIP</strong> defines a set of technical rules describing a new feature or affecting the interoperability of implementations. The
+distinguishing characteristic of a Specification BIP is that it can be implemented, and implementations can be compliant with
+it. Specification BIPs must have a Specification section, must have a Backward Compatibility section (if incompatibilities are introduced), and can only be advanced to Complete after they contain or refer to a reference implementation and test vectors.</li>
+<li>An <strong>Informational BIP</strong> describes a Bitcoin design issue, or provides general guidelines or other information to the
+Bitcoin community.</li>
+<li>A <strong>Process BIP</strong> describes a process surrounding Bitcoin, or proposes a change to (or an event in) a process. Process
+BIPs are like Specification BIPs, but apply to topics other than the Bitcoin protocol and Bitcoin implementations.
+They often require community consensus and are typically binding for the corresponding process. Examples include
+procedures, guidelines, and changes to decision-making processes such as the BIP Process.</li>
+</ul>
+<h2 id="Workflow">Workflow</h2>
+<p>The BIP process starts with a new idea for Bitcoin. Each potential BIP must have authors—people who write the BIP,
+gather feedback, shepherd the discussion in the appropriate forums, and finally recommend a mature proposal to the
+community.</p>
+<p><img src="https://bips.dev/3/bip-0003/status-diagram.png" alt="Status Diagram" title="Status Diagram for the BIP Workflow" /></p>
+<h3 id="Ideation">Ideation</h3>
+<p>After having an idea, the authors should evaluate whether it meets the criteria to become a BIP, as described in this
+BIP. The idea must be of interest to the broader community or relevant to multiple software projects. Minor improvements
+and matters concerning only a single project usually do not require standardization and should instead be brought up directly to
+the relevant project.</p>
+<p>The authors should first research whether an idea has been considered before. Ideas in Bitcoin are often rediscovered,
+and prior related discussions may inform the authors of the issues that may arise in its progression. After some investigation,
+the novelty of an idea can be tested by posting about it to the <a rel="noopener" target="_blank" href="https://groups.google.com/g/bitcoindev">Bitcoin Development Mailing
+List</a>. Prior correspondence can be found in the <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/">mailing list
+archive</a>.</p>
+<p>Vetting an idea publicly before investing the time to describe the idea formally is meant to save both the authors and
+the broader community time. Not only may someone point out relevant discussion topics that were missed in the authors’
+research, or that an idea is guaranteed to be rejected based on prior discussions, but describing an idea publicly also
+tests whether it is of interest to more people besides the authors. After establishing that the idea may be of interest
+to the Bitcoin community, the authors should work on drafting a BIP.</p>
+<p>As a first sketch of the proposal is taking shape, the authors should present it to the <a rel="noopener" target="_blank" href="https://groups.google.com/g/bitcoindev">Bitcoin Development Mailing
+List</a>. This gives the authors a chance to collect initial feedback and address
+fundamental concerns. If the authors wish to work in public on the proposal at this stage, it is recommended that they
+open a pull request against one of their forks of the BIPs repository instead of the main BIPs repository.</p>
+<p>It is recommended that complicated proposals be split into separate BIPs that each focus on a specific component of the
+overall proposal.</p>
+<h3 id="Progression_through_BIP_Statuses">Progression through BIP Statuses</h3>
+<p>The following sections refer to BIP Status Field values. The BIP Status Field is defined in the Header Preamble
+specification above.</p>
+<h4 id="Draft">Draft</h4>
+<p>After fleshing out the proposal further and ensuring that it is of high quality and properly formatted, the authors
+should open a pull request to the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips">BIPs repository</a>. The document must adhere to the
+formatting requirements specified above and should be provided as a file named with a working title of the form
+&quot;bip-title.[md|mediawiki]&quot;. The authors must not self-assign a number to their proposal.</p>
+<p>BIPs that (1) adhere to the formatting requirements, (2) are on-topic, and (3) have materially progressed beyond the
+ideation phase, e.g., by generating substantial public discussion and commentary from diverse contributors, by
+independent Bitcoin projects working on adopting the proposal, or by the authors working for an extended period toward
+improving the proposal based on community feedback, will be assigned a number by a BIP editor. The BIP editors should
+delay number assignment when they perceive a proposal being met with lack of interest: number assignment facilitates the
+distributed discussion of ideas, but before a proposal garners some interest in the Bitcoin community, there is no need
+to refer to it by a number.</p>
+<p>Proposals are also not ready for number assignment if they duplicate efforts, disregard formatting rules, are too
+unfocused or too broad, fail to provide proper motivation, fail to address backward compatibility where necessary, or
+fail to specify the feature clearly and comprehensively. Reviewers and BIP editors should provide guidance on how the
+proposal may be improved to progress toward readiness. Pull requests that are proposing off-topic ideas or
+have stopped making progress may be closed.</p>
+<p>When the proposal is ready and has been assigned a number, a BIP editor will merge it into the BIPs repository. After the
+BIP has been merged to the repository, its main focus should no longer shift significantly, even while the authors may
+continue to update the proposal as necessary. Updates to merged documents by the authors should also be submitted as
+pull requests.</p>
+<h4 id="Complete">Complete<sup class="footnote-reference"><a href="#complete">5</a></sup></h4>
+<p>When the authors have concluded all planned work on their proposal, are confident that their BIP represents a net
+improvement, is clear, comprehensive, and is
+ready for adoption by the Bitcoin community, they may update the BIP’s status to Complete to indicate that they
+recommend adoption, implementation, or deployment of the BIP. Where applicable, the authors must ensure that any
+proposed specification is solid, not unduly complicated, and definitive. Specification BIPs must come with or refer to a working reference implementation and comprehensive test vectors before they can be moved to Complete. Subsequently, the BIP’s content should only be
+adjusted in minor details, e.g., to improve language, clarify ambiguities, backfill omissions in the specification, add
+test vectors for edge cases, or address other issues discovered as the BIP is being adopted.</p>
+<p>A Complete BIP can only move to Deployed or Closed. Any necessary changes to the specification should be minimal and
+interfere as little as possible with ongoing adoption. If a Complete BIP is found to need substantial functional
+changes, it may be preferable to move it to Closed<sup class="footnote-reference"><a href="#new-BIP">6</a></sup>, and to start a new BIP with the changes instead.
+Otherwise, it could cause confusion as to what being compliant with the BIP means.</p>
+<p>A BIP may remain in the Complete status indefinitely unless its authors decide to move it to Closed or it is advanced to
+Deployed.
+Complete is the final status for most successful Informational BIPs.</p>
+<h4 id="Deployed">Deployed</h4>
+<p>A settled<sup class="footnote-reference"><a href="#settled">7</a></sup> BIP may be advanced to Deployed upon request by any community member with evidence<sup class="footnote-reference"><a href="#evidence">8</a></sup> that the idea
+described in the BIP is in active use. Convincing evidence includes for example: an established project having deployed support
+for the BIP in mainnet software releases, a soft fork proposal’s activation criteria having been met on the network, or
+rough consensus for the BIP having been demonstrated.</p>
+<p>At that point, the BIP should be considered final and any breaking changes to the BIP should be proposed as a new
+separate BIP.<sup class="footnote-reference"><a href="#new-BIP">6</a></sup></p>
+<h5 id="Process_BIPs">Process BIPs</h5>
+<p>A Process BIP may change status from Complete to Deployed when it achieves rough consensus on the Bitcoin Development Mailing List. Such a
+proposal is said to have rough consensus if it has been open to discussion on the mailing list for at least
+one month, and no person maintains any unaddressed substantiated objections to it. Addressed or obstructive objections
+may be ignored/overruled by general agreement that they have been sufficiently addressed, but clear reasoning must be
+given in such circumstances. Deployed Process BIPs may be modified indefinitely as long as a proposed modification has
+rough consensus per the same criteria.<sup class="footnote-reference"><a href="#living-documents">9</a></sup></p>
+<h4 id="Closed">Closed<sup class="footnote-reference"><a href="#closed">10</a></sup></h4>
+<p>A BIP that is of historical interest only, and is not being actively worked on, promoted or in active use, should be
+marked as Closed. The reason for moving the
+proposal to (or from) Closed should be recorded in the Changelog section in the same commit that updates the status.
+BIPs do not get deleted, they are retained even after being updated to Closed.
+Transitions involving the Closed state are:</p>
+<h5 id="Draft_↦_Closed">Draft ↦ Closed</h5>
+<p>BIP authors may decide on their own to change their BIP’s status from Draft to Closed. If a Draft BIP stops making
+progress, sees accumulated feedback unaddressed, or otherwise appears stalled for a year, the community may move the BIP
+to Closed unless the authors assert that they intend to continue work within four weeks of being contacted.</p>
+<h5 id="Complete_↦_Closed">Complete ↦ Closed</h5>
+<p>BIPs that had attained the Complete status, i.e., that had been recommended for adoption, may be moved to Closed per the
+authors’ announcement to the Bitcoin Development Mailing List<sup class="footnote-reference"><a href="#bip-announcements-to-list">11</a></sup>. However, if someone volunteers to adopt the proposal
+within four weeks, they become the BIP's author or deputy, and the BIP will
+remain Complete instead.</p>
+<h5 id="Deployed_↦_Closed">Deployed ↦ Closed</h5>
+<p>A BIP may evolve from Deployed to Closed when it is no longer in active use. Any community member may initiate this
+Status update by announcing it to the mailing list<sup class="footnote-reference"><a href="#bip-announcements-to-list">11</a></sup>, and proceed if no objections have been raised for four weeks.</p>
+<h5 id="Closed_↦_Draft">Closed ↦ Draft</h5>
+<p>The Closed status is generally intended to be a final status for BIPs,
+and if BIP authors decide to make another attempt at a previously Closed BIP, it is generally recommended to create a new
+proposal. (Obviously, the authors may borrow any amount of inspiration or actual text from any prior BIPs as licensing
+permits.) The authors should take special care to address the issues that caused the prior attempt’s abandonment. Even
+if the prior attempt had been assigned a number, the new BIP will generally be assigned a distinct number. However, if it is
+obvious that the new attempt directly continues work on the same idea, it may be reasonable to return the
+Closed BIP to Draft status.</p>
+<h3 id="Changelog">Changelog</h3>
+<p>To help implementers understand updates to a BIP, any changes after it has reached Complete must be tracked with version,
+date, and description in a Changelog section sorted by most recent version first. The version number is inspired by semantic versioning (MAJOR.MINOR.PATCH).
+The MAJOR version is incremented if changes to the BIP’s Specification are introduced that are incompatible with prior
+versions (which should be rare after a BIP is Complete, and only happen in well-grounded exceptional cases to a BIP that
+is Deployed). The MINOR version is incremented whenever the specification of the BIP is changed or extended in a
+backward-compatible way. The PATCH version is incremented for other changes to the BIP that are noteworthy (bug fixes,
+test vectors, important clarifications, etc.). Version 1.0.0 is used to label the promotion to
+Complete. A Changelog section may be introduced during the Draft phase to record significant changes (using versions 0.x.y).</p>
+<p>Example:</p>
+<blockquote>
+<p><strong>Changelog</strong></p>
+<ul>
+<li><strong>2.0.0</strong> (2025-01-22):
+<ul>
+<li>Introduce a breaking change in the specification to fix a bug.</li>
+</ul>
+</li>
+<li><strong>1.1.0</strong> (2025-01-17):
+<ul>
+<li>Add a backward compatible extension to the BIP.</li>
+</ul>
+</li>
+<li><strong>1.0.1</strong> (2025-01-15):
+<ul>
+<li>Clarify an edge case and add corresponding test vectors.</li>
+</ul>
+</li>
+<li><strong>1.0.0</strong> (2025-01-14):
+<ul>
+<li>Complete planned work on the BIP.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>After a BIP receives a Changelog, the
+Preamble must indicate the latest version in the Version header. The Changelog highlights revisions to BIPs to human readers. A single
+BIP shall not recommend more than one variant of an idea at the same time. A different or
+competing variant of an existing BIP must be published as a separate BIP.</p>
+<h3 id="Adoption_of_Proposals">Adoption of Proposals</h3>
+<p>The BIPs repository does not track the sentiment on proposals and does not track the adoption of BIPs beyond whether they
+are in active use or not. It is not intended for BIPs to list additional implementations beyond the reference
+implementation: the BIPs repository is not a signpost where to find implementations.<sup class="footnote-reference"><a href="#OtherImplementations">12</a></sup> After a BIP
+is advanced to Complete, it is up to the Bitcoin community to evaluate, adopt, ignore, or reject a BIP. Individual
+Bitcoin projects are encouraged to publish a list of BIPs they implement. A good example of this at the time of writing
+this BIP can be observed in Bitcoin Core’s <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/master/doc/bips.md">doc/bips.md</a>
+file.</p>
+<h3 id="Transferring_BIP_Ownership">Transferring BIP Ownership</h3>
+<p>It occasionally becomes necessary to transfer ownership of BIPs to new owners. In general, it would be preferable to
+retain the original authors of the transferred BIP, but that is up to the original authors. A good reason to transfer
+ownership is because the original authors no longer have the time or interest in updating it or following through with
+the BIP process, or are unreachable or unresponsive. A bad reason
+to transfer ownership is because someone doesn't agree with the direction of the BIP. The community tries to build
+consensus around a BIP, but if that's not possible, rather than fighting over control, the dissenters should supply a
+competing BIP.</p>
+<p>If someone is interested in assuming ownership of a BIP, they should send an email asking to take over, addressed to the
+original authors, the BIP Editors, and the Bitcoin Development Mailing List<sup class="footnote-reference"><a href="#bip-announcements-to-list">11</a></sup>. If the authors are unreachable or do not respond in a timely
+manner (e.g., four weeks), the BIP editors will make a unilateral decision whether to appoint the applicants as
+<a href="https://bips.dev/3/#authors-and-deputies">Authors or Deputies</a> (which may be amended should the original authors make a delayed reappearance).</p>
+<h2 id="BIP_Licensing">BIP Licensing</h2>
+<p>The Bitcoin project develops a global peer-to-peer digital cash system. Open standards are indispensable for continued
+interoperability. Open standards reduce friction, and encourage anybody and everyone to contribute, compete, and
+innovate on a level playing field. Only freely licensed contributions are accepted to the BIPs repository.</p>
+<h3 id="Specification-1">Specification</h3>
+<p>Each new BIP must identify at least one acceptable license in its preamble. Licenses must be referenced per their
+respective <a rel="noopener" target="_blank" href="https://spdx.org/licenses">SPDX License identifier</a>. New BIPs may be accepted with the licenses described
+below.</p>
+<p>For example, a preamble might include the following License header:</p>
+<pre><code>License: CC0-1.0
+         GNU-All-Permissive
+</code></pre>
+<p>In this case, the BIP text is fully licensed under both the Creative Commons CC0 1.0 Universal license as well as the
+GNU All-Permissive License, and anyone may modify and redistribute the text provided they comply with the terms of
+<em>either</em> license. In other words, the license list is an &quot;OR choice&quot;, not an &quot;AND also&quot; requirement.</p>
+<p>It is also possible to license source code differently from the BIP text by including the optional License-Code header
+after the License header. Again, each license must be referenced by their respective SPDX License identifier shown
+below.</p>
+<p>Each source code file or source directory should specify the license under which it is made available as is common in
+software (e.g., with a license header or a LICENSE/COPYING file). It is recommended to make any test vectors available
+under CC0-1.0 or GNU-All-Permissive in addition to any other licenses to allow anyone to copy test vectors into their
+implementations without introducing license hindrances. Licenses listed in the License-Code header apply to all source
+directories, source code files, and test vectors provided with the BIP except those where a LICENSE file in a directory
+or the file header states otherwise.</p>
+<p>For example, a preamble specifying the optional License-Code header might look like:</p>
+<pre><code>License:         CC0-1.0
+License-Code:    MIT
+</code></pre>
+<p>In this case, the code in the BIP is not available under CC0-1.0, but is only available under the terms of the MIT
+License.</p>
+<p>BIPs are not required to be <em>exclusively</em> licensed under approved terms, and may also be licensed under unacceptable
+licenses <em>in addition to</em> at least one acceptable license. In this case, only the acceptable license(s) should be listed
+in the License and License-Code headers.</p>
+<p>It is recommended that BIPs that include literal code be licensed under the same license terms as the project it
+modifies. For example, literal code intended for Bitcoin Core would ideally be licensed (or dual-licensed) under the MIT
+license terms.</p>
+<p>In all cases, details of the licensing terms must be provided in the Copyright section of the BIP.</p>
+<h4 id="Acceptable_Licenses">Acceptable Licenses<sup class="footnote-reference"><a href="#licenses">13</a></sup></h4>
+<ul>
+<li>BSD-2-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-2-Clause">OSI-approved BSD 2-clause license</a></li>
+<li>BSD-3-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-3-Clause">OSI-approved BSD 3-clause license</a></li>
+<li>CC0-1.0: <a rel="noopener" target="_blank" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal</a></li>
+<li>GNU-All-Permissive: <a rel="noopener" target="_blank" href="http://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html">GNU All-Permissive License</a></li>
+<li>CC-BY-4.0: <a rel="noopener" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a></li>
+<li>MIT: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/MIT">Expat/MIT/X11 license</a></li>
+<li>Apache-2.0: <a rel="noopener" target="_blank" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, version 2.0</a></li>
+<li>BSL-1.0: <a rel="noopener" target="_blank" href="http://www.boost.org/LICENSE_1_0.txt">Boost Software License, version 1.0</a></li>
+</ul>
+<h4 id="Not_Acceptable_Licenses">Not Acceptable Licenses</h4>
+<p>All licenses not explicitly included in the above lists are not acceptable terms for a Bitcoin Improvement Proposal.
+However, BIPs predating the acceptance of this BIP were allowed under other terms, and should use these abbreviations
+when no other license is granted:</p>
+<ul>
+<li>PD: Released into the public domain</li>
+<li>OPL: <a rel="noopener" target="_blank" href="http://opencontent.org/openpub/">Open Publication License, version 1.0</a></li>
+</ul>
+<h2 id="BIP_Editors">BIP Editors</h2>
+<p>The current BIP editors are:</p>
+<ul>
+<li>Bryan Bishop (<a href="mailto:kanzure@gmail.com">kanzure@gmail.com</a>)</li>
+<li>Jon Atack (<a href="mailto:jon@atack.com">jon@atack.com</a>)</li>
+<li>Luke Dashjr (<a href="mailto:luke_bipeditor@dashjr.org">luke_bipeditor@dashjr.org</a>)</li>
+<li>Mark &quot;Murch&quot; Erhardt (<a href="mailto:murch@murch.one">murch@murch.one</a>)</li>
+<li>Olaoluwa Osuntokun (<a href="mailto:laolu32@gmail.com">laolu32@gmail.com</a>)</li>
+<li>Ruben Somsen (<a href="mailto:rsomsen@gmail.com">rsomsen@gmail.com</a>)</li>
+</ul>
+<h3 id="BIP_Editor_Responsibilities_and_Workflow">BIP Editor Responsibilities and Workflow</h3>
+<p>The BIP editors subscribe to the Bitcoin Development Mailing List and watch the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips">BIPs
+repository</a>.</p>
+<p>When a new BIP idea is submitted to the mailing list, BIP editors and other community members should comment in regard
+to:</p>
+<ul>
+<li>Novelty of the idea</li>
+<li>Viability, utility, and relevance of the concept</li>
+<li>Readiness of the proposal</li>
+<li>On-topic for the Bitcoin community</li>
+</ul>
+<p>Discussion in pull request comments can often be hard to follow as feedback gets marked as resolved when it is addressed
+by authors. Substantive discussion of ideas may be more accessible to a broader audience on the mailing list, where it
+is also more likely to be retained by the community memory.</p>
+<p>If the BIP needs more work, an editor should ensure that constructive, actionable feedback is provided to the authors
+for revision. Once the BIP is ready it should be submitted as a &quot;pull request&quot; to the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips">BIPs
+repository</a> where it may get further feedback.</p>
+<p>For each new BIP pull request that comes in, an editor checks the following:</p>
+<ul>
+<li>The idea has been previously discussed on the Bitcoin Development Mailing List</li>
+<li>The described idea is on-topic for the repository</li>
+<li>Title accurately describes the content</li>
+<li>Proposal is of general interest and/or pertains to more than one Bitcoin project/implementation</li>
+<li>Document is properly formatted</li>
+<li>Licensing terms are acceptable</li>
+<li>Motivation, Rationale, and Backward Compatibility have been addressed</li>
+<li>Specification provides sufficient detail for implementation</li>
+<li>The defined Layer header must be correctly assigned for the given specification</li>
+<li>The BIP is ready: it is comprehensible, technically feasible, and all aspects are addressed as necessary</li>
+</ul>
+<p>Editors do NOT evaluate whether the proposal is likely to be adopted.</p>
+<p>Then, a BIP editor will:</p>
+<ul>
+<li>Assign a BIP number and BIP type in the pull request</li>
+<li>Ensure that the BIP is listed in the <a href="https://bips.dev/3/README.mediawiki">README</a></li>
+<li>Merge the pull request when it is ready</li>
+</ul>
+<p>The BIP editors are intended to fulfill administrative and editorial responsibilities. The BIP editors monitor BIP
+changes, and update BIP headers as appropriate.</p>
+<p>BIP editors may also, at their option, unilaterally make and merge strictly editorial changes to BIPs, such as
+correcting misspellings, mending grammar mistakes, fixing broken links, etc. as long as they do not change the meaning or conflict with the
+original intent of the authors. Such a change must be recorded in the Changelog if it’s noteworthy per the criteria
+mentioned in the <a href="https://bips.dev/3/#changelog">Changelog</a> section.</p>
+<h2 id="Backward_Compatibility">Backward Compatibility</h2>
+<h3 id="Changes_from_BIP 2">Changes from BIP 2</h3>
+<h4 id="Workflow-1">Workflow</h4>
+<ul>
+<li>Status field values are reduced from nine to four:
+<ul>
+<li>Deferred, Obsolete, Rejected, Replaced, and Withdrawn are gathered up into Closed.<sup class="footnote-reference"><a href="#closed">10</a></sup></li>
+<li>Final and Active are collapsed into Deployed.</li>
+<li>Proposed is renamed to Complete.</li>
+<li>The remaining statuses are Draft, Complete, Deployed, and Closed.</li>
+</ul>
+</li>
+<li>The comment system is abolished.<sup class="footnote-reference"><a href="#comments">14</a></sup></li>
+<li>A BIP in Draft or Complete status may no longer be closed solely on grounds of not making progress for three years.<sup class="footnote-reference"><a href="#rejection">15</a></sup>
+<ul>
+<li>A BIP in Draft status may be set to Closed by anyone if it appears to have stopped making progress for at least a
+year and its authors do not assert that they are still working on it when contacted.</li>
+<li>Complete BIPs can only be moved to Closed by its authors and may remain in Complete indefinitely.</li>
+</ul>
+</li>
+<li>Process BIPs are living documents that do not ossify and may be modified indefinitely.</li>
+<li>Some judgment calls previously required from BIP Editors are reassigned either to the BIP authors or the repository’s
+audience.</li>
+</ul>
+<h4 id="BIP_Format">BIP Format</h4>
+<ul>
+<li>The Standards Track type is superseded by the similar Specification type.<sup class="footnote-reference"><a href="#standard-track">16</a></sup></li>
+<li>Many sections are declared optional; it is up to the authors and reviewers to judge whether all relevant topics have
+been comprehensively addressed and which topics require a designated section to do so.</li>
+<li>&quot;Other Implementations&quot; sections are discouraged.<sup class="footnote-reference"><a href="#OtherImplementations">12</a></sup></li>
+<li>Auxiliary files are only permitted in the corresponding BIP’s subdirectory, as no one used the alternative of labeling
+them with the BIP number.</li>
+<li>Tracking of adoption, acceptance, and community consensus is out of scope for the BIPs repository, except to determine
+whether a BIP is in active use for the move into or out of the Deployed status.</li>
+<li>The distinction between recommended and acceptable licenses was dropped.</li>
+<li>Most licenses that have not been used in the BIP process have been dropped from the list of acceptable licenses.</li>
+</ul>
+<h4 id="Preamble">Preamble</h4>
+<ul>
+<li>&quot;Comments-URI&quot; and &quot;Comment-Summary&quot; headers are dropped from the preamble.<sup class="footnote-reference"><a href="#comments">14</a></sup></li>
+<li>The &quot;Superseded-By&quot; header is replaced with the &quot;Proposed-Replacement&quot; header.</li>
+<li>The &quot;Post-History&quot; header is replaced with the &quot;Discussion&quot; header.</li>
+<li>The &quot;Discussions-To&quot; header is dropped as it has never been used in any BIP.</li>
+<li>Introduce Deputies and optional &quot;Deputies&quot; header.</li>
+<li>The BIP &quot;Title&quot; header may now contain up to 50 characters (increased from 44 in BIP 2).</li>
+<li>The &quot;Layer&quot; header is optional for Specification BIPs or Informational BIPs, as it does not make sense for all BIPs.<sup class="footnote-reference"><a href="#layer">17</a></sup></li>
+<li>Rename the &quot;Author&quot; field to &quot;Authors&quot;.</li>
+</ul>
+<h3 id="Updates_to_Existing_BIPs_should_this_BIP_be_Activated">Updates to Existing BIPs should this BIP be Activated</h3>
+<h4 id="Previous_BIP_Process">Previous BIP Process</h4>
+<p>This BIP replaces BIP 2 as the guideline for the BIP process.</p>
+<h4 id="BIP_Types-1">BIP Types</h4>
+<p>Standards Track BIPs and eligible Informational BIPs are assigned the Specification type. The Standards Track type is
+considered obsolete. Specification BIPs use the Layer header rules specified in <a href="https://bips.dev/3/BIP-0123.mediawiki">BIP 123</a>.</p>
+<h4 id="Comments">Comments</h4>
+<p>The Comments-URI and Comment-Summary headers should be removed from all BIPs whose comment page in the wiki is empty.
+For existing BIPs whose comment page has content, BIP Authors may keep both headers or remove both headers at their
+discretion. It is recommended that existing wiki pages are not modified due to the activation of this BIP.</p>
+<h4 id="Status_Field">Status Field</h4>
+<p>After the activation of this BIP, the Status fields of existing BIPs that do not fit the specification in this BIP are
+updated to the corresponding values prescribed in this BIP. BIPs that have had Draft status for extended periods will be
+moved to Complete or Deployed as applicable in collaboration with their authors. The authors of incomplete Draft BIPs
+will be contacted to learn whether the BIPs are still in progress toward Complete, and will otherwise be updated to
+Closed as described in the <a href="https://bips.dev/3/#workflow">Workflow</a> section above.</p>
+<h4 id="Authors_Header">Authors Header</h4>
+<p>The Author header is replaced with the Authors header in all BIPs.</p>
+<h4 id="Discussion_Header">Discussion Header</h4>
+<p>The Post-History header is replaced with the Discussion header in all BIPs.</p>
+<h4 id="Proposed-Replacement_Header">Proposed-Replacement Header</h4>
+<p>The Superseded-By header is replaced with the Proposed-Replacement header in all BIPs.</p>
+<h4 id="Licenses">Licenses</h4>
+<p>The licenses of existing BIPs remain untouched.</p>
+<h2 id="Copyright">Copyright</h2>
+<p>This BIP is licensed under the <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-2-Clause">BSD-2-Clause License</a>. Some content was
+adapted from <a href="https://bips.dev/3/BIP-0002.mediawiki">BIP 2</a> which was also licensed under the BSD-2-Clause.</p>
+<h2 id="Related_Work">Related Work</h2>
+<ul>
+<li><a href="https://bips.dev/3/bip-0001.mediawiki">BIP 1: BIP Purpose and Guidelines</a></li>
+<li><a href="https://bips.dev/3/BIP-0002.mediawiki">BIP 2: BIP Process, revised</a></li>
+<li><a href="https://bips.dev/3/BIP-0123.mediawiki">BIP 123: BIP Classification</a></li>
+<li><a rel="noopener" target="_blank" href="https://datatracker.ietf.org/doc/html/rfc822">RFC 822: Standard for ARPA Internet Text Messages</a></li>
+<li><a rel="noopener" target="_blank" href="https://datatracker.ietf.org/doc/html/rfc2223">RFC 2223: Instructions to RFC Authors</a></li>
+<li><a rel="noopener" target="_blank" href="https://tools.ietf.org/html/rfc7282">RFC 7282: On Consensus and Humming in the IETF</a></li>
+</ul>
+<h2 id="Acknowledgements">Acknowledgements</h2>
+<p>We thank AJ Towns, Jon Atack, Jonas Nick, Larry Ruane, Pieter Wuille, Tim Ruffing, and others for their review,
+feedback, and helpful comments.</p>
+<h2 id="Rationale">Rationale</h2>
+<div class="footnote-definition" id="capitalization"><sup class="footnote-definition-label">1</sup>
+<p><strong>When is Bitcoin capitalized and when is it lowercased?</strong><br />
+This document uses capitalized Bitcoin to refer to the system, network and abstract concept, and only uses lowercase
+bitcoin to refer to units of the bitcoin currency.
+<sup class="footnote-reference"><a href="#standard-track">16</a></sup>: <strong>Why was the Specification type introduced?</strong><br />
+The definitions of Informational and Standards Track BIPs caused some confusion in the past. Due to Informational
+BIPs being described as optional, Standards Track BIPs were sometimes misunderstood to be generally recommended.
+This has led to a number of BIPs that propose new features affecting interoperability of implementations being
+assigned the Informational type. The situation is remedied by introducing a new <em>Specification BIP</em> type that is
+inclusive of any BIPs that can be implemented and affect interoperability of Bitcoin applications. Since all BIPs
+are individual recommendations by the authors (even if some may eventually achieve endorsement by the majority of
+the community), the prior reminder that Informational BIPs are optional is dropped.
+<sup class="footnote-reference"><a href="#comments">14</a></sup>: <strong>Why were comments, Comments-URI, and Comment-Summary removed from the process?</strong><br />
+The comments feature saw insignificant adoption. Few BIPs received any comments and barely any more than two with
+only a handful of contributors commenting at all. This led to many situations in which one or two comments ended up
+dominating the comment summary. While some of those comments may have been representative of broadly held opinions,
+it also overstated the importance of individual comments directly in the Preamble of BIPs. As collecting feedback in
+this accessible fashion failed, the new process puts the onus back on the audience to make their own evaluation.
+<sup class="footnote-reference"><a href="#layer">17</a></sup>: <strong>Why is the layer header now permitted for other BIP types?</strong><br />
+The layer header had already been used by many Informational BIPs, so the rule that it is only available to
+Standards Track BIPs is dropped.
+<sup class="footnote-reference"><a href="#OtherImplementations">12</a></sup>: <strong>What is the issue with &quot;Other Implementations&quot; sections in BIPs?</strong><br />
+In the past, some BIPs had &quot;Other Implementations&quot; sections that caused frequent change requests to existing BIPs.
+This put an onus on the BIP authors, and frequently led to lingering pull requests due to the corresponding BIPs’
+authors no longer participating in the process. Many of these alternative implementations eventually became
+unmaintained or were low-quality to begin with. Therefore, &quot;Other Implementations&quot; sections are heavily discouraged.
+<sup class="footnote-reference"><a href="#complete">5</a></sup>: <strong>Why was the Proposed status renamed to Complete?</strong><br />
+Some reviewers of this BIP raised that in a process which outlines the workflow of Bitcoin Improvement <em>Proposals</em>
+using &quot;Proposed&quot; as a status field value was overloading the term: clearly <em>proposals</em> are proposed at all stages of
+the process. &quot;Complete&quot; expresses that the authors have concluded planned work on all parts of the proposal and are
+ready to recommend their BIP for adoption. The term &quot;ready&quot; was also considered, but considered too subjective.
+<sup class="footnote-reference"><a href="#rejection">15</a></sup>: <strong>Why can proposals remain in Draft or Complete indefinitely?</strong><br />
+The automatic 3-year timeout of BIPs has led to some disagreement in the past and seems unnecessary in cases where
+the authors remain active in the community and still consider their idea worth pursuing. On the other hand,
+Draft proposals that appear stale may be closed after only one year, which should achieve the main goal of
+the original rule by limiting the effort and attention spent on proposals that never reach Complete.
+<sup class="footnote-reference"><a href="#closed">10</a></sup>: <strong>Why was the Closed Status introduced?</strong><br />
+The Closed Status provides value to the audience by indicating which documents are only of historical significance.
+Previously, the process had Deferred, Obsolete, Rejected, Replaced, and Withdrawn, which all meant some flavor of
+&quot;work has stopped on this.&quot; The many statuses complicated the process, may have contributed to process fatigue, and
+may have resulted in BIPs’ statuses not being maintained well. The author of this BIP feels that all of the
+aforementioned can be represented by <em>Closed</em> without significantly impacting the information quality of the
+overview table. Where the many Status variants provided minuscule additional information, the simplification is more
+valuable and the Changelog section now collects specific details.
+<sup class="footnote-reference"><a href="#acceptance">2</a></sup>: <strong>Why does the BIPs repository no longer track adoption?</strong><br />
+BIP 2 made an attempt to gather community feedback into comment summaries in BIPs directly. Given the low adoption
+and corresponding low information quality of the summaries that resulted from that feature, this BIP instead intends
+to leave the evaluation of BIPs to the audience.
+<sup class="footnote-reference"><a href="#markdown">3</a></sup>: <strong>Which flavor of Markdown is allowed?</strong><br />
+The author of this proposal has no opinion on Markdown flavors, but recommends that proposals stick to the basic
+Markdown syntax features commonly shared across Markdown dialects.
+<sup class="footnote-reference"><a href="#living-documents">9</a></sup>: <strong>Why are Process BIPs living documents?</strong><br />
+In the past years, the existing BIPs process has not always provided a clear approach to all situations. For
+example, the content of BIP 2 appears to have been penned especially with fork proposals in mind. It seems clear
+that Bitcoin development will evolve in many surprising ways in the future. Instead of mandating the effort of
+writing a new process document every time new situations arise, it seems preferable to allow the process to adapt to
+the concerns of the future in specific aspects. Therefore, Process BIPs are defined as living documents that remain
+open to amendment. If a Process BIP requires large modifications or even a complete overhaul, a new BIP should be
+preferred.
+<sup class="footnote-reference"><a href="#new-BIP">6</a></sup>: <strong>Why should the specification of an implemented BIP no longer be changed?</strong><br />
+After a Complete or Deployed BIP has been deployed by one or more implementations, breaking changes to the
+specification could lead to a situation where multiple &quot;compliant&quot; implementations fail at being interoperable,
+because they implemented different versions of the same BIP. Therefore, even changes to the specification of
+Complete BIPs should be avoided, but Deployed BIPs should never be subject to breaking changes to their
+specification.
+<sup class="footnote-reference"><a href="#settled">7</a></sup>: <strong>What is meant by a BIP being settled?</strong><br />
+Since Deployed BIPs should not be changed, a Complete BIP should only be moved to Deployed after its Specification
+has been put through its paces and changes to the BIP have stopped.
+<sup class="footnote-reference"><a href="#bip-announcements-to-list">11</a></sup>: <strong>Why are some BIP status changes announced to the mailing list?</strong><br />
+The BIPs repository does not and cannot track who might be interested in or has deployed a BIP. While concerns were
+raised that making announcements to the Bitcoin Developer Mailing List would introduce unnecessary noise, our
+rationale is that 1) moving Complete and Deployed BIPs to the Closed status will be a rare occurrence, 2) status
+updates will usually not generate a lot of discussion, 3) while the mailing list should preferably only used for
+getting review for new BIPs, it is the only channel available to us that can be consider a public announcement to
+the audience of the BIPs repository: even if the authors, implementers, or other parties interested in a BIP do not
+see the announcement themselves, they may be made aware by someone that does see it.
+<sup class="footnote-reference"><a href="#superseded-by-proposed-replacement">4</a></sup>: <strong>Why is Superseded-By replaced with Proposed-Replacement?</strong><br />
+Reviewers asked who should get to decide whether a BIP is superseded in case of a disagreement among the authors of
+the original BIP, the authors of the new BIP, the editors, or the community? This is addressed by making the
+&quot;Replaces&quot; header part of the recommendation of the authors of the new document, and replacing the &quot;Superseded-By&quot;
+header with the &quot;Proposed-Replacement&quot; header that lists any proposals that recommend replacing the original document.
+<sup class="footnote-reference"><a href="#evidence">8</a></sup>: <strong>How is evidence for advancing to Deployed evaluated?</strong><br />
+Whether evidence is deemed convincing to move a BIP to Deployed is up to the BIP Editors and Bitcoin community.
+Running a single instance of a personal fork of a software project might be rejected, while a small software project with
+dozens of users may be sufficient. The main point of the Deployed status is to indicate that changes to the BIP
+could negatively impact users of projects that have already implemented support.
+<sup class="footnote-reference"><a href="#licenses">13</a></sup>: <strong>Why were some licenses dropped?</strong><br />
+Among the 141 BIPs with licenses in the repository, only nine licenses have ever been used to license BIPs
+(although, some BIPs were made available under more than one license) and only one license has been used to license
+code:</p>
+</div>
+<pre><code>Licenses used:
+
+* BSD-2-Clause: 55
+* PD: 42
+* CC0-1.0: 23
+* BSD-3-Clause: 19
+* OPL: 5
+* CC-BY-SA-4.0: 4
+* GNU-All-Permissive: 3
+* MIT: 2
+* CC-BY-4.0: 1
+
+License-Code used:
+
+* MIT: 4
+
+The following previously acceptable licenses were retained per request of reviewers, even though they have so far
+never been used in the BIPs process:
+
+* Apache-2.0: [Apache License, version 2.0](http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0)
+* BSL-1.0: [Boost Software License, version 1.0](http:&#x2F;&#x2F;www.boost.org&#x2F;LICENSE_1_0.txt)
+
+The following previously acceptable licenses have never been used in the BIPs Process and have been dropped:
+
+* AGPL-3.0+: [GNU Affero General Public License (AGPL), version 3 or newer](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;agpl-3.0.en.html)
+* FDL-1.3: [GNU Free Documentation License, version 1.3](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;fdl-1.3.en.html)
+* GPL-2.0+: [GNU General Public License (GPL), version 2 or newer](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;old-licenses&#x2F;gpl-2.0.en.html)
+* LGPL-2.1+: [GNU Lesser General Public License (LGPL), version 2.1 or newer](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;old-licenses&#x2F;lgpl-2.1.en.html)
+
+Why are software licenses included?
+
+* Some BIPs, in particular those concerning the consensus layer, may include literal code in the BIP itself which
+  may not be available under the license terms the authors wish to use for the BIP.
+* The author of this BIP has been provided with a learned opinion indicating that software licenses are perfectly
+  acceptable for licensing &quot;human code&quot; i.e., text as well as Markdown or MediaWiki code.
+
+Why is CC-BY-SA-4.0 no longer acceptable for new BIPs?
+
+* Specification BIPs are required to have a Reference Implementation and Test Vectors to be advanced to Complete. As
+  the BIPs repository is aiming to make proposals easily adoptable, the intention is for the reference
+  implementation and test vectors to be as accessible as possible. Copyleft licenses may introduce friction here,
+  and therefore CC-BY-SA-4.0 (and the GPL-flavors) is no longer considered acceptable for new BIPs. As mentioned
+  above, existing BIPs will retain their original licensing.
+
+Why are OPL and Public Domain no longer acceptable for new BIPs?
+
+* Public domain is not universally recognised as a legitimate action, thus it is inadvisable.
+* The OPL is generally regarded as obsolete, and not a license suitable for new publications.
+</code></pre>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2025-03-21</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
