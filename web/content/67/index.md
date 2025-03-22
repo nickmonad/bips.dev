@@ -167,7 +167,7 @@ The authors wish to thank BtcDrak and Luke-Jr for their involvement & contributi
 *  <a href="https://github.com/bitpay/bitcore/blob/50a868cb8cdf2be04bb1c5bf4bcc064cc06f5888/lib/script/script.js L541" target="_blank">Bitcore</a>
 *  <a href="https://github.com/haskoin/haskoin-core/blob/b41b1deb0989334a7ead6fc993fb8b02f0c00810/haskoin-core/Network/Haskoin/Script/Parser.hs L112-L122" target="_blank">Haskoin</a> - Bitcoin implementation in Haskell
 *  <a href="https://github.com/etotheipi/BitcoinArmory/blob/268db0f3fa20c989057bd43343a43b2edbe89aeb/armoryengine/ArmoryUtils.py L1441" target="_blank">Armory</a>
-*  <a href="https://github.com/bitcoinj/bitcoinj/blob/master/core/src/main/java/org/bitcoinj/script/ScriptBuilder.java L331" target="_blank">BitcoinJ</a>
+*  <a href="https://github.com/bitcoinj/bitcoinj/blob/f7ea0b92a619800c143b0142dc70306da33119a9/core/src/main/java/org/bitcoinj/script/ScriptBuilder.java L331" target="_blank">BitcoinJ</a>
 
 
 <h2> References </h2>
