@@ -578,7 +578,7 @@ This BIP replaces BIP 2 as the guideline for the BIP process.
 #### BIP Types
 
 Standards Track BIPs and eligible Informational BIPs are assigned the Specification type. The Standards Track type is
-considered obsolete. Specification BIPs use the Layer header rules specified in [BIP 123](BIP-0123.mediawiki).
+considered obsolete. Specification BIPs use the Layer header rules specified in [BIP 123](bip-0123.mediawiki).
 
 #### Comments
 
@@ -613,13 +613,13 @@ The licenses of existing BIPs remain untouched.
 ## Copyright
 
 This BIP is licensed under the [BSD-2-Clause License](https://opensource.org/licenses/BSD-2-Clause). Some content was
-adapted from [BIP 2](BIP-0002.mediawiki) which was also licensed under the BSD-2-Clause.
+adapted from [BIP 2](bip-0002.mediawiki) which was also licensed under the BSD-2-Clause.
 
 ## Related Work
 
 - [BIP 1: BIP Purpose and Guidelines](bip-0001.mediawiki)
-- [BIP 2: BIP Process, revised](BIP-0002.mediawiki)
-- [BIP 123: BIP Classification](BIP-0123.mediawiki)
+- [BIP 2: BIP Process, revised](bip-0002.mediawiki)
+- [BIP 123: BIP Classification](bip-0123.mediawiki)
 - [RFC 822: Standard for ARPA Internet Text Messages](https://datatracker.ietf.org/doc/html/rfc822)
 - [RFC 2223: Instructions to RFC Authors](https://datatracker.ietf.org/doc/html/rfc2223)
 - [RFC 7282: On Consensus and Humming in the IETF](https://tools.ietf.org/html/rfc7282)
