@@ -193,11 +193,11 @@
 <h3> Encoding </h3>
 <p>Encoding a <strong>TxRef</strong> requires 4 or 5 pieces of data: a magic code denoting which network is being used; a version number (currently always 0); the block height of the block containing the transaction; the index of the transaction within the block; and optionally, the index of the outpoint within the transaction. Only a certain number of bits are supported for each of these values, see the following table for details.</p>
 <table><thead><tr><th></th><th>Description</th><th>Possible Data Type</th><th><strong># of Bits used</strong></th><th>Values</th></tr></thead><tbody>
-<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>Magic Code</td><td>Chain Namespacing Code</td><td>uint8</td><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td></tr>
-<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td><td>Version</td><td>For Future Use</td><td>uint8</td><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td></tr>
-<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>Block<br>Height</td><td>The Block Height of the Tx</td><td>uint32</td><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td></tr>
-<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>Transaction<br>Index</td><td>The index of the Tx inside the block</td><td>uint16, uint32</td><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td></tr>
-<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>Outpoint<br>Index</td><td>The index of the Outpoint inside the Tx</td><td>uint16, uint32</td><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td></tr>
+<tr><td>Magic Code</td><td>Chain Namespacing Code</td><td>uint8</td><td>5</td><td><strong>3</strong>: Mainnet<br><strong>4</strong>: Mainnet with Outpoint<br><strong>6</strong>: Testnet<br><strong>7</strong>: Testnet with Outpoint<br><strong>0</strong>: Regtest<br><strong>1</strong>: Regtest with Outpoint</td></tr>
+<tr><td>Version</td><td>For Future Use</td><td>uint8</td><td>1</td><td>Must be <strong>0</strong></td></tr>
+<tr><td>Block<br>Height</td><td>The Block Height of the Tx</td><td>uint32</td><td>24</td><td>Block 0 to Block 16777215</td></tr>
+<tr><td>Transaction<br>Index</td><td>The index of the Tx inside the block</td><td>uint16, uint32</td><td>15</td><td>Tx 0 to Tx 32767</td></tr>
+<tr><td>Outpoint<br>Index</td><td>The index of the Outpoint inside the Tx</td><td>uint16, uint32</td><td>15</td><td>Outpoint 0 to Outpoint 32767</td></tr>
 </tbody></table>
 <h4> Magic Notes </h4>
 <p>The magic code provides namespacing between chains:</p>
@@ -212,72 +212,72 @@
 <h4> Encoding Example </h4>
 <p>We want to encode a <strong>TxRef</strong> that refers to Transaction #1234 of Block #456789 on the Mainnet chain. We use this data in preparation for the Bech32 encoding algorithm:</p>
 <table><thead><tr><th></th><th>Decimal<br>Value</th><th>Binary<br>Value</th><th><strong># of Bits<br>used</strong></th><th>Bit Indexes and Values</th></tr></thead><tbody>
-<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>Magic<br>Code</td><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>3</td><td>00000011</td></tr>
-<tr><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td><td>Version</td><td>style=&quot;background: #DDDDDD; color: black; text-align : center;&quot;</td><td>0</td><td>00000000</td></tr>
-<tr><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>Block<br>Height</td><td>style=&quot;background: #EEDD88; color: black; text-align : center;&quot;</td><td>456789</td><td>00000110<br>11111000<br>01010101</td></tr>
-<tr><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>Transaction<br>Index</td><td>style=&quot;background: #FFAABB; color: black; text-align : center;&quot;</td><td>1234</td><td>00000100<br>11010010</td></tr>
+<tr><td>Magic<br>Code</td><td>3</td><td>00000011</td><td>5</td><td>(mc04, mc03, mc02, mc01, mc00) = (0, 0, 0, 1, 1)</td></tr>
+<tr><td>Version</td><td>0</td><td>00000000</td><td>1</td><td>(v0) = (0)</td></tr>
+<tr><td>Block<br>Height</td><td>456789</td><td>00000110<br>11111000<br>01010101</td><td>24</td><td>(bh23, bh22, bh21, bh20, bh19, bh18, bh17, bh16) = (0, 0, 0, 0, 0, 1, 1, 0)<br>(bh15, bh14, bh13, bh12, bh11, bh10, bh09, bh08) = (1, 1, 1, 1, 1, 0, 0, 0)<br>(bh07, bh06, bh05, bh04, bh03, bh02, bh01, bh00) = (0, 1, 0, 1, 0, 1, 0, 1)</td></tr>
+<tr><td>Transaction<br>Index</td><td>1234</td><td>00000100<br>11010010</td><td>15</td><td>(ti14, ti13, ti12, ti11, ti10, ti09, ti08) = (0, 0, 0, 0, 1, 0, 0)<br>(ti07, ti06, ti05, ti04, ti03, ti02, ti01, ti00) = (1, 1, 0, 1, 0, 0, 1, 0)</td></tr>
 </tbody></table>
 <p>As shown in the last column, we take the necessary bits of each binary value and copy them into nine unsigned chars illustrated in the next table. We only set the lower five bits of each unsigned char as the bech32 algorithm only uses those bits.</p>
-<p>|||style=&quot;width:2em&quot;|7|style=&quot;width:2em&quot;|6|style=&quot;width:2em&quot;|5|style=&quot;width:2em&quot;|4|style=&quot;width:2em&quot;|3|style=&quot;width:2em&quot;|2|style=&quot;width:2em&quot;|1|style=&quot;width:2em&quot;|0||Decimal<br>Value|Bech32<br>Character|
-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-||||||||||||||
-|rowspan=&quot;2&quot; | data[0]|Index|na|na|na|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc04|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc03|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc02|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc01|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc00||||
-|Value|0|0|0|0|0|0|1|1||3|r|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[1]|Index|na|na|na|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh03|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh02|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh01|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh00|style=&quot;background: #DDDDDD; color: black; text-align : center;&quot; | v0||||
-|Value|0|0|0|0|1|0|1|0||10|2|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[2]|Index|na|na|na|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh08|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh07|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh06|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh05|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh04||||
-|Value|0|0|0|0|0|1|0|1||5|9|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[3]|Index|na|na|na|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh13|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh12|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh11|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh10|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh09||||
-|Value|0|0|0|1|1|1|0|0||28|u|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[4]|Index|na|na|na|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh18|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh17|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh16|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh15|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh14||||
-|Value|0|0|0|1|1|0|1|1||27|m|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[5]|Index|na|na|na|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh23|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh22|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh21|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh20|style=&quot;background: #EEDD88; color: black; text-align : center;&quot; | bh19||||
-|Value|0|0|0|0|0|0|0|0||0|q|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[6]|Index|na|na|na|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti04|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti03|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti02|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti01|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti00||||
-|Value|0|0|0|1|0|0|1|0||18|j|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[7]|Index|na|na|na|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti09|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti08|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti07|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti06|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti05||||
-|Value|0|0|0|0|0|1|1|0||6|x|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[8]|Index|na|na|na|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti14|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti13|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti12|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti11|style=&quot;background: #FFAABB; color: black; text-align : center;&quot; | ti10||||
-|Value|0|0|0|0|0|0|0|1||1|p|</p>
+<table><thead><tr><th></th><th></th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th><th></th><th>Decimal<br>Value</th><th>Bech32<br>Character</th></tr></thead><tbody>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[0]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>mc04</td><td>mc03</td><td>mc02</td><td>mc01</td><td>mc00</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td></td><td>3</td><td>r</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[1]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>bh03</td><td>bh02</td><td>bh01</td><td>bh00</td><td>v0</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td></td><td>10</td><td>2</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[2]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>bh08</td><td>bh07</td><td>bh06</td><td>bh05</td><td>bh04</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td></td><td>5</td><td>9</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[3]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>bh13</td><td>bh12</td><td>bh11</td><td>bh10</td><td>bh09</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td></td><td>28</td><td>u</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[4]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>bh18</td><td>bh17</td><td>bh16</td><td>bh15</td><td>bh14</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td></td><td>27</td><td>m</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[5]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>bh23</td><td>bh22</td><td>bh21</td><td>bh20</td><td>bh19</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td><td>0</td><td>q</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[6]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>ti04</td><td>ti03</td><td>ti02</td><td>ti01</td><td>ti00</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td></td><td>18</td><td>j</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[7]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>ti09</td><td>ti08</td><td>ti07</td><td>ti06</td><td>ti05</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td></td><td>6</td><td>x</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[8]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>ti14</td><td>ti13</td><td>ti12</td><td>ti11</td><td>ti10</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td></td><td>1</td><td>p</td><td></td></tr>
+</tbody></table>
 <p>The Bech32 algorithm encodes the nine unsigned chars above and computes a checksum of those chars and encodes that as well--this gives a six character checksum (in this case, <strong>utt3p0</strong>) which is appended to the final <strong>TxRef</strong>. The final <strong>TxRef</strong> given is: <strong>tx1:r29u-mqjx-putt-3p0</strong> and is illustrated in the following table:</p>
 <p>TxRef character indexes and descriptions</p>
-<p>|style=&quot;width:2em&quot;|Index|style=&quot;width:2em&quot;|0|style=&quot;width:2em&quot;|1|style=&quot;width:2em&quot;|2|style=&quot;width:2em&quot;|3|style=&quot;width:2em&quot;|4|style=&quot;width:2em&quot;|5|style=&quot;width:2em&quot;|6|style=&quot;width:2em&quot;|7|style=&quot;width:2em&quot;|8|style=&quot;width:2em&quot;|9|style=&quot;width:2em&quot;|10|style=&quot;width:2em&quot;|11|style=&quot;width:2em&quot;|12|style=&quot;width:2em&quot;|13|style=&quot;width:2em&quot;|14|style=&quot;width:2em&quot;|15|style=&quot;width:2em&quot;|16|style=&quot;width:2em&quot;|17|style=&quot;width:2em&quot;|18|style=&quot;width:2em&quot;|19|style=&quot;width:2em&quot;|20|style=&quot;width:2em&quot;|21|
-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-|Char:|style=&quot;background: #BBCCEE; color: black; text-align : center;&quot; | t|style=&quot;background: #BBCCEE; color: black; text-align : center;&quot; | x|style=&quot;background: #FFCCCC; color: black; text-align : center;&quot; | 1|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | :|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | r|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | 2|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | 9|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | u|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | -|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | m|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | q|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | j|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | x|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | -|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | p|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | u|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | t|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | t|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | -|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | 3|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | p|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | 0|</p>
+<table><thead><tr><th>Index</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>21</th></tr></thead><tbody>
+<tr><td>Char:</td><td>t</td><td>x</td><td>1</td><td>:</td><td>r</td><td>2</td><td>9</td><td>u</td><td>-</td><td>m</td><td>q</td><td>j</td><td>x</td><td>-</td><td>p</td><td>u</td><td>t</td><td>t</td><td>-</td><td>3</td><td>p</td><td>0</td></tr>
+</tbody></table>
 <h4> Outpoint Index </h4>
 <p>Some uses of <strong>TxRef</strong> may want to refer to a specific outpoint of the transaction. In the previous example, since we did not specify the outpoint index, the <strong>TxRef</strong> <strong>tx1:r29u-mqjx-putt-3p0</strong> implicitly references the first (index 0) outpoint of the 1234th transaction in the 456789th block in the blockchain.</p>
 <p>If instead, for example, we want to reference the second (index 1) outpoint, we need to change the magic code from <strong>3</strong> to <strong>4</strong> and would include the following in the data to be encoded:</p>
 <table><thead><tr><th></th><th>Decimal<br>Value</th><th>Binary<br>Value</th><th><strong># of Bits<br>used</strong></th><th>Bit Indexes and Values</th></tr></thead><tbody>
-<tr><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>Magic<br>Code</td><td>style=&quot;background: #99DDFF; color: black; text-align : center;&quot;</td><td>4</td><td>00000100</td></tr>
-<tr><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>Outpoint Index</td><td>style=&quot;background: #BBCC33; color: black; text-align : center;&quot;</td><td>1</td><td>00000000 00000001</td></tr>
+<tr><td>Magic<br>Code</td><td>4</td><td>00000100</td><td>5</td><td>(mc04, mc03, mc02, mc01, mc00) = (0, 0, 1, 0, 0)</td></tr>
+<tr><td>Outpoint Index</td><td>1</td><td>00000000 00000001</td><td>15</td><td>(op14, op13, op12, op11, op10, op09, op08) = (0, 0, 0, 0, 0, 0, 0)<br>(op07, op06, op05, op04, op03, op02, op01, op00) = (0, 0, 0, 0, 0, 0, 0, 1)</td></tr>
 </tbody></table>
-<p>|||style=&quot;width:2em&quot;|7|style=&quot;width:2em&quot;|6|style=&quot;width:2em&quot;|5|style=&quot;width:2em&quot;|4|style=&quot;width:2em&quot;|3|style=&quot;width:2em&quot;|2|style=&quot;width:2em&quot;|1|style=&quot;width:2em&quot;|0||Decimal<br>Value|Bech32<br>Character|
-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-||||||||||||||
-|rowspan=&quot;2&quot; | data[0]|Index|na|na|na|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc04|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc03|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc02|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc01|style=&quot;background: #99DDFF; color: black; text-align : center;&quot; | mc00||||
-|Value|0|0|0|0|0|1|0|0||4|y|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[9]|Index|na|na|na|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op04|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op03|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op02|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op01|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op00||||
-|Value|0|0|0|0|0|0|0|1||1|p|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[10]|Index|na|na|na|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op09|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op08|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op07|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op06|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op05||||
-|Value|0|0|0|0|0|0|0|0||0|q|
-|||||||||||||
-|rowspan=&quot;2&quot; | data[11]|Index|na|na|na|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op14|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op13|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op12|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op11|style=&quot;background: #BBCC33; color: black; text-align : center;&quot; | op10||||
-|Value|0|0|0|0|0|0|0|0||0|q|</p>
+<table><thead><tr><th></th><th></th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th><th></th><th>Decimal<br>Value</th><th>Bech32<br>Character</th></tr></thead><tbody>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[0]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>mc04</td><td>mc03</td><td>mc02</td><td>mc01</td><td>mc00</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td></td><td>4</td><td>y</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[9]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>op04</td><td>op03</td><td>op02</td><td>op01</td><td>op00</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td></td><td>1</td><td>p</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[10]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>op09</td><td>op08</td><td>op07</td><td>op06</td><td>op05</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td><td>0</td><td>q</td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>data[11]</td><td>Index</td><td>na</td><td>na</td><td>na</td><td>op14</td><td>op13</td><td>op12</td><td>op11</td><td>op10</td><td></td><td></td><td></td></tr>
+<tr><td>Value</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td><td>0</td><td>q</td><td></td></tr>
+</tbody></table>
 <p>After Bech32 encoding all twelve unsigned chars above, we get the checksum: <strong>sfp2tt</strong>. The final <strong>TxRef</strong> given is: <strong>tx1:y29u-mqjx-ppqq-sfp2-tt</strong> and is illustrated in the following table:</p>
 <p>TxRef character indexes and descriptions</p>
-<p>|style=&quot;width:2em&quot;|Index|style=&quot;width:2em&quot;|0|style=&quot;width:2em&quot;|1|style=&quot;width:2em&quot;|2|style=&quot;width:2em&quot;|3|style=&quot;width:2em&quot;|4|style=&quot;width:2em&quot;|5|style=&quot;width:2em&quot;|6|style=&quot;width:2em&quot;|7|style=&quot;width:2em&quot;|8|style=&quot;width:2em&quot;|9|style=&quot;width:2em&quot;|10|style=&quot;width:2em&quot;|11|style=&quot;width:2em&quot;|12|style=&quot;width:2em&quot;|13|style=&quot;width:2em&quot;|14|style=&quot;width:2em&quot;|15|style=&quot;width:2em&quot;|16|style=&quot;width:2em&quot;|17|style=&quot;width:2em&quot;|18|style=&quot;width:2em&quot;|19|style=&quot;width:2em&quot;|20|style=&quot;width:2em&quot;|21|style=&quot;width:2em&quot;|22|style=&quot;width:2em&quot;|23|style=&quot;width:2em&quot;|24|style=&quot;width:2em&quot;|25|
-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-|Char:|style=&quot;background: #BBCCEE; color: black; text-align : center;&quot; | t|style=&quot;background: #BBCCEE; color: black; text-align : center;&quot; | x|style=&quot;background: #FFCCCC; color: black; text-align : center;&quot; | 1|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | :|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | y|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | 2|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | 9|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | u|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | -|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | m|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | q|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | j|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | x|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | -|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | p|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | p|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | q|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | q|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | -|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | s|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | f|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | p|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | 2|style=&quot;background: #CCDDAA; color: black; text-align : center;&quot; | -|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | t|style=&quot;background: #EEEEBB; color: black; text-align : center;&quot; | t|</p>
+<table><thead><tr><th>Index</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th><th>24</th><th>25</th></tr></thead><tbody>
+<tr><td>Char:</td><td>t</td><td>x</td><td>1</td><td>:</td><td>y</td><td>2</td><td>9</td><td>u</td><td>-</td><td>m</td><td>q</td><td>j</td><td>x</td><td>-</td><td>p</td><td>p</td><td>q</td><td>q</td><td>-</td><td>s</td><td>f</td><td>p</td><td>2</td><td>-</td><td>t</td><td>t</td></tr>
+</tbody></table>
 <h3> Decoding </h3>
 <p>The Bech32 spec defines 32 valid characters as its &quot;alphabet&quot;. All non-Bech32-alphabet characters present in a <strong>TxRef</strong> after the Bech32 separator character MUST be ignored/removed when parsing (except for terminating characters). We do not wish to expect the users to keep their <strong>TxRef</strong>s in good form and <strong>TxRef</strong>s may contains hyphens, colons, invisible spaces, uppercase or random characters. We expect users to copy, paste, write by-hand, write in a mix of character sets, etc. Parsers SHOULD attempt to correct for these and other common errors, reporting to the user any <strong>TxRef</strong>s that violate a proper Bech32 encoding.</p>
 <p>As of early 2021, <strong>TxRef</strong> has been in limited use for a couple of years and it is possible that there are some <strong>TxRef</strong>s in use which were created with the original specification of Bech32 before the Bech32m refinement was codified. Due to this possibility, a <strong>TxRef</strong> parser SHOULD be able to decode both Bech32m and Bech32 encoded <strong>TxRef</strong>s. In such a case, a <strong>TxRef</strong> parser SHOULD display or somehow notify the user that they are using an obsolete <strong>TxRef</strong> and that they should upgrade it to the Bech32m version. Additionally, the parser MAY also display the Bech32m version.</p>

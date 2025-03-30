@@ -343,7 +343,7 @@ A zero element filter MUST be written as one byte containing zeroes.
 This BIP allocates a new service bit:
 
 
-|NODE_COMPACT_FILTERS|style="white-space: nowrap;" | `1 << 6`|If enabled, the node MUST respond to all BIP 157 messages for filter type `0x00`|
+|NODE_COMPACT_FILTERS|`1 << 6`|If enabled, the node MUST respond to all BIP 157 messages for filter type `0x00`|
 
 
 <h2> Compatibility </h2>

@@ -59,11 +59,11 @@ The new per-input types are defined as follows:
 
 |Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><valuedata></tt>|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|
-|rowspan="2"|MuSig2 Participant Public Keys|rowspan="2"|<tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS = 0x1a</tt>|<tt><33 byte aggregate pubkey (compressed)></tt>|<tt><33 byte participant pubkey (compressed)>*</tt>|rowspan="2"||rowspan="2"||rowspan="2"| 0, 2|
+|MuSig2 Participant Public Keys|<tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS = 0x1a</tt>|<tt><33 byte aggregate pubkey (compressed)></tt>|<tt><33 byte participant pubkey (compressed)>*</tt>|||0, 2|
 |The MuSig2 aggregate public key (compressed) <ref>**Why the compressed aggregate public key instead of x-only?**|A list of the compressed public keys of the participants in the MuSig2 aggregate key in the order|
-|rowspan="2"|MuSig2 Public Nonce|rowspan="2"|<tt>PSBT_IN_MUSIG2_PUB_NONCE = 0x1b</tt>|<tt><33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted></tt>|<tt><66 byte public nonce></tt>|rowspan="2"||rowspan="2"||rowspan="2"| 0, 2|
+|MuSig2 Public Nonce|<tt>PSBT_IN_MUSIG2_PUB_NONCE = 0x1b</tt>|<tt><33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted></tt>|<tt><66 byte public nonce></tt>|||0, 2|
 |The compressed public key of the participant providing this nonce, followed by the compressed aggregate public|The public nonce produced by the <tt>NonceGen</tt> algorithm.|
-|rowspan="2"|MuSig2 Participant Partial Signature|rowspan="2"|<tt>PSBT_IN_MUSIG2_PARTIAL_SIG = 0x1c</tt>|<tt><33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted></tt>|<tt><32 byte partial signature></tt>|rowspan="2"||rowspan="2"||rowspan="2"| 0, 2|
+|MuSig2 Participant Partial Signature|<tt>PSBT_IN_MUSIG2_PARTIAL_SIG = 0x1c</tt>|<tt><33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted></tt>|<tt><32 byte partial signature></tt>|||0, 2|
 |The compressed public key of the participant providing this partial signature, followed by the|The partial signature produced by the <tt>Sign</tt> algorithm.|
 
 
@@ -72,7 +72,7 @@ The new per-output types are defined as follows:
 
 |Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><valuedata></tt>|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|
-|rowspan="2"|MuSig2 Participant Public Keys|rowspan="2"|<tt>PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS = 0x08</tt>|<tt><33 byte aggregate pubkey (compressed)></tt>|<tt><33 byte participant pubkey (compressed)>*</tt>|rowspan="2"||rowspan="2"||rowspan="2"|0, 2|
+|MuSig2 Participant Public Keys|<tt>PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS = 0x08</tt>|<tt><33 byte aggregate pubkey (compressed)></tt>|<tt><33 byte participant pubkey (compressed)>*</tt>|||0, 2|
 |The MuSig2 compressed aggregate public key from the <tt>KeyAgg</tt> algorithm. This key may or may not|A list of the compressed public keys of the participants in the MuSig2 aggregate key in the order|
 
 

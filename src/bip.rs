@@ -308,7 +308,18 @@ impl RenderContext {
                 if line.starts_with("!") {
                     let headers: Vec<&str> = line["!".len()..line.len()]
                         .split("!!")
-                        .map(|s| s.trim())
+                        .map(|s| {
+                            // edge case, see BIP 136
+                            // remove style from header
+                            let t = s.trim();
+                            if t.starts_with("style=") {
+                                if let Some((_, keep)) = t.split_once("|") {
+                                    return keep.trim();
+                                }
+                            }
+
+                            t
+                        })
                         .collect();
 
                     if headers.len() > 1 {
@@ -376,6 +387,32 @@ impl RenderContext {
                             } else {
                                 t
                             }
+                        })
+                        .map(|s| {
+                            // edge case, see BIP 136
+                            // remove any style metadata in the cell
+                            // | style="..." | A ---> A
+                            let t = s.trim();
+                            if t.starts_with("style=") {
+                                if let Some((_, keep)) = t.split_once("|") {
+                                    return keep.trim();
+                                }
+                            }
+
+                            t
+                        })
+                        .map(|s| {
+                            // edge case, see BIP 136
+                            // remove "rowspan"
+                            // | rowspan="..." | A ---> A
+                            let t = s.trim();
+                            if t.starts_with("rowspan=") {
+                                if let Some((_, keep)) = t.split_once("|") {
+                                    return keep.trim();
+                                }
+                            }
+
+                            t
                         })
                         .collect();
 
@@ -1204,6 +1241,112 @@ mod test {
             "||B|C|\n|-|-|-|\n".into(),
             "|aaa|bbb|ccc|\n".into(),
             "|aaa|bbb|ccc|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_row_style() {
+        let input = lines(
+            r#"{| class="wikitable"
+            !
+            !A
+            !B
+            !C
+            !D
+            |-
+            | style="background: #99DDFF; color: black; text-align : center;" | empty
+            |a
+            |b
+            | style="background: #99DDFF; color: black; text-align : center;" | c
+            |d
+            |-
+            | style="background: #DDDDDD; color: black; text-align : center;" | empty
+            |a
+            |b
+            | style="background: #DDDDDD; color: black; text-align : center;" | c
+            |d
+            |-
+            | style="background: #EEDD88; color: black; text-align : center;" | empty
+            |a
+            |b
+            | style="background: #EEDD88; color: black; text-align : center;" | c
+            |d
+            |-
+            | style="background: #FFAABB; color: black; text-align : center;" | empty
+            |a
+            |b
+            | style="background: #FFAABB; color: black; text-align : center;" | c
+            |d
+            |-
+            | style="background: #BBCC33; color: black; text-align : center;" | empty
+            |a
+            |b
+            | style="background: #BBCC33; color: black; text-align : center;" | c
+            |d
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "||A|B|C|D|\n|-|-|-|-|-|\n".into(),
+            "|empty|a|b|c|d|\n".into(),
+            "|empty|a|b|c|d|\n".into(),
+            "|empty|a|b|c|d|\n".into(),
+            "|empty|a|b|c|d|\n".into(),
+            "|empty|a|b|c|d|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_header_style() {
+        let input = lines(
+            r#"{| class="wikitable" style="text-align: center"
+            !style="ignore"|A
+            !style="ignore"|B
+            !style="ignore"|C
+            |-
+            |a
+            |b
+            |c
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|A|B|C|\n|-|-|-|\n".into(),
+            "|a|b|c|\n\n".into(),
+        ];
+
+        assert_eq!(run(input), expected);
+    }
+
+    #[test]
+    fn render_table_row_rowspan_ignore() {
+        let input = lines(
+            r#"{|
+            !A
+            !B
+            !C
+            |-
+            | rowspan="ignore" | a
+            |bb
+            |ccc
+            |-
+            | rowspan="ignore" | a
+            |bb
+            |ccc
+            |}"#,
+        );
+
+        let expected: Vec<String> = vec![
+            "\n".into(),
+            "|A|B|C|\n|-|-|-|\n".into(),
+            "|a|bb|ccc|\n".into(),
+            "|a|bb|ccc|\n\n".into(),
         ];
 
         assert_eq!(run(input), expected);

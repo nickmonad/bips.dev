@@ -55,10 +55,10 @@ The URI follow this form:
 Where:
 
 
-|style="text-align: center;" | Element|Required?|
+|Element|Required?|
 |-|-|
 |chain|optional|
-|rowspan="3" | type|tx|for transactions.|rowspan="3" | required|
+|type|tx|for transactions.|required|
 |block|for blocks (supports both hash or height).|
 |address|for addresses.|
 |hash|required|
