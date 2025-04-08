@@ -102,7 +102,7 @@ The algorithm _GenerateProof(a, B, r, G, m)_ is defined as:
 *  Let _C = a⋅B_.
 *  Let _t_ be the byte-wise xor of _bytes(32, a)_ and _hash<sub>BIP0374/aux</sub>(r)_.
 *  Let _m' = m if m is provided, otherwise an empty byte array_.
-*  Let _rand = hash<sub>BIP0374/nonce</sub>(t || cbytes(A) || cbytes(C) || m')_.<ref name="why_include_m_in_rand"> ** Why include the message in the rand computation?** Not including the message in the rand compution could leak _a_ if two proofs were constructed for the same _a_, _B_, and _G_ but a different message _m_ and an all-zero _r_.</ref>
+*  Let _rand = hash<sub>BIP0374/nonce</sub>(t || cbytes(A) || cbytes(C) || m')_.<ref name="why_include_m_in_rand"> ** Why include the message in the rand computation?** Not including the message in the rand computation could leak _a_ if two proofs were constructed for the same _a_, _B_, and _G_ but a different message _m_ and an all-zero _r_.</ref>
 *  Let _k = int(rand) mod n_.
 *  Fail if _k = 0_.
 *  Let _R<sub>1</sub> = k⋅G_.
