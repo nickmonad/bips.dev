@@ -145,7 +145,7 @@ Invalid descriptors
 
 
 <tt>pk()</tt>, <tt>pkh()</tt>, and <tt>sh()</tt> descriptors use the format and general operation specified in <a href="/380" target="_blank">380</a>.
-As these are a wholly new descriptors, they are not compatible with any implementation.
+As these are wholly new descriptors, they are not compatible with any implementation.
 However the scripts produced are standard scripts so existing software are likely to be familiar with them.
 
 <h2>Reference Implementation</h2>
