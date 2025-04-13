@@ -45,7 +45,7 @@ Several use cases make it desirable to expose a network node's transaction memor
 
 
 1.  The mempool message is defined as an empty message where pchCommand == "mempool"
-1.  Upon receipt of a "mempool" message, the node will respond   with an "inv" message containing MSG_TX hashes of all the transactions in the node's transaction memory pool, if any.
+1.  Upon receipt of a "mempool" message, the node will respond with an "inv" message containing MSG_TX hashes of all the transactions in the node's transaction memory pool, if any.
 1.  The typical node behavior in response to an "inv" is "getdata". However, the reference Satoshi implementation ignores requests for transaction hashes outside that which is recently relayed. To support "mempool", an implementation must extend its "getdata" message support to querying the memory pool.
 1.  Feature discovery is enabled by checking two "version" message attributes:
     1.  Protocol version >= 60002

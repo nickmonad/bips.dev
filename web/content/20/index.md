@@ -82,7 +82,7 @@ Graphical bitcoin clients SHOULD register themselves as the handler for the "bit
 
 * label: Label for that address (e.g. name of receiver)
 * address: bitcoin address
-* message: message that shown to the user after scanning the QR code
+* message: message that is shown to the user after scanning the QR code
 * size: amount of base bitcoin units (<a href=" Transfer amount/size" target="_blank">see below</a>)
 * send: used to send bitcoin, rather than to request them
 * (others): optional, for future extensions
