@@ -55,7 +55,7 @@ Several sources of malleability are known:
 
 1.  **Non-DER encoded ECDSA signatures** Right now, the Bitcoin reference client uses OpenSSL to validate signatures. As OpenSSL accepts more than serializations that strictly adhere to the DER standard, this is a source of malleability. Since v0.8.0, non-DER signatures are no longer relayed already.
 1.  **Non-push operations in scriptSig** Any sequence of script operations in scriptSig that results in the intended data pushes, but is not just a push of that data, results in an alternative transaction with the same validity.
-1.  **Push operations in scriptSig of non-standard size type** The Bitcoin scripting language has several push operators (OP_0, single-byte pushes, data pushes of up to 75 bytes, OP_PUSHDATA1, OP_PUSHDATA2, OP_PUSHDATA4). As the later ones have the same result as the former ones, they result in additional possibilities.
+1.  **Push operations in scriptSig of non-standard size type** The Bitcoin scripting language has several push operators (OP_0, single-byte pushes, data pushes of up to 75 bytes, OP_PUSHDATA1, OP_PUSHDATA2, OP_PUSHDATA4). As the latter ones have the same result as the former ones, they result in additional possibilities.
 1.  **Zero-padded number pushes** In cases where scriptPubKey opcodes use inputs that are interpreted as numbers, they can be zero padded.
 1.  **Inherent ECDSA signature malleability** ECDSA signatures themselves are already malleable: taking the negative of the number S inside (modulo the curve order) does not invalidate it.
 1.  **Superfluous scriptSig operations** Adding extra data pushes at the start of scripts, which are not consumed by the corresponding scriptPubKey, is also a source of malleability.

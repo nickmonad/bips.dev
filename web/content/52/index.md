@@ -141,7 +141,7 @@ The HeavyHash is performed in three stages:
 
 1.  Keccak hash
 1.  Matrix-vector multiplication
-1.  Keccak of the result xorred with the hashed input
+1.  Keccak of the result xored with the hashed input
 
 
 Note that the most efficient matrix-vector multiplication is performed on a

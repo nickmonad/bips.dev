@@ -245,7 +245,7 @@ It is advised to hard code the description of the well known error codes into th
 In some situation, the sender might want to pay some additional fee in the payjoin proposal.
 If such is the case, the sender must use both <a href="#optional-params" target="_blank">optional parameters</a> `additionalfeeoutputindex=` and `maxadditionalfeecontribution=` to indicate which output and how much the receiver can subtract fee.
 
-There is several cases where a fee output is useful:
+There are several cases where a fee output is useful:
 
 *  The sender's original transaction's fee rate is at the minimum accepted by the network, aka `minimum relay transaction fee rate`, which is typically 1 satoshi per vbyte.
 
@@ -327,7 +327,7 @@ It also allows the receiver to pay the fee for batching adding his own outputs.
 <h2>Rationale</h2>
 
 
-There is several consequences of our proposal:
+There are several consequences of our proposal:
 
 *  The receiver can bump the fee of the original transaction.
 *  The receiver can modify the outputs of the original PSBT.
@@ -383,7 +383,7 @@ On top of this the receiver can poison analysis by randomly faking a round amoun
 
 
 Unless disallowed by the sender explicitly via `disableoutputsubstitution=true` or by the BIP21 URL via the query parameter `pjos=0`, the receiver is free to decrease the amount or change the scriptPubKey output paying to himself.
-Note that if payment output substitution is disallowed, the reveiver can still increase the amount of the output. (See <a href="#reference-impl" target="_blank">the reference implementation</a>)
+Note that if payment output substitution is disallowed, the receiver can still increase the amount of the output. (See <a href="#reference-impl" target="_blank">the reference implementation</a>)
 
 For example, if the sender's scriptPubKey type is P2WPKH while the receiver's payment output in the original PSBT is P2SH, then the receiver can substitute the payment output to be P2WPKH to match the sender's scriptPubKey type.
 

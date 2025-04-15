@@ -306,7 +306,7 @@ If a participant to a transaction would like to inform the other party that a pr
 
 <h3>Transport Layer Communication Errors</h3>
 
-Communication errors MUST be communicated to the party that initiated the communication via the communication layer's existing error messaging faciltiies. In the case of TLS-protected HTTP, this SHOULD be done through standard HTTP Status Code messaging (<a href="https://tools.ietf.org/html/rfc7231" target="_blank">RFC 7231 Section 6</a>).
+Communication errors MUST be communicated to the party that initiated the communication via the communication layer's existing error messaging facilities. In the case of TLS-protected HTTP, this SHOULD be done through standard HTTP Status Code messaging (<a href="https://tools.ietf.org/html/rfc7231" target="_blank">RFC 7231 Section 6</a>).
 
 <h2>Extended Payment Protocol Process Details</h2>
 
