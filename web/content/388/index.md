@@ -400,6 +400,8 @@ Wallet policies are implemented in
 *  the <a href="https://github.com/LedgerHQ/app-bitcoin-new" target="_blank">Ledger bitcoin application</a> since version 2.1.0;
 *  the <a href="https://github.com/digitalbitbox/bitbox02-firmware" target="_blank">BitBox02 firmware</a> since version v9.15.0;
 *  <a href="https://github.com/Blockstream/Jade" target="_blank">Blockstream Jade</a> since version v1.0.24, via <a href="https://github.com/ElementsProject/libwally-core" target="_blank">libwally-core</a> v1.0.0.
+*  <a href="https://github.com/btcpayserver/btcpayserver" target="_blank">BTCPay Server</a> from version <a href="https://github.com/btcpayserver/btcpayserver/pull/6684" target="_blank">v2.1.1</a>. (Currently only a limited subset of singlesig and multisig policies)
+*  <a href="https://github.com/MetacoSA/NBitcoin/" target="_blank">NBitcoin</a> through <tt>Miniscript.Parse</tt>.
 
 
 For development and testing purposes, we provide a <a href="https://github.com/bitcoin/bips/blob/master/bip-0388/wallet_policies.py" target="_blank">Python 3.7 reference implementation</a> of simple classes to handle wallet policies, and the conversion to/from output script descriptors.
