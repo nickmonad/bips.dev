@@ -157,7 +157,7 @@ byte is the most significant.</p>
 <p>We assume a single BIP32 master root key. This specification is not concerned with how this was derived (e.g. directly or via a mnemonic scheme such as BIP39).</p>
 <p>For each application that requires its own wallet, a unique private key is derived from the BIP32 master root key using a fully hardened derivation path. The resulting private key (k) is then processed with HMAC-SHA512, where the key is &quot;bip-entropy-from-k&quot;, and the message payload is the private key k: <code>HMAC-SHA512(key=&quot;bip-entropy-from-k&quot;, msg=k)</code>
 <ref name="hmac-sha512">
-The reason for running the derived key through HMAC-SHA512 and truncating the result as necessary is to prevent leakage of the parent tree should the derived key (<em>k</em>) be compromised. While the specification requires the use of hardended key derivation which would prevent this, we cannot enforce hardened derivation, so this method ensures the derived entropy is hardened. Also, from a semantic point of view, since the purpose is to derive entropy and not a private key, we are required to transform the child key. This is done out of an abundance of caution, in order to ward off unwanted side effects should <em>k</em> be used for a dual purpose, including as a nonce <em>hash(k)</em>, where undesirable and unforeseen interactions could occur.
+The reason for running the derived key through HMAC-SHA512 and truncating the result as necessary is to prevent leakage of the parent tree should the derived key (<em>k</em>) be compromised. While the specification requires the use of hardened key derivation which would prevent this, we cannot enforce hardened derivation, so this method ensures the derived entropy is hardened. Also, from a semantic point of view, since the purpose is to derive entropy and not a private key, we are required to transform the child key. This is done out of an abundance of caution, in order to ward off unwanted side effects should <em>k</em> be used for a dual purpose, including as a nonce <em>hash(k)</em>, where undesirable and unforeseen interactions could occur.
 </ref>.
 The result produces 512 bits of entropy. Each application SHOULD use up to the required number of bits necessary for their operation, and truncate the rest.</p>
 <p>The HMAC-SHA512 function is specified in <a href="https://tools.ietf.org/html/rfc4231" target="_blank">RFC 4231</a>.</p>
@@ -485,7 +485,7 @@ move on to the next one. Repeat as needed until all rolls are complete.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-04-28</p>
+                    <p class="font-bold">2025-04-29</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

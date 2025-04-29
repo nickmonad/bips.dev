@@ -199,7 +199,7 @@ When initiating communication, the version field of the first message SHOULD be 
 
 <h3>EncryptedProtocolMessage</h3>
 
-The **EncryptedProtocolMessage** message is an encapsualting wrapper for any Payment Protocol message. It allows two-way, authenticated and encrypted communication of Payment Protocol messages in order to keep their contents secret. The message also includes a status code and status message that is used for error communication such that the protocol does not rely on transport-layer error handling.
+The **EncryptedProtocolMessage** message is an encapsulating wrapper for any Payment Protocol message. It allows two-way, authenticated and encrypted communication of Payment Protocol messages in order to keep their contents secret. The message also includes a status code and status message that is used for error communication such that the protocol does not rely on transport-layer error handling.
 ```
 message EncryptedProtocolMessage {
     required uint64 version = 1 [default = 1];

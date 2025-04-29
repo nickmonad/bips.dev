@@ -132,7 +132,7 @@
 </code></pre>
 <h2>Abstract</h2>
 <p>A general approach to bitcoin contracts is to fully enumerate the possible spending conditions and then program verification of these conditions into a single script.
-At redemption, the spending condition used is explicitly selected, e.g. by pushing a value on the witness stack which cascades through a series if if/else constructs.</p>
+At redemption, the spending condition used is explicitly selected, e.g. by pushing a value on the witness stack that cascades through a series of if/else constructs.</p>
 <p>This approach has significant downsides, such as requiring all program pathways to be visible in the scriptPubKey or redeem script, even those which are not used at validation.
 This wastes space on the block chain, restricts the size of possible scripts due to push limits, and impacts both privacy and fungibility as details of the contract can often be specific to the user.</p>
 <p>This BIP proposes a new soft-fork upgradeable opcode, MERKLEBRANCHVERIFY, which allows script writers to commit to a set of data elements and have one or more of these elements be provided at redemption without having to reveal the entire set.
@@ -169,7 +169,7 @@ With Merkle commitments to policy these size and runtime limitations constrain t
 <p>The MERKLEBRANCHVERIFY opcode uses fast Merkle hash trees as specified by BIP98[1] rather than the construct used by Satoshi for committing transactions to the block header as the later has a known vulnerability relating to duplicate entries that introduces a source of malleability to downstream protocols[4].
 A source of malleability in Merkle proofs could potentially lead to spend vulnerabilities in protocols that use MERKLEBRANCHVERIFY.
 For example, a compact 2-of-N policy could be written by using MERKLEBRANCHVERIFY to prove that two keys are extracted from the same tree, one at a time, then checking the proofs for bitwise equality to make sure the same entry wasn't used twice.
-With the vulnerable Merkle tree implementation there are privledged positions in unbalanced Merkle trees that allow multiple proofs to be constructed for the same, single entry.</p>
+With the vulnerable Merkle tree implementation there are privileged positions in unbalanced Merkle trees that allow multiple proofs to be constructed for the same, single entry.</p>
 <p>BIP141 (Segregated Witness)[3] provides support for a powerful form of script upgrades called script versioning, which is able to achieve the sort of upgrades which would previously have been hard-forks.
 If script versioning were used for deployment then MERKLEBRANCHVERIFY could be written to consume its inputs, which would provide a small 2-byte savings for many anticipated use cases.
 However the more familiar NOP-expansion soft-fork mechanism used by BIP65 (CHECKLOCKTIMEVERIFY)[5] and BIP112 (CHECKSEQUENCEVERIFY)[6] was chosen over script versioning for the following two reasons:</p>
@@ -227,7 +227,7 @@ When the honeypot is claimed, the (previous) owner of the coins can tell which s
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-04-28</p>
+                    <p class="font-bold">2025-04-29</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

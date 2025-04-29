@@ -158,7 +158,7 @@
 <p>Should the receiver reject a transaction, it should not attempt to propagate it on the network. However it is important for the sender to be aware that the receiver <em>could</em> at any time (regardless of which error was given) send this transaction. The client should therefore assume the receiver will, and act accordingly (either retry with adjustments or just propagate the transaction). It is imperative that the sender never finds themselves in a situation where two payments to the sender could be valid.</p>
 <h3> Contributed Input Choice </h3>
 <p>The receiver must add at least one input to the transaction (the &quot;contributed inputs&quot;). If the receiver has no inputs, it should use a 500 internal server error, so the client can send the transaction as per normal (or try again later). Its generally advised to only add a single contributed input, however they are circumstances where adding more than a single input can be useful.</p>
-<p>To prevent an attack where a receiver is continually sent variations of the same transaction to enumerate the receivers utxo set, it is essential that the receiver always returns the same contributed inputs when it's seen the same inputs.</p>
+<p>To prevent an attack where a receiver is continually sent variations of the same transaction to enumerate the receiver's utxo set, it is essential that the receiver always returns the same contributed inputs when it's seen the same inputs.</p>
 <p>It is strongly preferable that the receiver makes an effort to pick a contributed input of the same type as the other transaction inputs if possible.</p>
 <h3> Output Adjustment </h3>
 <p>After adding inputs to the transaction, the receiver generally will want to adjust the output that pays himself by increasing it by the sum of the contributed input amounts (minus any fees he wants to contribute). However the only strict requirement is that the receiver <em>must never</em> remove inputs, and <em>must not</em> ever decrease any output amount.</p>
@@ -172,7 +172,7 @@
 <li>All outputs from the template transaction exist in the partial transaction, except they are allowed to be reordered and have their amounts increased (but <em>never</em> decreased)</li>
 </ul>
 <h3> Creating Final Transaction </h3>
-<p>After validating the partial transaction, the sender signs all its inputs to create what is now the final transaction. It is important that the sender is careful to not be tricked by the receiver into signing other inputs it owns. The sender must only sign inputs that existed in the template transaction. If the sender is not careful the receiver may &quot;contribute&quot; inputs that are actually owned with by the sender, with the hope the sender blindly signs everything.</p>
+<p>After validating the partial transaction, the sender signs all its inputs to create what is now the final transaction. It is important that the sender is careful to not be tricked by the receiver into signing other inputs it owns. The sender must only sign inputs that existed in the template transaction. If the sender is not careful the receiver may &quot;contribute&quot; inputs that are actually owned by the sender, with the hope the sender blindly signs everything.</p>
 <h3> Transaction Publishing </h3>
 <p>Once the final transaction is created, the sender should publish it directly onto the bitcoin network. If the sender does not do this after a reasonable time (e.g. 1 minute), the receiver should publish the template transaction as an important anti-spy/anti-DoS tactic . The sender may also choose to publish the template transaction instead of the final transaction if they believe the receiver to have unreasonably lowered the feerate of the transaction (i.e. increased the size of the transaction, but not the feerate enough). And both parties can consider publishing the template transaction even after the finalized transaction is on the network (taking advantage of replace-by-fee) if the final transaction is not confirming and the template transaction has more fees.</p>
 <h3> Implementation Notes </h3>
@@ -200,7 +200,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-04-28</p>
+                    <p class="font-bold">2025-04-29</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

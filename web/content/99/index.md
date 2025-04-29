@@ -170,7 +170,7 @@ Fundamental disagreements and controversies are part of social
 systems, like the one defined as the human participants in the Bitcoin
 network. Without judging the motivation of the rule discrepancies or
 what rules were in place first, we're defining schism[1] hardforks as
-those in which - for whatever reason - users are consiously going to validate 2
+those in which - for whatever reason - users are consciously going to validate 2
 different sets of consensus rules. Since they will validate different
 rulesets, they will end up following 2 different chains for at least
 some time, maybe forever.
@@ -179,7 +179,7 @@ One possible result observed in the past[non_proportional_inflatacoin_fork]
 is that one of the chains rapidly disappears, but nothing indicates
 that this must always be the case.
 
-While 2 chains cohexist, they can be considered two different
+While 2 chains coexist, they can be considered two different
 currencies.
 We could say that bitcoin becomes bitcoinA and bitcoinB. The implications for market
 capitalization are completely unpredictable,
@@ -384,7 +384,7 @@ worth of blocks).
 
 [3] https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki
 
-[4] https://github.com/bitcoin/bitcoin/compare/0.11...jtimon:hardfork-timewarp-0.11
+[4] https://github.com/jtimon/bitcoin/tree/hardfork-timewarp-0.11
 
 [5] Original references:
 https://bitcointalk.org/index.php?topic=114751.0

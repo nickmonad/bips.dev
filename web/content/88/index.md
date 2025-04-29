@@ -252,7 +252,7 @@ There is a discussion on path templating for bitcoin script descriptors at https
 
 Its representation after parsing can be (using Python syntax, ignoring full/partial distinction):
 ```
-    [[(2147483692, 2147483692), (2147483697, 2147483697), (2147483732, 2147483732)),
+    [[(2147483692, 2147483692), (2147483697, 2147483697), (2147483732, 2147483732)],
      [(2147483648, 2147483648)],
      [(2147483648, 2147483648)],
      [(0, 1)],

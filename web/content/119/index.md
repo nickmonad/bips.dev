@@ -410,7 +410,7 @@ OP_CHECKTEMPLATEVERIFY is not subject to this sort of vulnerability as the
 hashes are effectively tagged externally, that is, by OP_CHECKTEMPLATEVERIFY
 itself and therefore cannot be confused for another hash.
 
-It would be a conservative design decisison to make it a tagged hash even if
+It would be a conservative design decision to make it a tagged hash even if
 there was no obvious benefit and no cost. However, in the future, if OP_CAT were
 to be introduced to Bitcoin, it would make programs which dynamically build
 OP_CHECKTEMPLATEVERIFY hashes less space-efficient. Therefore, bare untagged hashes
@@ -521,7 +521,7 @@ from the leaves of the CHECKTEMPLATEVERIFY tree.
 
 Key-reuse with CHECKTEMPLATEVERIFY may be used as a form of "forwarding address contract".
 A forwarding address is an address which can automatically execute in a predefined way.
-For example, a exchange's hot wallet might use an address which can automatically be moved to a cold
+For example, an exchange's hot wallet might use an address which can automatically be moved to a cold
 storage address after a relative timeout.
 
 The issue is that reusing addresses in this way can lead to loss of funds.
@@ -726,7 +726,7 @@ like fragments in their program as the scriptSig commitment creates a hash cycle
 * <a href="https://bitcoinops.org/en/newsletters/2019/05/29/" target="_blank">Optech Newsletter Covering OP_CHECKOUTPUTSHASHVERIFY</a>
 * <a href="https://cyber.stanford.edu/sites/g/files/sbiybj9936/f/jeremyrubin.pdf" target="_blank">Structuring Multi Transaction Contracts in Bitcoin</a>
 * <a href="https://github.com/jeremyrubin/lazuli" target="_blank">Lazuli Notes (ECDSA based N-of-N Signatures for Certified Post-Dated UTXOs)</a>
-* <a href="https://fc16.ifca.ai/bitcoin/papers/MES16.pdf" target="_blank">Bitcoin Covenants</a>
+* <a href="https://web.archive.org/web/20220203124718/https://fc16.ifca.ai/bitcoin/papers/MES16.pdf" target="_blank">Bitcoin Covenants</a>
 * <a href="https://bitcointalk.org/index.php?topic=278122.0" target="_blank">CoinCovenants using SCIP signatures, an amusingly bad idea.</a>
 * <a href="https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf" target="_blank">Enhancing Bitcoin Transactions with Covenants</a>
 * <a href="https://github.com/jamesob/simple-ctv-vault" target="_blank">Simple CTV Vaults</a>

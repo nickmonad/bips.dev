@@ -47,7 +47,7 @@ This BIP is licensed under the 2-clause BSD license.
 
 
 Tor v3 hidden services are part of the stable release of Tor since version 0.3.2.9. They have
-various advantages compared to the old hidden services, among which better encryption and privacy
+various advantages compared to the old hidden services, among which are better encryption and privacy
 <sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.
 These services have 256 bit addresses and thus do not fit in the existing `addr` message, which encapsulates onion addresses in OnionCat IPv6 addresses.
 

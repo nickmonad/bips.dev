@@ -256,7 +256,7 @@ final branch of above to ensure Bob cannot spend the output until after both
 the timeout is complete and Alice has had time to reveal the revocation
 secret.
 
-See the <a href="https://github.com/ElementsProject/lightning/blob/master/doc/deployable-lightning.pdf" target="_blank">Deployable Lightning</a> paper.
+See the <a href="https://github.com/ElementsProject/lightning/blob/master/doc/miscellaneous/deployable-lightning.pdf" target="_blank">Deployable Lightning</a> paper.
 
 
 <h4>2-Way Pegged Sidechains</h4>
@@ -433,7 +433,7 @@ Thanks to Eric Lombrozo and Anthony Towns for contributing example use cases.
 
 <a href="http://lightning.network/lightning-network-paper.pdf" target="_blank">Lightning Network</a>
 
-<a href="https://github.com/ElementsProject/lightning/blob/master/doc/deployable-lightning.pdf" target="_blank">Deployable Lightning</a>
+<a href="https://github.com/ElementsProject/lightning/blob/master/doc/miscellaneous/deployable-lightning.pdf" target="_blank">Deployable Lightning</a>
 
 <a href="http://diyhpl.us/diyhpluswiki/transcripts/sf-bitcoin-meetup/2015-02-23-scaling-bitcoin-to-billions-of-transactions-per-day/" target="_blank">Scaling Bitcoin to Billions of Transactions Per Day</a>
 

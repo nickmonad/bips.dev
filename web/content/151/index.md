@@ -114,7 +114,7 @@ The chacha20-poly1305@openssh.com specified and defined by openssh [5] combines 
 
 `K_2` must be used in conjunction with poly1305 to build an AEAD.
 
-Optimized implementations of ChaCha20-Poly1305 are very fast in general, therefore it is very likely that encrypted messages require less CPU cycles per byte then the current unencrypted p2p message format. A quick analysis by Pieter Wuille of the current _standard implementations_ has shown that SHA256 requires more CPU cycles per byte then ChaCha20 & Poly1304.
+Optimized implementations of ChaCha20-Poly1305 are very fast in general, therefore it is very likely that encrypted messages require less CPU cycles per byte than the current unencrypted p2p message format. A quick analysis by Pieter Wuille of the current _standard implementations_ has shown that SHA256 requires more CPU cycles per byte than ChaCha20 & Poly1304.
 
 <h3> The <code>encack</code> message type </h3>
 
