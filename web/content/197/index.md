@@ -194,7 +194,7 @@ As this is a new standard for collateralized debt, there is no need for backward
 <h2>Implementation</h2>
 
 
-https://github.com/AtomicLoans/chainabstractionlayer/blob/bitcoin-collateral-provider/src/providers/bitcoin/BitcoinCollateralProvider.js
+https://github.com/AtomicLoans/chainabstractionlayer/blob/dev/packages/bitcoin-collateral-provider/lib/BitcoinCollateralProvider.js
 
 <h2>Copyright</h2>
 
