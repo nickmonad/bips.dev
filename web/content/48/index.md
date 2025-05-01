@@ -127,17 +127,20 @@ Hardened derivation is used at this level.
 <h3>Script</h3>
 
 
-This level splits the key space into two separate `script_type`(s). To provide
+This level splits the key space into three separate `script_type`(s). To provide
 forward compatibility for future script types this specification can be easily extended.
 
-Currently the only script types covered by this BIP are Native Segwit (p2wsh) and
-Nested Segwit (p2sh-p2wsh).
+Currently the only script types covered by this BIP are Native Segwit (p2wsh),
+Nested Segwit (p2sh-p2wsh), and Taproot (p2tr).
 
 The following path represents Nested Segwit (p2sh-p2wsh) mainnet, account 0:
 `1'`: Nested Segwit (p2sh-p2wsh) `m/48'/0'/0'/1'`</br>
 
 The following path represents Native Segwit (p2wsh) mainnet, account 0:
 `2'`: Native Segwit (p2wsh) `m/48'/0'/0'/2'`</br>
+
+The following path represents Taproot (p2tr) mainnet, account 0:
+`3'`: Taproot (p2tr) `m/48'/0'/0'/3'`</br>
 
 The recommended default for wallets is pay to witness script hash `m/48'/0'/0'/2'`.
 
@@ -183,6 +186,7 @@ Public derivation is used at this level.
 |testnet|second|p2wsh|external|second|m / 48' / 1' / 1' / 2' / 0 / 1|
 |testnet|second|p2wsh|change|first|m / 48' / 1' / 1' / 2' / 1 / 0|
 |testnet|second|p2wsh|change|second|m / 48' / 1' / 1' / 2' / 1 / 1|
+|testnet|first|p2tr|external|first|m / 48' / 1' / 0' / 3' / 0 / 0|
 
 
 
