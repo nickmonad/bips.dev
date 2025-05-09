@@ -172,12 +172,14 @@ Public derivation is used at this level.
 
 |network|account|script|chain|address|path|
 |-|-|-|-|-|-|
+|mainnet|first|p2sh-p2wsh|external|first|m / 48' / 0' / 0' / 1' / 0 / 0|
 |mainnet|first|p2wsh|external|first|m / 48' / 0' / 0' / 2' / 0 / 0|
 |mainnet|first|p2wsh|external|second|m / 48' / 0' / 0' / 2' / 0 / 1|
 |mainnet|first|p2wsh|change|first|m / 48' / 0' / 0' / 2' / 1 / 0|
 |mainnet|first|p2wsh|change|second|m / 48' / 0' / 0' / 2' / 1 / 1|
 |mainnet|second|p2wsh|external|first|m / 48' / 0' / 1' / 2' / 0 / 0|
 |mainnet|second|p2wsh|external|second|m / 48' / 0' / 1' / 2' / 0 / 1|
+|mainnet|first|p2tr|external|first|m / 48' / 0' / 0' / 3' / 0 / 0|
 |testnet|first|p2sh-p2wsh|external|first|m / 48' / 1' / 0' / 1' / 0 / 0|
 |testnet|first|p2wsh|external|second|m / 48' / 1' / 0' / 2' / 0 / 1|
 |testnet|first|p2wsh|change|first|m / 48' / 1' / 0' / 2' / 1 / 0|
