@@ -52,7 +52,7 @@ Key tweaking is a procedure for creating a cryptographic commitment to a
 message using elliptic curve properties. The procedure uses the discrete log
 problem (DLP) to commit to an extra-transaction message. This is done by adding
 to a public key (for which the output owner knows the corresponding private key)
-a hash of the message multiplied on the generator point G of the elliptic curve.
+a hash of the message multiplied by the generator point G of the elliptic curve.
 This produces a tweaked public key containing the commitment. Later, in order
 to spend an output containing the P2C commitment, the same commitment should be
 added to the corresponding private key.
@@ -146,7 +146,7 @@ public keys:
 - P2PKH,
 - P2SH,
 - witness v0 P2WPKH and P2WSH,
-- nested witness v0 P2WPKH-P2SH and P2WSH-P2SH,
+- nested witness v0 P2WPKH-P2SH and P2WSH-P2SH
 
 Post-0 witness versions, including taproot outputs and future witness versions,
 may not be supported or covered by this BIP and may require the addition of new
@@ -176,21 +176,16 @@ TBD
 <h2>References</h2>
 
 
-[1] Ilja Gerhardt, Timo Hanke. Homomorphic Payment Addresses and the
-```
-    Pay-to-Contract Protocol. arXiv:1212.3257 \[cs.CR\]
-    <https://arxiv.org/pdf/1212.3257.pdf>
-[2] Eternity Wall's "sign-to-contract" article.
-    <https://blog.eternitywall.com/2018/04/13/sign-to-contract/>
-[3] Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed
-    Timestamping with Bitcoin.
-    <https://petertodd.org/2016/opentimestamps-announcement>
-[4] Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain
-    Innovations with Pegged Sidechains (commit5620e43). Appendix A.
-    <https://blockstream.com/sidechains.pdf>;.
-[5] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. Key
-    tweaking: collision- resistant elliptic curve-based commitments.
-    LNPBP-1 Standard.
-    <https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md>
-[6] Peter Todd. Single-use-seals. LNPBP-8 Standard.
-    <https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0008.md>
+[1] Ilja Gerhardt, Timo Hanke. _Homomorphic Payment Addresses and the Pay-to-Contract Protocol._ arXiv:1212.3257 [cs.CR]. <a href="https://arxiv.org/pdf/1212.3257.pdf" target="_blank">arxiv.org/pdf/1212.3257.pdf</a>
+
+[2] Eternity Wall. _Sign-to-contract._ <a href="https://blog.eternitywall.com/2018/04/13/sign-to-contract/" target="_blank">blog.eternitywall.com</a>
+
+[3] Peter Todd. _OpenTimestamps: Scalable, Trust-Minimized, Distributed Timestamping with Bitcoin._ <a href="https://petertodd.org/2016/opentimestamps-announcement" target="_blank">petertodd.org</a>
+
+[4] Adam Back, Matt Corallo, Luke Dashjr, et al. _Enabling Blockchain Innovations with Pegged Sidechains (commit5620e43). Appendix A._ <a href="https://blockstream.com/sidechains.pdf" target="_blank">blockstream.com/sidechains.pdf</a>
+
+[5] Maxim Orlovsky, Rene Pickhardt, Federico Tenga, et al. _Key tweaking: collision-resistant elliptic curve-based commitments. LNPBP-1 Standard._ <a href="https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md" target="_blank">LNPBP-1 on GitHub</a>
+
+[6] Peter Todd. _Single-use-seals. LNPBP-8 Standard._ <a href="https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0008.md" target="_blank">LNPBP-8 on GitHub</a>
+
+
