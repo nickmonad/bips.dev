@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 53: Disallow 64-byte transactions" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 53: Disallow 64-byte transactions" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 53: Disallow 64-byte transactions</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 53: Disallow 64-byte transactions</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2025-04-11</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0053.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 53
+  Layer: Consensus (soft fork)
+  Title: Disallow 64-byte transactions
+  Author: Chris Stewart &lt;stewart.chris1234@gmail.com&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0053
+  Status: Draft
+  Type: Standards Track
+  Created: 2025-04-11
+  License: BSD-3-Clause
+</code></pre>
+<h2>Abstract</h2>
+<p>This BIP describes the rationale for disallowing transactions that are serialized to 64 bytes without the transaction's witness.
+We describe the weaknesses to the Merkle tree included in Bitcoin block headers, and various exploits for those weaknesses.</p>
+<h2>Specification</h2>
+<p>This BIP disallows Bitcoin transactions that are serialized to 64 bytes in length without their witness.</p>
+<h2>Motivation</h2>
+<p>Bitcoin block headers include a commitment to the set of transactions in a given
+block, which is implemented by constructing a Merkle tree of transaction ids
+(double-SHA256 hash of a transaction) and including the root of the tree in the
+block header. This in turn allows for proving to a Bitcoin light client that a
+given transaction is in a given block by providing a path through the tree to the
+transaction. However, Bitcoin’s particular construction of the Merkle tree has
+several security weaknesses, including at least two forms of block malleability
+that have an impact on the consensus logic of Bitcoin Core, and an attack on
+light clients, where an invalid transaction could be ”proven” to appear in a block
+by doing substantially less work than a SHA256 hash collision would require.
+This has been mitigated by Bitcoin Core's relay policy and the RPC interface since 2018<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup><sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.</p>
+<h3> Block malleability </h3>
+<p>64-byte transactions introduce block malleability. Malicious peers can construct consensus valid and invalid 64-byte
+transactions that have the same serialization as the concatenation of 2 hashes in the Merkle tree.</p>
+<p>Assume we have a valid Bitcoin block with 2 transactions in it that have transaction ids of T<sub>0</sub> and T<sub>1</sub>.
+The Merkle root for this block is H(T<sub>0</sub>||T<sub>1</sub>).
+A malicious user could find a 64-byte transaction T<sub>m</sub> that serializes to T<sub>0</sub>||T<sub>1</sub>.
+Next that user relays the block containing the malicious T<sub>m</sub> rather than the
+valid Bitcoin transactions that correspond with T<sub>0</sub> and T<sub>1</sub>.</p>
+<h4> Block malleability with consensus INVALID transactions </h4>
+<p>The peer receiving the malicious block marks the block as invalid, as T<sub>m</sub>
+is not a valid transaction according to network consensus rules.
+Other peers on the network receive the valid block containing T<sub>0</sub> and T<sub>1</sub>
+and add the block to their blockchain. Peers that receive the invalid block before the valid block
+will never come to consensus with their peers due to the malicious user finding a collision
+within the block's Merkle root. Finding this collision is approximately 22 bits worth of work.<ref>[[bip-0053/2-BitcoinMerkle.pdf|to produce a block having a Merkle root that
+is a hash of a 64-byte quantity that deserializes validly, it’s enough
+to just do 8 bits of work to find a workable coinbase (which will hash to the first
+32 bytes), plus another ≈22 bits of work ((1/5) ∗224, so slightly less) to find
+a workable second transaction that will hash to the second 32 bytes)– a very
+small amount of computation.]]</ref></p>
+<p>This attack vector was fixed in Bitcoin Core 0.6.2<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>, re-introduced in 0.13.x<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup> and patched again in
+0.14<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>.</p>
+<h4> Block malleability with consensus VALID transactions </h4>
+<p>Producing a valid Bitcoin transaction T<sub>m</sub> that adheres to network consensus
+rules requires 224 bits of work<ref>[[bip-0053/2-BitcoinMerkle.pdf|Note that the first transaction in a block must be a coinbase, and as discussed
+above, that largely constrains the first 32 bytes of the first transaction: only
+the 4 version bytes are unconstrained. So it would take at least 28*8= 224 bits
+of work to find the first node in a given row of the tree that would match the
+first half of a coinbase, in addition to the amount of work required to grind the
+second half of the transaction to something meaningful (which is much easier –
+only 16 bytes or so are constrained, so approximately 128 bits of work to find a collision). Of course, any of the rows in the Merkle tree could be used, but it nevertheless seems clear that this should be computationally infeasible.]]</ref>.
+This is computationally and financially expensive but theoretically possible. This can lead to a persistent chain split on the network.</p>
+<h3> Attack on SPV clients </h3>
+<p>BIP37<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>provides a partial Merkle tree format<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>
+that allows you to verify that your Bitcoin transaction is included in a Merkle root embedded in a Bitcoin block header.
+Notably this format does not commit to the height of the Merkle tree.</p>
+<p>Suppose a (valid) 64-byte transaction T is included in a block with the property that the second 32 bytes (which
+are less constrained than the first 32 bytes) are constructed so that they collide
+with the hash of some other fake, invalid transaction F. The attacker can fool the SPV client into believing that F
+was included in a Bitcoin block rather than T with 81 bits<ref>[[bip-0053/2-BitcoinMerkle.pdf|An attacker who can do 81 bits of work (followed by another 40 bits of work, to
+construct the funding transaction whose coins will be spent by this one) is able
+to fool an SPV client in this way.]]</ref> of work. This also reduces implementation complexity for SPV wallets<ref><a href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/43" target="_blank">The steps needed to make sure a Merkle proof for a transaction is secure.</a></ref>.</p>
+<h2>Rationale</h2>
+<h3>SPV clients</h3>
+<p>Attacks on SPV clients could be mitigated by knowing the depth of the Merkle tree. Requiring SPV clients to request both the coinbase and payment transaction could mitigate this attack.
+To produce a valid coinbase transaction at the same depth that our fake transaction F occurs at would require 224 bits of work.
+As mentioned above, this is computationally and financially expensive, but theoretically possible. This design would increase the size
+of SPV proofs by 70%.<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup></p>
+<h2>Backward compatibility</h2>
+<p>There have been 5 64-byte transactions that have occurred in the Bitcoin blockchain as of this
+writing <sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>
+with the last transaction 7f2efc6546011ad3227b2da678be0d30c7f4b08e2ce57b5edadd437f9e27a612<sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>
+occurring at block height 419,606<sup id="cite_ref_11"><a href="#cite_ref_11">11</a></sup>.</p>
+<h4>Pre-segwit 64-byte transactions</h4>
+<p>Pre-segwit 64-byte transactions cannot spend a UTXO protected by a digital signature.<sup id="cite_ref_12"><a href="#cite_ref_12">12</a></sup>
+The largest scriptSig a pre-segwit 64-byte transaction can have is 4 bytes.<sup id="cite_ref_13"><a href="#cite_ref_13">13</a></sup></p>
+<p>There are 6<sup id="cite_ref_14"><a href="#cite_ref_14">14</a></sup>
+non standard hashlock UTXOs in the Bitcoin blockchain. None of them have a 0-3 byte pre-image. This means they cannot be spent by a 64-byte transaction.</p>
+<p>Pre-segwit 64-byte transactions that spend a non-standard UTXO that are inherently malleable.<sup id="cite_ref_15"><a href="#cite_ref_15">15</a></sup>
+Policy rules such as CLEANSTACK, MINIMALDATA, PUSHONLY are not consensus rules. If a user has a way to confirm an already non-standard
+64-byte transaction - they can malleate the transaction by violating policy rules to change the size of the transaction to a size other than 64 bytes.</p>
+<h4>Segwit 64-byte transactions</h4>
+<p>This BIP disallows single-input single-output segwit transactions that pay to a 2-byte witness program.<sup id="cite_ref_16"><a href="#cite_ref_16">16</a></sup>
+The only known use case<sup id="cite_ref_17"><a href="#cite_ref_17">17</a></sup>
+for this type of transaction is ephemeral anchor outputs.<sup id="cite_ref_18"><a href="#cite_ref_18">18</a></sup></p>
+<h2>Reference implementation</h2>
+<pre><code>&#x2F;**
+ * We want to enforce certain rules (specifically the 64-byte transaction check)
+ * before we call CheckBlock to check the Merkle root. This allows us to enforce
+ * malleability checks which may interact with other CheckBlock checks.
+ * This is currently called both in AcceptBlock prior to writing the block to
+ * disk and in ConnectBlock.
+ * Note that as this function is called before merkle-tree checks, it must never return a
+ * non-malleable error condition.
+ *&#x2F;
+static bool ContextualBlockPreCheck(const CBlock&amp; block, BlockValidationState&amp; state, const ChainstateManager&amp; chainman, const CBlockIndex* pindexPrev)
+{
+    if (DeploymentActiveAfter(pindexPrev, chainman, Consensus::DEPLOYMENT_64BYTETX)) {
+      for (const auto&amp; tx : block.vtx) {
+            if (::GetSerializeSize(TX_NO_WITNESS(tx)) == 64) {
+                return state.Invalid(BlockValidationResult::BLOCK_MUTATED, &quot;64-byte-transaction&quot;, strprintf(&quot;size of tx %s without witness is 64 bytes&quot;, tx-&gt;GetHash().ToString()));
+            }
+        }
+    }
+
+    return true;
+}
+</code></pre>
+<p>The sample implementation is currently open here:</p>
+<p>https://github.com/bitcoin-inquisition/bitcoin/pull/24/files</p>
+<ol>
+<li><a href="https://bips.dev/53/#cite_ref_1">^</a> <a href="https://github.com/bitcoin/bitcoin/pull/11423/commits/7485488e907e236133a016ba7064c89bf9ab6da3" target="_blank">PR #11423 disallows transactions that are less than 82 bytes in size from Bitcoin Core relay and RPC interface</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_2">^</a> <a href="https://github.com/bitcoin/bitcoin/commit/8c5b3646b5afe8a61f5c66478d8e11f0d2ce5108" target="_blank">Reduces the minimum transaction size required for a transaction to be considered standard from 82 bytes to 65 bytes</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_3">^</a> <a href="https://bitcoin.org/en/alert/2012-05-14-dos#risks" target="_blank">CVE-2012-2459</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_4">^</a> <a href="https://github.com/bitcoin/bitcoin/pull/7225" target="_blank">#7225</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_5">^</a> <a href="https://github.com/bitcoin/bitcoin/pull/9765" target="_blank">#9765</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_6">^</a> <a href="/37" target="_blank">BIP37</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_7">^</a> <a href="/37" target="_blank">Partial Merkle Tree Format</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_8">^</a> <a href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/29" target="_blank">Base proof: 80-byte header + 448-byte partial Merkle tree = 528 bytes. Proof with coinbase tx, assuming the coinbase tx is in the left half of the tree and the tx to prove is in the right half of the tree: 80-byte header + 416 bytes partial Merkle tree for coinbase tx + 416 bytes partial Merkle tree for tx = 912 bytes.</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_9">^</a> <a href="https://github.com/bitcoin/bips/blob/master/bip-0053/64byte-tx-mainnet.txt" target="_blank">64-byte transactions in the Bitcoin blockchain</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_10">^</a> <a href="https://mempool.space/tx/7f2efc6546011ad3227b2da678be0d30c7f4b08e2ce57b5edadd437f9e27a612" target="_blank">Last 64-byte transaction in the Bitcoin blockchain</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_11">^</a> <a href="https://mempool.space/block/000000000000000000308f1efc24419f34a3bafcc2b53c32dd57e4502865fd84" target="_blank">Block 419,606</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_12">^</a> <a href="/66" target="_blank">After BIP66 was activated on the Bitcoin network, Bitcoin transactions cannot have a digital signature smaller than 9 bytes.</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_13">^</a> [https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/73]</li>
+<li><a href="https://bips.dev/53/#cite_ref_14">^</a> <a href="https://github.com/bitcoin/bips/blob/master/bip-0053/non-standard-hashlock-utxos.txt" target="_blank">As of block <code>00000000000000000001194ae6be942619bf61aa70822b9643d01c1a441bf2b7</code> there exist 6 non-standard hashlock UTXOs that could theoretically have a 0-3 byte pre-image. None of them have a 0-3 byte pre-image.</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_15">^</a> <a href="/141" target="_blank">Details on how to malleate a pre-segwit transaction</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_16">^</a> <a href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/73#p-4382-future-segwit-versions-10" target="_blank">BIP141 says witness programs can be 2 bytes in size, which makes the scriptPubKey a total of 4 bytes</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_17">^</a> <a href="https://bitcoin.stackexchange.com/a/110664" target="_blank">Why do we have 2-byte witness programs? The original rationale for the lower end of the range of valid witness program lengths is that 2 bytes is enough to guarantee no ambiguity of how the program would be pushed (some 1-byte values can - and according to standardness, must - be pushed with OP_n, and dealing with those would have complicated the matter).</a></li>
+<li><a href="https://bips.dev/53/#cite_ref_18">^</a> <a href="https://bitcoinops.org/en/topics/ephemeral-anchors/" target="_blank">What are ephemeral anchor outputs? This allows anyone on the network to use that output as the input to a child transaction. This allows anyone to create the fee-paying child, even if they don’t receive any of the other outputs from the parent transaction. This allows ephemeral anchors to function as fee sponsorship but without requiring any consensus changes.</a></li>
+</ol>
+<h2>Copyright</h2>
+<p>This BIP is licensed under the <a href="https://opensource.org/license/BSD-3-Clause" target="_blank">BSD-3-Clause License</a>.</p>
+<h2>Acknowledgements</h2>
+<p>Suhas Daftuar, AJ Towns, Sergio Demian Lerner, Greg Maxwell, Matt Corallo, Antoine Poinsot, Dave Harding and Eric Voskuil</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2025-05-22</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
