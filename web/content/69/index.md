@@ -206,7 +206,7 @@ Outputs:
 *  <a href="https://github.com/bitcoinjs/bip69/blob/master/test/fixtures.json" target="_blank">BitcoinJS Test Fixtures</a>
 *  <a href="https://www.npmjs.com/package/bip69" target="_blank">NodeJS</a>
 *  <a href="https://github.com/blockchain/My-Wallet-V3/blob/v3.8.0/src/transaction.js L120-L142" target="_blank">Blockchain.info public beta</a>
-*  <a href="https://github.com/btcsuite/btcutil/blob/master/txsort/txsort.go" target="_blank">Btcsuite</a>
+*  <a href="https://github.com/btcsuite/btcd/blob/master/btcutil/txsort/txsort.go" target="_blank">Btcsuite</a>
 
 
 <h2>Acknowledgements</h2>
