@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 77: Async Payjoin" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 77: Async Payjoin" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 77: Async Payjoin</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 77: Async Payjoin</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2023-08-08</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0077.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 77
+  Layer: Applications
+  Title: Async Payjoin
+  Author: Dan Gould &lt;d@ngould.dev&gt;
+          Yuval Kogman &lt;nothingmuch@woobling.org&gt;
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0077
+  Post-History: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;pull&#x2F;1483
+                https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;7B11AE34-27A7-46ED-95BF-66CA13BA26F3@ngould.dev&#x2F;#t
+                https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;3C0A6E4C-444E-4E75-829C-1A21D8EE40E0@ngould.dev&#x2F;#t
+  Status: Draft
+  Type: Standards Track
+  Created: 2023-08-08
+  License: BSD-2-Clause
+  Requires: 21, 78, 173, 174
+</code></pre>
+<h2 id="Copyright">Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+<h2 id="Abstract">Abstract</h2>
+<p>Payjoin lets Bitcoin senders and receivers interact to make batched
+transactions.</p>
+<p>This document proposes a second, backwards-compatible, asynchronous version of
+the Payjoin protocol (&quot;Version 2&quot;) relative to and described in <a href="https://bips.dev/77/bip-0078.mediawiki">BIP 78</a> (&quot;Version 1&quot;). An untrusted
+third-party &quot;directory server&quot; replaces the requirement
+for a receiver to host a secure public endpoint for interactions. HTTP clients
+access the directory server using an asynchronous protocol and authenticated,
+encrypted payloads. The design preserves complete Payjoin receiver
+functionality, including payment
+output substitution. Authenticated encryption depends only on cryptographic
+primitives available in Bitcoin Core. Requests use <a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc9458.html">Oblivious
+HTTP</a> (OHTTP) to
+prevent the directory and other Payjoin clients from linking requests to client
+IP addresses.</p>
+<h2 id="Motivation">Motivation</h2>
+<p>Satoshi Nakamoto pointed out one specific privacy risk in the
+<a rel="noopener" target="_blank" href="https://bitcoin.org/en/bitcoin-paper">whitepaper</a>,
+that transactions with multiple inputs &quot;necessarily reveal that
+their inputs were owned by the same owner.&quot;
+Payjoin addresses that risk, the <em>common-input-ownership heuristic</em>,
+by making it practical to spend inputs owned by multiple parties
+in one transaction.</p>
+<p>While addressing Bitcoin's primal privacy risk, Payjoin <em>input</em> batching
+also improves on the widespread non-interactive <em>output</em> batching practice
+deployed by exchanges. When combined, the same movement of funds can use
+less block weight and save fees.</p>
+<p>A natural application of Payjoin would be to combine
+getting paid with consolidating UTXOs into one transaction. But Payjoin
+can also secure <a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=281848.0">transaction
+cut-through</a>,
+allowing a sender to transfer funds to a receiver who also transfers
+funds to a third party in the same transaction. For example, deposits to an
+exchange may &quot;cut through&quot; in a single transaction that also satisfies
+withdrawals instead of with a second transaction that spends the deposited
+funds. Payjoin enables more blockspace-efficient transactions that
+reduce fees while addressing privacy risks.</p>
+<p>However, BIP 78's requirements for Payjoin Version 1 have proven to be an
+obstacle to adoption. Version 1 receivers must host a secured
+public-facing HTTP server. Mobile and web environments limit the ability
+to fulfil such a requirement. Version 1 also requires synchronous
+communication. Both sender and receiver must be online simultaneously.
+Wallet developers <a rel="noopener" target="_blank" href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-January/018358.html">
+regard</a>
+these requirements as barriers to Payjoin adoption.</p>
+<p>To address these limitations, our goal is to specify a practical
+coordination mechanism suitable for widespread implementation. This proposal
+leverages mature solutions to common problems, building on established web
+standards and proven Bitcoin primitives.</p>
+<h2 id="Overview">Overview</h2>
+<p>A Payjoin <em>sender</em> and <em>receiver</em> interact so that they may both contribute to a
+transaction. In this proposal, they exchange asynchronous end-to-end
+encrypted messages by relaying them to a store-and-forward <em>directory</em> server
+using OHTTP.</p>
+<p>Before initiating the protocol, the receiver must secure communications with
+the directory by <a href="https://bips.dev/77/#ohttp-bootstrapping">bootstrapping</a>.</p>
+<ul>
+<li>The receiver <a href="https://bips.dev/77/#session-initiation">initiates a Payjoin Session</a>
+by sharing a <a href="https://bips.dev/77/#payjoin-uri">Payjoin URI</a> that includes the URL of an
+ephemeral mailbox hosted on the directory, where it can receive a message
+from the sender.</li>
+<li>The sender <a href="https://bips.dev/77/#sender-original-psbt-messaging">posts a message</a>
+containing a fully signed fallback transaction, known as the <em>Original PSBT</em>,
+to the mailbox.</li>
+<li>The receiver gets this message and
+<a href="https://bips.dev/77/#receiver-proposal-psbt-messaging">posts a message containing a <em>Proposal
+PSBT</em></a>
+to the sender's ephemeral mailbox, by updating the Original PSBT with
+appropriate inputs and/or outputs.</li>
+<li>The sender gets the Proposal PSBT, <a href="https://bips.dev/77/#sender-signing-and-broadcast">checks it, signs, and
+broadcasts</a> the final transaction.</li>
+</ul>
+<p>At any point, either party may choose to broadcast the
+fallback transaction described by the Original PSBT instead of proceeding.
+Because the Original PSBT and Proposal PSBT spend the same input(s) they are
+mutually exclusive and only one can be confirmed.</p>
+<p>Messages are buffered in the directory, allowing both parties to tolerate
+temporary disconnections and resume communication by polling.</p>
+<h3 id="Sequence_Diagram">Sequence Diagram</h3>
+<pre data-lang="mermaid" class="language-mermaid "><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    title Async Payjoin Sequence Diagram
+    participant R as Receiver
+    participant D as Directory
+    participant S as Sender
+    participant N as Network
+
+    R-)S:  Payjoin URI (BIP 21) out of band
+    
+    R--&gt;&gt;D: Poll GET Requests&lt;br&#x2F;&gt;for Original PSBT
+    activate D 
+    S-&gt;&gt;D: POST Request&lt;br&#x2F;&gt;Original PSBT
+    D-&gt;&gt;R: GET Response&lt;br&#x2F;&gt;Original PSBT
+    deactivate D
+
+    S--&gt;&gt;D: Poll GET Requests&lt;br&#x2F;&gt;for Proposal PSBT
+    activate D
+    R-&gt;&gt;D: POST Request&lt;br&#x2F;&gt;Proposal PSBT
+    D-&gt;&gt;S: GET Response&lt;br&#x2F;&gt;Proposal PSBT
+    deactivate D
+
+    S-&gt;&gt;N: Broadcast Payjoin
+</code></pre>
+<h2 id="Specification">Specification</h2>
+<h3 id="OHTTP_Bootstrapping">OHTTP Bootstrapping</h3>
+<p>Before initiating a Payjoin Session a receiver must first discover the
+directory's
+<a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc9458.html#section-3.1">OHTTP Key Configuration</a>,
+via an authenticated
+bootstrap mechanism. The key configuration contains information to establish
+<a href="https://bips.dev/77/#secp256k1-hybrid-public-key-encryption">Hybrid Public Key Encryption</a> (HPKE) in order to secure communications between the client and the directory in
+lieu of TLS.</p>
+<p>The bootstrap mechanism may vary by implementation but must
+follow <a rel="noopener" target="_blank" href="https://datatracker.ietf.org/doc/html/draft-ietf-privacypass-key-consistency-01">OHTTP Consistency
+Requirements</a>
+and should not reveal a receiver IP address to the directory. Some
+examples of suitable mechanisms include getting a key configuration
+from a Payjoin URI, a trusted application binary, or fetching using https-in-http
+CONNECT method, https-in-WebSocket, Tor, or a VPN.</p>
+<p>Directory OHTTP Gateways MUST support <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9540.html#name-key-configuration-fetching">RFC 9540 Key Configuration
+Fetching</a>
+via GET request. RFC 9540 defines the
+gateway location as <code>/.well-known/ohttp-gateway</code>.</p>
+<h3 id="Session_Initiation">Session Initiation</h3>
+<p>A receiver initiates a session by sharing a Payjoin URI. Because a URI
+contains sensitive information, such as a receiver address, it should be shared
+over a confidential channel.</p>
+<h4 id="Payjoin_URI">Payjoin URI</h4>
+<p>Bitcoin URIs (<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki">BIP
+21</a>
+or <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0321.mediawiki">BIP
+321</a>)
+are a standard way to request bitcoin.</p>
+<p>A Payjoin URI is a Bitcoin URI that contains a <code>pj</code> parameter. The <code>pj</code>
+parameter value is a URL in both BIP 78 and BIP 77.</p>
+<p>Senders that understand Bitcoin URI but don't support Payjoin will just
+ignore the <code>pj</code> parameter and proceed to typical address-based
+transaction flows.</p>
+<p>A <code>req-pj</code> parameter may be used as a <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki#forward-compatibility">BIP 21 forwards compatibility <code>reqparam</code></a> instead of
+<code>pj</code> to signal that Payjoin is required.</p>
+<p>The parameter value must be <a href="https://bips.dev/77/#uppercase-url">uppercased and the parameter should be placed last in the URI</a>.</p>
+<p>Since BIP 78 payloads are neither encrypted nor authenticated,
+a directory used for backwards-compatible payloads is known
+as an <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#unsecured-payjoin-server">&quot;unsecured payjoin server&quot; in BIP 78
+parlance</a>.
+Backwards-compatible receivers MUST disable output substitution
+by setting <code>pjos=0</code> to prevent modification by a malicious directory.</p>
+<h5 id="Mailbox_endpoint">Mailbox endpoint</h5>
+<p>In this proposal the URL in the <code>pj</code> parameter value is the mailbox
+endpoint URL. Mailboxes are shared HTTP resources hosted by the
+directory and serve as OHTTP Target Resources. Clients use these endpoints
+to relay encrypted messages. They <code>POST</code> messages to and <code>GET</code> messages from
+mailbox endpoints via OHTTP.</p>
+<p>Senders that support BIP 78 but not this proposal may POST messages directly to
+mailbox endpoints for <a href="https://bips.dev/77/#backwards-compatibility">backwards compatibility</a>.</p>
+<h6 id="Short_ID">Short ID</h6>
+<p>A Short ID identifies a mailbox based on its associated public key. The Short
+ID is the path component of the mailbox endpoint. One is derived by hashing the
+33-byte compressed public key encoding with SHA-256, truncating it to
+<a href="https://bips.dev/77/#64-bit-short-id-length">8 bytes (64 bits)</a>, and encoding it in
+<a href="https://bips.dev/77/#uppercase-url">uppercase</a> using the bech32 character set (like a bech32 string without the HRP, separator and checksum).</p>
+<h5 id="Receiver_fragment_parameters">Receiver fragment parameters</h5>
+<p>This proposal introduces session-specific parameters which the
+receiver shares encoded in the URI.</p>
+<p>Instead of defining new Bitcoin URI parameters, the session-specific
+parameters are encoded in the <a rel="noopener" target="_blank" href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
+fragment</a>
+of the the mailbox endpoint URL.</p>
+<p>The <code>#</code> fragment separator character must be <a rel="noopener" target="_blank" href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">RFC 3986
+percent-encoded</a>
+as <code>%23</code>, because it separates the
+fragment of the mailbox endpoint URL included in the <code>pj</code> parameter, not the
+fragment of the Bitcoin URI.</p>
+<p>These session-specific parameters use a bech32-inspired encoding.
+The HRP is used as the parameter key, followed by the '1' separator,
+followed by the parameter value encoded using the bech32 character set in
+<a href="https://bips.dev/77/#uppercase-url">uppercase</a>. No checksum is used. Parameters are separated
+by a <code>+</code> character.</p>
+<p>The following parameters are defined, and must be provided in reverse
+lexicographical order:</p>
+<ul>
+<li><code>RK</code>: encodes the <em>receiver key</em> as a 33-byte compressed public key.
+Senders will initiate HPKE with the receiver using this key.</li>
+<li><code>OH</code>: encodes an alternate format of the OHTTP Key Configuration of
+the directory. It consists of a 33-byte compressed public key of the
+directory's OHTTP Gateway, prefixed by the 2-byte Key Identifier. A <a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc9458.html#section-3.1">
+RFC 9458 Key
+Configuration</a>
+is reconstructed by assuming the HPKE KEM ID and Symmetric Algorithms
+are <a href="https://bips.dev/77/#secp256k1-hybrid-public-key-encryption">fixed</a>.</li>
+<li><code>EX</code>: specifies a <a href="https://bips.dev/77/#session-expiration">session
+expiration</a> in <a rel="noopener" target="_blank" href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16">unix
+time</a>.</li>
+</ul>
+<p>For example, a properly encoded endpoint Bitcoin URI looks like this
+<code>bitcoin:tb1q6q6de88mj8qkg0q5lupmpfexwnqjsr4d2gvx2p?amount=0.00666666&amp;pjos=0&amp;pj=HTTPS://PAYJO.IN/TXJCGKTKXLUUZ%23RK1Q0DJS3VVDXWQQTLQ8022QGXSX7ML9PHZ6EDSF6AKEWQG758JPS2EV+OH1QYPM59NK2LXXS4890SUAXXYT25Z2VAPHP0X7YEYCJXGWAG6UG9ZU6NQ+EX1WKV8CEC</code></p>
+<h3 id="Sender_Original_PSBT_Messaging">Sender Original PSBT Messaging</h3>
+<p>The sender constructs the fallback transaction, a typical transaction
+spending funds to the receiver's address specified in the Payjoin URI.
+This transaction is serialized as a BIP 174 PSBTv0, satisfying
+<a href="https://bips.dev/77/#receivers-original-psbt-checklist">the receiver checklist</a>.</p>
+<p>The Original PSBT MUST:</p>
+<ul>
+<li>Include complete UTXO data.</li>
+<li>Be fully signed.</li>
+<li>Exclude unnecessary fields such as global xpubs or keypath
+information.</li>
+<li>Be broadcastable.</li>
+</ul>
+<p>The Original PSBT MAY:</p>
+<ul>
+<li>Include outputs unrelated to the sender-receiver transfer for batching
+purposes.</li>
+</ul>
+<p>This <em>Original PSBT</em> is encoded as base64, followed by the query
+parameter string on a new line containing <a href="https://bips.dev/77/#optional-sender-parameters">optional sender
+parameters</a>.</p>
+<p>The sender generates an ephemeral mailbox key. The corresponding public key is
+known as the <em>reply key</em>, and it is prepended to the base64 plaintext string,
+serialized in compressed form as 33 bytes.</p>
+<p>This plaintext string is encrypted to the receiver key according to <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9180.html#name-encryption-to-a-public-key">HPKE Base
+mode</a>.
+The HPKE <code>info</code> string, used for domain separation, is <code>PjV2MsgA</code>. The
+ciphertext ensures message secrecy and integrity when passed to the receiver
+using the mailbox endpoint. The 16-byte authentication tag is appended to the
+ciphertext.</p>
+<p>RFC 9180 <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9180.html#section-10">does not
+specify</a> the wire format
+encoding of HPKE messages. To construct an HPKE payload, the secp256k1 public
+key from the DHKEM is encoded using ElligatorSwift in 64 bytes. Note that
+ElligatorSwift is only the wire format; when deriving shared secrets, the curve
+point is re-serialized in uncompressed form.</p>
+<pre><code>PjV2MsgA Byte Representation (7168 bytes total)
++---------------------------------------------------------------------------------------+
+| ElligatorSwift |                             Ciphertext                               |
+|   (64 bytes)   |                            (7104 bytes)                              |
+|                +-----------------------+---------------------------------+------------+
+|                |       Reply Key       |         Padded Plaintext        |  AEAD Tag  |
+|                |       (33 bytes)      |   (7055 bytes = 7168-64-33-16)  | (16 bytes) |
++---------------------------------------------------------------------------------------+
+</code></pre>
+<p>The resulting HPKE payload is the body of a POST request to the
+receiver's mailbox. This request is then <a href="https://bips.dev/77/#client-directory-interactions">
+encapsulated</a> according to
+Oblivious HTTP to the directory's OHTTP Gateway. OHTTP serializes the
+inner request as BHTTP, and provides another layer of HPKE encryption,
+between the client and directory.</p>
+<p>Upon receipt, the directory's OHTTP Gateway decapsulates the OHTTP
+request and handles the inner POST request at the receiver's mailbox
+endpoint, which stores the HPKE encrypted payload to be forwarded to the
+receiver.</p>
+<p>The sender then polls OHTTP encapsulated GET requests to the sender's
+mailbox endpoint until it receives a response from the directory
+containing the receiver's <em>Proposal PSBT</em>, and proceeds to
+<a href="https://bips.dev/77/#sender-signing-and-broadcast">sign and broadcast</a>.
+It stops polling after expiration.</p>
+<h4 id="Optional_sender_parameters">Optional sender parameters</h4>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#optional-parameters">BIP 78's optional sender parameters</a>
+may be used in this proposal, but must be included in
+the body as part of the ciphertext rather than as a query string.</p>
+<p>HPKE binds ciphertexts to application-specific <code>info</code> strings. Because
+of this domain separation, BIP 78's <code>v</code> parameter is redundant and
+should be omitted for this proposal.</p>
+<h3 id="Receiver_Proposal_PSBT_Messaging">Receiver Proposal PSBT Messaging</h3>
+<p>After sharing the Payjoin URI with the sender, the receiver polls via
+OHTTP encapsulated GET requests to the receiver's mailbox endpoint. So
+long as the mailbox contains no message, the directory responds with
+status 202 ACCEPTED. Once a mailbox contains a message, the directory
+returns it in the response body with status 200 OK.</p>
+<p>Upon receiving an encapsulated 200 OK response, the receiver decrypts
+the payload and checks the <em>Original PSBT</em> therein according to the
+<a href="https://bips.dev/77/#receivers-original-psbt-checklist">receiver checklist</a>.</p>
+<p>The receiver then updates the <em>Original PSBT</em> to include new signed
+inputs and outputs, invalidating the sender's signature(s). The receiver
+may also adjust the transaction fee. The result, called the <em>Proposal
+PSBT</em>, must satisfy the <a href="https://bips.dev/77/#senders-proposal-psbt-checklist">sender checklist</a></p>
+<p>The Proposal PSBT MUST:</p>
+<ul>
+<li>Include complete UTXO data.</li>
+<li>Include all inputs from the Original PSBT.</li>
+<li>Include all outputs which do not belong to the receiver from the
+Original PSBT.</li>
+<li>Use a random index if additional inputs or outputs are added.</li>
+</ul>
+<p>The Proposal PSBT sender MAY:</p>
+<ul>
+<li>Add inputs at random indices.</li>
+<li>Add outputs at random indices.</li>
+<li>Remove or modify Original PSBT outputs under the control of the
+receiver (i.e. not sender change).</li>
+</ul>
+<p>The Proposal PSBT MUST NOT:</p>
+<ul>
+<li>Shuffle the order of inputs or outputs contained in the Original PSBT.</li>
+<li>Decrease the absolute fee of the Original PSBT.</li>
+</ul>
+<p>The receiver encrypts the <em>Proposal PSBT</em> to the sender's reply key according to
+<a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9180.html#name-authentication-using-an-asy">HPKE Auth
+mode</a>,
+using the receiver's key for authentication. The HPKE <code>info</code> string is
+<code>PjV2MsgB</code>. The HPKE wire format is the same as in the <a href="https://bips.dev/77/#sender-original-psbt-messaging">sender's
+message</a>.</p>
+<pre><code>PjV2MsgB Byte Representation (7168 bytes total)
++---------------------------------------------------------------------------------------+
+| ElligatorSwift |                             Ciphertext                               |
+|   (64 bytes)   |                            (7104 bytes)                              |
+|                +---------------------------------------------------------+------------+
+|                |           Padded Plaintext                              |  AEAD Tag  |
+|                |       (7088 bytes = 7168-64-16)                         | (16 bytes) |
++---------------------------------------------------------------------------------------+
+</code></pre>
+<p>The receiver makes the resulting HPKE payload the body of a POST request to the
+sender's mailbox whose Short ID is derived from the sender's reply key. This request is then <a href="https://bips.dev/77/#client-directory-interactions">
+encapsulated</a> according to
+Oblivious HTTP to the directory's OHTTP Gateway. OHTTP serializes the
+inner request as BHTTP, and provides another layer of HPKE encryption,
+between the client and directory.</p>
+<p>Once the receiver makes this request, they wait for either transaction from the
+Original PSBT or Proposal PSBT to be broadcast to the Bitcoin network.</p>
+<h4 id="Receiver's_Original_PSBT_checklist">Receiver's Original PSBT checklist</h4>
+<p>The receiver checklist is the same as <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#receivers-original-psbt-checklist">the BIP 78 receiver
+checklist</a>.</p>
+<h3 id="Sender_signing_and_broadcast">Sender signing and broadcast</h3>
+<p>The sender validates the <em>Proposal PSBT</em> it receives against a
+checklist. If the checks pass, it may sign and broadcast the resulting
+Payjoin transaction.</p>
+<h4 id="Sender's_Proposal_PSBT_checklist">Sender's Proposal PSBT checklist</h4>
+<p>This proposal's sender checklist is the same as <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#senders-payjoin-proposal-checklist">the BIP 78 sender
+checklist</a>.</p>
+<h3 id="Client/Directory_interactions">Client/Directory interactions</h3>
+<p>The Payjoin Directory provides a rendezvous point for senders and
+receivers to exchange messages. The directory stores Payjoin payloads to
+support asynchronous communication. Async Payjoin requests must be
+submitted as encapsulated messages to the directory's OHTTP Gateway.</p>
+<p>The wire format OHTTP request is specified in <a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc9458.html#name-hpke-encapsulation">RFC
+9458</a>. HPKE
+requires the directory's OHTTP key configuration. The plaintext is a binary
+encoded HTTP request (<a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9292.html">RFC 9292</a>)
+intended for the OHTTP target resource, usually a mailbox endpoint, padded to
+8104 bytes with <a href="https://bips.dev/77/#random-padding">random data</a>.</p>
+<pre><code>OHTTP Encapsulated Request Byte Representation (8192 bytes total)
++--------------+-------------------------+------------------------------------------+
+| OHTTP Header |         HPKE KEM        |               Ciphertext                 |
+|  (7 bytes)   | Uncompressed Public Key |        (8120 bytes = 8192-65-7)          +
+|              |        (65 bytes)       +-----------------------------+------------+
+|              |                         |     Padded BHTTP Request    |  AEAD Tag  |
+|              |                         | (8104 bytes = 8192-65-16-7) | (16 bytes) |
++--------------+-------------------------+------------------------------------------+
+</code></pre>
+<p>Response encryption uses the Export functionality of the request HPKE context to
+establish a shared secret, and therefore consists of a 32 byte nonce followed by
+the AEAD ciphertext and tag.</p>
+<pre><code>OHTTP Encapsulated Response Byte Representation (8192 bytes total)
++---------------------+------------------------------------------+
+|        Nonce        |               Ciphertext                 |
+|      (32 bytes)     |          (8160 bytes = 8192-32)          +
+|                     +-----------------------------+------------+
+|                     |     Padded BHTTP Response   |  AEAD Tag  |
+|                     |   (8144 bytes = 8192-32-16) | (16 bytes) |
++---------------------+------------------------------------------+
+</code></pre>
+<p>GET requests on an empty mailbox should block until a message is posted
+or a timeout occurs. The timeout should be 30 seconds because that will
+not exceed the default timeout for most HTTP clients.</p>
+<p>The directory may optionally accept HTTP/1.1 POST requests without OHTTP
+to mailbox endpoint URLs for backwards compatibility with BIP 78 senders.</p>
+<h4 id="OHTTP_Sequence_Diagram">OHTTP Sequence Diagram</h4>
+<pre data-lang="mermaid" class="language-mermaid "><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+  title OHTTP Sequence Diagram
+  participant C as Client
+  participant R as OHTTP Relay
+
+  box PaleVioletRed Payjoin Directory
+    participant G as OHTTP Gateway
+    participant D as HTTP Resource
+  end
+
+  C-&gt;&gt;R: Relay Request&lt;br&#x2F;&gt;FROM: Client IP&lt;br&#x2F;&gt;[+ Encapsulated Request]
+  R-&gt;&gt;G: Gateway Request&lt;br&#x2F;&gt;FROM: Relay IP&lt;br&#x2F;&gt;[+ Encapsulated Request]
+  G-&gt;&gt;D: Request
+  D-&gt;&gt;G: Response
+  G-&gt;&gt;R: Gateway Response&lt;br&#x2F;&gt;TO: Relay IP&lt;br&#x2F;&gt;[+ Encapsulated Response]
+  R-&gt;&gt;C: Relay Response&lt;br&#x2F;&gt;TO: Client IP&lt;br&#x2F;&gt;[+ Encapsulated Response]
+</code></pre>
+<h3 id="Relay/Directory_interactions">Relay/Directory interactions</h3>
+<p>RFC 9458 requires each OHTTP Relay to be configured to forward requests
+to exactly one OHTTP Gateway. This requirement prevents receivers from
+being able to choose any directory, and senders from choosing relays
+independently. Without addressing this limitation, senders would have to
+know which relays are appropriate to use for each directory, creating a
+tendency for one directory and its affiliated relays to monopolize the
+protocol.</p>
+<p>In order to allow OHTTP Relays to be used with any directory, a
+directory's OHTTP Gateway may advertise this allowed purpose. This
+advertisement prevents OHTTP Relays from acting as open internet proxies,
+which would otherwise allow anonymized access to arbitrary resources and
+expose them to denial-of-service attacks, as well as other forms of abuse.
+When the directory receives a GET request to the <code>/.well-known/ohttp-gateway</code>
+path with an <code>allowed_purposes</code> query parameter, its response body
+should contain a magic string in the same format as a TLS ALPN protocol
+list (a U16BE length encoded list of U8 length encoded strings). The
+magic string is <code>BIP77 454403bb-9f7b-4385-b31f-acd2dae20b7e</code>, offering
+an unambiguous signal to relays that this OHTTP Gateway will accept
+requests associated with this purpose from any relay.</p>
+<p>By supporting this <code>allowed_purposes</code> parameter, the directory signals
+to OHTTP Relays that it is willing to handle requests related to BIP 77,
+removing the RFC 9458's requirement that relays and
+Gateways be configured in a one-to-one relationship.</p>
+<h2 id="Rationale">Rationale</h2>
+<h3 id="Uppercase_URL">Uppercase URL</h3>
+<p>In order to simplify parsing and allow QR encoders to use <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9285.html#name-the-alphabet-used-in-base45">Alphanumeric
+QR
+mode</a>,
+which is more compact than Byte mode, the mailbox endpoint URL,
+including the fragment parameters, is encoded in uppercase.</p>
+<p>Unlike Bitcoin URI parameters, which require switching back to Byte
+mode, the use of the URL fragment for session-specific parameters makes
+it possible to stay in Alphanumeric mode.</p>
+<h3 id="Parameter_Ordering">Parameter Ordering</h3>
+<p>The order of fragment parameters, Bitcoin URI parameters, as well as in the
+sender's optional parameters have no defined meaning.</p>
+<p>In the BIP 21 URI, the <code>pj</code> parameter mailbox endpoint URL SHOULD be the last
+parameter to avoid QR mode switching.</p>
+<p>Since variations might create a fingerprint for particular wallet software,
+this document requires that fragment parameters MUST appear in reverse
+lexicographical order.</p>
+<h3 id="Session_Expiration">Session Expiration</h3>
+<p>The directory may hold a message for an offline Payjoin client until that
+client comes online. However, the BIP 78 spec <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#receiver-does-not-need-to-be-a-full-node">
+recommends</a>
+broadcasting Original PSBTs in the case of an offline counterparty.
+Doing so exposes a naïve, surveillance-vulnerable transaction, which
+Payjoin intends to avoid.</p>
+<p>Because BIP 78 is a synchronous protocol without a standard expiration
+mechanism, and automated receivers are vulnerable to probing attacks,
+BIP 78 encourages receivers to broadcast the Original PSBT after some
+undefined expiration time.</p>
+<p>Because BIP 77 is an asynchronous protocol, it requires an explicit <a href="https://bips.dev/77/#receiver-fragment-parameters">
+session-specific fragment
+parameter</a>, <code>EX</code>, to
+communicate this expiration time to the sender.</p>
+<p>There is no way for a sender to prevent a receiver from broadcasting the
+fallback transaction extracted from the Original PSBT before the
+receiver-specified expiration time.</p>
+<h3 id="64-bit_Short_ID_Length">64-bit Short ID Length</h3>
+<p>64 bits are sufficient to make the probability of experiencing a random
+collision negligible. As of writing, the UTXO set has ~2^28 elements.
+This is a very loose upper bound for the number of concurrent (non-spam)
+sessions, for which the probability of a random collision will be less
+than 1%. The actual number of sessions will of course be (orders of
+magnitudes) lower given that sessions are short-lived. With ~2^21
+sessions (a loose bound on number of transactions that can be confirmed
+in 24 hours) the probability is less than 1e-6. These figures bound the
+probability of a collision existing anywhere in the entire set, whereas
+the probability for an individual session to experience a collision is
+&lt;&lt; 1e-10 in either case.</p>
+<h3 id="Complete_UTXO_Data">Complete UTXO Data</h3>
+<p>Complete UTXO data is required because this information is required for
+signing and calculating fees for some input types.</p>
+<h3 id="HTTP">HTTP</h3>
+<p>HTTP is ubiquitous. Using simple HTTP polling allows even Bitcoin Core
+to consider an implementation. Unlike a WebSockets protocol, plain HTTP
+can benefit from metadata protection by using Oblivious HTTP.</p>
+<h3 id="Oblivious_HTTP">Oblivious HTTP</h3>
+<p>OHTTP protects sender and receiver IP addresses both from one another
+and from the directory. This makes it more difficult for a directory to
+correlate many Payjoin transactions with specific IP addresses.</p>
+<p>OHTTP relays can be run as basic HTTP proxies from wallet providers or
+third parties.</p>
+<h3 id="Uniform_Payloads">Uniform Payloads</h3>
+<p>Encapsulated OHTTP payloads seen by the relay and directory, and
+encrypted messages seen by the directory, are constructed to be uniform
+so that these third-party services are unable to distinguish between
+them.</p>
+<p>Encapsulated OHTTP messages are 8192 bytes long, and begin with a
+cleartext OHTTP header and an uncompressed key which is distinguishable
+from random bytes but uniform across different encapsulated requests.</p>
+<p>End-to-end encrypted messages are 7168 bytes long, and should be
+indistinguishable from uniformly random bytes.
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0324.mediawiki#elligatorswift-encoding-of-curve-x-coordinates">ElligatorSwift as defined in BIP 324</a>
+is used to encode encapsulated HPKE public keys prepended to the HPKE ciphertext
+so that the directory can't distinguish between key material, the
+ciphertext, and randomness. This ensures the two different protocol
+messages are indistinguishable from each other as well as any protocol
+extensions.</p>
+<p>These padded sizes are sufficient for most PSBTs without exceeding the <a rel="noopener" target="_blank" href="https://www.geekersdigest.com/max-http-request-header-size-server-comparison/">
+8KB
+limit</a>
+of many HTTP/1.1 web servers. 8KB is also too small for image sharing,
+making misuse of the directory impractical.</p>
+<h4 id="Random_Padding">Random Padding</h4>
+<p>The typical <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9292.html#name-padding-and-truncation">zero padding recommended by the BHTTP
+specification</a>
+would make future use of <a rel="noopener" target="_blank" href="https://github.com/orgs/payjoin/discussions/582">multi-hop OHTTP inspired by the Sphinx mix
+format</a> detectable from the
+point of view of the directory. Random padding is allowed so long as the BHTTP
+encoded request is not truncated.</p>
+<p>By randomly padding OHTTP messages, any future use of such techniques would be
+indistinguishable from clients that only implement standardized OHTTP. Since
+this would limit a malicious directory's ability to censor any such requests in
+the future, and such requests significantly bolster the privacy threat model
+against malicious OHTTP relays or traffic analysis by a global passive
+adversary, it is desirable to do so for standard OHTTP requests as well.</p>
+<h3 id="Secp256k1_Hybrid_Public_Key_Encryption">Secp256k1 Hybrid Public Key Encryption</h3>
+<p><a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc9180.html">RFC 9180 Hybrid Public Key
+Encryption</a>
+(HPKE) is a modern IETF standard for secure
+message exchange without TLS, since TLS is not available in Bitcoin Core.</p>
+<p>This proposal uses <code>DHKEM(Secp256k1, HKDF-SHA256)</code> and
+<code>ChaCha20Poly1305</code> AEAD for both OHTTP encapsulation and for end-to-end
+encryption between the sender and receiver.</p>
+<p>The receiver transmits its receiver key in <a href="https://bips.dev/77/#receiver-fragment-parameters">receiver fragment
+parameters</a>. The sender shares
+its reply key along with the Original PSBT. These keys are ephemeral and
+must only be used for a single Payjoin Session.</p>
+<h4 id="Secp256k1-based_DHKEM">Secp256k1-based DHKEM</h4>
+<p><a rel="noopener" target="_blank" href="https://www.ietf.org/archive/id/draft-wahby-cfrg-hpke-kem-secp256k1-01.html">Secp256k1-based DHKEM for
+HPKE</a>
+is most appropriate because of secp256k1's availability in bitcoin
+contexts.</p>
+<h4 id="ChaCha20Poly1305_AEAD">ChaCha20Poly1305 AEAD</h4>
+<p>This authenticated encryption with additional data <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/ChaCha20-Poly1305">
+algorithm</a>
+is standardized in <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc8439">RFC
+8439</a> and has high
+performance. ChaCha20Poly1305 AEAD has been implemented <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/15649">in Bitcoin
+Core</a> for <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0324.mediawiki">
+BIP 324 Encrypted
+Transport</a>
+as well. This has widespread support in browsers and common
+cryptographic libraries. AES-GCM is more widespread but slower without
+hardware support and not typically already a dependency in bitcoin software.</p>
+<h4 id="HKDF-SHA256">HKDF-SHA256</h4>
+<p>SHA-256 is necessarily available in bitcoin contexts.</p>
+<h2 id="Attack_vectors">Attack vectors</h2>
+<p>In addition to the attack vectors and mitigations in
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#attack-vectors">BIP 78</a>,
+this proposal has the following attack vectors.</p>
+<h3 id="Directory_Denial_of_Service">Directory Denial of Service</h3>
+<p>Since each mailbox stores arbitrary encrypted payloads, directories are
+vulnerable to flooding. To mitigate such denial of service attacks,
+directory operators may respond with <code>401</code> unauthorized unless an
+authorization token is provided. Authorization tokens must be unlinkable
+to preserve client privacy. A specific unlinkable authorization token
+mechanism is out of the scope of this proposal.</p>
+<h3 id="Network_privacy">Network privacy</h3>
+<p>Oblivious HTTP must be used to protect the IP addresses of both sender
+and receiver from the directory. This requires an OHTTP Key
+Configuration to be shared in the Payjoin URI and for the directory to
+support Oblivious HTTP.</p>
+<p>Unlike BIP 78 implementations, sender and receiver clients will only see
+the IP address of the directory and not that of the client they are
+interacting with.</p>
+<p>Senders that submit requests directly to the directory, without using
+an OHTTP Relay, may reveal their IP address to the receiver since that
+receiver also specifies the directory.</p>
+<h2 id="Backwards_compatibility">Backwards compatibility</h2>
+<p>Senders not supporting Payjoin will just ignore the <code>pj</code> parameter and
+proceed to typical address-based transaction flows.</p>
+<p>All Payjoin versions use <a href="https://bips.dev/77/#payjoin-uri">Bitcoin URIs</a>.
+Receivers may choose to accept BIP 78 payloads at their discretion.</p>
+<p>A BIP 78 sender posts their request to the directory, which stores
+and forwards it to the BIP 77 receiver. A backwards-compatible
+receiver proceeds with the BIP 78 checks if the encapsulated response
+body is UTF-8 plaintext, signifying BIP 78. In order to service the
+request, a BIP 78 response must be returned to the sender within 30
+seconds or else the directory should respond with an <code>unavailable</code> JSON
+error code as <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#receivers-well-known-errors">defined in BIP
+78</a>.</p>
+<h2 id="Reference_implementation">Reference implementation</h2>
+<p>A production reference implementation client can be found at
+<a rel="noopener" target="_blank" href="https://crates.io/crates/payjoin-cli">https://crates.io/crates/payjoin-cli</a>. Source code for the clients, the
+directory, and development kit may be found here:
+<a rel="noopener" target="_blank" href="https://github.com/payjoin/rust-payjoin">https://github.com/payjoin/rust-payjoin</a>. Source code for an Oblivious
+HTTP relay implementation may be found here:
+<a rel="noopener" target="_blank" href="https://github.com/payjoin/ohttp-relay">https://github.com/payjoin/ohttp-relay</a>.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2025-05-29</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
