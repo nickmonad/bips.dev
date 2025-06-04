@@ -353,7 +353,6 @@ Communication between payer and payee as well as hashing the contract and genera
 <h2>Reference implementations</h2>
 
 
-*  Reference wallet implementation, based on Copay project : https://github.com/commerceblock/copay (<a href="https://github.com/commerceblock/copay/pull/1" target="_blank">pull_request</a>)
 *  Reference implementation to Hash to Partial Derivation Path Mapping in javascript (<a href="https://github.com/commerceblock/pay-to-contract-lib/blob/master/lib/contract.js" target="_blank">https://github.com/commerceblock/pay-to-contract-lib</a>)
 
 

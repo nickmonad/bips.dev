@@ -58,7 +58,7 @@ This document is licensed under the 3-clause BSD license.
 The ability to constrain the future of coins beyond what is possible with presigned transactions is at the core of
 numerous attempts to improve bitcoin. Some of the proposed applications include:
 
-*  UTXO sharing schemes like Ark, CoinPools, Timeout Trees, etc. use various types of output restrictions in order to enable multiple parties to share the control of a UTXO, while ensuring that each participant controls their own `balance.
+*  UTXO sharing schemes like Ark, CoinPools, Timeout Trees, etc. use various types of output restrictions in order to enable multiple parties to share the control of a UTXO, while ensuring that each participant controls their own balance.
 *  `OP_VAULT`<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> is a proposed opcode to implement a 2-step withdrawal process, enabling on-chain reactive security.
 *  `OP_CHECKTEMPLATEVERIFY`<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup> is a long-proposed opcode to constrain a transaction to a _template_ with a fixed set of outputs.
 *  Sidechains and rollups could be implemented via a UTXO encumbered with a recursive covenant, updating the sidechain state root every time it is spent.
@@ -164,10 +164,10 @@ The tapscript opcode `OP_SUCCESS187` (`0xbb`) is constrained with new rules to i
 `OP_CHECKCONTRACTVERIFY`.
 
 When evaluating `OP_CHECKCONTRACTVERIFY` (`OP_SUCCESS187`,
-`0xbb`), the expected format of the stack, shown bottom to top, is:
+`0xbb`), the expected format of the stack, shown bottom-to-top, is:
 
 ```
-<mode> <taptree> <pk> <index> <data>
+<data> <index> <pk> <taptree> <mode>
 ```
 
 where:
