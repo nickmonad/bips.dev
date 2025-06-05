@@ -141,6 +141,8 @@ Please see the BNF grammar above for the normative syntax.
 <h3> Examples </h3>
 
 
+Note: The addresses used in these examples are intentionally invalid to prevent accidental transactions.
+
 Just the address:
 ```
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W
