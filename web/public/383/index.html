@@ -149,12 +149,12 @@ Depending on the higher level descriptors, there may be restrictions on the type
 When used at the top level, there can only be at most 3 keys.
 When used inside of a <tt>sh()</tt> expression, there can only be most 15 compressed public keys (this is limited by the P2SH script limit).
 Otherwise the maximum number of keys is 20.</p>
-<p>The output script produced also depends on the value of <tt>k</tt>. If <tt>k</tt> is less than or equal to 16:</p>
-<pre><code>OP_k KEY_1 KEY_2 ... KEY_n OP_CHECKMULTISIG
+<p>The output script produced will be</p>
+<pre><code>k KEY_1 KEY_2 ... KEY_n n OP_CHECKMULTISIG
 </code></pre>
-<p>if <tt>k</tt> is greater than 16:</p>
-<pre><code>k KEY_1 KEY_2 ... KEY_n OP_CHECKMULTISIG
-</code></pre>
+<p>The values <tt>k</tt> and <tt>n</tt> must be minimally encoded integers.
+For values less than or equal to 16, they must be encoded using <tt>OP_0</tt> through <tt>OP_16</tt>.
+For values greater than 16, they must be a push of the signed little endian encoded value without padding.</p>
 <h3><tt>sortedmulti()</tt></h3>
 <p>The only change for <tt>sortedmulti()</tt> is that the keys are sorted lexicographically prior to the creation of the output script.
 This sorting is on the keys that are to be put into the output script, i.e. after all extended keys are derived.</p>
@@ -237,7 +237,7 @@ However the scripts produced are standard scripts so existing software are likel
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-06-05</p>
+                    <p class="font-bold">2025-06-06</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
