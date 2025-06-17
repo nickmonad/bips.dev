@@ -200,12 +200,6 @@ Request 20.30 BTC to "Luke-Jr":
 ```
 
 
-Address with recipient's name as label:
-```
- bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr
-```
-
-
 Request 50 BTC with message:
 ```
  bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Luke-Jr&message=Donation%20for%20project%20xyz
