@@ -55,7 +55,7 @@ A new key expression is defined: <tt>musig()</tt>.
 
 The <tt>musig(KEY, KEY, ..., KEY)</tt> expression can only be used inside of a <tt>tr()</tt>
 expression as a key expression. It additionally cannot be nested within another <tt>musig()</tt>
-expression. Repeated participant public keys are not allowed. The aggregate public key is produced
+expression. Participant public keys may be repeated. The aggregate public key is produced
 by using the <tt>KeyAgg</tt> algorithm on all KEYs specified in the expression after performing all
 specified derivation. As with script expressions, KEY can contain child derivation specified by
 <tt>/*</tt>. A new aggregate public key will be computed for each child index. Keys must be sorted
@@ -80,7 +80,7 @@ only unhardened derivation from the aggregate public key is allowed, and thus th
 following the <tt>musig()</tt> expression cannot contain
 <tt>/NUMh</tt> or <tt>/NUM'</tt> derivation steps nor <tt>/*h</tt>, or <tt>/*'</tt> child derivation.
 For these <tt>musig()</tt> expressions, the KEY expressions contained within must be xpubs or derived from
-xpubs, and cannot contain child derivation as specified by a <tt>/*</tt>, <tt>/*'</tt>, or <tt>/*h</tt>.
+xpubs, and cannot contain child derivation as specified by a <tt>/*</tt>, <tt>/*'</tt>, <tt>/*h</tt>, or multipath as specified with <tt>/<NUM;NUM;...></tt>.
 
 <h2>Test Vectors</h2>
 
@@ -104,6 +104,8 @@ will have the 0th, 1st, and 2nd scripts listed.
     *  <tt>512068983d461174afc90c26f3b2821d8a9ced9534586a756763b68371a404635cc8</tt>
     *  <tt>5120368e2d864115181bdc8bb5dc8684be8d0760d5c33315570d71a21afce4afd43e</tt>
     *  <tt>512097a1e6270b33ad85744677418bae5f59ea9136027223bc6e282c47c167b471d5</tt>
+*  <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/1,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/1)/2)</tt>
+    *  <tt>5120a17ceacd6422bd5ffd9f165807b254b7d68ad39f179cc4f11545a6835227e97c</tt>
 
 
 Invalid descriptors
@@ -118,6 +120,7 @@ Invalid descriptors
 *  <tt>musig()</tt> is not allowed in <tt>sh()</tt>: <tt>sh(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))</tt>
 *  Ranged <tt>musig()</tt> requires all participants to be xpubs: <tt>tr(musig(02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9,03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66)/0/0)</tt>
 *  Cannot have ranged participants if <tt>musig()</tt> is also ranged: <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/*,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0/*)</tt>
+*  Cannot have multipath participants if <tt>musig()</tt> is also multipath: <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/<0;1>,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/<2;3>)</tt>
 *  <tt>musig()</tt> cannot have hardened derivation steps: <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0h/*)</tt>
 *  <tt>musig()</tt> cannot have hardened child derivation: <tt>tr(musig(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y)/0/*h)</tt>
 
