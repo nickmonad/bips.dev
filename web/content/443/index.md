@@ -207,7 +207,7 @@ would always be hard-coded via a push in the script, the risk of mistakes seems 
 
 The following values of the other parameters have special meanings:
 *  If the `<taptree>` is -1, it is replaced with the Merkle root of the current input's tapscript tree. If the taptree is the empty buffer, then the taptweak is skipped.
-*  If the `<pk>` is 0, it is replaced with the NUMS x-only pubkey `0x50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0` defined in BIP-0340. If the `<pk>` is -1, it is replaced with the taproot internal key of the current input.
+*  If the `<pk>` is 0, it is replaced with the NUMS x-only pubkey `0x50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0` defined in <a href="/340" target="_blank">BIP-340</a>. If the `<pk>` is -1, it is replaced with the taproot internal key of the current input.
 *  If the `<index>` is -1, it is replaced with the index of the current input.
 *  If the `<data>` is the empty buffer, then there is no data tweak for the input/output being checked.
 
@@ -243,7 +243,7 @@ def tweak_embed_data(pubkey, data):
     return 0 if has_even_y(Q) else 1, bytes_from_int(x(Q))
 ```
 
-The `taproot_tweak_pubkey` from <a href="/341" target="_blank">BIP341</a> is also used as a helper function.
+The `taproot_tweak_pubkey` from <a href="/341" target="_blank">BIP-341</a> is also used as a helper function.
 
 The following notations are used in the pseudocode below:
 *  `n_inputs` and `n_outputs` are the number of inputs and outputs of the transaction, respectively;
@@ -507,7 +507,7 @@ without upgrade except for mining and block validation.
 
 
 1. [^](#cite_ref_1) <a href="/345" target="_blank">BIP-345</a>
-2. [^](#cite_ref_2) <a href="/119" target="_blank">BIP-114</a>
+2. [^](#cite_ref_2) <a href="/119" target="_blank">BIP-119</a>
 3. [^](#cite_ref_3) https://bitvm.org/
 
 <h2> Acknowledgements </h2>
