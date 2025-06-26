@@ -291,7 +291,7 @@ Common single-signature account patterns:
 Common multisig schemes:
 *  <tt>wsh(multi(2,@0/**,@1/**))</tt> - SegWit 2-of-2 multisig, keys in order.
 *  <tt>sh(sortedmulti(2,@0/**,@1/**,@2/**))</tt> - Legacy 2-of-3 multisig, sorted keys.
-*  <tt>tr(musig(@0/**,@1/**))</tt> - MuSig2 2-of-2 in the taproot keypath
+*  <tt>tr(musig(@0,@1)/**)</tt> - MuSig2 2-of-2 in the taproot keypath
 
 
 Some miniscript policies in <tt>wsh</tt>:
