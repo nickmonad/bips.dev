@@ -128,7 +128,7 @@ exhaustive, as there are many more possible combinations.
 in the same transaction, or multiple times with the _deduct_ logic. This prevents duplicate or inconsistent counting
 of the same amounts.
 
-**Remark:** it is allowed to check for multiple inputs to check the same output with the _default_ logic. This
+**Remark:** it is allowed for multiple inputs to check the same output with the _default_ logic. This
 allows multiple inputs to aggregate (in full or in part) their amounts to the same output.
 
 -----
@@ -156,6 +156,19 @@ allows multiple inputs to aggregate (in full or in part) their amounts to the sa
 Note that the _deduct_ semantic does not allow to check the exact amount of its output. Therefore, in contracts using
 a scheme similar to figure 3 or 4 above, amounts should be constrained either with a signature, or with future
 introspection opcodes that allow fixing the amount. In lack of that, amounts would be malleable.
+
+<h3> Paying fees </h3>
+
+
+Since the amount-checking semantics of `OP_CHECKCONTRACTVERIFY` are designed to preserve the entire input
+amount across one or more outputs, transaction fees must be paid exogenously. This can be achieved by adding an extra
+input to the transaction, by using an anchor output, or with other future mechanisms.
+
+The _ignore_ amount mode is not a safe mechanism for paying endogenous fees. An output checked with this mode has no
+amount constraint, which would allow a miner to claim the entire value of that input. This mode is included for forward
+compatibility with potential future soft forks that may introduce other amount-related logic that is compatible with
+`OP_CHECKCONTRACTVERIFY`'s script checks.
+
 
 <h2> Specification </h2>
 
@@ -207,7 +220,7 @@ would always be hard-coded via a push in the script, the risk of mistakes seems 
 
 The following values of the other parameters have special meanings:
 *  If the `<taptree>` is -1, it is replaced with the Merkle root of the current input's tapscript tree. If the taptree is the empty buffer, then the taptweak is skipped.
-*  If the `<pk>` is 0, it is replaced with the NUMS x-only pubkey `0x50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0` defined in <a href="/340" target="_blank">BIP-340</a>. If the `<pk>` is -1, it is replaced with the taproot internal key of the current input.
+*  If the `<pk>` is 0, it is replaced with the NUMS x-only pubkey `0x50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0` defined in <a href="/341" target="_blank">BIP-341</a>. If the `<pk>` is -1, it is replaced with the taproot internal key of the current input.
 *  If the `<index>` is -1, it is replaced with the index of the current input.
 *  If the `<data>` is the empty buffer, then there is no data tweak for the input/output being checked.
 
@@ -224,12 +237,16 @@ The specification is divided into three parts:
 *  the opcode evaluation.
 
 
-The following helper function is a version of `taproot_tweak_pubkey`, except that a raw 32-byte data is used
-as the tweak.
+The following helper function is a variant of `taproot_tweak_pubkey` from <a href="/341" target="_blank">BIP341</a>,
+except that a regular SHA256-hash is used instead of a tagged hash, and the pubkey is returned unchanged if the length
+of `data` is 0.
 
 ```
 def tweak_embed_data(pubkey, data):
     assert len(pubkey) == 32
+
+    if len(data) == 0:
+      return None, pubkey
 
     data_tweak = sha256(pubkey + data)
 
@@ -243,7 +260,7 @@ def tweak_embed_data(pubkey, data):
     return 0 if has_even_y(Q) else 1, bytes_from_int(x(Q))
 ```
 
-The `taproot_tweak_pubkey` from <a href="/341" target="_blank">BIP-341</a> is also used as a helper function.
+The `taproot_tweak_pubkey` function is also used as a helper in the pseudocode below.
 
 The following notations are used in the pseudocode below:
 *  `n_inputs` and `n_outputs` are the number of inputs and outputs of the transaction, respectively;

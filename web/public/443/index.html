@@ -198,7 +198,7 @@ exhaustive, as there are many more possible combinations.</p>
 <p><strong>Remark:</strong> validation fails if the amount of an output is checked with both the <em>default</em> and the <em>deduct</em> logic
 in the same transaction, or multiple times with the <em>deduct</em> logic. This prevents duplicate or inconsistent counting
 of the same amounts.</p>
-<p><strong>Remark:</strong> it is allowed to check for multiple inputs to check the same output with the <em>default</em> logic. This
+<p><strong>Remark:</strong> it is allowed for multiple inputs to check the same output with the <em>default</em> logic. This
 allows multiple inputs to aggregate (in full or in part) their amounts to the same output.</p>
 <hr />
 <img src="bip-0443/amount_example_1.png" />
@@ -216,6 +216,14 @@ allows multiple inputs to aggregate (in full or in part) their amounts to the sa
 <p>Note that the <em>deduct</em> semantic does not allow to check the exact amount of its output. Therefore, in contracts using
 a scheme similar to figure 3 or 4 above, amounts should be constrained either with a signature, or with future
 introspection opcodes that allow fixing the amount. In lack of that, amounts would be malleable.</p>
+<h3> Paying fees </h3>
+<p>Since the amount-checking semantics of <code>OP_CHECKCONTRACTVERIFY</code> are designed to preserve the entire input
+amount across one or more outputs, transaction fees must be paid exogenously. This can be achieved by adding an extra
+input to the transaction, by using an anchor output, or with other future mechanisms.</p>
+<p>The <em>ignore</em> amount mode is not a safe mechanism for paying endogenous fees. An output checked with this mode has no
+amount constraint, which would allow a miner to claim the entire value of that input. This mode is included for forward
+compatibility with potential future soft forks that may introduce other amount-related logic that is compatible with
+<code>OP_CHECKCONTRACTVERIFY</code>'s script checks.</p>
 <h2> Specification </h2>
 <p>The tapscript opcode <code>OP_SUCCESS187</code> (<code>0xbb</code>) is constrained with new rules to implement
 <code>OP_CHECKCONTRACTVERIFY</code>.</p>
@@ -253,7 +261,7 @@ would always be hard-coded via a push in the script, the risk of mistakes seems 
 <p>The following values of the other parameters have special meanings:</p>
 <ul>
 <li>If the <code>&lt;taptree&gt;</code> is -1, it is replaced with the Merkle root of the current input's tapscript tree. If the taptree is the empty buffer, then the taptweak is skipped.</li>
-<li>If the <code>&lt;pk&gt;</code> is 0, it is replaced with the NUMS x-only pubkey <code>0x50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0</code> defined in <a href="/340" target="_blank">BIP-340</a>. If the <code>&lt;pk&gt;</code> is -1, it is replaced with the taproot internal key of the current input.</li>
+<li>If the <code>&lt;pk&gt;</code> is 0, it is replaced with the NUMS x-only pubkey <code>0x50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0</code> defined in <a href="/341" target="_blank">BIP-341</a>. If the <code>&lt;pk&gt;</code> is -1, it is replaced with the taproot internal key of the current input.</li>
 <li>If the <code>&lt;index&gt;</code> is -1, it is replaced with the index of the current input.</li>
 <li>If the <code>&lt;data&gt;</code> is the empty buffer, then there is no data tweak for the input/output being checked.</li>
 </ul>
@@ -266,10 +274,14 @@ is invalid, and makes the opcode immediately fail validation.</p>
 <li>the input initialization;</li>
 <li>the opcode evaluation.</li>
 </ul>
-<p>The following helper function is a version of <code>taproot_tweak_pubkey</code>, except that a raw 32-byte data is used
-as the tweak.</p>
+<p>The following helper function is a variant of <code>taproot_tweak_pubkey</code> from <a href="/341" target="_blank">BIP341</a>,
+except that a regular SHA256-hash is used instead of a tagged hash, and the pubkey is returned unchanged if the length
+of <code>data</code> is 0.</p>
 <pre><code>def tweak_embed_data(pubkey, data):
     assert len(pubkey) == 32
+
+    if len(data) == 0:
+      return None, pubkey
 
     data_tweak = sha256(pubkey + data)
 
@@ -282,7 +294,7 @@ as the tweak.</p>
     Q = point_add(P, point_mul(G, t))
     return 0 if has_even_y(Q) else 1, bytes_from_int(x(Q))
 </code></pre>
-<p>The <code>taproot_tweak_pubkey</code> from <a href="/341" target="_blank">BIP-341</a> is also used as a helper function.</p>
+<p>The <code>taproot_tweak_pubkey</code> function is also used as a helper in the pseudocode below.</p>
 <p>The following notations are used in the pseudocode below:</p>
 <ul>
 <li><code>n_inputs</code> and <code>n_outputs</code> are the number of inputs and outputs of the transaction, respectively;</li>
@@ -495,7 +507,7 @@ without upgrade except for mining and block validation.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-06-26</p>
+                    <p class="font-bold">2025-06-27</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
