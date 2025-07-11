@@ -309,12 +309,13 @@ fragment of the Bitcoin URI.</p>
 The HRP is used as the parameter key, followed by the '1' separator,
 followed by the parameter value encoded using the bech32 character set in
 <a href="https://bips.dev/77/#uppercase-url">uppercase</a>. No checksum is used. Parameters are separated
-by a <code>+</code> character.</p>
-<p>The following parameters are defined, and must be provided in reverse
-lexicographical order:</p>
+by a <code>-</code> character.</p>
+<p>The following parameters are defined, and must be provided in lexicographical
+order:</p>
 <ul>
-<li><code>RK</code>: encodes the <em>receiver key</em> as a 33-byte compressed public key.
-Senders will initiate HPKE with the receiver using this key.</li>
+<li><code>EX</code>: specifies a <a href="https://bips.dev/77/#session-expiration">session
+expiration</a> in <a rel="noopener" target="_blank" href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16">unix
+time</a>.</li>
 <li><code>OH</code>: encodes an alternate format of the OHTTP Key Configuration of
 the directory. It consists of a 33-byte compressed public key of the
 directory's OHTTP Gateway, prefixed by the 2-byte Key Identifier. A <a rel="noopener" target="_blank" href="https://www.ietf.org/rfc/rfc9458.html#section-3.1">
@@ -322,12 +323,14 @@ RFC 9458 Key
 Configuration</a>
 is reconstructed by assuming the HPKE KEM ID and Symmetric Algorithms
 are <a href="https://bips.dev/77/#secp256k1-hybrid-public-key-encryption">fixed</a>.</li>
-<li><code>EX</code>: specifies a <a href="https://bips.dev/77/#session-expiration">session
-expiration</a> in <a rel="noopener" target="_blank" href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16">unix
-time</a>.</li>
+<li><code>RK</code>: encodes the <em>receiver key</em> as a 33-byte compressed public key.
+Senders will initiate HPKE with the receiver using this key.</li>
 </ul>
 <p>For example, a properly encoded endpoint Bitcoin URI looks like this
-<code>bitcoin:tb1q6q6de88mj8qkg0q5lupmpfexwnqjsr4d2gvx2p?amount=0.00666666&amp;pjos=0&amp;pj=HTTPS://PAYJO.IN/TXJCGKTKXLUUZ%23RK1Q0DJS3VVDXWQQTLQ8022QGXSX7ML9PHZ6EDSF6AKEWQG758JPS2EV+OH1QYPM59NK2LXXS4890SUAXXYT25Z2VAPHP0X7YEYCJXGWAG6UG9ZU6NQ+EX1WKV8CEC</code></p>
+<code>bitcoin:tb1q6q6de88mj8qkg0q5lupmpfexwnqjsr4d2gvx2p?amount=0.00666666&amp;pjos=0&amp;pj=HTTPS://PAYJO.IN/TXJCGKTKXLUUZ%23EX1WKV8CEC-OH1QYPM59NK2LXXS4890SUAXXYT25Z2VAPHP0X7YEYCJXGWAG6UG9ZU6NQ-RK1Q0DJS3VVDXWQQTLQ8022QGXSX7ML9PHZ6EDSF6AKEWQG758JPS2EV</code></p>
+<p>Until 2026 implementations SHOULD also accept <code>+</code> as a fragment parameter
+separator and not enforce parameter ordering requirements, for compatibility
+with the <a href="https://bips.dev/77/#changelog">previous version of this document</a>.</p>
 <h3 id="Sender_Original_PSBT_Messaging">Sender Original PSBT Messaging</h3>
 <p>The sender constructs the fallback transaction, a typical transaction
 spending funds to the receiver's address specified in the Payjoin URI.
@@ -708,6 +711,24 @@ directory, and development kit may be found here:
 <a rel="noopener" target="_blank" href="https://github.com/payjoin/rust-payjoin">https://github.com/payjoin/rust-payjoin</a>. Source code for an Oblivious
 HTTP relay implementation may be found here:
 <a rel="noopener" target="_blank" href="https://github.com/payjoin/ohttp-relay">https://github.com/payjoin/ohttp-relay</a>.</p>
+<h2 id="Changelog">Changelog</h2>
+<ul>
+<li>0.2.0 2025-07-08
+<ul>
+<li>Change fragment parameter delimiter from <code>+</code> to <code>-</code> to improve
+compatibility with generic URI parsing libraries, and order them
+lexicographically. <code>+</code> can cause issues due to a common convention (not
+specified in RFC 3986, but in RFC 1866, in relation to HTML form
+submission and query parameters) of interpreting <code>+</code> as <code> </code> when decoding
+URIs.</li>
+</ul>
+</li>
+<li>0.1.0 2025-05-28
+<ul>
+<li>First merged Draft version of BIP 77</li>
+</ul>
+</li>
+</ul>
 
         </article>
     </div>
@@ -718,7 +739,7 @@ HTTP relay implementation may be found here:
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-07-10</p>
+                    <p class="font-bold">2025-07-11</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
