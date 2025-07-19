@@ -211,8 +211,8 @@ appear in the following order. Headers marked with &quot;*&quot; are optional. A
   Status: &lt;Draft | Complete | Deployed | Closed&gt;
   Type: &lt;Specification | Informational | Process&gt;
   Created: &lt;Date of number assignment (yyyy-mm-dd), or &quot;?&quot;&gt;
-  License: &lt;Identifier(s) of acceptable license(s)&gt;
-* License-Code: &lt;Identifier(s) for Code under different acceptable license(s)&gt;
+  License: &lt;SPDX License Expression&gt;
+* License-Code: &lt;SPDX License Expression for Code (if different)&gt;
 * Discussion: &lt;Noteworthy discussion threads in &quot;yyyy-mm-dd: URL&quot; format&gt;
 * Version: &lt;MAJOR.MINOR.PATCH&gt;
 * Requires: &lt;BIP number(s)&gt;
@@ -248,10 +248,8 @@ Authors header. See the <a href="https://bips.dev/3/#bip-ownership">BIP Ownershi
 <p>Type — See the <a href="https://bips.dev/3/#bip-types">BIP Types</a> section below for a description of the three BIP types.</p>
 </li>
 <li>
-<p>License and License-Code — These headers list SPDX License Identifier(s) of the acceptable licenses under which the
-BIP and corresponding code are available. See the <a href="https://bips.dev/3/#bip-licensing">BIP Licensing</a> section below for a description of
-the Licenses and their SPDX License Identifiers. If there are multiple acceptable licenses, each should be on a
-separate line.</p>
+<p>License and License-Code — These headers specify SPDX License Expressions describing the licenses under which the
+BIP and corresponding code are available. See the <a href="https://bips.dev/3/#bip-licensing">BIP Licensing</a> section below.</p>
 </li>
 <li>
 <p>Discussion — The Discussion header points the audience to relevant discussions of the BIP, e.g., the mailing list
@@ -467,56 +465,57 @@ manner (e.g., four weeks), the BIP Editors will make a unilateral decision wheth
 interoperability. Open standards reduce friction, and encourage anybody and everyone to contribute, compete, and
 innovate on a level playing field. Only freely licensed contributions are accepted to the BIPs repository.</p>
 <h3 id="Specification-1">Specification</h3>
-<p>Each new BIP must identify at least one acceptable license in its preamble. Licenses must be referenced per their
-respective <a rel="noopener" target="_blank" href="https://spdx.org/licenses">SPDX License identifier</a>. New BIPs may be accepted with the licenses described
-below.</p>
+<p>Each new BIP must specify in two ways under which license terms it is made available. First, it must specify an <a rel="noopener" target="_blank" href="https://spdx.dev/ids/">SPDX
+License Expression</a> in the License field in the preamble. Second, it must include a matching
+Copyright section, possibly providing further details on licensing.</p>
 <p>For example, a preamble might include the following License header:</p>
-<pre><code>License: CC0-1.0
-         GNU-All-Permissive
+<pre><code>License: CC0-1.0 OR MIT
 </code></pre>
-<p>In this case, the BIP text is fully licensed under both the Creative Commons CC0 1.0 Universal license as well as the
-GNU All-Permissive License, and anyone may modify and redistribute the text provided they comply with the terms of
-<em>either</em> license. In other words, the license list is an &quot;OR choice&quot;, not an &quot;AND also&quot; requirement.</p>
-<p>It is also possible to license source code differently from the BIP text by including the optional License-Code header
-after the License header. Again, each license must be referenced by their respective SPDX License identifier shown
-below.</p>
-<p>Each source code file or source directory should specify the license under which it is made available as is common in
-software (e.g., with a license header or a LICENSE/COPYING file). It is recommended to make any test vectors available
-under CC0-1.0 or GNU-All-Permissive in addition to any other licenses to allow anyone to copy test vectors into their
-implementations without introducing license hindrances. Licenses listed in the License-Code header apply to all source
-directories, source code files, and test vectors provided with the BIP except those where a LICENSE file in a directory
+<p>In this case, the BIP (including all auxiliary files) is made available under the terms of both Creative Commons CC0 1.0 Universal as well as the
+MIT License, and anyone may modify and redistribute it provided they comply with the terms of
+<em>either</em> license, at their option. In other words, the license list is an &quot;OR choice&quot;, not an &quot;AND also&quot; requirement. See the <a rel="noopener" target="_blank" href="https://spdx.dev/ids/">SPDX
+documentation</a> and the <a rel="noopener" target="_blank" href="https://spdx.org/licenses/">SPDX License List</a> for further details.</p>
+<p>It is also possible to specify that source code is licensed differently by including the optional License-Code header
+after the License header. Again, the licensing terms must be specified using an SPDX License Expression.</p>
+<p>Each auxiliary source code file or source directory should specify the license under which it is made available as is common in
+software (e.g., with a <a rel="noopener" target="_blank" href="https://spdx.dev/ids/"><code>SPDX-License-Identifier: &lt;SPDX License Expression&gt;</code> comment</a>,
+a license header, or a LICENSE/COPYING file). It is recommended to make any test vectors available
+under CC0-1.0 or FSFAP in addition to any other licenses to allow anyone to copy test vectors into their
+implementations without introducing license hindrances. Licenses listed in the License-Code header apply to all source directories,
+source code files, and test vectors provided with the BIP except those where a LICENSE file in a directory
 or the file header states otherwise.</p>
 <p>For example, a preamble specifying the optional License-Code header might look like:</p>
 <pre><code>License:         CC0-1.0
 License-Code:    MIT
 </code></pre>
-<p>In this case, the code in the BIP is not available under CC0-1.0, but is only available under the terms of the MIT
+<p>In this case, the source code in the BIP is not available under Creative Commons CC0 1.0 Universal, but is only available under the MIT
 License.</p>
-<p>BIPs are not required to be <em>exclusively</em> licensed under approved terms, and may also be licensed under unacceptable
-licenses <em>in addition to</em> at least one acceptable license. In this case, only the acceptable license(s) should be listed
-in the License and License-Code headers.</p>
-<p>It is recommended that BIPs that include literal code be licensed under the same license terms as the project it
-modifies. For example, literal code intended for Bitcoin Core would ideally be licensed (or dual-licensed) under the MIT
-license terms.</p>
+<p>It is recommended that source code included in a BIP (whether within the text or in auxiliary files) be licensed under the same license terms as the project it
+is proposed to modify, if any. For example, changes intended for Bitcoin Core would ideally be licensed (also) under the MIT
+License.</p>
 <p>In all cases, details of the licensing terms must be provided in the Copyright section of the BIP.</p>
 <h4 id="Acceptable_Licenses">Acceptable Licenses<sup class="footnote-reference"><a href="#licenses">14</a></sup></h4>
+<p>Each new BIP must be made available under at least one acceptable license as listed below. BIPs are not required to be
+<em>exclusively</em> licensed under approved terms, and may also be licensed under other licenses <em>in addition to</em> at least one
+acceptable license.</p>
+<p>In other words, a new BIP must specify an SPDX License Expression that is either &quot;L&quot; or equivalent to &quot;L OR E&quot; for some
+acceptable license L from the following list and another SPDX License Expression E.</p>
 <ul>
-<li>BSD-2-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-2-Clause">OSI-approved BSD 2-clause license</a></li>
-<li>BSD-3-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-3-Clause">OSI-approved BSD 3-clause license</a></li>
+<li>BSD-2-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause License</a></li>
+<li>BSD-3-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a></li>
 <li>CC0-1.0: <a rel="noopener" target="_blank" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal</a></li>
-<li>GNU-All-Permissive: <a rel="noopener" target="_blank" href="http://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html">GNU All-Permissive License</a></li>
+<li>FSFAP: <a rel="noopener" target="_blank" href="https://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html">FSF All Permissive License</a></li>
 <li>CC-BY-4.0: <a rel="noopener" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a></li>
-<li>MIT: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/MIT">Expat/MIT/X11 license</a></li>
-<li>Apache-2.0: <a rel="noopener" target="_blank" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, version 2.0</a></li>
-<li>BSL-1.0: <a rel="noopener" target="_blank" href="http://www.boost.org/LICENSE_1_0.txt">Boost Software License, version 1.0</a></li>
+<li>MIT: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/MIT">Expat/MIT/X11 License</a></li>
+<li>Apache-2.0: <a rel="noopener" target="_blank" href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a></li>
+<li>BSL-1.0: <a rel="noopener" target="_blank" href="https://www.boost.org/LICENSE_1_0.txt">Boost Software License 1.0</a></li>
 </ul>
 <h4 id="Not_Acceptable_Licenses">Not Acceptable Licenses</h4>
 <p>All licenses not explicitly included in the above lists are not acceptable terms for a Bitcoin Improvement Proposal.
-However, BIPs predating this proposal were allowed under other terms, and should use these abbreviations
-when no other license is granted:</p>
+However, BIPs predating this proposal were accepted under other terms, and should use one the following identifiers.</p>
 <ul>
-<li>PD: Released into the public domain</li>
-<li>OPL: <a rel="noopener" target="_blank" href="http://opencontent.org/openpub/">Open Publication License, version 1.0</a></li>
+<li>LicenseRef-PD: Placed into the public domain</li>
+<li>OPUBL-1.0: <a rel="noopener" target="_blank" href="https://opencontent.org/openpub/">Open Publication License 1.0</a></li>
 </ul>
 <h2 id="BIP_Editors">BIP Editors</h2>
 <p>The current BIP Editors are:</p>
@@ -774,9 +773,9 @@ code:</p>
 * PD: 42
 * CC0-1.0: 23
 * BSD-3-Clause: 19
-* OPL: 5
+* OPUBL-1.0: 5
 * CC-BY-SA-4.0: 4
-* GNU-All-Permissive: 3
+* FSFAP: 3
 * MIT: 2
 * CC-BY-4.0: 1
 
@@ -787,15 +786,15 @@ License-Code used:
 The following previously acceptable licenses were retained per request of reviewers, even though they have so far
 never been used in the BIPs process:
 
-* Apache-2.0: [Apache License, version 2.0](http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0)
-* BSL-1.0: [Boost Software License, version 1.0](http:&#x2F;&#x2F;www.boost.org&#x2F;LICENSE_1_0.txt)
+* Apache-2.0: [Apache License 2.0](https:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0)
+* BSL-1.0: [Boost Software License 1.0](https:&#x2F;&#x2F;www.boost.org&#x2F;LICENSE_1_0.txt)
 
 The following previously acceptable licenses have never been used in the BIPs Process and have been dropped:
 
-* AGPL-3.0+: [GNU Affero General Public License (AGPL), version 3 or newer](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;agpl-3.0.en.html)
-* FDL-1.3: [GNU Free Documentation License, version 1.3](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;fdl-1.3.en.html)
-* GPL-2.0+: [GNU General Public License (GPL), version 2 or newer](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;old-licenses&#x2F;gpl-2.0.en.html)
-* LGPL-2.1+: [GNU Lesser General Public License (LGPL), version 2.1 or newer](http:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;old-licenses&#x2F;lgpl-2.1.en.html)
+* AGPL-3.0+: [GNU Affero General Public License (AGPL) 3](https:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;agpl-3.0.en.html)
+* FDL-1.3: [GNU Free Documentation License 1.3](https:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;fdl-1.3.en.html)
+* GPL-2.0+: [GNU General Public License (GPL) 2 or newer](https:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;old-licenses&#x2F;gpl-2.0.en.html)
+* LGPL-2.1+: [GNU Lesser General Public License (LGPL) 2.1 or newer](https:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;old-licenses&#x2F;lgpl-2.1.en.html)
 
 Why are software licenses included?
 
@@ -812,10 +811,10 @@ Why is CC-BY-SA-4.0 no longer acceptable for new BIPs?
   and therefore CC-BY-SA-4.0 (and the GPL-flavors) is no longer considered acceptable for new BIPs. As mentioned
   above, existing BIPs will retain their original licensing.
 
-Why are OPL and Public Domain no longer acceptable for new BIPs?
+Why are Open Publication License and Public Domain no longer acceptable for new BIPs?
 
 * Public domain is not universally recognised as a legitimate action, thus it is inadvisable.
-* The OPL is generally regarded as obsolete, and not a license suitable for new publications.
+* The Open Publication License is generally regarded as obsolete, and not a license suitable for new publications.
 </code></pre>
 
         </article>
@@ -827,7 +826,7 @@ Why are OPL and Public Domain no longer acceptable for new BIPs?
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-07-18</p>
+                    <p class="font-bold">2025-07-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
