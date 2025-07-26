@@ -343,13 +343,14 @@ After the inputs have been selected, the sender can create one or more outputs f
 *  Let _a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub>_, where each _a<sub>i</sub>_ has been negated if necessary
     *  If _a = 0_, fail
 *  Let _input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)_, where _outpoint<sub>L</sub>_ is the smallest _outpoint_ lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref> and _A = a·G_
+    *  If _input_hash_ is not a valid scalar, i.e., if _input_hash = 0_ or _input_hash_ is larger or equal to the secp256k1 group order, fail
 *  Group receiver silent payment addresses by _B<sub>scan</sub>_ (e.g. each group consists of one _B<sub>scan</sub>_ and one or more _B<sub>m</sub>_)
 *  For each group:
     *  Let _ecdh_shared_secret = input_hash·a·B<sub>scan</sub>_
     *  Let _k = 0_
     *  For each _B<sub>m</sub>_ in the group:
         *  Let _t<sub>k</sub> = hash<sub>BIP0352/SharedSecret</sub>(ser<sub>P</sub>(ecdh_shared_secret) || ser<sub>32</sub>(k))_
-                *  If _t<sub>k</sub>_ is not valid tweak, i.e., if _t<sub>k</sub> = 0_ or _t<sub>k</sub>_ is larger or equal to the secp256k1 group order, fail
+                *  If _t<sub>k</sub>_ is not a valid scalar, i.e., if _t<sub>k</sub> = 0_ or _t<sub>k</sub>_ is larger or equal to the secp256k1 group order, fail
         *  Let _P<sub>mn</sub> = B<sub>m</sub> + t<sub>k</sub>·G_
         *  Encode _P<sub>mn</sub>_ as a <a href="/341" target="_blank">BIP341</a> taproot output
         *  Optionally, repeat with k++ to create additional outputs for the current _B<sub>m</sub>_
@@ -383,12 +384,13 @@ If each of the checks in _<a href="#scanning-silent-payment-eligible-transaction
 *  Let _A = A<sub>1</sub> + A<sub>2</sub> + ... + A<sub>n</sub>_, where each _A<sub>i</sub>_ is the public key of an input from the _<a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a>_ list
     *  If _A_ is the point at infinity, skip the transaction
 *  Let _input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)_, where _outpoint<sub>L</sub>_ is the smallest _outpoint_ lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref>
+    *  If _input_hash_ is not a valid scalar, i.e., if _input_hash = 0_ or _input_hash_ is larger or equal to the secp256k1 group order, fail
 *  Let _ecdh_shared_secret = input_hash·b<sub>scan</sub>·A_
 *  Check for outputs:
     *  Let _outputs_to_check_ be the taproot output keys from all taproot outputs in the transaction (spent and unspent).
     *  Starting with _k = 0_:
         *  Let _t<sub>k</sub> = hash<sub>BIP0352/SharedSecret</sub>(ser<sub>P</sub>(ecdh_shared_secret) || ser<sub>32</sub>(k))_
-                *  If _t<sub>k</sub>_ is not valid tweak, i.e., if _t<sub>k</sub> = 0_ or _t<sub>k</sub>_ is larger or equal to the secp256k1 group order, fail
+                *  If _t<sub>k</sub>_ is not a valid scalar, i.e., if _t<sub>k</sub> = 0_ or _t<sub>k</sub>_ is larger or equal to the secp256k1 group order, fail
         *  Compute _P<sub>k</sub> = B<sub>spend</sub> + t<sub>k</sub>·G_
         *  For each _output_ in _outputs_to_check_:
                 *  If _P<sub>k</sub>_ equals _output_:
@@ -564,6 +566,8 @@ The `MAJOR` version is incremented if changes to the BIP are introduced that are
 The `MINOR` version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
 The `PATCH` version is incremented for other changes that are noteworthy (bug fixes, test vectors, important clarifications, etc.).
 
+*  **1.0.2** (2025-07-25):
+    *  Clarify how to handle the improbable corner case where the output of SHA256 is equal to 0 or greater than or equal to the secp256k1 curve order.
 *  **1.0.1** (2024-06-22):
     *  Add steps to fail if private key sum is zero (for sender) or public key sum is point at infinity (for receiver), add corresponding test vectors.
 *  **1.0.0** (2024-05-08):

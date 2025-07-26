@@ -355,7 +355,11 @@
 <li>If <em>a = 0</em>, fail</li>
 </ul>
 </li>
-<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref> and <em>A = a·G</em></li>
+<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref> and <em>A = a·G</em>
+<ul>
+<li>If <em>input_hash</em> is not a valid scalar, i.e., if <em>input_hash = 0</em> or <em>input_hash</em> is larger or equal to the secp256k1 group order, fail</li>
+</ul>
+</li>
 <li>Group receiver silent payment addresses by <em>B<sub>scan</sub></em> (e.g. each group consists of one <em>B<sub>scan</sub></em> and one or more <em>B<sub>m</sub></em>)</li>
 <li>For each group:
 <ul>
@@ -364,7 +368,7 @@
 <li>For each <em>B<sub>m</sub></em> in the group:
 <ul>
 <li>Let <em>t<sub>k</sub> = hash<sub>BIP0352/SharedSecret</sub>(ser<sub>P</sub>(ecdh_shared_secret) || ser<sub>32</sub>(k))</em>
-*  If <em>t<sub>k</sub></em> is not valid tweak, i.e., if <em>t<sub>k</sub> = 0</em> or <em>t<sub>k</sub></em> is larger or equal to the secp256k1 group order, fail</li>
+*  If <em>t<sub>k</sub></em> is not a valid scalar, i.e., if <em>t<sub>k</sub> = 0</em> or <em>t<sub>k</sub></em> is larger or equal to the secp256k1 group order, fail</li>
 <li>Let <em>P<sub>mn</sub> = B<sub>m</sub> + t<sub>k</sub>·G</em></li>
 <li>Encode <em>P<sub>mn</sub></em> as a <a href="/341" target="_blank">BIP341</a> taproot output</li>
 <li>Optionally, repeat with k++ to create additional outputs for the current <em>B<sub>m</sub></em></li>
@@ -391,7 +395,11 @@
 <li>If <em>A</em> is the point at infinity, skip the transaction</li>
 </ul>
 </li>
-<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref></li>
+<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref>
+<ul>
+<li>If <em>input_hash</em> is not a valid scalar, i.e., if <em>input_hash = 0</em> or <em>input_hash</em> is larger or equal to the secp256k1 group order, fail</li>
+</ul>
+</li>
 <li>Let <em>ecdh_shared_secret = input_hash·b<sub>scan</sub>·A</em></li>
 <li>Check for outputs:
 <ul>
@@ -399,7 +407,7 @@
 <li>Starting with <em>k = 0</em>:
 <ul>
 <li>Let <em>t<sub>k</sub> = hash<sub>BIP0352/SharedSecret</sub>(ser<sub>P</sub>(ecdh_shared_secret) || ser<sub>32</sub>(k))</em>
-*  If <em>t<sub>k</sub></em> is not valid tweak, i.e., if <em>t<sub>k</sub> = 0</em> or <em>t<sub>k</sub></em> is larger or equal to the secp256k1 group order, fail</li>
+*  If <em>t<sub>k</sub></em> is not a valid scalar, i.e., if <em>t<sub>k</sub> = 0</em> or <em>t<sub>k</sub></em> is larger or equal to the secp256k1 group order, fail</li>
 <li>Compute <em>P<sub>k</sub> = B<sub>spend</sub> + t<sub>k</sub>·G</em></li>
 <li>For each <em>output</em> in <em>outputs_to_check</em>:
 *  If <em>P<sub>k</sub></em> equals <em>output</em>:
@@ -532,6 +540,11 @@ The <code>MAJOR</code> version is incremented if changes to the BIP are introduc
 The <code>MINOR</code> version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
 The <code>PATCH</code> version is incremented for other changes that are noteworthy (bug fixes, test vectors, important clarifications, etc.).</p>
 <ul>
+<li><strong>1.0.2</strong> (2025-07-25):
+<ul>
+<li>Clarify how to handle the improbable corner case where the output of SHA256 is equal to 0 or greater than or equal to the secp256k1 curve order.</li>
+</ul>
+</li>
 <li><strong>1.0.1</strong> (2024-06-22):
 <ul>
 <li>Add steps to fail if private key sum is zero (for sender) or public key sum is point at infinity (for receiver), add corresponding test vectors.</li>
@@ -556,7 +569,7 @@ The <code>PATCH</code> version is incremented for other changes that are notewor
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-07-25</p>
+                    <p class="font-bold">2025-07-26</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
