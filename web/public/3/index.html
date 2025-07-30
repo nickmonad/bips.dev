@@ -212,7 +212,6 @@ appear in the following order. Headers marked with &quot;*&quot; are optional. A
   Type: &lt;Specification | Informational | Process&gt;
   Created: &lt;Date of number assignment (yyyy-mm-dd), or &quot;?&quot;&gt;
   License: &lt;SPDX License Expression&gt;
-* License-Code: &lt;SPDX License Expression for Code (if different)&gt;
 * Discussion: &lt;Noteworthy discussion threads in &quot;yyyy-mm-dd: URL&quot; format&gt;
 * Version: &lt;MAJOR.MINOR.PATCH&gt;
 * Requires: &lt;BIP number(s)&gt;
@@ -248,8 +247,8 @@ Authors header. See the <a href="https://bips.dev/3/#bip-ownership">BIP Ownershi
 <p>Type — See the <a href="https://bips.dev/3/#bip-types">BIP Types</a> section below for a description of the three BIP types.</p>
 </li>
 <li>
-<p>License and License-Code — These headers specify SPDX License Expressions describing the licenses under which the
-BIP and corresponding code are available. See the <a href="https://bips.dev/3/#bip-licensing">BIP Licensing</a> section below.</p>
+<p>License — The License header specifies SPDX License Expressions describing the terms under which the
+BIP and its auxiliary files are available. See the <a href="https://bips.dev/3/#bip-licensing">BIP Licensing</a> section below.</p>
 </li>
 <li>
 <p>Discussion — The Discussion header points the audience to relevant discussions of the BIP, e.g., the mailing list
@@ -471,25 +470,16 @@ Copyright section, possibly providing further details on licensing.</p>
 <p>For example, a preamble might include the following License header:</p>
 <pre><code>License: CC0-1.0 OR MIT
 </code></pre>
-<p>In this case, the BIP (including all auxiliary files) is made available under the terms of both Creative Commons CC0 1.0 Universal as well as the
+<p>In this case, the BIP (including all auxiliary files) is made available under the terms of both CC0 1.0 Universal as well as the
 MIT License, and anyone may modify and redistribute it provided they comply with the terms of
 <em>either</em> license, at their option. In other words, the license list is an &quot;OR choice&quot;, not an &quot;AND also&quot; requirement. See the <a rel="noopener" target="_blank" href="https://spdx.dev/ids/">SPDX
 documentation</a> and the <a rel="noopener" target="_blank" href="https://spdx.org/licenses/">SPDX License List</a> for further details.</p>
-<p>It is also possible to specify that source code is licensed differently by including the optional License-Code header
-after the License header. Again, the licensing terms must be specified using an SPDX License Expression.</p>
-<p>Each auxiliary source code file or source directory should specify the license under which it is made available as is common in
+<p>Wherever different from those specified in the License header, an auxiliary file or directory should specify the license terms under which it is made available as is common in
 software (e.g., with a <a rel="noopener" target="_blank" href="https://spdx.dev/ids/"><code>SPDX-License-Identifier: &lt;SPDX License Expression&gt;</code> comment</a>,
-a license header, or a LICENSE/COPYING file). It is recommended to make any test vectors available
+a license header, or a LICENSE/COPYING file). Such exceptions should also be mentioned in the Copyright section. It is recommended to make any test vectors available
 under CC0-1.0 or FSFAP in addition to any other licenses to allow anyone to copy test vectors into their
-implementations without introducing license hindrances. Licenses listed in the License-Code header apply to all source directories,
-source code files, and test vectors provided with the BIP except those where a LICENSE file in a directory
-or the file header states otherwise.</p>
-<p>For example, a preamble specifying the optional License-Code header might look like:</p>
-<pre><code>License:         CC0-1.0
-License-Code:    MIT
-</code></pre>
-<p>In this case, the source code in the BIP is not available under Creative Commons CC0 1.0 Universal, but is only available under the MIT
-License.</p>
+implementations without introducing license hindrances.</p>
+<p>A few BIP2-era BIPs (98, 116, 117, 330, 340) have a no longer used &quot;License-Code&quot; header indicating the license terms applicable to auxiliary source code files. For such cases, please refer to BIP2.</p>
 <p>It is recommended that source code included in a BIP (whether within the text or in auxiliary files) be licensed under the same license terms as the project it
 is proposed to modify, if any. For example, changes intended for Bitcoin Core would ideally be licensed (also) under the MIT
 License.</p>
@@ -503,7 +493,7 @@ acceptable license L from the following list and another SPDX License Expression
 <ul>
 <li>BSD-2-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause License</a></li>
 <li>BSD-3-Clause: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a></li>
-<li>CC0-1.0: <a rel="noopener" target="_blank" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal</a></li>
+<li>CC0-1.0: <a rel="noopener" target="_blank" href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a></li>
 <li>FSFAP: <a rel="noopener" target="_blank" href="https://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html">FSF All Permissive License</a></li>
 <li>CC-BY-4.0: <a rel="noopener" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a></li>
 <li>MIT: <a rel="noopener" target="_blank" href="https://opensource.org/licenses/MIT">Expat/MIT/X11 License</a></li>
@@ -512,7 +502,7 @@ acceptable license L from the following list and another SPDX License Expression
 </ul>
 <h4 id="Not_Acceptable_Licenses">Not Acceptable Licenses</h4>
 <p>All licenses not explicitly included in the above lists are not acceptable terms for a Bitcoin Improvement Proposal.
-However, BIPs predating this proposal were accepted under other terms, and should use one the following identifiers.</p>
+However, BIPs predating this proposal were accepted under other terms, and should use one of the following identifiers.</p>
 <ul>
 <li>LicenseRef-PD: Placed into the public domain</li>
 <li>OPUBL-1.0: <a rel="noopener" target="_blank" href="https://opencontent.org/openpub/">Open Publication License 1.0</a></li>
@@ -615,6 +605,7 @@ whether a BIP is in active use for the move into or out of the Deployed status.<
 <li>The &quot;Post-History&quot; header is replaced with the &quot;Discussion&quot; header.</li>
 <li>The optional &quot;Version&quot; header is introduced.</li>
 <li>The &quot;Discussions-To&quot; header is dropped as it has never been used in any BIP.</li>
+<li>The &quot;License-Code&quot; header has been sunset, as it was used by only five BIPs (98, 116, 117, 330, 340) and created more ambiguity than clarity.</li>
 <li>Introduce Deputies and optional &quot;Deputies&quot; header.</li>
 <li>The BIP &quot;Title&quot; header may now contain up to 50 characters (increased from 44 in BIP 2).</li>
 <li>The &quot;Layer&quot; header is optional for Specification BIPs or Informational BIPs, as it does not make sense for all BIPs.<sup class="footnote-reference"><a href="#layer">18</a></sup></li>
@@ -779,9 +770,11 @@ code:</p>
 * MIT: 2
 * CC-BY-4.0: 1
 
-License-Code used:
+License-Code used (previous BIP2 format):
 
-* MIT: 4
+* BSD-2-Clause: 1
+* CC0-1.0: 1
+* MIT: 5
 
 The following previously acceptable licenses were retained per request of reviewers, even though they have so far
 never been used in the BIPs process:
@@ -826,7 +819,7 @@ Why are Open Publication License and Public Domain no longer acceptable for new 
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-07-29</p>
+                    <p class="font-bold">2025-07-30</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
