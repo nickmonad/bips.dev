@@ -137,7 +137,7 @@ An alternative implementation of OP_CAT can be found in Elements <sup id="cite_r
 3. [^](#cite_ref_3)  P. Wuille, "Multisig on steroids using tree signatures", 2015, https://blog.blockstream.com/en-treesignatures/
 4. [^](#cite_ref_4) J. Rubin, "[bitcoin-dev] OP_CAT Makes Bitcoin Quantum Secure <a href="was" target="_blank">CheckSigFromStack for Arithmetic Values</a>", 2021, https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-July/019233.html
 5. [^](#cite_ref_5) T. Ruffing, A. Kate, D. Schröder, "Liar, Liar, Coins on Fire: Penalizing Equivocation by Loss of Bitcoins", 2015, https://web.archive.org/web/20221023121048/https://publications.cispa.saarland/565/1/penalizing.pdf
-6. [^](#cite_ref_6) M. Moser, I. Eyal, and E. G. Sirer, Bitcoin Covenants, http://fc16.ifca.ai/bitcoin/papers/MES16.pdf
+6. [^](#cite_ref_6) M. Moser, I. Eyal, and E. G. Sirer, Bitcoin Covenants, https://web.archive.org/web/20220203124718/https://fc16.ifca.ai/bitcoin/papers/MES16.pdf
 7. [^](#cite_ref_7) A. Poelstra, "CAT and Schnorr Tricks II", 2021, https://www.wpsoftware.net/andrew/blog/cat-and-schnorr-tricks-ii.html
 8. [^](#cite_ref_8) A. Poelstra, "CAT and Schnorr Tricks I", 2021, https://www.wpsoftware.net/andrew/blog/cat-and-schnorr-tricks-i.html
 9. [^](#cite_ref_9) R. Linus, "Covenants with CAT and ECDSA", 2023, https://gist.github.com/RobinLinus/9a69f5552be94d13170ec79bf34d5e85 file-covenants_cat_ecdsa-md

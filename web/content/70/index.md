@@ -277,7 +277,7 @@ occurs.
 
 Trusted root certificates may be obtained from the operating system;
 if validation is done on a device without an operating system, the
-<a href="http://www.mozilla.org/projects/security/certs/included/index.html" target="_blank">Mozilla root store</a> is recommended.
+<a href="https://www.mozilla.org/about/governance/policies/security-group/certs/policy/" target="_blank">Mozilla root store</a> is recommended.
 
 <h2>Extensibility</h2>
 
