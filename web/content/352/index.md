@@ -358,6 +358,8 @@ After the inputs have been selected, the sender can create one or more outputs f
     *  Optionally, if the sending wallet implements receiving silent payments, it can create change outputs by sending to its own silent payment address using label _m = 0_, following the steps above
 
 
+All generated outputs MUST be present in the final transaction. If an output _P<sub>i</sub>_ with _i < k_ is omitted, the receiver will not be able to find outputs _P<sub>j</sub>_ where _i < j <= k_.
+
 <h3> Receiver </h3>
 
 
