@@ -278,7 +278,7 @@ The following notations are used in the pseudocode below:
 
 
 This is executed once for the entire transaction, before any of the transaction input's scripts are evaluated.
-Itinitializes three arrays that are used to keep track of the amount information of the output.
+It initializes three arrays that are used to keep track of the amount information of the output.
 
 ```
   output_min_amount = [0] * n_outputs
