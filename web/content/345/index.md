@@ -356,7 +356,8 @@ where
 After the stack is parsed, the following validation checks are performed:
 
 *  Let the output at index `<recovery-vout-idx>` be called _recoveryOut_.
-*  If the scriptPubKey of _recoveryOut_ does not have a tagged hash equal to `<recovery-sPK-hash>` (`tagged_hash("VaultRecoverySPK", recoveryOut.scriptPubKey) == recovery-sPK-hash`, where `tagged_hash()` is from the <a href="https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py" target="_blank">BIP-0340 reference code</a>), script execution MUST fail and terminate immediately.
+*  Compute the scriptPubKey tagged hash for _recoveryOut_ as `output-sPK-hash = tagged_hash("VaultRecoverySPK", CompactSize(len(recoveryOut.scriptPubKey)) || recoveryOut.scriptPubKey)`, where `tagged_hash()` is from the <a href="https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py" target="_blank">BIP-0340 reference code</a>.
+*  If the _recoveryOut_ `output-sPK-hash` is not equal to `<recovery-sPK-hash>`, script execution MUST fail and terminate immediately.
     *  Implementation recommendation: if _recoveryOut_ does not have an `nValue` greater than or equal to this input's amount, the script SHOULD fail and terminate immediately.
 *  Queue a deferred check that ensures the `nValue` of _recoveryOut_ contains the entire `nValue` of this input.<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup>
     *  This deferred check could be characterized in terms of the pseudocode below as `RecoveryCheck(<recovery-vout-idx>, input_amount)`.
