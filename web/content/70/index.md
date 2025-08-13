@@ -320,7 +320,7 @@ Protocol Buffers : https://developers.google.com/protocol-buffers/
 <h2>Reference implementation</h2>
 
 
-Create Payment Request generator : https://bitcoincore.org/~gavin/createpaymentrequest.php (<a href="https://github.com/gavinandresen/paymentrequest" target="_blank">source</a>)
+Create Payment Request generator : https://developer.bitcoin.org/examples/payment_processing.html (<a href="https://github.com/gavinandresen/paymentrequest" target="_blank">source</a>)
 
 BitcoinJ : https://bitcoinj.github.io/payment-protocol#introduction
 
