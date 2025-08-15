@@ -184,7 +184,7 @@ These goals are accompanied by basic safety considerations (e.g. not being
 vulnerable to mempool pinning) and a desire for concision, both in terms of the number
 of outputs created as well as script sizes.
 
-This proposal is designed to be compatible with any future sighash modes (e.g. `SIGHASH_GROUP`) or fee management strategies (e.g. <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-September/018168.html" target="_blank">transaction sponsors</a>) that may be introduced. Use of these opcodes will benefit from, but do not strictly rely on, <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-September/020937.html" target="_blank">v3 transaction relay</a> and <a href="https://github.com/instagibbs/bips/blob/ephemeral_anchor/bip-ephemeralanchors.mediawiki" target="_blank">ephemeral anchors</a>.
+This proposal is designed to be compatible with any future sighash modes (e.g. `SIGHASH_GROUP`) or fee management strategies (e.g. <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-September/018168.html" target="_blank">transaction sponsors</a>) that may be introduced. Use of these opcodes will benefit from, but do not strictly rely on, <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-September/020937.html" target="_blank">v3 transaction relay</a> and <a href="https://github.com/instagibbs/bips/blob/527b007dbf5b9a89895017030183370e05468ae6/bip-ephemeralanchors.mediawiki" target="_blank">ephemeral anchors</a>.
 
 <h2> Design </h2>
 
@@ -441,7 +441,7 @@ unauthorized recovery transaction is limited.
 
 *  If the recovery is unauthorized, the recovery transaction MUST (by policy) abide by the following constraints:
     *  If the spending transaction has more than two outputs, the script MUST fail and terminate immediately.
-    *  If the spending transaction has two outputs, and the output which is not _recoveryOut_ is not an <a href="https://github.com/instagibbs/bips/blob/ephemeral_anchor/bip-ephemeralanchors.mediawiki" target="_blank">ephemeral anchor</a>, the script MUST fail and terminate immediately.<sup id="cite_ref_11"><a href="#cite_ref_11">11</a></sup>
+    *  If the spending transaction has two outputs, and the output which is not _recoveryOut_ is not an <a href="https://github.com/instagibbs/bips/blob/527b007dbf5b9a89895017030183370e05468ae6/bip-ephemeralanchors.mediawiki" target="_blank">ephemeral anchor</a>, the script MUST fail and terminate immediately.<sup id="cite_ref_11"><a href="#cite_ref_11">11</a></sup>
 
 
 <h2> Implementation </h2>
