@@ -116,7 +116,7 @@ timelocked coins for perpetuity or relying on a trusted third party.
 <img src="bip-0345/vaults-Basic.png" />
 
 Vaults in Bitcoin have been discussed formally since 2016
-(<a href="http://fc16.ifca.ai/bitcoin/papers/MES16.pdf" target="_blank">MES16</a>) and informally since <a href="https://web.archive.org/web/20160220215151/https://bitcointalk.org/index.php?topic=511881.0" target="_blank">2014</a>. The value of
+(<a href="https://crypto.news/app/uploads/2016/08/MES16.pdf" target="_blank">MES16</a>) and informally since <a href="https://web.archive.org/web/20160220215151/https://bitcointalk.org/index.php?topic=511881.0" target="_blank">2014</a>. The value of
 having a configurable delay period with recovery capability in light of an
 unexpected spend has been widely recognized.
 
@@ -447,7 +447,7 @@ unauthorized recovery transaction is limited.
 <h2> Implementation </h2>
 
 
-A sample implementation is available on bitcoin-inquisition <a href="https://github.com/jamesob/bitcoin/tree/2023-01-opvault-inq" target="_blank">here</a>, with an associated <a href="https://github.com/bitcoin-inquisition/bitcoin/pull/21" target="_blank">pull request</a>.
+A sample implementation is available on bitcoin-inquisition <a href="https://github.com/jamesob/bitcoin/tree/2023-02-opvault-inq" target="_blank">here</a>, with an associated <a href="https://github.com/bitcoin-inquisition/bitcoin/pull/21" target="_blank">pull request</a>.
 
 
 <h2> Applications </h2>
