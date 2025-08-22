@@ -315,11 +315,11 @@ The derivation path format is: `m/83696968'/707764'/{pwd_len}'/{index}'`
 `20 <= pwd_len <= 86`
 
 <a href="https://datatracker.ietf.org/doc/html/rfc4648" target="_blank">Base64</a> encode all 64 bytes of entropy.
-Remove any spaces or new lines inserted by Base64 encoding process. Slice base64 result string
+Remove any spaces or new lines inserted by Base64 encoding process. Slice Base64 result string
 on index 0 to `pwd_len`. This slice is the password. As `pwd_len` is limited to 86, passwords will not contain padding.
 
 Entropy calculation:<br>
-R = 64  (base64 - do not count padding)<br>
+R = 64  (Base64 - do not count padding)<br>
 L = pwd_len<br>
 Entropy = log2(R ** L)<br>
 
@@ -352,7 +352,7 @@ The derivation path format is: `m/83696968'/707785'/{pwd_len}'/{index}'`
 `10 <= pwd_len <= 80`
 
 Base85 encode all 64 bytes of entropy.
-Remove any spaces or new lines inserted by Base64 encoding process. Slice base85 result string
+Remove any spaces or new lines inserted by Base85 encoding process. Slice Base85 result string
 on index 0 to `pwd_len`. This slice is the password. `pwd_len` is limited to 80 characters.
 
 Entropy calculation:<br>
