@@ -443,8 +443,8 @@ In this case, only the acceptable license(s) should be listed in the License and
 <h4>Recommended licenses</h4>
 
 
-*  BSD-2-Clause: <a href="https://opensource.org/licenses/BSD-2-Clause" target="_blank">OSI-approved BSD 2-clause license</a>
-*  BSD-3-Clause: <a href="https://opensource.org/licenses/BSD-3-Clause" target="_blank">OSI-approved BSD 3-clause license</a>
+*  BSD-2-Clause: <a href="https://opensource.org/license/BSD-2-Clause" target="_blank">OSI-approved BSD 2-clause license</a>
+*  BSD-3-Clause: <a href="https://opensource.org/license/BSD-3-Clause" target="_blank">OSI-approved BSD 3-clause license</a>
 *  CC0-1.0: <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">Creative Commons CC0 1.0 Universal</a>
 *  GNU-All-Permissive: <a href="https://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html" target="_blank">GNU All-Permissive License</a>
 
@@ -458,7 +458,7 @@ In addition, it is recommended that literal code included in the BIP be dual-lic
 *  BSL-1.0: <a href="https://www.boost.org/LICENSE_1_0.txt" target="_blank">Boost Software License, version 1.0</a>
 *  CC-BY-4.0: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International</a>
 *  CC-BY-SA-4.0: <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International</a>
-*  MIT: <a href="https://opensource.org/licenses/MIT" target="_blank">Expat/MIT/X11 license</a>
+*  MIT: <a href="https://opensource.org/license/MIT" target="_blank">The MIT License</a>
 *  AGPL-3.0+: <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">GNU Affero General Public License (AGPL), version 3 or newer</a>
 *  FDL-1.3: <a href="https://www.gnu.org/licenses/fdl-1.3.en.html" target="_blank">GNU Free Documentation License, version 1.3</a>
 *  GPL-2.0+: <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" target="_blank">GNU General Public License (GPL), version 2 or newer</a>
