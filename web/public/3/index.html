@@ -203,14 +203,14 @@ as auxiliary files (see <a href="https://bips.dev/3/#auxiliary-files">Auxiliary 
 <p>Each BIP must begin with an <a rel="noopener" target="_blank" href="https://www.w3.org/Protocols/rfc822/">RFC 822-style header preamble</a>. The headers must
 appear in the following order. Headers marked with &quot;*&quot; are optional. All other headers are required.</p>
 <h5 id="Overview">Overview</h5>
-<pre><code>  BIP: &lt;BIP number, or &quot;?&quot;&gt;
+<pre><code>  BIP: &lt;BIP number, or &quot;?&quot; before assignment&gt;
 * Layer: &lt;Consensus (soft fork) | Consensus (hard fork) | Peer Services | API&#x2F;RPC | Applications&gt;
   Title: &lt;BIP title (≤ 50 characters)&gt;
   Authors: &lt;Authors’ names and email addresses&gt;
 * Deputies: &lt;Deputies’ names and email addresses&gt;
   Status: &lt;Draft | Complete | Deployed | Closed&gt;
   Type: &lt;Specification | Informational | Process&gt;
-  Created: &lt;Date of number assignment (yyyy-mm-dd), or &quot;?&quot;&gt;
+  Assigned: &lt;Date of number assignment (yyyy-mm-dd), or &quot;?&quot; before assignment&gt;
   License: &lt;SPDX License Expression&gt;
 * Discussion: &lt;Noteworthy discussion threads in &quot;yyyy-mm-dd: URL&quot; format&gt;
 * Version: &lt;MAJOR.MINOR.PATCH&gt;
@@ -221,7 +221,7 @@ appear in the following order. Headers marked with &quot;*&quot; are optional. A
 <h5 id="Header_Descriptions">Header Descriptions</h5>
 <ul>
 <li>
-<p>BIP — The assigned number of the BIP. Please use &quot;?&quot; before a number has been assigned by the BIP Editors.</p>
+<p>BIP — The assigned number of the BIP (without leading zeros). Please use &quot;?&quot; before a number has been assigned by the BIP Editors.</p>
 </li>
 <li>
 <p>Layer — The layer of Bitcoin the BIP applies to using the BIP classification defined in <a href="https://bips.dev/3/bip-0123.mediawiki">BIP 123</a>.</p>
@@ -245,6 +245,9 @@ Authors header. See the <a href="https://bips.dev/3/#bip-ownership">BIP Ownershi
 </li>
 <li>
 <p>Type — See the <a href="https://bips.dev/3/#bip-types">BIP Types</a> section below for a description of the three BIP types.</p>
+</li>
+<li>
+<p>Assigned – The date a BIP was assigned its number. Please use &quot;?&quot; before a number has been assigned by the BIP Editors.</p>
 </li>
 <li>
 <p>License — The License header specifies SPDX License Expressions describing the terms under which the
@@ -605,11 +608,12 @@ whether a BIP is in active use for the move into or out of the Deployed status.<
 <li>The &quot;Superseded-By&quot; header is replaced with the &quot;Proposed-Replacement&quot; header.</li>
 <li>The &quot;Post-History&quot; header is replaced with the &quot;Discussion&quot; header.</li>
 <li>The optional &quot;Version&quot; header is introduced.</li>
-<li>The &quot;Discussions-To&quot; header is dropped as it has never been used in any BIP.</li>
+<li>The &quot;Discussions-To&quot; header is dropped, as it has never been used in any BIP.</li>
 <li>The &quot;License-Code&quot; header has been sunset, as it was used by only five BIPs (98, 116, 117, 330, 340) and created more ambiguity than clarity.</li>
+<li>The &quot;Created&quot; header is renamed to &quot;Assigned&quot;, as the header’s value is the date of number assignment.<sup class="footnote-reference"><a href="#assigned">18</a></sup></li>
 <li>Introduce Deputies and optional &quot;Deputies&quot; header.</li>
 <li>The BIP &quot;Title&quot; header may now contain up to 50 characters (increased from 44 in BIP 2).</li>
-<li>The &quot;Layer&quot; header is optional for Specification BIPs or Informational BIPs, as it does not make sense for all BIPs.<sup class="footnote-reference"><a href="#layer">18</a></sup></li>
+<li>The &quot;Layer&quot; header is optional for Specification BIPs or Informational BIPs, as it does not make sense for all BIPs.<sup class="footnote-reference"><a href="#layer">19</a></sup></li>
 <li>Rename the &quot;Author&quot; field to &quot;Authors&quot;.</li>
 </ul>
 <h3 id="Updates_to_Existing_BIPs_should_this_BIP_be_Activated">Updates to Existing BIPs should this BIP be Activated</h3>
@@ -653,8 +657,14 @@ adapted from <a href="https://bips.dev/3/bip-0002.mediawiki">BIP 2</a> which w
 <p>We thank AJ Towns, Jon Atack, Jonas Nick, Larry Ruane, Pieter Wuille, Tim Ruffing, and others for their review,
 feedback, and helpful comments.</p>
 <h2 id="Rationale">Rationale</h2>
-<div class="footnote-definition" id="capitalization"><sup class="footnote-definition-label">1</sup>
-<p><strong>When is Bitcoin capitalized and when is it lowercased?</strong><br />
+<div class="footnote-definition" id="assigned"><sup class="footnote-definition-label">18</sup>
+<p><strong>Why was the Created header renamed to Assigned?</strong><br />
+Both BIP 1 and BIP 2 described the Created header as &quot;date created on&quot; in the preamble template, but followed that
+up with &quot;Created header records the date that the BIP was assigned a number&quot; as the description of the field. This
+has frequently led to confusion, with authors using the date of opening the pull request, the date they started
+writing their proposal, the date of number assignment (as prescribed), or various other dates. Aligning the name of
+the header and the text in the preamble template with the descriptions will reduce the confusion.
+<sup class="footnote-reference"><a href="#capitalization">1</a></sup>: <strong>When is Bitcoin capitalized and when is it lowercased?</strong><br />
 This document uses capitalized Bitcoin to refer to the system, network and abstract concept, and only uses lowercase
 bitcoin to refer to units of the bitcoin currency.
 <sup class="footnote-reference"><a href="#standard-track">17</a></sup>: <strong>Why was the Specification type introduced?</strong><br />
@@ -671,7 +681,7 @@ only a handful of contributors commenting at all. This led to many situations in
 dominating the comment summary. While some of those comments may have been representative of broadly held opinions,
 it also overstated the importance of individual comments directly in the Preamble of BIPs. As collecting feedback in
 this accessible fashion failed, the new process puts the onus back on the audience to make their own evaluation.
-<sup class="footnote-reference"><a href="#layer">18</a></sup>: <strong>Why is the layer header now permitted for other BIP types?</strong><br />
+<sup class="footnote-reference"><a href="#layer">19</a></sup>: <strong>Why is the layer header now permitted for other BIP types?</strong><br />
 The layer header had already been used by many Informational BIPs, so the rule that it is only available to
 Standards Track BIPs is dropped.
 <sup class="footnote-reference"><a href="#OtherImplementations">13</a></sup>: <strong>What is the issue with &quot;Other Implementations&quot; sections in BIPs?</strong><br />
@@ -821,7 +831,7 @@ Why are Open Publication License and Public Domain no longer acceptable for new 
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-09-19</p>
+                    <p class="font-bold">2025-09-20</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
