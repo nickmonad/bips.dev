@@ -134,7 +134,7 @@
 <p>This BIP proposes a URI scheme for describing Bitcoin payment instructions.</p>
 <h2> Motivation </h2>
 <p>The purpose of this URI scheme is to enable users to easily make payments by simply clicking links on webpages or scanning QR Codes.</p>
-<p>This BIP is a modification of <a href="/21" target="_blank">BIP 0021</a> to add information about the modern usage of bitcoin: URIs (including standard query parameters and modern address types) as well as provide forward-looking guidance on how to incorporate new payment instructions. It further adds an optional extension to provide the payment initiator with proof of payment. BIP 21 was based on BIP 20, which was, in turn based on an earlier document by Nils Schneider.</p>
+<p>This BIP is a modification and intended replacement of <a href="/21" target="_blank">BIP 0021</a> to add information about the modern usage of bitcoin: URIs (including standard query parameters and modern address types) as well as provide forward-looking guidance on how to incorporate new payment instructions. It further adds an optional extension to provide the payment initiator with proof of payment. BIP 21 was based on BIP 20, which was, in turn based on an earlier document by Nils Schneider.</p>
 <h2> Specification </h2>
 <h3> General rules for handling (important!) </h3>
 <p>Bitcoin clients MUST NOT act on URIs without getting the user's authorization.
@@ -196,6 +196,9 @@ Therefore, a URI which contains an on-chain payment address MUST NOT represent a
 <p>On many mobile operating systems (especially, or any operating system more generally), applications may &quot;open&quot; a bitcoin: URI in order to initiate a payment with the user's default wallet application. These payment-initiating applications may wish to learn about the completed payment.</p>
 <p>For payments completed on-chain, this is largely addressed by having the payment-initiating application monitor the blockchain for payment completion, however for other payment schemes (e.g. lightning), no such global ledger of transactions exists. In that case, proof of payment must be provided via some other mechanism.</p>
 <p>In order to avoid inadvertently revealing the sender's IP address or other information to the recipient, proof URIs must only be opened when they will simply switch to another locally-installed application (i.e. the application which initiated the payment). When clicking a URI from a website, the website should already have plenty of logic on its backend to process payment completion and a proof-of-payment callback is unnecessary.</p>
+<h2> Reference Implementation </h2>
+<p>Documentation: https://docs.rs/bitcoin-payment-instructions</p>
+<p>Code repository: https://github.com/rust-bitcoin/bitcoin-payment-instructions</p>
 <h2> Forward compatibility </h2>
 <p>Query parameter keys which are prefixed with a req- are considered required.  If a client does not implement handling a query parameter which has a key prefixed with req-, it MUST consider the entire URI invalid.  Any other query parameters which are not implemented, but which are not prefixed with a req-, can be safely ignored.</p>
 <p>As future new address types should be added using query parameters rather than the <code>bitcoinaddress</code> field, URIs seamlessly support various payment instructions while senders only need to support legacy instructions. This allows old senders to pay newer recipients which offer more modern payment instruction formats.</p>
@@ -309,7 +312,7 @@ Therefore, a URI which contains an on-chain payment address MUST NOT represent a
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-10-01</p>
+                    <p class="font-bold">2025-10-02</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
