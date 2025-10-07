@@ -141,7 +141,7 @@ An account encompasses a logical group of receive and change addresses, and each
 <p><em><a href="/380" target="_blank">Output Script Descriptors</a></em> were introduced in Bitcoin Core as a way to represent collections of output scripts. It is a general and flexible language, designed to catch all the possible use-cases of bitcoin wallets (that is, if you know the script and you have the necessary keys, it will be possible to sign transactions with any descriptor-based software wallet).</p>
 <p>Unfortunately, descriptors are not a perfect match for the typical usage of hardware signing devices (often also called <em>hardware wallets</em>). Most of them have some of the following limitations when compared to a general-purpose machine running Bitcoin Core:</p>
 <ul>
-<li>they are embedded devices with limited RAM, and computational power;</li>
+<li>they are embedded devices with limited RAM and computational power;</li>
 <li>they cannot import additional private keys (that is, they can only sign with keys derived from a single seed via <a href="/32" target="_blank">BIP-32</a>);</li>
 <li>they have limited storage, or they might not have persistent storage at all (<em>stateless design</em>).</li>
 </ul>
@@ -163,7 +163,7 @@ The hardware signing device must guarantee that the user knows precisely what &q
 <p>It is strongly recommended to avoid key reuse across accounts. Distinct public keys per account can be guaranteed by using distinct hardened derivation paths. This specification does not mandate hardened derivation in order to maintain compatibility with existing deployments that do not adhere to this recommendation.</p>
 <p>It is out of scope for this document to guarantee that users do not reuse extended public keys among different wallet accounts. This is still very important, but the responsibility is left to the users and their software wallet.</p>
 <h4> UX issues </h4>
-<p>Miniscript (and taproot trees) allow substantially more complex spending policies. It is a challenge to ensure that the user can practically verify such spending policies per the screen.</p>
+<p>Miniscript (and taproot trees) allow substantially more complex spending policies. It is a challenge to ensure that the user can practically verify such spending policies on the screen.</p>
 <p>We set two fundamental design goals:</p>
 <ul>
 <li>Minimize the amount of information that is shown on screen - so that the user can actually validate it.</li>
@@ -205,7 +205,7 @@ The hardware signing device must guarantee that the user knows precisely what &q
 <h2> Specification </h2>
 <p>This section formally defines wallet policies, and how they relate to output script descriptors.</p>
 <h3> Formal definition </h3>
-<p>A <em>wallet policy</em> is composed by a <em>wallet descriptor template</em>, together with a vector of <em>key information items</em>.</p>
+<p>A <em>wallet policy</em> is composed of a <em>wallet descriptor template</em>, together with a vector of <em>key information items</em>.</p>
 <h4> Wallet descriptor template </h4>
 <p>A <em>wallet descriptor template</em> is a <tt>SCRIPT</tt> expression.</p>
 <p><tt>SCRIPT</tt> expressions:</p>
@@ -375,7 +375,7 @@ produces the following multipath descriptor:</p>
 <li><tt>sh(multi(1,@0/<strong>,@0/</strong>))</tt>: Repeated keys with the same path expression</li>
 <li><tt>sh(multi(1,@0/&lt;0;1&gt;/<em>,@0/&lt;1;2&gt;/</em>))</tt>: Non-disjoint multipath expressions (<tt>@0/1/*</tt> appears twice)</li>
 <li><tt>sh(multi(1,@0/**,xpub6AHA9hZDN11k2ijHMeS5QqHx2KP9aMBRhTDqANMnwVtdyw2TDYRmF8PjpvwUFcL1Et8Hj59S3gTSMcUQ5gAqTz3Wd8EsMTmF3DChhqPQBnU/&lt;0;1&gt;/*))</tt>: Expression with a non-KP key present</li>
-<li><tt>pkh(@0/&lt;0;1;2&gt;/*)</tt>: Solved cardinality &gt; 2</li>
+<li><tt>pkh(@0/&lt;0;1;2&gt;/*)</tt>: Allowed cardinality &gt; 2</li>
 <li><tt>tr(musig(@0/<strong>,@1/</strong>))</tt>: Derivation before aggregation is not allowed in wallet policies (despite being allowed in <a href="/390" target="_blank">BIP-390</a>)</li>
 </ul>
 <p>Remark: some of the examples of invalid descriptor templates may be valid via optional extensions.</p>
@@ -423,7 +423,7 @@ The reference implementation is for demonstration purposes only and not to be us
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-10-06</p>
+                    <p class="font-bold">2025-10-07</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

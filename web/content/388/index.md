@@ -55,7 +55,7 @@ _<a href="/380" target="_blank">Output Script Descriptors</a>_ were introduced i
 
 Unfortunately, descriptors are not a perfect match for the typical usage of hardware signing devices (often also called _hardware wallets_). Most of them have some of the following limitations when compared to a general-purpose machine running Bitcoin Core:
 
-*  they are embedded devices with limited RAM, and computational power;
+*  they are embedded devices with limited RAM and computational power;
 *  they cannot import additional private keys (that is, they can only sign with keys derived from a single seed via <a href="/32" target="_blank">BIP-32</a>);
 *  they have limited storage, or they might not have persistent storage at all (_stateless design_).
 
@@ -99,7 +99,7 @@ It is out of scope for this document to guarantee that users do not reuse extend
 <h4> UX issues </h4>
 
 
-Miniscript (and taproot trees) allow substantially more complex spending policies. It is a challenge to ensure that the user can practically verify such spending policies per the screen.
+Miniscript (and taproot trees) allow substantially more complex spending policies. It is a challenge to ensure that the user can practically verify such spending policies on the screen.
 
 We set two fundamental design goals:
 *  Minimize the amount of information that is shown on screen - so that the user can actually validate it.
@@ -157,7 +157,7 @@ This section formally defines wallet policies, and how they relate to output scr
 <h3> Formal definition </h3>
 
 
-A _wallet policy_ is composed by a _wallet descriptor template_, together with a vector of _key information items_.
+A _wallet policy_ is composed of a _wallet descriptor template_, together with a vector of _key information items_.
 
 <h4> Wallet descriptor template </h4>
 
@@ -378,7 +378,7 @@ The following descriptor templates are invalid:
 *  <tt>sh(multi(1,@0/**,@0/**))</tt>: Repeated keys with the same path expression
 *  <tt>sh(multi(1,@0/<0;1>/*,@0/<1;2>/*))</tt>: Non-disjoint multipath expressions (<tt>@0/1/*</tt> appears twice)
 *  <tt>sh(multi(1,@0/**,xpub6AHA9hZDN11k2ijHMeS5QqHx2KP9aMBRhTDqANMnwVtdyw2TDYRmF8PjpvwUFcL1Et8Hj59S3gTSMcUQ5gAqTz3Wd8EsMTmF3DChhqPQBnU/<0;1>/*))</tt>: Expression with a non-KP key present
-*  <tt>pkh(@0/<0;1;2>/*)</tt>: Solved cardinality > 2
+*  <tt>pkh(@0/<0;1;2>/*)</tt>: Allowed cardinality > 2
 *  <tt>tr(musig(@0/**,@1/**))</tt>: Derivation before aggregation is not allowed in wallet policies (despite being allowed in <a href="/390" target="_blank">BIP-390</a>)
 
 

@@ -207,7 +207,7 @@ If the `<data>` is non-empty, then the additive tweak for the data is computed a
 
 In the following, the _current input_ is the input whose script is being executed.
 
-The following value of the `<mode>` are defined:
+The following values of the `<mode>` are defined:
 *  `CCV_MODE_CHECK_INPUT = -1`: Check an input's script; no amount check.
 *  `CCV_MODE_CHECK_OUTPUT = 0`: Check an output's script; preserve the (possibly residual) amount.
 *  `CCV_MODE_CHECK_OUTPUT_IGNORE_AMOUNT = 1`: Check an output's script; ignore amounts.
@@ -293,7 +293,7 @@ This is executed at the beginning of the evaluation of each input's script. It i
 the full amount of the current input.
 
 ```
-  residual_input_amount = input[this_input_index].amount
+  residual_input_amount = inputs[this_input_index].amount
 ```
 
 <h4> <code>OP_CHECKCONTRACTVERIFY</code> evaluation </h4>

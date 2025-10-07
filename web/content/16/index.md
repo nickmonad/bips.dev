@@ -92,7 +92,7 @@ Examples:
 ```
 
 
-+22 signature operations
++22 signature operations:
 ```
     {OP_CHECKSIG OP_IF OP_CHECKSIGVERIFY OP_ELSE OP_CHECKMULTISIGVERIFY OP_ENDIF}
 ```
@@ -112,7 +112,7 @@ The signature operation counting rules are intended to be easy and quick to impl
 There is a 1-confirmation attack on old implementations, but it is expensive and difficult in practice. The attack is:
 
 1.  Attacker creates a pay-to-script-hash transaction that is valid as seen by old software, but invalid for new implementation, and sends themselves some coins using it.
-1.  Attacker also creates a standard transaction that spends the pay-to-script transaction, and pays the victim who is running old software.
+1.  Attacker also creates a standard transaction that spends the pay-to-script-hash transaction, and pays the victim who is running old software.
 1.  Attacker mines a block that contains both transactions.
 
 
@@ -161,6 +161,7 @@ https://gist.github.com/gavinandresen/3966071
 
 
 <h2> References </h2>
+
 
 1. [^](#cite_ref_1) <a href="https://github.com/bitcoin/bitcoin/commit/8f188ece3c82c4cf5d52a3363e7643c23169c0ff" target="_blank">Remove -bip16 and -paytoscripthashtime command-line arguments</a>
 2. [^](#cite_ref_2) <a href="https://web.archive.org/web/20141122040355/http://blockexplorer.com/tx/6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192" target="_blank">Transaction 6a26d2ecb67f27d1fa5524763b49029d7106e91e3cc05743073461a719776192</a>
