@@ -59,7 +59,9 @@ Bitcoin wallets MUST NOT prefer to use DNS-based resolving when methods with exp
 
 <h3> Records </h3>
 
-Payment instructions are indexed by both a user and a domain. Instructions for a given `user` and `domain` are stored at `user`.user._bitcoin-payment.`domain` in a single TXT record.
+Payment instructions are indexed by both a user and a domain. Instructions for a given `user` and `domain` are stored at `user`.user._bitcoin-payment.`domain` in a single TXT RR.
+
+The TXT RR’s RDATA <b>MUST</b> consist of one or more DNS `<character-string>`s (see <a href="https://www.rfc-editor.org/rfc/rfc1035#section-3.3.14" target="_blank">RFC&nbsp;1035&nbsp;§3.3.14</a>), each ≤255 bytes.
 
 All payment instructions MUST be DNSSEC-signed.
 
@@ -76,7 +78,9 @@ For payment instructions that have a built-in expiry time (e.g. Lightning BOLT 1
 
 Clients resolving Bitcoin payment instructions MUST ignore any TXT records at the same label which do not begin with (ignoring case) "bitcoin:". Resolvers encountering multiple "bitcoin:"-matching TXT records at the same label MUST treat the records as invalid and refuse to use any payment instructions therein.
 
-Clients resolving Bitcoin payment instructions MUST concatenate all strings in the TXT record before processing the complete URI.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
+Clients resolving Bitcoin payment instructions <b>MUST</b> reconstruct the `bitcoin:` URI by concatenating the TXT RR’s `<character-string>` fields in <b>RDATA order</b>, without inserting separators, before parsing.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
+
+Clients <b>MUST NOT</b> concatenate across multiple TXT RRs at the same owner name.
 
 Clients resolving Bitcoin payment instructions MUST fully validate DNSSEC signatures leading to the DNS root (including any relevant CNAME or DNAME records) and MUST NOT accept DNSSEC signatures which use SHA-1 or RSA with keys shorter than 1024 bits. Resolvers MAY accept SHA-1 DS records.
 

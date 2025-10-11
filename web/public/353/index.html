@@ -142,7 +142,8 @@
 <h3> General rules for handling </h3>
 <p>Bitcoin wallets MUST NOT prefer to use DNS-based resolving when methods with explicit public keys or addresses are available. In other words, if a standard Bitcoin address or direct BIP 21 URI is available or would suffice, Bitcoin wallets MUST prefer to use that instead.</p>
 <h3> Records </h3>
-<p>Payment instructions are indexed by both a user and a domain. Instructions for a given <code>user</code> and <code>domain</code> are stored at <code>user</code>.user._bitcoin-payment.<code>domain</code> in a single TXT record.</p>
+<p>Payment instructions are indexed by both a user and a domain. Instructions for a given <code>user</code> and <code>domain</code> are stored at <code>user</code>.user._bitcoin-payment.<code>domain</code> in a single TXT RR.</p>
+<p>The TXT RR’s RDATA <b>MUST</b> consist of one or more DNS <code>&lt;character-string&gt;</code>s (see <a href="https://www.rfc-editor.org/rfc/rfc1035#section-3.3.14" target="_blank">RFC 1035 §3.3.14</a>), each ≤255 bytes.</p>
 <p>All payment instructions MUST be DNSSEC-signed.</p>
 <p>Payment instructions MAY resolve through CNAME or DNAME records as long as all such records and the ultimate records pointed to by them are DNSSEC signed.</p>
 <p>User and domain names which are not expressible using standard printable ASCII MUST be encoded using the punycode IDN encoding defined in <a href="https://datatracker.ietf.org/doc/html/rfc3492" target="_blank">RFC 3492</a> and <a href="https://datatracker.ietf.org/doc/html/rfc5891" target="_blank">RFC 5891</a>.</p>
@@ -150,7 +151,8 @@
 <p>For payment instructions that have a built-in expiry time (e.g. Lightning BOLT 12 offers), care must be taken to ensure that the DNS records expire prior to the expiry of the payment instructions. Otherwise, senders may have payment instructions cached locally which have expired, preventing payment.</p>
 <h3> Resolution </h3>
 <p>Clients resolving Bitcoin payment instructions MUST ignore any TXT records at the same label which do not begin with (ignoring case) &quot;bitcoin:&quot;. Resolvers encountering multiple &quot;bitcoin:&quot;-matching TXT records at the same label MUST treat the records as invalid and refuse to use any payment instructions therein.</p>
-<p>Clients resolving Bitcoin payment instructions MUST concatenate all strings in the TXT record before processing the complete URI.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup></p>
+<p>Clients resolving Bitcoin payment instructions <b>MUST</b> reconstruct the <code>bitcoin:</code> URI by concatenating the TXT RR’s <code>&lt;character-string&gt;</code> fields in <b>RDATA order</b>, without inserting separators, before parsing.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup></p>
+<p>Clients <b>MUST NOT</b> concatenate across multiple TXT RRs at the same owner name.</p>
 <p>Clients resolving Bitcoin payment instructions MUST fully validate DNSSEC signatures leading to the DNS root (including any relevant CNAME or DNAME records) and MUST NOT accept DNSSEC signatures which use SHA-1 or RSA with keys shorter than 1024 bits. Resolvers MAY accept SHA-1 DS records.</p>
 <p>Clients resolving Bitcoin payment instructions MUST NOT trust a remote resolver to validate DNSSEC records on their behalf.</p>
 <p>Clients resolving Bitcoin payment instructions MUST support resolving through CNAME or DNAME records.</p>
@@ -257,7 +259,7 @@ Thanks to Andrew Kaizer for the suggestion to explicitly restrict cache lifetime
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-10-10</p>
+                    <p class="font-bold">2025-10-11</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
