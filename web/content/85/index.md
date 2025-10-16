@@ -410,7 +410,7 @@ Keys allocated for RSA-GPG purposes use the following scheme:
 
 Note on timestamps:
 
-The resulting RSA key can be used to create a GPG key where the creation date MUST be fixed to unix Epoch timestamp 1231006505 (the Bitcoin genesis block time `'2009-01-03 18:05:05'` UTC) because the key fingerprint is affected by the creation date (Epoch timestamp 0 was not chosen because of legacy behavior in GNUPG implementations for older keys). Additionally, when importing sub-keys under a key in GNUPG, the system time must be frozen to the same timestamp before importing (e.g. by use of `faketime`).
+The resulting RSA key can be used to create a GPG key where the creation date MUST be fixed to UNIX Epoch timestamp 1231006505 (the Bitcoin genesis block time `'2009-01-03 18:15:05'` UTC)<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> because the key fingerprint is affected by the creation date (Epoch timestamp 0 was not chosen because of legacy behavior in GNUPG implementations for older keys). Additionally, when importing sub-keys under a key in GNUPG, the system time must be frozen to the same timestamp before importing (e.g. by use of `faketime`).
 
 Note on GPG key capabilities on smartcard/hardware devices:
 
@@ -485,6 +485,15 @@ BIP32, BIP39
 <h2>Changelog</h2>
 
 
+<h3>2.0.0 (2025-09-19)</h3>
+
+
+<h4>Fixed </h4>
+
+
+*  Fixed the human-readable datetime string for BIP85 GPG Keys that was incorrectly stated as '2009-01-03 18:05:05' rather than '2009-01-03 18:15:05'. Implementations that relied on the previously incorrect datetime string instead of UNIX Epoch timestamp 1231006505 will produce different key fingerprints.
+
+
 <h3>1.3.0 (2024-10-22)</h3>
 
 
@@ -526,7 +535,7 @@ BIP32, BIP39
 <h2>Footnotes</h2>
 
 
-
+1. [^](#cite_ref_1) The human-readable datetime string was incorrectly noted as '2009-01-03 18:05:05' prior to v2.0.0 of this BIP, so implementations that relied on it rather than UNIX Epoch timestamp 1231006505 will produce different key fingerprints.
 <h2>Acknowledgements</h2>
 
 
