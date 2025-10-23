@@ -110,7 +110,7 @@ The algorithm _GenerateProof(a, B, r, G, m)_ is defined as:
 *  Let _e = int(hash<sub>BIP0374/challenge</sub>(cbytes(A) || cbytes(B) || cbytes(C) || cbytes(G) || cbytes(R<sub>1</sub>) || cbytes(R<sub>2</sub>) || m'))_.
 *  Let _s = (k + e⋅a) mod n_.
 *  Let _proof = bytes(32, e) || bytes(32, s)_.
-*  If _VerifyProof(A, B, C, proof)_ (see below) returns failure, abort.
+*  If _VerifyProof(A, B, C, proof, G, m)_ (see below) returns failure, abort.
 *  Return the proof _proof_.
 
 

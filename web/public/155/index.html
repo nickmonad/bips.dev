@@ -167,7 +167,7 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 <table><thead><tr><th>Network ID</th><th>Enumeration</th><th>Address length (bytes)</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>0x01</code></td><td><code>IPV4</code></td><td>4</td><td>IPv4 address (globally routed internet)</td></tr>
 <tr><td><code>0x02</code></td><td><code>IPV6</code></td><td>16</td><td>IPv6 address (globally routed internet)</td></tr>
-<tr><td><code>0x03</code></td><td><code>TORV2</code></td><td>10</td><td>Tor v2 hidden service address</td></tr>
+<tr><td><code>0x03</code></td><td><code>TORV2</code></td><td>10</td><td>Tor v2 hidden service address (no longer used<ref name="torv2">Tor v2 is no longer operational; clients MUST NOT gossip or relay Tor v2 addresses and MUST ignore them on receive</ref>)</td></tr>
 <tr><td><code>0x04</code></td><td><code>TORV3</code></td><td>32</td><td>Tor v3 hidden service address</td></tr>
 <tr><td><code>0x05</code></td><td><code>I2P</code></td><td>32</td><td>I2P overlay network address</td></tr>
 <tr><td><code>0x06</code></td><td><code>CJDNS</code></td><td>16</td><td>Cjdns overlay network address</td></tr>
@@ -193,7 +193,7 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 <p>Gregory Maxwell: various suggestions regarding extensibility</p>
 </li>
 </ul>
-<h2>Appendix A: Tor v2 address encoding</h2>
+<h2>Appendix A: Tor v2 address encoding (no longer used <ref name"torv2" />)</h2>
 <p>The new message introduces a separate network ID for <code>TORV2</code>.</p>
 <p>Clients MUST send Tor hidden service addresses with this network ID, with the 80-bit hidden service ID in the address field. This is the same as the representation in the legacy <code>addr</code> message, minus the 6 byte prefix of the OnionCat wrapping.</p>
 <p>Clients SHOULD ignore OnionCat (<code>fd87:d87e:eb43::/48</code>) addresses on receive if they come with the <code>IPV6</code> network ID.</p>
@@ -218,6 +218,19 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 <p>Cjdns addresses are simply IPv6 addresses in the <code>fc00::/8</code> range<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>. They MUST be sent with the <code>CJDNS</code> network ID.</p>
 <h2>Appendix E: Yggdrasil address encoding</h2>
 <p>Yggdrasil addresses are simply IPv6 addresses in the <code>0200::/7</code> range<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>. They MUST be sent with the <code>YGGDRASIL</code> network ID.</p>
+<h2> Changelog </h2>
+<ul>
+<li>2.0.0 (2025-10-01):
+<ul>
+<li>Add note that Tor v2 is no longer operational.</li>
+</ul>
+</li>
+<li>1.0.0 (2019-02-27):
+<ul>
+<li>Initial version</li>
+</ul>
+</li>
+</ul>
 <h2>References</h2>
 <ol>
 <li><a href="https://bips.dev/155/#cite_ref_1">^</a> <a href="https://gitweb.torproject.org/torspec.git/tree/rend-spec-v3.txt" target="_blank">Tor Rendezvous Specification - Version 3</a></li>

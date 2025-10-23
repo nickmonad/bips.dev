@@ -93,7 +93,7 @@ The list of reserved network IDs is as follows:
 |-|-|-|-|
 |`0x01`|`IPV4`|4|IPv4 address (globally routed internet)|
 |`0x02`|`IPV6`|16|IPv6 address (globally routed internet)|
-|`0x03`|`TORV2`|10|Tor v2 hidden service address|
+|`0x03`|`TORV2`|10|Tor v2 hidden service address (no longer used<ref name="torv2">Tor v2 is no longer operational; clients MUST NOT gossip or relay Tor v2 addresses and MUST ignore them on receive</ref>)|
 |`0x04`|`TORV3`|32|Tor v3 hidden service address|
 |`0x05`|`I2P`|32|I2P overlay network address|
 |`0x06`|`CJDNS`|16|Cjdns overlay network address|
@@ -131,7 +131,7 @@ The reference implementation is available at (to be done)
 
 - Gregory Maxwell: various suggestions regarding extensibility
 
-<h2>Appendix A: Tor v2 address encoding</h2>
+<h2>Appendix A: Tor v2 address encoding (no longer used <ref name"torv2" />)</h2>
 
 
 The new message introduces a separate network ID for `TORV2`.
@@ -176,6 +176,15 @@ Cjdns addresses are simply IPv6 addresses in the `fc00::/8` range<sup id="cite_r
 
 
 Yggdrasil addresses are simply IPv6 addresses in the `0200::/7` range<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>. They MUST be sent with the `YGGDRASIL` network ID.
+
+<h2> Changelog </h2>
+
+
+*  2.0.0 (2025-10-01):
+    *  Add note that Tor v2 is no longer operational.
+*  1.0.0 (2019-02-27):
+    *  Initial version
+
 
 <h2>References</h2>
 
