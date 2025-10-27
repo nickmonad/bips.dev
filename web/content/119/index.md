@@ -724,7 +724,7 @@ like fragments in their program as the scriptSig commitment creates a hash cycle
 * <a href="https://rubin.io/advent21" target="_blank">27 Blog Posts on building smart contracts with Sapio and CTV, including examples described here.</a>
 * <a href="https://www.youtube.com/watch?v=YxsjdIl0034&t=2451" target="_blank">Scaling Bitcoin Presentation</a>
 * <a href="https://bitcoinops.org/en/newsletters/2019/05/29/" target="_blank">Optech Newsletter Covering OP_CHECKOUTPUTSHASHVERIFY</a>
-* <a href="https://cyber.stanford.edu/sites/g/files/sbiybj9936/f/jeremyrubin.pdf" target="_blank">Structuring Multi Transaction Contracts in Bitcoin</a>
+* <a href="https://rubin.io/public/pdfs/multi-txn-contracts.pdf" target="_blank">Structuring Multi Transaction Contracts in Bitcoin</a>
 * <a href="https://github.com/jeremyrubin/lazuli" target="_blank">Lazuli Notes (ECDSA based N-of-N Signatures for Certified Post-Dated UTXOs)</a>
 * <a href="https://web.archive.org/web/20220203124718/https://fc16.ifca.ai/bitcoin/papers/MES16.pdf" target="_blank">Bitcoin Covenants</a>
 * <a href="https://bitcointalk.org/index.php?topic=278122.0" target="_blank">CoinCovenants using SCIP signatures, an amusingly bad idea.</a>
