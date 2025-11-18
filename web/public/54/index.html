@@ -176,12 +176,15 @@ T<sub>N−2015</sub>).</li>
 <p>A limit is set on the number of potentially executed signature operations in validating a
 transaction. It applies to all transactions in the block except the coinbase transaction<sup class="footnote-reference"><a href="#1">2</a></sup>. For
 each input in the transaction, count the number of <code>CHECKSIG</code> and <code>CHECKMULTISIG</code> in the input
-scriptSig and previous output's scriptPubKey, including the P2SH redeemScript. The accounting is the
-same as for <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki#specification">bip-0016</a>: a <code>CHECKSIG</code>/<code>CHECKSIGVERIFY</code> operation accounts for 1 and a
-<code>CHECKMULTISIG</code>/<code>CHECKMULTISIGVERIFY</code> accounts for the number of public keys associated, or 20 if
-the number of public keys is greater than 16. A <code>CHECKMULTISIG</code>/<code>CHECKMULTISIGVERIFY</code> not directly
-preceded by a minimally-pushed number between 1 and 16 (included) accounts for 20. If the
-total is strictly higher than 2500, the transaction is invalid.</p>
+scriptSig and previous output's scriptPubKey, including the P2SH redeemScript. If the total summed
+over all transaction inputs is strictly higher than 2500, the transaction is invalid. The accounting is the
+same as for <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki#specification">bip-0016</a>, evaluating the scriptSig, scriptPubKey, and P2SH redeemScript
+separately:</p>
+<ol>
+<li><code>CHECKSIG</code> and <code>CHECKSIGVERIFY</code> count as 1 signature operation, whether or not they are evaluated.</li>
+<li><code>CHECKMULTISIG</code> and <code>CHECKMULTISIGVERIFY</code> immediately preceded by <code>OP_1</code> through <code>OP_16</code> are counted as 1 to 16 signature operations, whether or not they are evaluated.</li>
+<li>All other <code>CHECKMULTISIG</code> and <code>CHECKMULTISIGVERIFY</code> are counted as 20 signature operations, whether or not they are evaluated.</li>
+</ol>
 <p>Transactions whose witness-stripped serialized size is exactly 64 bytes are invalid.</p>
 <p>The coinbase transaction's <code>nLockTime</code> field must be set to the height of the block minus 1<sup class="footnote-reference"><a href="#2">3</a></sup>
 and its <code>nSequence</code> field must not be equal to 0xffffffff.</p>
@@ -305,7 +308,7 @@ notably of Bitcoin Core but also of all other implementations the authors are aw
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-17</p>
+                    <p class="font-bold">2025-11-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
