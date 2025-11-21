@@ -144,7 +144,7 @@ An implementation of this BIP, including both consensus code updates and tests i
 <h2>Deployment</h2>
 
 
-This BIP will be deployed by BIP8 (Version bits with lock-in by height)[9] with the name "merklebranchverify" and using bit 2.
+This BIP will be deployed by BIP8 (Version bits with lock-in by height)[10] with the name "merklebranchverify" and using bit 2.
 
 For Bitcoin mainnet, the BIP8 startheight will be at height M to be determined and BIP8 timeout activation will occur on height M + 50,400 blocks.
 
@@ -177,3 +177,5 @@ Old clients will consider the OP_MERKLEBRANCHVERIFY as a NOP and ignore it. Proo
 [8] <a href="https://blockstream.com/2015/08/24/treesignatures.html" target="_blank">Multisig on steroids using tree signatures</a>
 
 [9] <a href="/68" target="_blank">BIP68: Relative lock-time using consensus-enforced sequence numbers</a>
+
+[10] <a href="/8" target="_blank">BIP8: Version bits with lock-in by height</a>
