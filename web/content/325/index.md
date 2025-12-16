@@ -104,6 +104,16 @@ A block is considered fully validated only if the to_sign transaction is a valid
 
 There is one other acceptable special case: if a block's challenge is e.g. `OP_TRUE` (`0x51`), where an empty solution would result in success, the block is also considered valid if the signet commitment is absent.
 
+<h3> Minimum Difficulty </h3>
+
+
+The minimum difficulty for blocks in signet is approximately
+0.0011265, corresponding to a maximum target of
+`00000377ae000000000000000000000000000000000000000000000000000000`
+which is represented by an nBits value of `0x1e0377ae`.
+
+This value is chosen so that multiplying the maximum target by maximum retarget timespan (8 weeks measured in seconds) does not overflow a uint256, making it easier to do difficulty adjustment calculations.
+
 <h2> Genesis Block and Message Start </h2>
 
 
