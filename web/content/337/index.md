@@ -114,7 +114,7 @@ There are no concerns with backwards compatibility.
 
 |Name|Width|Description|
 |-|-|-|
-|Compressed Signature|1 Bit|A Boolean do determine if this input's signature is compressed. The signature is only compressed for P2TR on a key spend and for P2SH when it is a wrapped P2SH-WPKH.|
+|Compressed Signature|1 Bit|A Boolean to determine if this input's signature is compressed. The signature is only compressed for P2TR on a key spend and for P2SH when it is a wrapped P2SH-WPKH.|
 |Standard Hash|1 Bit|A Boolean to determine if this input's signature hash type is standard (0x00 for Taproot, 0x01 for Legacy/Segwit).|
 |Standard Sequence|2 Bits|A CompactSize flag for this input's sequence. Encode literal values as follows: 1 = 0x00000000, 2 = 0xFFFFFFFE, 3 = 0xFFFFFFFF.|
 |Compressed OutPoint|1 bit|A Boolean to determine if the input's outpoint is compressed.|
@@ -154,7 +154,7 @@ There are no concerns with backwards compatibility.
 
 |Name|Width|Description|
 |-|-|-|
-|Outpoint|2-37 Bytes|The Outpoint Txid/Vout are determined to be compressed or otherwise by the "Compressed Outpoint" Boolean in the input metadata. For each compressed outpoint see <a href="#compressed-outpoint" target="_blank">Compressed Outpoint</a>. For each uncompressed signature see <a href="#uncompressed-outpoint" target="_blank">Uncompressed Outpoint</a>.|
+|Outpoint|2-37 Bytes|The Outpoint Txid/Vout are determined to be compressed or otherwise by the "Compressed Outpoint" Boolean in the input metadata. For each compressed outpoint see <a href="#compressed-outpoint" target="_blank">Compressed Outpoint</a>. For each uncompressed outpoint see <a href="#uncompressed-outpoint" target="_blank">Uncompressed Outpoint</a>.|
 |Signature|64+ Bytes|The Signature is determined to be compressed or otherwise by the output script of the previous transaction. For each compressed signature see <a href="#compressed-signature" target="_blank">Compressed Signature</a>. For each uncompressed signature see <a href="#uncompressed-signature" target="_blank">Uncompressed Signature</a>.|
 |Sequence|0-5 Bytes|If present due to a non-standard sequence, a VarInt encoding of the sequence.|
 
