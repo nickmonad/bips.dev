@@ -166,7 +166,7 @@ Signers who control an address _A_ who wish to sign a message _m_ act as follows
 
 1.  They construct `to_spend` and `to_sign` as specified above, using the scriptPubKey of _A_ for `message_challenge` and tagged hash of _m_ as `message_hash`.
 1.  Optionally, they may set nLockTime of `to_sign` or nSequence of its first input.
-1.  Optionally, they may add any additional outputs to `to_sign` that they wish to prove control of.
+1.  Optionally, they may add any additional inputs to `to_sign` that they wish to prove control of.
 1.  They satisfy `to_sign` as they would any other transaction.
 
 
