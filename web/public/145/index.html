@@ -136,37 +136,37 @@
 <table><thead><tr><th>Key</th><th>Required</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>weightlimit</td><td>No</td><td>Number</td><td>total weight allowed in blocks</td></tr>
 </tbody></table>
-<p>The '!' rule prefix MUST be enabled on the &quot;segwit&quot; rule for templates including transactions with witness data.
-In particular, note that even if the client's &quot;rules&quot; list lacks &quot;segwit&quot;, server MAY support old miners by producing a witness-free template and omitting the '!' rule prefix for &quot;segwit&quot; in the template's &quot;rules&quot; list.
-If the GBT server does not support producing witness-free templates after its activation, it must also use the '!' rule prefix in the &quot;vbavailable&quot; list prior to activation.</p>
+<p>The '!' rule prefix MUST be enabled on the "segwit" rule for templates including transactions with witness data.
+In particular, note that even if the client's "rules" list lacks "segwit", server MAY support old miners by producing a witness-free template and omitting the '!' rule prefix for "segwit" in the template's "rules" list.
+If the GBT server does not support producing witness-free templates after its activation, it must also use the '!' rule prefix in the "vbavailable" list prior to activation.</p>
 <h4>Transactions Object Format</h4>
-<p>The Objects listed in the response's &quot;transactions&quot; key is revised to include these keys:</p>
+<p>The Objects listed in the response's "transactions" key is revised to include these keys:</p>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>txid</td><td>String</td><td>transaction id encoded in hexadecimal; required for transactions with witness data</td></tr>
 <tr><td>weight</td><td>Number</td><td>numeric weight of the transaction, as counted for purposes of the block's weightlimit; if key is not present, weight is unknown and clients MUST NOT assume it is zero, although they MAY choose to calculate it themselves</td></tr>
 <tr><td>hash</td><td>String</td><td>reversed hash of complete transaction (with witness data included) encoded in hexadecimal</td></tr>
 </tbody></table>
-<p>Transactions with witness data may only be included if the template's &quot;rules&quot; list (see <a href="/9" target="_blank">BIP 9</a>) includes &quot;segwit&quot;.</p>
+<p>Transactions with witness data may only be included if the template's "rules" list (see <a href="/9" target="_blank">BIP 9</a>) includes "segwit".</p>
 <h3>Sigops</h3>
-<p>For templates with &quot;segwit&quot; enabled as a rule, the &quot;sigoplimit&quot; and &quot;sigops&quot; keys must use the new values as calculated in <a href="/141" target="_blank">BIP 141</a>.</p>
+<p>For templates with "segwit" enabled as a rule, the "sigoplimit" and "sigops" keys must use the new values as calculated in <a href="/141" target="_blank">BIP 141</a>.</p>
 <h3>Block Assembly with Witness Transactions</h3>
 <p>When block assembly is done without witness transactions, no changes are made by this BIP, and it should be assembled as previously.</p>
-<p>When witness transactions are included in the block, the primary merkle root MUST be calculated with those transactions' &quot;txid&quot; field instead of &quot;hash&quot;. A secondary merkle root MUST be calculated as per <a href="/141" target="_blank">BIP 141's commitment structure specification</a> to be inserted into the generation (coinbase) transaction.</p>
-<p>Servers MUST NOT include a commitment in the &quot;coinbasetxn&quot; key on the template. Clients MUST insert the commitment as an additional output at the end of the final generation (coinbase) transaction. Only if the template includes a &quot;mutable&quot; key (see <a href="/23" target="_blank">BIP 23 Mutations</a>) including &quot;generation&quot;, the client MAY in that case place the commitment output in any position it chooses, provided that no later output matches the commitment pattern.</p>
+<p>When witness transactions are included in the block, the primary merkle root MUST be calculated with those transactions' "txid" field instead of "hash". A secondary merkle root MUST be calculated as per <a href="/141" target="_blank">BIP 141's commitment structure specification</a> to be inserted into the generation (coinbase) transaction.</p>
+<p>Servers MUST NOT include a commitment in the "coinbasetxn" key on the template. Clients MUST insert the commitment as an additional output at the end of the final generation (coinbase) transaction. Only if the template includes a "mutable" key (see <a href="/23" target="_blank">BIP 23 Mutations</a>) including "generation", the client MAY in that case place the commitment output in any position it chooses, provided that no later output matches the commitment pattern.</p>
 <h2>Motivation</h2>
 <p>Segregated witness substantially changes the structure of blocks, so the previous getblocktemplate specification is no longer sufficient.
 It additionally also adds a new way of counting resource limits, and so GBT must be extended to convey this information correctly as well.</p>
 <h2>Rationale</h2>
-<p>Why doesn't &quot;weightlimit&quot; simply redefine the existing &quot;sizelimit&quot;?</p>
+<p>Why doesn't "weightlimit" simply redefine the existing "sizelimit"?</p>
 <ul>
-<li>&quot;sizelimit&quot; is already enforced by clients by counting the sum of bytes in transactions' &quot;data&quot; keys.</li>
-<li>Servers may wish to limit the overall size of a block, independently from the &quot;weight&quot; of the block.</li>
+<li>"sizelimit" is already enforced by clients by counting the sum of bytes in transactions' "data" keys.</li>
+<li>Servers may wish to limit the overall size of a block, independently from the "weight" of the block.</li>
 </ul>
-<p>Why is &quot;sigoplimit&quot; redefined instead of a new &quot;sigopweightlimit&quot; being added?</p>
+<p>Why is "sigoplimit" redefined instead of a new "sigopweightlimit" being added?</p>
 <ul>
-<li>The old limit was already arbitrarily defined, and could not be counted by clients on their own anyway. The concept of &quot;sigop weight&quot; is merely a change in the arbitrary formula used.</li>
+<li>The old limit was already arbitrarily defined, and could not be counted by clients on their own anyway. The concept of "sigop weight" is merely a change in the arbitrary formula used.</li>
 </ul>
-<p>Why is &quot;sigoplimit&quot; divided by 4?</p>
+<p>Why is "sigoplimit" divided by 4?</p>
 <ul>
 <li>To resemble the previous values. (FIXME: is this a good reason? maybe we shouldn't divide it?)</li>
 </ul>
@@ -174,11 +174,11 @@ It additionally also adds a new way of counting resource limits, and so GBT must
 <ul>
 <li>Servers which do not allow modification of the generation outputs ought to be checking this as part of the validity of submissions. By requiring a specific placement, they can simply strip the commitment and do a byte-for-byte comparison of the outputs. Placing it at the end avoids the possibility of a later output matching the pattern and overriding it.</li>
 </ul>
-<p>Why shouldn't the server simply add the commitment upfront in the &quot;coinbasetxn&quot;, and simply send the client stripped transaction data?</p>
+<p>Why shouldn't the server simply add the commitment upfront in the "coinbasetxn", and simply send the client stripped transaction data?</p>
 <ul>
-<li>It would become impossible for servers to specify only &quot;coinbasevalue&quot;, since clients would no longer have the information required to construct the commitment.</li>
+<li>It would become impossible for servers to specify only "coinbasevalue", since clients would no longer have the information required to construct the commitment.</li>
 <li>getblocktemplate is intended to be a <em>decentralised</em> mining protocol, and allowing clients to be blinded to the content of the block works contrary to that purpose.</li>
-<li>BIP 23's &quot;transactions&quot; mutations allow the client to modify the transaction-set on their own, which is impossible without the complete transaction data.</li>
+<li>BIP 23's "transactions" mutations allow the client to modify the transaction-set on their own, which is impossible without the complete transaction data.</li>
 </ul>
 <h2>Reference Implementation</h2>
 <ul>
@@ -205,7 +205,7 @@ It additionally also adds a new way of counting resource limits, and so GBT must
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-25</p>
+                    <p class="font-bold">2025-12-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

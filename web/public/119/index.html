@@ -195,7 +195,7 @@ the precomputed data must be initialized to prevent Denial-of-Service attacks.
 Any implementation <em>must</em> cache these parts of the hash computation to avoid
 quadratic hashing DoS. All variable length computations must be precomputed
 including hashes of the scriptsigs, sequences, and outputs. See the section
-&quot;Denial of Service and Validation Costs&quot; below. This is not a performance
+"Denial of Service and Validation Costs" below. This is not a performance
 optimization.</p>
 <pre><code>
 def ser_compact_size(l):
@@ -322,7 +322,7 @@ script.</p>
 <h5>Committing to the number of inputs</h5>
 <p>If we allow more than one input to be spent in the transaction then it would be
 possible for two outputs to request payment to the same set of outputs,
-resulting in half the intended payments being discarded, the &quot;half-spend&quot; problem.</p>
+resulting in half the intended payments being discarded, the "half-spend" problem.</p>
 <p>Furthermore, the restriction on which inputs can be co-spent is critical for
 payments-channel constructs where a stable TXID is a requirement (updates would
 need to be signed on all combinations of inputs).</p>
@@ -441,7 +441,7 @@ the outputs hash.</p>
 outputs hash than the inputs hash.</p>
 <p>We usually have just a single input on a CHECKTEMPLATEVERIFY script, which would suggest that it
 does not make sense for input index to be the last field. However, given the desirability of being
-able to express a &quot;don't care&quot; index easily (e.g., for decentralized kickstarter-type transactions),
+able to express a "don't care" index easily (e.g., for decentralized kickstarter-type transactions),
 this value is placed last.</p>
 <h3>Design Tradeoffs and Risks</h3>
 <p>CHECKTEMPLATEVERIFY's design limits script authors to relatively precise template matching. The
@@ -451,7 +451,7 @@ exactly at the time of construction, with the exception of the inputs.</p>
 <code>&lt;H&gt; OP_CHECKTEMPLATEVERIFY</code> restriction may create outputs with <code>&lt;X&gt; OP_CHECKTEMPLATEVERIFY</code> restrictions.
 This expansion is inherently finite, as re-creating an output with a script containing the hash <code>&lt;H&gt;</code> from a transaction
 spending an output with the hash <code>&lt;H&gt;</code> creates a hash cycle. This can also be thought of as each template hash <code>&lt;H&gt;</code> having
-a &quot;path height&quot; of the longest chain of possible unbroken <code>OP_CHECKTEMPLATEVERIFY</code> verifying transactions, and the path height is
+a "path height" of the longest chain of possible unbroken <code>OP_CHECKTEMPLATEVERIFY</code> verifying transactions, and the path height is
 strictly decreasing.</p>
 <p>Furthermore, templates are restricted to be spendable as a known number of inputs only and
 at a specific input index, preventing unintentional introduction of the 'half spend' problem.</p>
@@ -486,7 +486,7 @@ to spend to any address (especially, OP_RETURN). If a sender needs to know the t
 from before sending, they may request a signature of a provably non-transaction challenge string
 from the leaves of the CHECKTEMPLATEVERIFY tree.</p>
 <h4>Forwarding Addresses</h4>
-<p>Key-reuse with CHECKTEMPLATEVERIFY may be used as a form of &quot;forwarding address contract&quot;.
+<p>Key-reuse with CHECKTEMPLATEVERIFY may be used as a form of "forwarding address contract".
 A forwarding address is an address which can automatically execute in a predefined way.
 For example, an exchange's hot wallet might use an address which can automatically be moved to a cold
 storage address after a relative timeout.</p>
@@ -506,7 +506,7 @@ spent to multiple times (e.g., a Hash Time Lock branch should be instantiated wi
 each time it is used). Keys which have signed a SIGHASH_ANYPREVOUT transaction can similarly become
 reuse-unsafe.</p>
 <p>Because CHECKTEMPLATEVERIFY commits to the input index currently being spent, reused-keys are
-guaranteed to execute in separate transactions which reduces the risk of &quot;half-spend&quot; type issues.</p>
+guaranteed to execute in separate transactions which reduces the risk of "half-spend" type issues.</p>
 <h4>NOP-Default and Recommended Standardness Rules</h4>
 <p>If the argument length is not exactly 32, CHECKTEMPLATEVERIFY treats it as a NOP during
 consensus validation. Implementations are recommended to fail in such circumstances during non-consensus
@@ -617,7 +617,7 @@ scripts using it to be accepted to the mempool or relayed under standard policy 
 are recommended to follow this rule as well, but not required.</p>
 <p>Older wallet software will be able to accept spends from OP_CHECKTEMPLATEVERIFY outputs, but will
 require an upgrade in order to treat PayToBareDefaultCheckTemplateVerifyHash chains with a confirmed ancestor as
-being &quot;trusted&quot; (i.e., eligible for spending before the transaction is confirmed).</p>
+being "trusted" (i.e., eligible for spending before the transaction is confirmed).</p>
 <p>Backports of OP_CHECKTEMPLATEVERIFY can be trivially prepared (see the reference implementation)
 for older node versions that can be patched but not upgraded to a newer major release.</p>
 <h2> Script Compatibility </h2>
@@ -671,7 +671,7 @@ to aid in searching and referencing discussion on this BIP.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-25</p>
+                    <p class="font-bold">2025-12-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

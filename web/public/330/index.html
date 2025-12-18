@@ -162,9 +162,9 @@ Flooding is expensive, so Erlay seeks to use it only when necessary to facilitat
 <h1></h1>
 <p>Short IDs are computed as follows:</p>
 <ul>
-<li>Let <em>salt<sub>1</sub></em> and <em>salt<sub>2</sub></em> be the entropy contributed by both sides; see the &quot;sendtxrcncl&quot; message further for details how they are exchanged.</li>
+<li>Let <em>salt<sub>1</sub></em> and <em>salt<sub>2</sub></em> be the entropy contributed by both sides; see the "sendtxrcncl" message further for details how they are exchanged.</li>
 <li>Sort the two salts such that <em>salt<sub>1</sub> ≤ salt<sub>2</sub></em> (which side sent what doesn't matter).</li>
-<li>Compute <em>h = TaggedHash(&quot;Tx Relay Salting&quot;, salt<sub>1</sub>, salt<sub>2</sub>)</em>, where the two salts are encoded in 64-bit little-endian byte order, and TaggedHash is specified by <a href="/340" target="_blank">BIP-340</a>.</li>
+<li>Compute <em>h = TaggedHash("Tx Relay Salting", salt<sub>1</sub>, salt<sub>2</sub>)</em>, where the two salts are encoded in 64-bit little-endian byte order, and TaggedHash is specified by <a href="/340" target="_blank">BIP-340</a>.</li>
 <li>Let <em>k<sub>0</sub></em> be the 64-bit integer obtained by interpreting the first 8 bytes of <em>h</em> in little-endian byte order.</li>
 <li>Let <em>k<sub>1</sub></em> be the 64-bit integer obtained by interpreting the second 8 bytes of <em>h</em> in little-endian byte order.</li>
 <li>Let <em>s = SipHash-2-4((k<sub>0</sub>,k<sub>1</sub>),wtxid)</em>, where <em>wtxid</em> is the transaction hash including witness data as defined by BIP141.</li>
@@ -218,32 +218,32 @@ This optimization is possible because extending a sketch is just concatenating n
 <p>In what follows, all integers are serialized in little-endian byte order. Boolean values are encoded as a single byte that must be 0 or 1 exactly. Arrays are serialized with the CompactSize prefix that encodes their length, as is common in other P2P messages.</p>
 <h4>sendtxrcncl</h4>
 <p>The sendtxrcncl message announces support for the reconciliation protocol. It is expected to be only sent once, and ignored by nodes that don't support it.</p>
-<p>Should be sent before &quot;verack&quot; and accompanied by &quot;wtxidrelay&quot; (in any order).</p>
-<p>If &quot;sendtxrcncl&quot; was sent after &quot;verack&quot;, the sender should be disconnected.</p>
-<p>If &quot;sendtxrcncl&quot; was sent before &quot;verack&quot;, but by &quot;verack&quot; the &quot;wtxidrelay&quot; message was not received,
-&quot;sendtxrcncl&quot; should be ignored. The connection should proceed normally, but as if reconciliation
+<p>Should be sent before "verack" and accompanied by "wtxidrelay" (in any order).</p>
+<p>If "sendtxrcncl" was sent after "verack", the sender should be disconnected.</p>
+<p>If "sendtxrcncl" was sent before "verack", but by "verack" the "wtxidrelay" message was not received,
+"sendtxrcncl" should be ignored. The connection should proceed normally, but as if reconciliation
 was not supported.</p>
-<p>Must not be sent if peer specified no support for transaction relay (fRelay=0) in &quot;version&quot;.
+<p>Must not be sent if peer specified no support for transaction relay (fRelay=0) in "version".
 Otherwise, the sender should be disconnected.</p>
 <p>Its payload consists of:</p>
 <table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>uint32</td><td>version</td><td>Sender must set this to 1 currently, otherwise receiver should ignore the message. v1 is the lowest protocol version, everything below that is a protocol violation.</td></tr>
 <tr><td>uint64</td><td>salt</td><td>The salt used in the short transaction ID computation.</td></tr>
 </tbody></table>
-<p>After both peers have confirmed support by sending &quot;sendtxrcncl&quot;, the initiator of the P2P connection assumes the role of reconciliation initiator (will send &quot;reqrecon&quot; messages) and the other peer assumes the role of reconciliation responder (will respond to &quot;reqrecon&quot; messages).
-&quot;reqrecon&quot; messages can only be sent by the reconciliation initiator.</p>
+<p>After both peers have confirmed support by sending "sendtxrcncl", the initiator of the P2P connection assumes the role of reconciliation initiator (will send "reqrecon" messages) and the other peer assumes the role of reconciliation responder (will respond to "reqrecon" messages).
+"reqrecon" messages can only be sent by the reconciliation initiator.</p>
 <h4>reqrecon</h4>
 <p>The reqrecon message initiates a reconciliation round.</p>
 <table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>uint16</td><td>set_size</td><td>Size of the sender's reconciliation set, used to estimate set difference.</td></tr>
 <tr><td>uint16</td><td>q</td><td>Coefficient used to estimate set difference. Multiplied by PRECISION=(2^15) - 1 and rounded up by the sender and divided by PRECISION by the receiver.</td></tr>
 </tbody></table>
-<p>Upon receipt of a &quot;reqrecon&quot; message, the receiver:</p>
+<p>Upon receipt of a "reqrecon" message, the receiver:</p>
 <ul>
-<li>Constructs and sends a &quot;sketch&quot; message (see below), with a sketch of certain <em>capacity=f(set_size, local_set_size, q)</em> (the exact function is suggested below), where <em>local_set_size</em> represents size of the receiver's reconciliation set.</li>
-<li>Makes a snapshot of their current reconciliation set, and clears the set itself. The snapshot is kept until a &quot;reconcildiff&quot; message is received by the node.</li>
+<li>Constructs and sends a "sketch" message (see below), with a sketch of certain <em>capacity=f(set_size, local_set_size, q)</em> (the exact function is suggested below), where <em>local_set_size</em> represents size of the receiver's reconciliation set.</li>
+<li>Makes a snapshot of their current reconciliation set, and clears the set itself. The snapshot is kept until a "reconcildiff" message is received by the node.</li>
 </ul>
-<p>No new &quot;reqrecon&quot; message can be sent until a &quot;reconcildiff&quot; message is sent.</p>
+<p>No new "reqrecon" message can be sent until a "reconcildiff" message is sent.</p>
 <h4>sketch</h4>
 <p>The sketch message is used to communicate a sketch required to perform set reconciliation.</p>
 <table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
@@ -251,38 +251,38 @@ Otherwise, the sender should be disconnected.</p>
 </tbody></table>
 <p>The sketch message may be received in two cases.</p>
 <ol>
-<li>Initial sketch. Upon receipt of a &quot;sketch&quot; message, a node computes the difference sketch by combining the received sketch with a sketch computed locally for a corresponding reconciliation set. The receiving node then tries to decode the difference sketch and based on the result:</li>
+<li>Initial sketch. Upon receipt of a "sketch" message, a node computes the difference sketch by combining the received sketch with a sketch computed locally for a corresponding reconciliation set. The receiving node then tries to decode the difference sketch and based on the result:</li>
 </ol>
 <ul>
-<li>If the decoding failed, the receiving node requests an extension sketch by sending a &quot;reqsketchext&quot; message. Alternatively, the node may terminate the reconciliation right away by sending a &quot;reconcildiff&quot; message is sent with the failure flag set (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
+<li>If the decoding failed, the receiving node requests an extension sketch by sending a "reqsketchext" message. Alternatively, the node may terminate the reconciliation right away by sending a "reconcildiff" message is sent with the failure flag set (success=false).</li>
+<li>If the decoding succeeded, a "reconcildiff" message with success=true.</li>
 </ul>
-<p>The receiver also makes snapshot of their current reconciliation set, and clears the set itself. The snapshot is kept until a &quot;reconcildiff&quot; message is sent by the node. It is needed to enable sketch extension.</p>
+<p>The receiver also makes snapshot of their current reconciliation set, and clears the set itself. The snapshot is kept until a "reconcildiff" message is sent by the node. It is needed to enable sketch extension.</p>
 <ol start="2">
 <li>Sketch extension. By combining the sketch extension with the initially received sketch, an extended sketch is obtained. The receiving node then computes the extended difference sketch by combining the received extended sketch with an extended sketch computed locally over a corresponding reconciliation set snapshot. The receiving node then tries to decode the extended difference sketch and based on the result:</li>
 </ol>
 <ul>
-<li>If the decoding failed, the receiving node terminates the reconciliation right away by sending a &quot;reconcildiff&quot; message is sent with the failure flag set (success=false).</li>
-<li>If the decoding succeeded, a &quot;reconcildiff&quot; message with success=true.</li>
+<li>If the decoding failed, the receiving node terminates the reconciliation right away by sending a "reconcildiff" message is sent with the failure flag set (success=false).</li>
+<li>If the decoding succeeded, a "reconcildiff" message with success=true.</li>
 </ul>
-<p>In either cases, a &quot;reconcildiff&quot; with success=false should also be accompanied with announcing all transactions from the reconciliation set (or set snapshot if failed after extension) as a fallback to flooding.
-A &quot;reconcildiff&quot; with success=true should contain unknown short IDs of the transactions from the decoded difference, corresponding to the transactions missing on the sender's side. Known short IDs from the difference correspond to what the receiver of the message is missing, and they should be announced via an &quot;inv&quot; message.</p>
+<p>In either cases, a "reconcildiff" with success=false should also be accompanied with announcing all transactions from the reconciliation set (or set snapshot if failed after extension) as a fallback to flooding.
+A "reconcildiff" with success=true should contain unknown short IDs of the transactions from the decoded difference, corresponding to the transactions missing on the sender's side. Known short IDs from the difference correspond to what the receiver of the message is missing, and they should be announced via an "inv" message.</p>
 <h4>reqsketchext</h4>
 <p>The reqsketchext message is used by reconciliation initiator to signal that initial set reconciliation has failed and a sketch extension is needed to find set difference.</p>
 <p>It has an empty payload.</p>
-<p>Upon receipt of a &quot;reqsketchext&quot; message, a node responds to it with a &quot;sketch&quot; message, which contains a sketch extension: a sketch (of the same transactions sketched initially) of higher capacity without the part sent initially.</p>
+<p>Upon receipt of a "reqsketchext" message, a node responds to it with a "sketch" message, which contains a sketch extension: a sketch (of the same transactions sketched initially) of higher capacity without the part sent initially.</p>
 <h4>reconcildiff</h4>
 <p>The reconcildiff message is used by reconciliation initiator to announce transactions which are found to be missing during set reconciliation on the sender's side.</p>
 <table><thead><tr><th>Data type</th><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>uint8</td><td>success</td><td>Indicates whether sender of the message succeeded at set difference decoding.</td></tr>
 <tr><td>uint32[]</td><td>ask_shortids</td><td>The short IDs that the sender did not have.</td></tr>
 </tbody></table>
-<p>Upon receipt a &quot;reconcildiff&quot; message with <em>success=1</em> (reconciliation success), a node sends an &quot;inv&quot; message for the transactions requested by 32-bit IDs (first vector) containing their wtxids (with parent transactions occurring before their dependencies).
-If <em>success=0</em> (reconciliation failure), receiver should announce all transactions from the reconciliation set via an &quot;inv&quot; message.
-In both cases, transactions the sender of the message thinks the receiver is missing are announced via an &quot;inv&quot; message.
-The regular &quot;inv&quot; deduplication should apply.</p>
+<p>Upon receipt a "reconcildiff" message with <em>success=1</em> (reconciliation success), a node sends an "inv" message for the transactions requested by 32-bit IDs (first vector) containing their wtxids (with parent transactions occurring before their dependencies).
+If <em>success=0</em> (reconciliation failure), receiver should announce all transactions from the reconciliation set via an "inv" message.
+In both cases, transactions the sender of the message thinks the receiver is missing are announced via an "inv" message.
+The regular "inv" deduplication should apply.</p>
 <p>The <b>snapshot</b> of the corresponding reconciliation set is cleared by the sender and the receiver of the message.</p>
-<p>The sender should also send their own &quot;inv&quot; message along with the reconcildiff message to announce transactions which are missing on the receiver's side.</p>
+<p>The sender should also send their own "inv" message along with the reconcildiff message to announce transactions which are missing on the receiver's side.</p>
 <h2>Local state</h2>
 <p>This BIP suggests a stateful protocol and it requires storing several variables at every node to operate properly.</p>
 <h4>Reconciliation salt</h4>
@@ -342,7 +342,7 @@ We would like to thank Ben Woosley for contributions to the high-level descripti
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-25</p>
+                    <p class="font-bold">2025-12-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

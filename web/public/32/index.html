@@ -137,15 +137,15 @@
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
-<p>This document describes hierarchical deterministic wallets (or &quot;HD Wallets&quot;): wallets which can be shared partially or entirely with different systems, each with or without the ability to spend coins.</p>
+<p>This document describes hierarchical deterministic wallets (or "HD Wallets"): wallets which can be shared partially or entirely with different systems, each with or without the ability to spend coins.</p>
 <p>The specification is intended to set a standard for deterministic wallets that can be interchanged between different clients. Although the wallets described here have many features, not all are required by supporting clients.</p>
 <p>The specification consists of two parts. In the first part, a system for deriving a tree of keypairs from a single seed is presented. The second part demonstrates how to build a wallet structure on top of such a tree.</p>
 <h2>Copyright</h2>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
 <h2>Motivation</h2>
-<p>The Bitcoin reference client uses randomly generated keys. In order to avoid the necessity for a backup after every transaction, (by default) 100 keys are cached in a pool of reserve keys. Still, these wallets are not intended to be shared and used on several systems simultaneously. They support hiding their private keys by using the wallet encrypt feature and not sharing the password, but such &quot;neutered&quot; wallets lose the power to generate public keys as well.</p>
+<p>The Bitcoin reference client uses randomly generated keys. In order to avoid the necessity for a backup after every transaction, (by default) 100 keys are cached in a pool of reserve keys. Still, these wallets are not intended to be shared and used on several systems simultaneously. They support hiding their private keys by using the wallet encrypt feature and not sharing the password, but such "neutered" wallets lose the power to generate public keys as well.</p>
 <p>Deterministic wallets do not require such frequent backups, and elliptic curve mathematics permit schemes where one can calculate the public keys without revealing the private keys. This permits for example a webshop business to let its webserver generate fresh addresses (public key hashes) for each order or for each customer, without giving the webserver access to the corresponding private keys (which are required for spending the received funds).</p>
-<p>However, deterministic wallets typically consist of a single &quot;chain&quot; of keypairs. The fact that there is only one chain means that sharing a wallet happens on an all-or-nothing basis. However, in some cases one only wants some (public) keys to be shared and recoverable. In the example of a webshop, the webserver does not need access to all public keys of the merchant's wallet; only to those addresses which are used to receive customers' payments, and not for example the change addresses that are generated when the merchant spends money. Hierarchical deterministic wallets allow such selective sharing by supporting multiple keypair chains, derived from a single root.</p>
+<p>However, deterministic wallets typically consist of a single "chain" of keypairs. The fact that there is only one chain means that sharing a wallet happens on an all-or-nothing basis. However, in some cases one only wants some (public) keys to be shared and recoverable. In the example of a webshop, the webserver does not need access to all public keys of the merchant's wallet; only to those addresses which are used to receive customers' payments, and not for example the change addresses that are generated when the merchant spends money. Hierarchical deterministic wallets allow such selective sharing by supporting multiple keypair chains, derived from a single root.</p>
 <h2>Specification: Key derivation</h2>
 <h3>Conventions</h3>
 <p>In the rest of this text we will assume the public key cryptography used in Bitcoin, namely elliptic curve cryptography using the field and curve parameters defined by secp256k1 (http://www.secg.org/sec2-v2.pdf). Variables below are either:</p>
@@ -200,7 +200,7 @@ Concatenation (||) is the operation of appending one byte sequence onto another.
 <li>In case parse<sub>256</sub>(I<sub>L</sub>) ≥ n or K<sub>i</sub> is the point at infinity, the resulting key is invalid, and one should proceed with the next value for i.</li>
 </ul>
 <h4>Private parent key &rarr; public child key</h4>
-<p>The function N((k, c)) → (K, c) computes the extended public key corresponding to an extended private key (the &quot;neutered&quot; version, as it removes the ability to sign transactions).</p>
+<p>The function N((k, c)) → (K, c) computes the extended public key corresponding to an extended private key (the "neutered" version, as it removes the ability to sign transactions).</p>
 <ul>
 <li>The returned key K is point(k).</li>
 <li>The returned chain code c is just the passed chain code.</li>
@@ -235,14 +235,14 @@ Concatenation (||) is the operation of appending one byte sequence onto another.
 <li>32 bytes: the chain code</li>
 <li>33 bytes: the public key or private key data (ser<sub>P</sub>(K) for public keys, 0x00 || ser<sub>256</sub>(k) for private keys)</li>
 </ul>
-<p>This 78 byte structure can be encoded like other Bitcoin data in Base58, by first adding 32 checksum bits (derived from the double SHA-256 checksum), and then converting to the Base58 representation. This results in a Base58-encoded string of exactly 111 characters. Because of the choice of the version bytes, the Base58 representation will start with &quot;xprv&quot; or &quot;xpub&quot; on mainnet, &quot;tprv&quot; or &quot;tpub&quot; on testnet.</p>
+<p>This 78 byte structure can be encoded like other Bitcoin data in Base58, by first adding 32 checksum bits (derived from the double SHA-256 checksum), and then converting to the Base58 representation. This results in a Base58-encoded string of exactly 111 characters. Because of the choice of the version bytes, the Base58 representation will start with "xprv" or "xpub" on mainnet, "tprv" or "tpub" on testnet.</p>
 <p>Note that the fingerprint of the parent only serves as a fast way to detect parent and child nodes in software, and software must be willing to deal with collisions. Internally, the full 160-bit identifier could be used.</p>
 <p>When importing a serialized extended public key, implementations must verify whether the X coordinate in the public key data corresponds to a point on the curve. If not, the extended public key is invalid.</p>
 <h3>Master key generation</h3>
 <p>The total number of possible extended keypairs is almost 2<sup>512</sup>, but the produced keys are only 256 bits long, and offer about half of that in terms of security. Therefore, master keys are not generated directly, but instead from a potentially short seed value.</p>
 <ul>
 <li>Generate a seed byte sequence S of a chosen length (between 128 and 512 bits; 256 bits is advised) from a (P)RNG.</li>
-<li>Calculate I = HMAC-SHA512(Key = &quot;Bitcoin seed&quot;, Data = S)</li>
+<li>Calculate I = HMAC-SHA512(Key = "Bitcoin seed", Data = S)</li>
 <li>Split I into two 32-byte sequences, I<sub>L</sub> and I<sub>R</sub>.</li>
 <li>Use parse<sub>256</sub>(I<sub>L</sub>) as master secret key, and I<sub>R</sub> as master chain code.</li>
 </ul>
@@ -251,7 +251,7 @@ Concatenation (||) is the operation of appending one byte sequence onto another.
 <h2>Specification: Wallet structure</h2>
 <p>The previous sections specified key trees and their nodes. The next step is imposing a wallet structure on this tree. The layout defined in this section is a default only, though clients are encouraged to mimic it for compatibility, even if not all features are supported.</p>
 <h3>The default wallet layout</h3>
-<p>An HDW is organized as several 'accounts'. Accounts are numbered, the default account (&quot;&quot;) being number 0. Clients are not required to support more than one account - if not, they only use the default account.</p>
+<p>An HDW is organized as several 'accounts'. Accounts are numbered, the default account ("") being number 0. Clients are not required to support more than one account - if not, they only use the default account.</p>
 <p>Each account is composed of two keypair chains: an internal and an external one. The external keychain is used to generate new public addresses, while the internal keychain is used for all other operations (change addresses, generation addresses, ..., anything that doesn't need to be communicated). Clients that do not support separate keychains for these should use the external one for everything.</p>
 <ul>
 <li>m/i<sub>H</sub>/0/k corresponds to the k'th keypair of the external chain of account number i of the HDW derived from master m.</li>
@@ -265,7 +265,7 @@ Concatenation (||) is the operation of appending one byte sequence onto another.
 <h4>Per-office balances: m/i<sub>H</sub></h4>
 <p>When a business has several independent offices, they can all use wallets derived from a single master. This will allow the headquarters to maintain a super-wallet that sees all incoming and outgoing transactions of all offices, and even permit moving money between the offices.</p>
 <h4>Recurrent business-to-business transactions: N(m/i<sub>H</sub>/0)</h4>
-<p>In case two business partners often transfer money, one can use the extended public key for the external chain of a specific account (M/i h/0) as a sort of &quot;super address&quot;, allowing frequent transactions that cannot (easily) be associated, but without needing to request a new address for each payment.
+<p>In case two business partners often transfer money, one can use the extended public key for the external chain of a specific account (M/i h/0) as a sort of "super address", allowing frequent transactions that cannot (easily) be associated, but without needing to request a new address for each payment.
 Such a mechanism could also be used by mining pool operators as a variable payout address.</p>
 <h4>Unsecure money receiver: N(m/i<sub>H</sub>/0)</h4>
 <p>When an unsecure webserver is used to run an e-commerce site, it needs to know public addresses that are used to receive payments. The webserver only needs to know the public extended key of the external chain of a single account. This means someone illegally obtaining access to the webserver can at most see all incoming payments but will not be able to steal the money, will not (trivially) be able to distinguish outgoing transactions, nor be able to see payments received by other webservers if there are several.</p>
@@ -449,7 +449,7 @@ It is also the reason for the existence of hardened keys, and why they are used 
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-25</p>
+                    <p class="font-bold">2025-12-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

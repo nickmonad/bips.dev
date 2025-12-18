@@ -130,28 +130,28 @@
   Post-History: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2017-May&#x2F;014364.html
 </code></pre>
 <h2>Abstract</h2>
-<p>BIP-300 enables a new type of L2, where &quot;withdrawals&quot; (the L2-to-L1 txns) are governed by proof-of-work -- instead of a federation or fixed set of pubkeys.</p>
+<p>BIP-300 enables a new type of L2, where "withdrawals" (the L2-to-L1 txns) are governed by proof-of-work -- instead of a federation or fixed set of pubkeys.</p>
 <p>BIP-300 emphasizes slow, transparent, and auditable withdrawals that are easy for honest users to get right and hard for dishonest miners to abuse. The main design goal for BIP-300 is <em>partitioning</em> -- users can ignore BIP-300 txns if they wish; it makes no difference to L1 if the user validates all, some, or none of them. The second design goal is <em>security</em> -- users of the L2 should feel confident that, <a href="https://www.drivechain.info/blog/fees/" target="_blank">if the L2 network is paying a lot of fees</a>, then miners will want to keep it around, and the withdrawals will therefore be processed accurately.</p>
-<p>Once BIP-300 has established a &quot;bridge&quot; between L1 and these L2s, users can swap coins in and out instantly, only using BIP-300 for final settlement. This setup allows Bitcoin to process all the transactions in the world, of any shape or size, regardless of blocksize, node software, tech stack, or decentralization level -- all without altering L1 at all.</p>
+<p>Once BIP-300 has established a "bridge" between L1 and these L2s, users can swap coins in and out instantly, only using BIP-300 for final settlement. This setup allows Bitcoin to process all the transactions in the world, of any shape or size, regardless of blocksize, node software, tech stack, or decentralization level -- all without altering L1 at all.</p>
 <h2>Motivation</h2>
 <p>BIP-300 allows us to achieve <a href="https://www.truthcoin.info/blog/zside-meltcast/" target="_blank">strong privacy</a>, <a href="https://www.truthcoin.info/blog/thunder/" target="_blank">planetary scale</a>, and <a href="https://www.truthcoin.info/blog/all-world-txns/" target="_blank">hundreds of billions of dollars in annual mining revenues</a>, all with a <a href="https://www.drivechain.info/blog/fees/" target="_blank">security model</a> that is <a href="https://x.com/Truthcoin/status/1701959339508965405" target="_blank">much stronger than</a> that of the <a href="https://www.truthcoin.info/blog/ln-blackpill/" target="_blank">Lightning Network</a>.</p>
-<p>The original motivation stretches back to Reid Hoffman, who <a href="https://blockstream.com/2015/01/13/en-reid-hoffman-on-the-future-of-the-bitcoin-ecosystem/" target="_blank">wrote in 2014</a>: &quot;Sidechains allow developers to add features and functionality to the Bitcoin universe without actually modifying the Bitcoin Core code...Consequently, innovation can occur faster, in more flexible and distributed ways, without losing the synergies of a common platform with a single currency.&quot;</p>
+<p>The original motivation stretches back to Reid Hoffman, who <a href="https://blockstream.com/2015/01/13/en-reid-hoffman-on-the-future-of-the-bitcoin-ecosystem/" target="_blank">wrote in 2014</a>: "Sidechains allow developers to add features and functionality to the Bitcoin universe without actually modifying the Bitcoin Core code...Consequently, innovation can occur faster, in more flexible and distributed ways, without losing the synergies of a common platform with a single currency."</p>
 <p>See <a href="http://www.drivechain.info/" target="_blank">drivechain.info</a> for more information.</p>
 <h2>Specification</h2>
 <h3>Overview</h3>
 <p>BIP-300 consists of six new blockchain messages:</p>
 <ul>
-<li>M1. &quot;Propose New Sidechain&quot;</li>
-<li>M2. &quot;ACK Proposal&quot;</li>
-<li>M3. &quot;Propose Bundle&quot;</li>
-<li>M4. &quot;ACK Bundle&quot;</li>
+<li>M1. "Propose New Sidechain"</li>
+<li>M2. "ACK Proposal"</li>
+<li>M3. "Propose Bundle"</li>
+<li>M4. "ACK Bundle"</li>
 <li>M5. Deposit  -- a transfer of BTC from-main-to-side</li>
 <li>M6. Withdrawal -- a transfer of BTC from-side-to-main</li>
 </ul>
 <p>Nodes organize this data into <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/blob/13a4353c39a26d9d40180ea361b7580fd682e5b5/src/bip300.rs#L79-L96" target="_blank">a few caches</a>, mainly these two:</p>
 <ul>
-<li>D1. &quot;The Sidechain List&quot;</li>
-<li>D2. &quot;The Withdrawal List&quot;</li>
+<li>D1. "The Sidechain List"</li>
+<li>D2. "The Withdrawal List"</li>
 </ul>
 <h4> D1 (The Sidechain List) </h4>
 <p>D1 is a list of active sidechains. D1 is populated via M1 and M2. Fields #9 and #10 are updated via M5 and M6.</p>
@@ -163,25 +163,25 @@
 <tr><td>5</td><td>Hash1 - tarball hash</td><td>uint256</td><td>Intended as the sha256 hash of the tar.gz of the canonical sidechain software. (This is not enforced by BIP-300, and is for human purposes only.)</td></tr>
 <tr><td>6</td><td>Hash2 - git commit hash</td><td>uint160</td><td>Intended as the git commit hash of the canonical sidechain node software. (This is not enforced by BIP-300, and is for human purposes only.)</td></tr>
 <tr><td>7</td><td>Active</td><td>bool</td><td>Does this sidechain slot contain an active sidechain?<br /></td></tr>
-<tr><td>8</td><td>Activation Status</td><td>int , int</td><td>The age of the proposal (in blocks); and the number of &quot;fails&quot; (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.</td></tr>
-<tr><td>9</td><td>&quot;CTIP&quot; -- &quot;TxID&quot;</td><td>uint256</td><td>A UTXO that holds the sidechain's money. (Part 1 of 2).</td></tr>
-<tr><td>10</td><td>&quot;CTIP&quot; -- &quot;vout&quot;</td><td>int32_t</td><td>A UTXO that holds the sidechain's money. (Part 2 of 2).</td></tr>
+<tr><td>8</td><td>Activation Status</td><td>int , int</td><td>The age of the proposal (in blocks); and the number of "fails" (a block that does NOT ack the sidechain). This is discarded after the sidechain activates.</td></tr>
+<tr><td>9</td><td>"CTIP" -- "TxID"</td><td>uint256</td><td>A UTXO that holds the sidechain's money. (Part 1 of 2).</td></tr>
+<tr><td>10</td><td>"CTIP" -- "vout"</td><td>int32_t</td><td>A UTXO that holds the sidechain's money. (Part 2 of 2).</td></tr>
 </tbody></table>
 <h4> D2 (The Withdrawal List) </h4>
-<p>Withdrawals are transactions that remove coins &quot;from&quot; L2 (i.e., from the BIP-300 locked UTXO), and place them back on L1. Each BIP-300 withdrawal can pay out up to 6,000 withdrawals, and only one withdrawal can succeed at a time (per L2). Therefore, since all L2 users share the same large withdrawal-event, on L1 we call these withdrawals &quot;bundles&quot;.</p>
+<p>Withdrawals are transactions that remove coins "from" L2 (i.e., from the BIP-300 locked UTXO), and place them back on L1. Each BIP-300 withdrawal can pay out up to 6,000 withdrawals, and only one withdrawal can succeed at a time (per L2). Therefore, since all L2 users share the same large withdrawal-event, on L1 we call these withdrawals "bundles".</p>
 <p>D2 is driven by M3, M4, M5, and M6. Those messages enforce the following principles:</p>
 <ol>
 <li>The database has a canonical order (first come first serve).</li>
-<li>From one block to the next, every &quot;Blocks Remaining&quot; field decreases by 1.</li>
-<li>When &quot;Blocks Remaining&quot; reaches zero, the bundle is removed.</li>
-<li>From one block to the next, the value in &quot;ACKs&quot; may either increase or decrease, by a maximum of 1 (see M4).</li>
-<li>If a bundle's &quot;ACKs&quot; reach 13150 or greater, it &quot;succeeds&quot; and its corresponding M6 message can be included in a block.</li>
+<li>From one block to the next, every "Blocks Remaining" field decreases by 1.</li>
+<li>When "Blocks Remaining" reaches zero, the bundle is removed.</li>
+<li>From one block to the next, the value in "ACKs" may either increase or decrease, by a maximum of 1 (see M4).</li>
+<li>If a bundle's "ACKs" reach 13150 or greater, it "succeeds" and its corresponding M6 message can be included in a block.</li>
 <li>If the M6 of a bundle is paid out, it is also removed.</li>
-<li>If a bundle cannot possibly succeed ( 13150 - &quot;ACKs&quot;  &gt;  &quot;Blocks Remaining&quot; ), it is removed immediately.</li>
+<li>If a bundle cannot possibly succeed ( 13150 - "ACKs"  &gt;  "Blocks Remaining" ), it is removed immediately.</li>
 </ol>
 <table><thead><tr><th>Field No.</th><th>Label</th><th>Type</th><th>Description / Purpose</th></tr></thead><tbody>
 <tr><td>1</td><td>Sidechain Number</td><td>uint8_t</td><td>Links the withdrawal-request to a specific hashrate escrow.</td></tr>
-<tr><td>2</td><td>Bundle Hash</td><td>uint256</td><td>A withdrawal attempt. Specifically, it is a &quot;blinded transaction id&quot; (i.e., the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.</td></tr>
+<tr><td>2</td><td>Bundle Hash</td><td>uint256</td><td>A withdrawal attempt. Specifically, it is a "blinded transaction id" (i.e., the double-Sha256 of a txn that has had two fields zeroed out, see M6) of a txn which could withdraw funds from a sidechain.</td></tr>
 <tr><td>3</td><td>Work Score (ACKs)</td><td>uint16_t</td><td>How many miner upvotes a withdrawal has. Starts at 0. Fastest possible rate of increase is 1 per block.</td></tr>
 <tr><td>4</td><td>Blocks Remaining</td><td>uint16_t</td><td>How long this bundle has left to live (measured in blocks). Starts at 26,300 and counts down.</td></tr>
 </tbody></table>
@@ -222,7 +222,7 @@
 </ul>
 <p>Otherwise:</p>
 <ul>
-<li>The sidechain is &quot;ACK&quot;ed and does NOT get a &quot;fail&quot; for this block. (As it otherwise would.)</li>
+<li>The sidechain is "ACK"ed and does NOT get a "fail" for this block. (As it otherwise would.)</li>
 </ul>
 <p>A sidechain fails to activate if:</p>
 <ul>
@@ -232,8 +232,8 @@
 <p>( Thus we can overwrite a used sidechain slot. BIP-300 sidechains are already vulnerable to one catastrophe per 13150 blocks (the invalid withdrawal), so this slot-overwrite option does not change the security assumptions. )</p>
 <p>Otherwise, the sidechain activates (Active is set to TRUE).</p>
 <h3> Withdrawing in Bundles </h3>
-<p>Sidechain withdrawals take the form of &quot;bundles&quot; -- named because they &quot;bundle up&quot; many individual withdrawal-requests into a single rare L1 transaction.</p>
-<p>On the L2 side, individual withdrawal requests are periodically combined into a single CoinJoin-like withdrawal bundle. This bundle is hashed <a href="https://github.com/LayerTwo-Labs/bip300301_messages/blob/398b224981c7c236c8354704e655996d33685149/src/lib.rs#L374C1-L419C2" target="_blank">in a particular way</a> (on both L2 and L1) -- this &quot;blinded hash&quot; commits to its own L1 fee, but (notably) it does not commit to its first tx-input (in that way, it is like <a href="/118" target="_blank">BIP-118</a>).</p>
+<p>Sidechain withdrawals take the form of "bundles" -- named because they "bundle up" many individual withdrawal-requests into a single rare L1 transaction.</p>
+<p>On the L2 side, individual withdrawal requests are periodically combined into a single CoinJoin-like withdrawal bundle. This bundle is hashed <a href="https://github.com/LayerTwo-Labs/bip300301_messages/blob/398b224981c7c236c8354704e655996d33685149/src/lib.rs#L374C1-L419C2" target="_blank">in a particular way</a> (on both L2 and L1) -- this "blinded hash" commits to its own L1 fee, but (notably) it does not commit to its first tx-input (in that way, it is like <a href="/118" target="_blank">BIP-118</a>).</p>
 <p>This hash is what L1 miners will slowly ACK over 3-6 months, not the M6 itself (nor any sidechain data, of course).</p>
 <p>A bundle will either pay all its withdrawals out (via M6), or fail (and pay nothing out for anyone).</p>
 <h3> M3 -- Propose Bundle </h3>
@@ -265,9 +265,9 @@
 <li>It tries to upvote a bundle that doesn't exist. (For example, trying to upvote the 7th bundle on sidechain  2, when sidechain  2 has only three bundles.)</li>
 <li>There are no bundles at all, from any sidechain.</li>
 </ul>
-<p>If M4 is NOT present in a block, then it is treated as an &quot;abstain&quot; for all sidechains.</p>
+<p>If M4 is NOT present in a block, then it is treated as an "abstain" for all sidechains.</p>
 <p>If M4 is present and valid: each withdrawal-bundle that is ACKed, will gain one upvote.</p>
-<p>Each sidechain always has two &quot;virtual bundles&quot; -- an &quot;abstain&quot; bundle (0xFF), and an &quot;alarm&quot; bundle (0xFE). Abstain leaves the ACK count unchanged, and alarm reduces all ACK counts of all bundles by 1.</p>
+<p>Each sidechain always has two "virtual bundles" -- an "abstain" bundle (0xFF), and an "alarm" bundle (0xFE). Abstain leaves the ACK count unchanged, and alarm reduces all ACK counts of all bundles by 1.</p>
 <p>Any bundle which fails to receive a vote, is downvoted (and loses 1 ACK). If a sidechain has no pending bundles, then it is skipped over when M4 is created and parsed.</p>
 <h4> Examples </h4>
 <p>To upvote the 7th bundle on sidechain #1, and upvote the 4th bundle on sidechain #2, the upvote vector would be { 07, 04 }. And M4 would be [0x6A,D77D1776,00,0006,0003].</p>
@@ -294,12 +294,12 @@ Version 0x00 omits the upvote vector entirely (i.e., 6 bytes for the whole M4) a
 Version 0x01 uses 1 byte per sidechain, and can be used while all ACKed withdrawals have an index &lt;256 (i.e., 99.99%+ of the time).
 Version 0x02 uses 2 bytes per sidechain, but it always works, even in astronomically unlikely cases (such as when &gt;1 sidechains have &gt;256 bundle candidates).
 Version 0x03 omits the upvote vector, and instead upvotes only those withdrawals that are leading their rivals by at least 50 votes.</p>
-<p>For example, an upvote vector of { 2 , N/A, 1 } would be represented as [0x6A,D77D1776,01,01,00]. It means: &quot;upvote the second bundle in sidechain #1; and the first bundle in sidechain #3&quot; (iff sidechains #2 has no bundles proposed).</p>
+<p>For example, an upvote vector of { 2 , N/A, 1 } would be represented as [0x6A,D77D1776,01,01,00]. It means: "upvote the second bundle in sidechain #1; and the first bundle in sidechain #3" (iff sidechains #2 has no bundles proposed).</p>
 <p>An upvote vector of { N/A, N/A, 4 } would be [0x6A,D77D1776,01,03].</p>
 <h3> M5 -- Deposit BTC (from L1 to L2) </h3>
 <p>Finally, we describe Deposits (M5) and Withdrawals (M6). These are not coinbase outputs, they are txns on L1.</p>
-<p>We call a transaction &quot;M5&quot; if it spends from the escrow output and <strong>increases</strong> the quantity of coins. Conversely, we call a transaction &quot;M6&quot; if it spends from the escrow output and <strong>decreases</strong> the quantity of coins. See <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/blob/13a4353c39a26d9d40180ea361b7580fd682e5b5/src/bip300.rs#L462C1-L462C47" target="_blank">here</a>.</p>
-<p>Every time a deposit/withdrawal is made, the old UTXO is spent and a single new UTXO is created. (Deposits/Withdrawals never cause UTXO bloat.) At all times, the specific treasury UTXO (&quot;CTIP&quot;) of each sidechain is cached in D1 (above).</p>
+<p>We call a transaction "M5" if it spends from the escrow output and <strong>increases</strong> the quantity of coins. Conversely, we call a transaction "M6" if it spends from the escrow output and <strong>decreases</strong> the quantity of coins. See <a href="https://github.com/LayerTwo-Labs/bip300301_enforcer/blob/13a4353c39a26d9d40180ea361b7580fd682e5b5/src/bip300.rs#L462C1-L462C47" target="_blank">here</a>.</p>
+<p>Every time a deposit/withdrawal is made, the old UTXO is spent and a single new UTXO is created. (Deposits/Withdrawals never cause UTXO bloat.) At all times, the specific treasury UTXO ("CTIP") of each sidechain is cached in D1 (above).</p>
 <p>Every M5 is valid, as long as:</p>
 <ul>
 <li>It has exactly one OP_DRIVECHAIN output -- this becomes the new CTIP.</li>
@@ -320,7 +320,7 @@ Version 0x03 omits the upvote vector, and instead upvotes only those withdrawals
 <p>This proposal adds a single new opcode, OP_DRIVECHAIN, which has strict semantics for usage.
 OP_NOP5 (0xb4) is redefined as OP_DRIVECHAIN if and only if the entire script is OP_DRIVECHAIN followed by a single-byte push and OP_TRUE (exactly 4 bytes).
 The single-byte push contains the sidechain number.
-Note that this is not a &quot;script number&quot;, and cannot be OP_1..OP_16 or any other kind of push; it is also unsigned, and must not be padded even if over sidechain number 127.
+Note that this is not a "script number", and cannot be OP_1..OP_16 or any other kind of push; it is also unsigned, and must not be padded even if over sidechain number 127.
 The final OP_TRUE is to ensure this change remains a softfork:
 without it, sidechain numbers 0 and 128 would cause the legacy script interpreter to fail.</p>
 <p>If an OP_DRIVECHAIN input is spent, the additional rules for M5 or M6 (see above) must be enforced.</p>
@@ -415,7 +415,7 @@ This BIP is licensed under the BSD 2-clause license.
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-25</p>
+                    <p class="font-bold">2025-12-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

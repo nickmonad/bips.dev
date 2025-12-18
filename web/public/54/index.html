@@ -239,60 +239,86 @@ the grace period used in this proposal, miners should use the <code>curtime</cod
 <code>getblocktemplate</code> result for their block's timestamp to make sure they always create blocks valid
 according to this proposal. Note this is not a new requirement: using a timestamp lower than the
 <code>mintime</code> field from the <code>getblocktemplate</code> result already leads to creating an invalid block.</p>
-<p>Bitcoin Core as of version 29.0 may relay and create a block template including a transaction that
-violates the signature operations limit introduced in this BIP. A newer version of Bitcoin Core
-that makes this type of transaction non-standard should be widely adopted before this soft fork is
-considered for activation.</p>
+<p>Bitcoin Core version <a rel="noopener" target="_blank" href="https://bitcoincore.org/en/releases/30.0">30.0</a> and later will not generate a block template including a
+transaction that violates the signature operations limit introduced in this BIP.</p>
 <p>Bitcoin Core version <a rel="noopener" target="_blank" href="https://bitcoincore.org/en/releases/0.16.1">0.16.1</a> and later will neither relay nor create block templates
 that include 64-byte transactions.</p>
 <p>The coinbase transaction is usually crafted by mining pool software. To the best of the authors'
 knowledge, there does not exist an open source reference broadly in use today for such software.
 We encourage mining pools to update their software to craft coinbase transactions that are
 forward-compatible with the changes proposed in this BIP.</p>
+<h2 id="Reference_implementation">Reference implementation</h2>
+<p>An implementation of BIP54 for Bitcoin Core is available <a rel="noopener" target="_blank" href="https://github.com/darosior/bitcoin/tree/2509_inquisition_consensus_cleanup">here</a>.</p>
+<h2 id="Test_vectors">Test vectors</h2>
+<p>Documented test vectors are available <a href="https://bips.dev/54/./bip-0054/test_vectors/">here</a> for all mitigations
+introduced in this BIP.</p>
 <h2 id="Acknowledgements">Acknowledgements</h2>
 <p>This document builds upon an <a rel="noopener" target="_blank" href="https://github.com/TheBlueMatt/bips/blob/7f9670b643b7c943a0cc6d2197d3eabe661050c2/bip-XXXX.mediawiki">earlier proposal</a> by Matt Corallo.</p>
 <p>The authors would like to thank everyone involved in researching the most appropriate mitigation for
 each of these bugs. We would like to thank in particular Anthony Towns and Sjors Provoost for their
 direct contributions to this proposal, as well as @0xb10c and Brian Groll for providing the authors
-with data to analyze the proposed mitigations.</p>
+with data to analyze the proposed mitigations. Thanks to Chris Stewart for digging up historical
+violations to the new transaction size rule, which are partially reused in this BIP's test vectors.</p>
 <h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal license.</p>
 <div class="footnote-definition" id="0"><sup class="footnote-definition-label">1</sup>
 <p>Block 1,983,702 is the earliest future block which could contain a duplicate coinbase
 transaction while still respecting <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a>. See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/4">this post</a> for a list
-of all such future blocks.
-<sup class="footnote-reference"><a href="#1">2</a></sup>: Technically this limit <em>cannot</em> apply to a coinbase transaction as the size of its sole
-input's scriptSig is limited.
-<sup class="footnote-reference"><a href="#2">3</a></sup>: The locktime validation, which is also performed for coinbase transactions, enforces that the
+of all such future blocks.</p>
+</div>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">2</sup>
+<p>Technically this limit <em>cannot</em> apply to a coinbase transaction as the size of its sole
+input's scriptSig is limited.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">3</sup>
+<p>The locktime validation, which is also performed for coinbase transactions, enforces that the
 nLockTime value is the last block at which a transaction is invalid, not the first one at which it
-is valid.
-<sup class="footnote-reference"><a href="#3">4</a></sup>: The timewarp attack is described <a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/75831/what-is-time-warp-attack-and-how-does-it-work-in-general/75834#75834">here</a> and the Murch–Zawy attack <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/zawy-s-alternating-timestamp-attack/1062#variant-on-zawys-attack-2">here</a>.
-<sup class="footnote-reference"><a href="#4">5</a></sup>: The testnet4 difficulty exception pushed blocks' timestamps in the future when abused,
+is valid.</p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">4</sup>
+<p>The timewarp attack is described <a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/75831/what-is-time-warp-attack-and-how-does-it-work-in-general/75834#75834">here</a> and the Murch–Zawy attack <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/zawy-s-alternating-timestamp-attack/1062#variant-on-zawys-attack-2">here</a>.</p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">5</sup>
+<p>The testnet4 difficulty exception pushed blocks' timestamps in the future when abused,
 revealing how some broken pool software may produce blocks that don't respect a 10 minutes grace
 period. Some <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/timewarp-attack-600-second-grace-period/1326">raised concerns</a> similarly broken software might be used on
 mainnet. Using a grace period of 2 hours instead of 10 minutes only reduces the expected block
-interval time under attack by ~2.2 seconds. See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/66">this post</a> for more.
-<sup class="footnote-reference"><a href="#5">6</a></sup>: The argument is about someone having a timelocked presigned transaction using some of those
+interval time under attack by ~2.2 seconds. See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/66">this post</a> for more.</p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">6</sup>
+<p>The argument is about someone having a timelocked presigned transaction using some of those
 features in its output script. The transaction cannot be mined before activation. Such outputs would
 not be covered by an amnesty for old UTxOs. See for instance <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMZUoKneArC+YZ36YFwxNTKsDtJhEz5P2cosXKxJS8Rf_3Nyuw@mail.gmail.com">here</a> and
-<a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMZUoK=1kgZLR1YZ+cJgzwmEOwrABYFs=2Ri=xGX=BCr+w=VQw@mail.gmail.com">here</a> for discussions on this topic.
-<sup class="footnote-reference"><a href="#6">7</a></sup>: It is important to reduce the worst case block validation time as well as the ratio of
+<a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMZUoK=1kgZLR1YZ+cJgzwmEOwrABYFs=2Ri=xGX=BCr+w=VQw@mail.gmail.com">here</a> for discussions on this topic.</p>
+</div>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">7</sup>
+<p>It is important to reduce the worst case block validation time as well as the ratio of
 validation time imposed over preparation cost. The former is to limit the damages an externally
 motivated attacker can do. The latter is to disincentivize miners slowing down their competition by
-mining expensive blocks. See <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/VsltJ2PHqWfzG4BU9YETTXjL7fYBbJhjVXKZQyItemySIA1okvNee9kf0zAOyLMeJ4Nqv1VOrYbWns5nP4TANCWvPJYu1ew_yxQSaudizzk=@protonmail.com">this thread</a> for more.
-<sup class="footnote-reference"><a href="#7">8</a></sup>: A non-pathological transaction would have a public key per signature operation and at least
+mining expensive blocks. See <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/VsltJ2PHqWfzG4BU9YETTXjL7fYBbJhjVXKZQyItemySIA1okvNee9kf0zAOyLMeJ4Nqv1VOrYbWns5nP4TANCWvPJYu1ew_yxQSaudizzk=@protonmail.com">this thread</a> for more.</p>
+</div>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">8</sup>
+<p>A non-pathological transaction would have a public key per signature operation and at least
 one signature per input. Per standardness a single P2SH input may not have more than 15 signature
 operations. Even by using 1-of-15 <code>CHECKMULTISIG</code>s a transaction would bump against the maximum
 standard transaction size before running into the newly introduced limit. To run against the newly
 introduced limit but not the transaction size a transaction would need to spend P2SH inputs with a
 redeem script similar to <code>CHECKSIG DROP CHECKSIG DROP ...</code>. This type of redeem script serves no
-purpose beyond increasing its validation cost, which is exactly what this proposal aims to mitigate.
-<sup class="footnote-reference"><a href="#8">9</a></sup>: See <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAFp6fsGtEm9p-ZQF_XqfqyQGzZK7BS2SNp2z680QBsJiFDraEA@mail.gmail.com">this writeup</a> by Suhas Daftuar for an explanation as well as a discussion
-of the consequences.
-<sup class="footnote-reference"><a href="#9">10</a></sup>: By Sergio Demian Lerner in a <a rel="noopener" target="_blank" href="https://bitslog.com/2018/06/09/leaf-node-weakness-in-bitcoin-merkle-tree-design">blog post</a> surfaced <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/37">by Eric Voskuil</a>. Eric also pushed back against the importance of fixing this issue. See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/41">this post</a> for an attempt at summarizing the arguments for both sides of this debate.
-<sup class="footnote-reference"><a href="#10">11</a></sup>: See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/4">here</a> for a full list of the heights of historical blocks including a valid
-bip-0034 height commitment and the corresponding future block height.
-<sup class="footnote-reference"><a href="#11">12</a></sup>: Technically it could be argued a duplicate could in principle always be possible before block
+purpose beyond increasing its validation cost, which is exactly what this proposal aims to mitigate.</p>
+</div>
+<div class="footnote-definition" id="8"><sup class="footnote-definition-label">9</sup>
+<p>See <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAFp6fsGtEm9p-ZQF_XqfqyQGzZK7BS2SNp2z680QBsJiFDraEA@mail.gmail.com">this writeup</a> by Suhas Daftuar for an explanation as well as a discussion
+of the consequences.</p>
+</div>
+<div class="footnote-definition" id="9"><sup class="footnote-definition-label">10</sup>
+<p>By Sergio Demian Lerner in a <a rel="noopener" target="_blank" href="https://bitslog.com/2018/06/09/leaf-node-weakness-in-bitcoin-merkle-tree-design">blog post</a> surfaced <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/37">by Eric Voskuil</a>. Eric also pushed back against the importance of fixing this issue. See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/41">this post</a> for an attempt at summarizing the arguments for both sides of this debate.</p>
+</div>
+<div class="footnote-definition" id="10"><sup class="footnote-definition-label">11</sup>
+<p>See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/4">here</a> for a full list of the heights of historical blocks including a valid
+bip-0034 height commitment and the corresponding future block height.</p>
+</div>
+<div class="footnote-definition" id="11"><sup class="footnote-definition-label">12</sup>
+<p>Technically it could be argued a duplicate could in principle always be possible before block
 31,001 when <code>nLockTime</code> enforcement <a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/90229/nlocktime-in-bitcoin-core">was originally soft-forked</a>. But treating
 coinbase transactions as not having duplicate past Consensus Cleanup activation would be consistent
 for any implementation which enforces <code>nLockTime</code> from the genesis block, which is the behaviour
@@ -308,7 +334,7 @@ notably of Bitcoin Core but also of all other implementations the authors are aw
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-25</p>
+                    <p class="font-bold">2025-12-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

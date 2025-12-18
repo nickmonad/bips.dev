@@ -172,7 +172,7 @@ A <a href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_int
 ;<tt><keylen></tt>
 The compact size unsigned integer containing the combined length of <tt><keytype></tt> and <tt><keydata></tt>
 ;<tt><valuelen></tt>
-The compact size unsigned integer containing the length of <tt><valuedata></tt>.
+The compact size unsigned integer containing the length of <tt><valuedata></tt> (which must be exactly this many bytes).
 ;<tt><magic></tt>
 Magic bytes which are ASCII for psbt <ref><strong>Why use 4 bytes for psbt?</strong> The
 transaction format needed to start with a 5 byte header which uniquely identifies
@@ -296,7 +296,7 @@ Before signing a witness input, the Signer must verify that the witnessScript (i
 The Signer may choose to fail to sign a segwit input if a non-witness UTXO is not provided. <sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
 The Signer should not need any additional data sources, as all necessary information is provided in the PSBT format.
 The Signer must only add data to a PSBT.
-Any signatures created by the Signer must be added as a &quot;Partial Signature&quot; key-value pair for the respective input it relates to.
+Any signatures created by the Signer must be added as a "Partial Signature" key-value pair for the respective input it relates to.
 If a Signer cannot sign a transaction, it must not add a Partial Signature.</p>
 <p>The Signer can additionally compute the addresses and values being sent, and the transaction fee,  optionally showing this data to the user as a confirmation of intent and the consequences of signing the PSBT.</p>
 <p>Signers do not need to sign for all possible input types. For example, a signer may choose to only sign Segwit inputs.</p>
@@ -556,6 +556,13 @@ able to be unserialized by an unserializer for the PSBT format.</p>
 <li>Base64 String: <pre>cHNidP8BAHgCAAAAAAEBJoFxNx7f8oXpN63upLN7eAAMBWbLs61kZBcTykIXG/YAAAAAAP7///8C09/1BQAAAAAZdqkU0MWZA8W6woaHYOkP1SGkZlqnZSCIrADh9QUAAAAAF6kUNUXm4zuDLEcFDyTT7rk8nAOUi8eHALMuEwAAAQD9pQEBAAAAAAECiaPHHqtNIOA3G7ukzGmPopXJRjr6Ljl/hTPMti+VZ+UBAAAAFxYAFL4Y0VKpsBIDna89p95PUzSe7LmF/////4b4qkOnHf8USIk6UwpyN+9rRgi7st0tAXHmOuxqSJC0AQAAABcWABT+Pp7xp0XpdNkCxDVZQ6vLNL1TU/////8CAMLrCwAAAAAZdqkUhc/xCX/Z4Ai7NK9wnGIZeziXikiIrHL++E4sAAAAF6kUM5cluiHv1irHU6m80GfWx6ajnQWHAkcwRAIgJxK+IuAnDzlPVoMR3HyppolwuAJf3TskAinwf4pfOiQCIAGLONfc0xTnNMkna9b7QPZzMlvEuqFEyADS8vAtsnZcASED0uFWdJQbrUqZY3LLh+GFbTZSYG2YVi/jnF6efkE/IQUCSDBFAiEA0SuFLYXc2WHS9fSrZgZU327tzHlMDDPOXMMJ/7X85Y0CIGczio4OFyXBl/saiK9Z9R5E5CVbIBZ8hoQDHAXR8lkqASECI7cr7vCWXRC+B3jv7NYfysb3mk6haTkzgHNEZPhPKrMAAAAAAAAA</pre></li>
 </ul>
 </li>
+<li>
+<p>Case: PSBT with an invalid value data due to its size being not the stated size</p>
+<ul>
+<li>Bytes in Hex: <pre>70736274ff0100337401ff0700010000000100ff01000a73317428ff0000000001ff010301000001000000000000000076010000004100090000000000</pre></li>
+<li>Base64 String: <pre>cHNidP8BADN0Af8HAAEAAAABAP8BAApzMXQo/wAAAAAB/wEDAQAAAQAAAAAAAAAAdgEAAABBAAkAAAAAAA==</pre></li>
+</ul>
+</li>
 </ul>
 <p>The following are valid PSBTs:</p>
 <ul>
@@ -802,7 +809,7 @@ and suggestions for improving this proposal.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-11-25</p>
+                    <p class="font-bold">2025-12-18</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
