@@ -165,11 +165,11 @@ encodings and operations.</p>
 <h3> Design </h3>
 <p><strong>Schnorr signature variant</strong> Elliptic Curve Schnorr signatures for message <em>m</em> and public key <em>P</em> generally involve a point <em>R</em>, integers <em>e</em> and <em>s</em> picked by the signer, and the base point <em>G</em> which satisfy <em>e = hash(R || m)</em> and <em>s⋅G = R + e⋅P</em>. Two formulations exist, depending on whether the signer reveals <em>e</em> or <em>R</em>:</p>
 <ol>
-<li>Signatures are pairs <em>(e, s)</em> that satisfy <em>e = hash(s⋅G - e⋅P || m)</em>. This variant avoids minor complexity introduced by the encoding of the point <em>R</em> in the signature (see paragraphs "Encoding R and public key point P" and "Implicit Y coordinates" further below in this subsection). Moreover, revealing <em>e</em> instead of <em>R</em> allows for potentially shorter signatures: Whereas an encoding of <em>R</em> inherently needs about 32 bytes, the hash <em>e</em> can be tuned to be shorter than 32 bytes, and <a href="http://www.neven.org/papers/schnorr.pdf" target="_blank">a short hash of only 16 bytes suffices to provide SUF-CMA security at the target security level of 128 bits</a>. However, a major drawback of this optimization is that finding collisions in a short hash function is easy. This complicates the implementation of secure signing protocols in scenarios in which a group of mutually distrusting signers work together to produce a single joint signature (see Applications below). In these scenarios, which are not captured by the SUF-CMA model due its assumption of a single honest signer, a promising attack strategy for malicious co-signers is to find a collision in the hash function in order to obtain a valid signature on a message that an honest co-signer did not intend to sign.</li>
+<li>Signatures are pairs <em>(e, s)</em> that satisfy <em>e = hash(s⋅G - e⋅P || m)</em>. This variant avoids minor complexity introduced by the encoding of the point <em>R</em> in the signature (see paragraphs &quot;Encoding R and public key point P&quot; and &quot;Implicit Y coordinates&quot; further below in this subsection). Moreover, revealing <em>e</em> instead of <em>R</em> allows for potentially shorter signatures: Whereas an encoding of <em>R</em> inherently needs about 32 bytes, the hash <em>e</em> can be tuned to be shorter than 32 bytes, and <a href="http://www.neven.org/papers/schnorr.pdf" target="_blank">a short hash of only 16 bytes suffices to provide SUF-CMA security at the target security level of 128 bits</a>. However, a major drawback of this optimization is that finding collisions in a short hash function is easy. This complicates the implementation of secure signing protocols in scenarios in which a group of mutually distrusting signers work together to produce a single joint signature (see Applications below). In these scenarios, which are not captured by the SUF-CMA model due its assumption of a single honest signer, a promising attack strategy for malicious co-signers is to find a collision in the hash function in order to obtain a valid signature on a message that an honest co-signer did not intend to sign.</li>
 <li>Signatures are pairs <em>(R, s)</em> that satisfy <em>s⋅G = R + hash(R || m)⋅P</em>. This supports batch verification, as there are no elliptic curve operations inside the hashes. Batch verification enables significant speedups.<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup></li>
 </ol>
 <p>Since we would like to avoid the fragility that comes with short hashes, the <em>e</em> variant does not provide significant advantages. We choose the <em>R</em>-option, which supports batch verification.</p>
-<p><strong>Key prefixing</strong> Using the verification rule above directly makes Schnorr signatures vulnerable to "related-key attacks" in which a third party can convert a signature <em>(R, s)</em> for public key <em>P</em> into a signature <em>(R, s + a⋅hash(R || m))</em> for public key <em>P + a⋅G</em> and the same message <em>m</em>, for any given additive tweak <em>a</em> to the signing key. This would render signatures insecure when keys are generated using <a href="/32" target="_blank">BIP32's unhardened derivation</a> and other methods that rely on additive tweaks to existing keys such as Taproot.</p>
+<p><strong>Key prefixing</strong> Using the verification rule above directly makes Schnorr signatures vulnerable to &quot;related-key attacks&quot; in which a third party can convert a signature <em>(R, s)</em> for public key <em>P</em> into a signature <em>(R, s + a⋅hash(R || m))</em> for public key <em>P + a⋅G</em> and the same message <em>m</em>, for any given additive tweak <em>a</em> to the signing key. This would render signatures insecure when keys are generated using <a href="/32" target="_blank">BIP32's unhardened derivation</a> and other methods that rely on additive tweaks to existing keys such as Taproot.</p>
 <p>To protect against these attacks, we choose <em>key prefixed</em><sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup> Schnorr signatures which means that the public key is prefixed to the message in the challenge hash input. This changes the equation to <em>s⋅G = R + hash(R || P || m)⋅P</em>. <a href="https://eprint.iacr.org/2015/1135.pdf" target="_blank">It can be shown</a> that key prefixing protects against related-key attacks with additive tweaks. In general, key prefixing increases robustness in multi-user settings, e.g., it seems to be a requirement for proving multiparty signing protocols (such as MuSig, MuSig2, and FROST) secure (see Applications below).</p>
 <p>We note that key prefixing is not strictly necessary for transaction signatures as used in Bitcoin currently, because signed transactions indirectly commit to the public keys already, i.e., <em>m</em> contains a commitment to <em>pk</em>. However, this indirect commitment should not be relied upon because it may change with proposals such as SIGHASH_NOINPUT (<a href="/118" target="_blank">BIP118</a>), and would render the signature scheme unsuitable for other purposes than signing transactions, e.g., <a href="https://bitcoin.org/en/developer-reference#signmessage" target="_blank">signing ordinary messages</a>.</p>
 <p><strong>Encoding R and public key point P</strong> There exist several possibilities for encoding elliptic curve points:</p>
@@ -346,13 +346,13 @@ or even messages in entirely different applications
 (e.g., a secret key may be used to sign Bitcoin transactions as well plain text messages).</p>
 <p>As a consequence, applications should ensure that a signed application message intended for one context is never deemed valid in a different context
 (e.g., a signed plain text message should never be misinterpreted as a signed Bitcoin transaction, because this could cause unintended loss of funds).
-This is called "domain separation" and it is typically realized by partitioning the message space.
+This is called &quot;domain separation&quot; and it is typically realized by partitioning the message space.
 Even if key pairs are intended to be used only within a single context,
 domain separation is a good idea because it makes it easy to add more contexts later.</p>
 <p>As a best practice, we recommend applications to use exactly one of the following methods to pre-process application messages before passing it to the signature scheme:</p>
 <ul>
-<li>Either, pre-hash the application message using <em>hash<sub>name</sub></em>, where <em>name</em> identifies the context uniquely (e.g., "foo-app/signed-bar"),</li>
-<li>or prefix the actual message with a 33-byte string that identifies the context uniquely (e.g., the UTF-8 encoding of "foo-app/signed-bar", padded with null bytes to 33 bytes).</li>
+<li>Either, pre-hash the application message using <em>hash<sub>name</sub></em>, where <em>name</em> identifies the context uniquely (e.g., &quot;foo-app/signed-bar&quot;),</li>
+<li>or prefix the actual message with a 33-byte string that identifies the context uniquely (e.g., the UTF-8 encoding of &quot;foo-app/signed-bar&quot;, padded with null bytes to 33 bytes).</li>
 </ul>
 <p>As the two pre-processing methods yield different message sizes (32 bytes vs. at least 33 bytes), there is no risk of collision between them.</p>
 <h2> Applications </h2>
@@ -380,7 +380,7 @@ The reference implementation is for demonstration purposes only and not to be us
 <ul>
 <li>2022-08: Fix function signature of lift_x in reference code</li>
 <li>2023-04: Allow messages of arbitrary size</li>
-<li>2024-05: Update "Applications" section with more recent references</li>
+<li>2024-05: Update &quot;Applications&quot; section with more recent references</li>
 <li>2025-04: Change license of test vectors and code</li>
 </ul>
 <h2> Footnotes </h2>
@@ -414,7 +414,7 @@ The reference implementation is for demonstration purposes only and not to be us
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

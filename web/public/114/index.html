@@ -139,7 +139,7 @@
 <li>To prevent DoS attack, scripts are limited to 10,000 bytes and 201 op codes;</li>
 <li>Any unexecuted branches and non-consensus enforced data in the script are visible to the public, consuming block space while damaging privacy.</li>
 </ol>
-<p>The <a href="/16" target="_blank">BIP16</a> (Pay-to-script-hash, "P2SH") fixes the first 3 problems by using a fixed-length 20-byte script hash in the scriptPubKey, and moving the responsibility for supplying the script to the redeemer. However, due to the data push size limit in script, a P2SH script may not be bigger than 520 bytes. Also, P2SH still requires the redeemer to publish all unexecuted branches of the script.</p>
+<p>The <a href="/16" target="_blank">BIP16</a> (Pay-to-script-hash, &quot;P2SH&quot;) fixes the first 3 problems by using a fixed-length 20-byte script hash in the scriptPubKey, and moving the responsibility for supplying the script to the redeemer. However, due to the data push size limit in script, a P2SH script may not be bigger than 520 bytes. Also, P2SH still requires the redeemer to publish all unexecuted branches of the script.</p>
 <p>The <a href="/141" target="_blank">BIP141</a> defines 2 new types of scripts that support segregated witness. The pay-to-witness-script-hash (P2WSH) is similar to P2SH is many ways. By supplying the script in witness, P2WSH restores the original 10,000 byte script limit. However, it still requires publishing of unexecuted branches.</p>
 <h3>Merkelized Abstract Syntax Tree</h3>
 <p>The idea of Merkelized Abstract Syntax Tree (MAST) is to use a Merkle tree to encode branches in a script. When spending, users may provide only the branches they are executing, and hashes that connect the branches to the fixed size Merkel root. This reduces the size of redemption stack from O(n) to O(log n) (n as the number of branches). This enables complicated redemption conditions that is currently not possible due to the script size and opcode limit, improves privacy by hiding unexecuted branches, and allows inclusion of non-consensus enforced data with very low or no additional cost.</p>
@@ -188,7 +188,7 @@
 <p>This proposal is a restricted case of more general MAST. In a general MAST design, users may freely assign one or more script branches for execution. In this proposal, only one branch is allowed for execution, and users are required to transform a complicated condition into several mutually exclusive branches. For example, if the desired redeem condition is:</p>
 <pre><code>  (A or B) and (C or D or E) and (F or G)
 </code></pre>
-<p>In a general MAST design, the 7 branches (A to G) will form a 3-level Merkle tree, plus an "overall condition" describing the relationship of different branches. In redemption, the "overall condition", executed branches (e.g. B, D, F), and Merkle path data will be provided for validation.</p>
+<p>In a general MAST design, the 7 branches (A to G) will form a 3-level Merkle tree, plus an &quot;overall condition&quot; describing the relationship of different branches. In redemption, the &quot;overall condition&quot;, executed branches (e.g. B, D, F), and Merkle path data will be provided for validation.</p>
 <p>In the current proposal, the user has to transform the redeem condition into 12 mutually exclusive branches and form a 4-level Merkle tree, and present only one branch in redemption:</p>
 <pre><code>  A and C and F
   B and C and F
@@ -260,7 +260,7 @@
 <h3> Imbalance MAST </h3>
 <p>When constructing a MAST, if the user believes that some of the branches are more likely to be executed, they may put them closer to the <code>Script Root</code>. It will save some witness space when the preferred branches are actually executed.</p>
 <h3> Escrow with Timeout </h3>
-<p>The following is the "Escrow with Timeout" example in <a href="/112" target="_blank">BIP112</a>:</p>
+<p>The following is the &quot;Escrow with Timeout&quot; example in <a href="/112" target="_blank">BIP112</a>:</p>
 <pre><code>    IF
         2 &lt;Alice&#x27;s pubkey&gt; &lt;Bob&#x27;s pubkey&gt; &lt;Escrow&#x27;s pubkey&gt; 3 CHECKMULTISIG
     ELSE
@@ -275,7 +275,7 @@
 </code></pre>
 <p>Since only one branch will be published, it is more difficult for a blockchain analyst to determine the details of the escrow.</p>
 <h3> Hashed Time-Lock Contract </h3>
-<p>The following is the "Hashed TIme-Lock Contract" example in <a href="/112" target="_blank">BIP112</a>:</p>
+<p>The following is the &quot;Hashed TIme-Lock Contract&quot; example in <a href="/112" target="_blank">BIP112</a>:</p>
 <pre><code>    HASH160 DUP &lt;R-HASH&gt; EQUAL
     IF
         &quot;24h&quot; CHECKSEQUENCEVERIFY
@@ -301,7 +301,7 @@
 <p>With MAST, large and complex multi-signature constructs could be flattened to many simple CHECKMULTISIGVERIFY conditions. For example, a 3-of-2000 multi-signature scheme could be expressed as 1,331,334,000 3-of-3 CHECKMULTISIGVERIFY, which forms a 31-level MAST. The scriptPubKey still maintains a fixed size of 34 bytes, and the redemption witness will be very compact, with less than 1,500 bytes.</p>
 <h3> Commitment of non-consensus enforced data </h3>
 <p>Currently, committing non-consensus enforced data in the scriptPubKey requires the use of OP_RETURN which occupies additional block space. With MAST, users may commit such data as a branch. Depends on the number of executable branches, inclusion of such a commitment may incur no extra witness space, or 32 bytes at most.</p>
-<p>An useful case would be specifying "message-signing keys", which are not valid for spending, but allow users to sign any message without touching the cold storage "funding key".</p>
+<p>An useful case would be specifying &quot;message-signing keys&quot;, which are not valid for spending, but allow users to sign any message without touching the cold storage &quot;funding key&quot;.</p>
 <h2> Backward compatibility </h2>
 <p>As a soft fork, older software will continue to operate without modification. Non-upgraded nodes, however, will consider MAST programs as anyone-can-spend scripts. Wallets should always be wary of anyone-can-spend scripts and treat them with suspicion.</p>
 <h2> Deployment </h2>
@@ -454,7 +454,7 @@ if (witversion == 1 &amp;&amp; program.size() == 32 &amp;&amp; (flags &amp; SCRI
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

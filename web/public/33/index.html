@@ -140,21 +140,21 @@
 <p>We propose two more values of NODE_SERVICE (2) and NODE_STRATIZED (4).</p>
 <h3> NODE_SERVICE </h3>
 <ul>
-<li>A blockchain service which supports the additional messages "getoutputs" and "getspends".</li>
-<li>Does not respond to "getdata" messages by itself (unless NODE_NETWORK is specified)</li>
-<li>If NODE_NETWORK is specified, then "getdata" for transactions will retrieve them not only from the memory pool but also check the blockchain if necessary.</li>
+<li>A blockchain service which supports the additional messages &quot;getoutputs&quot; and &quot;getspends&quot;.</li>
+<li>Does not respond to &quot;getdata&quot; messages by itself (unless NODE_NETWORK is specified)</li>
+<li>If NODE_NETWORK is specified, then &quot;getdata&quot; for transactions will retrieve them not only from the memory pool but also check the blockchain if necessary.</li>
 </ul>
 <h3> NODE_STRATIZED </h3>
 <ul>
 <li>A node which uses the stratized strategy specified in this document.</li>
 <li>NODE_STRATIZED will relay inventories for accepted transactions.</li>
-<li>Does not support "getblocks" as stratized nodes do not contain the entire blockchain.</li>
+<li>Does not support &quot;getblocks&quot; as stratized nodes do not contain the entire blockchain.</li>
 </ul>
 <p>Apart from the differences noted above, the nodes are otherwise unchanged in their behaviour from NODE_NETWORK.</p>
 <h2> Specification </h2>
 <h3> Initialisation </h3>
 <p>Four new messages are defined which are represented below in C-like pseudocode.</p>
-<p>"getoutputs"</p>
+<p>&quot;getoutputs&quot;</p>
 <pre><code>struct decoded_address
 {
     uint8_t payment_type;
@@ -166,7 +166,7 @@ struct get_outputs
     decoded_address dest;
 };
 </code></pre>
-<p>"outputs"</p>
+<p>&quot;outputs&quot;</p>
 <pre><code>struct point_t
 {
     uint8_t hash[32];
@@ -180,13 +180,13 @@ struct outputs
     point_t outpoints[];
 };
 </code></pre>
-<p>"getspend"</p>
+<p>&quot;getspend&quot;</p>
 <pre><code>struct get_spend
 {
     point_t outpoint;
 };
 </code></pre>
-<p>"spend"</p>
+<p>&quot;spend&quot;</p>
 <pre><code>struct spend
 {
     point_t outpoint, inpoint;
@@ -195,22 +195,22 @@ struct outputs
 <p>These four messages allow a node to discover the history of a Bitcoin address without needing direct access to the blockchain.</p>
 <p>A typical use case might look like:</p>
 <ol>
-<li>Send "getoutputs" for a decoded Bitcoin address.</li>
-<li>Receive "outputs", and loop through each contained output point:
+<li>Send &quot;getoutputs&quot; for a decoded Bitcoin address.</li>
+<li>Receive &quot;outputs&quot;, and loop through each contained output point:
 <ol>
-<li>Send "getdata" to download the transaction for that point.</li>
-<li>Send "getspend" for each output point.</li>
+<li>Send &quot;getdata&quot; to download the transaction for that point.</li>
+<li>Send &quot;getspend&quot; for each output point.</li>
 </ol>
 </li>
-<li>Receive "spend":
+<li>Receive &quot;spend&quot;:
 <ol>
-<li>Send "getdata" to download the transaction for that input point.</li>
+<li>Send &quot;getdata&quot; to download the transaction for that input point.</li>
 </ol>
 </li>
 </ol>
 <p>This sequence allows the gradual but fast build up of history for an address.</p>
 <h3> Updates </h3>
-<p>Nodes receive "inv" messages as normal from service nodes, issuing "getdata" to download the block or transaction data. From this they check for newly sent (in the input points) or received (in the output points) payments in the transaction data.</p>
+<p>Nodes receive &quot;inv&quot; messages as normal from service nodes, issuing &quot;getdata&quot; to download the block or transaction data. From this they check for newly sent (in the input points) or received (in the output points) payments in the transaction data.</p>
 <p>Note that blocks must at minimum have their merkle root validated and transactions must be checked for uniqueness by stratized nodes.</p>
 <h2> Security </h2>
 <p>The concern here is that stratized nodes are at the mercy of blockchain services. This proposal deals with that issue by designing this protocol in such a way that the implementation can resolve the common history between multiple services.</p>
@@ -218,8 +218,8 @@ struct outputs
 <h2> Privacy </h2>
 <p>The other strategy for thin clients termed <em>headers-only</em> or <em>Simplified. Payment. Verification.</em> have the same privacy issues as this proposal. SPV resolves this problem by sending out fake requests for transaction data which obfuscates the client data. By sending out a sufficient number of fake requests, privacy can be kept to a sufficient level.</p>
 <h2> Rationale </h2>
-<p>NODE_SERVICE does not respond to "getdata" requests by itself (unless used in conjunction with NODE_NETWORK) to prevent starvation attacks. This allows a single trusted NODE_SERVICE architecture (possibly acting as a front-end to multiple backends) to service very many nodes while externalising the costs to the Bitcoin network.</p>
-<p>NODE_STRATIZED tries its best to maintain the facade and help upkeep the Bitcoin network (see relaying), but cannot support "getblocks" as it does not have the entire blockchain.</p>
+<p>NODE_SERVICE does not respond to &quot;getdata&quot; requests by itself (unless used in conjunction with NODE_NETWORK) to prevent starvation attacks. This allows a single trusted NODE_SERVICE architecture (possibly acting as a front-end to multiple backends) to service very many nodes while externalising the costs to the Bitcoin network.</p>
+<p>NODE_STRATIZED tries its best to maintain the facade and help upkeep the Bitcoin network (see relaying), but cannot support &quot;getblocks&quot; as it does not have the entire blockchain.</p>
 <h2> Backwards Compatibility </h2>
 <p>This proposal is an addon to the current Bitcoin network, and is completely backwards compatible.</p>
 
@@ -232,7 +232,7 @@ struct outputs
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

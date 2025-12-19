@@ -131,14 +131,14 @@
 <h2>Abstract</h2>
 <p>This document specifies a method to activate the existing BIP9 segwit deployment with a majority hashpower less than 95%.</p>
 <h2>Definitions</h2>
-<p>"existing segwit deployment" refer to the BIP9 "segwit" deployment using bit 1, between November 15th 2016 and November 15th 2017 to activate BIP141, BIP143 and BIP147.</p>
+<p>&quot;existing segwit deployment&quot; refer to the BIP9 &quot;segwit&quot; deployment using bit 1, between November 15th 2016 and November 15th 2017 to activate BIP141, BIP143 and BIP147.</p>
 <h2>Motivation</h2>
 <p>Segwit increases the blocksize, fixes transaction malleability, and makes scripting easier to upgrade as well as bringing many other <a href="https://bitcoincore.org/en/2016/01/26/segwit-benefits/" target="_blank">benefits</a>.</p>
 <p>This BIP provides a way for a simple majority of miners to coordinate activation of the existing segwit deployment with less than 95% hashpower. For a number of reasons a complete redeployment of segwit is difficult to do until the existing deployment expires. This is due to 0.13.1+ having many segwit related features active already, including all the P2P components, the new network service flag, the witness-tx and block messages, compact blocks v2 and preferential peering. A redeployment of segwit will need to redefine all these things and doing so before expiry would greatly complicate testing.</p>
 <h2>Specification</h2>
 <p>While this BIP is active, all blocks must set the nVersion header top 3 bits to 001 together with bit field (1&lt;&lt;1) (according to the existing segwit deployment). Blocks that do not signal as required will be rejected.</p>
 <h2>Deployment</h2>
-<p>This BIP will be deployed by a "version bits" with an 80%(this can be adjusted if desired) 269 block activation threshold and 336 block confirmation window BIP9 with the name "segsignal" and using bit 4.</p>
+<p>This BIP will be deployed by a &quot;version bits&quot; with an 80%(this can be adjusted if desired) 269 block activation threshold and 336 block confirmation window BIP9 with the name &quot;segsignal&quot; and using bit 4.</p>
 <p>This BIP will have a start time of midnight June 1st, 2017 (epoch time 1496275200) and timeout on midnight November 15th 2017 (epoch time 1510704000). This BIP will cease to be active when segwit (BIP141) is locked-in, active, or failed</p>
 <h3> Reference implementation </h3>
 <pre><code>&#x2F;&#x2F; Deployment of SEGSIGNAL
@@ -189,10 +189,10 @@ if (VersionBitsState(pindex-&gt;pprev, chainparams.GetConsensus(), Consensus::DE
 </code></pre>
 <p>https://github.com/segsignal/bitcoin</p>
 <h2>Backwards Compatibility</h2>
-<p>This deployment is compatible with the existing "segwit" bit 1 deployment scheduled between midnight November 15th, 2016 and midnight November 15th, 2017. Miners will need to upgrade their nodes to support segsignal otherwise they may build on top of an invalid block. While this bip is active users should either upgrade to segsignal or wait for additional confirmations when accepting payments.</p>
+<p>This deployment is compatible with the existing &quot;segwit&quot; bit 1 deployment scheduled between midnight November 15th, 2016 and midnight November 15th, 2017. Miners will need to upgrade their nodes to support segsignal otherwise they may build on top of an invalid block. While this bip is active users should either upgrade to segsignal or wait for additional confirmations when accepting payments.</p>
 <h2>Rationale</h2>
 <p>Historically we have used IsSuperMajority() to activate soft forks such as BIP66 which has a mandatory signalling requirement for miners once activated, this ensures that miners are aware of new rules being enforced. This technique can be leveraged to lower the signalling threshold of a soft fork while it is in the process of being deployed in a backwards compatible way.</p>
-<p>By orphaning non-signalling blocks during the BIP9 bit 1 "segwit" deployment, this BIP can cause the existing "segwit" deployment to activate without needing to release a new deployment.</p>
+<p>By orphaning non-signalling blocks during the BIP9 bit 1 &quot;segwit&quot; deployment, this BIP can cause the existing &quot;segwit&quot; deployment to activate without needing to release a new deployment.</p>
 <h2>References</h2>
 <ul>
 <li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-March/013714.html" target="_blank">Mailing list discussion</a></li>
@@ -218,7 +218,7 @@ if (VersionBitsState(pindex-&gt;pprev, chainparams.GetConsensus(), Consensus::DE
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

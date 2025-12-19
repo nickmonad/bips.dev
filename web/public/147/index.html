@@ -131,11 +131,11 @@
 <p>This document specifies proposed changes to the Bitcoin transaction validity rules to fix a malleability vector in the extra stack element consumed by <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code>.</p>
 <h2>Motivation</h2>
 <p>Signature malleability refers to the ability of any relay node on the network to transform the signature in transactions, with no access to the relevant private keys required. For non-segregated witness transactions, signature malleability will change the <code>txid</code> and invalidate any unconfirmed child transactions. Although the <code>txid</code> of segregated witness (<a href="/141" target="_blank">BIP141</a>) transactions is not third party malleable, this malleability vector will change the <code>wtxid</code> and may reduce the efficiency of compact block relay (<a href="/152" target="_blank">BIP152</a>).</p>
-<p>A design flaw in <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> causes them to consume an extra stack element ("dummy element") after signature validation. The dummy element is not inspected in any manner, and could be replaced by any value without invalidating the script. This document specifies a new rule to fix this signature malleability.</p>
+<p>A design flaw in <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> causes them to consume an extra stack element (&quot;dummy element&quot;) after signature validation. The dummy element is not inspected in any manner, and could be replaced by any value without invalidating the script. This document specifies a new rule to fix this signature malleability.</p>
 <h2>Specification</h2>
-<p>To fix the dummy element malleability, a new consensus rule ("<code>NULLDUMMY</code>") is deployed to require that the dummy element MUST be the empty byte array. Anything else makes the script evaluate to false immediately. The <code>NULLDUMMY</code> rule applies to <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> in pre-segregated scripts, and also pay-to-witness-script-hash scripts described in BIP141.</p>
+<p>To fix the dummy element malleability, a new consensus rule (&quot;<code>NULLDUMMY</code>&quot;) is deployed to require that the dummy element MUST be the empty byte array. Anything else makes the script evaluate to false immediately. The <code>NULLDUMMY</code> rule applies to <code>OP_CHECKMULTISIG</code> and <code>OP_CHECKMULTISIGVERIFY</code> in pre-segregated scripts, and also pay-to-witness-script-hash scripts described in BIP141.</p>
 <h2>Deployment</h2>
-<p>This BIP will be deployed by "version bits" <a href="/9" target="_blank">BIP9</a> using the same parameters for BIP141 and BIP143, with the name "segwit" and using bit 1.</p>
+<p>This BIP will be deployed by &quot;version bits&quot; <a href="/9" target="_blank">BIP9</a> using the same parameters for BIP141 and BIP143, with the name &quot;segwit&quot; and using bit 1.</p>
 <p>For Bitcoin mainnet, the BIP9 starttime is midnight 15 November 2016 UTC (Epoch timestamp 1479168000) and BIP9 timeout is midnight 15 November 2017 UTC (Epoch timestamp 1510704000).</p>
 <p>For Bitcoin testnet, the BIP9 starttime is midnight 1 May 2016 UTC (Epoch timestamp 1462060800) and BIP9 timeout is midnight 1 May 2017 UTC (Epoch timestamp 1493596800).</p>
 <h2>Compatibility</h2>
@@ -157,7 +157,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

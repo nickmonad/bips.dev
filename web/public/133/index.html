@@ -128,22 +128,22 @@
   License: PD
 </code></pre>
 <h2>Abstract</h2>
-<p>Add a new message, "feefilter", which serves to instruct peers not to send "inv"'s to the node for transactions with fees below the specified fee rate.</p>
+<p>Add a new message, &quot;feefilter&quot;, which serves to instruct peers not to send &quot;inv&quot;'s to the node for transactions with fees below the specified fee rate.</p>
 <h2>Motivation</h2>
 <p>The concept of a limited mempool was introduced in Bitcoin Core 0.12 to provide protection against attacks or spam transactions of low fees that are not being mined. A reject filter was also introduced to help prevent repeated requests for the same transaction that might have been recently rejected for insufficient fee. These methods help keep resource utilization on a node from getting out of control.</p>
 <p>However, there are limitations to the effectiveness of these approaches.  The reject filter is reset after every block which means transactions that are inv'ed over a longer time period will be rerequested and there is no method to prevent requesting the transaction the first time.  Furthermore, inv data is sent at least once either to or from each peer for every transaction accepted to the mempool and there is no mechanism by which to know that an inv sent to a given peer would not result in a getdata request because it represents a transaction with too little fee.</p>
 <p>After receiving a feefilter message, a node can know before sending an inv that a given transaction's fee rate is below the minimum currently required by a given peer, and therefore the node can skip relaying an inv for that transaction to that peer.</p>
 <h2>Specification</h2>
 <ol>
-<li>The feefilter message is defined as a message containing an int64_t where pchCommand == "feefilter"</li>
-<li>Upon receipt of a "feefilter" message, the node will be permitted, but not required, to filter transaction invs for transactions that fall below the feerate provided in the feefilter message interpreted as satoshis per kilobyte.</li>
+<li>The feefilter message is defined as a message containing an int64_t where pchCommand == &quot;feefilter&quot;</li>
+<li>Upon receipt of a &quot;feefilter&quot; message, the node will be permitted, but not required, to filter transaction invs for transactions that fall below the feerate provided in the feefilter message interpreted as satoshis per kilobyte.</li>
 <li>The fee filter is additive with a bloom filter for transactions so if an SPV client were to load a bloom filter and send a feefilter message, transactions would only be relayed if they passed both filters.</li>
 <li>Inv's generated from a mempool message are also subject to a fee filter if it exists.</li>
 <li>Feature discovery is enabled by checking protocol version &gt;= 70013</li>
 </ol>
 <h2>Considerations</h2>
 <p>The propagation efficiency of transactions across the network should not be adversely affected by this change. In general, transactions which are not accepted to a node's mempool are not relayed by this node and the functionality implemented with this message is meant only to filter those transactions. There could be a small number of edge cases where a node's mempool min fee is actually less than the filter value a peer is aware of and transactions with fee rates between these values will now be newly inhibited.</p>
-<p>Feefilter messages are not sent to whitelisted peers if the "-whitelistforcerelay" option is set. In that case, transactions are intended to be relayed even if they are not accepted to the mempool.</p>
+<p>Feefilter messages are not sent to whitelisted peers if the &quot;-whitelistforcerelay&quot; option is set. In that case, transactions are intended to be relayed even if they are not accepted to the mempool.</p>
 <p>There are privacy concerns with deanonymizing a node by the fact that it is broadcasting identifying information about its mempool min fee. To help ameliorate this concern, the implementation quantizes the filter value broadcast with a small amount of randomness, in addition, the messages are broadcast to different peers at individually randomly distributed times.</p>
 <p>If a node is using prioritisetransaction to accept transactions whose actual fee rates might fall below the node's mempool min fee, it may want to consider disabling the fee filter to make sure it is exposed to all possible txid's.</p>
 <h2>Backward compatibility</h2>
@@ -162,7 +162,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

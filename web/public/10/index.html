@@ -126,7 +126,7 @@
   Type: Informational
   Created: 2011-10-28
 </code></pre>
-<p>A multi-signature transaction is one where a certain number of Bitcoins are "encumbered" with more than one recipient address.  The subsequent transaction that spends these coins will require each party involved (or some subset, depending on the script), to see the proposed transaction and sign it with their private key.  This necessarily requires collaboration between all parties -- to propose a distribution of encumbered funds, collect signatures from all necessary participants, and then broadcast the completed transaction.</p>
+<p>A multi-signature transaction is one where a certain number of Bitcoins are &quot;encumbered&quot; with more than one recipient address.  The subsequent transaction that spends these coins will require each party involved (or some subset, depending on the script), to see the proposed transaction and sign it with their private key.  This necessarily requires collaboration between all parties -- to propose a distribution of encumbered funds, collect signatures from all necessary participants, and then broadcast the completed transaction.</p>
 <p>This BIP describes a way standardize the encoding of proposal transactions, to assist with signature collection and broadcast (which includes regular, 1-of-1 transactions requiring signatures from an offline computer).  The goal is to encourage a standard that guarantees interoperability of all programs that implement it.</p>
 <h2>Motivation</h2>
 <p>The enabling of multi-signature transactions in Bitcoin will introduce a great deal of extra functionality to the users of the network, but also a great deal of extra complexity.  Executing a multi-signature tx will be a multi-step process, and will potentially get worse with multiple clients, each implementing this process differently.  By providing an efficient, standardized technique, we can improve the chance that developers will adopt compatible protocols and not bifurcate the user-base based on client selection.</p>
@@ -134,12 +134,12 @@
 <h2>Specification</h2>
 <p>This BIP proposes the following process, with terms in quotes referring to recommended terminology that should be encouraged across all implementations.</p>
 <ol>
-<li>One party will initiate this process by creating a "Distribution Proposal", which could be abbreviated DP, or TxDP</li>
+<li>One party will initiate this process by creating a &quot;Distribution Proposal&quot;, which could be abbreviated DP, or TxDP</li>
 <li>The user creating the TxDP (the preparer) will create the transaction as they would like to see it spent, but with blank TxIn scripts (where the signatures scripts will eventually go).</li>
 <li>The proposed transaction will be spending a set of unspent TxOuts available in the blockchain.  The full transactions containing these TxOuts will be serialized and included, as well.  This so that the values of the TxIns can be verified before signing (the prev-tx-hash is part of the data being signed, but the value is not).  By including the full tx, the signing party can verify that the tx matches the OutPoint hash, and then verify input values, all without any access to the blockchain.</li>
-<li>The TxDP will have an "DP ID" or "Unsigned ID" which is the hash of the proposed transaction with blanked scripts, in Base58.  This is a specific naming convention to make sure it is not confused with the actual transaction ID that it will have after it is broadcast (the transaction ID cannot be determined until after all signatures are collected).  The final Tx ID can be referred to as its "Broadcast ID", in order to distinguish it from the pre-signed ID.</li>
+<li>The TxDP will have an &quot;DP ID&quot; or &quot;Unsigned ID&quot; which is the hash of the proposed transaction with blanked scripts, in Base58.  This is a specific naming convention to make sure it is not confused with the actual transaction ID that it will have after it is broadcast (the transaction ID cannot be determined until after all signatures are collected).  The final Tx ID can be referred to as its &quot;Broadcast ID&quot;, in order to distinguish it from the pre-signed ID.</li>
 <li>The TxDP will have a potentially-unordered list of sig-pubkey pairs which represent collected signatures.  If you receive a TxDP missing only your signature, you can broadcast it as soon as you sign it.</li>
-<li>Identical TxDP objects with different signatures can be easily combined.  This allows one party to send out all the requests for signatures at once, and combine them all when they are received (instead of having to "pass it around".</li>
+<li>Identical TxDP objects with different signatures can be easily combined.  This allows one party to send out all the requests for signatures at once, and combine them all when they are received (instead of having to &quot;pass it around&quot;.</li>
 <li>For cases where the TxDP might be put into a file or sent via email, it should use .txdp or .btcdp suffix</li>
 </ol>
 <p>Anyone adopting BIP 0010 for multi-sig transactions will use the following format (without indentation):</p>
@@ -209,7 +209,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

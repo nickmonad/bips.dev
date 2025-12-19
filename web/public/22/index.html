@@ -128,19 +128,19 @@
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
-<p>This BIP describes a new JSON-RPC method for "smart" Bitcoin miners and proxies.
+<p>This BIP describes a new JSON-RPC method for &quot;smart&quot; Bitcoin miners and proxies.
 Instead of sending a simple block header for hashing, the entire block structure is sent, and left to the miner to (optionally) customize and assemble.</p>
 <h2>Copyright</h2>
 <p>This BIP is licensed under the BSD 2-clause license.</p>
 <h2>Specification</h2>
 <h3>Block Template Request</h3>
-<p>A JSON-RPC method is defined, called "getblocktemplate".
+<p>A JSON-RPC method is defined, called &quot;getblocktemplate&quot;.
 It accepts exactly one argument, which MUST be an Object of request parameters.
-If the request parameters include a "mode" key, that is used to explicitly select between the default "template" request or a <a href="/23" target="_blank">"proposal"</a>.</p>
+If the request parameters include a &quot;mode&quot; key, that is used to explicitly select between the default &quot;template&quot; request or a <a href="/23" target="_blank">&quot;proposal&quot;</a>.</p>
 <p>Block template creation can be influenced by various parameters:</p>
 <table><thead><tr><th>Key</th><th>Required</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td>capabilities</td><td>No</td><td>Array of Strings</td><td>SHOULD contain a list of the following, to indicate client-side support: <a href="#Optional: Long Polling" target="_blank">"longpoll"</a>, "coinbasetxn", "coinbasevalue", <a href="/23" target="_blank">"proposal"</a>, <a href="/23" target="_blank">"serverlist"</a>, "workid", and any of the <a href="/23" target="_blank">mutations</a></td></tr>
-<tr><td>mode</td><td>No</td><td>String</td><td>MUST be "template" or omitted</td></tr>
+<tr><td>capabilities</td><td>No</td><td>Array of Strings</td><td>SHOULD contain a list of the following, to indicate client-side support: <a href="#Optional: Long Polling" target="_blank">&quot;longpoll&quot;</a>, &quot;coinbasetxn&quot;, &quot;coinbasevalue&quot;, <a href="/23" target="_blank">&quot;proposal&quot;</a>, <a href="/23" target="_blank">&quot;serverlist&quot;</a>, &quot;workid&quot;, and any of the <a href="/23" target="_blank">mutations</a></td></tr>
+<tr><td>mode</td><td>No</td><td>String</td><td>MUST be &quot;template&quot; or omitted</td></tr>
 </tbody></table>
 <p>getblocktemplate MUST return a JSON Object containing the following keys:</p>
 <table><thead><tr><th>Key</th><th>Required</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -152,24 +152,24 @@ If the request parameters include a "mode" key, that is used to explicitly selec
 <tr><td>sizelimit</td><td>No</td><td>Number</td><td>number of bytes allowed in blocks</td></tr>
 <tr><td>transactions</td><td>Should</td><td>Array of Objects</td><td>Objects containing <a href="#Transactions Object Format" target="_blank">information for Bitcoin transactions</a> (excluding coinbase)</td></tr>
 <tr><td>version</td><td>Yes</td><td>Number</td><td>always 1 or 2 (at least for bitcoin) - clients MUST understand the implications of the version they use (eg, comply with <a href="/34" target="_blank">BIP 0034</a> for version 2)</td></tr>
-<tr><td>coinbaseaux</td><td>No</td><td>Object</td><td>data that SHOULD be included in the coinbase's scriptSig content. Only the values (hexadecimal byte-for-byte) in this Object should be included, not the keys. This does not include the block height, which is required to be included in the scriptSig by <a href="/34" target="_blank">BIP 0034</a>. It is advisable to encode values inside "PUSH" opcodes, so as to not inadvertently expend SIGOPs (which are counted toward limits, despite not being executed).</td></tr>
+<tr><td>coinbaseaux</td><td>No</td><td>Object</td><td>data that SHOULD be included in the coinbase's scriptSig content. Only the values (hexadecimal byte-for-byte) in this Object should be included, not the keys. This does not include the block height, which is required to be included in the scriptSig by <a href="/34" target="_blank">BIP 0034</a>. It is advisable to encode values inside &quot;PUSH&quot; opcodes, so as to not inadvertently expend SIGOPs (which are counted toward limits, despite not being executed).</td></tr>
 <tr><td>coinbasetxn</td><td>this or ↓</td><td>Object</td><td><a href="#Transactions Object Format" target="_blank">information for coinbase transaction</a></td></tr>
 <tr><td>coinbasevalue</td><td>this or ↑</td><td>Number</td><td>total funds available for the coinbase (in Satoshis)</td></tr>
 <tr><td>workid</td><td>No</td><td>String</td><td>if provided, this value must be returned with results (see <a href="#Block Submission" target="_blank">Block Submission</a>)</td></tr>
 </tbody></table>
 <h4> Transactions Object Format </h4>
-<p>The Objects listed in the response's "transactions" key contains these keys:</p>
+<p>The Objects listed in the response's &quot;transactions&quot; key contains these keys:</p>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>data</td><td>String</td><td>transaction data encoded in hexadecimal (byte-for-byte)</td></tr>
-<tr><td>depends</td><td>Array of Numbers</td><td>other transactions before this one (by 1-based index in "transactions" list) that must be present in the final block if this one is; if key is not present, dependencies are unknown and clients MUST NOT assume there aren't any</td></tr>
+<tr><td>depends</td><td>Array of Numbers</td><td>other transactions before this one (by 1-based index in &quot;transactions&quot; list) that must be present in the final block if this one is; if key is not present, dependencies are unknown and clients MUST NOT assume there aren't any</td></tr>
 <tr><td>fee</td><td>Number</td><td>difference in value between transaction inputs and outputs (in Satoshis); for coinbase transactions, this is a negative Number of the total collected block fees (ie, not including the block subsidy); if key is not present, fee is unknown and clients MUST NOT assume there isn't one</td></tr>
 <tr><td>hash</td><td>String</td><td>hash/id encoded in little-endian hexadecimal</td></tr>
 <tr><td>required</td><td>Boolean</td><td>if provided and true, this transaction must be in the final block</td></tr>
 <tr><td>sigops</td><td>Number</td><td>total number of SigOps, as counted for purposes of block limits; if key is not present, sigop count is unknown and clients MUST NOT assume there aren't any</td></tr>
 </tbody></table>
-<p>Only the "data" key is required, but servers should provide the others if they are known.</p>
+<p>Only the &quot;data&quot; key is required, but servers should provide the others if they are known.</p>
 <h3>Block Submission</h3>
-<p>A JSON-RPC method is defined, called "submitblock", to submit potential blocks (or shares).
+<p>A JSON-RPC method is defined, called &quot;submitblock&quot;, to submit potential blocks (or shares).
 It accepts two arguments:
 the first is always a String of the hex-encoded block data to submit;
 the second is an Object of parameters, and is optional if parameters are not needed.</p>
@@ -179,40 +179,40 @@ the second is an Object of parameters, and is optional if parameters are not nee
 <p>This method MUST return either null (when a share is accepted), a String describing briefly the reason the share was rejected, or an Object of these with a key for each merged-mining chain the share was submitted to.</p>
 <h3>Optional: Long Polling</h3>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td>capabilities</td><td>Array of Strings</td><td>miners which support long polling SHOULD provide a list including the String "longpoll"</td></tr>
-<tr><td>longpollid</td><td>String</td><td>"longpollid" of job to monitor for expiration; required and valid only for long poll requests</td></tr>
+<tr><td>capabilities</td><td>Array of Strings</td><td>miners which support long polling SHOULD provide a list including the String &quot;longpoll&quot;</td></tr>
+<tr><td>longpollid</td><td>String</td><td>&quot;longpollid&quot; of job to monitor for expiration; required and valid only for long poll requests</td></tr>
 </tbody></table>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>longpollid</td><td>String</td><td>identifier for long poll request; MUST be omitted if the server does not support long polling</td></tr>
 <tr><td>longpolluri</td><td>String</td><td>if provided, an alternate URI to use for long poll requests</td></tr>
 <tr><td>submitold</td><td>Boolean</td><td>only relevant for long poll responses: indicates if work received prior to this response remains potentially valid (default) and should have its shares submitted; if false, the miner may wish to discard its share queue</td></tr>
 </tbody></table>
-<p>If the server supports long polling, it MUST include a "longpollid" key in block templates, and it MUST be unique for each event:
-any given "longpollid" should check for only one condition and not be reused.
+<p>If the server supports long polling, it MUST include a &quot;longpollid&quot; key in block templates, and it MUST be unique for each event:
+any given &quot;longpollid&quot; should check for only one condition and not be reused.
 For example, a server which has a long poll wakeup only for new blocks might use the previous block hash.
-However, clients should not assume the "longpollid" has any specific meaning.
-It MAY supply the "longpolluri" key with a relative or absolute URI, which MAY specify a completely different resource than the original connection, including port number.
-If "longpolluri" is provided by the server, clients MUST only attempt to use that URI for longpoll requests.</p>
-<p>Clients MAY start a longpoll request with a standard JSON-RPC request (in the case of HTTP transport, POST with data) and same authorization, setting the "longpollid" parameter in the request to the value provided by the server.</p>
-<p>This request SHOULD NOT be processed nor answered by the server until it wishes to replace the current block data as identified by the "longpollid".
-Clients SHOULD make this request with a very long request timeout and MUST accept servers sending a partial response in advance (such as HTTP headers with "chunked" Transfer-Encoding), and only delaying the completion of the final JSON response until processing.</p>
+However, clients should not assume the &quot;longpollid&quot; has any specific meaning.
+It MAY supply the &quot;longpolluri&quot; key with a relative or absolute URI, which MAY specify a completely different resource than the original connection, including port number.
+If &quot;longpolluri&quot; is provided by the server, clients MUST only attempt to use that URI for longpoll requests.</p>
+<p>Clients MAY start a longpoll request with a standard JSON-RPC request (in the case of HTTP transport, POST with data) and same authorization, setting the &quot;longpollid&quot; parameter in the request to the value provided by the server.</p>
+<p>This request SHOULD NOT be processed nor answered by the server until it wishes to replace the current block data as identified by the &quot;longpollid&quot;.
+Clients SHOULD make this request with a very long request timeout and MUST accept servers sending a partial response in advance (such as HTTP headers with &quot;chunked&quot; Transfer-Encoding), and only delaying the completion of the final JSON response until processing.</p>
 <p>Upon receiving a completed response:</p>
 <ul>
-<li>Only if "submitold" is provided and false, the client MAY discard the results of past operations and MUST begin working on the new work immediately.</li>
+<li>Only if &quot;submitold&quot; is provided and false, the client MAY discard the results of past operations and MUST begin working on the new work immediately.</li>
 <li>The client SHOULD begin working on the new work received as soon as possible, if not immediately.</li>
 <li>The client SHOULD make a new request to the same long polling URI.</li>
 </ul>
 <p>If a client receives an incomplete or invalid response, it SHOULD retry the request with an exponential backoff.
 Clients MAY implement this backoff with limitations (such as maximum backoff time) or any algorithm as deemed suitable.
 It is, however, forbidden to simply retry immediately with no delay after more than one failure.
-In the case of a "Forbidden" response (for example, HTTP 403), a client SHOULD NOT attempt to retry without user intervention.</p>
+In the case of a &quot;Forbidden&quot; response (for example, HTTP 403), a client SHOULD NOT attempt to retry without user intervention.</p>
 <h3>Optional: Template Tweaking</h3>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>sigoplimit</td><td>Number or Boolean</td><td>maximum number of sigops to include in template</td></tr>
 <tr><td>sizelimit</td><td>Number or Boolean</td><td>maximum number of bytes to use for the entire block</td></tr>
 <tr><td>maxversion</td><td>Number</td><td>highest block version number supported</td></tr>
 </tbody></table>
-<p>For "sigoplimit" and "sizelimit", negative values and zero are offset from the server-determined block maximum.
+<p>For &quot;sigoplimit&quot; and &quot;sizelimit&quot;, negative values and zero are offset from the server-determined block maximum.
 If a Boolean is provided and true, the default limit is used; if false, the server is instructed not to use any limits on returned template.
 Servers SHOULD respect these desired maximums, but are NOT required to:
 clients SHOULD check that the returned template satisfies their requirements appropriately.</p>
@@ -222,7 +222,7 @@ clients SHOULD check that the returned template satisfies their requirements app
 <tr><td>bad-cb-flag</td><td>the server detected a feature-signifying flag that it does not allow</td></tr>
 <tr><td>bad-cb-length</td><td>the coinbase was too long (bitcoin limit is 100 bytes)</td></tr>
 <tr><td>bad-cb-prefix</td><td>the server only allows appending to the coinbase, but it was modified beyond that</td></tr>
-<tr><td>bad-diffbits</td><td>"bits" were changed</td></tr>
+<tr><td>bad-diffbits</td><td>&quot;bits&quot; were changed</td></tr>
 <tr><td>bad-prevblk</td><td>the previous-block is not the one the server intends to build on</td></tr>
 <tr><td>bad-txnmrklroot</td><td>the block header's merkle root did not match the transaction merkle tree</td></tr>
 <tr><td>bad-txns</td><td>the server didn't like something about the transactions in the block</td></tr>
@@ -248,11 +248,11 @@ At the same time, new independent node implementations are maturing to the point
 <li>Servers might not have access to the transaction database, or miners may wish to include transactions not broadcast to the network as a whole.</li>
 <li>Miners may opt not to do full transaction verification, and may not have access to the transaction database on their end.</li>
 </ul>
-<p>What is the purpose of "workid"?</p>
+<p>What is the purpose of &quot;workid&quot;?</p>
 <ul>
-<li>If servers allow all mutations, it may be hard to identify which job it is based on. While it may be possible to verify the submission by its content, it is much easier to compare it to the job issued. It is very easy for the miner to keep track of this. Therefore, using a "workid" is a very cheap solution to enable more mutations.</li>
+<li>If servers allow all mutations, it may be hard to identify which job it is based on. While it may be possible to verify the submission by its content, it is much easier to compare it to the job issued. It is very easy for the miner to keep track of this. Therefore, using a &quot;workid&quot; is a very cheap solution to enable more mutations.</li>
 </ul>
-<p>Why should "sigops" be provided for transactions?</p>
+<p>Why should &quot;sigops&quot; be provided for transactions?</p>
 <ul>
 <li>Due to the <a href="/16" target="_blank">BIP 0016</a> changes regarding rules on block sigops, it is impossible to count sigops from the transactions themselves (the sigops in the scriptCheck must also be included in the count).</li>
 </ul>
@@ -276,7 +276,7 @@ At the same time, new independent node implementations are maturing to the point
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

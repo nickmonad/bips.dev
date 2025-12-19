@@ -129,19 +129,19 @@
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
-<p>Blind Merged Mining (BMM) allows SHA-256d miners to collect transaction fee revenue from other blockchains, without running any new software (i.e., without "looking" at those alt-chains, hence "blind").</p>
-<p>Instead, this block-assembly work is done by alt-chain users. They choose the alt-chain block, and what txns go in it, the fees etc. Simultaneously, these users "bid" on L1 to win the right to be the sole creator of the alt-chain block. BIP-301 ensures that L1 miners only accept one bid (per 10 minutes, per L2 category), instead of taking all of them (which is what they would ordinarily do).</p>
+<p>Blind Merged Mining (BMM) allows SHA-256d miners to collect transaction fee revenue from other blockchains, without running any new software (i.e., without &quot;looking&quot; at those alt-chains, hence &quot;blind&quot;).</p>
+<p>Instead, this block-assembly work is done by alt-chain users. They choose the alt-chain block, and what txns go in it, the fees etc. Simultaneously, these users &quot;bid&quot; on L1 to win the right to be the sole creator of the alt-chain block. BIP-301 ensures that L1 miners only accept one bid (per 10 minutes, per L2 category), instead of taking all of them (which is what they would ordinarily do).</p>
 <h2>Motivation</h2>
-<p>"Merged-Mining" (MM) allows miners to reuse their hashing work to secure other chains (for example, as in Namecoin).</p>
+<p>&quot;Merged-Mining&quot; (MM) allows miners to reuse their hashing work to secure other chains (for example, as in Namecoin).</p>
 <p>However, traditional MM has two drawbacks:</p>
 <ol>
-<li>Miners must run a full node of the other chain(s). (Thus, they must run "non-Bitcoin" software which may be buggy.)</li>
+<li>Miners must run a full node of the other chain(s). (Thus, they must run &quot;non-Bitcoin&quot; software which may be buggy.)</li>
 <li>Miners are paid on the other chain, in Alt-currency. (Miners who MM Namecoin, will earn NMC.)</li>
 </ol>
 <h2>Notation and Example</h2>
-<p>We use notation side:* and main:* in front of otherwise ambiguous words (such as "block", "node", or "chain"), to distinguish the mainchain version from its sidechain/alt-chain counterpart. We name all sidechain users "Simon", and name all mainchain miners "Mary".</p>
-<p>Furthermore, here is an example of BIP-301 in use. Imagine that a side:block contains 20,000 txns, each paying a $0.10 fee; therefore, the side:block is worth $2000 of fee revenue. In BIP-301, the sidechain's coinbase txn will pay this $2000 to "Simon". Simon does no hashing, but instead makes one L1 txn paying $1999 to the L1 miners ("Mary"). Thus, Mary ends up with all of the fee revenue, even though she didn't do anything on the sidechain.</p>
-<table><thead><tr><th>Item</th><th>Layer1 Miner ("Mary")</th><th>Sidechain User ("Simon")</th></tr></thead><tbody>
+<p>We use notation side:* and main:* in front of otherwise ambiguous words (such as &quot;block&quot;, &quot;node&quot;, or &quot;chain&quot;), to distinguish the mainchain version from its sidechain/alt-chain counterpart. We name all sidechain users &quot;Simon&quot;, and name all mainchain miners &quot;Mary&quot;.</p>
+<p>Furthermore, here is an example of BIP-301 in use. Imagine that a side:block contains 20,000 txns, each paying a $0.10 fee; therefore, the side:block is worth $2000 of fee revenue. In BIP-301, the sidechain's coinbase txn will pay this $2000 to &quot;Simon&quot;. Simon does no hashing, but instead makes one L1 txn paying $1999 to the L1 miners (&quot;Mary&quot;). Thus, Mary ends up with all of the fee revenue, even though she didn't do anything on the sidechain.</p>
+<table><thead><tr><th>Item</th><th>Layer1 Miner (&quot;Mary&quot;)</th><th>Sidechain User (&quot;Simon&quot;)</th></tr></thead><tbody>
 <tr><td>Runs a sidechain node?</td><td>No</td><td>Yes</td></tr>
 <tr><td>How much hashing?</td><td>100%</td><td>0%</td></tr>
 <tr><td>Coins collected, on Layer2</td><td>$0</td><td>$2000</td></tr>
@@ -151,15 +151,15 @@
 </tbody></table>
 <p>BIP-301 makes this specialization-of-labor trustless on L1. If Mary takes Simon's money, then she must let Simon control the side:block.</p>
 <h2>Specification</h2>
-<p>Each candidate for next side:block is defined by its unique side:blockhash "h*". (Even if the entire rest of the L2 block is identical, different Simons will have different side:coinbases and therefore different h*.)</p>
-<p>BIP-301 consists of two messages: "BMM Accept" and "BMM Request".</p>
+<p>Each candidate for next side:block is defined by its unique side:blockhash &quot;h*&quot;. (Even if the entire rest of the L2 block is identical, different Simons will have different side:coinbases and therefore different h*.)</p>
+<p>BIP-301 consists of two messages: &quot;BMM Accept&quot; and &quot;BMM Request&quot;.</p>
 <ol>
-<li>"BMM Accept" -- A coinbase output in L1, which contains h*. Mary can only choose one h* to endorse.</li>
-<li>"BMM Request" -- A transaction where Simon offers to pay Mary, if (and only if) Mary's L1 block contains Simon's h*.</li>
+<li>&quot;BMM Accept&quot; -- A coinbase output in L1, which contains h*. Mary can only choose one h* to endorse.</li>
+<li>&quot;BMM Request&quot; -- A transaction where Simon offers to pay Mary, if (and only if) Mary's L1 block contains Simon's h*.</li>
 </ol>
-<p>As a miner, Mary controls the main:coinbase, so she may select any h*. Her selection determines which side:block is "found" -- and which associated BMM Request she can collect.</p>
+<p>As a miner, Mary controls the main:coinbase, so she may select any h*. Her selection determines which side:block is &quot;found&quot; -- and which associated BMM Request she can collect.</p>
 <h3> BMM Accept  </h3>
-<p>To "Accept" a BMM proposal (endorsing Simon's side:block, and allowing Mary to accept Simon's money later in the block), Mary places an OP_RETURN output into the main:coinbase as follows:</p>
+<p>To &quot;Accept&quot; a BMM proposal (endorsing Simon's side:block, and allowing Mary to accept Simon's money later in the block), Mary places an OP_RETURN output into the main:coinbase as follows:</p>
 <pre><code>    1-byte - OP_RETURN (0x6a)
     4-bytes - Message header (0xD1617368)
     1-byte - Sidechain number (0-255)
@@ -170,7 +170,7 @@
 <p>It is possible for Mary and Simon to be the same person. They would trust each other completely, so the BMM process would stop here. There would only be Accepts; Requests would be unnecessary.</p>
 <p>When Simon and Mary are different people, Simon will need to use BMM Requests.</p>
 <h3> BMM Request </h3>
-<p>Simon will use BMM Requests to buy the "right" to find a sidechain block, from Mary.</p>
+<p>Simon will use BMM Requests to buy the &quot;right&quot; to find a sidechain block, from Mary.</p>
 <p>For each side:block that Simon wants to attempt, he broadcasts a txn containing the following as an OP_RETURN:</p>
 <pre><code>    1-byte - OP_RETURN (0x6a)
     3-bytes - Message header (0x00bf00)
@@ -181,7 +181,7 @@
 <p>h* is chosen by Simon to correspond to the side:block he wants to mine on the alt-chain. nSidechain is the number assigned to the sidechain/alt-chain when it was created.</p>
 <p>This txn is invalid if it fails any of the following checks:</p>
 <ol>
-<li>Each "BMM Request", must match one corresponding "BMM Accept" (previous section).</li>
+<li>Each &quot;BMM Request&quot;, must match one corresponding &quot;BMM Accept&quot; (previous section).</li>
 <li>Only one BMM Request is allowed in each main:block, per nSidechain. In other words, if 700 users broadcast BMM Requests for sidechain #4, then the main:miner must single out one BMM_Request_4 to include in this L1 block.</li>
 <li>The 32-bytes of prevMainBlock must match the previous main:blockhash. Thus, Simon's txns are only valid for the current block, in the block history that he knows about.</li>
 </ol>
@@ -207,7 +207,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

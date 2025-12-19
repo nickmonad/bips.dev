@@ -155,12 +155,12 @@ Services and people which receive Bitcoins MAY continue to generate and use old 
 <p>If this template is not matched exactly OR the transaction is in a block with a timestamp before the hashScriptCheck activation date, validation MUST proceed in backward-compatibility mode, using scriptSig+scriptPubKey rather than dataSig+scriptCheck+hashScriptCheck.</p>
 <p>A hashScriptCheck-compliant input is valid only if:</p>
 <ul>
-<li>dataSig MUST NOT contain any operations other than "push data" (it is data, not a script; no mixing scriptSig with hashScriptCheck)</li>
+<li>dataSig MUST NOT contain any operations other than &quot;push data&quot; (it is data, not a script; no mixing scriptSig with hashScriptCheck)</li>
 <li>scriptCheck MUST hash (using Bitcoin's Hash160 algorithm) to the output's hashScriptCheck.</li>
 <li>scriptCheck MUST be executed with the dataSig-based stack specified above (ie, not including scriptCheck itself) to perform validation (this does not imply clients are required to validate transactions).</li>
 <li>scriptCheck must not abort, and must leave a true value on the top of the stack. This is the current behaviour for scriptSig+scriptPubKey.</li>
 </ul>
-<p>The new scriptCheck SHOULD be checked against "standard transaction" templates by miners.</p>
+<p>The new scriptCheck SHOULD be checked against &quot;standard transaction&quot; templates by miners.</p>
 <p>For example, the hashScriptCheck and corresponding dataSig for a one-signature-required transaction is:</p>
 <pre><code>    scriptCheck: [pubkey] OP_CHECKSIG
     dataSig: [signature] {[pubkey] OP_CHECKSIG}
@@ -204,8 +204,8 @@ If there was no limit, a rogue miner might broadcast a block that required hundr
 <li>A pay-to-script-hash transaction that is invalid for new clients/miners but valid for old clients/miners.</li>
 </ul>
 <p>To gracefully upgrade and ensure no long-lasting block-chain split occurs, more than 50% of miners must support full validation of the new transaction type and must switch from the old validation rules to the new rules at the same time.</p>
-<p>To judge whether or not more than 50% of hashing power supports this BIP, miners are asked to upgrade their software and put the string "/P2SH/" in the input of the coinbase transaction for blocks that they create.</p>
-<p>At 00:00:00 UTC on 15 Mar 2012, the block-chain will be examined to determine the number of blocks supporting pay-to-script-hash for the previous 7 days. If 550 or more contain "/P2SH/" in their coinbase, then all blocks with timestamps after 00:00:00 UTC on 1 Apr 2012 shall have their pay-to-script-hash transactions fully validated. Approximately 1,000 blocks are created in a week; 550 should, therefore, be approximately 55% of the network supporting the new feature.</p>
+<p>To judge whether or not more than 50% of hashing power supports this BIP, miners are asked to upgrade their software and put the string &quot;/P2SH/&quot; in the input of the coinbase transaction for blocks that they create.</p>
+<p>At 00:00:00 UTC on 15 Mar 2012, the block-chain will be examined to determine the number of blocks supporting pay-to-script-hash for the previous 7 days. If 550 or more contain &quot;/P2SH/&quot; in their coinbase, then all blocks with timestamps after 00:00:00 UTC on 1 Apr 2012 shall have their pay-to-script-hash transactions fully validated. Approximately 1,000 blocks are created in a week; 550 should, therefore, be approximately 55% of the network supporting the new feature.</p>
 <p>If a majority of hashing power does not support the new validation rules, then rollout will be postponed (or rejected if it becomes clear that a majority will never be achieved).</p>
 <h2>Forwards Compatibility </h2>
 <p>The first two bytes of hashScriptCheck specify the hash algorithm and length used to verify scriptCheck.
@@ -215,7 +215,7 @@ This BIP only allows Bitcoin's Hash160 algorithm, but leaves open the possibilit
 <h2>See Also</h2>
 <ul>
 <li>The <a href="/13" target="_blank">Address format for Pay to Script Hash BIP</a></li>
-<li><a href="/16" target="_blank">BIP 16 - Pay to Script Hash (aka "/P2SH/")</a></li>
+<li><a href="/16" target="_blank">BIP 16 - Pay to Script Hash (aka &quot;/P2SH/&quot;)</a></li>
 <li>M-of-N Multisignature Transactions <a href="/11" target="_blank">BIP 11</a></li>
 </ul>
 
@@ -228,7 +228,7 @@ This BIP only allows Bitcoin's Hash160 algorithm, but leaves open the possibilit
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

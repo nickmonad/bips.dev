@@ -133,7 +133,7 @@
 <p>This document will not go into the details of how Bloom filters work and the reader is referred to Wikipedia for an introduction to the topic.</p>
 <h2>Motivation</h2>
 <p>As Bitcoin grows in usage the amount of bandwidth needed to download blocks and transaction broadcasts increases. Clients implementing <em>simplified payment verification</em> do not attempt to fully verify the block chain, instead just checking that block headers connect together correctly and trusting that the transactions in a chain of high difficulty are in fact valid. See the Bitcoin paper for more detail on this mode.</p>
-<p>Today, <a href="https://bitcoin.org/en/developer-guide#simplified-payment-verification-spv" target="_blank">SPV</a> clients have to download the entire contents of blocks and all broadcast transactions, only to throw away the vast majority of the transactions that are not relevant to their wallets. This slows down their synchronization process, wastes users bandwidth (which on phones is often metered) and increases memory usage. All three problems are triggering real user complaints for the Android "Bitcoin Wallet" app which implements SPV mode. In order to make chain synchronization fast, cheap and able to run on older phones with limited memory we want to have remote peers throw away irrelevant transactions before sending them across the network.</p>
+<p>Today, <a href="https://bitcoin.org/en/developer-guide#simplified-payment-verification-spv" target="_blank">SPV</a> clients have to download the entire contents of blocks and all broadcast transactions, only to throw away the vast majority of the transactions that are not relevant to their wallets. This slows down their synchronization process, wastes users bandwidth (which on phones is often metered) and increases memory usage. All three problems are triggering real user complaints for the Android &quot;Bitcoin Wallet&quot; app which implements SPV mode. In order to make chain synchronization fast, cheap and able to run on older phones with limited memory we want to have remote peers throw away irrelevant transactions before sending them across the network.</p>
 <h2>Design rationale</h2>
 <p>The most obvious way to implement the stated goal would be for clients to upload lists of their keys to the remote node. We take a more complex approach for the following reasons:</p>
 <ul>
@@ -208,7 +208,7 @@
 <ul>
 <li><code>BLOOM_UPDATE_NONE (0)</code> means the filter is not adjusted when a match is found.</li>
 <li><code>BLOOM_UPDATE_ALL (1)</code> means if the filter matches any data element in a scriptPubKey the outpoint is serialized and inserted into the filter.</li>
-<li><code>BLOOM_UPDATE_P2PUBKEY_ONLY (2)</code> means the outpoint is inserted into the filter only if a data element in the scriptPubKey is matched, and that script is of the standard "pay to pubkey" or "pay to multisig" forms.</li>
+<li><code>BLOOM_UPDATE_P2PUBKEY_ONLY (2)</code> means the outpoint is inserted into the filter only if a data element in the scriptPubKey is matched, and that script is of the standard &quot;pay to pubkey&quot; or &quot;pay to multisig&quot; forms.</li>
 </ul>
 <p>These distinctions are useful to avoid too-rapid degradation of the filter due to an increasing false positive rate. We can observe that a wallet which expects to receive only payments of the standard pay-to-address form doesn't need automatic filter updates because any transaction that spends one of its own outputs has a predictable data element in the input (the pubkey that hashes to the address). If a wallet might receive pay-to-address outputs and also pay-to-pubkey or pay-to-multisig outputs then BLOOM_UPDATE_P2PUBKEY_ONLY is appropriate, as it avoids unnecessary expansions of the filter for the most common types of output but still ensures correct behaviour with payments that explicitly specify keys.</p>
 <p>Obviously, nFlags == 1 or nFlags == 2 mean that the filter will get dirtier as more of the chain is scanned. Clients should monitor the observed false positive rate and periodically refresh the filter with a clean one.</p>
@@ -272,11 +272,11 @@
 <li>In two-child nodes, the hash of the left and right branches was never equal.</li>
 </ul>
 <h3>Bloom filter format</h3>
-<p>A Bloom filter is a bit-field in which bits are set based on feeding the data element to a set of different hash functions. The number of hash functions used is a parameter of the filter. In Bitcoin we use version 3 of the 32-bit Murmur hash function. To get N "different" hash functions we simply initialize the Murmur algorithm with the following formula:</p>
+<p>A Bloom filter is a bit-field in which bits are set based on feeding the data element to a set of different hash functions. The number of hash functions used is a parameter of the filter. In Bitcoin we use version 3 of the 32-bit Murmur hash function. To get N &quot;different&quot; hash functions we simply initialize the Murmur algorithm with the following formula:</p>
 <p><code>nHashNum * 0xFBA4C795 + nTweak</code></p>
 <p>i.e. if the filter is initialized with 4 hash functions and a tweak of 0x00000005, when the second function (index 1) is needed h1 would be equal to 4221880218.</p>
 <p>When loading a filter with the <code>filterload</code> command, there are two parameters that can be chosen. One is the size of the filter in bytes. The other is the number of hash functions to use. To select the parameters you can use the following formulas:</p>
-<p>Let N be the number of elements you wish to insert into the set and P be the probability of a false positive, where 1.0 is "match everything" and zero is unachievable.</p>
+<p>Let N be the number of elements you wish to insert into the set and P be the probability of a false positive, where 1.0 is &quot;match everything&quot; and zero is unachievable.</p>
 <p>The size S of the filter in bytes is given by <code>(-1 / pow(log(2), 2) * N * log(P)) / 8</code>. Of course you must ensure it does not go over the maximum size (36,000: selected as it represents a filter of 20,000 items with false positive rate of &lt; 0.1% or 10,000 items and a false positive rate of &lt; 0.0001%).</p>
 <p>The number of hash functions required is given by <code>S * 8 / N * log(2)</code>.</p>
 <h2>Copyright</h2>
@@ -291,7 +291,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

@@ -140,7 +140,7 @@
 <p>Bitcoin clients MUST NOT act on URIs without getting the user's authorization.
 They SHOULD require the user to manually approve each payment individually, though in some cases they MAY allow the user to automatically make this decision.</p>
 <h3> Operating system integration </h3>
-<p>Graphical bitcoin clients SHOULD register themselves as the handler for the "bitcoin:" URI scheme by default, if no other handler is already registered. If there is already a registered handler, they MAY prompt the user to change it once when they first run the client.</p>
+<p>Graphical bitcoin clients SHOULD register themselves as the handler for the &quot;bitcoin:&quot; URI scheme by default, if no other handler is already registered. If there is already a registered handler, they MAY prompt the user to change it once when they first run the client.</p>
 <h3> General Format </h3>
 <p>Bitcoin URIs follow the general format for URIs as set forth in RFC 3986. The path component consists of a bitcoin address, and the query component provides additional payment options.</p>
 <p>Elements of the query component may contain characters outside the valid range. These must first be encoded according to UTF-8, and then each octet of the corresponding UTF-8 sequence must be percent-encoded as described in RFC 3986.</p>
@@ -156,9 +156,9 @@ They SHOULD require the user to manually approve each payment individually, thou
  otherparam     = qchar *qchar [ &quot;=&quot; *qchar ]
  reqparam       = &quot;req-&quot; qchar *qchar [ &quot;=&quot; *qchar ]
 </code></pre>
-<p>Here, "qchar" corresponds to valid characters of an RFC 3986 URI query component, excluding the "=" and "&amp;" characters, which this BIP takes as separators.</p>
-<p>The scheme component ("bitcoin:") is case-insensitive, and implementations must accept any combination of uppercase and lowercase letters. The query parameter keys are also case-insensitive. Query parameter values and bitcoin address fields may be case-sensitive depending on their content.</p>
-<p>Multiple query parameters with the same key MAY be included for query parameters representing payment instructions. Multiple query parameters with the same key MUST NOT be included for keys "label", "message", or "pop". Multiple query parameters with the same key for other keys MUST be allowed for unknown query parameters. Future query parameter keys may or may not allow for duplicate parameters.</p>
+<p>Here, &quot;qchar&quot; corresponds to valid characters of an RFC 3986 URI query component, excluding the &quot;=&quot; and &quot;&amp;&quot; characters, which this BIP takes as separators.</p>
+<p>The scheme component (&quot;bitcoin:&quot;) is case-insensitive, and implementations must accept any combination of uppercase and lowercase letters. The query parameter keys are also case-insensitive. Query parameter values and bitcoin address fields may be case-sensitive depending on their content.</p>
+<p>Multiple query parameters with the same key MAY be included for query parameters representing payment instructions. Multiple query parameters with the same key MUST NOT be included for keys &quot;label&quot;, &quot;message&quot;, or &quot;pop&quot;. Multiple query parameters with the same key for other keys MUST be allowed for unknown query parameters. Future query parameter keys may or may not allow for duplicate parameters.</p>
 <h3> Bitcoin Address </h3>
 <p>The bitcoinaddress body MUST be either a base58 P2SH or P2PKH address, bech32 Segwit version 0 address, bech32m Segwit address, or empty. Future address formats SHOULD instead be placed in query keys as optional payment instructions to provide backwards compatibility during upgrade cycles. The bitcoinaddress part of the URI MAY be left empty if there is at least one payment instruction provided in a query parameter, allowing for recipients wishing to avoid a standard on-chain fallback.</p>
 <h3> Query Keys </h3>
@@ -181,10 +181,10 @@ They SHOULD require the user to manually approve each payment individually, thou
 All amounts MUST contain no commas and use a period (.) as the separating character to separate whole numbers and decimal fractions.
 I.e. amount=50.00 or amount=50 is treated as 50 BTC, and amount=50,000.00 is invalid.</p>
 <h3> Proof of Payment </h3>
-<p>The URI MAY include a "pop" (or "req-pop") parameter whose value can be used to build a URI which the wallet application can, after payment completes, "open" to provide proof the payment was completed or other information about the payment.</p>
-<p>The value of a "pop" (or "req-pop") parameter shall be a percent-encoded (per RFC 3986 section 2.1) URI prefix. The wallet application, if it supports providing payment information SHOULD percent-decode the provided URI once, append the query parameter key from which the payment instructions used were read, append a single =, and finally append the Payment Information to the resulting URI and open it with the default system handler for the URI. For payment instructions read from the body of the URI, "onchain" SHALL be used in place of the key.</p>
-<p>A wallet MUST validate that the provided URI's scheme is not (case-insensitive) "http", "https", "file", "javascript", "mailto" or any other scheme which will open in a web browser prior to opening it.</p>
-<p>If a wallet will not open the pop scheme (either because it does not support returning payment information for the selected payment method or because it uses a URI scheme which should not be opened) and the parameter was passed as a "req-pop" parameter, the wallet MUST NOT initiate payment.</p>
+<p>The URI MAY include a &quot;pop&quot; (or &quot;req-pop&quot;) parameter whose value can be used to build a URI which the wallet application can, after payment completes, &quot;open&quot; to provide proof the payment was completed or other information about the payment.</p>
+<p>The value of a &quot;pop&quot; (or &quot;req-pop&quot;) parameter shall be a percent-encoded (per RFC 3986 section 2.1) URI prefix. The wallet application, if it supports providing payment information SHOULD percent-decode the provided URI once, append the query parameter key from which the payment instructions used were read, append a single =, and finally append the Payment Information to the resulting URI and open it with the default system handler for the URI. For payment instructions read from the body of the URI, &quot;onchain&quot; SHALL be used in place of the key.</p>
+<p>A wallet MUST validate that the provided URI's scheme is not (case-insensitive) &quot;http&quot;, &quot;https&quot;, &quot;file&quot;, &quot;javascript&quot;, &quot;mailto&quot; or any other scheme which will open in a web browser prior to opening it.</p>
+<p>If a wallet will not open the pop scheme (either because it does not support returning payment information for the selected payment method or because it uses a URI scheme which should not be opened) and the parameter was passed as a &quot;req-pop&quot; parameter, the wallet MUST NOT initiate payment.</p>
 <p>For payments made using an on-chain transaction, the Payment Information shall be the full (including witness data) Bitcoin transaction as it was broadcasted to the Bitcoin network, encoded in hex.</p>
 <p>For payments made using a BOLT 11 invoice (communicated via the <code>lightning</code> parameter), the Payment Information shall be the hex-encoded payment preimage.</p>
 <p>Other payment schemes will define their own Payment Information format. This BIP may be updated from time to time with Payment Information formats for other payment schemes.</p>
@@ -193,7 +193,7 @@ I.e. amount=50.00 or amount=50 is treated as 50 BTC, and amount=50,000.00 is inv
 <p>Best practices are that a unique address should be used for every transaction on-chain.
 Therefore, a URI which contains an on-chain payment address MUST NOT represent an exchange of personal information, but a one-time payment instruction. URIs which represent only reusable non-address-reusing payment instructions (like Lightning BOLT12 offers or Silent Payments) MAY be reused as a wallet sees fit.</p>
 <h3> Proof of Payment </h3>
-<p>On many mobile operating systems (especially, or any operating system more generally), applications may "open" a bitcoin: URI in order to initiate a payment with the user's default wallet application. These payment-initiating applications may wish to learn about the completed payment.</p>
+<p>On many mobile operating systems (especially, or any operating system more generally), applications may &quot;open&quot; a bitcoin: URI in order to initiate a payment with the user's default wallet application. These payment-initiating applications may wish to learn about the completed payment.</p>
 <p>For payments completed on-chain, this is largely addressed by having the payment-initiating application monitor the blockchain for payment completion, however for other payment schemes (e.g. lightning), no such global ledger of transactions exists. In that case, proof of payment must be provided via some other mechanism.</p>
 <p>In order to avoid inadvertently revealing the sender's IP address or other information to the recipient, proof URIs must only be opened when they will simply switch to another locally-installed application (i.e. the application which initiated the payment). When clicking a URI from a website, the website should already have plenty of logic on its backend to process payment completion and a proof-of-payment callback is unnecessary.</p>
 <h2> Reference Implementation </h2>
@@ -204,7 +204,7 @@ Therefore, a URI which contains an on-chain payment address MUST NOT represent a
 <p>As future new address types should be added using query parameters rather than the <code>bitcoinaddress</code> field, URIs seamlessly support various payment instructions while senders only need to support legacy instructions. This allows old senders to pay newer recipients which offer more modern payment instruction formats.</p>
 <h2> Backward compatibility </h2>
 <p>Compared to BIP 21, this document describes standard query parameters containing payment instructions, makes query parameters case-insensitive, allows bech32 and bech32m addresses in the <code>bitcoinaddress</code> field, and allows for URIs with an empty <code>bitcoinaddress</code> field. Use of bech32 and bech32m <code>bitcoinaddress</code> fields were long-since common practice in 2024, and the <code>lightning</code> query parameter storing BOLT 11 payment instructions became common practice in the year or three leading up to 2024. Inclusion of standard query parameters was added to provide guidance on query parameter usage going forward.</p>
-<p>Additionally, this BIP describes the "pop" query parameter, which was unused and will be ignored by BIP 21 implementations.</p>
+<p>Additionally, this BIP describes the &quot;pop&quot; query parameter, which was unused and will be ignored by BIP 21 implementations.</p>
 <p>Any existing BIP 21 implementation should automatically be fully compliant with this BIP, as the changes only describe existing practice or impact future address format inclusion, with the one possible exception of query parameters being made case-insensitive. Note, however, that treating query parameters as case-insensitive is already common practice due to the use of mostly-uppercase URIs in QR codes.</p>
 <h2> Appendix </h2>
 <h3> Examples </h3>
@@ -215,7 +215,7 @@ Therefore, a URI which contains an on-chain payment address MUST NOT represent a
 <p>Address with recipient's name as label:</p>
 <pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr
 </code></pre>
-<p>Request 20.30 BTC to "Luke-Jr":</p>
+<p>Request 20.30 BTC to &quot;Luke-Jr&quot;:</p>
 <pre><code> bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&amp;label=Luke-Jr
 </code></pre>
 <p>Request 50 BTC with message:</p>
@@ -312,7 +312,7 @@ Therefore, a URI which contains an on-chain payment address MUST NOT represent a
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2025-12-18</p>
+                    <p class="font-bold">2025-12-19</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
