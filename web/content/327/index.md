@@ -682,7 +682,7 @@ Algorithm _DeterministicSign(sk, aggothernonce, pk<sub>1..u</sub>, tweak<sub>1..
     *  The secret signing key _sk_: a 32-byte array
     *  The aggregate public nonce _aggothernonce_ (see <a href=" modifications-to-nonce-generation" target="_blank">above</a>): a 66-byte array
     *  The number _u_ of individual public keys with _0 < u < 2^32_
-    *  The individual public keys _pk<sub>1..u</sub>_: _u_ 32-byte arrays
+    *  The individual public keys _pk<sub>1..u</sub>_: _u_ 33-byte arrays
     *  The number _v_ of tweaks with _0 &le; v < 2^32_
     *  The tweaks _tweak<sub>1..v</sub>_: _v_ 32-byte arrays
     *  The tweak methods _is_xonly_t<sub>1..v</sub>_: _v_ booleans
@@ -699,7 +699,7 @@ Algorithm _DeterministicSign(sk, aggothernonce, pk<sub>1..u</sub>, tweak<sub>1..
 *  Let _k<sub>i</sub> = int(hash<sub>MuSig/deterministic/nonce</sub>(sk' || aggothernonce || aggpk || bytes(8, len(m)) || m || bytes(1, i - 1))) mod n_ for _i = 1,2_
 *  Fail if _k<sub>1</sub> = 0_ or _k<sub>2</sub> = 0_
 *  Let _R<sub>⁎,1</sub> = k<sub>1</sub>⋅G, R<sub>⁎,2</sub> = k<sub>2</sub>⋅G_
-*  Let _pubnonce = cbytes(R<sub>⁎,2</sub>) || cbytes(R<sub>⁎,2</sub>)_
+*  Let _pubnonce = cbytes(R<sub>⁎,1</sub>) || cbytes(R<sub>⁎,2</sub>)_
 *  Let _d = int(sk)_
 *  Fail if _d = 0_ or _d &ge; n_
 *  Let _pk = cbytes(d⋅G)_
@@ -898,6 +898,8 @@ An exception to this rule is `MAJOR` version zero (0.y.z) which is for developme
 The `MINOR` version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
 The `PATCH` version is incremented for other changes that are noteworthy (bug fixes, test vectors, important clarifications, etc.).
 
+*  **1.0.3** (2026-01-05):
+    *  Fix minor bugs in the specification of _DeterministicSign_.
 *  **1.0.2** (2024-07-22):
     *  Fix minor bug in the specification of _DeterministicSign_ and add small improvement to a _PartialSigAgg_ test vector.
 *  **1.0.1** (2024-05-14):

@@ -644,7 +644,7 @@ Algorithm _DeterministicSign(sk, aggothernonce, pk<sub>1..u</sub>, tweak<sub>1..
     *  The secret signing key _sk_: a 32-byte array
     *  The aggregate public nonce _aggothernonce_ (see <a href=" modifications-to-nonce-generation" target="_blank">above</a>): a 66-byte array
     *  The number _u_ of individual public keys with _0 < u < 2^32_
-    *  The individual public keys _pk<sub>1..u</sub>_: _u_ 32-byte arrays
+    *  The individual public keys _pk<sub>1..u</sub>_: _u_ 33-byte arrays
     *  The number _v_ of tweaks with _0 &le; v < 2^32_
     *  The tweaks _tweak<sub>1..v</sub>_: _v_ 32-byte arrays
     *  The tweak methods _is_xonly_t<sub>1..v</sub>_: _v_ booleans
@@ -661,7 +661,7 @@ Algorithm _DeterministicSign(sk, aggothernonce, pk<sub>1..u</sub>, tweak<sub>1..
 *  Let _k<sub>i</sub> = int(hash<sub>MuSig/deterministic/nonce</sub>(sk' || aggothernonce || aggpk || bytes(8, len(m)) || m || bytes(1, i - 1))) mod n_ for _i = 1,2_
 *  Fail if _k<sub>1</sub> = 0_ or _k<sub>2</sub> = 0_
 *  Let _R<sub>⁎,1</sub> = k<sub>1</sub>⋅G, R<sub>⁎,2</sub> = k<sub>2</sub>⋅G_
-*  Let _pubnonce = cbytes(R<sub>⁎,2</sub>) || cbytes(R<sub>⁎,2</sub>)_
+*  Let _pubnonce = cbytes(R<sub>⁎,1</sub>) || cbytes(R<sub>⁎,2</sub>)_
 *  Let _d = int(sk)_
 *  Fail if _d = 0_ or _d &ge; n_
 *  Let _pk = cbytes(d⋅G)_
@@ -808,6 +808,11 @@ An exception to this rule is <code>MAJOR</code> version zero (0.y.z) which is fo
 The <code>MINOR</code> version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
 The <code>PATCH</code> version is incremented for other changes that are noteworthy (bug fixes, test vectors, important clarifications, etc.).</p>
 <ul>
+<li><strong>1.0.3</strong> (2026-01-05):
+<ul>
+<li>Fix minor bugs in the specification of <em>DeterministicSign</em>.</li>
+</ul>
+</li>
 <li><strong>1.0.2</strong> (2024-07-22):
 <ul>
 <li>Fix minor bug in the specification of <em>DeterministicSign</em> and add small improvement to a <em>PartialSigAgg</em> test vector.</li>
@@ -891,7 +896,7 @@ The <code>PATCH</code> version is incremented for other changes that are notewor
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-05</p>
+                    <p class="font-bold">2026-01-06</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
