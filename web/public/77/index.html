@@ -119,16 +119,17 @@
             <pre><code>  BIP: 77
   Layer: Applications
   Title: Async Payjoin
-  Author: Dan Gould &lt;d@ngould.dev&gt;
-          Yuval Kogman &lt;nothingmuch@woobling.org&gt;
+  Authors: Dan Gould &lt;d@ngould.dev&gt;
+           Yuval Kogman &lt;nothingmuch@woobling.org&gt;
   Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0077
   Status: Draft
-  Type: Standards Track
-  Created: 2023-08-08
+  Type: Specification
+  Assigned: 2023-08-08
   License: BSD-2-Clause
-  Post-History: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;pull&#x2F;1483
-                https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;7B11AE34-27A7-46ED-95BF-66CA13BA26F3@ngould.dev&#x2F;#t
-                https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;3C0A6E4C-444E-4E75-829C-1A21D8EE40E0@ngould.dev&#x2F;#t
+  Discussion: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;pull&#x2F;1483
+              https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;7B11AE34-27A7-46ED-95BF-66CA13BA26F3@ngould.dev&#x2F;#t
+              https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;3C0A6E4C-444E-4E75-829C-1A21D8EE40E0@ngould.dev&#x2F;#t
+  Version: 0.2.0
   Requires: 21, 78, 173, 174
 </code></pre>
 <h2 id="Copyright">Copyright</h2>
@@ -137,8 +138,8 @@
 <p>Payjoin lets Bitcoin senders and receivers interact to make batched
 transactions.</p>
 <p>This document proposes a second, backwards-compatible, asynchronous version of
-the Payjoin protocol (&quot;Version 2&quot;) relative to and described in <a href="https://bips.dev/77/bip-0078.mediawiki">BIP 78</a> (&quot;Version 1&quot;). An untrusted
-third-party &quot;directory server&quot; replaces the requirement
+the Payjoin protocol ("Version 2") relative to and described in <a href="https://bips.dev/77/bip-0078.mediawiki">BIP 78</a> ("Version 1"). An untrusted
+third-party "directory server" replaces the requirement
 for a receiver to host a secure public endpoint for interactions. HTTP clients
 access the directory server using an asynchronous protocol and authenticated,
 encrypted payloads. The design preserves complete Payjoin receiver
@@ -151,8 +152,8 @@ IP addresses.</p>
 <h2 id="Motivation">Motivation</h2>
 <p>Satoshi Nakamoto pointed out one specific privacy risk in the
 <a rel="noopener" target="_blank" href="https://bitcoin.org/en/bitcoin-paper">whitepaper</a>,
-that transactions with multiple inputs &quot;necessarily reveal that
-their inputs were owned by the same owner.&quot;
+that transactions with multiple inputs "necessarily reveal that
+their inputs were owned by the same owner."
 Payjoin addresses that risk, the <em>common-input-ownership heuristic</em>,
 by making it practical to spend inputs owned by multiple parties
 in one transaction.</p>
@@ -166,7 +167,7 @@ can also secure <a rel="noopener" target="_blank" href="https://bitcointalk.org/
 cut-through</a>,
 allowing a sender to transfer funds to a receiver who also transfers
 funds to a third party in the same transaction. For example, deposits to an
-exchange may &quot;cut through&quot; in a single transaction that also satisfies
+exchange may "cut through" in a single transaction that also satisfies
 withdrawals instead of with a second transaction that spends the deposited
 funds. Payjoin enables more blockspace-efficient transactions that
 reduce fees while addressing privacy risks.</p>
@@ -277,7 +278,7 @@ transaction flows.</p>
 <p>The parameter value must be <a href="https://bips.dev/77/#uppercase-url">uppercased and the parameter should be placed last in the URI</a>.</p>
 <p>Since BIP 78 payloads are neither encrypted nor authenticated,
 a directory used for backwards-compatible payloads is known
-as an <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#unsecured-payjoin-server">&quot;unsecured payjoin server&quot; in BIP 78
+as an <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#unsecured-payjoin-server">"unsecured payjoin server" in BIP 78
 parlance</a>.
 Backwards-compatible receivers MUST disable output substitution
 by setting <code>pjos=0</code> to prevent modification by a malicious directory.</p>
@@ -456,14 +457,14 @@ inner request as BHTTP, and provides another layer of HPKE encryption,
 between the client and directory.</p>
 <p>Once the receiver makes this request, they wait for either transaction from the
 Original PSBT or Proposal PSBT to be broadcast to the Bitcoin network.</p>
-<h4 id="Receiver's_Original_PSBT_checklist">Receiver's Original PSBT checklist</h4>
+<h4 id="Receiver&#39;s_Original_PSBT_checklist">Receiver's Original PSBT checklist</h4>
 <p>The receiver checklist is the same as <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#receivers-original-psbt-checklist">the BIP 78 receiver
 checklist</a>.</p>
 <h3 id="Sender_signing_and_broadcast">Sender signing and broadcast</h3>
 <p>The sender validates the <em>Proposal PSBT</em> it receives against a
 checklist. If the checks pass, it may sign and broadcast the resulting
 Payjoin transaction.</p>
-<h4 id="Sender's_Proposal_PSBT_checklist">Sender's Proposal PSBT checklist</h4>
+<h4 id="Sender&#39;s_Proposal_PSBT_checklist">Sender's Proposal PSBT checklist</h4>
 <p>This proposal's sender checklist is the same as <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki#senders-payjoin-proposal-checklist">the BIP 78 sender
 checklist</a>.</p>
 <h3 id="Client/Directory_interactions">Client/Directory interactions</h3>
@@ -752,7 +753,7 @@ URIs.</li>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

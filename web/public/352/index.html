@@ -119,17 +119,17 @@
             <pre><code>  BIP: 352
   Layer: Applications
   Title: Silent Payments
-  Author: josibake &lt;josibake@protonmail.com&gt;
-          Ruben Somsen &lt;rsomsen@gmail.com&gt;
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0352
-  Status: Proposed
-  Type: Standards Track
-  Created: 2023-03-09
+  Authors: josibake &lt;josibake@protonmail.com&gt;
+           Ruben Somsen &lt;rsomsen@gmail.com&gt;
+  Status: Complete
+  Type: Specification
+  Assigned: 2023-03-09
   License: BSD-2-Clause
-  Post-History: 2022-03-13: https:&#x2F;&#x2F;gist.github.com&#x2F;RubenSomsen&#x2F;c43b79517e7cb701ebf77eec6dbb46b8 [gist] Original proposal
-                2022-03-28: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;CAPv7TjbXm953U2h+-12MfJ24YqOM5Kcq77_xFTjVK+R2nf-nYg@mail.gmail.com&#x2F; [bitcoin-dev] Silent Payments – Non-interactive private payments with no on-chain overhead
-                2022-10-11: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;P_21MLHGJicZ-hkbC4DGu86c5BtNKiH8spY4TOw5FJsfimdi_6VyHzU_y-s1mZsOcC2FA3EW_6w6W5qfV9dRK_7AvTAxDlwVfU-yhWZPEuo=@protonmail.com&#x2F; [bitcoin-dev] Silent Payment v4 (coinjoin support added)
-                2023-08-04: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;ZM03twumu88V2NFH@petertodd.org&#x2F; [bitcoin-dev] BIP-352 Silent Payments addresses should have an expiration time
+  Discussion: 2022-03-13: https:&#x2F;&#x2F;gist.github.com&#x2F;RubenSomsen&#x2F;c43b79517e7cb701ebf77eec6dbb46b8 [gist] Original proposal
+              2022-03-28: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;CAPv7TjbXm953U2h+-12MfJ24YqOM5Kcq77_xFTjVK+R2nf-nYg@mail.gmail.com&#x2F; [bitcoin-dev] Silent Payments – Non-interactive private payments with no on-chain overhead
+              2022-10-11: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;P_21MLHGJicZ-hkbC4DGu86c5BtNKiH8spY4TOw5FJsfimdi_6VyHzU_y-s1mZsOcC2FA3EW_6w6W5qfV9dRK_7AvTAxDlwVfU-yhWZPEuo=@protonmail.com&#x2F; [bitcoin-dev] Silent Payment v4 (coinjoin support added)
+              2023-08-04: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;ZM03twumu88V2NFH@petertodd.org&#x2F; [bitcoin-dev] BIP-352 Silent Payments addresses should have an expiration time
+  Version: 1.0.2
 </code></pre>
 <h2> Introduction </h2>
 <h3> Abstract </h3>
@@ -193,7 +193,7 @@
 </ul>
 <p>Bob must calculate the same <em>input_hash</em> when scanning.</p>
 <p>** Using all inputs **</p>
-<p>In our simplified example we have been referring to Alice's transactions as having only one input <em>A</em>, but in reality a Bitcoin transaction can have many inputs. Instead of requiring Alice to pick a particular input and requiring Bob to check each input separately, we can instead require Alice to perform the tweak with the sum of the input public keys<ref name="other_inputs"><strong>What about inputs without public keys?</strong> Inputs without public keys can still be spent in the transaction but are simply ignored in the silent payments protocol.</ref>. This significantly reduces Bob's scanning requirement, makes light client support more feasible<ref name="using_all_inputs"><strong>How does using all inputs help light clients?</strong> If Alice uses a random input for the tweak, Bob necessarily has to have access to and check all transaction inputs, which requires performing an ECC multiplication per input. If instead Alice performs the tweak with the sum of the input public keys, Bob only needs the summed 33 byte public key per transaction and only does one ECC multiplication per transaction. Bob can then use BIP158 block filters to determine if any of the outputs exist in a block and thus avoids downloading transactions which don't belong to him. It is still an open question as to how Bob can source the 33 bytes per transaction in a trustless manner, see <a href="#appendix-a-light-client-support" target="_blank">Appendix A: Light Client Support</a> for more details.</ref>, and protects Alice's privacy in collaborative transaction protocols such as CoinJoin&lt;ref name=&quot;&quot;all_inputs_and_coinjoin&quot;&gt;<strong>Why does using all inputs matter for CoinJoin?</strong> If Alice uses a random input to create the output for Bob, this necessarily reveals to Bob which input Alice has control of. If Alice is paying Bob as part of a CoinJoin, this would reveal which input belongs to her, degrading the anonymity set of the CoinJoin and giving Bob more information about Alice. If instead all inputs are used, Bob has no way of knowing which input(s) belong to Alice. This comes at the cost of increased complexity as the CoinJoin participants now need to coordinate to create the silent payment output and would need to use <a href="https://gist.github.com/RubenSomsen/be7a4760dd4596d06963d67baf140406" target="_blank">Blind Diffie–Hellman</a> to prevent the other participants from learning who Alice is paying. Note it is currently not recommended to use this protocol for CoinJoins due to a lack of a formal security proof.</ref>.</p>
+<p>In our simplified example we have been referring to Alice's transactions as having only one input <em>A</em>, but in reality a Bitcoin transaction can have many inputs. Instead of requiring Alice to pick a particular input and requiring Bob to check each input separately, we can instead require Alice to perform the tweak with the sum of the input public keys<ref name="other_inputs"><strong>What about inputs without public keys?</strong> Inputs without public keys can still be spent in the transaction but are simply ignored in the silent payments protocol.</ref>. This significantly reduces Bob's scanning requirement, makes light client support more feasible<ref name="using_all_inputs"><strong>How does using all inputs help light clients?</strong> If Alice uses a random input for the tweak, Bob necessarily has to have access to and check all transaction inputs, which requires performing an ECC multiplication per input. If instead Alice performs the tweak with the sum of the input public keys, Bob only needs the summed 33 byte public key per transaction and only does one ECC multiplication per transaction. Bob can then use BIP158 block filters to determine if any of the outputs exist in a block and thus avoids downloading transactions which don't belong to him. It is still an open question as to how Bob can source the 33 bytes per transaction in a trustless manner, see <a href="#appendix-a-light-client-support" target="_blank">Appendix A: Light Client Support</a> for more details.</ref>, and protects Alice's privacy in collaborative transaction protocols such as CoinJoin&lt;ref name=""all_inputs_and_coinjoin"&gt;<strong>Why does using all inputs matter for CoinJoin?</strong> If Alice uses a random input to create the output for Bob, this necessarily reveals to Bob which input Alice has control of. If Alice is paying Bob as part of a CoinJoin, this would reveal which input belongs to her, degrading the anonymity set of the CoinJoin and giving Bob more information about Alice. If instead all inputs are used, Bob has no way of knowing which input(s) belong to Alice. This comes at the cost of increased complexity as the CoinJoin participants now need to coordinate to create the silent payment output and would need to use <a href="https://gist.github.com/RubenSomsen/be7a4760dd4596d06963d67baf140406" target="_blank">Blind Diffie–Hellman</a> to prevent the other participants from learning who Alice is paying. Note it is currently not recommended to use this protocol for CoinJoins due to a lack of a formal security proof.</ref>.</p>
 <p>Alice performs the tweak with the sum of her input private keys in the following manner:</p>
 <ul>
 <li>Let <em>a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub></em></li>
@@ -271,10 +271,10 @@
 </li>
 <li>The final address is a <a href="/350" target="_blank">Bech32m</a> encoding of:
 <ul>
-<li>The human-readable part &quot;sp&quot; for mainnet, &quot;tsp&quot; for testnets (e.g.  signet, testnet)</li>
+<li>The human-readable part "sp" for mainnet, "tsp" for testnets (e.g.  signet, testnet)</li>
 <li>The data-part values:
 <ul>
-<li>The character &quot;q&quot;, to represent a silent payment address of version 0</li>
+<li>The character "q", to represent a silent payment address of version 0</li>
 <li>The 66-byte concatenation of the receiver's public keys, <em>ser<sub>P</sub>(B<sub>scan</sub>) || ser<sub>P</sub>(B<sub>m</sub>)</em></li>
 </ul>
 </li>
@@ -535,7 +535,7 @@
 </li>
 </ul>
 <p>Wallet designers can choose which tradeoffs they find appropriate. For example, a wallet could check the block filter to at least probabilistically confirm the likely existence of the UTXO, thus efficiently cutting down on spam. The payment could then be marked as unconfirmed until a scan is performed and the existence of the UTXO in accordance to the silent payment specification is verified.</p>
-<h2> Change Log </h2>
+<h2> Changelog </h2>
 <p>To help implementers understand updates to this document, we attach a version number that resembles <em>semantic versioning</em> (<code>MAJOR.MINOR.PATCH</code>).
 The <code>MAJOR</code> version is incremented if changes to the BIP are introduced that are incompatible with prior versions.
 The <code>MINOR</code> version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
@@ -570,7 +570,7 @@ The <code>PATCH</code> version is incremented for other changes that are notewor
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

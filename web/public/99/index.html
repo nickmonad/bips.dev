@@ -118,14 +118,12 @@
         <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 99
   Title: Motivation and deployment of consensus rule changes ([soft&#x2F;hard]forks)
-  Author: Jorge Timón &lt;jtimon@jtimon.cc&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0099
-  Status: Rejected
+  Authors: Jorge Timón &lt;jtimon@jtimon.cc&gt;
+  Status: Closed
   Type: Informational
-  Created: 2015-06-20
+  Assigned: 2015-06-20
   License: PD
-  Post-History: http:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2015-June&#x2F;008936.html
+  Discussion: http:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2015-June&#x2F;008936.html
 </code></pre>
 <h2>Abstract</h2>
 <p>This BIP attempts to create a taxonomy of the different types of
@@ -165,8 +163,8 @@ those users losing coins or being defrauded, making reimplementations
 of the consensus validation rules very risky. Note that a natural
 language specification of those rules doesn't help since the
 consensus is not determined by such specification but by the software
-that the majority of the network runs. That's why &quot;the implementation
-is the specification&quot;.</p>
+that the majority of the network runs. That's why "the implementation
+is the specification".</p>
 <p>But Bitcoin Core contains many more things than just consensus
 validation and it would be unreasonable for all alternative
 implementations to depend on it. Bitcoin Core should not be the
@@ -201,14 +199,14 @@ rapidly by the whole worldwide community and nobody is unhappy about
 the solution.</p>
 <p>But there's some philosophical disagreements on the terms of what the
 solution was: we can add a pedantic note on that.
-If &quot;the implementation is the specification&quot;, then those
+If "the implementation is the specification", then those
 levelDB-specific limitations were part of the consensus rules.
 Then additional rules were necessary and any alternative
 implementation (including 0.8) would have to implement it. Then a
 planned consensus fork to migrate all Bitcoin-qt 0.7- users could
 remove those additional consensus restrictions.
 Had libconsensus being implemented without depending on levelDB,
-those additional restrictions wouldn't have been part of &quot;the specification&quot;
+those additional restrictions wouldn't have been part of "the specification"
 and this would just have been a bug in the
 consensus rules, just a consensus-critical bug in a set of
 implementations, concretely all satoshi-bitcoin-0.7-or-less (which
@@ -222,7 +220,7 @@ another consensus fork to remove them. Two theoretical consensus forks
 instead of one but the first one deployed practically for free. The
 practical result would have been identical and only the definitions
 change. This means discussing something that went uncontroversially
-well further is &quot;philosophical bike-shed&quot; (TM).</p>
+well further is "philosophical bike-shed" (TM).</p>
 <h3>Unilateral softforks</h3>
 <p>If it is in their best interest of miners to softfork it should be
 assumed that they may likely enforce it. In some cases, even against the will of a
@@ -254,7 +252,7 @@ capitalization are completely unpredictable,</p>
 <p>maybe mc(bitcoinA) + mc(bitcoinB) = 0,</p>
 <p>...</p>
 <p>Schism hardforks have been compared to one type of altcoins called
-&quot;spinoffs&quot;<ref name="spinoffs">https://bitcointalk.org/index.php?topic=563972.0</ref> that distribute all or part of its initial seigniorage to
+"spinoffs"<ref name="spinoffs">https://bitcointalk.org/index.php?topic=563972.0</ref> that distribute all or part of its initial seigniorage to
 bitcoin owners at a given block height.</p>
 <p>This is very disruptive and hopefully will never be needed. But if
 it's needed the best deployment path is just to activate the rule
@@ -270,13 +268,13 @@ mine itself. For that or another reason, a single entity controls
 40%+ of the hashrate and there's no hope for an spontaneous
 improvement in decentralization. Such an untenable centralization could
 be fixed (with great risks) by switching the hash function used in the
-proof of work, effectively &quot;pressing the restart button&quot; on the ASIC
+proof of work, effectively "pressing the restart button" on the ASIC
 market. The next function should be simple to implement in ASIC as
 well so that the market can more easily develop as a healthy and
-competitive one (as opposed to what the &quot;ASIC-hard&quot; proponents would
+competitive one (as opposed to what the "ASIC-hard" proponents would
 want), but that's another story...]</p>
 <p>Since in this case the confrontation is clearly against the current
-miners any notion of &quot;miners' voting&quot; is utterly irrelevant.</p>
+miners any notion of "miners' voting" is utterly irrelevant.</p>
 <h4>Anti-Block-creator hardfork</h4>
 <p>There's less extreme cases where changing the pow function would not
 be necessary. For example, let's imagine a bright future where
@@ -299,20 +297,20 @@ that nobody noticed and allows an evil developer cabal to steal
 everyone's coins. The users and non-evil developers could join, fork
 libconsensus and use the forked version in their respective bitcoin
 implementations.
-Should miner's &quot;vote&quot; be required to express their consent? What if some miners
+Should miner's "vote" be required to express their consent? What if some miners
 are part of the cabal? In the unlikely event that most miners are
 part of such an evil cabal, changing the pow function may be
-required. In other cases, mining &quot;vote&quot; doesn't have much value
+required. In other cases, mining "vote" doesn't have much value
 either since this kind of hardfork would not qualify as
 uncontroversial anyway.</p>
 <h3>Uncontroversial consensus upgrades</h3>
-<p>&quot;Uncontroversial&quot; is something tough to define in this context. What
+<p>"Uncontroversial" is something tough to define in this context. What
 if a single user decides he won't upgrade no matter what and
 he doesn't even attempt to explain his decision? Obviously, such
 a user should be just ignored. But what if the circumstances are
 slightly different? What if they're 2, 10 users? where's the line.
-It is possible that we can never have a better definition than &quot;I know
-it when I see it&quot; <a href="citation" target="_blank">needed</a>.</p>
+It is possible that we can never have a better definition than "I know
+it when I see it" <a href="citation" target="_blank">needed</a>.</p>
 <h4>Uncontroversial softforks</h4>
 <p>If a majority of miners adopts a softfork, users will follow that
 chain, even without understanding the new rules. For them is like
@@ -327,8 +325,8 @@ clear disadvantage and  BIP17 was considered a less tested but
 functionally equivalent version by most of the reviewers. Although it
 was later discovered that BIP16 had unnecessary limitations and BIP17
 is now considered superior, this probably still qualified for our
-vague concept of &quot;uncontroversial&quot;.</p>
-<p>At the time, there was no &quot;mining voting&quot; implementation and it was
+vague concept of "uncontroversial".</p>
+<p>At the time, there was no "mining voting" implementation and it was
 simply deployed using the timestamp of the blocks at some time in the
 future as the activation trigger. This can't guarantee the assumption
 that most miners have upgraded before enforcing the new rules and
@@ -384,7 +382,7 @@ enough that is trivial to apply to diverse implementations (that
 currently can only use libbitcoinconsensus to validate script-related
 rules). The change has been already widely tested in many altcoins.</p>
 <p>The chosen consensus change is the fix of the timewarp attack
-discovered and also fixed with a simple patch&lt;ref name&quot;original-references&quot;&gt;
+discovered and also fixed with a simple patch&lt;ref name"original-references"&gt;
 Original References:
 https://bitcointalk.org/index.php?topic=114751.0,
 https://bitcointalk.org/index.php?topic=43692.msg521772#msg521772;
@@ -397,8 +395,8 @@ meaningful change to bitcoin and thus can be considered somewhat
 tested (in fact, most SHA256d altcoins that didn't implement it have
 died or being forced to implement it as an emergency hardfork). When
 deploying this change has been discussed, usually arguments in the
-lines of &quot;if we get to the point when this matters to bitcoin, we
-would be already in serious trouble&quot; were used against it. This
+lines of "if we get to the point when this matters to bitcoin, we
+would be already in serious trouble" were used against it. This
 shouldn't be seen as a disadvantage in this context, since it means we
 can safely activate the fix very far away in the future (say, 4 years
 worth of blocks).</p>
@@ -418,7 +416,7 @@ Btcdrak, Gavin Andresen, Gregory Sanders, Luke Dashjr, Marco Falke.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

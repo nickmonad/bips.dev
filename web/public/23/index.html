@@ -119,12 +119,10 @@
             <pre><code>  BIP: 23
   Layer: API&#x2F;RPC
   Title: getblocktemplate - Pooled Mining
-  Author: Luke Dashjr &lt;luke+bip22@dashjr.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0023
-  Status: Final
-  Type: Standards Track
-  Created: 2012-02-28
+  Authors: Luke Dashjr &lt;luke+bip22@dashjr.org&gt;
+  Status: Deployed
+  Type: Specification
+  Assigned: 2012-02-28
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
@@ -141,13 +139,13 @@
 <li><a href="/22" target="_blank">BIP 22 (non-optional sections)</a></li>
 <li><a href="/22" target="_blank">BIP 22 Long Polling</a></li>
 <li><a href=" Basic Pool Extensions" target="_blank">BIP 23 Basic Pool Extensions</a></li>
-<li><a href=" Mutations" target="_blank">BIP 23 Mutation &quot;coinbase/append&quot;</a></li>
-<li><a href=" Submission Abbreviation" target="_blank">BIP 23 Submission Abbreviation &quot;submit/coinbase&quot;</a></li>
-<li><a href=" Mutations" target="_blank">BIP 23 Mutation &quot;time/increment&quot;</a> (only required for servers)</li>
+<li><a href=" Mutations" target="_blank">BIP 23 Mutation "coinbase/append"</a></li>
+<li><a href=" Submission Abbreviation" target="_blank">BIP 23 Submission Abbreviation "submit/coinbase"</a></li>
+<li><a href=" Mutations" target="_blank">BIP 23 Mutation "time/increment"</a> (only required for servers)</li>
 </ul>
 <p>It can be said to have BIP 23 Level 2 support if it also implements:</p>
 <ul>
-<li><a href=" Mutations" target="_blank">BIP 23 Mutation &quot;transactions/add&quot;</a></li>
+<li><a href=" Mutations" target="_blank">BIP 23 Mutation "transactions/add"</a></li>
 <li><a href=" Block Proposals" target="_blank">BIP 23 Block Proposals</a></li>
 </ul>
 <h3>Basic Pool Extensions</h3>
@@ -161,14 +159,14 @@
 <h3>Block Proposal</h3>
 <p>Servers may indicate support for proposing blocks by including a capability string in their original template:</p>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td>capabilities</td><td>Array of Strings</td><td>MAY contain &quot;proposal&quot; to indicate support for block proposal</td></tr>
+<tr><td>capabilities</td><td>Array of Strings</td><td>MAY contain "proposal" to indicate support for block proposal</td></tr>
 <tr><td>reject-reason</td><td>String</td><td>Reason the proposal was invalid as-is (only applicable in response to proposals)</td></tr>
 </tbody></table>
 <p>If supported, a miner MAY propose a block to the server for general validation at any point before the job expires.
 This is accomplished by calling getblocktemplate with two keys:</p>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>data</td><td>String</td><td>MUST be hex-encoded block data</td></tr>
-<tr><td>mode</td><td>String</td><td>MUST be &quot;proposal&quot;</td></tr>
+<tr><td>mode</td><td>String</td><td>MUST be "proposal"</td></tr>
 <tr><td>workid</td><td>String</td><td>if the server provided a workid, it MUST be included with proposals</td></tr>
 </tbody></table>
 <p>The block data MUST be validated and checked against the server's usual acceptance rules (excluding the check for a valid proof-of-work).
@@ -176,7 +174,7 @@ If it is found to be in violation of any of these rules, the server MUST return 
 <ul>
 <li>Null if it is acceptable as-is, with the same workid (if any) as provided. Note that this SHOULD NOT invalidate the old template's claim to the same workid.</li>
 <li>A String giving the reason for the rejection (see <a href="/22" target="_blank">example rejection reasons</a>).</li>
-<li>A &quot;delta&quot; block template (with changes needed); in this case, any missing keys are assumed to default to those in the proposed block or, if not applicable, the original block template it was based on. This template MAY also include a &quot;reject-reason&quot; key with a String of the reason for rejection.</li>
+<li>A "delta" block template (with changes needed); in this case, any missing keys are assumed to default to those in the proposed block or, if not applicable, the original block template it was based on. This template MAY also include a "reject-reason" key with a String of the reason for rejection.</li>
 </ul>
 <p>It is RECOMMENDED that servers which merely need to track the proposed block for later share/* submissions, return a simple Object of the form:</p>
 <pre><code> {&quot;workid&quot;:&quot;new workid&quot;}
@@ -189,49 +187,49 @@ Servers SHOULD NOT break this assumption without good cause.</p>
 </tbody></table>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>maxtime</td><td>Number</td><td>the maximum time allowed</td></tr>
-<tr><td>maxtimeoff</td><td>Number</td><td>the maximum time allowed (as a moving offset from &quot;curtime&quot; - every second, the actual maxtime is incremented by 1; for example, &quot;maxtimeoff&quot;:0 means &quot;time&quot; may be incremented by 1 every second)</td></tr>
+<tr><td>maxtimeoff</td><td>Number</td><td>the maximum time allowed (as a moving offset from "curtime" - every second, the actual maxtime is incremented by 1; for example, "maxtimeoff":0 means "time" may be incremented by 1 every second)</td></tr>
 <tr><td>mintime</td><td>Number</td><td>the minimum time allowed</td></tr>
-<tr><td>mintimeoff</td><td>Number</td><td>the minimum time allowed (as a moving offset from &quot;curtime&quot;)</td></tr>
+<tr><td>mintimeoff</td><td>Number</td><td>the minimum time allowed (as a moving offset from "curtime")</td></tr>
 <tr><td>mutable</td><td>Array of Strings</td><td>different manipulations that the server explicitly allows to be made</td></tr>
 <tr><td>noncerange</td><td>String</td><td>two 32-bit integers, concatenated in big-endian hexadecimal, which represent the valid ranges of nonces the miner may scan</td></tr>
 </tbody></table>
-<p>If the block template contains a &quot;mutable&quot; key, it is a list of these to signify modifications the miner is allowed to make:</p>
+<p>If the block template contains a "mutable" key, it is a list of these to signify modifications the miner is allowed to make:</p>
 <table><thead><tr><th>Value</th><th>Significance</th></tr></thead><tbody>
 <tr><td>coinbase/append</td><td>append the provided coinbase scriptSig</td></tr>
-<tr><td>coinbase</td><td>provide their own coinbase; if one is provided, it may be replaced or modified (implied if &quot;coinbasetxn&quot; omitted)</td></tr>
-<tr><td>generation</td><td>add or remove outputs from the coinbase/generation transaction (implied if &quot;coinbasetxn&quot; omitted)</td></tr>
-<tr><td>time/increment</td><td>change the time header to a value after &quot;time&quot; (implied if &quot;maxtime&quot; or &quot;maxtimeoff&quot; are provided)</td></tr>
-<tr><td>time/decrement</td><td>change the time header to a value before &quot;time&quot; (implied if &quot;mintime&quot; is provided)</td></tr>
+<tr><td>coinbase</td><td>provide their own coinbase; if one is provided, it may be replaced or modified (implied if "coinbasetxn" omitted)</td></tr>
+<tr><td>generation</td><td>add or remove outputs from the coinbase/generation transaction (implied if "coinbasetxn" omitted)</td></tr>
+<tr><td>time/increment</td><td>change the time header to a value after "time" (implied if "maxtime" or "maxtimeoff" are provided)</td></tr>
+<tr><td>time/decrement</td><td>change the time header to a value before "time" (implied if "mintime" is provided)</td></tr>
 <tr><td>time</td><td>modify the time header of the block</td></tr>
-<tr><td>transactions/add (or &quot;transactions&quot;)</td><td>add other valid transactions to the block (implied if &quot;transactions&quot; omitted from result)</td></tr>
-<tr><td>prevblock</td><td>use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting &quot;height&quot; as necessary</td></tr>
+<tr><td>transactions/add (or "transactions")</td><td>add other valid transactions to the block (implied if "transactions" omitted from result)</td></tr>
+<tr><td>prevblock</td><td>use the work with other previous-blocks; this implicitly allows removing transactions that are no longer valid (but clients SHOULD attempt to propose removal of any required transactions); it also implies adjusting "height" as necessary</td></tr>
 <tr><td>version/force</td><td>encode the provide block version, even if the miner doesn't understand it</td></tr>
 <tr><td>version/reduce</td><td>use an older block version than the one provided (for example, if the client does not support the version provided)</td></tr>
 </tbody></table>
 <h3>Submission Abbreviation</h3>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td>fulltarget</td><td>String</td><td>the number which full results should be less than, in big-endian hexadecimal (see &quot;share/*&quot; mutations)</td></tr>
+<tr><td>fulltarget</td><td>String</td><td>the number which full results should be less than, in big-endian hexadecimal (see "share/*" mutations)</td></tr>
 <tr><td>mutable</td><td>Array of Strings</td><td>different manipulations that the server explicitly allows to be made, including abbreviations</td></tr>
 </tbody></table>
-<p>If the block template contains a &quot;mutable&quot; key, it is a list of these to signify modifications the miner is allowed to make:</p>
+<p>If the block template contains a "mutable" key, it is a list of these to signify modifications the miner is allowed to make:</p>
 <table><thead><tr><th>Value</th><th>Significance</th></tr></thead><tbody>
-<tr><td>submit/hash</td><td>each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a &quot;:&quot; character</td></tr>
-<tr><td>submit/coinbase</td><td>if the &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)</td></tr>
-<tr><td>submit/truncate</td><td>if the &quot;coinbasetxn&quot; and &quot;transactions&quot; provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of &quot;coinbasetxn&quot; is modified, the params Object MUST contain a &quot;coinbasesig&quot; key with the content, or a &quot;coinbaseadd&quot; with appended data (if only appending)</td></tr>
-<tr><td>share/coinbase</td><td>same as &quot;submit/coinbase&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td></tr>
-<tr><td>share/merkle</td><td>if the block hash is greater than &quot;fulltarget&quot;, the non-coinbase transactions may be replaced with a merkle chain connecting it to the root</td></tr>
-<tr><td>share/truncate</td><td>same as &quot;submit/truncate&quot;, but only if the block hash is greater than &quot;fulltarget&quot;</td></tr>
+<tr><td>submit/hash</td><td>each transaction being sent in a request, that the client is certain the server knows about, may be replaced by its hash in little-endian hexadecimal, prepended by a ":" character</td></tr>
+<tr><td>submit/coinbase</td><td>if the "transactions" provided by the server are used as-is with no changes, submissions may omit transactions after the coinbase (transaction count varint remains included with the full number of transactions)</td></tr>
+<tr><td>submit/truncate</td><td>if the "coinbasetxn" and "transactions" provided by the server are used as-is with no changes, submissions may contain only the block header; if only the scriptSig of "coinbasetxn" is modified, the params Object MUST contain a "coinbasesig" key with the content, or a "coinbaseadd" with appended data (if only appending)</td></tr>
+<tr><td>share/coinbase</td><td>same as "submit/coinbase", but only if the block hash is greater than "fulltarget"</td></tr>
+<tr><td>share/merkle</td><td>if the block hash is greater than "fulltarget", the non-coinbase transactions may be replaced with a merkle chain connecting it to the root</td></tr>
+<tr><td>share/truncate</td><td>same as "submit/truncate", but only if the block hash is greater than "fulltarget"</td></tr>
 </tbody></table>
 <h4> Format of Data for Merkle-Only Shares </h4>
-<p>The format used for submitting shares with the &quot;share/merkle&quot; mutation shall be the 80-byte block header, the total number of transactions encoded in Bitcoin variable length number format, the coinbase transaction, and then finally the little-endian SHA256 hashes of each link in the merkle chain connecting it to the merkle root.</p>
+<p>The format used for submitting shares with the "share/merkle" mutation shall be the 80-byte block header, the total number of transactions encoded in Bitcoin variable length number format, the coinbase transaction, and then finally the little-endian SHA256 hashes of each link in the merkle chain connecting it to the merkle root.</p>
 <h3>Logical Services</h3>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td>capabilities</td><td>Array of Strings</td><td>miners which support this SHOULD provide a list including the String &quot;serverlist&quot;</td></tr>
+<tr><td>capabilities</td><td>Array of Strings</td><td>miners which support this SHOULD provide a list including the String "serverlist"</td></tr>
 </tbody></table>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>serverlist</td><td>Array of Objects</td><td>list of servers in this single logical service</td></tr>
 </tbody></table>
-<p>If the &quot;serverlist&quot; parameter is provided, clients MAY choose to intelligently treat the server as part of a larger single logical service.</p>
+<p>If the "serverlist" parameter is provided, clients MAY choose to intelligently treat the server as part of a larger single logical service.</p>
 <p>Each host Object in the Array is comprised of the following fields:</p>
 <table><thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>uri</td><td>String</td><td>URI of the individual server; if authentication information is omitted, the same authentication used for this request MUST be assumed</td></tr>
@@ -241,16 +239,16 @@ Servers SHOULD NOT break this assumption without good cause.</p>
 <tr><td>update</td><td>Boolean</td><td>whether this server may update the serverlist (default: true)</td></tr>
 <tr><td>weight</td><td>Number</td><td>a relative weight for hosts with the same priority (default: 1)</td></tr>
 </tbody></table>
-<p>When choosing which actual server to get the next job from, URIs MUST be tried in order of their &quot;priority&quot; key, lowest Number first.
-Where the priority of URIs is the same, they should be chosen from in random order, weighed by their &quot;weight&quot; key.
+<p>When choosing which actual server to get the next job from, URIs MUST be tried in order of their "priority" key, lowest Number first.
+Where the priority of URIs is the same, they should be chosen from in random order, weighed by their "weight" key.
 Work proposals and submissions MUST be made to the same server that issued the job.
 Clients MAY attempt to submit to other servers if, and only if, the original server cannot be reached.
 If cross-server share submissions are desired, services SHOULD instead use the equivalent domain name system (DNS) features (RFCs <a href="http://tools.ietf.org/html/rfc1794" target="_blank">1794</a> and <a href="http://tools.ietf.org/html/rfc2782" target="_blank">2782</a>).</p>
-<p>Updates to the Logical Service server list may only be made by the original server, or servers listed with the &quot;update&quot; key missing or true.
-Clients MAY choose to advertise serverlist capability to servers with a false &quot;update&quot; key, but if so, MUST treat the server list provided as a subset of the current one, only considered in the context of this server.
-At least one server with &quot;update&quot; privilege MUST be attempted at least once daily.</p>
-<p>If the &quot;sticky&quot; key is provided, then when that server is used, it should be used consistently for at least that many seconds, if possible.</p>
-<p>A permanent change in server URI MAY be indicated with a simple &quot;serverlist&quot; parameter:</p>
+<p>Updates to the Logical Service server list may only be made by the original server, or servers listed with the "update" key missing or true.
+Clients MAY choose to advertise serverlist capability to servers with a false "update" key, but if so, MUST treat the server list provided as a subset of the current one, only considered in the context of this server.
+At least one server with "update" privilege MUST be attempted at least once daily.</p>
+<p>If the "sticky" key is provided, then when that server is used, it should be used consistently for at least that many seconds, if possible.</p>
+<p>A permanent change in server URI MAY be indicated with a simple "serverlist" parameter:</p>
 <pre><code> &quot;serverlist&quot;:[{&quot;uri&quot;: &quot;http:&#x2F;&#x2F;newserver&quot;}]
 </code></pre>
 <p>A temporary delegation to another server for 5 minutes MAY be indicated likewise:</p>
@@ -266,26 +264,26 @@ By exposing the details of the block proposals to the miners, they are enabled t
 <li>This is necessary to provide a complete superset of JSON-RPC getwork functionality, so that pools may opt to enable auditing without significantly changing or increasing the complexity of their share validation or mining policies.</li>
 <li>Since noncerange is optional (both for getwork and this BIP), neither clients nor servers are required to support it.</li>
 </ul>
-<p>Why specify &quot;time/*&quot; mutations at all?</p>
+<p>Why specify "time/*" mutations at all?</p>
 <ul>
 <li>In most cases, these are implied by the mintime/mintimecur/maxtime/maxtimecur keys, but there may be cases that there are no applicable minimums/maximums.</li>
 </ul>
-<p>What is the purpose of the &quot;prevblock&quot; mutation?</p>
+<p>What is the purpose of the "prevblock" mutation?</p>
 <ul>
-<li>There are often cases where a miner has processed a new block before the server. If the server allows &quot;prevblock&quot; mutation, the miner may begin mining on the new block immediately, without waiting for a new template.</li>
+<li>There are often cases where a miner has processed a new block before the server. If the server allows "prevblock" mutation, the miner may begin mining on the new block immediately, without waiting for a new template.</li>
 </ul>
-<p>Why must both &quot;mintime&quot;/&quot;maxtime&quot; and &quot;mintimeoff&quot;/&quot;maxtimeoff&quot; keys be defined?</p>
+<p>Why must both "mintime"/"maxtime" and "mintimeoff"/"maxtimeoff" keys be defined?</p>
 <ul>
 <li>In some cases, the limits may be unrelated to the current time (such as the Bitcoin network itself; the minimum is always a fixed median time)</li>
 <li>In other cases, the limits may be bounded by other rules (many pools limit the time header to within 5 minutes of when the share is submitted to them).</li>
 </ul>
-<p>Is &quot;target&quot; really needed?</p>
+<p>Is "target" really needed?</p>
 <ul>
 <li>Some pools work with lower targets, and should not be expected to waste bandwidth ignoring shares that don't meet it.</li>
 <li>Required to be a proper superset of getwork.</li>
 <li>As mining hashrates grow, some miners may need the ability to request a lower target from their pools to be able to manage their bandwidth use.</li>
 </ul>
-<p>What is the purpose of the &quot;hash&quot; transaction list format?</p>
+<p>What is the purpose of the "hash" transaction list format?</p>
 <ul>
 <li>Non-mining tools may wish to simply get a list of memory pool transactions.</li>
 <li>Humans may wish to view their current memory pool.</li>
@@ -310,7 +308,7 @@ By exposing the details of the block proposals to the miners, they are enabled t
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

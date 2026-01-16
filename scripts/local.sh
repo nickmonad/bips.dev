@@ -1,4 +1,6 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+
+set -e
 
 ./scripts/bips.sh
 ./scripts/tailwind.sh

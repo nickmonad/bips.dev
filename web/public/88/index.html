@@ -119,12 +119,10 @@
             <pre><code>  BIP: 88
   Layer: Applications
   Title: Hierarchical Deterministic Path Templates
-  Author: Dmitry Petukhov &lt;dp@simplexum.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0088
-  Status: Proposed
+  Authors: Dmitry Petukhov &lt;dp@simplexum.com&gt;
+  Status: Complete
   Type: Informational
-  Created: 2020-06-23
+  Assigned: 2020-06-23
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
@@ -162,7 +160,7 @@ succinctly and unambiguously.</p>
 <p>Wallet software authors can use the proposed format to describe the derivation paths that
 their software uses. This can improve user experience when switching to different wallet
 software, restoring access to old wallets, etc.</p>
-<p>Unrestricted derivation path usage might be unsafe in certain contexts. In particular, when &quot;change&quot;
+<p>Unrestricted derivation path usage might be unsafe in certain contexts. In particular, when "change"
 outputs of a transaction are sent to the addresses derived via paths unknown to the sender, the sender
 might lose access to the whole change amount.</p>
 <p>A simplistic approach of hard-coding the checks for well-known paths into software and firmware leads
@@ -170,7 +168,7 @@ to reduced interoperability. Vendors cannot choose custom paths that are appropr
 their particular, non-general-purpose applications, and are forced to shoehorn their solutions
 into using well-known paths, or convince other vendors to support their custom paths. This approach
 scales poorly.</p>
-<p>A flexible approach proposed in this document is to define a standard notation for &quot;BIP32 path templates&quot;
+<p>A flexible approach proposed in this document is to define a standard notation for "BIP32 path templates"
 that succinctly describes the constraints to impose on the derivation path.</p>
 <p>Wide support for these path templates will increase interoperability and flexibility of solutions,
 and will allow vendors and individual developers to easily define their own custom restrictions.
@@ -190,16 +188,16 @@ installation of malicious or incorrect profiles, though.</p>
 <p>Each section consists of <em>index template</em>, optionally followed by the hardened marker: either an apostrophe (<code>'</code>) or letter <code>h</code>.</p>
 <p>Index template can be:</p>
 <ul>
-<li>An integer value from 0 to 2147483647 (&quot;Unit index template&quot;)</li>
-<li>A single <code>*</code> character, which denotes any value from 0 to 2147483647 (&quot;Wildcard index template&quot;)</li>
-<li>The <code>{</code> character, followed by a number of <em>index ranges</em> delimited by commas (<code>,</code>), followed by <code>}</code> character (&quot;Ranged index template&quot;)</li>
+<li>An integer value from 0 to 2147483647 ("Unit index template")</li>
+<li>A single <code>*</code> character, which denotes any value from 0 to 2147483647 ("Wildcard index template")</li>
+<li>The <code>{</code> character, followed by a number of <em>index ranges</em> delimited by commas (<code>,</code>), followed by <code>}</code> character ("Ranged index template")</li>
 </ul>
 <p>Implementations MAY limit the maximum number of index ranges within the Ranged index template.</p>
 <p>If an index template is immediately followed by hardened marker, this means that all values specified in this index template is to be increased by 2147483648 for the purposes of matching.</p>
 <p>Index range can be:</p>
 <ul>
-<li>An integer value from 0 to 2147483647 (&quot;Unit range&quot;)</li>
-<li>An integer value from 0 to 2147483647, followed by the <code>-</code> character, followed by another integer value from 0 to 2147483647 (&quot;Non-unit range&quot;)</li>
+<li>An integer value from 0 to 2147483647 ("Unit range")</li>
+<li>An integer value from 0 to 2147483647, followed by the <code>-</code> character, followed by another integer value from 0 to 2147483647 ("Non-unit range")</li>
 </ul>
 <p>For Non-unit range, value on the left side of the <code>-</code> character is the range_start, and the value on the right side of the <code>-</code> character is the range_end.</p>
 <p>For Unit range, we say that range_start is equal to range_end, even though there is no start/end in the Unit range.</p>
@@ -230,8 +228,8 @@ installation of malicious or incorrect profiles, though.</p>
 </ul>
 <p>Instead of requiring the second extra rule, implementations can simply replace one type of marker with another in the template strings before comparing them.</p>
 <h2>Full and partial templates</h2>
-<p>If the template starts with <code>m/</code>, that means that this is the &quot;full&quot; template, that matches the whole path.</p>
-<p>If the template does not start with <code>m/</code>, that means that this is a &quot;partial&quot; template, and it can be used to match a part of the path, in the contexts where this might be appropriate (for example, when constraints for the suffix of the path might be dynamic, while constraints for the prefix of the path are fixed).</p>
+<p>If the template starts with <code>m/</code>, that means that this is the "full" template, that matches the whole path.</p>
+<p>If the template does not start with <code>m/</code>, that means that this is a "partial" template, and it can be used to match a part of the path, in the contexts where this might be appropriate (for example, when constraints for the suffix of the path might be dynamic, while constraints for the prefix of the path are fixed).</p>
 <p>Full template can be combined with partial template, where partial template extends full template,
 resulting in new, longer full template.</p>
 <p>Partial template can be combined with another partial template, resulting in new, longer partial template.</p>
@@ -239,9 +237,9 @@ resulting in new, longer full template.</p>
 <p>Implementations MUST support parsing full templates and matching paths against full templates.</p>
 <p>Implementations MAY support parsing partial templates and matching portions of the paths against partial templates, as well as combining the templates.</p>
 <h2>Parsing result</h2>
-<p>The result of successful parsing of a valid path template can be represented by a list of sections, where each section is a list of index ranges, where index range is a tuple of (range_start, range_end). The length of the list of sections is also referred to as the &quot;length of the template&quot;.</p>
+<p>The result of successful parsing of a valid path template can be represented by a list of sections, where each section is a list of index ranges, where index range is a tuple of (range_start, range_end). The length of the list of sections is also referred to as the "length of the template".</p>
 <h2>Matching</h2>
-<p>The matching is to be performed against a list of integer values that represent a BIP32 path (or a portion of BIP32 path, for partial templates). The length of this list is referred to as the &quot;length of the path&quot;.</p>
+<p>The matching is to be performed against a list of integer values that represent a BIP32 path (or a portion of BIP32 path, for partial templates). The length of this list is referred to as the "length of the path".</p>
 <p>Non-hardened indexes in this list should be represented by values from 0 to 2147483647.</p>
 <p>Hardened indexes in this list should be represented by values from 2147483648 to 4294967295.</p>
 <p>The matching algorithm:</p>
@@ -297,7 +295,7 @@ and the matching formula are specified in TLA+ specification language at https:/
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

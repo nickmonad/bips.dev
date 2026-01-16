@@ -119,12 +119,10 @@
             <pre><code>  BIP: 370
   Layer: Applications
   Title: PSBT Version 2
-  Author: Ava Chow &lt;me@achow101.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0370
-  Status: Final
-  Type: Standards Track
-  Created: 2021-01-14
+  Authors: Ava Chow &lt;me@achow101.com&gt;
+  Status: Deployed
+  Type: Specification
+  Assigned: 2021-01-14
   License: BSD-2-Clause
 </code></pre>
 <h2>Introduction</h2>
@@ -160,7 +158,7 @@ version number to 2 so that there would not be any confusion</ref>.</p>
 </tbody></table>
 <p>The new per-input types for PSBT Version 2 are defined as follows:</p>
 <table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>Previous TXID</td><td><tt>PSBT_IN_PREVIOUS_TXID = 0x0e</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32 byte txid&gt;</tt></td><td>32 byte txid of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td>Previous TXID</td><td><tt>PSBT_IN_PREVIOUS_TXID = 0x0e</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32 byte txid&gt;</tt></td><td>32 byte txid in standard byte order, not display byte order, of the previous transaction whose output at PSBT_IN_OUTPUT_INDEX is being spent.</td><td>2</td><td>0</td><td>2</td></tr>
 <tr><td>Spent Output Index</td><td><tt>PSBT_IN_OUTPUT_INDEX = 0x0f</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint index&gt;</tt></td><td>32 bit little endian integer representing the index of the output being spent in the transaction with the txid of PSBT_IN_PREVIOUS_TXID.</td><td>2</td><td>0</td><td>2</td></tr>
 <tr><td>Sequence Number</td><td><tt>PSBT_IN_SEQUENCE = 0x10</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint sequence&gt;</tt></td><td>The 32 bit unsigned little endian integer for the sequence number of this input. If omitted, the sequence number is assumed to be the final sequence number (0xffffffff).</td><td></td><td>0</td><td>2</td></tr>
 <tr><td>Required Time-based Locktime</td><td><tt>PSBT_IN_REQUIRED_TIME_LOCKTIME = 0x11</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint locktime&gt;</tt></td><td>32 bit unsigned little endian integer greater than or equal to 500000000 representing the minimum Unix timestamp that this input requires to be set as the transaction's lock time.</td><td></td><td>0</td><td>2</td></tr>
@@ -587,7 +585,7 @@ transaction from the PSBTv2 fields.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

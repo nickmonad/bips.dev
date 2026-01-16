@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 set -e
 
 bip_number() {
@@ -25,7 +25,6 @@ move_static() {
 
 export -f bip_number
 export -f move_static
-
 
 find bips -maxdepth 1 -type d -name 'bip-*' \
     | xargs -I{} bash -c 'move_static "{}"'

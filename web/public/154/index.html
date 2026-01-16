@@ -119,12 +119,10 @@
             <pre><code>  BIP: 154
   Layer: Peer Services
   Title: Rate Limiting via peer specified challenges
-  Author: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0154
-  Status: Withdrawn
-  Type: Standards Track
-  Created: 2017-04-12
+  Authors: Karl-Johan Alm &lt;karljohan-alm@garage.co.jp&gt;
+  Status: Closed
+  Type: Specification
+  Assigned: 2017-04-12
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
@@ -151,7 +149,7 @@ connections anyway by requiring that the incoming peer performs some form of pro
 of work, to prove that they are not simply spamming the network. This would severely
 ramp up the costs of a Sybil attack, as the attacker would now have to perform proof
 of work for each node, beyond the free slots.</p>
-<p>However, using the &quot;standard&quot; double-SHA256 POW algorithm in use by Bitcoin nodes to
+<p>However, using the "standard" double-SHA256 POW algorithm in use by Bitcoin nodes to
 generate blocks means attackers can use special-purpose hardware to greatly accelerate
 the POW solving process. To counter this, the proof weight would have to be raised,
 but this would mean standard nodes would need to solve unacceptably costly challenges
@@ -204,14 +202,14 @@ retain its place in the list indefinitely.</p>
 <table><thead><tr><th>Range</th><th>Field Name</th><th>Data Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>0..</td><td>nonce</td><td>uint32/64, or data</td><td>Nonce value that satisfies challenge; for zero-byte nonces, this is variable data that is appended to the challenge payload before hashing</td></tr>
 </tbody></table>
-<p>Note: SHA256 works in two &quot;modes&quot;.</p>
+<p>Note: SHA256 works in two "modes".</p>
 <ol>
 <li>One is where the task is to insert a nonce into an existing data block so that the hash of the data block matches a given target; this is the conventional block proof of work behavior.</li>
-<li>The other is where the whole or parts of the data chunk are given as input (a &quot;big nonce&quot;). In this case, the internal nonce size is zero bytes, and the task is simply to check whether the hash of the data matches the target. If it does not, there is no way to find a solution except by getting different input from the generator (a successor algorithm). This mode is used when SHA256 is a predecessor to another algorithm.</li>
+<li>The other is where the whole or parts of the data chunk are given as input (a "big nonce"). In this case, the internal nonce size is zero bytes, and the task is simply to check whether the hash of the data matches the target. If it does not, there is no way to find a solution except by getting different input from the generator (a successor algorithm). This mode is used when SHA256 is a predecessor to another algorithm.</li>
 </ol>
 <p>Additional notes:</p>
 <ul>
-<li>The initial nonce value (when present) for finding a suitable digest should be randomized, or a challenger may deliberately pick a challenge with &quot;poor&quot; outcomes to fool a node into spending more than predicted time solving.</li>
+<li>The initial nonce value (when present) for finding a suitable digest should be randomized, or a challenger may deliberately pick a challenge with "poor" outcomes to fool a node into spending more than predicted time solving.</li>
 </ul>
 <h4>cuckoo-cycle</h4>
 <p>Properties:</p>
@@ -234,7 +232,7 @@ retain its place in the list indefinitely.</p>
 </tbody></table>
 <p>Additional notes:</p>
 <ul>
-<li>The initial nonce value used for finding a graph with a suitable solution should be randomized, or a challenger may deliberately pick a challenge with &quot;poor&quot; outcomes to fool a node into spending more than predicted time solving.</li>
+<li>The initial nonce value used for finding a graph with a suitable solution should be randomized, or a challenger may deliberately pick a challenge with "poor" outcomes to fool a node into spending more than predicted time solving.</li>
 <li>Further information on the recommended challenge parameters can be found here: https://web.archive.org/web/20230207054058/http://bc-2.jp/cuckoo-profile.pdf</li>
 </ul>
 <h3>Purpose Identifiers</h3>
@@ -363,7 +361,7 @@ solution repeatedly up until its expiration.</p>
 <h3>Estimating Challenge Cost</h3>
 <p>Nodes need to be able to make a judgement call on whether solving a given challenge is worth their efforts. If a challenge is expected to take
 so much time that it would expire before being solved (on average), it should be immediately discarded. Beyond this, a threshold should be
-established for nodes based on their &quot;value&quot; to the node, which is inversely proportional to the current number of connections as a function
+established for nodes based on their "value" to the node, which is inversely proportional to the current number of connections as a function
 of uptime, with arbitrary modifiers (a whitelisted node or a node added via -addnode has a much higher threshold).</p>
 <p>It is hard to obtain an accurate value for <code>cycles_per_second</code>, and as such a fixed value of 1700000000=1.7e9 may be used.</p>
 <p>Given a threshold <code>t</code>, calculate the estimated work required to solve the challenge as follows:</p>
@@ -407,8 +405,8 @@ over the number of total available connections. This can be locally approximated
 local connections compared to the local connection maximum.</p>
 <p>In other words, the network pressure can be approximated by any node as <code>connections / max</code> and the difficulty
 can be based on e.g. <code>(connections - free) / pow_slots</code>.</p>
-<p>The challenge difficulty parameters can be set based on this, where 0.0 means &quot;low pressure&quot; and 1.0 means
-&quot;maximum pressure&quot;. The <code>GetPressure</code> method below gives 0.0 at 67 connections (for a 50 POW slot set up), and hits the 1.0 mark at <code>(nMaxConnections - nMaxOutbound - nMaxFeeler)</code>, incrementing by 0.02 for each new connection:</p>
+<p>The challenge difficulty parameters can be set based on this, where 0.0 means "low pressure" and 1.0 means
+"maximum pressure". The <code>GetPressure</code> method below gives 0.0 at 67 connections (for a 50 POW slot set up), and hits the 1.0 mark at <code>(nMaxConnections - nMaxOutbound - nMaxFeeler)</code>, incrementing by 0.02 for each new connection:</p>
 <pre><code>int nMaxInbound = nMaxConnections - (nMaxOutbound + nMaxFeeler + nPOWConnectionSlots);
 return ((double)GetNodeCount(CONNECTIONS_ALL) - nMaxInbound) &#x2F; nPOWConnectionSlots;
 </code></pre>
@@ -431,7 +429,7 @@ return ((double)GetNodeCount(CONNECTIONS_ALL) - nMaxInbound) &#x2F; nPOWConnecti
 <tr><td></td><td></td><td></td></tr>
 </tbody></table>
 <h2>Cuckoo Cycle</h2>
-<p>Cuckoo Cycle[1] is a &quot;graph-theoretic proof-of-work system, based on finding small cycles or other structures in large random graphs.&quot;</p>
+<p>Cuckoo Cycle[1] is a "graph-theoretic proof-of-work system, based on finding small cycles or other structures in large random graphs."</p>
 <p>It is memory hard, which greatly increases the complexity and cost of producing dedicated (special purpose) hardware, an ideal property for an anti-DoS system.</p>
 <p>The implementation specifics of the algorithm are beyond the scope of this BIP, but the github repository[2] has several reference implementations in various languages.</p>
 <h2>Compatibility</h2>
@@ -621,7 +619,7 @@ dbeb00e88f790106d71d02984d3d02091b5002378a8e0290a6d202b3c67003757cb70344d9cf0329
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

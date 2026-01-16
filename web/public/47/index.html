@@ -125,12 +125,12 @@
 <pre><code>  BIP: 47
   Layer: Applications
   Title: Reusable Payment Codes for Hierarchical Deterministic Wallets
-  Author: Justus Ranvier &lt;justus@openbitcoinprivacyproject.org&gt;
+  Authors: Justus Ranvier &lt;justus@openbitcoinprivacyproject.org&gt;
   Comments-Summary: Unanimously Discourage for implementation
   Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0047
-  Status: Final
+  Status: Deployed
   Type: Informational
-  Created: 2015-04-24
+  Assigned: 2015-04-24
 </code></pre>
 <h2>Status</h2>
 <p>This BIP can be considered final in terms of enabling compatibility with wallets that implement version 1 and version 2 reusable payment codes, however future developments of the reusable payment codes specification will not be distributed via the BIP process.</p>
@@ -138,7 +138,7 @@
 <h2>Abstract</h2>
 <p>This BIP defines a technique for creating a payment code which can be publicly advertised and associated with a real-life identity without creating the loss of security or privacy inherent to P2PKH address reuse.</p>
 <p>This BIP is a particular application of BIP43 and is intended to supplement HD wallets which implement BIP44.</p>
-<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;,  &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in RFC 2119.</p>
+<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.</p>
 <h2>Motivation</h2>
 <p>Payment codes add identity information to transactions which is useful in a merchant-customer interaction while protecting the privacy of users. Payment codes provide the privacy benefits of Darkwallet-style Stealth Addresses to SPV clients without requiring the assistance of a trusted full node and while greatly reducing reliance on blockchain storage.</p>
 <h2>Path levels</h2>
@@ -160,7 +160,7 @@
 <p>Hardened derivation is used at this level.</p>
 <h3>Identity</h3>
 <p>The identity derivation level produces an extended public key and its associated extended private key.</p>
-<p>When the extended public key at this level is combined with the metadata specified in the Representation section below, the resulting entity is called a &quot;payment code.&quot;</p>
+<p>When the extended public key at this level is combined with the metadata specified in the Representation section below, the resulting entity is called a "payment code."</p>
 <p>This derivation level is equivalent to the Account level in BIP-44. Wallets SHOULD treat payment codes as intrinsically part of the BIP-44 account at the same index and create payment codes and accounts as pairs.</p>
 <p>For example, the payment code created represented by (m / 47' / 0' / 0') is part of the account represented by (m / 44' / 0' / 0').</p>
 <p>The second account in a wallet consists of the new account/payment code pair created by using an index of 1 in as the account/identity level of both paths.</p>
@@ -210,7 +210,7 @@
 <h4>Base58 Serialization</h4>
 <p>When a payment code is presented to the user, it SHOULD be presented encoded in Base58Check form.</p>
 <ul>
-<li>The version byte is: 0x47 (produces a &quot;P&quot; as the first character of the serialized form)</li>
+<li>The version byte is: 0x47 (produces a "P" as the first character of the serialized form)</li>
 <li>The payload is the binary serialization of the payment code</li>
 </ul>
 <h3>Protocol</h3>
@@ -241,8 +241,8 @@
 <li>Alice calculates a secret point: <pre>S = aB</pre></li>
 <li>Alice calculates a 64 byte blinding factor: <pre>s = HMAC-SHA512(o, x)</pre>
 <ol>
-<li>&quot;x&quot; is the x value of the secret point</li>
-<li>&quot;o&quot; is the outpoint being spent by the designated input</li>
+<li>"x" is the x value of the secret point</li>
+<li>"o" is the outpoint being spent by the designated input</li>
 </ol>
 </li>
 </ol>
@@ -267,8 +267,8 @@
 <li>Bob calculates a secret point: <pre>S = bA</pre></li>
 <li>Bob calculates the blinding factor: <pre>s = HMAC-SHA512(x, o)</pre>
 <ol>
-<li>&quot;x&quot; is the x value of the secret point</li>
-<li>&quot;o&quot; is the outpoint being spent by the designated input.</li>
+<li>"x" is the x value of the secret point</li>
+<li>"o" is the outpoint being spent by the designated input.</li>
 </ol>
 </li>
 <li>Bob interprets the 80 byte payload as a payment code, except:
@@ -315,7 +315,7 @@
 <li>Alice selects the 0th private key derived from her payment code: <pre>a</pre></li>
 <li>Alice selects the next unused public key derived from Bob's payment code, starting from zero: <pre>B, where B = bG</pre>
 <ol>
-<li>The &quot;next unused&quot; public key is based on an index specific to the Alice-Bob context, not global to either Alice or Bob</li>
+<li>The "next unused" public key is based on an index specific to the Alice-Bob context, not global to either Alice or Bob</li>
 </ol>
 </li>
 <li>Alice calculates a secret point: <pre>S = aB</pre></li>
@@ -383,7 +383,7 @@
 <ol>
 <li>Recovering all incoming funds associated with ephemeral payment codes with 100% certainty requires exhausting the entire 2<sup>32</sup> address space of potential ephemeral payment codes.
 <ol>
-<li>In most cases, less than 100% certainty is acceptable as long as a fallback &quot;deep scan&quot; is available as an option to the user.</li>
+<li>In most cases, less than 100% certainty is acceptable as long as a fallback "deep scan" is available as an option to the user.</li>
 </ol>
 </li>
 <li>The wallet checks the notification address for each ephemeral payment code for notification transactions in order to recover associated funds.</li>
@@ -474,7 +474,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

@@ -119,12 +119,10 @@
             <pre><code>  BIP: 127
   Layer: Applications
   Title: Simple Proof-of-Reserves Transactions
-  Author: Steven Roose &lt;steven@stevenroose.org&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0127
+  Authors: Steven Roose &lt;steven@stevenroose.org&gt;
   Status: Draft
-  Type: Standards Track
-  Created: 2019-01-28
+  Type: Specification
+  Assigned: 2019-01-28
   License: CC0-1.0
 </code></pre>
 <h2>Abstract</h2>
@@ -156,8 +154,8 @@ of entry both for custodians and for users.</p>
 shortcomings, mostly with regards to its privacy properties.  While there exists
 research about improved proof-of-reserves mechanisms that have much better
 privacy properties<ref>Dagher, Gaby G., Benedikt Bünz, Joseph Bonneau, Jeremy
-Clark, and Dan Boneh. &quot;Provisions: Privacy-preserving proofs of solvency for
-Bitcoin exchanges.&quot; (2015).</ref>, this BIP intentionally only formalizes
+Clark, and Dan Boneh. "Provisions: Privacy-preserving proofs of solvency for
+Bitcoin exchanges." (2015).</ref>, this BIP intentionally only formalizes
 the de-facto existing method.</p>
 <h2>Specification</h2>
 <p>Our specification consists of two parts:</p>
@@ -183,9 +181,9 @@ transactions.  However, one small adaptation to the transaction is made that has
 <p>The resulting construction is a Bitcoin transaction with the following
 characteristics:</p>
 <ul>
-<li>The first input (the &quot;commitment input&quot;)
+<li>The first input (the "commitment input")
 <ul>
-<li>MUST have the txid part of the previous outpoint set to the SHA-256 hash of the commitment message prefixed with &quot;Proof-of-Reserves: &quot;<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and index 0.</li>
+<li>MUST have the txid part of the previous outpoint set to the SHA-256 hash of the commitment message prefixed with "Proof-of-Reserves: "<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and index 0.</li>
 </ul>
 </li>
 <li>The remaining inputs
@@ -266,7 +264,7 @@ file that can be used by proof-construction tools.  This allows them to
 construct different proofs incrementally without having to switch between file
 formats.</p>
 <h3>PSBT (BIP 174) extension</h3>
-<p>The &quot;commitment input&quot; detailed in the proof format section does not spend an
+<p>The "commitment input" detailed in the proof format section does not spend an
 existing UTXO and thus shouldn't be signed (empty <tt>scriptSig</tt> and
 witness).  This can cause some problems when signing this type of transactions.
 For example, hardware wallets often require the signer to provide information
@@ -279,7 +277,7 @@ input.  However, there is still a UX problem.  Because the hardware wallet
 device doesn't recognize the transaction as a proof-of-reserves transaction it
 will think it is signing a regular transaction that is spending all the money
 in the UTXOs.  Most devices will ask for confirmation with a message along the
-lines of &quot;Are you sure you want to send XXX BTC to address [...]?&quot;.  This is
+lines of "Are you sure you want to send XXX BTC to address [...]?".  This is
 not the best user experience.</p>
 <p>An addition to the BIP 174 PSBT format could help signing devices to recognize proof-of-reserve transactions.
 The following field is added to the BIP 174 <tt>INPUT</tt> map:</p>
@@ -324,7 +322,7 @@ https://github.com/stevenroose/reserves</p>
 <p>An implementation of the custom proof PSBTs is part of the <a href="https://bitcoindevkit.org/" target="_blank">BDK</a>, and can be found here: https://crates.io/crates/bdk-reserves</p>
 <h2> Footnotes </h2>
 <ol>
-<li><a href="https://bips.dev/127/#cite_ref_1">^</a> If the message is &quot;Some Message&quot;, the txid part should be <tt>SHA-256(&quot;Proof-of-Reserves: Some Message&quot;)</tt> with the string encoded as UTF-8.</li>
+<li><a href="https://bips.dev/127/#cite_ref_1">^</a> If the message is "Some Message", the txid part should be <tt>SHA-256("Proof-of-Reserves: Some Message")</tt> with the string encoded as UTF-8.</li>
 <li><a href="https://bips.dev/127/#cite_ref_2">^</a> https://github.com/protocolbuffers/protobuf/</li>
 </ol>
 
@@ -337,7 +335,7 @@ https://github.com/stevenroose/reserves</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

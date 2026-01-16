@@ -119,14 +119,12 @@
             <pre><code>  BIP: 98
   Layer: Consensus (soft fork)
   Title: Fast Merkle Trees
-  Author: Mark Friedenbach &lt;mark@friedenbach.org&gt;
-          Kalle Alm &lt;kalle.alm@gmail.com&gt;
-          BtcDrak &lt;btcdrak@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0098
+  Authors: Mark Friedenbach &lt;mark@friedenbach.org&gt;
+           Kalle Alm &lt;kalle.alm@gmail.com&gt;
+           BtcDrak &lt;btcdrak@gmail.com&gt;
   Status: Draft
-  Type: Standards Track
-  Created: 2017-08-24
+  Type: Specification
+  Assigned: 2017-08-24
   License: CC-BY-SA-4.0
   License-Code: MIT
 </code></pre>
@@ -180,7 +178,7 @@ The resulting midstate is used as IV for the fast-SHA256 cryptographic hash func
           0x0e, 0x0b, 0x9f, 0x79, 0xee, 0xf6, 0x8a, 0x24 };
 </code></pre>
 <p>As fast-SHA256 is only defined for two (2) 32-byte hash inputs, there are necessarily two special cases:
-an empty Merkle tree is not allowed, nor is any root hash defined for such a &quot;tree&quot;;
+an empty Merkle tree is not allowed, nor is any root hash defined for such a "tree";
 and a Merkle tree with a single value has a root hash label equal to that self-same value of the leaf branch, the only node in the tree (a passthrough operation with no hashing).</p>
 <h3>Rationale</h3>
 <p>The fast-SHA256 hash function can be calculated 2.32x faster than a specialized double-SHA256 implementation[2], or three (3) times faster than an implementation applying a generic SHA-256 primitive twice,
@@ -198,7 +196,7 @@ Using the next prime in sequence reduces the likelihood of introducing weakness 
 This is particularly useful when the validation environment constrains proof sizes, such as push limits in Bitcoin script.
 Chained validation allows a verifier to split one proof into two or more, where the leaf is shown to be under an inner node, and that inner node is shown to be under the root.
 Without pass-through hashing in a single-element tree, use of chained validation would unnecessarily introduce a minimum path length requirement equal to the number of chain links.
-Pass-through hashing of single elements allows instead for one or more of the chained validations to use a &quot;NOP&quot; proof consisting of a zero-length path,
+Pass-through hashing of single elements allows instead for one or more of the chained validations to use a "NOP" proof consisting of a zero-length path,
 thereby allowing, for example, a fixed series of four (4) chained validations to verify a length three (3) or shorter path.</p>
 <h2>Inclusion Proofs</h2>
 <p>An important use of Merkle hash-trees is the ability to compactly prove membership with log-sized proofs.
@@ -217,7 +215,7 @@ Then the number skipped hashes (those included in the proof, not verified by the
 followed by the hashes themselves in the order previously traversed.</p>
 <p>There are eight possible configurations of internal nodes, as given in the following diagram:</p>
 <img src="bip-0098/node-variants.png" />
-<p>In this diagram, DESCEND means the branch links to another internal node, as indicated by its child graph elements labeled &quot;...&quot;;
+<p>In this diagram, DESCEND means the branch links to another internal node, as indicated by its child graph elements labeled "...";
 SKIP means the branch contains a hash of an elided subtree or element, and the fast-SHA256 root hash of this subtree or double-SHA256 hash of the element is included in the proof structure; and
 VERIFY means the branch contains an externally provided hash that is needed as witness for the verification of the proof.
 In tabular form, these code values are:</p>
@@ -328,7 +326,7 @@ The deployment plan for BIP116 is covered in the text of that BIP.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

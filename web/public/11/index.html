@@ -119,13 +119,11 @@
             <pre><code>  BIP: 11
   Layer: Applications
   Title: M-of-N Standard Transactions
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0011
-  Status: Final
-  Type: Standards Track
-  Created: 2011-10-18
-  Post-History: 2011-10-02
+  Authors: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Status: Deployed
+  Type: Specification
+  Assigned: 2011-10-18
+  Discussion: 2011-10-02
 </code></pre>
 <h2>Abstract</h2>
 <p>This BIP proposes M-of-N-signatures required transactions as a new 'standard' transaction type.</p>
@@ -134,7 +132,7 @@
 <p>A couple of motivating use cases:</p>
 <ul>
 <li>
-<p>A wallet secured by a &quot;wallet protection service&quot; (WPS).  2-of-2 signatures required transactions will be used, with one signature coming from the (possibly compromised) computer with the wallet and the second signature coming from the WPS. When sending protected bitcoins, the user's bitcoin client will contact the WPS with the proposed transaction and it can then contact the user for confirmation that they initiated the transaction and that the transaction details are correct. Details for how clients and WPS's communicate are outside the scope of this BIP. Side note: customers should insist that their wallet protection service provide them with copies of the private key(s) used to secure their wallets that they can safely store off-line, so that their coins can be spent even if the WPS goes out of business.</p>
+<p>A wallet secured by a "wallet protection service" (WPS).  2-of-2 signatures required transactions will be used, with one signature coming from the (possibly compromised) computer with the wallet and the second signature coming from the WPS. When sending protected bitcoins, the user's bitcoin client will contact the WPS with the proposed transaction and it can then contact the user for confirmation that they initiated the transaction and that the transaction details are correct. Details for how clients and WPS's communicate are outside the scope of this BIP. Side note: customers should insist that their wallet protection service provide them with copies of the private key(s) used to secure their wallets that they can safely store off-line, so that their coins can be spent even if the WPS goes out of business.</p>
 </li>
 <li>
 <p>Three-party escrow (buyer, seller, and trusted dispute agent). 2-of-3 signatures required transactions will be used. The buyer and seller and agent will each provide a public key, and the buyer will then send coins into a 2-of-3 CHECKMULTISIG transaction and send the seller and the agent the transaction id. The seller will fulfill their obligation and then ask the buyer to co-sign a transaction ( already signed by seller ) that sends the tied-up coins to him (seller).<br />If the buyer and seller cannot agree, then the agent can, with the cooperation of either buyer or seller, decide what happens to the tied-up coins.  Details of how buyer, seller, and agent communicate to gather signatures or public keys are outside the scope of this BIP.</p>
@@ -152,7 +150,7 @@
 <p>The current Satoshi bitcoin client does not relay or mine transactions with scriptSigs larger than 200 bytes; to accommodate 3-signature transactions, this will be increased to 500 bytes.</p>
 <h2>Rationale</h2>
 <p>OP_CHECKMULTISIG is already an enabled opcode, and is the most straightforward way to support several important use cases.</p>
-<p>One argument against using OP_CHECKMULTISIG is that old clients and miners count it as &quot;20 sigops&quot; for purposes of computing how many signature operations are in a block, and there is a hard limit of 20,000 sigops per block-- meaning a maximum of 1,000 multisig transactions per block. Creating multisig transactions using multiple OP_CHECKSIG operations allows more of them per block.</p>
+<p>One argument against using OP_CHECKMULTISIG is that old clients and miners count it as "20 sigops" for purposes of computing how many signature operations are in a block, and there is a hard limit of 20,000 sigops per block-- meaning a maximum of 1,000 multisig transactions per block. Creating multisig transactions using multiple OP_CHECKSIG operations allows more of them per block.</p>
 <p>The counter-argument is that these new multi-signature transactions will be used in combination with OP_EVAL (see the OP_EVAL BIP), and <strong>will</strong> be counted accurately. And in any case, as transaction volume rises the hard-coded maximum block size will have to be addressed, and the rules for counting number-of-signature-operations-in-a-block can be addressed at that time.</p>
 <p>A weaker argument is OP_CHECKMULTISIG should not be used because it pops one too many items off the stack during validation. Adding an extra OP_0 placeholder to the scriptSig adds only 1 byte to the transaction, and any alternative that avoids OP_CHECKMULTISIG adds at least several bytes of opcodes.</p>
 <h2>Implementation</h2>
@@ -172,7 +170,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

@@ -119,18 +119,16 @@
             <pre><code>  BIP: 13
   Layer: Applications
   Title: Address Format for pay-to-script-hash
-  Author: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0013
-  Status: Final
-  Type: Standards Track
-  Created: 2011-10-18
+  Authors: Gavin Andresen &lt;gavinandresen@gmail.com&gt;
+  Status: Deployed
+  Type: Specification
+  Assigned: 2011-10-18
 </code></pre>
 <h2>Abstract</h2>
 <p>This BIP describes a new type of Bitcoin address to support arbitrarily complex transactions.  Complexity in this context is defined as what information is needed by the recipient to respend the received coins, in contrast to needing a single ECDSA private key as in current implementations of Bitcoin.</p>
 <p>In essence, an address encoded under this proposal represents the encoded hash of a <a href="https://en.bitcoin.it/wiki/Script" target="_blank">script</a>, rather than the encoded hash of an ECDSA public key.</p>
 <h2>Motivation</h2>
-<p>Enable &quot;end-to-end&quot; secure wallets and payments to fund escrow transactions or other complex transactions.  Enable third-party wallet security services.</p>
+<p>Enable "end-to-end" secure wallets and payments to fund escrow transactions or other complex transactions.  Enable third-party wallet security services.</p>
 <h2>Specification</h2>
 <p>The new bitcoin address type is constructed in the same manner as existing bitcoin addresses (see <a href="https://en.bitcoin.it/Base58Check_encoding" target="_blank">Base58Check encoding</a>):</p>
 <pre><code>    base58-encode: [one-byte version][20-byte hash][4-byte checksum]
@@ -143,7 +141,7 @@ And the 4-byte checksum is the first four bytes of the double SHA256 hash of the
 <p>Another criticism is that bitcoin addresses are inherently insecure because there is no identity information tied to them; if you only have a bitcoin address, how can you be certain that you're paying who or what you think you're paying?</p>
 <p>Furthermore, truncating SHA256 is not an optimal checksum; there are much better error-detecting algorithms. If we are introducing a new form of Bitcoin address, then perhaps a better algorithm should be used.</p>
 <p>This is one piece of the simplest path to a more secure bitcoin infrastructure. It is not intended to solve all of bitcoin's usability or security issues, but to be an incremental improvement over what exists today. A future BIP or BIPs should propose more user-friendly mechanisms for making payments, or for verifying that you're sending a payment to the Free Software Foundation and not Joe Random Hacker.</p>
-<p>Assuming that typing in bitcoin addresses manually will become increasingly rare in the future, and given that the existing checksum method for bitcoin addresses seems to work &quot;well enough&quot; in practice and has already been implemented multiple times, the Author believes no change to the checksum algorithm is necessary.</p>
+<p>Assuming that typing in bitcoin addresses manually will become increasingly rare in the future, and given that the existing checksum method for bitcoin addresses seems to work "well enough" in practice and has already been implemented multiple times, the Author believes no change to the checksum algorithm is necessary.</p>
 <p>The leading version bytes are chosen so that, after base58 encoding, the leading character is consistent: for the main network, byte 5 becomes the character '3'. For the testnet, byte 196 is encoded into '2'.</p>
 <h2>Backwards Compatibility</h2>
 <p>This proposal is not backwards compatible, but it fails gracefully-- if an older implementation is given one of these new bitcoin addresses, it will report the address as invalid and will refuse to create a transaction.</p>
@@ -152,7 +150,7 @@ And the 4-byte checksum is the first four bytes of the double SHA256 hash of the
 <h2>See Also</h2>
 <ul>
 <li><a href="/12" target="_blank">BIP 12: OP_EVAL, the original P2SH design</a></li>
-<li><a href="/16" target="_blank">BIP 16: Pay to Script Hash (aka &quot;/P2SH/&quot;)</a></li>
+<li><a href="/16" target="_blank">BIP 16: Pay to Script Hash (aka "/P2SH/")</a></li>
 <li><a href="/17" target="_blank">BIP 17: OP_CHECKHASHVERIFY, another P2SH design</a></li>
 </ul>
 
@@ -165,7 +163,7 @@ And the 4-byte checksum is the first four bytes of the double SHA256 hash of the
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

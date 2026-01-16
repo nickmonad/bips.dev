@@ -119,12 +119,12 @@
             <pre><code>  BIP: 171
   Layer: Applications
   Title: Currency&#x2F;exchange rate information API
-  Author: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
+  Authors: Luke Dashjr &lt;luke+bip@dashjr.org&gt;
   Comments-Summary: No comments yet.
   Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0171
-  Status: Rejected
-  Type: Standards Track
-  Created: 2017-03-04
+  Status: Closed
+  Type: Specification
+  Assigned: 2017-03-04
   License: BSD-2-Clause
 </code></pre>
 <h2>Abstract</h2>
@@ -133,7 +133,7 @@
 <p>This BIP is licensed under the BSD 2-clause license.</p>
 <h2>Specification</h2>
 <p>Four requests are defined, which are all made by a GET request to a common URI with parameters encoded in application/x-www-form-urlencoded format.
-All matching parameters may be specified with multiple comma-separated values, which are to be interpreted as &quot;any of these&quot;.
+All matching parameters may be specified with multiple comma-separated values, which are to be interpreted as "any of these".
 Each result is always in JSON format, with a line-feed (never a carriage-return) separating multiple results.</p>
 <p>Authentication for subscription-based services MAY be supported using standard HTTP authentication.
 It is recommended to use TLS (HTTPS) and/or Linked Data Signatures, so that MITM attackers cannot deceive the client.</p>
@@ -152,7 +152,7 @@ In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
 <h3>Enumerating supported currency-pair tokens</h3>
 <p>Parameters:</p>
 <ul>
-<li><em>mode</em> - Always &quot;list&quot; for this request.</li>
+<li><em>mode</em> - Always "list" for this request.</li>
 <li><em>quote</em> - If provided, the server MAY limit the results to only currency-pairs describing a currency with the given currency code(s).</li>
 <li><em>base</em> - If provided, the server MAY limit the results to only currency-pairs describing currency rates compared to the given currency code(s).</li>
 <li><em>locale</em> - If provided, the server MAY limit the results to only currency-pairs supporting the given Unicode CLDR locale(s).</li>
@@ -163,7 +163,7 @@ In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
 <li><em>quote</em> - The currency code for the quote currency.</li>
 <li><em>base</em> - The currency code for the base currency.</li>
 <li><em>locale</em> - If provided, a String with the applicable Unicode CLDR locale.</li>
-<li><em>desc</em> - Optional description. For example, it could be &quot;Based on Florida BTM prices.&quot; or any other short String that provides information useful to the user. SHOULD be shorter than 45 characters.</li>
+<li><em>desc</em> - Optional description. For example, it could be "Based on Florida BTM prices." or any other short String that provides information useful to the user. SHOULD be shorter than 45 characters.</li>
 <li><em>signature</em> - Optional. May be used for Linked Data Signatures.</li>
 </ul>
 <p>Example:</p>
@@ -176,7 +176,7 @@ In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
 <h3>Currency-pair information</h3>
 <p>Parameters:</p>
 <ul>
-<li><em>mode</em> - Always &quot;info&quot; for this request.</li>
+<li><em>mode</em> - Always "info" for this request.</li>
 <li><em>cp</em> - Currency pair(s) for which information is requested.</li>
 </ul>
 <p>Each currency-pair will receive a separate result, a JSON Object, with the following information:</p>
@@ -185,11 +185,11 @@ In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
 <li><em>quote</em> - The currency code for the quote currency.</li>
 <li><em>base</em> - The currency code for the base currency.</li>
 <li><em>locale</em> - If provided, a String with the applicable Unicode CLDR locale.</li>
-<li><em>desc</em> - Optional description. For example, it could be &quot;Based on Florida BTM prices.&quot; or any other short String that provides information useful to the user. SHOULD be shorter than 45 characters.</li>
+<li><em>desc</em> - Optional description. For example, it could be "Based on Florida BTM prices." or any other short String that provides information useful to the user. SHOULD be shorter than 45 characters.</li>
 <li><em>longdesc</em> - Optional description, but may be longer and include newlines.</li>
 <li><em>symbol</em> - An Array of prefix and suffix for the quote currency. Each may be either a fixed String, an Array of two Strings (negative and positive), or null. Any positive or negative symbols must be included in this prefix/suffix; it MUST NOT be implied otherwise.</li>
-<li><em>digits</em> - The type of digits to use for the quote currency's numbers. &quot;arabic&quot; should be used for common 0-9 digits.</li>
-<li><em>grouping</em> - An Array alternating between Numbers representing a series of digits, and Strings used as delimiters. If terminated by a zero, the final grouping is to be repeated continually. For example, the common US locale thousands grouping would be <code>&lt;a href=&quot;3,&quot; target=&quot;_blank&quot;&gt;&quot;,&quot;, 0&lt;/a&gt;</code></li>
+<li><em>digits</em> - The type of digits to use for the quote currency's numbers. "arabic" should be used for common 0-9 digits.</li>
+<li><em>grouping</em> - An Array alternating between Numbers representing a series of digits, and Strings used as delimiters. If terminated by a zero, the final grouping is to be repeated continually. For example, the common US locale thousands grouping would be <code>&lt;a href="3," target="_blank"&gt;",", 0&lt;/a&gt;</code></li>
 <li><em>fraction_sep</em> - A String to be placed between whole numbers and a fractional amount.</li>
 <li><em>fraction_digits</em> - Array of absolute minimum (even for whole numbers) number of fractional digits, minimum fractional digits when a fraction exists, and maximum number of fractional digits when absolute precision is not demanded (below which is to be rounded in an implementation-dependent manner).</li>
 <li><em>minpoll</em> - A Number of seconds indicating a minimum time between polls to the server. Clients should be prudent about not polling too often, even if this number is low.</li>
@@ -207,9 +207,9 @@ In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
 <h3>Current exchange rate</h3>
 <p>Parameters:</p>
 <ul>
-<li><em>mode</em> - Always &quot;rate&quot; for this request.</li>
+<li><em>mode</em> - Always "rate" for this request.</li>
 <li><em>cp</em> - Currency pair(s) for which rate is requested.</li>
-<li><em>type</em> - Type of exchange rate data being requested. May be &quot;high&quot;, &quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If omitted, the server may provide any rates it deems appropriate.</li>
+<li><em>type</em> - Type of exchange rate data being requested. May be "high", "low", "average", "typical", or any other arbitrary name. If omitted, the server may provide any rates it deems appropriate.</li>
 <li><em>minrate</em>, <em>maxrate</em> - If specified, indicates this request is a longpoll. The server should not send a response until the rate(s) fall below or above (respectively) the provided value.</li>
 <li><em>nonce</em> - If specified, the server SHOULD return it in each result.</li>
 </ul>
@@ -230,18 +230,18 @@ In other words, <code>1 baseCurrency = rate quoteCurrency</code>.</p>
 <h3>Historical exchange rates</h3>
 <p>Parameters:</p>
 <ul>
-<li><em>mode</em> - Always &quot;history&quot; for this request.</li>
+<li><em>mode</em> - Always "history" for this request.</li>
 <li><em>cp</em> - Currency pair(s) for which rate is requested.</li>
-<li><em>type</em> - Type of exchange rate data being requested. May be &quot;high&quot;, &quot;low&quot;, &quot;average&quot;, &quot;typical&quot;, or any other arbitrary name. If omitted, the server may provide any rates it deems appropriate.</li>
+<li><em>type</em> - Type of exchange rate data being requested. May be "high", "low", "average", "typical", or any other arbitrary name. If omitted, the server may provide any rates it deems appropriate.</li>
 <li><em>from</em> - POSIX timestamp the results should begin with.</li>
 <li><em>to</em> - POSIX timestamp the results should end with. If omitted, the present time shall be used.</li>
-<li><em>nearest</em> - If provided and true, indicates that only the nearest timestamp to &quot;from&quot; must be returned, and a range is not desired. (&quot;to&quot; should be omitted in this case.)</li>
+<li><em>nearest</em> - If provided and true, indicates that only the nearest timestamp to "from" must be returned, and a range is not desired. ("to" should be omitted in this case.)</li>
 <li><em>ratedelta</em>, <em>timedelta</em> - If specified, the server may omit data where the rate or time has not changed since the last provided rate and time. If both are provided, either a significant rate change OR time change should trigger a new record in the results.</li>
 </ul>
 <p>A result is provided for each currency-pair and timestamp record, in the same format as the current exchange rate request.
 Records MUST be provided in chronological order, but only within the scope of the applicable currency-pair (ie, it is okay to send the full history for one currency-pair, and then the full history for the next; or to intermix them out of any given order).</p>
-<p>If there is no exact record for the times specified by &quot;from&quot; and/or &quot;to&quot;, a single record before &quot;from&quot; and/or after &quot;to&quot; should also be included.
-This is not necessary when only the nearest record is requested, or when &quot;to&quot; is omitted (ie, ending at the most recent record).</p>
+<p>If there is no exact record for the times specified by "from" and/or "to", a single record before "from" and/or after "to" should also be included.
+This is not necessary when only the nearest record is requested, or when "to" is omitted (ie, ending at the most recent record).</p>
 <p>Example:</p>
 <pre><code>    Request: http:&#x2F;&#x2F;api.example.tld&#x2F;?mode=history&amp;cp=XBTUSD-ver4,2&amp;type=typical&amp;ratedelta=0.1&amp;timedelta=10&amp;from=1488759998&amp;to=1488760090
     Result:
@@ -277,7 +277,7 @@ There are many independent providers of such information, but they all use diffe
 </ul>
 <p>What if long descriptions require line and paragraph breaks?</p>
 <ul>
-<li>Clients should word-wrap long lines, and JSON escapes newlines as &quot;\n&quot; which can be used doubly (&quot;\n\n&quot;) for paragraph breaks.</li>
+<li>Clients should word-wrap long lines, and JSON escapes newlines as "\n" which can be used doubly ("\n\n") for paragraph breaks.</li>
 </ul>
 <h2>Backwards compatibility</h2>
 <p>While this new standard is adopted, software and providers can continue to use and provide their current formats until they are no longer needed.</p>
@@ -297,7 +297,7 @@ There are many independent providers of such information, but they all use diffe
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

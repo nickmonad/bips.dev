@@ -119,31 +119,29 @@
             <pre><code>  BIP: 130
   Layer: Peer Services
   Title: sendheaders message
-  Author: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
-  Comments-Summary: No comments yet.
-  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0130
-  Status: Final
-  Type: Standards Track
-  Created: 2015-05-08
+  Authors: Suhas Daftuar &lt;sdaftuar@chaincode.com&gt;
+  Status: Deployed
+  Type: Specification
+  Assigned: 2015-05-08
   License: PD
 </code></pre>
 <h2>Abstract</h2>
-<p>Add a new message, &quot;sendheaders&quot;, which indicates that a node prefers to receive new block announcements via a &quot;headers&quot; message rather than an &quot;inv&quot;.</p>
+<p>Add a new message, "sendheaders", which indicates that a node prefers to receive new block announcements via a "headers" message rather than an "inv".</p>
 <h2>Motivation</h2>
-<p>Since the introduction of &quot;headers-first&quot; downloading of blocks in 0.10, blocks will not be processed unless
+<p>Since the introduction of "headers-first" downloading of blocks in 0.10, blocks will not be processed unless
 they are able to connect to a (valid) headers chain.  Consequently, block relay generally works
 as follows:</p>
 <ol>
-<li>A node (N) announces the new tip with an &quot;inv&quot; message, containing the block hash</li>
-<li>A peer (P) responds to the &quot;inv&quot; with a &quot;getheaders&quot; message (to request headers up to the new tip) and a &quot;getdata&quot; message for the new tip itself</li>
-<li>N responds with a &quot;headers&quot; message (with the header for the new block along with any preceding headers unknown to P) and a &quot;block&quot; message containing the new block</li>
+<li>A node (N) announces the new tip with an "inv" message, containing the block hash</li>
+<li>A peer (P) responds to the "inv" with a "getheaders" message (to request headers up to the new tip) and a "getdata" message for the new tip itself</li>
+<li>N responds with a "headers" message (with the header for the new block along with any preceding headers unknown to P) and a "block" message containing the new block</li>
 </ol>
 <p>However, in the case where a new block is being announced that builds on the tip, it would be generally more efficient if the node N just announced the block header for the new block, rather than just the block hash, and saved the peer from generating and transmitting the getheaders message (and the required block locator).</p>
-<p>In the case of a reorg, where 1 or more blocks are disconnected, nodes currently just send an &quot;inv&quot; for the new tip.  Peers currently are able to request the new tip immediately, but wait until the headers for the intermediate blocks are delivered before requesting those blocks.  By announcing headers from the last fork point leading up to the new tip in the block announcement, peers are able to request all the intermediate blocks immediately.</p>
+<p>In the case of a reorg, where 1 or more blocks are disconnected, nodes currently just send an "inv" for the new tip.  Peers currently are able to request the new tip immediately, but wait until the headers for the intermediate blocks are delivered before requesting those blocks.  By announcing headers from the last fork point leading up to the new tip in the block announcement, peers are able to request all the intermediate blocks immediately.</p>
 <h2>Specification</h2>
 <ol>
-<li>The sendheaders message is defined as an empty message where pchCommand == &quot;sendheaders&quot;</li>
-<li>Upon receipt of a &quot;sendheaders&quot; message, the node will be permitted, but not required, to announce new blocks by sending the header of the new block (along with any other blocks that a node believes a peer might need in order for the block to connect).</li>
+<li>The sendheaders message is defined as an empty message where pchCommand == "sendheaders"</li>
+<li>Upon receipt of a "sendheaders" message, the node will be permitted, but not required, to announce new blocks by sending the header of the new block (along with any other blocks that a node believes a peer might need in order for the block to connect).</li>
 <li>Feature discovery is enabled by checking protocol version &gt;= 70012</li>
 </ol>
 <h2>Additional constraints</h2>
@@ -164,7 +162,7 @@ as follows:</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-14</p>
+                    <p class="font-bold">2026-01-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
