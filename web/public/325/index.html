@@ -132,7 +132,7 @@
 <p>Testnet is a great place to try out new things without risking real money, but it is notoriously unreliable. Huge block reorgs, long gaps in between blocks being mined or sudden bursts of blocks in rapid succession mean that realistic testing of software, especially involving multiple independent parties running software over an extended period of time, becomes infeasible in practice.</p>
 <p>A new type of test network would be more suitable for integration testing by organizations such as exchanges, or testing of next generation Layer-2 protocols like Eltoo or sidechain pegs. The goal is not to be perfectly reliable but rather to have a predictable amount of unreliability. You want a test network to behave like mainnet (i.e. no thousands of block reorgs) while also making it easier to trigger expected but rare events like a 6-block reorg. Regtest is not suitable for longer-term scenarios involving multiple independent parties because creating blocks costs nothing, so any party can completely control the test network.</p>
 <h2> Specification </h2>
-<p>A new type of network ("signet"), which takes an additional consensus parameter called the challenge (scriptPubKey). The challenge can be a simple pubkey (P2PKH style), or a k-of-n multisig, or any other script you would want.</p>
+<p>A new type of network (&quot;signet&quot;), which takes an additional consensus parameter called the challenge (scriptPubKey). The challenge can be a simple pubkey (P2PKH style), or a k-of-n multisig, or any other script you would want.</p>
 <p>Signet requires all blocks to have a BIP 141 commitment in the coinbase transaction. In order to provide a non-empty solution to the block challenge the block's BIP 141 commitment's optional data must include an additional commitment of the signature/solution for the block:</p>
 <pre><code>    1-5 bytes - Push the following (4 + x + y) bytes
     4 bytes - Signet header (0xecc7daa2)
@@ -143,7 +143,7 @@
 <p>The scriptSig is serialized by first encoding its length as CompactSize. The scriptWitness stack is serialized as described in BIP 141.</p>
 <p>Any push operations that do not start with the 4 byte Signet header are ignored. Multiple push operations with the 4 byte Signet header are ignored except for the first instance of the header.</p>
 <p>To sign the block or verify a block signature, two virtual transactions, each with a single input and output are constructed from the block as follows.</p>
-<p>The "to_spend" transaction is:</p>
+<p>The &quot;to_spend&quot; transaction is:</p>
 <pre><code>    nVersion = 0
     nLockTime = 0
     vin[0].prevout.hash = 0000...000
@@ -155,7 +155,7 @@
     vout[0].scriptPubKey = signet_challenge
 </code></pre>
 <p>where block_data is the serialization of the block's nVersion, hashPrevBlock, signet_merkle_root, and nTime. The <code>signet_merkle_root</code> is obtained by generating the merkle root of the block transactions, after modifying the coinbase witness commitment by replacing the signet solution with an empty solution (that is, the witness commitment includes a four byte push of the Signet header with no additional solution data, and no prior pushes beginning with the Signet header). This means the merkle root of the block is different from the merkle root in the signet commitment. This is needed, because the signature can never be included in the very message (in this case, a block) that is being signed.</p>
-<p>The "to_sign" transaction is:</p>
+<p>The &quot;to_sign&quot; transaction is:</p>
 <pre><code>    nVersion = 0
     nLockTime = 0
     vin[0].prevout.hash = to_spend.txid
@@ -195,7 +195,7 @@ which is represented by an nBits value of <code>0x1e0377ae</code>.</p>
 </ul>
 <h2> Compatibility </h2>
 <p>This specification is backwards compatible in the sense that existing software can use Signet out of the box.</p>
-<p>Simply by adding the network parameters for signet (magic number, etc), a client can connect to and use any signet network without further modifications. The block headers have valid proof of work, so clients can trivially check that blocks are "probably" valid.</p>
+<p>Simply by adding the network parameters for signet (magic number, etc), a client can connect to and use any signet network without further modifications. The block headers have valid proof of work, so clients can trivially check that blocks are &quot;probably&quot; valid.</p>
 <p>However, anyone can mine blocks that are accepted by the client for any given signet network. These blocks do not contain the required signatures, however, so any fully validating node will promptly reject them. As such, clients need to either validate the block signature inside the coinbase transaction, or connect to trusted peers.</p>
 <p>Other software need not add block signature validation code that they will not use in production. This is adequate for non-production test purposes where the goal is to have a network behave as much like mainnet as possible.</p>
 <h2> Reference implementation </h2>
@@ -217,7 +217,7 @@ which is represented by an nBits value of <code>0x1e0377ae</code>.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

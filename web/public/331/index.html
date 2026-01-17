@@ -163,15 +163,15 @@ issues in contracting protocols which rely on presigned, time-sensitive transact
 <p></ref> to prevent cheating.
 In other words, a key security assumption of many contracting protocols is that all parties can
 propagate and confirm transactions in a timely manner.  Increasing attention has been brought to
-"pinning attacks," a type of censorship in which the attacker uses mempool policy restrictions to
+&quot;pinning attacks,&quot; a type of censorship in which the attacker uses mempool policy restrictions to
 prevent a transaction from being relayed or getting mined.
 <ref><strong>Concerns for pinning attacks in L2 protocols</strong></p>
 <ul>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020458.html" target="_blank">Greg Sanders, "Bringing a nuke to a knife fight: Transaction introspection to stop RBF pinning"</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-April/002639.html" target="_blank">Matt Corallo, "RBF Pinning with Counterparties and Competing Interest"</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-June/002758.html" target="_blank">Antoine Riard, "Pinning : The Good, The Bad, The Ugly"</a></li>
-<li><a href="https://github.com/t-bast/lightning-docs/blob/master/pinning-attacks.md" target="_blank">Bastien Teinturier, "Pinning Attacks"</a></li>
-<li><a href="https://gist.github.com/instagibbs/60264606e181451e977e439a49f69fe1" target="_blank">Greg Sanders, "Eltoo Pinning"</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020458.html" target="_blank">Greg Sanders, &quot;Bringing a nuke to a knife fight: Transaction introspection to stop RBF pinning&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-April/002639.html" target="_blank">Matt Corallo, &quot;RBF Pinning with Counterparties and Competing Interest&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-June/002758.html" target="_blank">Antoine Riard, &quot;Pinning : The Good, The Bad, The Ugly&quot;</a></li>
+<li><a href="https://github.com/t-bast/lightning-docs/blob/master/pinning-attacks.md" target="_blank">Bastien Teinturier, &quot;Pinning Attacks&quot;</a></li>
+<li><a href="https://gist.github.com/instagibbs/60264606e181451e977e439a49f69fe1" target="_blank">Greg Sanders, &quot;Eltoo Pinning&quot;</a></li>
 </ul>
 </ref>
 <p>These transactions must meet a certain confirmation target to be effective, but their feerates
@@ -198,7 +198,7 @@ information with one another, resulting in a more efficient and reliable way to 
 changing its txid; a node cannot use txid to deduplicate transactions it has already downloaded
 or validated. Ideally, two nodes that both support BIP339 wtxid-based transaction relay shouldn't
 ever need to use txid-based transaction relay.</p>
-<p>A single use case of txid-based relay remains: handling "orphan" transactions that spend output(s)
+<p>A single use case of txid-based relay remains: handling &quot;orphan&quot; transactions that spend output(s)
 from an unconfirmed transaction the receiving node is unaware of. Orphan transactions are very
 common for new nodes that have just completed Initial Block Download and do not have an up-to-date
 mempool. Nodes also download transactions from multiple peers. If the peer from which a child
@@ -242,31 +242,31 @@ and accepted individually.</p>
 <img src="./bip-0331/no_package_info.png" />
 <br />
 <p><strong>Package Information Only:</strong> Just having package information gives enough information for the
-receiver to accept the packages. That is, rather than using "getpkgtxns" and "pkgtxns" messages,
-send "getdata" and download the transactions individually. While this option is a potential fallback
+receiver to accept the packages. That is, rather than using &quot;getpkgtxns&quot; and &quot;pkgtxns&quot; messages,
+send &quot;getdata&quot; and download the transactions individually. While this option is a potential fallback
 if batched transaction download fails for some reason, it shouldn't be used as the default because
 it always requires storage of unvalidated transactions.
 <img src="./bip-0331/package_info_only.png" />
 </ref></p>
-<p>Package relay is negotiated between two peers during the version handshake using a "sendpackages"
-message. The versions field within "sendpackages" is interpreted as a bitfield; peers may relay
+<p>Package relay is negotiated between two peers during the version handshake using a &quot;sendpackages&quot;
+message. The versions field within &quot;sendpackages&quot; is interpreted as a bitfield; peers may relay
 multiple versions of packages. Package relay requires both peers to support wtxid-based relay
 because package transactions are referenced by their wtxids.
 <ref><strong>Why do we need multiple versions? Why can't we just support arbitrary packages?</strong>
 Attempting to support arbitrary packages in mempool validation may result in very complex logic, new
 Denial of Service attack vectors, and policy limitations that could be leveraged to censor
-transactions (aka "pinning attacks"). This protocol is extensible to support other types of
+transactions (aka &quot;pinning attacks&quot;). This protocol is extensible to support other types of
 packages based on future desired use cases. Future package information messages may describe
 different types of packages and/or contain more information than a list of wtxids, e.g. feerate or
 relationships between transactions.</ref>
 <ref><strong>Why use a bitfield instead of a numbering system?</strong>
 It should be possible to support some subset of the existing package types.</ref></p>
 <img src="./bip-0331/version_negotiation.png" />
-<p>Nodes indicate support for batched transaction data round ("getpkgtxns", "pkgtxns", and
-"MSG_PKGTXNS") using the <code>PKG_RELAY_PKGTXNS = (1 &lt;&lt; 0)</code> bit in their "sendpackages"
+<p>Nodes indicate support for batched transaction data round (&quot;getpkgtxns&quot;, &quot;pkgtxns&quot;, and
+&quot;MSG_PKGTXNS&quot;) using the <code>PKG_RELAY_PKGTXNS = (1 &lt;&lt; 0)</code> bit in their &quot;sendpackages&quot;
 messages during version handshake. They indicate support for the ancestor package information
-round ("ancpkginfo", "MSG_ANCPKGINFO") using the <code>PKG_RELAY_ANC = (1 &lt;&lt; 1)</code> bit in their
-"sendpackages" messages during version handshake.</p>
+round (&quot;ancpkginfo&quot;, &quot;MSG_ANCPKGINFO&quot;) using the <code>PKG_RELAY_ANC = (1 &lt;&lt; 1)</code> bit in their
+&quot;sendpackages&quot; messages during version handshake.</p>
 <h3>Protocol Flow Examples</h3>
 <p>This package relay protocol satisfies both use cases (orphan transaction handling and high-feerate
 transaction paying for low-feerate ancestors).</p>
@@ -306,8 +306,8 @@ currently-rejected transactions to propagate. After deploying receiver-initiated
 can observe its usage and then introduce a sender-initiated package relay protocol informed by data
 collected from the p2p network.</ref></p>
 <h3>Combined Hash</h3>
-<p>A "combined hash" serves as a unique "package id" for some list of transactions and helps provide a
-meaningful but short "notfound" response to "getpkgtxns."</p>
+<p>A &quot;combined hash&quot; serves as a unique &quot;package id&quot; for some list of transactions and helps provide a
+meaningful but short &quot;notfound&quot; response to &quot;getpkgtxns.&quot;</p>
 <p>The combined hash of a package of transactions is equal to the sha256 hash of each transaction's
 wtxid concatenated in lexicographical order.</p>
 <h3>New Messages</h3>
@@ -319,16 +319,16 @@ wtxid concatenated in lexicographical order.</p>
 </tbody></table>
 <ol>
 <li>
-<p>The "sendpackages" message has the structure defined above, with pchCommand == "sendpackages".</p>
+<p>The &quot;sendpackages&quot; message has the structure defined above, with pchCommand == &quot;sendpackages&quot;.</p>
 </li>
 <li>
-<p>During version handshake, nodes should send one "sendpackages" message indicating they support package relay, with the versions field indicating which versions they support.</p>
+<p>During version handshake, nodes should send one &quot;sendpackages&quot; message indicating they support package relay, with the versions field indicating which versions they support.</p>
 </li>
 <li>
-<p>The "sendpackages" message MUST be sent before sending a "verack" message. If a "sendpackages" message is received after "verack", the sender may be disconnected.</p>
+<p>The &quot;sendpackages&quot; message MUST be sent before sending a &quot;verack&quot; message. If a &quot;sendpackages&quot; message is received after &quot;verack&quot;, the sender may be disconnected.</p>
 </li>
 <li>
-<p>Upon successful connection ("verack" sent by both peers), a node may relay packages with the peer if they did not set "fRelay" to false in the "version" message, both peers sent "wtxidrelay", and both peers sent "sendpackages" for matching version bit(s). Unknown bits (including versions==0) should be ignored. Peers should relay packages corresponding to versions that both sent "sendpackages" for.<ref><strong>Is it ok to send "sendpackages" to a peer that specified fRelay=false in their "version" message?</strong></p>
+<p>Upon successful connection (&quot;verack&quot; sent by both peers), a node may relay packages with the peer if they did not set &quot;fRelay&quot; to false in the &quot;version&quot; message, both peers sent &quot;wtxidrelay&quot;, and both peers sent &quot;sendpackages&quot; for matching version bit(s). Unknown bits (including versions==0) should be ignored. Peers should relay packages corresponding to versions that both sent &quot;sendpackages&quot; for.<ref><strong>Is it ok to send &quot;sendpackages&quot; to a peer that specified fRelay=false in their &quot;version&quot; message?</strong></p>
 </li>
 </ol>
 <p>Yes, this is allowed in order to reduce the number of negotiation steps. This means nodes can
@@ -342,10 +342,10 @@ logic at the end based on what was sent and received. See <a href="https://lists
 </tbody></table>
 <ol>
 <li>
-<p>The "ancpkginfo" message has the structure defined above, with pchCommand == "ancpkginfo".</p>
+<p>The &quot;ancpkginfo&quot; message has the structure defined above, with pchCommand == &quot;ancpkginfo&quot;.</p>
 </li>
 <li>
-<p>The "txns" field should contain a list of wtxids which constitute the ancestor package of the last wtxid. For the receiver's convenience, the sender should - but is not required to - sort the wtxids in topological order. The topological sort can be achieved by sorting the transactions by mempool acceptance order (if parents are always accepted before children). Apart from the last wtxid which is used to learn which transaction the message corresponds to, there is no enforced ordering. Nodes should not disconnect or punish a peer who provides a list not sorted in topological order.<ref><strong>Why not include feerate information to help the receiver decide whether these transactions are worth downloading?</strong></p>
+<p>The &quot;txns&quot; field should contain a list of wtxids which constitute the ancestor package of the last wtxid. For the receiver's convenience, the sender should - but is not required to - sort the wtxids in topological order. The topological sort can be achieved by sorting the transactions by mempool acceptance order (if parents are always accepted before children). Apart from the last wtxid which is used to learn which transaction the message corresponds to, there is no enforced ordering. Nodes should not disconnect or punish a peer who provides a list not sorted in topological order.<ref><strong>Why not include feerate information to help the receiver decide whether these transactions are worth downloading?</strong></p>
 </li>
 </ol>
 <p>A simple feerate is typically insufficient; the receiver must also know the dependency
@@ -357,7 +357,7 @@ are based on their chainstate. For example, during a reorg or when two blocks ar
 time, one peer may see a transaction as confirmed while the other peer does not.
 As such, it is impossible to accurately enforce this without also knowing the peer's chainstate.
 It was <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020493.html" target="_blank">originally proposed</a>
-to include a block hash in "ancpkginfo" to avoid unwarranted disconnections. However, it does not
+to include a block hash in &quot;ancpkginfo&quot; to avoid unwarranted disconnections. However, it does not
 make much sense to stop or delay transaction data requests due to mismatched chainstates, and the
 chainstate may change again between package information and transaction data rounds. Instead,
 differences in chainstate should be handled at the validation level. The node has already spent
@@ -370,16 +370,16 @@ a list of transactions contains a full ancestor package without knowing what the
 </ref></p>
 <ol>
 <li>
-<p>Upon receipt of a "ancpkginfo" message, the node may use it to request the transactions it does not already have (e.g. using "getpkgtxns" or "tx").</p>
+<p>Upon receipt of a &quot;ancpkginfo&quot; message, the node may use it to request the transactions it does not already have (e.g. using &quot;getpkgtxns&quot; or &quot;tx&quot;).</p>
 </li>
 <li>
-<p>Upon receipt of a malformed "ancpkginfo" message, the sender may be disconnected. An "ancpkginfo" message is malformed if it contains duplicate wtxids or conflicting transactions (spending the same inputs). The receiver may learn that a package info was malformed after downloading the transactions.</p>
+<p>Upon receipt of a malformed &quot;ancpkginfo&quot; message, the sender may be disconnected. An &quot;ancpkginfo&quot; message is malformed if it contains duplicate wtxids or conflicting transactions (spending the same inputs). The receiver may learn that a package info was malformed after downloading the transactions.</p>
 </li>
 <li>
-<p>A node MUST NOT send a "ancpkginfo" message that has not been requested by the recipient. Upon receipt of an unsolicited "ancpkginfo", a node may disconnect the sender.</p>
+<p>A node MUST NOT send a &quot;ancpkginfo&quot; message that has not been requested by the recipient. Upon receipt of an unsolicited &quot;ancpkginfo&quot;, a node may disconnect the sender.</p>
 </li>
 <li>
-<p>This message must only be used if both peers set <code>PKG_RELAY_ANC</code> in their "sendpackages" message. If an "ancpkginfo" message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+<p>This message must only be used if both peers set <code>PKG_RELAY_ANC</code> in their &quot;sendpackages&quot; message. If an &quot;ancpkginfo&quot; message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
 </li>
 </ol>
 <h4>MSG_ANCPKGINFO</h4>
@@ -388,16 +388,16 @@ a list of transactions contains a full ancestor package without knowing what the
 <p>A new inv type (MSG_ANCPKGINFO == 0x7) is added, for use only in getdata requests pertaining to ancestor packages.</p>
 </li>
 <li>
-<p>As a getdata request type, it indicates that the sender wants an "ancpkginfo" containing all of the unconfirmed ancestors of a transaction, referenced by wtxid.</p>
+<p>As a getdata request type, it indicates that the sender wants an &quot;ancpkginfo&quot; containing all of the unconfirmed ancestors of a transaction, referenced by wtxid.</p>
 </li>
 <li>
-<p>Upon receipt of a "getdata(MSG_ANCPKGINFO)" request, the node should respond with an "ancpkginfo" message corresponding to the transaction's unconfirmed ancestor package, or with "notfound".  The wtxid of the requested transaction must be the last item in the "ancpkginfo" response list, as the last item is used to determine which transaction the "ancpkginfo" pertains to.</p>
+<p>Upon receipt of a &quot;getdata(MSG_ANCPKGINFO)&quot; request, the node should respond with an &quot;ancpkginfo&quot; message corresponding to the transaction's unconfirmed ancestor package, or with &quot;notfound&quot;.  The wtxid of the requested transaction must be the last item in the &quot;ancpkginfo&quot; response list, as the last item is used to determine which transaction the &quot;ancpkginfo&quot; pertains to.</p>
 </li>
 <li>
-<p>The inv type must only be used in a "getdata" message. An "inv(MSG_ANCPKGINFO)" must never be sent.  If an "inv(MSG_ANCPKGINFO)" is received, the sender may be disconnected.</p>
+<p>The inv type must only be used in a &quot;getdata&quot; message. An &quot;inv(MSG_ANCPKGINFO)&quot; must never be sent.  If an &quot;inv(MSG_ANCPKGINFO)&quot; is received, the sender may be disconnected.</p>
 </li>
 <li>
-<p>This inv type must only be used if both peers set <code>PKG_RELAY_ANC</code> in their "sendpackages" message. If a "getdata" message with type MSG_ANCPKGINFO is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+<p>This inv type must only be used if both peers set <code>PKG_RELAY_ANC</code> in their &quot;sendpackages&quot; message. If a &quot;getdata&quot; message with type MSG_ANCPKGINFO is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
 </li>
 </ol>
 <h4>getpkgtxns</h4>
@@ -407,19 +407,19 @@ a list of transactions contains a full ancestor package without knowing what the
 </tbody></table>
 <ol>
 <li>
-<p>The "getpkgtxns" message has the structure defined above, with pchCommand == "getpkgtxns".</p>
+<p>The &quot;getpkgtxns&quot; message has the structure defined above, with pchCommand == &quot;getpkgtxns&quot;.</p>
 </li>
 <li>
-<p>A "getpkgtxns" message should be used to request some list of transactions specified by witness transaction id. It indicates that the node wants to receive either all the specified transactions or none of them. This message is intended to allow nodes to avoid downloading and storing transactions that cannot be validated without each other. The list of transactions does not need to correspond to a previously-received ancpkginfo message.</p>
+<p>A &quot;getpkgtxns&quot; message should be used to request some list of transactions specified by witness transaction id. It indicates that the node wants to receive either all the specified transactions or none of them. This message is intended to allow nodes to avoid downloading and storing transactions that cannot be validated without each other. The list of transactions does not need to correspond to a previously-received ancpkginfo message.</p>
 </li>
 <li>
-<p>Upon receipt of a "getpkgtxns" message, a node should respond with either a "pkgtxns" containing all of the requested transactions in the same order specified in the "getpkgtxns" request or one "notfound" message of type MSG_PKGTXNS and combined hash of all of the wtxids in the "getpkgtxns" request (only one "notfound" message and nothing else), indicating one or more of the transactions is unavailable.</p>
+<p>Upon receipt of a &quot;getpkgtxns&quot; message, a node should respond with either a &quot;pkgtxns&quot; containing all of the requested transactions in the same order specified in the &quot;getpkgtxns&quot; request or one &quot;notfound&quot; message of type MSG_PKGTXNS and combined hash of all of the wtxids in the &quot;getpkgtxns&quot; request (only one &quot;notfound&quot; message and nothing else), indicating one or more of the transactions is unavailable.</p>
 </li>
 <li>
-<p>A "getpkgtxns" message must contain at most 100 wtxids. Upon receipt of a "getpkgtxns" message with more than 100 wtxids, a node may ignore the message (to avoid calculating the combined hash) and disconnect the sender.</p>
+<p>A &quot;getpkgtxns&quot; message must contain at most 100 wtxids. Upon receipt of a &quot;getpkgtxns&quot; message with more than 100 wtxids, a node may ignore the message (to avoid calculating the combined hash) and disconnect the sender.</p>
 </li>
 <li>
-<p>This message must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their "sendpackages" message. If a "getpkgtxns" message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+<p>This message must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their &quot;sendpackages&quot; message. If a &quot;getpkgtxns&quot; message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
 </li>
 </ol>
 <h4>pkgtxns</h4>
@@ -429,31 +429,31 @@ a list of transactions contains a full ancestor package without knowing what the
 </tbody></table>
 <ol>
 <li>
-<p>The "pkgtxns" message has the structure defined above, with pchCommand == "pkgtxns".</p>
+<p>The &quot;pkgtxns&quot; message has the structure defined above, with pchCommand == &quot;pkgtxns&quot;.</p>
 </li>
 <li>
-<p>A "pkgtxns" message should contain the transaction data requested using "getpkgtxns".</p>
+<p>A &quot;pkgtxns&quot; message should contain the transaction data requested using &quot;getpkgtxns&quot;.</p>
 </li>
 <li>
-<p>A "pkgtxns" message should only be sent to a peer that requested the package using "getpkgtxns". If a node receives an unsolicited package, it may choose to validate the transactions or not, and the sender may be disconnected.</p>
+<p>A &quot;pkgtxns&quot; message should only be sent to a peer that requested the package using &quot;getpkgtxns&quot;. If a node receives an unsolicited package, it may choose to validate the transactions or not, and the sender may be disconnected.</p>
 </li>
 <li>
-<p>This message must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their "sendpackages" message. If a "pkgtxns" message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
+<p>This message must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their &quot;sendpackages&quot; message. If a &quot;pkgtxns&quot; message is received from a peer with which this type of package relay was not negotiated, no response should be sent and the sender may be disconnected.</p>
 </li>
 </ol>
 <h4>MSG_PKGTXNS</h4>
 <ol>
 <li>
-<p>A new inv type (MSG_PKGTXNS == 0x6) is added, for use only in "notfound" messages pertaining to package transactions.</p>
+<p>A new inv type (MSG_PKGTXNS == 0x6) is added, for use only in &quot;notfound&quot; messages pertaining to package transactions.</p>
 </li>
 <li>
-<p>As a "notfound" type, it indicates that the sender is unable to send all the transactions requested in a prior "getpkgtxns" message. The hash used is equal to the combined hash of the wtxids in the getpkgtxns request.</p>
+<p>As a &quot;notfound&quot; type, it indicates that the sender is unable to send all the transactions requested in a prior &quot;getpkgtxns&quot; message. The hash used is equal to the combined hash of the wtxids in the getpkgtxns request.</p>
 </li>
 <li>
-<p>This inv type should only be used in "notfound" messages, i.e. "inv(MSG_PKGTXNS)" and "getdata(MSG_PKGTXNS)" must never be sent. Upon receipt of an "inv" or "getdata" message of this type, the sender may be disconnected.</p>
+<p>This inv type should only be used in &quot;notfound&quot; messages, i.e. &quot;inv(MSG_PKGTXNS)&quot; and &quot;getdata(MSG_PKGTXNS)&quot; must never be sent. Upon receipt of an &quot;inv&quot; or &quot;getdata&quot; message of this type, the sender may be disconnected.</p>
 </li>
 <li>
-<p>This inv type must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their "sendpackages" message.</p>
+<p>This inv type must only be used if both peers set <code>PKG_RELAY_PKGTXNS</code> in their &quot;sendpackages&quot; message.</p>
 </li>
 </ol>
 <h2>Compatibility</h2>
@@ -474,11 +474,11 @@ those ancestors resolved using ancestor package relay.
 <h2>Extensibility</h2>
 <p>This protocol can be extended to include more types of package information in the future, while
 continuing to use the same messages for transaction data download. One would define a new package
-information message (named "*pkginfo" in the diagram below), allocate its corresponding inv
-type (named "<em>PKGINFO" in the diagram below), and specify how to signal support using the
-versions field of "sendpackages" (an additional bit named "PKG_RELAY_</em>" in the diagram below). A
+information message (named &quot;*pkginfo&quot; in the diagram below), allocate its corresponding inv
+type (named &quot;<em>PKGINFO&quot; in the diagram below), and specify how to signal support using the
+versions field of &quot;sendpackages&quot; (an additional bit named &quot;PKG_RELAY_</em>&quot; in the diagram below). A
 future version of package relay may allow a sender-initiated dialogue by specifying that the package
-info type inv type can be used in an "inv" message.
+info type inv type can be used in an &quot;inv&quot; message.
 <br />
 <img src="./bip-0331/sender_init_future_version.png" /></p>
 <h2>Implementation</h2>
@@ -523,7 +523,7 @@ dependent upon them should still be considered.
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

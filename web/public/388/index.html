@@ -127,7 +127,7 @@
   Discussion: 2022-05-10: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2022-May&#x2F;020423.html
 </code></pre>
 <h2> Abstract </h2>
-<p>Software wallets and hardware signing devices typically partition funds into separate "accounts". When signing or visualizing a transaction, aggregate flows of funds of all accounts affected by the transaction may (and should) be displayed to the user.</p>
+<p>Software wallets and hardware signing devices typically partition funds into separate &quot;accounts&quot;. When signing or visualizing a transaction, aggregate flows of funds of all accounts affected by the transaction may (and should) be displayed to the user.</p>
 <p>Wallet policies build on top of output script descriptors to represent such accounts in a compact, reviewable way.
 An account encompasses a logical group of receive and change addresses, and each wallet policy represents all descriptors necessary to describe an account in its entirety.</p>
 <p>We simplify the language to suit devices with limited memory, where even keeping the entire descriptor in memory could be a major hurdle, by reducing the generality of descriptors to just the essential features and by separating the extended pubkeys and other key information from the descriptor.</p>
@@ -152,7 +152,7 @@ An account encompasses a logical group of receive and change addresses, and each
 <p>Hardware signing devices strive to guarantee that no action can be performed without the user’s consent as long as the user correctly verifies the information that is shown on the device’s screen before approving.</p>
 <p>This must hold even in scenarios where the attacker has full control of the machine that is connected to the signing device, and can execute arbitrary requests, or tamper with the legitimate user's requests.</p>
 <p>Therefore, it is not at all trivial to allow complex scripts, especially if they contain keys that belong to third parties.
-The hardware signing device must guarantee that the user knows precisely what "policy" is being used to spend the funds, and that any "unspent" funds (if any) that is sent to a change address will be protected by the same policy.</p>
+The hardware signing device must guarantee that the user knows precisely what &quot;policy&quot; is being used to spend the funds, and that any &quot;unspent&quot; funds (if any) that is sent to a change address will be protected by the same policy.</p>
 <p>This makes it impossible for an attacker to surreptitiously modify the policy, therefore stealing or burning the user's funds.</p>
 <h4> Avoiding key reuse </h4>
 <p>Reusing public keys within a script is a source of malleability when using miniscript policies, which has potential security implications.</p>
@@ -175,7 +175,7 @@ The hardware signing device must guarantee that the user knows precisely what "p
 <li>The software wallet initiates a <em>wallet policy registration</em> on the hardware signing device; the information should include the wallet policy, but also a unique <em>name</em> that identifies the policy.</li>
 <li>The device shows the wallet policy to the user using the secure screen.</li>
 <li>After inspecting the policy and comparing it with a trusted source (for example a printed backup), the user approves the policy.</li>
-<li>If stateful, the hardware signing device persists the policy in its permanent memory; if stateless, it returns a "proof of registration".</li>
+<li>If stateful, the hardware signing device persists the policy in its permanent memory; if stateless, it returns a &quot;proof of registration&quot;.</li>
 </ol>
 <p>The <strong>proof of registration</strong> will allow the hardware signer to verify that a certain policy was indeed previously approved by the user, and is therefore safe to use without repeating the expensive user verification procedure. The details of how to create a proof of registration are out of scope for this document; using a Message Authentication Code on a hash committing to the wallet policy, its name and any additional metadata is an effective solution if correctly executed.</p>
 <p>Once a policy is registered, the hardware signing device can perform the typical operations securely:</p>
@@ -277,7 +277,7 @@ The hardware signing device must guarantee that the user knows precisely what "p
 <li>replacing every <tt>/**</tt> with <tt>/&lt;0;1&gt;/*</tt>.</li>
 </ul>
 <p>For example, the wallet descriptor <tt>pkh(@0/**)</tt> with key information
-<tt>["[d34db33f/44'/0'/0']xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL"]</tt>
+<tt>[&quot;[d34db33f/44'/0'/0']xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL&quot;]</tt>
 produces the following multipath descriptor:</p>
 <p><tt>pkh([d34db33f/44'/0'/0']xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/&lt;0;1&gt;/*)</tt></p>
 <h3> Implementation guidelines </h3>
@@ -421,7 +421,7 @@ The reference implementation is for demonstration purposes only and not to be us
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

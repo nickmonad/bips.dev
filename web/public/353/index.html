@@ -148,7 +148,7 @@
 <p>Note that because resolvers are not required to support resolving non-ASCII identifiers, wallets SHOULD avoid using non-ASCII identifiers.</p>
 <p>For payment instructions that have a built-in expiry time (e.g. Lightning BOLT 12 offers), care must be taken to ensure that the DNS records expire prior to the expiry of the payment instructions. Otherwise, senders may have payment instructions cached locally which have expired, preventing payment.</p>
 <h3> Resolution </h3>
-<p>Clients resolving Bitcoin payment instructions MUST ignore any TXT records at the same label which do not begin with (ignoring case) "bitcoin:". Resolvers encountering multiple "bitcoin:"-matching TXT records at the same label MUST treat the records as invalid and refuse to use any payment instructions therein.</p>
+<p>Clients resolving Bitcoin payment instructions MUST ignore any TXT records at the same label which do not begin with (ignoring case) &quot;bitcoin:&quot;. Resolvers encountering multiple &quot;bitcoin:&quot;-matching TXT records at the same label MUST treat the records as invalid and refuse to use any payment instructions therein.</p>
 <p>Clients resolving Bitcoin payment instructions <b>MUST</b> reconstruct the <code>bitcoin:</code> URI by concatenating the TXT RR’s <code>&lt;character-string&gt;</code> fields in <b>RDATA order</b>, without inserting separators, before parsing.<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup></p>
 <p>Clients <b>MUST NOT</b> concatenate across multiple TXT RRs at the same owner name.</p>
 <p>Clients resolving Bitcoin payment instructions MUST fully validate DNSSEC signatures leading to the DNS root (including any relevant CNAME or DNAME records) and MUST NOT accept DNSSEC signatures which use SHA-1 or RSA with keys shorter than 1024 bits. Resolvers MAY accept SHA-1 DS records.</p>
@@ -161,7 +161,7 @@
 <p>Payment instructions which do contain on-chain addresses which will be re-used SHOULD be rotated after any transaction to such an address is confirmed on-chain.</p>
 <h3> Display </h3>
 <p>When displaying a verified human-readable name, wallets SHOULD prefix it with ₿, i.e. ₿<code>user</code>@<code>domain</code>. They SHOULD parse recipient information in both <code>user</code>@<code>domain</code> and ₿<code>user</code>@<code>domain</code> forms and resolve such an entry into recipient information using the above record. For the avoidance of doubt, the ₿ is <em>not</em> included in the DNS label which is resolved.</p>
-<p>Wallets providing the ability for users to "copy" their address information SHOULD copy the underlying URI directly, rather than the human-readable name. This avoids an additional DNS lookup by the application in which it is pasted. Wallets that nevertheless provide users the ability to copy their human-readable name, MUST include the ₿ prefix (i.e. copy it in the form ₿<code>user</code>@<code>domain</code>).</p>
+<p>Wallets providing the ability for users to &quot;copy&quot; their address information SHOULD copy the underlying URI directly, rather than the human-readable name. This avoids an additional DNS lookup by the application in which it is pasted. Wallets that nevertheless provide users the ability to copy their human-readable name, MUST include the ₿ prefix (i.e. copy it in the form ₿<code>user</code>@<code>domain</code>).</p>
 <p>Wallets accepting payment information from external devices (e.g. hardware wallets) SHOULD accept RFC 9102-formatted proofs (as a series of unsorted <code>AuthenticationChain</code> records) and, if verification succeeds, SHOULD display the recipient in the form ₿<code>user</code>@<code>domain</code>.</p>
 <h3> PSBT types </h3>
 <p>Wallets accepting payment information from external devices (e.g. hardware wallets) MAY examine the following per-output PSBT fields to fetch RFC 9102-formatted proofs. Wallets creating PSBTs with recipient information derived from human-readable names SHOULD include the following fields.</p>
@@ -189,7 +189,7 @@
 <h3> DNS Enumeration </h3>
 <p>In most cases where payments are accepted from any third-party, user enumeration is practical by simply attempting to send small value payments to a list of possible user names. However, storing all valid users in the DNS directly may make such enumeration marginally more practical. Thus, those wishing to avoid such enumeration should carefully ensure all DNS names return valid payment instructions. Note when doing so that wildcard records are identified as such by the DNSSEC RRSIG labels counter and are differentiable from non-wildcard records.</p>
 <h2> Backwards Compatibility </h2>
-<p>This work is intended to extend and subsume the existing "Lightning Address" scheme, which maps similar names (without the ₿ prefix) using HTTPS servers to Lightning BOLT 11 payment instructions. Wallets implementing this scheme MAY fall back to existing "Lightning Address" logic if DNS resolution fails but SHOULD NOT do so after this scheme is sufficiently broadly deployed to avoid leaking sender IP address information.</p>
+<p>This work is intended to extend and subsume the existing &quot;Lightning Address&quot; scheme, which maps similar names (without the ₿ prefix) using HTTPS servers to Lightning BOLT 11 payment instructions. Wallets implementing this scheme MAY fall back to existing &quot;Lightning Address&quot; logic if DNS resolution fails but SHOULD NOT do so after this scheme is sufficiently broadly deployed to avoid leaking sender IP address information.</p>
 <h2> Examples </h2>
 <p><code>matt@mattcorallo.com</code> resolves to</p>
 <pre>matt.user._bitcoin-payment.mattcorallo.com. 1800 IN TXT  "bitcoin:?lno=lno1qsgr30k45jhvkfqxjqheaetac
@@ -257,7 +257,7 @@ Thanks to Andrew Kaizer for the suggestion to explicitly restrict cache lifetime
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

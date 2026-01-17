@@ -137,7 +137,7 @@
 <p>Mempools typically accept and relay transactions that spend outputs from other unconfirmed transactions, but restrict package sizes through ancestor and descendant limits
 <sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
 to limit the computational complexity of mempool operations and mitigate Denial of Service attacks.</p>
-<p>Users may also create unconfirmed transactions that conflict with -- or are "double spends" of -- each other by spending the same input(s) in both.
+<p>Users may also create unconfirmed transactions that conflict with -- or are &quot;double spends&quot; of -- each other by spending the same input(s) in both.
 Instead of always keeping the first-seen transaction, many mempools also have some kind of Replace by Fee (RBF) policy
 <ref>
 <a href="https://github.com/bitcoin/bitcoin/blob/632a2bb731804dffe52bd4cbd90bfee352d25ede/doc/policy/mempool-replacements.md" target="_blank">Bitcoin Core's RBF policy</a> at the time of writing. It is slightly different from what is described in BIP 125.
@@ -147,16 +147,16 @@ to keep the more incentive compatible transaction, i.e. one that would earn a mi
 <p>Pinning is consequential to contracting protocols in which untrusted parties construct and sign time-sensitive transactions to be broadcast on-chain later
 <ref>Posts about pinning in LN and LN-Symmetry:</p>
 <ul>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020458.html" target="_blank">"Bringing a nuke to a knife fight: Transaction introspection to stop RBF pinning"</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-April/002639.html" target="_blank">"RBF Pinning with Counterparties and Competing Interest"</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-June/002758.html" target="_blank">"Pinning : The Good, The Bad, The Ugly"</a></li>
-<li><a href="https://github.com/t-bast/lightning-docs/blob/master/pinning-attacks.md" target="_blank">"Pinning Attacks"</a></li>
-<li><a href="https://gist.github.com/instagibbs/60264606e181451e977e439a49f69fe1" target="_blank">"Eltoo Pinning"</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020458.html" target="_blank">&quot;Bringing a nuke to a knife fight: Transaction introspection to stop RBF pinning&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-April/002639.html" target="_blank">&quot;RBF Pinning with Counterparties and Competing Interest&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-June/002758.html" target="_blank">&quot;Pinning : The Good, The Bad, The Ugly&quot;</a></li>
+<li><a href="https://github.com/t-bast/lightning-docs/blob/master/pinning-attacks.md" target="_blank">&quot;Pinning Attacks&quot;</a></li>
+<li><a href="https://gist.github.com/instagibbs/60264606e181451e977e439a49f69fe1" target="_blank">&quot;Eltoo Pinning&quot;</a></li>
 </ul>
 <p></ref>.
 When the funds available to be redeemed by each party depend on a transaction confirming within a specific time window, a malicious party may be able to steal money if the honest party cannot get their transaction confirmed. As such, the ability to fee-bump a transaction to entice miners to include it in their blocks is crucial to the security of the protocol.</p>
 <h3>RBF pinning through absolute fees</h3>
-<p>Imagine that counterparties Alice and Mallory have transactions (or packages) A and B, respectively, which conflict with each other. Alice broadcasts A and Mallory broadcasts B. RBF rules require the replacement transaction pay a higher absolute fee than the aggregate fees paid by all original transactions (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">"Rule 3"</a>). This means Mallory may increase the fees required to replace B beyond what Alice was planning to pay for A's fees.</p>
+<p>Imagine that counterparties Alice and Mallory have transactions (or packages) A and B, respectively, which conflict with each other. Alice broadcasts A and Mallory broadcasts B. RBF rules require the replacement transaction pay a higher absolute fee than the aggregate fees paid by all original transactions (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">&quot;Rule 3&quot;</a>). This means Mallory may increase the fees required to replace B beyond what Alice was planning to pay for A's fees.</p>
 <ol>
 <li>
 <p>Adding transaction(s) that descend from B and pay a low feerate (too low to fee-bump B through CPFP)<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>.</p>
@@ -166,9 +166,9 @@ When the funds available to be redeemed by each party depend on a transaction co
 </li>
 </ol>
 <h3>RBF pinning through number of conflicts</h3>
-<p>RBF rules require that no replacement trigger the removal of more than 100 transactions (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">"Rule 5"</a>). This number includes the descendants of the conflicted mempool transactions. Mallory can make it more difficult to replace transactions by attaching lots of descendants to them. For example, if Alice wants to batch-replace 5 transactions but each has 21 descendants, her replacement will be rejected regardless of its fees.</p>
+<p>RBF rules require that no replacement trigger the removal of more than 100 transactions (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">&quot;Rule 5&quot;</a>). This number includes the descendants of the conflicted mempool transactions. Mallory can make it more difficult to replace transactions by attaching lots of descendants to them. For example, if Alice wants to batch-replace 5 transactions but each has 21 descendants, her replacement will be rejected regardless of its fees.</p>
 <h3>RBF incentive compatibility requirements</h3>
-<p>There is currently no effective rule to enforce that a replacement transaction would be more incentive compatible to keep in the mempool. It is difficult to quantify the incentive compatibility of a set of transactions, especially in comparison with another set of transactions<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>, but the requirement of a feerate increase (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">"Rule 6"</a>) is far too simplistic.</p>
+<p>There is currently no effective rule to enforce that a replacement transaction would be more incentive compatible to keep in the mempool. It is difficult to quantify the incentive compatibility of a set of transactions, especially in comparison with another set of transactions<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>, but the requirement of a feerate increase (<a href="https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md#current-replace-by-fee-policy" target="_blank">&quot;Rule 6&quot;</a>) is far too simplistic.</p>
 <p>For example, a user could create a replacement transaction that pays more fees and is higher feerate, but has a low feerate ancestor and would confirm slower than the original transaction. As a result, all transactions signed with SIGHASH_ANYONECANPAY are vulnerable to being replaced by a transaction that will confirm later than the original<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>.</p>
 <h3>Child fees don't count towards RBF rules</h3>
 <p>A transaction must meet all fee-related requirements (Rules 3, 4, 6) alone; its child's fees cannot be used. A <em>Package RBF</em> policy would allow a transaction's child to be used for its RBF requirements.</p>
@@ -200,7 +200,7 @@ A node that implements this policy would apply their existing standardness and p
 </ol>
 <ul>
 <li>Requiring packages to be all-or-none TRUC makes it possible to enforce the topology limits. For example, the TRUC descendant limit would not be very meaningful if it could be bypassed by creating a non-TRUC child.</li>
-<li>Combined with Rule 1, this requirement creates "inherited signaling" when descendants of unconfirmed transactions are created. Checking whether a transaction signals replaceability this way does not require mempool traversal, and does not change based on what transactions are mined.</li>
+<li>Combined with Rule 1, this requirement creates &quot;inherited signaling&quot; when descendants of unconfirmed transactions are created. Checking whether a transaction signals replaceability this way does not require mempool traversal, and does not change based on what transactions are mined.</li>
 </ul>
 </ref>
 Note: A TRUC transaction can spend outputs from _confirmed_ non-TRUC transactions. A non-TRUC transaction can spend outputs from _confirmed_ TRUC transactions.
@@ -214,7 +214,7 @@ Note: A TRUC transaction can spend outputs from _confirmed_ non-TRUC transaction
 <li>This 1-parent-1-child topology makes it possible to use ancestor score (minimum of ancestor feerate and individual feerate) as a measure of incentive compatibility.</li>
 </ul>
 <p><br />Q: Why not allow multiple parents to enable batched fee-bumping?
-<br />To mitigate pinning through absolute fees, we need to prevent a child of an unconfirmed TRUC transaction from bringing in more unconfirmed ancestors. See #2 in "RBF pinning through absolute fees" section above.</p>
+<br />To mitigate pinning through absolute fees, we need to prevent a child of an unconfirmed TRUC transaction from bringing in more unconfirmed ancestors. See #2 in &quot;RBF pinning through absolute fees&quot; section above.</p>
 <p><br />Q: Why not allow another child?
 <br />Allowing another child disables the ability to use ancestor score to measure incentive compatibility. Imagine the original transaction, A, has a child B and co-parent C (i.e. B spends from A and C). C also has another child, D. B is one of the original transactions and thus its ancestor feerate must be lower than the package's feerate. However, this may be an underestimation because D can bump C without B's help. This is resolved if TRUC transactions can only have TRUC ancestors, as then C cannot have another child.</p>
 <p><br />Q: Why allow any descendants at all?
@@ -277,25 +277,25 @@ It also allows anchor outputs to have 0 value, eliminating the need to deduct va
 <p>This proposal allows for a different solution to fee-bumping in LN, in which commitment transactions are signed with 0 fees and include a single anchor that can later be used to add fees at broadcast time
 <ref>Proposals for changes to LN commitment transaction format using TRUC and a single anchor:</p>
 <ul>
-<li><a href="https://delvingbitcoin.org/t/lightning-transactions-with-v3-and-ephemeral-anchors/418" target="_blank">"Lightning transactions with v3 and ephemeral anchors"</a></li>
+<li><a href="https://delvingbitcoin.org/t/lightning-transactions-with-v3-and-ephemeral-anchors/418" target="_blank">&quot;Lightning transactions with v3 and ephemeral anchors&quot;</a></li>
 <li><a href="https://github.com/instagibbs/bolts/commits/zero_fee_commitment" target="_blank">bolts proposal branch</a></li>
-<li>See "Intended usage for LN" section in <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-September/020937.html" target="_blank">"New transaction policies (nVersion=3) for contracting protocols"</a></li>
+<li>See &quot;Intended usage for LN&quot; section in <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-September/020937.html" target="_blank">&quot;New transaction policies (nVersion=3) for contracting protocols&quot;</a></li>
 </ul>
 <p></ref>.
 A similar fee-bumping model can also be used in other contracting protocols
 <ref>Examples of non-LN protocols that have shown interest in, designed, or built fee-bumping using TRUC:</p>
 <ul>
 <li>A LN-Symmetry implementation using TRUC and ephemeral anchors: <a href="https://delvingbitcoin.org/t/ln-symmetry-project-recap/359" target="_blank">LN-Symmetry Project Recap</a> <a href="https://github.com/instagibbs/lightning/tree/eltoo_support" target="_blank">branch</a></li>
-<li>See "Managing Fees Safely" mentioning ephemeral anchors in <a href="https://jameso.be/vaults.pdf" target="_blank">"Vaults and Covenants"</a></li>
+<li>See &quot;Managing Fees Safely&quot; mentioning ephemeral anchors in <a href="https://jameso.be/vaults.pdf" target="_blank">&quot;Vaults and Covenants&quot;</a></li>
 </ul>
 <p></ref>.</p>
 <h2>Alternatives</h2>
 <p>Various alternatives for RBF
 <ref>Proposals and discussions dedicated to improving RBF:</p>
 <ul>
-<li><a href="https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff" target="_blank">"RBF Improvements"</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019817.html" target="_blank">"Improving RBF Policy"</a></li>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-June/016998.html" target="_blank">"[PROPOSAL] Emergency RBF (BIP 125)"</a></li>
+<li><a href="https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff" target="_blank">&quot;RBF Improvements&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019817.html" target="_blank">&quot;Improving RBF Policy&quot;</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-June/016998.html" target="_blank">&quot;[PROPOSAL] Emergency RBF (BIP 125)&quot;</a></li>
 </ul>
 </ref>
 and new fee-bumping mechanisms
@@ -313,31 +313,31 @@ A few popular ideas that were not incorporated into this work are summarized her
 <p>Add incentive compatibility requirement to RBF policy using some existing score or static calculation
 <ref>Examples of incentive compatibility score proposals and suggestions:</p>
 <ul>
-<li><a href="https://github.com/bitcoin/bitcoin/pull/23121" target="_blank">"check ancestor feerate in RBF, remove BIP125 Rule2"</a></li>
-<li><a href="https://github.com/bitcoin/bitcoin/pull/26451" target="_blank">"Enforce incentive compatibility for all RBF replacements"</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/pull/23121" target="_blank">&quot;check ancestor feerate in RBF, remove BIP125 Rule2&quot;</a></li>
+<li><a href="https://github.com/bitcoin/bitcoin/pull/26451" target="_blank">&quot;Enforce incentive compatibility for all RBF replacements&quot;</a></li>
 <li>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019841.html</li>
 <li>https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff?permalink_comment_id=4081349 gistcomment-4081349</li>
 </ul>
 <p></ref>.</p>
-<p>As the incentive compatibility "score" of a transaction must be dynamically calculated given the structure of mempools today, there is no satisfactory solution. A full calculation is too computationally expensive. Static values can overestimate or underestimate, leading to more pinning problems <sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>.
+<p>As the incentive compatibility &quot;score&quot; of a transaction must be dynamically calculated given the structure of mempools today, there is no satisfactory solution. A full calculation is too computationally expensive. Static values can overestimate or underestimate, leading to more pinning problems <sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>.
 The ability to calculate incentive compatibility scores efficiently is a primary feature and motivation for both TRUC transactions and Cluster Mempool.</p>
 <h3>Alternatives: replace by feerate</h3>
-<p>"Instead of using Rule 3 and/or 4 (requiring an increase in absolute fees), allow replacements with a higher feerate."</p>
-<p>One variation of this proposal is to apply this rule in certain exceptional scenarios or when the replacement would confirm "soon"
+<p>&quot;Instead of using Rule 3 and/or 4 (requiring an increase in absolute fees), allow replacements with a higher feerate.&quot;</p>
+<p>One variation of this proposal is to apply this rule in certain exceptional scenarios or when the replacement would confirm &quot;soon&quot;
 <ref>Examples of Replace by Feerate proposals and suggestions:</p>
 <ul>
-<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-June/016998.html" target="_blank">"[PROPOSAL] Emergency RBF (BIP 125)"</a></li>
+<li><a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-June/016998.html" target="_blank">&quot;[PROPOSAL] Emergency RBF (BIP 125)&quot;</a></li>
 <li><a href="https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff" target="_blank">fees-in-next-block-and-feerate-for-the-rest-of-the-mempool</a></li>
-<li><a href="https://petertodd.org/2024/one-shot-replace-by-fee-rate" target="_blank">"One-Shot Replace-by-Fee-Rate"</a></li>
+<li><a href="https://petertodd.org/2024/one-shot-replace-by-fee-rate" target="_blank">&quot;One-Shot Replace-by-Fee-Rate&quot;</a></li>
 </ul>
 <p></ref>.</p>
 <p>The primary problem with these proposals is the potential for free relay and DDoS attacks.</p>
 <p>Removing Rule 3 and 4 in general would allow free relay
 <ref>Examples of free relay with the removal of Rule 3 and/or 4:
 <br/> Consider a rule where the fee can be decreased (remove Rule 3 and 4) but the feerate must double. In this scenario, a 100 kvB transaction can be replaced by a 100 vB transaction paying 200 sats. That's 200 sats to relay 100,200 vB of transaction data, which is less than 0.002 sat/vB. It becomes quite cheap to replace large portions of the mempool, decreasing both its average feerate and total absolute fees.</p>
-<p><br/>Consider a rule where the fee can stay the same (keep Rule 3 but drop Rule 4) but the feerate must double. The attacker can start out with 100 kvB transaction, paying 1 sat/vB. A user can reduce its size over and over again, doubling the feerate each time until it gets too small, and end up paying 100 ksat for 100 kvB(1 + 1/2 + 1/4 + ... + log2(mintxsize)) -&gt; approaches 200 kvB. This means the attacker pays a rate of 0.5 sat/vB to relay transactions, which is below our "free relay" threshold of 1 sat/vB.
+<p><br/>Consider a rule where the fee can stay the same (keep Rule 3 but drop Rule 4) but the feerate must double. The attacker can start out with 100 kvB transaction, paying 1 sat/vB. A user can reduce its size over and over again, doubling the feerate each time until it gets too small, and end up paying 100 ksat for 100 kvB(1 + 1/2 + 1/4 + ... + log2(mintxsize)) -&gt; approaches 200 kvB. This means the attacker pays a rate of 0.5 sat/vB to relay transactions, which is below our &quot;free relay&quot; threshold of 1 sat/vB.
 </ref>.</p>
-<p>Another issue is the complexity of defining and implementing a "would confirm soon" or "is in the top N portion of the mempool." These proposals require an efficient way to assess the incentive compatibility score of a transaction and where it ranks amongst the other mempool transactions. This isn't feasible without something like cluster mempool (also see the "add static incentive compatibility rule in RBF policy" section above)
+<p>Another issue is the complexity of defining and implementing a &quot;would confirm soon&quot; or &quot;is in the top N portion of the mempool.&quot; These proposals require an efficient way to assess the incentive compatibility score of a transaction and where it ranks amongst the other mempool transactions. This isn't feasible without something like cluster mempool (also see the &quot;add static incentive compatibility rule in RBF policy&quot; section above)
 <ref>Concerns about Replace by Feerate proposals</p>
 <ul>
 <li>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-June/017020.html</li>
@@ -347,7 +347,7 @@ The ability to calculate incentive compatibility scores efficiently is a primary
 </ul>
 <p></ref>.</p>
 <h3>Alternatives: implement rate-limiting without fee rules</h3>
-<p>"Since Rule 3 and 4 (requiring an increase in absolute fees) are for rate-limiting, replace them with a mempool-wide or per-peer rate limits on replacements by outpoint and/or bandwidth
+<p>&quot;Since Rule 3 and 4 (requiring an increase in absolute fees) are for rate-limiting, replace them with a mempool-wide or per-peer rate limits on replacements by outpoint and/or bandwidth
 <ref>Examples of general rate-limiting proposals and suggestions:</p>
 <ul>
 <li>https://gist.github.com/glozow/25d9662c52453bd08b4b4b1d3783b9ff?permalink_comment_id=4081349 gistcomment-4081349</li>
@@ -358,7 +358,7 @@ The ability to calculate incentive compatibility scores efficiently is a primary
 <ul>
 <li>https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-January/019820.html</li>
 </ul>
-<p></ref>."</p>
+<p></ref>.&quot;</p>
 <p>A problem with any global rate limit is that, in the absence of reputation or identities, the limit could be exhausted by an attacker, thus restricting replacements for honest users. For example, an outpoint-based rate limit could be exhausted by one dishonest participant of a shared transaction, preventing the other participants from making any replacements. There are also other concerns about implementation complexity, free relay issues, and other unresolved edge cases
 <ref>Concerns</p>
 <ul>
@@ -384,7 +384,7 @@ and Bastien Teinturier.</p>
 <li><a href="https://bips.dev/431/#cite_ref_3">^</a> Example: https://github.com/bitcoin/bitcoin/pull/25038#issuecomment-1320295394</li>
 <li><a href="https://bips.dev/431/#cite_ref_4">^</a> https://delvingbitcoin.org/t/mempool-incentive-compatibility/553</li>
 <li><a href="https://bips.dev/431/#cite_ref_5">^</a> https://github.com/bitcoin/bitcoin/pull/23121#pullrequestreview-766271585</li>
-<li><a href="https://bips.dev/431/#cite_ref_6">^</a> <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-November/016518.html" target="_blank">"CPFP Carve-Out for Fee-Prediction Issues in Contracting Applications (eg Lightning)"</a></li>
+<li><a href="https://bips.dev/431/#cite_ref_6">^</a> <a href="https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-November/016518.html" target="_blank">&quot;CPFP Carve-Out for Fee-Prediction Issues in Contracting Applications (eg Lightning)&quot;</a></li>
 <li><a href="https://bips.dev/431/#cite_ref_7">^</a> https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393 the-cpfp-carveout-rule-can-no-longer-be-supported-12</li>
 <li><a href="https://bips.dev/431/#cite_ref_8">^</a> https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393#the-cpfp-carveout-rule-can-no-longer-be-supported-12</li>
 <li><a href="https://bips.dev/431/#cite_ref_9">^</a> https://delvingbitcoin.org/t/v3-and-some-possible-futures/523/3</li>
@@ -400,7 +400,7 @@ and Bastien Teinturier.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

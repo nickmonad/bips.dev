@@ -141,7 +141,7 @@ spending conditions consisting of various combinations of signatures, hash locks
 Yet, despite being limited in functionality, it is still highly nontrivial to:</p>
 <ul>
 <li>Given a combination of spending conditions, finding the most economical script to implement it.</li>
-<li>Given two scripts, construct a script that implements a composition of their spending conditions (e.g. a multisig where one of the "keys" is another multisig).</li>
+<li>Given two scripts, construct a script that implements a composition of their spending conditions (e.g. a multisig where one of the &quot;keys&quot; is another multisig).</li>
 <li>Given a script, find out what spending conditions it permits.</li>
 <li>Given a script and access to a sufficient set of private keys, construct a general satisfying witness for it.</li>
 <li>Given a script, be able to predict the cost of spending an output.</li>
@@ -217,10 +217,10 @@ that consume an exactly known number of arguments, while others need a subexpres
 nonzero top stack element to satisfy. To model all these properties, we define a correctness type
 system for Miniscript.</p>
 <h4 id="Correctness">Correctness</h4>
-<p>Every miniscript expression has one of four basic types: "<strong>B</strong>" (base), "<strong>V</strong>" (verify),
-"<strong>K</strong>" (key) and "<strong>W</strong>" (wrapped). Then there are 5 type modifiers that guarantee additional
-properties: "<strong>z</strong>" (zero-arg), "<strong>o</strong>" (one-arg), "<strong>n</strong>" (nonzero), "<strong>d</strong>"
-(dissatisfiable), and "<strong>u</strong>" (unit).</p>
+<p>Every miniscript expression has one of four basic types: &quot;<strong>B</strong>&quot; (base), &quot;<strong>V</strong>&quot; (verify),
+&quot;<strong>K</strong>&quot; (key) and &quot;<strong>W</strong>&quot; (wrapped). Then there are 5 type modifiers that guarantee additional
+properties: &quot;<strong>z</strong>&quot; (zero-arg), &quot;<strong>o</strong>&quot; (one-arg), &quot;<strong>n</strong>&quot; (nonzero), &quot;<strong>d</strong>&quot;
+(dissatisfiable), and &quot;<strong>u</strong>&quot; (unit).</p>
 <p>The following table lists the correctness requirements for each of the Miniscript expressions, and
 its type properties in function of those of their subexpressions.</p>
 <table><thead><tr><th>Miniscript</th><th>Requires</th><th>Type</th><th>Properties</th></tr></thead><tbody>
@@ -263,8 +263,8 @@ mix absolute and relative timelocks (even if one is height based and the other i
 <h4 id="Malleability">Malleability</h4>
 <p>Malleability is the ability for a third party (someone who does <em>not</em> hold a participating private
 key) to modify an existing satisfaction into another valid satisfaction. To analyze the
-malleability guarantees of a script we define three additional type properties: "<strong>s</strong>" (signed),
-"<strong>f</strong>" (forced) and "<strong>e</strong>" (expressive).</p>
+malleability guarantees of a script we define three additional type properties: &quot;<strong>s</strong>&quot; (signed),
+&quot;<strong>f</strong>&quot; (forced) and &quot;<strong>e</strong>&quot; (expressive).</p>
 <p>The following table lists the malleability properties and requirement of each fragment.</p>
 <table><thead><tr><th>Miniscript</th><th>Requires</th><th>Properties</th></tr></thead><tbody>
 <tr><td><code>0</code></td><td></td><td>s, e</td></tr>
@@ -335,8 +335,8 @@ will contain <em>(empty)</em>.</p>
 </tbody></table>
 <h4 id="Non-malleable_Satisfaction_Algorithm">Non-malleable Satisfaction Algorithm</h4>
 <p>In order to produce non-malleable satisfactions we make use of a function that returns the optimal
-satisfaction and dissatisfaction for a given expression (if any exist), or a special DONTUSE ("don't use") value,
-together with an optional HASSIG ("has signature") marker that tracks whether the solution contains at least one
+satisfaction and dissatisfaction for a given expression (if any exist), or a special DONTUSE (&quot;don't use&quot;) value,
+together with an optional HASSIG (&quot;has signature&quot;) marker that tracks whether the solution contains at least one
 signature. To implement the function:</p>
 <ul>
 <li>Invoke the function recursively for all subexpressions, obtaining all their satisfactions/dissatisfactions.</li>
@@ -382,25 +382,25 @@ we define a type system. See the specifications above for a reference of each fr
 requirements and properties. Here we give more information about each type.</p>
 <p>Every expression has one of four basic types:</p>
 <ul>
-<li>"<strong>B</strong>" Base expressions. These take their inputs from the top of the stack. When satisfied, they push a nonzero value of up to 4 bytes onto the stack. When dissatisfied, they push an exact 0 onto the stack (if dissatisfaction without aborting is possible at all). This type is used for most expressions, and required for the top level expression. An example is <code>older(n)</code> = <code>&lt;n&gt; CHECKSEQUENCEVERIFY</code>.</li>
-<li>"<strong>V</strong>" Verify expressions. Like "B", these take their inputs from the top of the stack. Upon satisfaction however, they continue without pushing anything. They cannot be dissatisfied (will abort instead). A "V" can be obtained using the <code>v:</code> wrapper on a "B" expression, or by combining other "V" expressions using <code>and_v</code>, <code>or_i</code>, <code>or_c</code>, or <code>andor</code>. An example is <code>v:pk(key)</code> = <code>&lt;key&gt; CHECKSIGVERIFY</code>.</li>
-<li>"<strong>K</strong>" Key expressions. They again take their inputs from the top of the stack, but instead of verifying a condition directly they always push a public key onto the stack, for which a signature is still required to satisfy the expression. A "K" can be converted into a "B" using the <code>c:</code> wrapper. An example is <code>pk_h(key)</code> = <code>DUP HASH160 &lt;Hash160(key)&gt; EQUALVERIFY</code>.</li>
-<li>"<strong>W</strong>" Wrapped expressions. They take their inputs from one below the top of the stack, and push a nonzero (in case of satisfaction) or zero (in case of dissatisfaction) either on top of the stack, or one below. So for example a 3-input "W" would take the stack "A B C D E F" and turn it into "A B F 0" or "A B 0 F" in case of dissatisfaction, and "A B F n" or "A B n F" in case of satisfaction (with n a nonzero value). Every "W" is either <code>s:B</code> (SWAP B) or <code>a:B</code> (TOALTSTACK B FROMALTSTACK). An example is <code>s:pk(key)</code> = <code>SWAP &lt;key&gt; CHECKSIG</code>.</li>
+<li>&quot;<strong>B</strong>&quot; Base expressions. These take their inputs from the top of the stack. When satisfied, they push a nonzero value of up to 4 bytes onto the stack. When dissatisfied, they push an exact 0 onto the stack (if dissatisfaction without aborting is possible at all). This type is used for most expressions, and required for the top level expression. An example is <code>older(n)</code> = <code>&lt;n&gt; CHECKSEQUENCEVERIFY</code>.</li>
+<li>&quot;<strong>V</strong>&quot; Verify expressions. Like &quot;B&quot;, these take their inputs from the top of the stack. Upon satisfaction however, they continue without pushing anything. They cannot be dissatisfied (will abort instead). A &quot;V&quot; can be obtained using the <code>v:</code> wrapper on a &quot;B&quot; expression, or by combining other &quot;V&quot; expressions using <code>and_v</code>, <code>or_i</code>, <code>or_c</code>, or <code>andor</code>. An example is <code>v:pk(key)</code> = <code>&lt;key&gt; CHECKSIGVERIFY</code>.</li>
+<li>&quot;<strong>K</strong>&quot; Key expressions. They again take their inputs from the top of the stack, but instead of verifying a condition directly they always push a public key onto the stack, for which a signature is still required to satisfy the expression. A &quot;K&quot; can be converted into a &quot;B&quot; using the <code>c:</code> wrapper. An example is <code>pk_h(key)</code> = <code>DUP HASH160 &lt;Hash160(key)&gt; EQUALVERIFY</code>.</li>
+<li>&quot;<strong>W</strong>&quot; Wrapped expressions. They take their inputs from one below the top of the stack, and push a nonzero (in case of satisfaction) or zero (in case of dissatisfaction) either on top of the stack, or one below. So for example a 3-input &quot;W&quot; would take the stack &quot;A B C D E F&quot; and turn it into &quot;A B F 0&quot; or &quot;A B 0 F&quot; in case of dissatisfaction, and &quot;A B F n&quot; or &quot;A B n F&quot; in case of satisfaction (with n a nonzero value). Every &quot;W&quot; is either <code>s:B</code> (SWAP B) or <code>a:B</code> (TOALTSTACK B FROMALTSTACK). An example is <code>s:pk(key)</code> = <code>SWAP &lt;key&gt; CHECKSIG</code>.</li>
 </ul>
 <p>Then there are 6 type modifiers, which guarantee additional properties:</p>
 <ul>
-<li>"<strong>z</strong>" Zero-arg: this expression always consumes exactly 0 stack elements.</li>
-<li>"<strong>o</strong>" One-arg: this expression always consumes exactly 1 stack element.</li>
-<li>"<strong>n</strong>" Nonzero: this expression always consumes at least 1 stack element, no satisfaction for this expression requires the top input stack element to be zero.</li>
-<li>"<strong>d</strong>" Dissatisfiable: a dissatisfaction for this expression can unconditionally be constructed. This implies the dissatisfaction cannot include any signature or hash preimage, and cannot rely on timelocks being satisfied.</li>
-<li>"<strong>u</strong>" Unit: when satisfied, this expression will put an exact 1 on the stack (as opposed to any nonzero value).</li>
-<li>"<strong>k</strong>" No timelock mixing. This expression does not contain a mix of heightlock and timelock of the same type. If the miniscript does not have the "k" property, the miniscript template will not match the user expectation of the corresponding spending policy.</li>
+<li>&quot;<strong>z</strong>&quot; Zero-arg: this expression always consumes exactly 0 stack elements.</li>
+<li>&quot;<strong>o</strong>&quot; One-arg: this expression always consumes exactly 1 stack element.</li>
+<li>&quot;<strong>n</strong>&quot; Nonzero: this expression always consumes at least 1 stack element, no satisfaction for this expression requires the top input stack element to be zero.</li>
+<li>&quot;<strong>d</strong>&quot; Dissatisfiable: a dissatisfaction for this expression can unconditionally be constructed. This implies the dissatisfaction cannot include any signature or hash preimage, and cannot rely on timelocks being satisfied.</li>
+<li>&quot;<strong>u</strong>&quot; Unit: when satisfied, this expression will put an exact 1 on the stack (as opposed to any nonzero value).</li>
+<li>&quot;<strong>k</strong>&quot; No timelock mixing. This expression does not contain a mix of heightlock and timelock of the same type. If the miniscript does not have the &quot;k&quot; property, the miniscript template will not match the user expectation of the corresponding spending policy.</li>
 </ul>
 <p>Finally to analyze malleability guarantees we introduce 3 new type modifiers:</p>
 <ul>
-<li>"<strong>s</strong>" Signed: satisfying this expression always requires a signature (predicting whether all satisfactions will be HASSIG).</li>
-<li>"<strong>f</strong>" Forced: dissatisfying this expression always requires a signature (predicting whether all dissatisfactions will be HASSIG).</li>
-<li>"<strong>e</strong>" Expressive: this requires a unique unconditional dissatisfaction to exist, and forces all conditional dissatisfactions (if any) to require a signature.</li>
+<li>&quot;<strong>s</strong>&quot; Signed: satisfying this expression always requires a signature (predicting whether all satisfactions will be HASSIG).</li>
+<li>&quot;<strong>f</strong>&quot; Forced: dissatisfying this expression always requires a signature (predicting whether all dissatisfactions will be HASSIG).</li>
+<li>&quot;<strong>e</strong>&quot; Expressive: this requires a unique unconditional dissatisfaction to exist, and forces all conditional dissatisfactions (if any) to require a signature.</li>
 </ul>
 <h3 id="Malleability-1">Malleability</h3>
 <p>Since Segwit, malleating a transaction no longer breaks the validity of unconfirmed descendant
@@ -447,13 +447,13 @@ non-canonical solutions listed in the satisfaction table can occur inside non-ma
 satisfaction:</p>
 <ul>
 <li>Some of the non-canonical options (the <code>or_b</code>, <code>and_b</code>, and <code>thresh</code> ones) are overcomplete, and thus can clearly not appear in non-malleable satisfactions.</li>
-<li>The fact that non-"d" expressions cannot be dissatisfied in valid witnesses rules out the usage of the non-canonical <code>and_v</code> dissatisfaction.</li>
-<li>"d" expressions are defined to be unconditionally dissatisfiable, which implies that for those a non-HASSIG dissatisfaction must exist. Non-HASSIG solutions must be preferred over HASSIG ones (reason 2), and when multiple non-HASSIG ones exist, none can be used (reason 1). This lets us rule out the other non-canonical options in the table:
+<li>The fact that non-&quot;d&quot; expressions cannot be dissatisfied in valid witnesses rules out the usage of the non-canonical <code>and_v</code> dissatisfaction.</li>
+<li>&quot;d&quot; expressions are defined to be unconditionally dissatisfiable, which implies that for those a non-HASSIG dissatisfaction must exist. Non-HASSIG solutions must be preferred over HASSIG ones (reason 2), and when multiple non-HASSIG ones exist, none can be used (reason 1). This lets us rule out the other non-canonical options in the table:
 <ul>
-<li><code>j:X</code> is always "d", its non-HASSIG dissatisfaction "0" always exists, and thus rules out any usage of "dsat(X)".</li>
-<li>If <code>andor(X,Y,Z)</code> is "d", a non-HASSIG dissatisfaction "dsat(Z) dsat(X)" must exist, and thus rules out any usage of "dsat(Y) sat(X)".</li>
-<li>If <code>and_b(X,Y)</code> is "d", a non-HASSIG dissatisfaction "dsat(Y) dsat(X)" must exist, and thus rules out any usage of "dsat(Y) sat(X)" and "sat(Y) dsat(X)". Those are also overcomplete.</li>
-<li><code>thresh(k,...)</code> is always "d", a non-HASSIG dissatisfaction with just dissatisfactions must exist due to typing rules, and thus rules out usage of the other dissatisfactions. They are also overcomplete.</li>
+<li><code>j:X</code> is always &quot;d&quot;, its non-HASSIG dissatisfaction &quot;0&quot; always exists, and thus rules out any usage of &quot;dsat(X)&quot;.</li>
+<li>If <code>andor(X,Y,Z)</code> is &quot;d&quot;, a non-HASSIG dissatisfaction &quot;dsat(Z) dsat(X)&quot; must exist, and thus rules out any usage of &quot;dsat(Y) sat(X)&quot;.</li>
+<li>If <code>and_b(X,Y)</code> is &quot;d&quot;, a non-HASSIG dissatisfaction &quot;dsat(Y) dsat(X)&quot; must exist, and thus rules out any usage of &quot;dsat(Y) sat(X)&quot; and &quot;sat(Y) dsat(X)&quot;. Those are also overcomplete.</li>
+<li><code>thresh(k,...)</code> is always &quot;d&quot;, a non-HASSIG dissatisfaction with just dissatisfactions must exist due to typing rules, and thus rules out usage of the other dissatisfactions. They are also overcomplete.</li>
 </ul>
 </li>
 </ul>
@@ -498,7 +498,7 @@ version 26.0.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

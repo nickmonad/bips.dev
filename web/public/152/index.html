@@ -129,7 +129,7 @@
 </code></pre>
 <h2>Abstract</h2>
 <p>Compact blocks on the wire as a way to save bandwidth for nodes on the P2P network.</p>
-<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.</p>
+<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in RFC 2119.</p>
 <h2>Motivation</h2>
 <p>Historically, the Bitcoin P2P protocol has not been very bandwidth efficient for block relay. Every transaction in a block is included when relayed, even though a large number of the transactions in a given block are already available to nodes before the block is relayed. This causes moderate inbound bandwidth spikes for nodes when receiving blocks, but can cause very significant outbound bandwidth spikes for some nodes which receive a block before their peers. When such spikes occur, buffer bloat can make consumer-grade internet connections temporarily unusable, and can delay the relay of blocks to remote peers who may choose to wait instead of redundantly requesting the same block from other, less congested, peers.</p>
 <p>Thus, decreasing the bandwidth used during block relay is very useful for many individuals running nodes.</p>
@@ -137,22 +137,22 @@
 <h2>Specification for version 1</h2>
 <h3>Intended Protocol Flow</h3>
 <p><img src=bip-0152/protocol-flow.png></img></p>
-<p>The protocol is intended to be used in two ways, depending on the peers and bandwidth available, as discussed <a href="#Implementation_Notes" target="_blank">later</a>. The "high-bandwidth" mode, which nodes may only enable for a few of their peers, is enabled by setting the first boolean to 1 in a <code>sendcmpct</code> message. In this mode, peers send new block announcements with the short transaction IDs already (via a <code>cmpctblock</code> message), possibly even before fully validating the block (as indicated by the grey box in the image above). In some cases no further round-trip is needed, and the receiver can reconstruct the block and process it as usual immediately. When some transactions were not available from local sources (ie mempool), a <code>getblocktxn</code>/<code>blocktxn</code> roundtrip is necessary, bringing the best-case latency to the same 1.5*RTT minimum time that nodes take today, though with significantly less bandwidth usage.</p>
-<p>The "low-bandwidth" mode is enabled by setting the first boolean to 0 in a <code>sendcmpct</code> message. In this mode, peers send new block announcements with the usual inv/headers announcements (as per BIP130, and after fully validating the block). The receiving peer may then request the block using a MSG_CMPCT_BLOCK <code>getdata</code> request, which will receive a response of the header and short transaction IDs. In some cases no further round-trip is needed, and the receiver can reconstruct the block and process it as usual, taking the same 1.5<em>RTT minimum time that nodes take today, though with significantly less bandwidth usage. When some transactions were not available from local sources (ie mempool), a <code>getblocktxn</code>/<code>blocktxn</code> roundtrip is necessary, bringing the latency to at least 2.5</em>RTT in this case, again with significantly less bandwidth usage than today. Because TCP often exhibits worse transfer latency for larger data sizes (as a multiple of RTT), total latency is expected to be reduced even when the full 2.5*RTT transfer mechanism is used.</p>
+<p>The protocol is intended to be used in two ways, depending on the peers and bandwidth available, as discussed <a href="#Implementation_Notes" target="_blank">later</a>. The &quot;high-bandwidth&quot; mode, which nodes may only enable for a few of their peers, is enabled by setting the first boolean to 1 in a <code>sendcmpct</code> message. In this mode, peers send new block announcements with the short transaction IDs already (via a <code>cmpctblock</code> message), possibly even before fully validating the block (as indicated by the grey box in the image above). In some cases no further round-trip is needed, and the receiver can reconstruct the block and process it as usual immediately. When some transactions were not available from local sources (ie mempool), a <code>getblocktxn</code>/<code>blocktxn</code> roundtrip is necessary, bringing the best-case latency to the same 1.5*RTT minimum time that nodes take today, though with significantly less bandwidth usage.</p>
+<p>The &quot;low-bandwidth&quot; mode is enabled by setting the first boolean to 0 in a <code>sendcmpct</code> message. In this mode, peers send new block announcements with the usual inv/headers announcements (as per BIP130, and after fully validating the block). The receiving peer may then request the block using a MSG_CMPCT_BLOCK <code>getdata</code> request, which will receive a response of the header and short transaction IDs. In some cases no further round-trip is needed, and the receiver can reconstruct the block and process it as usual, taking the same 1.5<em>RTT minimum time that nodes take today, though with significantly less bandwidth usage. When some transactions were not available from local sources (ie mempool), a <code>getblocktxn</code>/<code>blocktxn</code> roundtrip is necessary, bringing the latency to at least 2.5</em>RTT in this case, again with significantly less bandwidth usage than today. Because TCP often exhibits worse transfer latency for larger data sizes (as a multiple of RTT), total latency is expected to be reduced even when the full 2.5*RTT transfer mechanism is used.</p>
 <h3>New data structures</h3>
 <p>Several new data structures are added to the P2P network to relay compact blocks: PrefilledTransaction, HeaderAndShortIDs, BlockTransactionsRequest, and BlockTransactions.</p>
 <p>For the purposes of this section, CompactSize refers to the variable-length integer encoding used across the existing P2P protocol to encode array lengths, among other things, in 1, 3, 5 or 9 bytes. Only CompactSize encodings which are minimally-encoded (ie the shortest length possible) are used by this spec. Any other CompactSize encodings are left with undefined behavior.</p>
-<p>Several uses of CompactSize below are "differentially encoded". For these, instead of using raw indexes, the number encoded is the difference between the current index and the previous index, minus one. For example, a first index of 0 implies a real index of 0, a second index of 0 thereafter refers to a real index of 1, etc.</p>
+<p>Several uses of CompactSize below are &quot;differentially encoded&quot;. For these, instead of using raw indexes, the number encoded is the difference between the current index and the previous index, minus one. For example, a first index of 0 implies a real index of 0, a second index of 0 thereafter refers to a real index of 1, etc.</p>
 <h4>PrefilledTransaction</h4>
 <p>A PrefilledTransaction structure is used in HeaderAndShortIDs to provide a list of a few transactions explicitly.</p>
 <table><thead><tr><th>Field Name</th><th>Type</th><th>Size</th><th>Encoding</th><th>Purpose</th></tr></thead><tbody>
 <tr><td>index</td><td>CompactSize</td><td>1, 3 bytes</td><td>Compact Size, differentially encoded since the last PrefilledTransaction in a list</td><td>The index into the block at which this transaction is</td></tr>
-<tr><td>tx</td><td>Transaction</td><td>variable</td><td>As encoded in "tx" messages sent in response to getdata MSG_TX</td><td>The transaction which is in the block at index index.</td></tr>
+<tr><td>tx</td><td>Transaction</td><td>variable</td><td>As encoded in &quot;tx&quot; messages sent in response to getdata MSG_TX</td><td>The transaction which is in the block at index index.</td></tr>
 </tbody></table>
 <h4>HeaderAndShortIDs</h4>
 <p>A HeaderAndShortIDs structure is used to relay a block header, the short transactions IDs used for matching already-available transactions, and a select few transactions which we expect a peer may be missing.</p>
 <table><thead><tr><th>Field Name</th><th>Type</th><th>Size</th><th>Encoding</th><th>Purpose</th></tr></thead><tbody>
-<tr><td>header</td><td>Block header</td><td>80 bytes</td><td>First 80 bytes of the block as defined by the encoding used by "block" messages</td><td>The header of the block being provided</td></tr>
+<tr><td>header</td><td>Block header</td><td>80 bytes</td><td>First 80 bytes of the block as defined by the encoding used by &quot;block&quot; messages</td><td>The header of the block being provided</td></tr>
 <tr><td>nonce</td><td>uint64_t</td><td>8 bytes</td><td>Little Endian</td><td>A nonce for use in short transaction ID calculations</td></tr>
 <tr><td>shortids_length</td><td>CompactSize</td><td>1 or 3 bytes</td><td>As used to encode array lengths elsewhere</td><td></td></tr>
 <tr><td>shortids</td><td>List of 6-byte integers</td><td>6*shortids_length bytes</td><td>Little Endian</td><td>The short transaction IDs calculated from the transactions which were not provided explicitly in prefilledtxn</td></tr>
@@ -171,7 +171,7 @@
 <table><thead><tr><th>Field Name</th><th>Type</th><th>Size</th><th>Encoding</th><th>Purpose</th></tr></thead><tbody>
 <tr><td>blockhash</td><td>Binary blob</td><td>32 bytes</td><td>The output from a double-SHA256 of the block header, as used elsewhere</td><td>The blockhash of the block which the transactions being provided are in</td></tr>
 <tr><td>transactions_length</td><td>CompactSize</td><td>1 or 3 bytes</td><td>As used to encode array lengths elsewhere</td><td></td></tr>
-<tr><td>transactions</td><td>List of Transactions</td><td>variable</td><td>As encoded in "tx" messages in response to getdata MSG_TX</td><td>The transactions provided</td></tr>
+<tr><td>transactions</td><td>List of Transactions</td><td>variable</td><td>As encoded in &quot;tx&quot; messages in response to getdata MSG_TX</td><td>The transactions provided</td></tr>
 </tbody></table>
 <h4>Short transaction IDs</h4>
 <p>Short transaction IDs are used to represent a transaction without sending a full 256-bit hash. They are calculated by:</p>
@@ -184,12 +184,12 @@
 <p>A new inv type (MSG_CMPCT_BLOCK == 4) and several new protocol messages are added: sendcmpct, cmpctblock, getblocktxn, and blocktxn.</p>
 <h4>sendcmpct</h4>
 <ol>
-<li>The sendcmpct message is defined as a message containing a 1-byte integer followed by a 8-byte integer where pchCommand == "sendcmpct".</li>
+<li>The sendcmpct message is defined as a message containing a 1-byte integer followed by a 8-byte integer where pchCommand == &quot;sendcmpct&quot;.</li>
 <li>The first integer SHALL be interpreted as a boolean (and MUST have a value of either 1 or 0)</li>
 <li>The second integer SHALL be interpreted as a little-endian version number. Nodes sending a sendcmpct message MUST currently set this value to 1.</li>
-<li>Upon receipt of a "sendcmpct" message with the first and second integers set to 1, the node SHOULD announce new blocks by sending a cmpctblock message.</li>
-<li>Upon receipt of a "sendcmpct" message with the first integer set to 0, the node SHOULD NOT announce new blocks by sending a cmpctblock message, but SHOULD announce new blocks by sending invs or headers, as defined by BIP130.</li>
-<li>Upon receipt of a "sendcmpct" message with the second integer set to something other than 1, nodes MUST treat the peer as if they had not received the message (as it indicates the peer will provide an unexpected encoding in cmpctblock, and/or other, messages). This allows future versions to send duplicate sendcmpct messages with different versions as a part of a version handshake for future versions. See Protocol Versioning section, below, for more info on the specifics of the version-negotiation mechanics.</li>
+<li>Upon receipt of a &quot;sendcmpct&quot; message with the first and second integers set to 1, the node SHOULD announce new blocks by sending a cmpctblock message.</li>
+<li>Upon receipt of a &quot;sendcmpct&quot; message with the first integer set to 0, the node SHOULD NOT announce new blocks by sending a cmpctblock message, but SHOULD announce new blocks by sending invs or headers, as defined by BIP130.</li>
+<li>Upon receipt of a &quot;sendcmpct&quot; message with the second integer set to something other than 1, nodes MUST treat the peer as if they had not received the message (as it indicates the peer will provide an unexpected encoding in cmpctblock, and/or other, messages). This allows future versions to send duplicate sendcmpct messages with different versions as a part of a version handshake for future versions. See Protocol Versioning section, below, for more info on the specifics of the version-negotiation mechanics.</li>
 <li>Nodes SHOULD check for a protocol version of &gt;= 70014 before sending sendcmpct messages.</li>
 <li>Nodes MUST NOT send a request for a MSG_CMPCT_BLOCK object to a peer before having received a sendcmpct message from that peer.</li>
 <li>Nodes MUST NOT request a MSG_CMPCT_BLOCK object before having sent all sendcmpct messages to that peer which they intend to send, as the peer cannot know what version protocol to use in the response.</li>
@@ -203,7 +203,7 @@
 </ol>
 <h4>cmpctblock</h4>
 <ol>
-<li>The cmpctblock message is defined as a message containing a serialized HeaderAndShortIDs message and pchCommand == "cmpctblock".</li>
+<li>The cmpctblock message is defined as a message containing a serialized HeaderAndShortIDs message and pchCommand == &quot;cmpctblock&quot;.</li>
 <li>Upon receipt of a cmpctblock message after sending a sendcmpct message, nodes SHOULD calculate the short transaction ID for each unconfirmed transaction they have available (ie in their mempool) and compare each to each short transaction ID in the cmpctblock message.</li>
 <li>After finding already-available transactions, nodes which do not have all transactions available to reconstruct the full block SHOULD request the missing transactions using a getblocktxn message.</li>
 <li>A node MUST NOT send a cmpctblock message unless they are able to respond to a getblocktxn message which requests every transaction in the block.</li>
@@ -211,12 +211,12 @@
 </ol>
 <h4>getblocktxn</h4>
 <ol>
-<li>The getblocktxn message is defined as a message containing a serialized BlockTransactionsRequest message and pchCommand == "getblocktxn".</li>
+<li>The getblocktxn message is defined as a message containing a serialized BlockTransactionsRequest message and pchCommand == &quot;getblocktxn&quot;.</li>
 <li>Upon receipt of a properly-formatted getblocktxn message, nodes which recently provided the sender of such a message a cmpctblock for the block hash identified in this message MUST respond with either an appropriate blocktxn message, or a full block message. A blocktxn response MUST contain exactly and only each transaction which is present in the appropriate block at the index specified in the getblocktxn indexes list, in the order requested.</li>
 </ol>
 <h4>blocktxn</h4>
 <ol>
-<li>The blocktxn message is defined as a message containing a serialized BlockTransactions message and pchCommand == "blocktxn".</li>
+<li>The blocktxn message is defined as a message containing a serialized BlockTransactions message and pchCommand == &quot;blocktxn&quot;.</li>
 <li>Upon receipt of a properly-formatted requested blocktxn message, nodes SHOULD attempt to reconstruct the full block by:
 <ol>
 <li>Taking the prefilledtxn transactions from the original cmpctblock and placing them in the marked positions.</li>
@@ -238,7 +238,7 @@
 <ol>
 <li>By way of example, an implementation of the above protocol might look like the following.</li>
 <li>Upon exchanging version/verack messages, a node immediately sends its list of sendcmpct announcements to the other side, with the version which it wants to receive sent first.</li>
-<li>Upon receiving the first sendcmpct announcement with a protocol version which is understood from the remote peer, a node will "lock in" the compact block encoding version which will be used to encode compact blocks to that peer.</li>
+<li>Upon receiving the first sendcmpct announcement with a protocol version which is understood from the remote peer, a node will &quot;lock in&quot; the compact block encoding version which will be used to encode compact blocks to that peer.</li>
 <li>The node then sets the current receive-protocol-version in use on the connection to that version, and uses it to decode new compact block messages.</li>
 <li>Upon receiving subsequent sendcmpct announcements with a protocol version which is understood from the remote peer (ie a version which has been announced using a sendcmpct in the other direction), a node will check if that protocol version is higher-receive-priority than the current receive-protocol-version in use on the connection, and switch to that version for decoding new compact block messages received.</li>
 <li>A node might wish to keep a flag for each peer which indicates compact block version negotiation is complete, which can be set upon receiving any compact block-related, or pong message.</li>
@@ -291,10 +291,10 @@
 <p>As high-bandwidth mode permits relaying of CMPCTBLOCK messages prior to full validation (requiring only that the block header is valid before relay), nodes SHOULD NOT ban a peer for announcing a new block with a CMPCTBLOCK message that is invalid, but has a valid header.  For avoidance of doubt, nodes SHOULD bump their peer-to-peer protocol version to 70015 or higher to signal that they will not ban or punish a peer for announcing compact blocks prior to full validation, and nodes SHOULD NOT announce a CMPCTBLOCK to a peer with a version number below 70015 before fully validating the block.</p>
 </li>
 <li>
-<p>SPV nodes which implement this spec must consider the implications of accepting blocks which were not validated by the node which provided them. Especially SPV nodes which allow users to select a "trusted full node" to sync from may wish to avoid implementing this spec in high-bandwidth mode.</p>
+<p>SPV nodes which implement this spec must consider the implications of accepting blocks which were not validated by the node which provided them. Especially SPV nodes which allow users to select a &quot;trusted full node&quot; to sync from may wish to avoid implementing this spec in high-bandwidth mode.</p>
 </li>
 <li>
-<p>Note that this spec does not change the requirement that nodes only relay information about blocks which they have fully validated in response to GETDATA/GETHEADERS/GETBLOCKS/etc requests. Nodes which announce using CMPCTBLOCK message and then receive a request for associated block data SHOULD ensure that messages do not go unresponded to, and that the appropriate data is provided after the block has been validated, subject to standard message-response ordering requirements. Note that no requirement is added that the node respond to the request with the new block included in eg GETHEADERS or GETBLOCKS messages, but the node SHOULD re-announce the block using the associated announcement methods after validation has completed if it is not included in the original response. On the other hand, nodes SHOULD delay responding to GETDATA requests for the block until validation has completed, stalling all message processing for the associated peer. REJECT messages are not considered "responses" for the purpose of this section.</p>
+<p>Note that this spec does not change the requirement that nodes only relay information about blocks which they have fully validated in response to GETDATA/GETHEADERS/GETBLOCKS/etc requests. Nodes which announce using CMPCTBLOCK message and then receive a request for associated block data SHOULD ensure that messages do not go unresponded to, and that the appropriate data is provided after the block has been validated, subject to standard message-response ordering requirements. Note that no requirement is added that the node respond to the request with the new block included in eg GETHEADERS or GETBLOCKS messages, but the node SHOULD re-announce the block using the associated announcement methods after validation has completed if it is not included in the original response. On the other hand, nodes SHOULD delay responding to GETDATA requests for the block until validation has completed, stalling all message processing for the associated peer. REJECT messages are not considered &quot;responses&quot; for the purpose of this section.</p>
 </li>
 <li>
 <p>As a result of the above requirements, implementers may wish to consider the potential for the introduction of delays in responses while remote peers validate blocks, avoiding delay-causing requests where possible.</p>
@@ -354,7 +354,7 @@ Thanks to Nicolas Dorier for the protocol flow diagram.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

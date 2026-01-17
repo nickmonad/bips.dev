@@ -135,7 +135,7 @@ covenant: <code>OP_VAULT</code> and <code>OP_VAULT_RECOVER</code>. These opcodes
 <code>OP_CHECKTEMPLATEVERIFY</code>
 (<a href="/119" target="_blank">BIP-0119</a>),
 allow users to enforce a delay period before designated coins may be spent to
-an arbitrary destination, with the exception of a prespecified "recovery" path.
+an arbitrary destination, with the exception of a prespecified &quot;recovery&quot; path.
 At any time prior to final withdrawal, the coins can be spent to the
 recovery path.</p>
 <h3> Copyright </h3>
@@ -153,8 +153,8 @@ that are only exercised in the worst case, and which may otherwise be
 operationally prohibitive. The goal of this proposal is to make this strategy
 usable for custodians of any size with minimal complication.</p>
 <h4> Example uses </h4>
-<p>A common configuration for an individual custodying Bitcoin is "single
-signature and passphrase" using a hardware wallet. A user with such a
+<p>A common configuration for an individual custodying Bitcoin is &quot;single
+signature and passphrase&quot; using a hardware wallet. A user with such a
 configuration might be concerned about the risk associated with relying on a
 single manufacturer for key management, as well as physical access to the
 hardware.</p>
@@ -168,7 +168,7 @@ private key replicated only in paper form. Or the key could be a 2-of-3
 multisig using devices from different manufacturers. Perhaps the key is
 geographically or socially distributed.</p>
 <p>Since it can be any Bitcoin script policy, the recovery key can include a
-number of spending conditions, e.g. a time-delayed fallback to an "easier"
+number of spending conditions, e.g. a time-delayed fallback to an &quot;easier&quot;
 recovery method, in case the highly secure key winds up being <em>too</em> highly
 secure.</p>
 <p>The user can run software on their mobile device that monitors the blockchain
@@ -179,7 +179,7 @@ from the spend delay).</p>
 <p>Institutional custodians of Bitcoin may use vaults in similar fashion.</p>
 <h5> Provable timelocks </h5>
 <p>This proposal provides a mitigation to the
-<a href="https://web.archive.org/web/20230210123933/https://xkcd.com/538/" target="_blank">"$5 wrench attack."</a> By
+<a href="https://web.archive.org/web/20230210123933/https://xkcd.com/538/" target="_blank">&quot;$5 wrench attack.&quot;</a> By
 setting the spend delay to, say, a week, and using as the recovery path a
 script that enforces a longer relative timelock, the owner of the vault can
 prove that he is unable to access its value immediately. To the author's
@@ -203,10 +203,10 @@ key. This approach was first demonstrated
 <li>there is a necessity to precommit to an address that the funds must pass through on their way to the final withdrawal target, which is likely only known at unvault time,</li>
 <li>the particular fee management technique or wallet must be decided upon vault creation,</li>
 <li>coin loss follows if a vault address is reused,</li>
-<li>the transaction data that represents the "bearer asset" of the vault must be stored for perpetuity, otherwise value is lost, and</li>
+<li>the transaction data that represents the &quot;bearer asset&quot; of the vault must be stored for perpetuity, otherwise value is lost, and</li>
 <li>the vault creation ceremony must be performed each time a new balance is to be deposited.</li>
 </ul>
-<p>The deployment of a "precomputed" covenant mechanism like
+<p>The deployment of a &quot;precomputed&quot; covenant mechanism like
 <a href="/119" target="_blank">OP_CHECKTEMPLATEVERIFY</a> or
 <a href="/118" target="_blank">SIGHASH_ANYPREVOUT</a>
 would both remove the necessity to use an ephemeral key, since the
@@ -219,7 +219,7 @@ destinations, and fee management are all fixed. Funds must flow through a fixed
 intermediary to their final destination. Batch operations, which may be vital
 for successful recovery during fee spikes or short spend delay, are not possible.</p>
 <img src="bip-0345/withdrawal-comparison.drawio.png" />
-<p>Having a "general" covenant mechanism that can encode arbitrary transactional
+<p>Having a &quot;general&quot; covenant mechanism that can encode arbitrary transactional
 state machines would allow us to solve these issues, but at the cost of complex
 and large scripts that would probably be duplicated many times over in the
 blockchain. The particular design and deployment timeline of such a general
@@ -282,7 +282,7 @@ facilitate other kinds of withdrawal processes.</p>
 <p><strong>vault transaction</strong>: encumbers some coins into a Taproot structure that includes at least one <code>OP_VAULT</code> leaf and one <code>OP_VAULT_RECOVER</code> leaf.</p>
 </li>
 <li>
-<p><strong>trigger transaction</strong>: spends one or more <code>OP_VAULT</code>-tapleaf inputs into an output which is encumbered by a timelocked withdrawal to a fixed set of outputs, chosen at trigger time. This publicly broadcasts the intent to withdraw to some specific set of outputs.<br /><br />The trigger transaction may have an additional output which allocates some of the vault balance into a partial "revault," which simply encumbers the revaulted portion of the value into the same <code>scriptPubKey</code> as the <code>OP_VAULT</code>-containing input(s) being spent.</p>
+<p><strong>trigger transaction</strong>: spends one or more <code>OP_VAULT</code>-tapleaf inputs into an output which is encumbered by a timelocked withdrawal to a fixed set of outputs, chosen at trigger time. This publicly broadcasts the intent to withdraw to some specific set of outputs.<br /><br />The trigger transaction may have an additional output which allocates some of the vault balance into a partial &quot;revault,&quot; which simply encumbers the revaulted portion of the value into the same <code>scriptPubKey</code> as the <code>OP_VAULT</code>-containing input(s) being spent.</p>
 </li>
 <li>
 <p><strong>withdrawal transaction</strong>: spends the timelocked, destination-locked trigger inputs into a compatible set of final withdrawal outputs (per, e.g., a <code>CHECKTEMPLATEVERIFY</code> hash), after the trigger inputs have matured per the spend delay. Timelocked CTV transactions are the motivating usage of OP_VAULT, but any script template can be specified during the creation of the vault.</p>
@@ -414,7 +414,7 @@ respectively.</p>
 <p>After the stack is parsed, the following validation checks are performed:</p>
 <ul>
 <li>Let the output at index <code>&lt;recovery-vout-idx&gt;</code> be called <em>recoveryOut</em>.</li>
-<li>Compute the scriptPubKey tagged hash for <em>recoveryOut</em> as <code>output-sPK-hash = tagged_hash("VaultRecoverySPK", CompactSize(len(recoveryOut.scriptPubKey)) || recoveryOut.scriptPubKey)</code>, where <code>tagged_hash()</code> is from the <a href="https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py" target="_blank">BIP-0340 reference code</a>.</li>
+<li>Compute the scriptPubKey tagged hash for <em>recoveryOut</em> as <code>output-sPK-hash = tagged_hash(&quot;VaultRecoverySPK&quot;, CompactSize(len(recoveryOut.scriptPubKey)) || recoveryOut.scriptPubKey)</code>, where <code>tagged_hash()</code> is from the <a href="https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py" target="_blank">BIP-0340 reference code</a>.</li>
 <li>If the <em>recoveryOut</em> <code>output-sPK-hash</code> is not equal to <code>&lt;recovery-sPK-hash&gt;</code>, script execution MUST fail and terminate immediately.
 <ul>
 <li>Implementation recommendation: if <em>recoveryOut</em> does not have an <code>nValue</code> greater than or equal to this input's amount, the script SHOULD fail and terminate immediately.</li>
@@ -483,7 +483,7 @@ corresponding trigger or recovery outputs while preserving their entire input va
 <li>the version of the recovery transaction has an nVersion other than 3.</li>
 </ul>
 <p>If the script containing <code>OP_VAULT_RECOVER</code> is 34 bytes or less<sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup>, let
-it be called "unauthorized," because there is no script guarding the recovery
+it be called &quot;unauthorized,&quot; because there is no script guarding the recovery
 process. In order to prevent pinning attacks in the case of unauthorized
 recovery - since the spend of the input (and the structure of the
 transaction) is not authorized by a signed signature message - the output structure of
@@ -529,7 +529,7 @@ that contains a taptree of the form</p>
 <li>This is one example of a trigger script, but <em>any</em> script fragment can be used, allowing the creation of different types of vaults. For example, you could use <code>OP_CHECKSEQUENCEVERIFY OP_DROP OP_CHECKSIG</code> to do a time-delayed transfer of the coins to another key. This also future-proofs <code>OP_VAULT</code> for future scripting capabilities.</li>
 </ul>
 </li>
-<li>The script fragment in <code>(i)</code> is called the "trigger authorization," because it gates triggering the withdrawal. This can be done in whatever manner the wallet designer would like.</li>
+<li>The script fragment in <code>(i)</code> is called the &quot;trigger authorization,&quot; because it gates triggering the withdrawal. This can be done in whatever manner the wallet designer would like.</li>
 <li>The script fragment in <code>(ii)</code> is the incomplete <code>OP_VAULT</code> invocation - it will be completed once the rest of the parameters (the CTV target hash, trigger vout index, and revault vout index) are provided by the trigger transaction witness.</li>
 </ul>
 <p>Typically, the internal key for the vault taproot output will be specified so
@@ -541,7 +541,7 @@ coin without ever revealing it was a vault.</p>
 force execution of the taptree contents.</p>
 <h3> Triggering a withdrawal </h3>
 <p>To make use of the vault, and spend it towards some output, we construct a spend
-of the above <code>tr()</code> output that simply replaces the "trigger" leaf with the
+of the above <code>tr()</code> output that simply replaces the &quot;trigger&quot; leaf with the
 full leaf-update script (in this case, a timelocked CTV script):</p>
 <pre><code>Witness stack:
 
@@ -577,18 +577,18 @@ Output scripts:
 <p><code>OP_VAULT</code> has allowed the taptree to be transformed so that the trigger leaf
 becomes a timelocked CTV script, which is what actually facilitates the announced
 withdrawal. The withdrawal is interruptible by the recovery path because the
-"recover" leaf is preserved exactly from the original taptree.</p>
+&quot;recover&quot; leaf is preserved exactly from the original taptree.</p>
 <p>Note that the CTV hash is specified at spend time using the witness stack, and
-"locked in" via the <code>OP_VAULT</code> spend rules which assert its existence in the output.</p>
+&quot;locked in&quot; via the <code>OP_VAULT</code> spend rules which assert its existence in the output.</p>
 <p>The vault funds can be recovered at any time prior to the spend of the
-timelocked CTV script by way of a script-path spend using the "recover" leaf.</p>
+timelocked CTV script by way of a script-path spend using the &quot;recover&quot; leaf.</p>
 <h3> Recovery authorization </h3>
 <p>When configuring a vault, the user must decide if they want to have the
 recovery process gated by a script fragment prefixing the
-<code>OP_VAULT_RECOVER</code> instruction in the "recover" leaf. Its use
+<code>OP_VAULT_RECOVER</code> instruction in the &quot;recover&quot; leaf. Its use
 entails trade-offs.</p>
 <h4> Unauthorized recovery </h4>
-<p>Unauthorized recovery simplifies vault use in that recovery never requires additional information aside from the location of the vault outpoints and the recovery path - the "authorization" is simply the reveal of the recovery path, i.e. the preimage of <code>&lt;recovery-sPK-hash&gt;</code>.</p>
+<p>Unauthorized recovery simplifies vault use in that recovery never requires additional information aside from the location of the vault outpoints and the recovery path - the &quot;authorization&quot; is simply the reveal of the recovery path, i.e. the preimage of <code>&lt;recovery-sPK-hash&gt;</code>.</p>
 <p>But because this reveal is the only authorization necessary to spend the vault coins to recovery, the user must expect to recover all such vaults at once, since an observer can replay this recovery (provided they know the outpoints).</p>
 <p>Additionally, unauthorized recovery across multiple distinct recovery paths
 cannot be done in the same transaction, and fee control is more constrained:
@@ -599,7 +599,7 @@ use of the optional ephemeral anchor and package relay.</p>
 <h4> Authorized recovery </h4>
 <p>With authorized recovery, the user must keep track of an additional piece of information: how to solve the recovery authorization script fragment when recovery is required.</p>
 <p>If this key is lost, the user will be unable to initiate the recovery process for their coins. If an attacker obtains the recovery key, they may grief the user during the recovery process by constructing a low fee rate recovery transaction and broadcasting it (though they will not be able to pin because of the replaceability requirement on recovery transactions).</p>
-<p>However, authorized recovery configurations have significant benefits. Batched recoveries are possible for vaults with otherwise incompatible recovery parameters. Fee management is much more flexible, since authorized recovery transactions are "free form" and unrelated inputs and outputs can be added, potentially to handle fees.</p>
+<p>However, authorized recovery configurations have significant benefits. Batched recoveries are possible for vaults with otherwise incompatible recovery parameters. Fee management is much more flexible, since authorized recovery transactions are &quot;free form&quot; and unrelated inputs and outputs can be added, potentially to handle fees.</p>
 <h4> Recommendation: use a simple, offline recovery authorization key seed </h4>
 <p>The benefits of batching and fee management that authorized recovery provides are significant. If the recovery authorization key falls into the hands of an attacker, the outcome is not catastrophic, whereas if the user loses their recovery authorization key as well as their trigger key, the result is likely coin loss. Consequently, the author's recommendation is to use a simple seed for the recovery authorization key that can be written down offline and replicated.</p>
 <p>Note that the recovery authorization key <strong>is not</strong> the recovery path key, and
@@ -643,7 +643,7 @@ trigger and recovery transactions must preserve the total value of vault
 inputs, so vaulted values cannot be repurposed to pay for fees. This does not
 apply to the withdrawal transaction, which can allocate value arbitrarily.</p>
 <p>In the case of vaults that use recovery authorization, all transactions can
-"bring their own fees" in the form of unrelated inputs and outputs. These
+&quot;bring their own fees&quot; in the form of unrelated inputs and outputs. These
 transactions are also free to specify ephemeral anchors, once the related relay
 policies are deployed. This means that vaults using recovery authorization have
 no dependence on the deploy of v3 relay policy.</p>
@@ -655,7 +655,7 @@ are essentially dependent on v3 transaction relay policy being deployed.</p>
 <h4> During trigger </h4>
 <p><code>OP_VAULT</code> outputs with the same taptree, aside from slightly
 different trigger leaves, can be batched together in the same withdrawal
-process. Two "trigger" leaves are compatible if they have the same
+process. Two &quot;trigger&quot; leaves are compatible if they have the same
 <code>OP_VAULT</code> arguments.</p>
 <p>Note that this allows the trigger authorization -- the script prefixing the
 <code>OP_VAULT</code> invocation -- to differ while still allowing batching.</p>
@@ -714,9 +714,9 @@ deployments for OP_CHECKSEQUENCEVERIFY and OP_CHECKLOCKTIMEVERIFY (see
 <li><a href="https://bips.dev/345/#cite_ref_4">^</a> <strong>Why only prefix with data pushes?</strong> Prefixing the <code>leaf-update-script-body</code> with opcodes opens up the door to prefix OP_SUCCESSX opcodes, to name a single issue only, side-stepping the validation that was meant to be run by the committed script.</li>
 <li><a href="https://bips.dev/345/#cite_ref_5">^</a> <strong>Why is -1 the only allowable negative value for revault-vout-idx?</strong> A negative revault index indicates that no revault output exists; if this value were allowed to be any negative number, the witness could be malleated (and bloated) while a transaction is waiting for confirmation.</li>
 <li><a href="https://bips.dev/345/#cite_ref_6">^</a> <strong>Why is the sigops cost for OP_VAULT set to 60?</strong> To determine the validity of a trigger output, OP_VAULT must perform an EC multiplication and hashing proportional to the length of the control block in order to generate the output's expected TapTweak. This has been measured to have a cost in the worst case (max length control block) of roughly twice a Schnorr verification. Because the hashing cost could be mitigated by caching midstate, the cost is 60 and not 100.</li>
-<li><a href="https://bips.dev/345/#cite_ref_7">^</a> <strong>What is a deferred check and why does this proposal require them for correct script evaluation?</strong> A deferred check is a validation check that is executed only after all input scripts have been validated, and is based on aggregate information collected during each input's EvalScript run.<br /><br />Currently, the validity of each input is (usually) checked concurrently across all inputs in a transaction. Because this proposal allows batching the spend of multiple vault inputs into a single recovery or withdrawal output, we need a mechanism to ensure that all expected values per output can be summed and then checked. This necessitates the introduction of an "aggregating" set of checks which can only be executed after each input's script is evaluated. Note that similar functionality would be required for batch input validation or cross-input signature aggregation.</li>
+<li><a href="https://bips.dev/345/#cite_ref_7">^</a> <strong>What is a deferred check and why does this proposal require them for correct script evaluation?</strong> A deferred check is a validation check that is executed only after all input scripts have been validated, and is based on aggregate information collected during each input's EvalScript run.<br /><br />Currently, the validity of each input is (usually) checked concurrently across all inputs in a transaction. Because this proposal allows batching the spend of multiple vault inputs into a single recovery or withdrawal output, we need a mechanism to ensure that all expected values per output can be summed and then checked. This necessitates the introduction of an &quot;aggregating&quot; set of checks which can only be executed after each input's script is evaluated. Note that similar functionality would be required for batch input validation or cross-input signature aggregation.</li>
 <li><a href="https://bips.dev/345/#cite_ref_8">^</a> <strong>How do recovery transactions pay for fees?</strong> If the recovery is unauthorized, fees are attached either via CPFP with an ephemeral anchor or as inputs which are solely spent to fees (i.e. no change output). If the recovery is authorized, fees can be attached in any manner, e.g. unrelated inputs and outputs or CPFP via anchor.</li>
-<li><a href="https://bips.dev/345/#cite_ref_9">^</a> <strong>Why are recovery transactions required to be replaceable?</strong> In the case of unauthorized recoveries, an attacker may attempt to pin recovery transactions by broadcasting a "rebundled" version with a low fee rate. Vault owners must be able to overcome this with replacement. In the case of authorized recovery, if an attacker steals the recovery authorization key, the attacker may try to pin the recovery transaction during theft. Requiring replaceability ensures that the owner can always raise the fee rate of the recovery transaction, even if they are RBF rule  3 griefed in the process.</li>
+<li><a href="https://bips.dev/345/#cite_ref_9">^</a> <strong>Why are recovery transactions required to be replaceable?</strong> In the case of unauthorized recoveries, an attacker may attempt to pin recovery transactions by broadcasting a &quot;rebundled&quot; version with a low fee rate. Vault owners must be able to overcome this with replacement. In the case of authorized recovery, if an attacker steals the recovery authorization key, the attacker may try to pin the recovery transaction during theft. Requiring replaceability ensures that the owner can always raise the fee rate of the recovery transaction, even if they are RBF rule  3 griefed in the process.</li>
 <li><a href="https://bips.dev/345/#cite_ref_10">^</a> 34 bytes is the length of a recovery script that consists solely of <code>&lt;recovery-sPK-hash&gt; OP_VAULT_RECOVER</code>.</li>
 <li><a href="https://bips.dev/345/#cite_ref_11">^</a> <strong>Why can unauthorized recoveries only process a single recovery path?</strong> Because there is no signature required for unauthorized recoveries, if additional outputs were allowed, someone observing a recovery in the mempool would be able to rebundle and broadcast the recovery with a lower fee rate.</li>
 </ol>
@@ -749,7 +749,7 @@ deployments for OP_CHECKSEQUENCEVERIFY and OP_CHECKLOCKTIMEVERIFY (see
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

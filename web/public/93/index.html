@@ -129,7 +129,7 @@
 </code></pre>
 <h2>Introduction</h2>
 <h3>Abstract</h3>
-<p>This document proposes a checksummed base32 format, "codex32", and a standard for backing up and restoring the master seed of a
+<p>This document proposes a checksummed base32 format, &quot;codex32&quot;, and a standard for backing up and restoring the master seed of a
 <a href="/32" target="_blank">BIP-0032</a> hierarchical deterministic wallet using it.
 It includes an encoding format, a BCH error-correcting checksum, and optional Shamir's secret sharing algorithms for share generation and secret recovery.
 Secret data can be encoded directly, or split into up to 31 shares.
@@ -169,17 +169,17 @@ efficient to read out loud, write, type or to put into QR codes.</ref> format ca
 <p>A codex32 string is similar to a bech32 string defined in <a href="/173" target="_blank">BIP-0173</a>.
 It reuses the base-32 character set from BIP-0173, and consists of:</p>
 <ul>
-<li>A human-readable part, which is the string "ms" (or "MS").</li>
-<li>A separator, which is always "1".</li>
+<li>A human-readable part, which is the string &quot;ms&quot; (or &quot;MS&quot;).</li>
+<li>A separator, which is always &quot;1&quot;.</li>
 <li>A data part which is in turn subdivided into:
 <ul>
-<li>A threshold parameter, which MUST be a single digit between "2" and "9", or the digit "0".
+<li>A threshold parameter, which MUST be a single digit between &quot;2&quot; and &quot;9&quot;, or the digit &quot;0&quot;.
 <ul>
-<li>If the threshold parameter is "0" then the share index, defined below, MUST have a value of "s" (or "S").</li>
+<li>If the threshold parameter is &quot;0&quot; then the share index, defined below, MUST have a value of &quot;s&quot; (or &quot;S&quot;).</li>
 </ul>
 </li>
 <li>An identifier consisting of 4 bech32 characters.</li>
-<li>A share index, which is any bech32 character. Note that a share index value of "s" (or "S") is special and denotes the unshared secret (see section "Unshared Secret").</li>
+<li>A share index, which is any bech32 character. Note that a share index value of &quot;s&quot; (or &quot;S&quot;) is special and denotes the unshared secret (see section &quot;Unshared Secret&quot;).</li>
 <li>A payload which is a sequence of up to 74 bech32 characters. (However, see <strong>Long codex32 Strings</strong> below for an exception to this limit.)</li>
 <li>A checksum which consists of 13 bech32 characters as described below.</li>
 </ul>
@@ -238,14 +238,14 @@ Implementations SHOULD provide the user with a corrected valid codex32 string if
 However, implementations SHOULD NOT automatically proceed with a corrected codex32 string without user confirmation of the corrected string, either by prompting the user, or returning a corrected string in an error message and allowing the user to repeat their action.
 We do not specify how an implementation should implement error correction. However, we recommend that:</p>
 <ul>
-<li>Implementations make suggestions to substitute non-bech32 characters with bech32 characters in some situations, such as replacing "B" with "8", "O" with "0", "I" with "l", etc.</li>
-<li>Implementations interpret "?" as an erasure.</li>
+<li>Implementations make suggestions to substitute non-bech32 characters with bech32 characters in some situations, such as replacing &quot;B&quot; with &quot;8&quot;, &quot;O&quot; with &quot;0&quot;, &quot;I&quot; with &quot;l&quot;, etc.</li>
+<li>Implementations interpret &quot;?&quot; as an erasure.</li>
 <li>Implementations optionally interpret other non-bech32 characters, or characters with incorrect case, as erasures.</li>
 <li>If a string with 8 or fewer erasures can have those erasures filled in to make a valid codex32 string, then the implementation suggests such a string as a correction.</li>
 <li>If a string consisting of valid bech32 characters in the proper case can be made valid by substituting 4 or fewer characters, then the implementation suggests such a string as a correction.</li>
 </ul>
 <h3>Unshared Secret</h3>
-<p>When the share index of a valid codex32 string (converted to lowercase) is the letter "s", we call the string a codex32 secret.</p>
+<p>When the share index of a valid codex32 string (converted to lowercase) is the letter &quot;s&quot;, we call the string a codex32 secret.</p>
 <p>The secret is decoded by converting the payload to bytes:</p>
 <ul>
 <li>Translate the characters to 5 bits values using the bech32 character table from BIP-0173, most significant bit first.</li>
@@ -253,7 +253,7 @@ We do not specify how an implementation should implement error correction. Howev
 </ul>
 <p>Note that unlike the decoding process in BIP-0173, we do NOT require that the incomplete group be all zeros.</p>
 <p>For an unshared secret, the threshold parameter (the first character of the data part) is ignored (beyond the fact it must be a digit for the codex32 string to be valid).
-We recommend using the digit "0" for the threshold parameter in this case.
+We recommend using the digit &quot;0&quot; for the threshold parameter in this case.
 The 4 character identifier also has no effect beyond aiding users in distinguishing between multiple different secrets in cases where they have more than one.</p>
 <p>The function <code>ms32_encode</code> constructs a codex32 string when its argument is the converted data-part characters (excluding the checksum).</p>
 <p>To validate a codex32 string and determine the data-part (excluding the checksum) as a list of 5-bit values, the <code>ms32_decode</code> function can be used.</p>
@@ -281,19 +281,19 @@ def ms32_decode(codex):
     return data[:-13 if len(data) &lt; 94 else -15]  # See Long codex32 Strings
 </code></pre>
 <h3>Master seed format</h3>
-<p>When the human-readable part of a valid codex32 secret (converted to lowercase) is the string "ms", we call it a codex32-encoded master seed or secret seed. The payload in this case is a direct encoding of a BIP-0032 HD master seed.</p>
+<p>When the human-readable part of a valid codex32 secret (converted to lowercase) is the string &quot;ms&quot;, we call it a codex32-encoded master seed or secret seed. The payload in this case is a direct encoding of a BIP-0032 HD master seed.</p>
 <p>A secret seed is a codex32 encoding of:</p>
 <ul>
-<li>The human-readable part "ms" for master seed.</li>
+<li>The human-readable part &quot;ms&quot; for master seed.</li>
 <li>The data-part values:
 <ul>
-<li>A threshold parameter, which MUST be a single digit between "2" and "9", or the digit "0".</li>
+<li>A threshold parameter, which MUST be a single digit between &quot;2&quot; and &quot;9&quot;, or the digit &quot;0&quot;.</li>
 <li>An identifier consisting of 4 bech32 characters.
 <ul>
 <li>We do not define how to choose the identifier, beyond noting that it SHOULD be distinct for every master seed and share set the user may need to disambiguate.</li>
 </ul>
 </li>
-<li>The share index "s".</li>
+<li>The share index &quot;s&quot;.</li>
 <li>A conversion of the 16-to-64-byte BIP-0032 HD master seed to bech32:
 <ul>
 <li>Start with the bits of the master seed, most significant bit per byte first.</li>
@@ -306,15 +306,15 @@ def ms32_decode(codex):
 </li>
 </ul>
 <h3>Recovering Secret</h3>
-<p>When the share index of a valid codex32 string (converted to lowercase) is not the letter "s", we call the string a codex32 share.
-The first character of the data part indicates the threshold of the share, and it is required to be a non-"0" digit.</p>
+<p>When the share index of a valid codex32 string (converted to lowercase) is not the letter &quot;s&quot;, we call the string a codex32 share.
+The first character of the data part indicates the threshold of the share, and it is required to be a non-&quot;0&quot; digit.</p>
 <p>In order to recover a secret, one needs a set of valid shares such that:</p>
 <ul>
 <li>All shares have the same threshold value, the same identifier, and the same length.</li>
 <li>All of the share index values are distinct.</li>
 <li>The number of shares is exactly equal to the (common) threshold value.</li>
 </ul>
-<p>If all the above conditions are satisfied, the <code>ms32_recover</code> function will return a codex32 secret when its argument is the list of codex32 shares with each share represented as a list of integers representing the characters converted using the bech32 character table from BIP-0173.</p>
+<p>If all the above conditions are satisfied, the <code>ms32_recover</code> function will return a codex32 secret when its argument is the list of codex32 shares with each share represented as a list of integers representing the characters converted using the bech32 character table from BIP-0173. </p>
 <pre><code>BECH32_INV = [
     0, 1, 20, 24, 10, 8, 12, 29, 5, 11, 4, 9, 6, 28, 26, 31,
     22, 18, 17, 23, 2, 25, 16, 19, 3, 21, 14, 30, 13, 7, 27, 15,
@@ -399,7 +399,7 @@ The conversion process consists of:</p>
 <li>Generate a valid checksum in accordance with the Checksum section</li>
 </ol>
 <p>Along with the codex32 secret, the user must generate <em>k</em>-1 other codex32 shares, each with the same threshold value, the same identifier, and a distinct share index.
-These shares should be generated as described in the "fresh secret" section.</p>
+These shares should be generated as described in the &quot;fresh secret&quot; section.</p>
 <p>The codex32 secret and the <em>k</em>-1 codex32 shares form a set of <em>k</em> valid initial codex32 strings from which additional shares can be derived as described above.</p>
 <h3>Long codex32</h3>
 <p>The 13 character checksum design only supports up to 80 data characters.
@@ -520,7 +520,7 @@ The payload contains 26 bech32 characters, which corresponds to 130 bits. We tru
 <li>master node xprv: <code>xprv9s21ZrQH143K3taPNekMd9oV5K6szJ8ND7vVh6fxicRUMDcChr3bFFzuxY8qP3xFFBL6DWc2uEYCfBFZ2nFWbAqKPhtCLRjgv78EZJDEfpL</code></li>
 </ul>
 <h3>Test vector 2</h3>
-<p>This example shows generating a new master seed using "random" shares, as well as deriving an additional share, using <em>k</em>=2 and an identifier of <code>NAME</code>.
+<p>This example shows generating a new master seed using &quot;random&quot; shares, as well as deriving an additional share, using <em>k</em>=2 and an identifier of <code>NAME</code>.
 Although codex32 strings are canonically all lowercase, it's also valid to use all uppercase.</p>
 <p>Share with index <code>A</code>: <code>MS12NAMEA320ZYXWVUTSRQPNMLKJHGFEDCAXRPP870HKKQRM</code></p>
 <p>Share with index <code>C</code>: <code>MS12NAMECACDEFGHJKLMNPQRSTUVWXYZ023FTR2GDZMPY6PN</code></p>
@@ -531,7 +531,7 @@ Although codex32 strings are canonically all lowercase, it's also valid to use a
 <li>master node xprv: <code>xprv9s21ZrQH143K2NkobdHxXeyFDqE44nJYvzLFtsriatJNWMNKznGoGgW5UMTL4fyWtajnMYb5gEc2CgaKhmsKeskoi9eTimpRv2N11THhPTU</code></li>
 </ul>
 <h3>Test vector 3</h3>
-<p>This example shows splitting an existing 128-bit master seed into "random" shares, using <em>k</em>=3 and an identifier of <code>cash</code>.
+<p>This example shows splitting an existing 128-bit master seed into &quot;random&quot; shares, using <em>k</em>=3 and an identifier of <code>cash</code>.
 We appended two zero bits in order to obtain 26 bech32 characters (130 bits of data) from the 128-bit master seed.</p>
 <p>Master seed (hex): <code>ffeeddccbbaa99887766554433221100</code></p>
 <p>codex32-encoded master seed with index <code>s</code>: <code>ms13cashsllhdmn9m42vcsamx24zrxgs3qqjzqud4m0d6nln</code></p>
@@ -580,7 +580,7 @@ We appended four zero bits in order to obtain 52 bech32 characters (260 bits of 
 <li><code>ms10leetsllhdmn9m42vcsamx24zrxgs3qrl7ahwvhw4fnzrhve25gvezzyq0pgjxpzx0ysaam</code></li>
 </ul>
 <h3>Test vector 5</h3>
-<p>This example shows generating a new 512-bit master seed using "random" bech32 characters and appending a checksum.
+<p>This example shows generating a new 512-bit master seed using &quot;random&quot; bech32 characters and appending a checksum.
 The payload contains 103 bech32 characters, which corresponds to 515 bits. The last three bits are discarded when converting to a 512-bit master seed.</p>
 <p>This is an example of a <strong>Long codex32</strong> string.</p>
 <p>k value (bech32): <code>0</code></p>
@@ -649,7 +649,7 @@ They are either too short, too long, or would decode to byte sequence with an in
 <li><code>ms12fauxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9llwmgesfulcj2z</code></li>
 <li><code>ms12fauxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx02ev7caq6n9fgkf</code></li>
 </ul>
-<p>This example uses a "0" threshold with a non-"s" index</p>
+<p>This example uses a &quot;0&quot; threshold with a non-&quot;s&quot; index</p>
 <ul>
 <li><code>ms10fauxxxxxxxxxxxxxxxxxxxxxxxxxxxx0z26tfn0ulw3p</code></li>
 </ul>
@@ -657,7 +657,7 @@ They are either too short, too long, or would decode to byte sequence with an in
 <ul>
 <li><code>ms1fauxxxxxxxxxxxxxxxxxxxxxxxxxxxxxda3kr3s0s2swg</code></li>
 </ul>
-<p>These examples do not begin with the required "ms" or "MS" prefix and/or are missing the "1" separator.</p>
+<p>These examples do not begin with the required &quot;ms&quot; or &quot;MS&quot; prefix and/or are missing the &quot;1&quot; separator.</p>
 <ul>
 <li><code>0fauxsxxxxxxxxxxxxxxxxxxxxxxxxxxuqxkk05lyf3x2</code></li>
 <li><code>10fauxsxxxxxxxxxxxxxxxxxxxxxxxxxxuqxkk05lyf3x2</code></li>
@@ -706,7 +706,7 @@ The resulting polynomial is our generating polynomial for our 15 character check
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-16</p>
+                    <p class="font-bold">2026-01-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
