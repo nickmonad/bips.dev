@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 434: Peer Feature Negotiation" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 434: Peer Feature Negotiation" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 434: Peer Feature Negotiation</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 434: Peer Feature Negotiation</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2026-01-14</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0434.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 434
+  Layer: Peer Services
+  Title: Peer Feature Negotiation
+  Authors: Anthony Towns &lt;aj@erisian.com.au&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2026-01-14
+  License: BSD-3-Clause
+  Discussion: 2025-12-19: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;aUUXLgEUCgGb122o@erisian.com.au&#x2F;T&#x2F;#u
+              2020-08-21: https:&#x2F;&#x2F;gnusha.org&#x2F;pi&#x2F;bitcoindev&#x2F;20200821023647.7eat4goqqrtaqnna@erisian.com.au&#x2F;
+  Version: 0.1.0
+</code></pre>
+<h2 id="Abstract">Abstract</h2>
+<p>This BIP defines a peer-to-peer (P2P) message that can be used for
+announcements and negotiation related to support of new peer-to-peer
+features.</p>
+<h2 id="Motivation">Motivation</h2>
+<p>Historically, new peer-to-peer protocol changes have been tied to
+bumping the protocol version, so that nodes know to only attempt
+feature negotiation with peers that support the feature. Coordinating
+the protocol version across implementations, when different clients may
+have different priorities for features to implement, is an unnecessary
+burden in the upgrade process for P2P features that do not require
+universal support. And at a more philosophical level, having the P2P
+protocol be <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/20564#issuecomment-738456560">permissionlessly extensible</a>, with no
+coordination required between implementations or developers, seems ideal
+for a decentralized system.</p>
+<p>Many earlier P2P protocol upgrades were implemented as new messages
+sent after a peer connection is set up (ie, after receipt of a <code>verack</code>
+message by both sides). See <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0130.mediawiki">BIP 130 (sendheaders)</a>, <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0133.mediawiki">BIP 133
+(feefilter)</a>, and <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki">BIP 152 (compact blocks)</a> for some
+examples. However, for some P2P upgrades, it is helpful to perform
+feature negotiation prior to a connection being fully established
+(ie, prior to the <code>verack</code> being received by both sides). <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki">BIP 155
+(addrv2)</a> and <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki">BIP 339 (wtxid-relay)</a> are examples of
+this approach, which involves sending and receiving a single new message
+(<code>sendaddrv2</code> and <code>wtxidrelay</code> respectively), in between <code>version</code> and
+<code>verack</code> to indicate support of the new feature.</p>
+<p>In all these cases, sending new messages on the network raises the
+question of what non-implementing software will do with such messages. The
+common behavior observed on the network was for software to ignore
+unknown messages received from a peer, so these proposals posed minimal
+risk of potential network partitioning. In fact, supporting protocol
+extensibility in this manner was given as an explicit reason to ignore
+unknown messages in Bitcoin's <a rel="noopener" target="_blank" href="https://github.com/benjiqq/bitcoinArchive/blob/master/bitcoin0.1/src/main.cpp#L2035-L2039">first release</a>.</p>
+<p>However, if nodes respond to unknown messages by disconnecting, then
+the network might partition in the future as incompatible software is
+deployed. And in fact, some clients on the network have historically
+discouraged or disallowed unknown messages, both between <code>version</code>
+and <code>verack</code> (eg, Bitcoin Core discouraged such messages between
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/9720">PR#9720</a> and <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/19723">PR#19723</a>, and btcd disallowed
+such messages until <a rel="noopener" target="_blank" href="https://github.com/btcsuite/btcd/pull/1812">PR#1812</a>, but see also discussion in
+<a rel="noopener" target="_blank" href="https://github.com/btcsuite/btcd/issues/1661">#1661</a>), as well as after <code>verack</code>.</p>
+<p>To maximise compatibility with such clients, most of these BIPs require
+that peers bump the protocol version:</p>
+<ul>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0130.mediawiki">BIP 130</a> requires version 70012 or higher,</li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0133.mediawiki">BIP 133</a> requires version 70013 or higher,</li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki">BIP 152</a> recommends version 70014/70015 or higher, and</li>
+<li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki">BIP 339</a> requires version 70016 or higher.</li>
+</ul>
+<p>And while <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki">BIP 155</a> does not specify a minimum protocol version,
+implementations have <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/20564">added</a> a de facto requirement of version
+70016 or higher.</p>
+<p>In this BIP, we propose codifying and generalising the mechanism used by
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki">BIP 339</a> for future P2P upgrades, by adding a single new feature
+negotiation message that can be reused for advertising arbitrary new
+features, and requiring that implementing software ignore unknown features
+that might be advertised. This allows future upgrades to negotiate new
+features by exchanging messages prior to exchanging <code>verack</code> messages,
+without concerns of being unnecessarily disconnected by a peer which
+doesn't understand the messages, and without needing to coordinate
+updating the protocol version.</p>
+<h2 id="Specification">Specification</h2>
+<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;,
+&quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be
+interpreted as described in RFC 2119.</p>
+<p>For the purposes of this section, <code>CompactSize</code> refers to the
+variable-length integer encoding used across the existing P2P protocol
+to encode array lengths, among other things, in 1, 3, 5 or 9 bytes. Only
+<code>CompactSize</code> encodings which are minimally-encoded (ie the shortest
+length possible) are used by this specification.</p>
+<p>Nodes implementing this BIP:</p>
+<ul>
+<li>MUST advertise a protocol version number <code>&gt;= 70017</code>,</li>
+<li>MUST NOT send <code>feature</code> messages to peers that advertise a protocol
+version number <code>&lt; 70017</code>,</li>
+<li>MUST accept <code>feature</code> messages received after the <code>version</code> message
+and before the <code>verack</code> message, and</li>
+<li>MUST NOT send <code>feature</code> messages after sending the <code>verack</code> message.</li>
+</ul>
+<p>In addition, nodes implementing this BIP:</p>
+<ul>
+<li>SHOULD ignore unknown messages received after the <code>version</code> message
+and before the <code>verack</code> message,</li>
+<li>MAY ignore <code>feature</code> messages sent after <code>verack</code>, and</li>
+<li>MAY disconnect peers who send <code>feature</code> messages after <code>verack</code>.</li>
+</ul>
+<p>Feature specifications based on this BIP:</p>
+<ul>
+<li>MUST forbid sending messages it introduces after <code>verack</code> to a peer
+that has not indicated support for the feature via a <code>feature</code>
+message.</li>
+</ul>
+<h3 id="feature_message"><code>feature</code> message</h3>
+<p>The payload of the <code>feature</code> message contains exactly the following data:</p>
+<table><thead><tr><th>Type</th><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>string</td><td><code>featureid</code></td><td>Unique identifier for the feature</td></tr>
+<tr><td>byte-vector</td><td><code>featuredata</code></td><td>Feature-specific configuration data</td></tr>
+</tbody></table>
+<p>The <code>featureid</code> is encoded in the usual way, that is, as a <code>CompactSize</code>
+specifying the string length, followed by that many bytes. The string
+length MUST be between 4 and 80, inclusive. The string SHOULD include
+only printable ASCII characters (ie, each byte should have a value
+between 32 and 126, inclusive).</p>
+<p>Likewise, <code>featuredata</code> is encoded as a <code>CompactSize</code> specifying the
+byte-vector size, followed by that many bytes. How these bytes are
+interpreted is part of the feature's specification. The byte-vector size
+MUST NOT be more than 512 bytes. Note that the <code>featuredata</code> field is not
+optional, so if no data is required, an empty vector should be provided,
+ie serialized as <code>CompactSize</code> of 0.</p>
+<p>Nodes implementing this BIP MUST ignore <code>feature</code> messages specifying a
+<code>featureid</code> they do not support, so long as the payload conforms to the
+requirements above.</p>
+<p>Nodes implementing this BIP MAY disconnect peers that send <code>feature</code>
+messages where the <code>feature</code> message's payload cannot be correctly
+parsed (including having missing or additional data), even if they do
+not recognise the <code>featureid</code>.</p>
+<p>The <code>featureid</code> MUST be a globally unique identifier for the feature.
+For features published as a BIP, the <code>featureid</code> SHOULD be the assigned
+BIP number, eg &quot;BIP434&quot;, or be based on the BIP number (eg, &quot;BIP434v2&quot;
+where the &quot;v2&quot; suffix covers versioning, or &quot;BIP434.3&quot; where the &quot;.3&quot;
+suffix covers part 3 of the BIP). For experimental features that do not
+(yet) have a BIP number assigned, some other unique identifier MUST be
+chosen, such as a URL to the repository where development is taking place,
+or the sha256 digest of some longer reference.</p>
+<p>Nodes implementing both this BIP and <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0324.mediawiki">BIP 324 (v2 P2P encrypted
+transport)</a> MUST treat a message with a 1-byte <code>message_type</code>
+equal to <code>XXX</code> that is received prior to <code>verack</code> as the <code>feature</code> message.</p>
+<h3 id="Feature_negotiation">Feature negotiation</h3>
+<p>It is RECOMMENDED that feature negotiation be designed and implemented
+as follows:</p>
+<ul>
+<li>all <code>feature</code> messages and the <code>verack</code> message should be sent
+immediately on receipt of the peer's <code>version</code> message</li>
+<li>any negotiation calculations should be performed immediately on
+receipt of the peer's <code>verack</code> message</li>
+</ul>
+<p>This structure is fairly easy to implement, and avoids introducing any
+significant latency that might result from more interactive negotiation
+methods.</p>
+<p>Feature specifications defining a <code>featureid</code> MAY make use of the
+following approaches:</p>
+<h4 id="Feature_advertisement:">Feature advertisement:</h4>
+<ol>
+<li>Send a <code>feature</code> message advertising the <code>featureid</code> unconditionally</li>
+<li>Accept messages related to the feature unconditionally</li>
+<li>Only send messages defined by the feature if the peer sent
+a valid <code>feature</code> message for the <code>featureid</code>.</li>
+</ol>
+<p>This approach is appropriate for many simple features that define
+new messages, particularly where an implementation might only
+implement sending or receiving a message, but not both, eg <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0035.mediawiki">BIP 35
+(mempool)</a>.</p>
+<h4 id="Feature_coordination:">Feature coordination:</h4>
+<ol>
+<li>Send a <code>feature</code> message advertising the <code>featureid</code> unconditionally</li>
+<li>Check if the peer sends the same <code>feature</code> message (or a compatible
+one), and enable the feature for this peer if so.</li>
+<li>Only send/accept messages or encode data items according to the
+feature's specification if the feature is enabled for this peer.</li>
+</ol>
+<p>This approach is appropriate for upgrades to data encoding in
+P2P messages, eg <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0339.mediawiki">BIP 339 (wtxidrelay)</a> or <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki">BIP 155
+(addrv2)</a>.</p>
+<h4 id="Feature_versioning:">Feature versioning:</h4>
+<ol>
+<li>Send <code>feature</code> messages for multiple incompatible features, eg
+<code>BIP434v3</code>, <code>BIP434v2</code>, <code>BIP434v1</code>, ordered from most preferred
+to least.</li>
+<li>Track the corresponding <code>feature</code> messages from your peer.</li>
+<li>If you were the listening peer, enable your highest preference feature
+that your peer also supports.</li>
+<li>If you were the initiating peer, enable the first feature that your
+peer announced, that you also support.</li>
+<li>For example if the listening peer sends <code>BIP434v3</code>, <code>BIP434v2</code>,
+<code>BIP434v1</code>, and the initiating peer sends <code>BIP434v1</code>, <code>BIP434v2</code>,
+then the listening peer should select <code>BIP434v2</code> when <code>verack</code>
+is received, and the initiating peer should select <code>BIP434v2</code>
+as soon as <code>feature BIP434v2</code> is received.</li>
+<li>Conversely, if the initiating peer sends <code>BIP434v3</code>, <code>BIP434v2</code>,
+<code>BIP434v1</code>, and the listening peer sends <code>BIP434v1</code>, <code>BIP434v2</code>,
+then the listening peer should select <code>BIP434v1</code> when <code>verack</code>
+is received, and the initiating peer should select <code>BIP434v1</code>
+as soon as <code>feature BIP434v1</code> is received.</li>
+<li>In most cases, implementations should simply advertise incompatible
+features in order from most recent to oldest, on the basis that
+the only reason to make incompatible updates is because there are
+significant improvements. Exceptions to that may occur when two
+incompatible features are both receiving active development, or
+when an implementation has only partially implemented the latest
+spec, and the older spec is better supported (and thus should be
+listed first, as the preferred protocol to adopt).</li>
+</ol>
+<p>This approach may be appropriate when making substantial changes to a
+deployed protocol and backwards compatibility is desirable on a short-term
+basis, or when there is disagreement amongst implementations or users
+as to which approach is most desirable.</p>
+<h2 id="Considerations">Considerations</h2>
+<p>The advantage this approach has over bumping the protocol version
+number when introducing new P2P messages or data structures, is that no
+coordination is required (that is, there is no longer a question whether
+version &quot;n+1&quot; belongs to Alice's new feature, or Bob's new feature),
+and there is no implication that supporting each new feature means all
+prior features are also supported.</p>
+<p>The advantage this approach has over defining new messages for each
+feature is that the <code>featureid</code> can be much longer (at up to 80
+bytes) than a message type id (which are limited to 12 bytes). With a
+<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0324.mediawiki">BIP 324</a> one-byte <code>message_type</code>, the overhead compared to that
+approach is also kept small.</p>
+<p>This approach is largely equivalent to adding a <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/B514142F-382B-4D49-B68D-0115ECBD1D79@voskuil.org/">payload to the <code>verack</code>
+message</a> (eg, a vector of <code>featureid</code>, <code>featuredata</code>
+pairs). It was chosen because:</p>
+<ul>
+<li>it retains compatibility with any implementations that expect <code>verack</code>
+to have no payload;</li>
+<li>it allows peers to process each feature request individually, rather than
+having to first load the configuration information for all features into
+memory at once (in order to validate the message's checksum), and then
+deal with each feature's configuration;</li>
+<li>limiting the maximum message payload size you accept (eg to 4MB)
+does not limit the number of features you can accept; and</li>
+<li>we have experience with negotiating features with individual messages,
+but no experience with doing so via <code>verack</code> payload.</li>
+</ul>
+<p>A mild disadvantage compared to using a <code>verack</code> payload is that this
+approach allows the possibility of interactive feature negotiation prior
+to <code>verack</code>. However interactive feature negotiation is always possible
+simply by having the initiating peer disconnect and reconnect after
+discovering the listening peer's supported features.</p>
+<p>This specification attempts to maximise compatibility with implementations
+that prefer to fully validate each message received:</p>
+<ul>
+<li><code>feature</code> messages, even for unknown features, must always be fully
+parseable into a <code>featureid</code> and <code>featuredata</code></li>
+<li>Ignoring unknown messages prior to <code>verack</code> is only a recommendation,
+not a requirement, so compliant implementations may disconnect on an
+unknown message that cannot be validated.</li>
+<li>Sending unknown messages after <code>verack</code> is explicitly forbidden,
+in so far as that is possible.</li>
+</ul>
+<h2 id="Backward_compatibility">Backward compatibility</h2>
+<p>Clients specifying a version number prior to <code>70017</code> remain fully
+compatible with this change.</p>
+<p>Clients specifying a version number of <code>70017</code> or higher that do not
+implement this BIP remain fully compatible provided they do not disconnect
+peers upon receiving unexpected messages received between <code>version</code> and
+<code>verack</code>.</p>
+<h2 id="Acknowledgements">Acknowledgements</h2>
+<p>Much of the logic here, and much of the text in the motivation section,
+is based on Suhas Daftuar's 2020 post on <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAFp6fsE=HPFUMFhyuZkroBO_QJ-dUWNJqCPg9=fMJ3Jqnu1hnw@mail.gmail.com/">Generalizing feature
+negotiation</a>.</p>
+<h2 id="Copyright">Copyright</h2>
+<p>This BIP is licensed under the 2-clause BSD license.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-01-28</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
