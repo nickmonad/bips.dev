@@ -127,6 +127,7 @@
   Type: Specification
   Assigned: 2019-03-08
   License: BSD-3-Clause
+  Version: 1.0.1
   Replaces: 151
 </code></pre>
 <h2> Introduction </h2>
@@ -669,19 +670,21 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
 <tr><td><code>message_payload</code></td><td><code>message_length</code></td><td>message payload</td></tr>
 </tbody></table>
 <p>If the first byte of <code>message_type</code> is <code>b'\x00'</code>, the following 12 bytes are interpreted as an ASCII message type (as in the v1 P2P protocol), trailing padded with <code>b'\x00'</code> as necessary. If the first byte of <code>message_type</code> is in the range <em>1..255</em>, it is interpreted as a message type ID. This structure results in smaller messages than the v1 protocol, as most messages sent/received will have a message type ID. We recommend reserving 1-byte type IDs for message types that are sent more than once per direction per connection.<ref name="smaller_messages"><strong>How do the lengths between v1 and v2 compare?</strong> For messages that use the 1-byte short message type ID, v2 packets use 3 bytes less per message than v1.</ref>&lt;ref name&quot;fixed_length_long_ids&quot;&gt;<strong>Why not allow variable length long message type IDs?</strong> Allowing for variable length long IDs reduces the available 1-byte ID space by 12 (to encode the length itself) and incentivizes less descriptive message types. In addition, limiting message types to fixed lengths of 1 or 13 hampers traffic analysis.</ref></p>
-<p>The following table lists currently defined message type IDs:</p>
+<p>The value of <code>message_length</code> is <strong>length</strong> minus the size of the <code>message_type</code>.</p>
+<p>The following table lists currently defined message type IDs and the 12-byte ASCII message type (trimmed of trailing padding) that they are treated as equivalent to:</p>
 <table><thead><tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead><tbody>
-<tr><td>(12 bytes follow)</td><td><code>ADDR</code></td><td><code>BLOCK</code></td><td><code>BLOCKTXN</code></td><td></td></tr>
-<tr><td><code>CMPCTBLOCK</code></td><td><code>FEEFILTER</code></td><td><code>FILTERADD</code></td><td><code>FILTERCLEAR</code></td><td></td></tr>
-<tr><td><code>FILTERLOAD</code></td><td><code>GETBLOCKS</code></td><td><code>GETBLOCKTXN</code></td><td><code>GETDATA</code></td><td></td></tr>
-<tr><td><code>GETHEADERS</code></td><td><code>HEADERS</code></td><td><code>INV</code></td><td><code>MEMPOOL</code></td><td></td></tr>
-<tr><td><code>MERKLEBLOCK</code></td><td><code>NOTFOUND</code></td><td><code>PING</code></td><td><code>PONG</code></td><td></td></tr>
-<tr><td><code>SENDCMPCT</code></td><td><code>TX</code></td><td><code>GETCFILTERS</code></td><td><code>CFILTER</code></td><td></td></tr>
-<tr><td><code>GETCFHEADERS</code></td><td><code>CFHEADERS</code></td><td><code>GETCFCHECKPT</code></td><td><code>CFCHECKPT</code></td><td></td></tr>
-<tr><td>+28</td><td><code>ADDRV2</code></td><td></td><td></td><td></td></tr>
+<tr><td>(12 bytes follow)</td><td><code>addr</code></td><td><code>block</code></td><td><code>blocktxn</code></td><td></td></tr>
+<tr><td><code>cmpctblock</code></td><td><code>feefilter</code></td><td><code>filteradd</code></td><td><code>filterclear</code></td><td></td></tr>
+<tr><td><code>filterload</code></td><td><code>getblocks</code></td><td><code>getblocktxn</code></td><td><code>getdata</code></td><td></td></tr>
+<tr><td><code>getheaders</code></td><td><code>headers</code></td><td><code>inv</code></td><td><code>mempool</code></td><td></td></tr>
+<tr><td><code>merkleblock</code></td><td><code>notfound</code></td><td><code>ping</code></td><td><code>pong</code></td><td></td></tr>
+<tr><td><code>sendcmpct</code></td><td><code>tx</code></td><td><code>getcfilters</code></td><td><code>cfilter</code></td><td></td></tr>
+<tr><td><code>getcfheaders</code></td><td><code>cfheaders</code></td><td><code>getcfcheckpt</code></td><td><code>cfcheckpt</code></td><td></td></tr>
+<tr><td>+28</td><td><code>addrv2</code></td><td></td><td></td><td></td></tr>
 <tr><td>≥29</td><td></td><td></td><td></td><td></td></tr>
 </tbody></table>
-<p>Additional message types may be added separately after BIP finalization.</p>
+<p>When a message type has both a 1-byte encoding and a 13-byte encoding defined, peers that support receiving that message type should accept messages using either encoding (e.g., if the &quot;getblocktxn&quot; message type is supported, then both the 1-byte <code>b'\x0a'</code> encoding and the 13-byte <code>b'\x00getblocktxn\x00'</code> should be supported, and behavior should not depend on which of the two encodings is received).</p>
+<p>Additional message type IDs may be added separately after BIP finalization.</p>
 <h3> Signaling specification </h3>
 <h4> Signaling v2 support </h4>
 <p>Peers supporting the v2 transport protocol signal support by advertising the <code>NODE_P2P_V2 = (1 &lt;&lt; 11)</code> service flag in addr relay. If met with immediate disconnection when establishing a v2 connection, clients implementing this proposal are encouraged to retry connecting using the v1 protocol.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup></p>
@@ -692,6 +695,12 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
 <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0324/xswiftec_inv_test_vectors.csv" target="_blank">XSwiftECInv vectors</a> provide examples of <em>(u, x)</em> pairs, and the various <em>t</em> values that <em>xswiftec_inv</em> maps them to.</li>
 <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0324/packet_encoding_test_vectors.csv" target="_blank">Packet encoding vectors</a> illustrate the lifecycle of the authenticated encryption scheme proposed in this document.</li>
 </ul>
+<h2> Changelog </h2>
+<pre><code> * 1.0.1 (2026-01-16)
+   * Specify equivalence of 1-byte and 13-byte `message_type`
+ * 1.0.0 (2024-07-10)
+   * Marked as Final
+</code></pre>
 <h2> Rationale and References </h2>
 <ol>
 <li><a href="https://bips.dev/324/#cite_ref_1">^</a> <strong>Why is the header a part of the plaintext and not included alongside the length field?</strong> The packet length field is the minimum information that must be available before we can leverage the standard RFC8439 AEAD. Any other data, including metadata like the header being in the content encryption makes it easier to reason about the protocol security w.r.t. data being used before it is authenticated. If the ignore bit was not part of the content, another mechanism would be needed to authenticate it; for example, it could be fed as AAD to the AEAD cipher. We feel the complexity of such an approach outweighs the benefit of saving one byte per message.</li>
@@ -715,7 +724,7 @@ def v2_receive_packet(peer, aad=b&#x27;&#x27;):
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-01-29</p>
+                    <p class="font-bold">2026-01-30</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
