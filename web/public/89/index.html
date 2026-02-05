@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 89: Chain Code Delegation" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 89: Chain Code Delegation" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 89: Chain Code Delegation</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 89: Chain Code Delegation</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2025-12-03</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0089.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 89
+  Layer: Applications
+  Title: Chain Code Delegation
+  Authors: Jesse Posner &lt;jesse@vora.io&gt;
+           Jurvis Tan &lt;jurvis@block.xyz&gt;
+  Comments-Summary: No comments yet.
+  Comments-URI: https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;wiki&#x2F;Comments:BIP-0089
+  Status: Draft
+  Type: Specification
+  Assigned: 2025-12-03
+  License: BSD-3-Clause
+  Discussion: https:&#x2F;&#x2F;delvingbitcoin.org&#x2F;t&#x2F;chain-code-delegation-private-access-control-for-bitcoin-keys&#x2F;1837
+  Requires: 32, 340, 341
+</code></pre>
+<h2> Abstract </h2>
+<p>Chain Code Delegation (CCD) is a method for multi-signature wallets in which a privileged participant withholds BIP32 chain codes from one or more non-privileged participants, and supplies per-input scalar tweaks at signing time. This allows non-privileged participants to co-sign transactions without learning wallet-wide derivations, balances, or signing activity from other spending combinations. CCD defines the tweak exchange needed for verification and signing behavior when the signer does not possess a chain code.</p>
+<h2> Motivation </h2>
+<p>In multisig deployments, sharing extended public keys (xpubs) or descriptors enables all participants to scan the chain and infer counterparties' activity. CCD limits that visibility by ensuring non-privileged participants only ever hold a non-extended keypair and only receive the minimum per-spend data needed to sign. The procedure keeps policy enforcement feasible for the non-privileged signer while preserving balance privacy, which is particularly useful in collaborative custody arrangements where the wallet owner wants balance privacy from their custodian.</p>
+<h2> Terminology </h2>
+<p>In CCD, the chain code is the object of delegation—not signing authority. A participant who gives up their chain code delegates it to another.</p>
+<ul>
+<li>A &quot;Delegator&quot; is a participant who delegates their chain code to another party. They hold only a non-extended keypair and receive scalar tweaks from the delegatee when asked to sign.</li>
+<li>A &quot;Delegatee&quot; is a participant who receives and retains a delegated chain code for another participant's public key, and computes derivation tweaks for that participant.</li>
+<li>A &quot;Participant&quot; is any key holder that can co-sign for UTXOs in the wallet (including delegators and delegatees).</li>
+<li>A &quot;Non-hardened derivation&quot; is a BIP32 child derivation where index &lt; 2^31.</li>
+</ul>
+<h2> Overview </h2>
+<p>CCD operates by having Delegatees deprive Delegators of BIP32 chain codes during setup and later conveying the aggregated scalar tweak computed as the sum of non-hardened derivation tweaks along the remaining path to the child key used by a given input or change output. A Delegator uses the tweak to compute the child keys for verification and signing without being able to derive or recognize keys for other paths.</p>
+<h2> Specification </h2>
+<h3> Key material and setup </h3>
+<ul>
+<li><strong>Delegator key:</strong> Each delegator generates a standard (non-extended) secp256k1 keypair and provides the public key to the counterparties. A delegator MUST NOT retain or be provided a chain code for this key.</li>
+<li><strong>Delegated chain code:</strong> A designated delegatee computes and retains a BIP32 chain code bound to the delegator's public key, forming an xpub that MUST NOT be disclosed to the delegator. The delegatee MAY share this xpub with other delegatees.</li>
+<li><strong>Other participants:</strong> Non-delegator participants use conventional extended keys and share the public half as appropriate for the wallet descriptor.</li>
+<li><strong>Derivation constraints:</strong> The delegatee holds an extended public key for the delegator. All derivation from this extended key MUST be non-hardened, as hardened derivation requires the private key, which the delegatee does not possess.</li>
+</ul>
+<h3> Notation </h3>
+<p>The following conventions are used, with constants as defined for <a href="https://www.secg.org/sec2-v2.pdf" target="_blank">secp256k1</a>. We note that adapting this proposal to other elliptic curves is not straightforward and can result in an insecure scheme.</p>
+<ul>
+<li>Lowercase variables represent integers or byte arrays.
+<ul>
+<li>The constant <em>p</em> refers to the field size, <em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F</em>.</li>
+<li>The constant <em>n</em> refers to the curve order, <em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141</em>.</li>
+</ul>
+</li>
+<li>Uppercase variables refer to points on the curve with equation <em>y<sup>2</sup> = x<sup>3</sup> + 7</em> over the integers modulo <em>p</em>.
+<ul>
+<li><em>is_infinite(P)</em> returns whether <em>P</em> is the point at infinity.</li>
+<li><em>x(P)</em> and <em>y(P)</em> are integers in the range <em>0..p-1</em> and refer to the X and Y coordinates of a point <em>P</em> (assuming it is not infinity).</li>
+<li>The constant <em>G</em> refers to the base point, for which <em>x(G) = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</em> and <em>y(G) = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8</em>.</li>
+<li>Addition of points refers to the usual <a href="https://en.wikipedia.org/wiki/Elliptic_curve" target="_blank">The_group_law elliptic curve group operation</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication" target="_blank">Multiplication (⋅) of an integer and a point</a> refers to the repeated application of the group operation.</li>
+</ul>
+</li>
+<li>Functions and operations:
+<ul>
+<li><em>||</em> refers to byte array concatenation.</li>
+<li>The function <em>x[i:j]</em>, where <em>x</em> is a byte array and <em>i, j ≥ 0</em>, returns a <em>(j - i)</em>-byte array with a copy of the <em>i</em>-th byte (inclusive) to the <em>j</em>-th byte (exclusive) of <em>x</em>.</li>
+<li>The function <em>bytes(n, x)</em>, where <em>x</em> is an integer, returns the n-byte encoding of <em>x</em>, most significant byte first.</li>
+<li>The constant <em>empty_bytestring</em> refers to the empty byte array. It holds that <em>len(empty_bytestring) = 0</em>.</li>
+<li>The function <em>xbytes(P)</em>, where <em>P</em> is a point for which <em>not is_infinite(P)</em>, returns <em>bytes(32, x(P))</em>.</li>
+<li>The function <em>len(x)</em> where <em>x</em> is a byte array returns the length of the array.</li>
+<li>The function <em>has_even_y(P)</em>, where <em>P</em> is a point for which <em>not is_infinite(P)</em>, returns <em>y(P) mod 2 == 0</em>.</li>
+<li>The function <em>with_even_y(P)</em>, where <em>P</em> is a point, returns <em>P</em> if <em>is_infinite(P)</em> or <em>has_even_y(P)</em>. Otherwise,  <em>with_even_y(P)</em> returns <em>-P</em>.</li>
+<li>The function <em>cbytes(P)</em>, where <em>P</em> is a point for which <em>not is_infinite(P)</em>, returns <em>a || xbytes(P)</em> where <em>a</em> is a byte that is <em>2</em> if <em>has_even_y(P)</em> and <em>3</em> otherwise.</li>
+<li>The function <em>int(x)</em>, where <em>x</em> is a 32-byte array, returns the 256-bit unsigned integer whose most significant byte first encoding is <em>x</em>.</li>
+<li>The function <em>lift_x(x)</em>, where <em>x</em> is an integer in range <em>0..2<sup>256</sup>-1</em>, returns the point <em>P</em> for which <em>x(P) = x</em><ref></li>
+</ul>
+</li>
+</ul>
+<pre><code>    Given a candidate X coordinate &#x27;&#x27;x&#x27;&#x27; in the range &#x27;&#x27;0..p-1&#x27;&#x27;, there exist either exactly two or exactly zero valid Y coordinates. If no valid Y coordinate exists, then &#x27;&#x27;x&#x27;&#x27; is not a valid X coordinate either, i.e., no point &#x27;&#x27;P&#x27;&#x27; exists for which &#x27;&#x27;x(P) = x&#x27;&#x27;. The valid Y coordinates for a given candidate &#x27;&#x27;x&#x27;&#x27; are the square roots of &#x27;&#x27;c = x&lt;sup&gt;3&lt;&#x2F;sup&gt; + 7 mod p&#x27;&#x27; and they can be computed as &#x27;&#x27;y = &amp;plusmn;c&lt;sup&gt;(p+1)&#x2F;4&lt;&#x2F;sup&gt; mod p&#x27;&#x27; (see [https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Quadratic_residue#Prime_or_prime_power_modulus Quadratic residue]) if they exist, which can be checked by squaring and comparing with &#x27;&#x27;c&#x27;&#x27;.&lt;&#x2F;ref&gt; and &#x27;&#x27;has_even_y(P)&#x27;&#x27;, or fails if &#x27;&#x27;x&#x27;&#x27; is greater than &#x27;&#x27;p-1&#x27;&#x27; or no such point exists. The function &#x27;&#x27;lift_x(x)&#x27;&#x27; is equivalent to the following pseudocode:
+*** Fail if &#x27;&#x27;x &amp;gt; p-1&#x27;&#x27;.
+*** Let &#x27;&#x27;c = x&lt;sup&gt;3&lt;&#x2F;sup&gt; + 7 mod p&#x27;&#x27;.
+*** Let &#x27;&#x27;y&#x27; = c&lt;sup&gt;(p+1)&#x2F;4&lt;&#x2F;sup&gt; mod p&#x27;&#x27;.
+*** Fail if &#x27;&#x27;c &amp;ne; y&#x27;&lt;sup&gt;2&lt;&#x2F;sup&gt; mod p&#x27;&#x27;.
+*** Let &#x27;&#x27;y = y&#x27; &#x27;&#x27; if &#x27;&#x27;y&#x27; mod 2 = 0&#x27;&#x27;, otherwise let &#x27;&#x27;y = p - y&#x27; &#x27;&#x27;.
+*** Return the unique point &#x27;&#x27;P&#x27;&#x27; such that &#x27;&#x27;x(P) = x&#x27;&#x27; and &#x27;&#x27;y(P) = y&#x27;&#x27;.
+** The function &#x27;&#x27;cpoint(x)&#x27;&#x27;, where &#x27;&#x27;x&#x27;&#x27; is a 33-byte array (compressed serialization), sets &#x27;&#x27;P = lift_x(int(x[1:33]))&#x27;&#x27; and fails if that fails. If &#x27;&#x27;x[0] = 2&#x27;&#x27; it returns &#x27;&#x27;P&#x27;&#x27; and if &#x27;&#x27;x[0] = 3&#x27;&#x27; it returns &#x27;&#x27;-P&#x27;&#x27;. Otherwise, it fails.
+** The function &#x27;&#x27;hash256&lt;sub&gt;tag&lt;&#x2F;sub&gt;(x)&#x27;&#x27; where &#x27;&#x27;tag&#x27;&#x27; is a UTF-8 encoded tag name and &#x27;&#x27;x&#x27;&#x27; is a byte array returns the 32-byte hash &#x27;&#x27;SHA256(SHA256(tag) || SHA256(tag) || x)&#x27;&#x27;.
+** The function &#x27;&#x27;hash512&lt;sub&gt;tag&lt;&#x2F;sub&gt;(x)&#x27;&#x27; where &#x27;&#x27;tag&#x27;&#x27; is a UTF-8 encoded tag name and &#x27;&#x27;x&#x27;&#x27; is a byte array returns the 64-byte hash &#x27;&#x27;SHA512(SHA512(tag) || SHA512(tag) || x)&#x27;&#x27;.
+* Other:
+** Tuples are written by listing the elements within parentheses and separated by commas. For example, &#x27;&#x27;(2, 3, 1)&#x27;&#x27; is a tuple.
+</code></pre>
+<h3> Tweak Calculation </h3>
+<p>To produce CCD tweak data, a delegatee computes a per-participant scalar that aggregates the non-hardened derivation tweaks along the remaining path. Let the extended key retained by the delegatee be P at depth d, and let the target index vector be I = (i<sub>d+1</sub>, …, i<sub>n</sub>) with each i<sub>k</sub> &lt; 2<sup>31</sup>.</p>
+<div>
+Algorithm _ComputeBIP32Tweak(P, I)_:
+*  Inputs:
+    *  _P_: base public key at depth _d_
+    *  _I = (i<sub>d+1</sub>, …, i<sub>n</sub>)_: ordered sequence of non-hardened child indices
+*  Let _t = 0_ and _E = P_.
+*  For each index _i_ in _I_ (from left to right):
+    *  Run the BIP32 non-hardened derivation _CKDpub_ on _E_ with child index _i_, yielding the child extended key _P<sub>child</sub>_ and its scalar tweak _δ_ (the parse<sub>256</sub>(_I<sub>L</sub>_) term from BIP32).
+    *  Let _t = (t + δ) mod n_.
+    *  Let _E = P<sub>child</sub>_.
+*  If _I_ is empty, let _P′ = P_; otherwise let _P′ = P<sub>child</sub>_ from the final iteration.
+*  Return _(t, P′)_.
+</div>
+<p>Any attempt to apply a hardened derivation (index ≥ 2<sup>31</sup>) MUST fail. Delegatees MAY discard P′ after extracting t if it is not otherwise required.</p>
+<h3> Delegation Bundle </h3>
+<p>CCD requires the delegatee to provide per-participant tweaks for inputs and (optionally) change outputs. Tweaks for change outputs are only required if a delegator wants to be able to compute the amount of bitcoin they are spending. </p>
+<p>A delegatee MUST provide each delegator with, for every signing context, a collection of tuples (P<sub>i</sub>, t<sub>i</sub>) where P<sub>i</sub> is the participant's base public key disclosed to the delegator and t<sub>i</sub> is the aggregated tweak returned by <em>ComputeBIP32Tweak</em>. The scalar t<sub>i</sub> MUST be encoded as a 32-byte big-endian integer. </p>
+<p>The transport that carries this bundle is out of scope for this proposal; implementers MAY use PSBT proprietary keys, RPC payloads, or bespoke messages as long as the delegator can authenticate the origin of the data. Delegatees SHOULD attach the witness script (or sufficient script template information) built with the tweaked keys when the delegator is expected to verify the input or enforce spending policy on change outputs.</p>
+<p>Delegators use the supplied CCD tweak bundle during verification (see <em>Delegator input and change verification</em>) and signature generation (see <em>DelegatorSign</em>). The message to be signed is provided separately as part of the standard signing protocol and is not part of the CCD-specific bundle.</p>
+<h3> Signing Modes </h3>
+<p>This BIP supports two modes:</p>
+<ul>
+<li><strong>Non‑blinded.</strong> The delegator receives the tweak for the child public key and the message. The delegator learns only about the specific child keys and transactions it signs for; it does not learn the wider address space.</li>
+<li><strong>Blinded.</strong> The delegator receives only a blinded challenge and parity bits. The delegator learns nothing about the message or child key for which it produces a signature.</li>
+</ul>
+<p>Both modes produce valid BIP340 signatures.</p>
+<h4>Non-Blinded Signing</h4>
+<p>For non-blinded signing, the delegator can produce signatures as usual using the tweaked key.</p>
+<h5>Delegator input and change verification (Optional)</h5>
+<p>A delegator MAY validate the data it receives before producing signatures. </p>
+<p>For example, input verification reassures the delegator that every tweaked key they are asked to sign for corresponds to a wallet input they recognise. Change verification lets them establish the net outflow and enforce spending policy.</p>
+<p>Both checks rely on the same delegated tweak bundle described above.</p>
+<h5>Input verification</h5>
+<p>For each input, the delegatee SHOULD disclose the descriptor template, the untweaked participant keys, the input witness script, and the per-participant tweaks. The delegator then applies the following procedure.</p>
+<div>
+Algorithm _InputVerification(D, W, T)_:
+*  Inputs:
+    *  _D_: wallet policy or descriptor template expressed in terms of the untweaked participant keys _P<sub>i</sub>_
+    *  _W_: witness script disclosed for the input under review
+    *  _T_: mapping from each _P<sub>i</sub>_ to a 32-byte big-endian tweak scalar _t<sub>i</sub>_
+*  For each participant key _P<sub>i</sub>_ referenced in _D_:
+    *  Retrieve _t<sub>i</sub>_ from _T_; fail if the entry is missing or malformed.
+    *  If the verifier controls the corresponding private key _d<sub>i</sub>_, let _d′<sub>i</sub> = (d<sub>i</sub> + t<sub>i</sub>) mod n_ and _P′<sub>i</sub> = d′<sub>i</sub> · G_; otherwise let _P′<sub>i</sub> = P<sub>i</sub> + t<sub>i</sub> · G_.
+*  Let _D′_ be the descriptor formed by substituting every occurrence of _P<sub>i</sub>_ in _D_ with _P′<sub>i</sub>_.
+*  Derive the witness script _W′_ from _D′_.
+*  Return `true` if _W′ = W_, otherwise `false`.
+</div>
+<p>Successful verification of an input confirms that the delegator is signing for a script that belongs to the wallet and that the aggregate tweak values align with the expected policy.</p>
+<h5>Change-output verification</h5>
+<p>When change outputs are disclosed, the delegator can perform an analogous check to ensure the destination script matches their policy template and to calculate outflows. Let D be the descriptor expressed in untweaked keys, W the provided witness script, and T the tweak mapping:</p>
+<div>
+Algorithm _ChangeOutputVerification(D, W, T)_:
+*  Inputs:
+    *  _D_: wallet policy or descriptor template expressed in terms of the untweaked participant keys _P<sub>i</sub>_
+    *  _W_: witness script disclosed for the change output
+    *  _T_: mapping from each _P<sub>i</sub>_ to a 32-byte big-endian tweak scalar _t<sub>i</sub>_
+*  For each participant key _P<sub>i</sub>_ referenced in _T_:
+    *  Retrieve _t<sub>i</sub>_ from _T_; fail if the entry is missing or malformed.
+    *  If the verifier controls the corresponding private key _d<sub>i</sub>_, let _d′<sub>i</sub> = (d<sub>i</sub> + t<sub>i</sub>) mod n_ and _P′<sub>i</sub> = d′<sub>i</sub> · G_; otherwise let _P′<sub>i</sub> = P<sub>i</sub> + t<sub>i</sub> · G_.
+*  Let _D′_ be the descriptor formed by substituting every occurrence of _P<sub>i</sub>_ in _D_ with _P′<sub>i</sub>_.
+*  Derive the witness script _W′_ from _D′_.
+*  Return `true` if _W′ = W_, otherwise `false`.
+</div>
+<p>Successful verification ensures the change output commits to the tweaked participant keys implied by the CCD tweaks, preserving the intended policy.</p>
+<p>The delegator may perform additional application-specific verification on the transaction (e.g., recipient addresses, amounts, compliance checks) using the message <em>m</em>. In the concurrently secure blinded mode, such policies can be enforced via zero-knowledge proofs that encode predicates about <em>m</em>. Specification of such policies is outside the scope of this BIP.</p>
+<h5>Delegator Signing</h5>
+<p>A delegator that holds only its base secret key <code>x</code> and public key <code>P</code> uses the delegated tweak bundle to derive per-input signing keys. The delegator MAY first call <em>InputVerification</em> and <em>ChangeOutputVerification</em> on any input and change output that provides a tweak in order to confirm outflow or policy requirements before signing.</p>
+<div>
+Algorithm _DelegatorSign(t, x, m)_:
+*  Inputs:
+    *  _t_: aggregated tweak for the signing context (scalar mod _n_)
+    *  _x_: delegator base secret key
+    *  _m_: message to be signed (for example, a transaction digest under the desired SIGHASH policy)
+*  Let _x′ = (x + t) mod n_.
+*  Use secret key _x′_ to produce the required signature _σ_ under the indicated policy.
+*  Return _σ_.
+</div>
+<p>The delegatee is responsible for inserting <em>σ</em> into the surrounding protocol (e.g., a PSBT, transaction witness, or adaptor signature exchange).</p>
+<h4>Blinded Signing</h4>
+<p>The delegator learns neither the message, the challenge, or the public key used in the BIP340 signature, only a blinded challenge e'.</p>
+<p>This blind‑signing protocol specifies how a delegator can produce a blind partial Schnorr signature that a delegatee can unblind into a standard <a href="/340" target="_blank">BIP340</a> signature under a possibly tweaked X‑only public key. The notation, algorithmic patterns, and test‑vector style are adapted from <a href="BIP‑327" target="_blank">(MuSig2)</a> and from the <a href="https://github.com/siv2r/bip-frost-signing" target="_blank">FROST Signing BIP</a>. The design follows the “plain” blind Schnorr flow described in Concurrently Secure Blind Schnorr Signatures (<a href="https://eprint.iacr.org/2022/1676" target="_blank">ePrint 2022/1676</a>), but without the concurrency hardening from that work.</p>
+<p>The output signature is a BIP340 Schnorr signature valid under an X‑only key obtained by applying a sequence of plain (e.g. BIP32) and X‑only (e.g. Tapscript) tweaks to the signer’s plain public key. Consequently the protocol is compatible with <a href="/341" target="_blank">BIP341</a>. The delegator learns neither the message, the challenge, or the public key used in the BIP340 signature, only a blinded challenge e'.</p>
+<p>The plain protocol here is <strong>not</strong> concurrently secure. A signer <strong>MUST NOT</strong> run multiple blind signing sessions in parallel or interleave state across sessions. A signer <strong>MUST</strong> refuse any new blind‑nonce requests while a previous blind‑signature request is outstanding, or <strong>MUST</strong> irrevocably discard (and never reuse) any in‑flight blind nonce commitments that have not resulted in a signature, before accepting new ones.</p>
+<p>To obtain concurrency security as in (<a href="https://eprint.iacr.org/2022/1676" target="_blank">ePrint 2022/1676</a>), the delegatee first sends an encryption of (m, a, b) before the signer commits to the blind nonce; later, the delegatee includes a zero‑knowledge proof binding the produced challenge to that encrypted tuple. That proof can additionally encode policy predicates about m (spend limits, velocity controls, etc.). A complete specification of this variant is outside the scope of this BIP.</p>
+<p>The following sections fully specify the non-concurrent blind signing protocol.</p>
+<h5> Overview </h5>
+<ul>
+<li><strong>Round 1 (blind nonce).</strong> The delegator runs <em>BlindNonceGen</em> to produce <em>blindsecnonce</em> and <em>blindpubnonce</em> and sends <em>blindpubnonce</em> to the delegatee.</li>
+<li><strong>Round 2 (challenge).</strong> The delegatee runs <em>BlindChallengeGen</em> using the message <em>m</em>, <em>blindpubnonce</em>, the base public key <em>pk</em>, and a list of ordinary and X-only tweaks, to produce a <em>session context</em> (kept locally for unblinding), a <em>blindchallenge</em>, and two booleans <em>pk_parity</em> and <em>nonce_parity</em>. The delegatee sends <em>blindchallenge</em>, <em>pk_parity</em>, and <em>nonce_parity</em> to the signer.</li>
+<li><strong>Round 3 (blind signature).</strong> The delegator runs <em>BlindSign</em> with <em>sk</em>, <em>blindchallenge</em>, <em>blindsecnonce</em>, <em>pk_parity</em>, and <em>nonce_parity</em> and returns <em>blindsignature</em>. The delegatee completes by calling <em>UnblindSignature</em> with the stored session context and <em>blindsignature</em> to obtain the final BIP340 signature <em>sig</em>.</li>
+</ul>
+<p><em>BlindSign</em> <strong>MUST NOT</strong> be executed twice with the same <em>blindsecnonce</em>. As a defense, implementations <strong>SHOULD</strong> overwrite the first 64 bytes of <em>blindsecnonce</em> with zeros after they have been read by <em>BlindSign</em>.</p>
+<h5>Key Tweaking</h5>
+<h6>Tweak Context</h6>
+<p>The Tweak Context is a data structure consisting of the following elements:</p>
+<ul>
+<li>The point <em>Q</em> representing the potentially tweaked public key: an elliptic curve point</li>
+<li>The accumulated tweak <em>tacc</em>: an integer with <em>0 ≤ tacc &lt; n</em></li>
+<li>The value <em>gacc</em> : 1 or -1 mod n</li>
+</ul>
+<p>We write &quot;Let <em>(Q, gacc, tacc) = tweak_ctx</em>&quot; to assign names to the elements of a Tweak Context.</p>
+<div>
+Algorithm _TweakCtxInit(pk)_:
+*  Input:
+    *  The base public key pk: a 33-byte array
+*  Let _Q = cpoint(pk)_
+*  Fail if _is_infinite(Q)_
+*  Let _gacc = 1_
+*  Let _tacc = 0_
+*  Return _tweak_ctx = (Q, gacc, tacc)_
+</div>
+<div>
+Algorithm _ApplyTweak(tweak_ctx, tweak, is_xonly_t)_:
+*  Inputs:
+    *  The _tweak_ctx_: a <a href=" tweak-context" target="_blank">Tweak Context</a> data structure
+    *  The _tweak_: a 32-byte array
+    *  The tweak mode _is_xonly_t_: a boolean
+*  Let _(Q, gacc, tacc) = tweak_ctx_
+*  If _is_xonly_t_ and _not has_even_y(Q)_:
+    *  Let _g = -1 mod n_
+*  Else:
+    *  Let _g = 1_
+*  Let _t = int(tweak)_; fail if _t &ge; n_
+*  Let _Q' = g⋅Q + t⋅G_
+    *  Fail if _is_infinite(Q')_
+*  Let _gacc' = g⋅gacc mod n_
+*  Let _tacc' = t + g⋅tacc mod n_
+*  Return _tweak_ctx' = (Q', gacc', tacc')_
+</div>
+<h5>Blind Nonce Generation</h5>
+<div>
+Algorithm _BlindNonceGen(sk, pk, aggpk, m, extra_in)_:
+*  Inputs:
+    *  The base secret signing key _sk_: a 32-byte array (optional argument)
+    *  The base public key _pk_: a 33-byte array (optional argument)
+    *  The auxiliary input _extra_in_: a byte array with _0 &le; len(extra_in) &le; 2<sup>32</sup>-1_ (optional argument)
+*  Let _rand' _ be a 32-byte array freshly drawn uniformly at random
+*  If the optional argument _sk_ is present:
+    *  Let _rand_ be the byte-wise xor of _sk_ and _hash256<sub>CCD/aux</sub>(rand')_<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>
+*  Else:
+    *  Let _rand = rand' _
+*  If the optional argument _extra_in_ is not present:
+    *  Let _extra_in = empty_bytestring_
+*  Let _k' = int(hash256<sub>CCD/blindnonce</sub>(rand || bytes(1, len(pk)) || pk || bytes(4, len(extra_in)) || extra_in )) mod n_
+*  Fail if _k' = 0_
+*  Let _R' = k'⋅G_
+*  Let _blindpubnonce = cbytes(R')_
+*  Let _blindsecnonce = bytes(32, k' || pk)_<ref name="blindsecnonce">The algorithms as specified here assume that the _blindsecnonce_ is stored as a 65-byte array using the serialization _blindsecnonce = bytes(32, k') || pk_. The same format is used in the reference implementation and in the test vectors. However, since the _blindsecnonce_ is not meant to be sent over the wire, compatibility between implementations is not a concern, and this method of storing the _blindsecnonce_ is merely a suggestion.<br />
+<p>The <em>blindsecnonce</em> is effectively a local data structure of the signer which comprises the value double <em>(k', pk)</em>, and implementations may choose any suitable method to carry it from <em>BlindNonceGen</em> (first communication round) to <em>BlindSign</em> (third communication round). In particular, implementations may choose to hide the <em>blindsecnonce</em> in internal state without exposing it in an API explicitly, e.g., in an effort to prevent callers from reusing a <em>blindsecnonce</em> accidentally.</ref></p>
+<ul>
+<li>Return <em>(secnonce, pubnonce)</em></li>
+</ul>
+</div>
+<h5>Session Context</h5>
+<p>The Session Context is a data structure consisting of the following elements:</p>
+<ul>
+<li>The base public key <em>pk</em>: a 33-byte array</li>
+<li>The blind factor <em>blindfactor</em>: a 32-byte array</li>
+<li>The challenge hash <em>challenge</em>: a 32-byte array</li>
+<li>The public nonce <em>pubnonce</em>: a 33-byte array</li>
+<li>The number <em>v</em> of tweaks with <em>0 ≤ v &lt; 2^32</em></li>
+<li>The tweaks <em>tweak<sub>1..v</sub></em>: <em>v</em> 32-byte arrays</li>
+<li>The tweak modes <em>is_xonly_t<sub>1..v</sub></em> : <em>v</em> booleans</li>
+</ul>
+<p>We write &quot;Let <em>(pk, blindfactor, challenge, pubnonce, v, tweak<sub>1..v</sub>, is_xonly_t<sub>1..v</sub>) = session_ctx</em>&quot; to assign names to the elements of a Session Context.</p>
+<div>
+Algorithm _GetSessionValues(session_ctx)_:
+*  Let _(pk, blindfactor, challenge, pubnonce, v, tweak<sub>1..v</sub>, is_xonly_t<sub>1..v</sub>) = session_ctx_
+*  Let _tweak_ctx<sub>0</sub> = TweakCtxInit(pk)_; fail if that fails
+*  For _i = 1 .. v_:
+    *  Let _tweak_ctx<sub>i</sub> = ApplyTweak(tweak_ctx<sub>i-1</sub>, tweak<sub>i</sub>, is_xonly_t<sub>i</sub>)_; fail if that fails
+*  Let _(Q, gacc, tacc) = tweak_ctx<sub>v</sub>_
+*  Let _a = int(blindfactor)_; fail if _a ≥ n_
+*  Let _b = int(blindfactor)_; fail if _b ≥ n_
+*  Let _e = int(challenge)_; fail if _e ≥ n_
+*  Let _R = cpoint(pubnonce)_; fail if that fails
+*  Return _(Q, gacc, tacc, a, e, R)_
+</div>
+<h5>Blind Challenge Generation</h5>
+<div>
+Algorithm _BlindChallengeGen(m, blindpubnonce, pk, tweak<sub>1..v</sub>, is_xonly<sub>1..v</sub>, extra_in)_:
+*  Inputs:
+    *  The message _m_: a byte array
+    *  The blind public nonce _blindpubnonce_: a 33-byte array
+    *  The base public key _pk_: a 33-byte array
+    *  The tweaks _tweak<sub>1..v</sub>_: _v_ 32-byte arrays
+    *  The tweak modes _is_xonly<sub>1..v</sub>_: _v_ booleans 
+    *  The auxiliary input _extra_in_: a byte array with _0 &le; len(extra_in) &le; 2<sup>32</sup>-1_ (optional argument)
+*  If _extra_in_ is not present:
+    *  Let _extra_in = empty_bytestring_
+*  Let _(Q, gacc, tacc) = TweakCtxInit(pk)_
+*  For _i = 1 .. v_:
+    *  Let _(Q, gacc, tacc) = ApplyTweak((Q, gacc, tacc), tweak<sub>i</sub>, is_xonly<sub>i</sub>)_; fail if that fails 
+*  Let _cpk = cbytes(Q)_
+*  Draw 32 random bytes _rand_
+*  Let _z = hash512<sub>CCD/blindfactor</sub>(rand || bytes(1, len(cpk)) || cpk || bytes(1, len(blindpubnonce)) || blindpubnonce || bytes(8, len(m)) || m || bytes(4, len(extra_in)) || extra_in)_
+*  Let _a' = int(z[0:32]) mod n_; fail if _a' = 0_
+*  Let _b' = int(z[32:64]) mod n_; fail if _b' = 0_
+*  Let _g = 1_ if _has_even_y(Q)_, else _g = −1 mod n_
+*  Let _pk_parity = (g⋅gacc mod n == 1)_
+*  Let _X' = cpoint(pk)_; let _X = X' _ if _pk_parity_ else _−X' _
+*  Let _R' = cpoint(blindpubnonce)_
+*  Let _R = R' + a'⋅G + b'⋅X_; fail if _is_infinite(R)_
+*  Let _nonce_parity = has_even_y(R)_
+*  If _nonce_parity_:
+    *  Let _a = a' _, _b = b' _
+*  Else:
+    *  Let _a = n − a' _, _b = n − b' _
+*  Let _e = int(hash<sub>BIP0340/challenge</sub>(xbytes(R) || xbytes(Q) || m)) mod n_
+*  Let _e' = (e + b) mod n_
+*  Let _session_ctx = (pk, bytes(32, a), bytes(32, e), cbytes(R), tweak<sub>1..v</sub>, is_xonly<sub>1..v</sub>)_
+*  Return _(session_ctx, bytes(32, e'), pk_parity, nonce_parity)_
+</div>
+<h5>Blind Signing</h5>
+<div>
+Algorithm _BlindSign(sk, blindchallenge, blindsecnonce, pk_parity, nonce_parity)_:
+*  Inputs:
+    *  The secret key _sk_: a 32-byte array
+    *  The blind challenge _blindchallenge_: a 32-byte array _e' _
+    *  The secret nonce _blindsecnonce_: a byte array whose first 32 bytes are _k_ (remaining bytes are implementation-defined)
+    *  _pk_parity_: boolean (from _BlindChallengeGen_)
+    *  _nonce_parity_: boolean (from _BlindChallengeGen_)
+*  Let _d' = int(sk)_; fail if _d' = 0_ or _d' ≥ n_
+*  Let _P = d'⋅G_; fail if _is_infinite(P)_
+*  Let _d = d' _ if _pk_parity_ else _n − d' _
+*  Let _e' = int(blindchallenge)_; fail if _e' ≥ n_
+*  Let _k' = int(blindsecnonce[0:32])_; fail if _k' = 0_ or _k' ≥ n_
+*  Let _k = k' _ if _nonce_parity_ else _n − k' _
+*  Overwrite _blindsecnonce[0:64]_ with 64 zero bytes<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
+*  Let _R' = k'⋅G_; fail if _is_infinite(R')_<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>
+*  Let _s' = (k + e'⋅d) mod n_
+*  If _VerifyBlindSignature(cbytes(P), cbytes(R'), blindchallenge, bytes(32, s'), pk_parity, nonce_parity)_ returns failure, abort
+*  Return _blindsignature = bytes(32, s')_
+</div>
+<div>
+Algorithm _VerifyBlindSignature(pk, blindpubnonce, blindchallenge, blindsignature, pk_parity, nonce_parity)_:
+*  Inputs:
+    *  _pk_: a 33-byte compressed public key
+    *  _blindpubnonce_: the signer’s 33-byte _R' = k'⋅G_
+    *  _blindchallenge_: 32-byte _e' _
+    *  _blindsignature_: 32-byte _s' _
+    *  _pk_parity, nonce_parity_: booleans
+*  Let _P' ' = cpoint(pk)_; let _P = P' _ if _pk_parity_ else _−P' _ ; fail if _is_infinite(P)_
+*  Let _R' ' = cpoint(blindpubnonce)_; let _R = R' _ if _nonce_parity_ else _−R' _
+*  Let _e' = int(blindchallenge)_, _s' = int(blindsignature)_
+*  Return success iff _s'⋅G == R + e'⋅P_
+</div>
+<h5>Unblinding</h5>
+<div>
+Algorithm _UnblindSignature(session_ctx, blindsignature)_:
+*  Inputs:
+    *  _session_ctx_: as defined above
+    *  _blindsignature_: the 32-byte _s' _ returned by the signer
+*  Let _(Q, gacc, tacc, a, e, R) = GetSessionValues(session_ctx)_; fail if that fails
+*  Let _g = 1_ if _has_even_y(Q)_, else _g = −1 mod n_
+*  Let _s' = int(blindsignature)_; fail if _s' ≥ n_
+*  Let _s = (s' + a + e⋅g⋅tacc) mod n_
+*  Return the BIP340 signature _sig = xbytes(R) || bytes(32, s)_
+</div>
+<h2> Security Considerations </h2>
+<ul>
+<li>Exposure of any delegated tweak scalar <code>t</code> enables signing only for the specific child key(s) that scalar was derived for, and is typically short-lived if disclosed immediately before spending.</li>
+<li>Delegatees MUST ensure every delegated path remains non-hardened and that <em>ComputeBIP32Tweak</em> yields the correct tweak <code>t</code>; incorrect scalars could render the delegator incapable of producing a signature.</li>
+<li>Delegators MUST verify change outputs when tweak data is provided (for example via <em>ChangeOutputVerification</em>) to avoid authorizing unexpected scripts.</li>
+<li>Reusing the same k' (first 32 bytes in blindsecnonce) across two BlindSign calls allows recovery of the base secret key.</li>
+<li>When using blinded signing, opening multiple sessions concurrently against the same signer can allow an attacker to learn the base secret key. If concurrency is required, use the concurrently secure variant (encryption + ZK) instead (not specified in this BIP).</li>
+</ul>
+<h2> Test Vectors </h2>
+<p>A <a href="https://github.com/bitcoin/bips/blob/master/bip-0089/vectors" target="_blank">collection of JSON test vectors</a> are provided, along with a <a href="https://github.com/bitcoin/bips/blob/master/bip-0089/reference.py" target="_blank">python reference implementation</a>.
+It uses a vendored copy of the <a href="https://github.com/secp256k1lab/secp256k1lab/" target="_blank">secp256k1lab</a> library
+(commit [https://github.com/secp256k1lab/secp256k1lab/commit/a265da139aea27386085a2a8760f8698e1bda64e
+a265da139aea27386085a2a8760f8698e1bda64e]).</p>
+<p>You may also find example code of CCD in action <a href="https://github.com/jurvis/chaincode-delegation" target="_blank">here</a>.</p>
+<h2> Changelog </h2>
+<ul>
+<li><strong>0.1.3</strong> (2026-02-02): Upgrade secp256k1lab and add license file; fix type checker and linter issues; clarify Delegator/Delegatee terminology, derivation constraints, signing modes, and verification scope.</li>
+<li><strong>0.1.2</strong> (2025-12-03): Updated to reflect BIP number assignment.</li>
+<li><strong>0.1.1</strong> (2025-11-30): Fix acknowledgments spelling, BIP3 formatting, and use &quot;Chain Code&quot; with a space throughout.</li>
+<li><strong>0.1.0</strong> (2025-10-14): Publication of draft BIP</li>
+</ul>
+<h2> Acknowledgements </h2>
+<ul>
+<li>Arik Sosman and Wilmer Paulino for the initial discussions and validation of this idea.</li>
+<li>Sanket Kajalkar, Jordan Mecom, Gregory Sanders, ZmnSCPxj, Yuval Kogman, and John Cantrell for code and design review.</li>
+</ul>
+<h2> Copyright </h2>
+<p>This BIP is licensed under the BSD 3-Clause license.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-02-05</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
