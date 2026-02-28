@@ -234,3 +234,5 @@ The v0 segwit rules prohibit leaving anything on the stack, so for v0 parameters
 [5] <a href="/114" target="_blank">BIP114: Merkelized Abstract Syntax Tree</a>
 
 [6] <a href="/68" target="_blank">BIP68: Relative lock-time using consensus-enforced sequence numbers</a>
+
+[9] <a href="/8" target="_blank">BIP8: Version bits with lock-in by height</a>

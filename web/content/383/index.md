@@ -78,7 +78,7 @@ For values greater than 16, they must be a push of the signed little endian enco
 The only change for <tt>sortedmulti()</tt> is that the keys are sorted lexicographically prior to the creation of the output script.
 This sorting is on the keys that are to be put into the output script, i.e. after all extended keys are derived.
 
-<h3>Multiple Extended Keys</tt></h3>
+<h3>Multiple Extended Keys</h3>
 
 
 When one or more the key expressions in a <tt>multi()</tt> or <tt>sortedmulti()</tt> expression are extended keys, the derived keys use the same child index.
