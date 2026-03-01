@@ -271,6 +271,12 @@ with common bits intersection of the miner's mask and its a mask
 to be stable for the whole mining session. A miner doesn't have to
 send the mask, in this case a default full mask is used.</li>
 </ul>
+<ul>
+<li><strong>&quot;version-rolling.min-bit-count&quot;</strong> (REQUIRED, <em>Integer</em>, &gt;= 0)</li>
+</ul>
+<ul>
+<li>The miner also provides a minimum number of bits that it needs for efficient version rolling in hardware. Note that this parameter provides important diagnostic information to the pool server. If the requested bit count exceeds the limit of the pool server, the miner always has the chance to operate in a degraded mode without using full hashing power. The pool server SHOULD NOT terminate miner connection if this rare mismatch case occurs.</li>
+</ul>
 <p><strong>Extension return values</strong>:</p>
 <ul>
 <li><strong>&quot;version-rolling&quot;</strong> (REQUIRED, <em>TExtensionResult</em>)</li>
@@ -284,12 +290,6 @@ send the mask, in this case a default full mask is used.</li>
 <ul>
 <li>Bits set to 1 are allowed to be changed by the miner. If a miner changes bits with mask value 0, the server will reject the submit.</li>
 <li>The server SHOULD return the largest mask possible (as many bits set to 1 as possible). This can be useful in a mining proxy setup when a proxy needs to negotiate the best mask for its future clients. There is a <a href="https://github.com/bitcoin/bips/pull/661/files" target="_blank">Draft BIP</a> describing available nVersion bits. The server SHOULD pick a mask that preferably covers all bits specified in the BIP.</li>
-</ul>
-<ul>
-<li><strong>&quot;version-rolling.min-bit-count&quot;</strong> (REQUIRED, <em>TMask</em>)</li>
-</ul>
-<ul>
-<li>The miner also provides a minimum number of bits that it needs for efficient version rolling in hardware. Note that this parameter provides important diagnostic information to the pool server. If the requested bit count exceeds the limit of the pool server, the miner always has the chance to operate in a degraded mode without using full hashing power. The pool server SHOULD NOT terminate miner connection if this rare mismatch case occurs.</li>
 </ul>
 <h3>Notification '''"mining.set_version_mask"'''</h3>
 <p>Server notifies the miner about a new mask valid for the
@@ -391,7 +391,7 @@ that <strong>mining.capabilities</strong> request has no associated response.</p
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-02-28</p>
+                    <p class="font-bold">2026-03-01</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
