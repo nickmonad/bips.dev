@@ -121,11 +121,13 @@
   Title: OP_CAT in Tapscript
   Authors: Ethan Heilman &lt;ethan.r.heilman@gmail.com&gt;
            Armin Sabouri &lt;arminsdev@gmail.com&gt;
-  Status: Draft
+  Status: Complete
   Type: Specification
   Assigned: 2023-12-11
   License: BSD-3-Clause
   Discussion: 2023-10-21: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2023-October&#x2F;022049.html [bitcoin-dev] Proposed BIP for OP_CAT
+  Version: 1.0.0
+  Requires: 340, 341, 342
 </code></pre>
 <h2>Abstract</h2>
 <p>This BIP introduces OP_CAT as a tapscript opcode which allows the concatenation of two values on the stack. OP_CAT would be activated via a soft fork by redefining the opcode OP_SUCCESS126 (126 in decimal and 0x7e in hexadecimal). This is the same opcode value used by the original OP_CAT.</p>
@@ -150,6 +152,8 @@
 <li>Non-equivocation contracts <sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup> in tapscript provide a mechanism to punish equivocation/double spending in Bitcoin payment channels. OP_CAT enables this by enforcing rules on the spending transaction's nonce. The capability is a useful building block for payment channels and other Bitcoin protocols.</li>
 <li>Vaults <sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup> which are a specialized covenant that allows a user to block a malicious party who has compromised the user's secret key from stealing the funds in that output. As shown in <sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup> OP_CAT is sufficient to build vaults in Bitcoin.</li>
 <li>Replicating CheckSigFromStack <sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup> which would allow the creation of simple covenants and other advanced contracts without having to presign spending transactions, possibly reducing complexity and the amount of data that needs to be stored. Originally shown to work with Schnorr signatures, this result has been extended to ECDSA signatures <sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup>.</li>
+<li>OP_CAT would allow tapscript to perform arbitrary computation on stack elements larger than 32-bits such as signatures and public keys. While Collider Script <sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup> showed that even without OP_CAT tapscript can perform arbitrary computation on stack elements larger than 32-bits, this approach is extremely computationally expensive. In practice, today's tapscript can only perform arbitrary computation on 32-bit stack elements. OP_CAT was not designed with this usecase in mind and OP_CAT an inefficient way to perform this task.</li>
+<li>BitVM<sup id="cite_ref_11"><a href="#cite_ref_11">11</a></sup> improvements. OP_CAT would enable BitVM2 to eliminating the trusted setup from its proof system allow BitVM2 to reduce the size of transactions it uses.</li>
 </ul>
 <p>OP_CAT was available in early versions of Bitcoin.
 In 2010, a single commit disabled OP_CAT, along with another 15 opcodes.
@@ -177,7 +181,7 @@ This is no longer an issue because tapscript enforces a maximum stack element si
 break;
 </code></pre>
 <p>The value of <code>MAX_SCRIPT_ELEMENT_SIZE</code> is 520.</p>
-<p>This implementation is inspired by the original implementation of <a href="https://github.com/bitcoin/bitcoin/blob/01cd2fdaf3ac6071304ceb80fb7436ac02b1059e/script.cpp#L381-L393" target="_blank">OP_CAT as it existed in the Bitcoin codebase</a> prior to the commit &quot;misc changes&quot; 4bd188c<sup id="cite_ref_10"><a href="#cite_ref_10">10</a></sup> which disabled it:</p>
+<p>This implementation is inspired by the original implementation of <a href="https://github.com/bitcoin/bitcoin/blob/01cd2fdaf3ac6071304ceb80fb7436ac02b1059e/script.cpp#L381-L393" target="_blank">OP_CAT as it existed in the Bitcoin codebase</a> prior to the commit &quot;misc changes&quot; 4bd188c<sup id="cite_ref_12"><a href="#cite_ref_12">12</a></sup> which disabled it:</p>
 <pre><code>case OP_CAT:
 {
     &#x2F;&#x2F; (x1 x2 -- out)
@@ -192,7 +196,55 @@ break;
 }
 break;
 </code></pre>
-<p>An alternative implementation of OP_CAT can be found in Elements <sup id="cite_ref_11"><a href="#cite_ref_11">11</a></sup>.</p>
+<p>An alternative implementation of OP_CAT can be found in Elements <sup id="cite_ref_13"><a href="#cite_ref_13">13</a></sup>.</p>
+<h2>Test Vectors</h2>
+<p>The following test vectors use Bitcoin-core JSON script-test format.</p>
+<pre><code>[
+    [
+        &quot;78a11a1260c1101260&quot;,
+        &quot;78a11a1260&quot;,
+        &quot;c1101260&quot;,
+        &quot;#SCRIPT# CAT EQUAL&quot;,
+        &quot;#CONTROLBLOCK#&quot;,
+        0.00000001
+    ],
+    &quot;&quot;,
+    &quot;0x51 0x20 #TAPROOTOUTPUT#&quot;,
+    &quot;P2SH,WITNESS,TAPROOT,OP_CAT&quot;,
+    &quot;OK&quot;,
+    &quot;TAPSCRIPT CATs 78a11a1260 and c1101260 together and checks it is EQUAL to stack element 78a11a1260c1101260&quot;
+],
+[
+    [
+        &quot;51&quot;,
+        &quot;bbbb&quot;,
+        &quot;01&quot;,
+        &quot;#SCRIPT# IF CAT ELSE DROP ENDIF&quot;,
+        &quot;#CONTROLBLOCK#&quot;,
+        0.00000001
+    ],
+    &quot;&quot;,
+    &quot;0x51 0x20 #TAPROOTOUTPUT#&quot;,
+    &quot;P2SH,WITNESS,TAPROOT,OP_CAT&quot;,
+    &quot;OK&quot;,
+    &quot;TAPSCRIPT Tests CAT inside of an IF ELSE conditional (true IF)&quot;
+],
+[
+    [
+        &quot;&quot;,
+        &quot;09ca7009ca7009ca7009ca7009ca70&quot;,
+        &quot;#SCRIPT# CAT&quot;,
+        &quot;#CONTROLBLOCK#&quot;,
+        0.00000001
+    ],
+    &quot;&quot;,
+    &quot;0x51 0x20 #TAPROOTOUTPUT#&quot;,
+    &quot;P2SH,WITNESS,TAPROOT,OP_CAT&quot;,
+    &quot;OK&quot;,
+    &quot;TAPSCRIPT ([&#x27;&#x27;, 09ca7009ca7009ca7009ca7009ca70], CAT) Tests CAT succeeds when one of the two values to concatenate is of size zero&quot;
+],
+</code></pre>
+<p>A full test suite with additional vectors can be found at the Bitcoin <a href="https://github.com/bitcoin/bitcoin/pull/29247" target="_blank">OP_CAT PR</a>.</p>
 <h2>References</h2>
 <ol>
 <li><a href="https://bips.dev/347/#cite_ref_1">^</a> R. Pike and B. Kernighan, &quot;Program design in the UNIX environment&quot;, 1983, https://harmful.cat-v.org/cat-v/unix_prog_design.pdf</li>
@@ -204,9 +256,20 @@ break;
 <li><a href="https://bips.dev/347/#cite_ref_7">^</a> A. Poelstra, &quot;CAT and Schnorr Tricks II&quot;, 2021, https://www.wpsoftware.net/andrew/blog/cat-and-schnorr-tricks-ii.html</li>
 <li><a href="https://bips.dev/347/#cite_ref_8">^</a> A. Poelstra, &quot;CAT and Schnorr Tricks I&quot;, 2021, https://www.wpsoftware.net/andrew/blog/cat-and-schnorr-tricks-i.html</li>
 <li><a href="https://bips.dev/347/#cite_ref_9">^</a> R. Linus, &quot;Covenants with CAT and ECDSA&quot;, 2023, https://gist.github.com/RobinLinus/9a69f5552be94d13170ec79bf34d5e85 file-covenants_cat_ecdsa-md</li>
-<li><a href="https://bips.dev/347/#cite_ref_10">^</a> S. Nakamoto, &quot;misc changes&quot;, Aug 25 2010, https://github.com/bitcoin/bitcoin/commit/4bd188c4383d6e614e18f79dc337fbabe8464c82#diff-27496895958ca30c47bbb873299a2ad7a7ea1003a9faa96b317250e3b7aa1fefR94</li>
-<li><a href="https://bips.dev/347/#cite_ref_11">^</a> Roose S., Elements Project, &quot;Re-enable several disabled opcodes&quot;, 2019, https://github.com/ElementsProject/elements/commit/13e1103abe3e328c5a4e2039b51a546f8be6c60a#diff-a0337ffd7259e8c7c9a7786d6dbd420c80abfa1afdb34ebae3261109d9ae3c19R740-R759</li>
+<li><a href="https://bips.dev/347/#cite_ref_10">^</a> E. Heilman, V. I. Kolobov, A. M. Levy, A. Poelstra, &quot;ColliderScript: Covenants in Bitcoin via 160-bit hash collisions&quot;, 2024, https://eprint.iacr.org/2024/1802</li>
+<li><a href="https://bips.dev/347/#cite_ref_11">^</a> R. Linus, L. Aumayr, A. Zamyatin, A. Pelosi, Z. Avarikioti, M. Maffei &quot;BitVM2: Bridging Bitcoin to Second Layers&quot;, 2025, https://bitvm.org/bitvm_bridge.pdf</li>
+<li><a href="https://bips.dev/347/#cite_ref_12">^</a> S. Nakamoto, &quot;misc changes&quot;, Aug 25 2010, https://github.com/bitcoin/bitcoin/commit/4bd188c4383d6e614e18f79dc337fbabe8464c82#diff-27496895958ca30c47bbb873299a2ad7a7ea1003a9faa96b317250e3b7aa1fefR94</li>
+<li><a href="https://bips.dev/347/#cite_ref_13">^</a> Roose S., Elements Project, &quot;Re-enable several disabled opcodes&quot;, 2019, https://github.com/ElementsProject/elements/commit/13e1103abe3e328c5a4e2039b51a546f8be6c60a#diff-a0337ffd7259e8c7c9a7786d6dbd420c80abfa1afdb34ebae3261109d9ae3c19R740-R759</li>
 </ol>
+<h2>Changelog</h2>
+<ul>
+<li><strong>1.0.0</strong> (2026-03-01) - Marked as complete.</li>
+<li><strong>0.3.1</strong> (2026-01-23) - Made compliant with BIP 003, use cases added. </li>
+<li><strong>0.3.0</strong> (2024-05-06) - Merged to BIP repo</li>
+<li><strong>0.2.0</strong> (2024-04-24) - Assigned BIP number</li>
+<li><strong>0.1.0</strong> (2023-12-11) - Initial draft posted</li>
+</ul>
+<p>May 6, 2024</p>
 <h2>Acknowledgements</h2>
 <p>We wish to acknowledge Dan Gould for encouraging and helping review this effort. We also want to thank Madars Virza, Jeremy Rubin, Andrew Poelstra, Bob Summerwill,
 Tim Ruffing and Johan T. Halseth for their feedback, review and helpful comments.</p>
@@ -220,7 +283,7 @@ Tim Ruffing and Johan T. Halseth for their feedback, review and helpful comments
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-03-02</p>
+                    <p class="font-bold">2026-03-03</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

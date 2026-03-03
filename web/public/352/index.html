@@ -349,20 +349,32 @@
 <h4> Creating outputs </h4>
 <p>After the inputs have been selected, the sender can create one or more outputs for one or more silent payment addresses in the following manner:</p>
 <ul>
-<li>Collect the private keys for each input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list</li>
-<li>For each private key <em>a<sub>i</sub></em> corresponding to a <a href="/341" target="_blank">BIP341</a> taproot output, check that the private key produces a point with an even Y coordinate and negate the private key if not<ref name="why_negate_taproot_private_keys"><strong>Why do taproot private keys need to be checked?</strong> Recall from <a href="/340" target="_blank">BIP340</a> that each X-only public key has two corresponding private keys, <em>d</em> and <em>n - d</em>. To maintain parity between sender and receiver, it is necessary to use the private key corresponding to the even Y coordinate when performing the ECDH step since the receiver will assume the even Y coordinate when summing the taproot X-only public keys.</ref></li>
-<li>Let <em>a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub></em>, where each <em>a<sub>i</sub></em> has been negated if necessary
+<li>
+<p>Collect the private keys for each input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list</p>
+</li>
+<li>
+<p>For each private key <em>a<sub>i</sub></em> corresponding to a <a href="/341" target="_blank">BIP341</a> taproot output, check that the private key produces a point with an even Y coordinate and negate the private key if not<ref name="why_negate_taproot_private_keys"><strong>Why do taproot private keys need to be checked?</strong> Recall from <a href="/340" target="_blank">BIP340</a> that each X-only public key has two corresponding private keys, <em>d</em> and <em>n - d</em>. To maintain parity between sender and receiver, it is necessary to use the private key corresponding to the even Y coordinate when performing the ECDH step since the receiver will assume the even Y coordinate when summing the taproot X-only public keys.</ref></p>
+</li>
+<li>
+<p>Let <em>a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub></em>, where each <em>a<sub>i</sub></em> has been negated if necessary</p>
 <ul>
 <li>If <em>a = 0</em>, fail</li>
 </ul>
 </li>
-<li>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref> and <em>A = a·G</em>
+<li>
+<p>Let <em>input_hash = hash<sub>BIP0352/Inputs</sub>(outpoint<sub>L</sub> || A)</em>, where <em>outpoint<sub>L</sub></em> is the smallest <em>outpoint</em> lexicographically used in the transaction<ref name="why_smallest_outpoint"></ref> and <em>A = a·G</em></p>
 <ul>
 <li>If <em>input_hash</em> is not a valid scalar, i.e., if <em>input_hash = 0</em> or <em>input_hash</em> is larger or equal to the secp256k1 group order, fail</li>
 </ul>
 </li>
-<li>Group receiver silent payment addresses by <em>B<sub>scan</sub></em> (e.g. each group consists of one <em>B<sub>scan</sub></em> and one or more <em>B<sub>m</sub></em>)</li>
-<li>For each group:
+<li>
+<p>Group receiver silent payment addresses by <em>B<sub>scan</sub></em> (e.g. each group consists of one <em>B<sub>scan</sub></em> and one or more <em>B<sub>m</sub></em>)</p>
+</li>
+<li>
+<p>If any of the groups exceed the limit of <em>K<sub>max</sub></em> (=2323) silent payment addresses, fail.<ref name="why_limit_k"><strong>Why is the size of groups (i.e. silent payment addresses sharing the same scan public key) limited by <em>K<sub>max</sub></em>?</strong> An adversary could construct a block filled with a single transaction consisting of N=23255 outputs (that's the theoretical maximum under current consensus rules, w.r.t. the block weight limit) that all target the same entity, consisting of one large group. Without a limit on the group size, scanning such a block with the algorithm described in this document would have a complexity of <em>O(N<sup>2</sup>)</em> for that entity, taking several minutes on modern systems. By capping the group size at <em>K<sub>max</sub></em>, we reduce the inner loop iterations to <em>K<sub>max</sub></em>, thereby decreasing the worst-case block scanning complexity to <em>O(N·K<sub>max</sub>)</em>. This cuts down the scanning cost to the order of tens of seconds. The chosen value of <em>K<sub>max</sub></em> = 2323 represents the maximum number of P2TR outputs that can fit into a 100kvB transaction, meaning a transaction that adheres to the current standardness rules is guaranteed to be within the limit. This ensures flexibility and also mitigates potential fingerprinting issues.</ref></p>
+</li>
+<li>
+<p>For each group:</p>
 <ul>
 <li>Let <em>ecdh_shared_secret = input_hash·a·B<sub>scan</sub></em></li>
 <li>Let <em>k = 0</em></li>
@@ -408,6 +420,7 @@
 <li>Let <em>outputs_to_check</em> be the taproot output keys from all taproot outputs in the transaction (spent and unspent).</li>
 <li>Starting with <em>k = 0</em>:
 <ul>
+<li>If <em>k == K<sub>max</sub></em> (=2323), stop scanning.<ref name="why_limit_k"></ref></li>
 <li>Let <em>t<sub>k</sub> = hash<sub>BIP0352/SharedSecret</sub>(ser<sub>P</sub>(ecdh_shared_secret) || ser<sub>32</sub>(k))</em>
 *  If <em>t<sub>k</sub></em> is not a valid scalar, i.e., if <em>t<sub>k</sub> = 0</em> or <em>t<sub>k</sub></em> is larger or equal to the secp256k1 group order, fail</li>
 <li>Compute <em>P<sub>k</sub> = B<sub>spend</sub> + t<sub>k</sub>·G</em></li>
@@ -452,7 +465,15 @@
 <pre><code>    {
         &quot;given&quot;: {
             &quot;vin&quot;: [&lt;array of vin objects with an added field for the private key. These objects are structured to match the `vin` output field from `getrawtransaction verbosity=2`&gt;],
-            &quot;recipients&quot;: [&lt;array of strings, where each string is a bech32m encoding representing a silent payment address&gt;]
+            &quot;recipients&quot;: [&lt;array of recipient objects, consisting of the address and its contained scan&#x2F;spend public keys each&gt;
+                {
+                    &quot;address&quot;: &lt;bech32m encoding representing a silent payment address&gt;,
+                    &quot;scan_pub_key&quot;: &lt;hex encoded scan public key&gt;,
+                    &quot;spend_pub_key&quot;: &lt;hex encoded spend public key&gt;,
+                    &quot;count&quot;: &lt;optional integer for specifying the same recipient repeatedly (1 by default)&gt;
+                },
+                ...
+            ]
         },
         &quot;expected&quot;: {
             &quot;outputs&quot;: [&lt;array of strings, where each string is a hex encoding of 32-byte X-only public key; contains all possible output sets, test must match a subset of size `n_outputs`&gt;],
@@ -472,7 +493,7 @@
          },
          &quot;expected&quot;: {
              &quot;addresses&quot;: [&lt;array of bech32m strings, one for the silent payment address and each labeled address (if used)&gt;],
-             &quot;outputs&quot;: [&lt;array of outputs with tweak and signature; contains all possible output sets, tester must match a subset of size `n_outputs`&gt;
+             &quot;outputs&quot;: [&lt;optional array of outputs with tweak and signature, tester must match this set (alternatively, &quot;n_outputs&quot; can be specified)&gt;
                  {
                      &quot;priv_key_tweak&quot;: &lt;hex encoded private key tweak data&gt;,
                      &quot;pub_key&quot;: &lt;hex encoded X-only public key&gt;,
@@ -480,7 +501,7 @@
                  },
                  ...
              ],
-             &quot;n_outputs&quot;: &lt;integer for the exact number of expected outputs&gt;
+             &quot;n_outputs&quot;: &lt;optional integer for the number of expected found outputs (alternative to &quot;outputs&quot;)&gt;
          }
      }
 </code></pre>
@@ -542,6 +563,11 @@ The <code>MAJOR</code> version is incremented if changes to the BIP are introduc
 The <code>MINOR</code> version is incremented whenever the inputs or the output of an algorithm changes in a backward-compatible way or new backward-compatible functionality is added.
 The <code>PATCH</code> version is incremented for other changes that are noteworthy (bug fixes, test vectors, important clarifications, etc.).</p>
 <ul>
+<li><strong>1.1.0</strong> (2026-03-02):
+<ul>
+<li>Introduce per-group recipient limit <em>K<sub>max</sub></em> to mitigate quadratic scanning behavior for adversarial transactions.<ref name="why_limit_k"></ref></li>
+</ul>
+</li>
 <li><strong>1.0.2</strong> (2025-07-25):
 <ul>
 <li>Clarify how to handle the improbable corner case where the output of SHA256 is equal to 0 or greater than or equal to the secp256k1 curve order.</li>
@@ -571,7 +597,7 @@ The <code>PATCH</code> version is incremented for other changes that are notewor
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-03-02</p>
+                    <p class="font-bold">2026-03-03</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
