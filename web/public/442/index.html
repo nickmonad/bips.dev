@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 442: OP_PAIRCOMMIT" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 442: OP_PAIRCOMMIT" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 442: OP_PAIRCOMMIT</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 442: OP_PAIRCOMMIT</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2024-12-09</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0442.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 442
+  Layer: Consensus (soft fork)
+  Title: OP_PAIRCOMMIT
+  Authors: moonsettler &lt;moonsettler@protonmail.com&gt;
+           Brandon Black &lt;freedom@reardencode.com&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2024-12-09
+  License: BSD-3-Clause
+  Discussion: https:&#x2F;&#x2F;delvingbitcoin.org&#x2F;t&#x2F;op-paircommit-as-a-candidate-for-addition-to-lnhance&#x2F;1216
+              https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;si6ZNIkVfOw&#x2F;m&#x2F;29VY_YRrCgAJ
+</code></pre>
+<h2 id="Abstract">Abstract</h2>
+<p>This BIP proposes a new tapscript opcode, <code>OP_PAIRCOMMIT</code>, which enables efficient and secure commitment to pairs of stack elements using a tagged hash construction. This opcode provides limited vector commitment functionality, facilitating more expressive contracts and improved data availability in Bitcoin scripts.</p>
+<h2 id="Summary">Summary</h2>
+<p>For taproot script spends with leaf version <em>0xc0</em> (see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0342.mediawiki">BIP-342</a>), <code>OP_PAIRCOMMIT</code> replaces <code>OP_SUCCESS205</code> (<em>0xcd</em>). When executed, <code>OP_PAIRCOMMIT</code> pops the top two stack elements, computes a <em>PairCommit</em> tagged SHA256 hash over their compact size and data, and pushes the resulting 32-byte hash onto the stack.</p>
+<h2 id="Specification">Specification</h2>
+<p>Notation follows <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP-340</a>, including the tagged hash notation:
+<em>hash<sub>tag</sub>(x) = SHA256(SHA256(tag) || SHA256(tag) || x)</em></p>
+<p>Stack operation:</p>
+<ul>
+<li>If fewer than 2 elements are present, script execution fails.</li>
+<li>Let the stack be <em>[..., x1, x2]</em> (top is rightmost).</li>
+<li>Compute: <code>pc</code> = <em>hash<sub>PairCommit</sub>(compact_size(len(x1)) || x1 || compact_size(len(x2)) || x2)</em><sup class="footnote-reference"><a href="#1">1</a></sup></li>
+<li>Pop <code>x2</code> and <code>x1</code> from the stack.</li>
+<li>Push <code>pc</code> onto the stack.</li>
+</ul>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>The number of SHA256 blocks is minimized in typical use cases. The tag can be precomputed as a SHA256 mid-state, requiring only two hash cycles for two 32-byte items, or one for two smaller items.</p>
+</div>
+<h2 id="Motivation">Motivation</h2>
+<p>Bitcoin scripts often commit to single data items (e.g., hash/time locks, P2PKH), but lack native support for committing to multiple items together. <code>OP_PAIRCOMMIT</code> enables Merklized commitments, allowing contracts to commit to trees of elements with a single hash. This supports use cases such as hash lock contracts where any pre-image in a Merkle tree can unlock a spend.</p>
+<p>Combined with <code>OP_CHECKSIGFROMSTACK</code>, signing commitments to multiple items enables complex delegation (e.g., delegating to <code>key1</code> after time <code>t1</code> and <code>key2</code> after time <code>t2</code>). Previously, such delegation required key laddering<sup class="footnote-reference"><a href="#2">2</a></sup>, which is more costly in validation. <code>OP_PAIRCOMMIT</code> enforces relationships between items efficiently.</p>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p>Key laddering involves a sequence of keys signing tuples of items and keys, which is costly in bytes and sigops. See <a rel="noopener" target="_blank" href="https://rubin.io/bitcoin/2024/12/02/csfs-ctv-rekey-symmetry/">key laddering post</a> for details.</p>
+</div>
+<h2 id="Examples">Examples</h2>
+<h3 id="Committing_to_more_than_2_elements">Committing to more than 2 elements</h3>
+<p><code>OP_PAIRCOMMIT</code> can commit to a vector of stack elements securely and efficiently.</p>
+<pre data-lang="perl" class="language-perl "><code class="language-perl" data-lang="perl"># Commit to three elements: a, b, c
+# pc-hash = PC(a, PC(b, c))
+
+# Witness: &lt;a&gt; &lt;b&gt; &lt;c&gt;
+OP_PAIRCOMMIT                          # &lt;a&gt;, PC(b, c)
+OP_PAIRCOMMIT                          # PC(a, PC(b, c))
+&lt;pc-hash&gt;                              # PC(a, PC(b, c)), &lt;pc-hash&gt;
+OP_EQUALVERIFY                         #
+# ...
+</code></pre>
+<h3 id="Use_in_Lightning_Symmetry">Use in Lightning Symmetry</h3>
+<p>Lightning Symmetry contracts require data availability for contested closes. <sup class="footnote-reference"><a href="#3">3</a></sup> By forcing parties to include settlement transaction hashes in the witness, later updates can reconstruct scripts of intermediate states while only keeping the latest state.</p>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p>The required data is a full CTV hash of the settlement transaction when there are open HTLCs, or merely the difference in balance between the channel partners in other cases. Whether the latter optimization would be used is an implementation detail not further discussed here.</p>
+</div>
+<pre data-lang="perl" class="language-perl "><code class="language-perl" data-lang="perl"># S:                                   500000000
+# internal-key:                        BIP-327 aggregate key of channel participants
+# state-n-hash:                        { nLockTime(S+n), out(contract, amount(A)+amount(B)) }
+# settlement-n-hash:                   { nSequence(2w), out(A, amount(A)), out(B, amount(B)) }
+# state-n-recovery-data:               { settlement-n-hash or state-n-balance }
+</code></pre>
+<h4 id="Example_channel_script_(pseudo-code)">Example channel script (pseudo-code)</h4>
+<pre data-lang="perl" class="language-perl "><code class="language-perl" data-lang="perl"># Witness: &lt;sig&gt; &lt;state-n-recovery-data&gt; &lt;state-n-hash&gt;
+OP_CHECKTEMPLATEVERIFY                 # &lt;sig&gt;, &lt;state-n-recovery-data&gt;, &lt;state-n-hash&gt;
+OP_PAIRCOMMIT                          # &lt;sig&gt;, PC(state-n-recovery-data, state-n-hash)
+OP_INTERNALKEY                         # &lt;sig&gt;, PC(state-n-recovery-data, state-n-hash), &lt;internal-key&gt;
+OP_CHECKSIGFROMSTACK                   # &lt;1&gt;
+&lt;S+1&gt;                                  # &lt;1&gt;, &lt;S+1&gt;
+OP_CHECKLOCKTIMEVERIFY                 # &lt;1&gt;, &lt;S+1&gt;
+OP_DROP                                # &lt;1&gt;
+</code></pre>
+<h4 id="Channel_update_script_(pseudo-code)_for_m_&gt;_n">Channel update script (pseudo-code) for m &gt; n</h4>
+<pre data-lang="perl" class="language-perl "><code class="language-perl" data-lang="perl">OP_IF
+    # Witness: &lt;sig&gt; &lt;state-m-recovery-data&gt; &lt;state-m-hash&gt;
+    OP_CHECKTEMPLATEVERIFY             # &lt;sig&gt;, &lt;state-m-recovery-data&gt;, &lt;state-m-hash&gt;
+    OP_PAIRCOMMIT                      # &lt;sig&gt;, PC(state-m-recovery-data, state-m-hash)
+    OP_INTERNALKEY                     # &lt;sig&gt;, PC(state-m-recovery-data, state-m-hash), &lt;internal-key&gt;
+    OP_CHECKSIGFROMSTACK               # &lt;1&gt;
+    &lt;S+n+1&gt;                            # &lt;1&gt;, &lt;S+n+1&gt;
+    OP_CHECKLOCKTIMEVERIFY             # &lt;1&gt;, &lt;S+n+1&gt;
+    OP_DROP                            # &lt;1&gt;
+OP_ELSE
+    # Empty witness stack
+    &lt;settlement-n-hash&gt;                # &lt;settlement-n-hash&gt;
+    OP_CHECKTEMPLATEVERIFY             # &lt;settlement-n-hash&gt;
+    OP_0NOTEQUAL                       # &lt;1&gt;
+OP_ENDIF
+</code></pre>
+<p>These constructions ensure both parties sign the same pair hash, requiring inclusion of both update and settlement hashes in the witness. <sup class="footnote-reference"><a href="#4">4</a></sup> <sup class="footnote-reference"><a href="#5">5</a></sup></p>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><code>state-n-hash</code> commits to a specific <code>nLockTime</code> value for the transaction through <code>OP_CHECKTEMPLATEVERIFY</code>; <code>OP_CHECKLOCKTIMEVERIFY</code> ensures that the state progression can only go forward (the transaction needs to have greater <code>nLockTime</code> value than the intermediate state 
+<sup class="footnote-reference"><a href="#5">5</a></sup>: <code>OP_0NOTEQUAL</code> can be omitted (any non-zero value left on the stack would be accepted by the script interpreter).</p>
+</div>
+<h3 id="In_MATT">In MATT</h3>
+<p>The Merklize All The Things (<a rel="noopener" target="_blank" href="https://merkle.fun">MATT</a>) framework uses <code>OP_CAT</code> to combine items for commitments. <code>OP_PAIRCOMMIT</code> provides a more ergonomic and secure alternative<sup class="footnote-reference"><a href="#6">6</a></sup>.</p>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<p>Naive use of <code>OP_CAT</code> is vulnerable to byte shifting attacks. E.g. <em>0x0102 || 0x03</em> equals <em>0x01 || 0x0203</em>. Mitigation requires length checking or hashing.</p>
+</div>
+<h2 id="Alternative_approaches">Alternative approaches</h2>
+<p>Alternative approaches considered and rejected:</p>
+<ul>
+<li><code>OP_CAT</code><sup class="footnote-reference"><a href="#6">6</a></sup><sup class="footnote-reference"><a href="#9">7</a></sup></li>
+<li>SHA256 streaming opcodes<sup class="footnote-reference"><a href="#9">7</a></sup></li>
+<li>Merkle operation opcodes</li>
+<li>'Kitty' CAT: <code>OP_CAT</code> with size limits</li>
+<li><code>OP_CHECKTEMPLATEVERIFY</code> committing to the taproot annex<sup class="footnote-reference"><a href="#7">8</a></sup></li>
+<li><code>OP_CHECKSIGFROMSTACK</code> on n elements</li>
+<li><code>OP_VECTORCOMMIT</code>: generalized for n &gt; 2 elements</li>
+<li>ReKey/Laddering<sup class="footnote-reference"><a href="#2">2</a></sup></li>
+<li><code>OP_RETURN</code><sup class="footnote-reference"><a href="#8">9</a></sup></li>
+</ul>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">8</sup>
+<p>Committing to the taproot annex allows one additional item, but it is not accessible to script.
+<sup class="footnote-reference"><a href="#8">9</a></sup>: <code>OP_RETURN</code> can commit to additional data, but is costly and not accessible to script.
+<sup class="footnote-reference"><a href="#9">7</a></sup>: <code>OP_PAIRCOMMIT</code> enables useful scripts without the risks of <code>OP_CAT</code> (see <a rel="noopener" target="_blank" href="https://medium.com/blockstream/cat-and-schnorr-tricks-i-faf1b59bd298">CAT-tricks-I</a>, <a rel="noopener" target="_blank" href="https://medium.com/blockstream/cat-and-schnorr-tricks-ii-2f6ede3d7bb5">CAT-tricks-II</a>).</p>
+</div>
+<h2 id="Reference_Implementation">Reference Implementation</h2>
+<h3 id="Code">Code</h3>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">case OP_PAIRCOMMIT: {
+    &#x2F;&#x2F; OP_PAIRCOMMIT is only available in Tapscript
+    &#x2F;&#x2F; ...
+    &#x2F;&#x2F; x1 x2 -- hash
+    if (stack.size() &lt; 2) {
+        return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
+    }
+    const valtype&amp; vch1 = stacktop(-2);
+    const valtype&amp; vch2 = stacktop(-1);
+
+    uint256 hash = PairCommitHash(vch1, vch2);
+
+    stack.pop_back();
+    stack.pop_back();
+    stack.emplace_back(hash.begin(), hash.end());
+    break;
+}
+</code></pre>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">const HashWriter HASHER_PAIRCOMMIT{TaggedHash(&quot;PairCommit&quot;)};
+
+uint256 PairCommitHash(const std::vector&lt;unsigned char&gt;&amp; x1, const std::vector&lt;unsigned char&gt;&amp; x2)
+{
+    return (HashWriter{HASHER_PAIRCOMMIT} &lt;&lt; x1 &lt;&lt; x2).GetSHA256();
+}
+</code></pre>
+<h3 id="Pull_Request">Pull Request</h3>
+<p>https://github.com/lnhance/bitcoin/pull/6/files</p>
+<h2 id="Rationale">Rationale</h2>
+<h3 id="Cost_comparison_of_Lightning_Symmetry_constructions">Cost comparison of Lightning Symmetry constructions</h3>
+<table><thead><tr><th style="text-align: left">Method</th><th style="text-align: right">Channel Script</th><th style="text-align: right">Update Script</th><th style="text-align: right">Update Witness<sup>1</sup></th><th style="text-align: right">Force Close<sup>2</sup></th><th style="text-align: right">Contest</th><th style="text-align: center">Settlement Mechanism</th></tr></thead><tbody>
+<tr><td style="text-align: left">APO-Annex</td><td style="text-align: right">8 WU</td><td style="text-align: right">113 WU</td><td style="text-align: right">100 WU</td><td style="text-align: right">1221 WU</td><td style="text-align: right">627 WU</td><td style="text-align: center">SigOp</td></tr>
+<tr><td style="text-align: left">APO-Return</td><td style="text-align: right">8 WU</td><td style="text-align: right">113 WU</td><td style="text-align: right">66 WU</td><td style="text-align: right">1359 WU</td><td style="text-align: right">765 WU</td><td style="text-align: center">SigOp</td></tr>
+<tr><td style="text-align: left">CTV+CSFS</td><td style="text-align: right">43 WU</td><td style="text-align: right">81 WU</td><td style="text-align: right">98 WU</td><td style="text-align: right">1394 WU</td><td style="text-align: right">765 WU</td><td style="text-align: center">HashEq</td></tr>
+<tr><td style="text-align: left">CTV+CSFS+IKEY</td><td style="text-align: right">10 WU</td><td style="text-align: right">48 WU</td><td style="text-align: right">98 WU</td><td style="text-align: right">1328 WU</td><td style="text-align: right">732 WU</td><td style="text-align: center">HashEq</td></tr>
+<tr><td style="text-align: left">CTV+CSFS+IKEY+PC</td><td style="text-align: right">11 WU</td><td style="text-align: right">49 WU</td><td style="text-align: right">131 WU</td><td style="text-align: right">1191 WU</td><td style="text-align: right">594 WU</td><td style="text-align: center">HashEq</td></tr>
+<tr><td style="text-align: left">THIKCS-Annex</td><td style="text-align: right">10 WU</td><td style="text-align: right">49 WU</td><td style="text-align: right">98 WU</td><td style="text-align: right">1160 WU</td><td style="text-align: right">563 WU</td><td style="text-align: center">HashEq</td></tr>
+<tr><td style="text-align: left">THIKCS-Return</td><td style="text-align: right">10 WU</td><td style="text-align: right">49 WU</td><td style="text-align: right">66 WU</td><td style="text-align: right">1329 WU</td><td style="text-align: right">733 WU</td><td style="text-align: center">HashEq</td></tr>
+</tbody></table>
+<p><sup>1</sup> <em>Witness is the same weight for both Force Close and Contest in LN-Symmetry</em> <br />
+<sup>2</sup> <em>Total cost of unilateral close transactions</em> <br />
+<sup>3</sup> <em>THIKCS is short for TEMPLATEHASH+IKEY+CSFS</em></p>
+<h3 id="Proving_general_computation_using_trees">Proving general computation using trees</h3>
+<p><code>OP_PAIRCOMMIT</code> enables Merkle tree commitments, which can represent functions where inputs and corresponding outputs are the leaves. Taproot trees can be 128 levels deep, therefore including up to 2<sup>128</sup> possible leaf scripts that can represent complex functions. This is already over the practical computational limits to enumerate and Merklize.</p>
+<h2 id="Backward_Compatibility">Backward Compatibility</h2>
+<p>Constraining <code>OP_SUCCESS</code> opcodes allows deployment as a backwards-compatible soft fork. Reliance on <code>OP_SUCCESS205</code> behavior will be invalidated by <code>OP_PAIRCOMMIT</code>.</p>
+<h2 id="Deployment">Deployment</h2>
+<p>TBD</p>
+<h2 id="Credits">Credits</h2>
+<p>Jeremy Rubin, Salvatore Ingala, Anthony Towns, Ademan555, Psifour</p>
+<h2 id="Copyright">Copyright</h2>
+<p>This document is licensed under the 3-clause BSD license.</p>
+<h2 id="References">References</h2>
+<ol>
+<li>LNhance bitcoin repository: <a rel="noopener" target="_blank" href="https://github.com/lnhance/bitcoin">lnhance</a></li>
+<li>Lightning Symmetry: <a rel="noopener" target="_blank" href="https://github.com/instagibbs/bolts/blob/eltoo_draft/XX-eltoo-transactions.md">eltoo</a></li>
+<li>OP_CAT: <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0347.mediawiki">BIP-347</a>, <a rel="noopener" target="_blank" href="https://github.com/bitcoin-inquisition/binana/blob/master/2024/BIN-2024-0001.md">BIN-2024-0001</a></li>
+<li>OP_CHECKTEMPLATEVERIFY: <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/tree/master/bip-0119.mediawiki">BIP-119</a></li>
+<li>OP_CHECKSIGFROMSTACK: <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0348.md">BIP-348</a>, <a rel="noopener" target="_blank" href="https://github.com/bitcoin-inquisition/binana/blob/master/2024/BIN-2024-0003.md">BIN-2024-0003</a></li>
+<li>OP_CHECKCONTRACTVERIFY: <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0443.mediawiki">BIP-443</a></li>
+<li>OP_INTERNALKEY: <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0349.md">BIP-349</a>, <a rel="noopener" target="_blank" href="https://github.com/bitcoin-inquisition/binana/blob/master/2024/BIN-2024-0004.md">BIN-2024-0004</a></li>
+<li>OP_TEMPLATEHASH: <a rel="noopener" target="_blank" href="https://github.com/instagibbs/bips/blob/bip_op_templatehash/bip-0446.md">BIP-446</a></li>
+<li>Tagged hash: <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP-340</a></li>
+<li>MuSig2: <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki">BIP-327</a></li>
+</ol>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-03-04</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
