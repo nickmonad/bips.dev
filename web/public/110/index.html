@@ -134,7 +134,7 @@
 <p>Blocks during a temporary, one-year deployment are checked with these additional rules:</p>
 <ol>
 <li>New output scriptPubKeys exceeding 34 bytes are invalid, unless the first opcode is OP_RETURN, in which case up to 83 bytes are valid.</li>
-<li>OP_PUSHDATA* payloads and witness stack elements exceeding 256 bytes are invalid, except for the redeemScript push in BIP16 scriptSigs.</li>
+<li>OP_PUSHDATA* payloads and <a href="#script-argument-witness-items" target="_blank">script argument witness items</a> exceeding 256 bytes are invalid, except for the redeemScript push in BIP16 scriptSigs.</li>
 <li>Spending undefined witness (or Tapleaf) versions (ie, not Witness v0/BIP 141, Taproot/BIP 341, or P2A) is invalid. (Creating outputs with undefined witness versions is still valid.)</li>
 <li>Witness stacks with a Taproot annex are invalid.</li>
 <li>Taproot control blocks larger than 257 bytes (a merkle tree with 128 script leaves) are invalid.</li>
@@ -143,6 +143,8 @@
 </ol>
 <p>Inputs spending UTXOs that were created before the activation height are exempt from the new rules.
 Once the softfork expires, UTXOs of all heights are once again unrestricted.</p>
+<h3>GetBlockTemplate</h3>
+<p>This deployment uses the GBT deployment name &quot;reduced_data&quot; as defined in <a href="/9" target="_blank">BIP 9</a>. During mandatory signaling, the deployment's bit is included in &quot;vbrequired&quot;.</p>
 <h2>Motivation</h2>
 <p>In order to protect Bitcoin's intended function as the Internet's native money, the Bitcoin community has historically treated techniques for embedding arbitrary data into Bitcoin transactions with antagonism.</p>
 <p>Such data embedding must be resisted at all times in order to ensure it doesn't become load-bearing and start to produce negative externalities, especially for node operators.</p>
@@ -177,10 +179,29 @@ However, to avoid breaking legacy protocols that still include such outputs, thi
 As far as Bitcoin is concerned, the data has some meaning other than the spammers' misinterpretation, and any external code to &quot;reassemble&quot; the unintended data is responsible for producing it
 (it is possible to write code that transforms <em>any</em> data into any other data - what matters is that Bitcoin has a well-defined meaning that is distinct from the unsupported one).
 Requiring users to divide their files into chunks of at most 256 bytes, raising the cost both in fees and in effort, sends a clear message that data storage abuses in general are unwelcome rather than sanctioned or supported.</p>
-<p><strong>Why is there an exception for BIP16 redeemScripts?</strong></p>
-<p>The content of redeemScripts are another script, which is then executed.
-Its contents are then also subject to the same OP_PUSHDATA* restrictions.
-Restricting it is not only unnecessary, but would reduce the ability to make use of the intended script capabilities, and could impact legitimate real-world usage.</p>
+<p><span id="script-argument-witness-items"></span>
+<strong>What are &quot;script argument witness items&quot;, referred to in rule 2?</strong></p>
+<p>Script argument witness items are the witness stack elements that are placed on the script interpreter's stack as inputs before the script is executed - the witness equivalent of data pushes in scriptSigs.</p>
+<p>The following witness stack elements are <strong>not</strong> script argument witness items, and are thus excluded from rule 2 (though some are limited/invalidated by other rules):</p>
+<ul>
+<li>Some items are part of a spend that invokes the script interpreter, but are popped from the witness stack before the remaining elements are passed to it as inputs:
+<ul>
+<li>Witness scripts and Tapleaf scripts (not limited)</li>
+<li>Control blocks (limited by rule 5)</li>
+<li>Annexes (invalidated by rule 4)</li>
+</ul>
+</li>
+<li>Others are not part of a script-path spend at all, so the script interpreter is not invoked:
+<ul>
+<li>Taproot key path signatures (limited to exactly 64 or 65 bytes by BIP 341 signature validation)</li>
+<li>Witness stacks in spends of undefined witness versions (invalidated by rule 3)</li>
+</ul>
+</li>
+</ul>
+<p>All <strong>other</strong> witness stack elements are script argument witness items, and are thus limited to 256 bytes by rule 2.</p>
+<p><strong>Why are BIP16 redeemScripts, witness scripts, and Tapleaf scripts exempt from rule 2?</strong></p>
+<p>BIP16 redeemScripts, witness scripts, and Tapleaf scripts are scripts, not data. Their contents are subject to the same OP_PUSHDATA* restrictions during execution.
+Restricting them is not only unnecessary, but would reduce the ability to make use of the intended script capabilities, and could impact legitimate real-world usage.</p>
 <p><strong>Why make spending undefined witness/Tapleaf versions invalid?</strong></p>
 <p>Since they are undefined, witness stacks spending these versions are completely unlimited currently to allow maximum flexibility in future upgrades.
 Any future upgrade, however, would need more than a year of coordination, so this softfork will not actually restrict it, and only safeguards against abuse in the meantime.</p>
@@ -332,15 +353,16 @@ Pains have been taken to avoid breaking monetary use cases, and it is unlikely t
 <p><strong>Reduced threshold (55% instead of 95%)</strong>: The standard BIP9 threshold of 95% is designed for permanent consensus changes where near-universal miner readiness is desirable. Since rejecting data storage is a matter of urgency, and since this softfork is temporary and expires after one year, a lower threshold is ideal.</p>
 <p><strong>No timeout, using max_activation_height instead</strong>: Standard BIP9 uses a time-based timeout that transitions to FAILED if the threshold is not reached. This deployment sets timeout to NO_TIMEOUT and instead uses a BIP8-like, height-based max_activation_height. The deployment transitions to LOCKED_IN at height 963648 (one retarget period before max_activation_height), then to ACTIVE at height 965664.</p>
 <p><strong>Mandatory signaling period</strong>: Similar to BIP8, this deployment enforces mandatory signaling during the retarget period immediately before mandatory lock-in (blocks 961632 to 963647; lock-in happens no later than block 963648). During this window, blocks that do not signal bit 4 are rejected as invalid. Mandatory signaling ends once the deployment reaches the LOCKED_IN state.</p>
-<p><strong>Expiry via active_duration</strong>: Standard BIP9 deployments are permanent once ACTIVE. This proposal includes an active_duration of 52416 blocks (~1 year), making the deployment temporary rather than permanent. The state machine remains in ACTIVE, but consensus rule enforcement is conditional: rules are only enforced for blocks with height &lt; activation_height + active_duration. After 52416 blocks, the rules cease to be enforced and UTXOs are once again unrestricted.</p>
+<p><strong>Expiry via active_duration</strong>: Standard BIP9 deployments are permanent once ACTIVE. This proposal includes an active_duration of 52416 blocks (~1 year), making the deployment temporary rather than permanent. After active_duration blocks, the state machine transitions from ACTIVE to EXPIRED, a new terminal state. Once EXPIRED, the rules cease to be enforced and UTXOs are once again unrestricted.</p>
 <p><strong>State transitions</strong>: The state machine follows this progression:</p>
 <ol>
 <li>DEFINED: Initial state until starttime</li>
 <li>STARTED: After starttime; miners may signal with bit 4</li>
 <li>LOCKED_IN: Entered at the start of the first retarget period where the threshold was reached in the previous period; mandatory signaling (blocks 961632-963647) ensures this happens no later than height 963648</li>
 <li>ACTIVE: Entered one retarget period after LOCKED_IN; rules enforced for active_duration blocks</li>
+<li>EXPIRED: Entered when block height &gt;= activation_height + active_duration; rules no longer enforced (terminal state)</li>
 </ol>
-<p>The FAILED state is never reached because timeout is disabled. ACTIVE is the final state; there are no transitions after it. Miner signaling after expiry has no effect because the deployment is no longer in the STARTED state, and miner signaling only governs the STARTED → LOCKED_IN transition. After active_duration blocks, the deployment remains in the ACTIVE state but rules are no longer enforced. There is no separate EXPIRED state in the state machine.</p>
+<p>The FAILED state is never reached because timeout is disabled. EXPIRED is the final state; there are no transitions after it. Miner signaling after expiry has no effect because the deployment is no longer in the STARTED state, and miner signaling only governs the STARTED -&gt; LOCKED_IN transition.</p>
 <h2>Credits</h2>
 <p>Original draft and advice: Luke-Jr</p>
 
