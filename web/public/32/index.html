@@ -156,10 +156,10 @@
 Concatenation (||) is the operation of appending one byte sequence onto another.</p>
 <p>As standard conversion functions, we assume:</p>
 <ul>
-<li>point(p): returns the coordinate pair resulting from EC point multiplication (repeated application of the EC group operation) of the secp256k1 base point with the integer p.</li>
+<li>point(p): returns the coordinate pair resulting from EC point multiplication (repeated application of the EC group operation) of the secp256k1 base point with the integer p (i.e., the operation used to compute a public key from a private key).</li>
 <li>ser<sub>32</sub>(i): serialize a 32-bit unsigned integer i as a 4-byte sequence, most significant byte first.</li>
 <li>ser<sub>256</sub>(p): serializes the integer p as a 32-byte sequence, most significant byte first.</li>
-<li>ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) as a byte sequence using SEC1's compressed form: (0x02 or 0x03) || ser<sub>256</sub>(x), where the header byte depends on the parity of the omitted y coordinate.</li>
+<li>ser<sub>P</sub>(P): serializes the coordinate pair P = (x,y) (i.e., the public key) as a byte sequence using <a href="https://www.secg.org/sec1-v2.pdf" target="_blank">SEC1</a>'s compressed form: (0x02 or 0x03) || ser<sub>256</sub>(x), where the header byte depends on the parity of the omitted y coordinate.</li>
 <li>parse<sub>256</sub>(p): interprets a 32-byte sequence as a 256-bit number, most significant byte first.</li>
 </ul>
 <h3>Extended keys</h3>
@@ -447,7 +447,7 @@ It is also the reason for the existence of hardened keys, and why they are used 
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-03-05</p>
+                    <p class="font-bold">2026-03-06</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
