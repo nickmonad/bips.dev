@@ -437,7 +437,10 @@ Silent payments introduces a new address format and protocol for sending and as 
 <h2> Test Vectors </h2>
 
 
-A <a href="https://github.com/bitcoin/bips/blob/master/bip-0352/send_and_receive_test_vectors.json" target="_blank">collection of test vectors in JSON format</a> are provided, along with a <a href="https://github.com/bitcoin/bips/blob/master/bip-0352/reference.py" target="_blank">python reference implementation</a>. Each test vector consists of a sending test case and corresponding receiving test case. This is to allow sending and receiving to be implemented separately. To ensure determinism while testing, sort the array of _B<sub>m</sub>_ by amount (see the <a href="https://github.com/bitcoin/bips/blob/master/bip-0352/reference.py" target="_blank">reference implementation</a>). Test cases use the following schema:
+A <a href="https://github.com/bitcoin/bips/blob/master/bip-0352/send_and_receive_test_vectors.json" target="_blank">collection of test vectors in JSON format</a> is provided, along with a <a href="https://github.com/bitcoin/bips/blob/master/bip-0352/reference.py" target="_blank">python reference implementation</a>. It uses a vendored copy of the <a href="https://github.com/secp256k1lab/secp256k1lab/" target="_blank">secp256k1lab</a> library at version 1.0.0
+(commit <a href="https://github.com/secp256k1lab/secp256k1lab/commit/44dc4bd893b8f03e621585e3bf255253e0e0fbfb" target="_blank">44dc4bd893b8f03e621585e3bf255253e0e0fbfb</a>).
+
+Each test vector consists of a sending test case and corresponding receiving test case. This is to allow sending and receiving to be implemented separately. To ensure determinism while testing, sort the array of _B<sub>m</sub>_ by amount (see the <a href="https://github.com/bitcoin/bips/blob/master/bip-0352/reference.py" target="_blank">reference implementation</a>). Test cases use the following schema:
 
 ** test_case **
 
