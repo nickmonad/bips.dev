@@ -286,70 +286,70 @@ The following examples show values for various combinations on mainnet and testn
 
 The following list gives properly encoded mainnet **TxRef**s and the decoded hex values (block height, transaction index)
 
-*  <tt>tx1:rqqq-qqqq-qwtv-vjr</tt>: <tt>(0x0, 0x0)</tt>
-*  <tt>tx1:rqqq-qqll-lj68-7n2</tt>: <tt>(0x0, 0x7FFF)</tt>
-*  <tt>tx1:r7ll-llqq-qats-vx9</tt>: <tt>(0xFFFFFF, 0x0)</tt>
-*  <tt>tx1:r7ll-llll-lp6m-78v</tt>: <tt>(0xFFFFFF, 0x7FFF)</tt>
+*  `tx1:rqqq-qqqq-qwtv-vjr`: `(0x0, 0x0)`
+*  `tx1:rqqq-qqll-lj68-7n2`: `(0x0, 0x7FFF)`
+*  `tx1:r7ll-llqq-qats-vx9`: `(0xFFFFFF, 0x0)`
+*  `tx1:r7ll-llll-lp6m-78v`: `(0xFFFFFF, 0x7FFF)`
 
 
 The following list gives properly encoded testnet **TxRef**s and the decoded hex values (block height, transaction index)
 
-*  <tt>txtest1:xqqq-qqqq-qrrd-ksa</tt>: <tt>(0x0, 0x0)</tt>
-*  <tt>txtest1:xqqq-qqll-lljx-y35</tt>: <tt>(0x0, 0x7FFF)</tt>
-*  <tt>txtest1:x7ll-llqq-qsr3-kym</tt>: <tt>(0xFFFFFF, 0x0)</tt>
-*  <tt>txtest1:x7ll-llll-lvj6-y9j</tt>: <tt>(0xFFFFFF, 0x7FFF)</tt>
+*  `txtest1:xqqq-qqqq-qrrd-ksa`: `(0x0, 0x0)`
+*  `txtest1:xqqq-qqll-lljx-y35`: `(0x0, 0x7FFF)`
+*  `txtest1:x7ll-llqq-qsr3-kym`: `(0xFFFFFF, 0x0)`
+*  `txtest1:x7ll-llll-lvj6-y9j`: `(0xFFFFFF, 0x7FFF)`
 
 
 The following list gives valid (sometimes strangely formatted) **TxRef**s and the decoded values (block height, transaction index)*
-*  <tt>tx1:r29u-mqjx-putt-3p0</tt>: <tt>(456789, 1234)</tt>
-*  <tt>TX1R29UMQJXPUTT3P0</tt>: <tt>(456789, 1234)</tt>
-*  <tt>tx1 r29u mqjx putt 3p0</tt>: <tt>(456789, 1234)</tt>
-*  <tt>tx1!r29u/mqj*x-putt^^3p0</tt>: <tt>(456789, 1234)</tt>
+*  `tx1:r29u-mqjx-putt-3p0`: `(456789, 1234)`
+*  `TX1R29UMQJXPUTT3P0`: `(456789, 1234)`
+*  `tx1 r29u mqjx putt 3p0`: `(456789, 1234)`
+*  `tx1!r29u/mqj*x-putt^^3p0`: `(456789, 1234)`
 
 
 The following list gives invalid **TxRef**s and the reason for their invalidity.
-*  <tt>tx1:t7ll-llll-lcq3-aj4</tt>: Magic 0xB instead of 0x3.
-*  <tt>tx1:rlll-llll-lu9m-00x</tt>: Version 1 instead of 0.
-*  <tt>tx1:r7ll-llll-lqfu-gss2</tt>: Valid Bech32, but ten 5 bit unsigned chars instead of nine.
-*  <tt>tx1:r7ll-llll-rt5h-wz</tt>: Valid Bech32, but eight 5 bit unsigned chars instead of nine.
-*  <tt>tx1:r7ll-LLLL-lp6m-78v</tt>: Invalid Bech32 due to mixed case. Would decode correctly otherwise.
+*  `tx1:t7ll-llll-lcq3-aj4`: Magic 0xB instead of 0x3.
+*  `tx1:rlll-llll-lu9m-00x`: Version 1 instead of 0.
+*  `tx1:r7ll-llll-lqfu-gss2`: Valid Bech32, but ten 5 bit unsigned chars instead of nine.
+*  `tx1:r7ll-llll-rt5h-wz`: Valid Bech32, but eight 5 bit unsigned chars instead of nine.
+*  `tx1:r7ll-LLLL-lp6m-78v`: Invalid Bech32 due to mixed case. Would decode correctly otherwise.
 
 
 <h4> TxRef with Outpoints </h4>
 
 The following list gives properly encoded mainnet **TxRef**s with Outpoints and the decoded values (block height, transaction index, outpoint index)
 
-*  <tt>tx1:yqqq-qqqq-qqqq-rvum-0c</tt>: <tt>(0x0, 0x0, 0x0)</tt>
-*  <tt>tx1:yqqq-qqll-lqqq-en8x-05</tt>: <tt>(0x0, 0x7FFF, 0x0)</tt>
-*  <tt>tx1:y7ll-llqq-qqqq-ggjg-w6</tt>: <tt>(0xFFFFFF, 0x0, 0x0)</tt>
-*  <tt>tx1:y7ll-llll-lqqq-jhf4-wk</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x0)</tt>
+*  `tx1:yqqq-qqqq-qqqq-rvum-0c`: `(0x0, 0x0, 0x0)`
+*  `tx1:yqqq-qqll-lqqq-en8x-05`: `(0x0, 0x7FFF, 0x0)`
+*  `tx1:y7ll-llqq-qqqq-ggjg-w6`: `(0xFFFFFF, 0x0, 0x0)`
+*  `tx1:y7ll-llll-lqqq-jhf4-wk`: `(0xFFFFFF, 0x7FFF, 0x0)`
 
 
-*  <tt>tx1:yqqq-qqqq-qpqq-pw4v-kq</tt>: <tt>(0x0, 0x0, 0x1)</tt>
-*  <tt>tx1:yqqq-qqll-lpqq-m3w3-kv</tt>: <tt>(0x0, 0x7FFF, 0x1)</tt>
-*  <tt>tx1:y7ll-llqq-qpqq-22ml-hz</tt>: <tt>(0xFFFFFF, 0x0, 0x1)</tt>
-*  <tt>tx1:y7ll-llll-lpqq-s4qz-hw</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x1)</tt>
+*  `tx1:yqqq-qqqq-qpqq-pw4v-kq`: `(0x0, 0x0, 0x1)`
+*  `tx1:yqqq-qqll-lpqq-m3w3-kv`: `(0x0, 0x7FFF, 0x1)`
+*  `tx1:y7ll-llqq-qpqq-22ml-hz`: `(0xFFFFFF, 0x0, 0x1)`
+*  `tx1:y7ll-llll-lpqq-s4qz-hw`: `(0xFFFFFF, 0x7FFF, 0x1)`
 
 
-*  <tt>tx1:y29u-mqjx-ppqq-sfp2-tt</tt>: <tt>(456789, 1234, 1)</tt>
+*  `tx1:y29u-mqjx-ppqq-sfp2-tt`: `(456789, 1234, 1)`
 
 
 
 The following list gives properly encoded testnet **TxRef**s with Outpoints and the decoded values (block height, transaction index, outpoint index)
 
-*  <tt>txtest1:8qqq-qqqq-qqqq-d5ns-vl</tt>: <tt>(0x0, 0x0, 0x0)</tt>
-*  <tt>txtest1:8qqq-qqll-lqqq-htgd-vn</tt>: <tt>(0x0, 0x7FFF, 0x0)</tt>
-*  <tt>txtest1:87ll-llqq-qqqq-xsar-da</tt>: <tt>(0xFFFFFF, 0x0, 0x0)</tt>
-*  <tt>txtest1:87ll-llll-lqqq-u0x7-d3</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x0)</tt>
+*  `txtest1:8qqq-qqqq-qqqq-d5ns-vl`: `(0x0, 0x0, 0x0)`
+*  `txtest1:8qqq-qqll-lqqq-htgd-vn`: `(0x0, 0x7FFF, 0x0)`
+*  `txtest1:87ll-llqq-qqqq-xsar-da`: `(0xFFFFFF, 0x0, 0x0)`
+*  `txtest1:87ll-llll-lqqq-u0x7-d3`: `(0xFFFFFF, 0x7FFF, 0x0)`
 
 
-*  <tt>txtest1:8qqq-qqqq-qpqq-0k68-48</tt>: <tt>(0x0, 0x0, 0x1)</tt>
-*  <tt>txtest1:8qqq-qqll-lpqq-4fp6-4t</tt>: <tt>(0x0, 0x7FFF, 0x1)</tt>
-*  <tt>txtest1:87ll-llqq-qpqq-yj55-59</tt>: <tt>(0xFFFFFF, 0x0, 0x1)</tt>
-*  <tt>txtest1:87ll-llll-lpqq-7d0f-5f</tt>: <tt>(0xFFFFFF, 0x7FFF, 0x1)</tt>
+*  `txtest1:8qqq-qqqq-qpqq-0k68-48`: `(0x0, 0x0, 0x1)`
+*  `txtest1:8qqq-qqll-lpqq-4fp6-4t`: `(0x0, 0x7FFF, 0x1)`
+*  `txtest1:87ll-llqq-qpqq-yj55-59`: `(0xFFFFFF, 0x0, 0x1)`
+*  `txtest1:87ll-llll-lpqq-7d0f-5f`: `(0xFFFFFF, 0x7FFF, 0x1)`
 
 
-*  <tt>txtest1:829u-mqjx-ppqq-73wp-gv</tt>: <tt>(456789, 1234, 1)</tt>
+*  `txtest1:829u-mqjx-ppqq-73wp-gv`: `(456789, 1234, 1)`
 
 
 

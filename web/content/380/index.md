@@ -66,14 +66,14 @@ Lastly, the use of common terminology and existing standards allow for Output Sc
 
 
 Descriptors consist of several types of expressions.
-The top level expression is a <tt>SCRIPT</tt>.
-This expression may be followed by <tt>#CHECKSUM</tt>, where <tt>CHECKSUM</tt> is an 8 character alphanumeric descriptor checksum.
+The top level expression is a `SCRIPT`.
+This expression may be followed by `#CHECKSUM`, where `CHECKSUM` is an 8 character alphanumeric descriptor checksum.
 Although the checksum is optional for parsing, applications may choose to reject descriptors that do not contain a checksum.
 
 <h3>Script Expressions</h3>
 
 
-Script Expressions (denoted <tt>SCRIPT</tt>) are expressions which correspond directly with a Bitcoin script.
+Script Expressions (denoted `SCRIPT`) are expressions which correspond directly with a Bitcoin script.
 These expressions are written as functions and take arguments.
 Such expressions have a script template which is filled with the arguments correspondingly.
 Expressions are written with a human readable identifier string with the arguments enclosed with parentheses.
@@ -85,32 +85,32 @@ They could be a script expression, a key expression, or some other expression en
 <h3>Key Expressions</h3>
 
 
-A common expression used as an argument to script expressions are key expressions (denoted <tt>KEY</tt>).
+A common expression used as an argument to script expressions are key expressions (denoted `KEY`).
 These represent a public or private key and, optionally, information about the origin of that key.
 Key expressions can only be used as arguments to script expressions.
 
 Key expressions consist of:
 *  Optionally, key origin information, consisting of:
-    *  An open bracket <tt>[</tt>
+    *  An open bracket `[`
     *  Exactly 8 hex characters for the fingerprint of the key where the derivation starts (see BIP 32 for details)
-    *  Followed by zero or more <tt>/NUM</tt> or <tt>/NUMh</tt>  path elements to indicate the unhardened or hardened derivation steps between the fingerprint and the key that follows.
-    *  A closing bracket <tt>]</tt>
+    *  Followed by zero or more `/NUM` or `/NUMh`  path elements to indicate the unhardened or hardened derivation steps between the fingerprint and the key that follows.
+    *  A closing bracket `]`
 *  Followed by the actual key, which is either:
     *  A hex encoded public key, which depending on the script expression, may be either:
-        *  66 hex character string beginning with <tt>02</tt> or <tt>03</tt> representing a compressed public key
-        *  130 hex character string beginning with <tt>04</tt> representing an uncompressed public key
+        *  66 hex character string beginning with `02` or `03` representing a compressed public key
+        *  130 hex character string beginning with `04` representing an uncompressed public key
     *  A <a href="https://en.bitcoin.it/wiki/Wallet_import_format" target="_blank">WIF</a> encoded private key
-    *  <tt>xpub</tt> encoded extended public key or <tt>xprv</tt> encoded extended private key (as defined in BIP 32)
-        *  Followed by zero or more <tt>/NUM</tt> or <tt>/NUMh</tt> path elements indicating BIP 32 derivation steps to be taken after the given extended key.
-        *  Optionally followed by a single <tt>/*</tt> or <tt>/*h</tt> final step to denote all direct unhardened or hardened children.
+    *  `xpub` encoded extended public key or `xprv` encoded extended private key (as defined in BIP 32)
+        *  Followed by zero or more `/NUM` or `/NUMh` path elements indicating BIP 32 derivation steps to be taken after the given extended key.
+        *  Optionally followed by a single `/*` or `/*h` final step to denote all direct unhardened or hardened children.
 
 
-If the <tt>KEY</tt> is a BIP 32 extended key, before output scripts can be created, child keys must be derived using the derivation information that follows the extended key.
-When the final step is <tt>/*</tt> or <tt>/*'</tt>, an output script will be produced for every child key index.
+If the `KEY` is a BIP 32 extended key, before output scripts can be created, child keys must be derived using the derivation information that follows the extended key.
+When the final step is `/*` or `/*'`, an output script will be produced for every child key index.
 The derived key must be not be serialized as an uncompressed public key.
 Script Expressions may have further requirements on how derived public keys are serialized for script creation.
 
-In the above specification, the hardened indicator <tt>h</tt> may be replaced with alternative hardened indicator of <tt>'</tt>.
+In the above specification, the hardened indicator `h` may be replaced with alternative hardened indicator of `'`.
 
 <h4>Normalization of Key Expressions with Hardened Derivation</h4>
 
@@ -132,7 +132,7 @@ The allowed characters are:
 IJKLMNOPQRSTUVWXYZ&+-.;<=>?!^_|~
 ijklmnopqrstuvwxyzABCDEFGH`#"\<space>
 ```
-Note that <tt><space></tt> on the last line is a space character.
+Note that `<space>` on the last line is a space character.
 
 This character set is written as 3 groups of 32 characters in this specific order so that the checksum below can identify more errors.
 The first group are the most common "unprotected" characters (i.e. things such as hex and keypaths that do not already have their own checksums).
@@ -141,14 +141,14 @@ Case errors cause an offset that is a multiple of 32 while as many alphabetic ch
 <h3>Checksum</h3>
 
 
-Following the top level script expression is a single octothorpe (<tt>#</tt>) followed by the 8 character checksum.
+Following the top level script expression is a single octothorpe (`#`) followed by the 8 character checksum.
 The checksum is an error correcting checksum similar to bech32.
 
 The checksum has the following properties:
 *  Mistakes in a descriptor string are measured in "symbol errors". The higher the number of symbol errors, the harder it is to detect:
-    *  An error substituting a character from <tt>0123456789()[],'/*abcdefgh@:$%{}</tt> for another in that set always counts as 1 symbol error.
-        *  Note that hex encoded keys are covered by these characters. Extended keys (<tt>xpub</tt> and <tt>xprv</tt>) use other characters too, but also have their own checksum mechanism.
-        *  <tt>SCRIPT</tt> expression function names use other characters, but mistakes in these would generally result in an unparsable descriptor.
+    *  An error substituting a character from `0123456789()[],'/*abcdefgh@:$%{}` for another in that set always counts as 1 symbol error.
+        *  Note that hex encoded keys are covered by these characters. Extended keys (`xpub` and `xprv`) use other characters too, but also have their own checksum mechanism.
+        *  `SCRIPT` expression function names use other characters, but mistakes in these would generally result in an unparsable descriptor.
     *  A case error always counts as 1 symbol error.
     *  Any other 1 character substitution error counts as 1 or 2 symbol errors.
 *  Any 1 symbol error is always detected.
@@ -159,10 +159,10 @@ The checksum has the following properties:
 *  Random errors have a chance of 1 in 2<super>40</super> of being undetected.
 
 
-The checksum itself uses the same character set as bech32: <tt>qpzry9x8gf2tvdw0s3jn54khce6mua7l</tt>
+The checksum itself uses the same character set as bech32: `qpzry9x8gf2tvdw0s3jn54khce6mua7l`
 
 Valid descriptor strings with a checksum must pass the criteria for validity specified by the Python3 code snippet below.
-The function <tt>descsum_check</tt> must return true when its argument <tt>s</tt> is a descriptor consisting in the form <tt>SCRIPT#CHECKSUM</tt>.
+The function `descsum_check` must return true when its argument `s` is a descriptor consisting in the form `SCRIPT#CHECKSUM`.
 
 ```
 INPUT_CHARSET = "0123456789()[],'/*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&+-.;<=>?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\"\\ "
@@ -230,61 +230,61 @@ def descsum_create(s):
 
 The following tests cover the checksum and character set:
 
-*  Valid checksum: <tt>raw(deadbeef) 89f8spxm</tt>
-*  No checksum: <tt>raw(deadbeef)</tt>
-*  Missing checksum: <tt>raw(deadbeef) </tt>
-*  Too long checksum (9 chars): <tt>raw(deadbeef) 89f8spxmx</tt>
-*  Too short checksum (7 chars): <tt>raw(deadbeef) 89f8spx</tt>
-*  Error in payload: <tt>raw(deedbeef) 89f8spxm</tt>
-*  Error in checksum: <tt>raw(deedbeef)  9f8spxm</tt>
-*  Invalid characters in payload: <tt>raw(Ü) 00000000</tt>
+*  Valid checksum: `raw(deadbeef) 89f8spxm`
+*  No checksum: `raw(deadbeef)`
+*  Missing checksum: `raw(deadbeef) `
+*  Too long checksum (9 chars): `raw(deadbeef) 89f8spxmx`
+*  Too short checksum (7 chars): `raw(deadbeef) 89f8spx`
+*  Error in payload: `raw(deedbeef) 89f8spxm`
+*  Error in checksum: `raw(deedbeef)  9f8spxm`
+*  Invalid characters in payload: `raw(Ü) 00000000`
 
 
 The following tests cover key expressions:
 
 Valid expressions:
 
-*  Compressed public key: <tt>0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Uncompressed public key: <tt>04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235</tt>
-*  Public key with key origin: <tt>[deadbeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Public key with key origin (<tt>'</tt> as hardened indicator): <tt>[deadbeef/0'/0'/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Public key with key origin (mixed hardened indicator): <tt>[deadbeef/0'/0h/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  WIF uncompressed private key <tt>5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss</tt>
-*  WIF compressed private key <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1</tt>
-*  Extended public key: <tt>xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL</tt>
-*  Extended public key with key origin: <tt>[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL</tt>
-*  Extended public key with derivation: <tt>[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5</tt>
-*  Extended public key with derivation and children: <tt>[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5/*</tt>
-*  Extended public key with hardened derivation and unhardened children: <tt>xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*</tt>
-*  Extended public key with hardened derivation and children: <tt>xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h</tt>
-*  Extended public key with key origin, hardened derivation and children: <tt>[deadbeef/0h/1h/2]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h</tt>
-*  Extended private key: <tt>xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc</tt>
-*  Extended private key with key origin: <tt>[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc</tt>
-*  Extended private key with derivation: <tt>[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5</tt>
-*  Extended private key with derivation and children: <tt>[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5/*</tt>
-*  Extended private key with hardened derivation and unhardened children: <tt>xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*</tt>
-*  Extended private key with hardened derivation and children: <tt>xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h</tt>
-*  Extended private key with key origin, hardened derivation and children: <tt>[deadbeef/0h/1h/2]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h</tt>
+*  Compressed public key: `0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Uncompressed public key: `04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235`
+*  Public key with key origin: `[deadbeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Public key with key origin (`'` as hardened indicator): `[deadbeef/0'/0'/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Public key with key origin (mixed hardened indicator): `[deadbeef/0'/0h/0']0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  WIF uncompressed private key `5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss`
+*  WIF compressed private key `L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1`
+*  Extended public key: `xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL`
+*  Extended public key with key origin: `[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL`
+*  Extended public key with derivation: `[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5`
+*  Extended public key with derivation and children: `[deadbeef/0h/1h/2h]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3/4/5/*`
+*  Extended public key with hardened derivation and unhardened children: `xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*`
+*  Extended public key with hardened derivation and children: `xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h`
+*  Extended public key with key origin, hardened derivation and children: `[deadbeef/0h/1h/2]xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/3h/4h/5h/*h`
+*  Extended private key: `xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc`
+*  Extended private key with key origin: `[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc`
+*  Extended private key with derivation: `[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5`
+*  Extended private key with derivation and children: `[deadbeef/0h/1h/2h]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3/4/5/*`
+*  Extended private key with hardened derivation and unhardened children: `xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*`
+*  Extended private key with hardened derivation and children: `xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h`
+*  Extended private key with key origin, hardened derivation and children: `[deadbeef/0h/1h/2]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3h/4h/5h/*h`
 
 
 Invalid expression:
 
-*  Children indicator in key origin: <tt>[deadbeef/0h/0h/0h/*]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Trailing slash in key origin: <tt>[deadbeef/0h/0h/0h/]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Too short fingerprint: <tt>[deadbef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Too long fingerprint: <tt>[deadbeeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Invalid hardened indicators: <tt>[deadbeef/0f/0f/0f]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Invalid hardened indicators: <tt>[deadbeef/-0/-0/-0]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Invalid hardened indicators: <tt>[deadbeef/0H/0H/0H]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600</tt>
-*  Invalid hardened indicators: <tt>[deadbeef/0h/1h/2]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3H/4h/5h/*H</tt>
-*  Private key with derivation: <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/0</tt>
-*  Private key with derivation children: <tt>L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/*</tt>
-*  Derivation index out of range: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483648</tt>
-*  Invalid derivation index: <tt>xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/1aa</tt>
-*  Multiple key origins: <tt>[aaaaaaaa][aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt>
-*  Missing key origin start: <tt>aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt>
-*  Non hex fingerprint: <tt>[gaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0</tt>
-*  Key origin with no public key: <tt>[deadbeef]</tt>
+*  Children indicator in key origin: `[deadbeef/0h/0h/0h/*]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Trailing slash in key origin: `[deadbeef/0h/0h/0h/]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Too short fingerprint: `[deadbef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Too long fingerprint: `[deadbeeef/0h/0h/0h]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Invalid hardened indicators: `[deadbeef/0f/0f/0f]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Invalid hardened indicators: `[deadbeef/-0/-0/-0]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Invalid hardened indicators: `[deadbeef/0H/0H/0H]0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600`
+*  Invalid hardened indicators: `[deadbeef/0h/1h/2]xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc/3H/4h/5h/*H`
+*  Private key with derivation: `L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/0`
+*  Private key with derivation children: `L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1/*`
+*  Derivation index out of range: `xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483648`
+*  Invalid derivation index: `xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/1aa`
+*  Multiple key origins: `[aaaaaaaa][aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0`
+*  Missing key origin start: `aaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0`
+*  Non hex fingerprint: `[gaaaaaaa]xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647'/0`
+*  Key origin with no public key: `[deadbeef]`
 
 
 <h2>Backwards Compatibility</h2>
@@ -310,9 +310,9 @@ All available expression types are listed in this table.
 
 |Name|Denoted As|BIP|
 |-|-|-|
-|Script|<tt>SCRIPT</tt>|380|
-|Key|<tt>KEY</tt>|380|
-|Tree|<tt>TREE</tt>|<a href="/386" target="_blank">386</a>|
+|Script|`SCRIPT`|380|
+|Key|`KEY`|380|
+|Tree|`TREE`|<a href="/386" target="_blank">386</a>|
 
 
 <h2>Appendix B: Index of Script Expressions</h2>
@@ -324,17 +324,17 @@ This Table lists all available Script expressions and the BIPs specifying them.
 
 |Expression|BIP|
 |-|-|
-|<tt>pk(KEY)</tt>|<a href="/381" target="_blank">381</a>|
-|<tt>pkh(KEY)</tt>|<a href="/381" target="_blank">381</a>|
-|<tt>sh(SCRIPT)</tt>|<a href="/381" target="_blank">381</a>|
-|<tt>wpkh(KEY)</tt>|<a href="/382" target="_blank">382</a>|
-|<tt>wsh(SCRIPT)</tt>|<a href="/382" target="_blank">382</a>|
-|<tt>multi(NUM, KEY, ..., KEY)</tt>|<a href="/383" target="_blank">383</a>|
-|<tt>sortedmulti(NUM, KEY, ..., KEY)</tt>|<a href="/383" target="_blank">383</a>|
-|<tt>combo(KEY)</tt>|<a href="/384" target="_blank">384</a>|
-|<tt>raw(HEX)</tt>|<a href="/385" target="_blank">385</a>|
-|<tt>addr(ADDR)</tt>|<a href="/385" target="_blank">385</a>|
-|<tt>tr(KEY)</tt>, <tt>tr(KEY, TREE)</tt>|<a href="/386" target="_blank">386</a>|
-|<tt>musig(KEY, KEY, ..., KEY)</tt>|<a href="/390" target="_blank">390</a>|
-|<tt>sp(KEY)</tt>, <tt>sp(KEY, KEY)</tt>|<a href="/392" target="_blank">392</a>|
+|`pk(KEY)`|<a href="/381" target="_blank">381</a>|
+|`pkh(KEY)`|<a href="/381" target="_blank">381</a>|
+|`sh(SCRIPT)`|<a href="/381" target="_blank">381</a>|
+|`wpkh(KEY)`|<a href="/382" target="_blank">382</a>|
+|`wsh(SCRIPT)`|<a href="/382" target="_blank">382</a>|
+|`multi(NUM, KEY, ..., KEY)`|<a href="/383" target="_blank">383</a>|
+|`sortedmulti(NUM, KEY, ..., KEY)`|<a href="/383" target="_blank">383</a>|
+|`combo(KEY)`|<a href="/384" target="_blank">384</a>|
+|`raw(HEX)`|<a href="/385" target="_blank">385</a>|
+|`addr(ADDR)`|<a href="/385" target="_blank">385</a>|
+|`tr(KEY)`, `tr(KEY, TREE)`|<a href="/386" target="_blank">386</a>|
+|`musig(KEY, KEY, ..., KEY)`|<a href="/390" target="_blank">390</a>|
+|`sp(KEY)`, `sp(KEY, KEY)`|<a href="/392" target="_blank">392</a>|
 

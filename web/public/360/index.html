@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 360
   Layer: Consensus (soft fork)
   Title: Pay-to-Merkle-Root (P2MR)
@@ -137,9 +137,9 @@
 <li>resistant to long exposure attacks by Cryptographically Relevant Quantum Computers (CRQCs), and</li>
 <li>resistant to future cryptanalytic approaches that may compromise the elliptic curve cryptography (ECC) used by Bitcoin.</li>
 </ol>
-<p>It is worth noting that proposed P2MR outputs are only resistant to &quot;long exposure attacks&quot; on elliptic curve cryptography; that is, attacks on keys exposed for time periods longer than needed to confirm a spending transaction.</p>
-<p>Protection against more sophisticated quantum attacks, including protection against private key recovery from public keys exposed in the mempool while a transaction is waiting to be confirmed (a.k.a. &quot;short exposure attacks&quot;), may require the introduction of post-quantum signatures in Bitcoin. We believe it's worth considering this path in the future and intend to offer a separate proposal for this purpose upon further research.</p>
-<p>This document additionally defines &quot;long exposure&quot; and &quot;short exposure&quot; attacks, and other new terminology in the Glossary.</p>
+<p>It is worth noting that proposed P2MR outputs are only resistant to "long exposure attacks" on elliptic curve cryptography; that is, attacks on keys exposed for time periods longer than needed to confirm a spending transaction.</p>
+<p>Protection against more sophisticated quantum attacks, including protection against private key recovery from public keys exposed in the mempool while a transaction is waiting to be confirmed (a.k.a. "short exposure attacks"), may require the introduction of post-quantum signatures in Bitcoin. We believe it's worth considering this path in the future and intend to offer a separate proposal for this purpose upon further research.</p>
+<p>This document additionally defines "long exposure" and "short exposure" attacks, and other new terminology in the Glossary.</p>
 <h3>Copyright</h3>
 <p>This document is licensed under the 3-clause BSD license.</p>
 <h3>Motivation</h3>
@@ -171,14 +171,14 @@
 <li>Taproot outputs (starts with bc1p)</li>
 </ul>
 <p><nowiki>*</nowiki> Funds in P2PKH, P2SH, P2WPKH, P2WSH, and P2MR outputs can become vulnerable to long exposure quantum attacks anytime their script reveals a public key.</p>
-<p>Note: Extended public keys, commonly known as &quot;xpubs,&quot; and wallet descriptors also reveal quantum vulnerable public key information. For further clarification on quantum attack vectors, please refer to the <a href="#Glossary" target="_blank">Glossary of Terms</a>.</p>
+<p>Note: Extended public keys, commonly known as "xpubs," and wallet descriptors also reveal quantum vulnerable public key information. For further clarification on quantum attack vectors, please refer to the <a href="#Glossary" target="_blank">Glossary of Terms</a>.</p>
 <h2>Design</h2>
 <p>Pay-to-Merkle-Root (P2MR) is a proposed new output type that commits to the root of a script tree. It operates with nearly the same functionality as P2TR (Pay-to-Taproot) outputs, but with the quantum vulnerable key path spend removed.</p>
 <p>In other words, P2MR outputs commit to the Merkle root of a script tree without committing to an internal key. The script(s) being committed to, however, may contain a key or key-hash.</p>
 <p>This output type is designed to offer users protection against long exposure quantum attacks as well as a practical output type with which post-quantum signatures may be used if such signatures are adopted in the future.</p>
-<p>Since P2MR outputs have no key path spend, they omit the Taproot internal key. Instead, a P2MR output includes the 32-byte root of the script tree as defined in <a href="/341" target="_blank">BIP 341</a> hashed with the tag &quot;TapBranch&quot; as shown below.</p>
+<p>Since P2MR outputs have no key path spend, they omit the Taproot internal key. Instead, a P2MR output includes the 32-byte root of the script tree as defined in <a href="/341" target="_blank">BIP 341</a> hashed with the tag "TapBranch" as shown below.</p>
 <img src="bip-0360/media/merkletree.png" />
-<p>To construct a P2MR output, we follow the process outlined in <a href="/341" target="_blank">BIP 341</a> to compute the final tapbranch hash, which is the merkle root of the script leaves; however, instead of tweaking the internal key with the root of the Merkle tree (as is the case with P2TR outputs), P2MR outputs commit only to final tapbranch hash, which is tagged, &quot;TapBranch&quot;.</p>
+<p>To construct a P2MR output, we follow the process outlined in <a href="/341" target="_blank">BIP 341</a> to compute the final tapbranch hash, which is the merkle root of the script leaves; however, instead of tweaking the internal key with the root of the Merkle tree (as is the case with P2TR outputs), P2MR outputs commit only to final tapbranch hash, which is tagged, "TapBranch".</p>
 <pre><code>D = tagged_hash(&quot;TapLeaf&quot;, bytes([leaf_version]) + ser_script(script))
 CD = tagged_hash(&quot;TapBranch&quot;, C + D)
 CDE = tagged_hash(&quot;TapBranch&quot;, CD + E)
@@ -212,7 +212,7 @@ That is, they place elements on the stack to be evaluated by the leaf script.</p
 <h3>P2MR Trade-Offs</h3>
 <p>While P2TR outputs (and the use of key path spend) will remain an option for folks wishing to use them, we aim to be clear about the tradeoffs of using P2MR outputs, which disable the key path spend for the benefit of quantum resistance.</p>
 <p>The witness to a P2MR spend is always larger than the witness to a P2TR key path spend. This is because a P2TR key path spend requires only a Schnorr signature in the witness. For P2MR, the witness must include the chosen leaf script, the initial stack, and a control block consisting of the control byte and Merkle path (if any).</p>
-<p>That said, the witness to a P2MR spend will always be smaller than the witness to an equivalent P2TR script path spend, because there is no longer any internal key in P2MR that must be revealed in the control block. For a more complete comparison of output type transaction sizes, the &quot;Transaction Size and Fees&quot; section may be reviewed later in this proposal.</p>
+<p>That said, the witness to a P2MR spend will always be smaller than the witness to an equivalent P2TR script path spend, because there is no longer any internal key in P2MR that must be revealed in the control block. For a more complete comparison of output type transaction sizes, the "Transaction Size and Fees" section may be reviewed later in this proposal.</p>
 <p>Additionally, there is a privacy tradeoff when comparing P2MR and P2TR, which is that users reveal they are spending to a script tree whenever they are using P2MR outputs, since P2MR outputs can only be spent via script path spend. In P2TR when you spend an output as a key path spend, you don't reveal if you have any script path spends. This trade-off only exists when comparing P2TR key path spends to P2MR script path spends; P2TR and P2MR provide the same level of privacy when both are script path spends.</p>
 <p><strong>Note:</strong> P2MR and P2TR both provide greater script privacy than P2SH <a href="/16" target="_blank">BIP 16</a> because unused script paths are not revealed.</p>
 <h2>Specification</h2>
@@ -323,14 +323,14 @@ control block = [size] [control byte] [Merkle path] (1 + 1 + 32*m = 2 + 32*m byt
 <p>Lamport and WOTS (Winternitz One-Time Signatures) built from CAT are quantum resistant, but are one-time signatures — meaning, if you sign twice for the same public key, you risk leaking your private key, which is a significant security concern for everyday users.</p>
 <p>This would require major changes to wallet behavior and would represent a significant security downgrade. Common practices, such as RBF and CPFP, could risk revealing private keys if no stateless signature scheme is used.</p>
 <p><a href="https://groups.google.com/g/bitcoindev/c/8O857bRSVV8/m/rTrpeFjWDAAJ" target="_blank">Trivial QC signatures with clean upgrade path</a> and <a href="https://groups.google.com/g/bitcoindev/c/oQKezDOc4us/m/T1vSMkZNAAAJ" target="_blank">Re: P2QRH / BIP 360 Update</a> also discuss the possibility of Taproot with key path spend removed. The design of P2MR was partly inspired by these discussions.</p>
-<p>Commit-reveal schemes such as <a href="https://gnusha.org/pi/bitcoindev/1518710367.3550.111.camel@mmci.uni-saarland.de/" target="_blank">Re: Transition to post-quantum (2018)</a> and <a href="https://groups.google.com/g/bitcoindev/c/LpWOcXMcvk8/m/YEiH-kTHAwAJ" target="_blank">Post-Quantum commit / reveal Fawkescoin variant as a soft fork (2025)</a> have been proposed as a way to create cryptocurrencies without public key cryptography. The ideas in this paper were more recently expanded upon by Tadge Dryja in his &quot;<a href="https://www.youtube.com/watch?v=4bzOwYPf1yo" target="_blank">Lifeboat</a>&quot; proposal, which effectively quantum-proofs Bitcoin transactions through a similar pre-commitment scheme designed for Bitcoin.</p>
+<p>Commit-reveal schemes such as <a href="https://gnusha.org/pi/bitcoindev/1518710367.3550.111.camel@mmci.uni-saarland.de/" target="_blank">Re: Transition to post-quantum (2018)</a> and <a href="https://groups.google.com/g/bitcoindev/c/LpWOcXMcvk8/m/YEiH-kTHAwAJ" target="_blank">Post-Quantum commit / reveal Fawkescoin variant as a soft fork (2025)</a> have been proposed as a way to create cryptocurrencies without public key cryptography. The ideas in this paper were more recently expanded upon by Tadge Dryja in his "<a href="https://www.youtube.com/watch?v=4bzOwYPf1yo" target="_blank">Lifeboat</a>" proposal, which effectively quantum-proofs Bitcoin transactions through a similar pre-commitment scheme designed for Bitcoin.</p>
 <h2>Other Methods of Addressing Quantum Vulnerabilities for Cryptocurrencies</h2>
 <p>It is worth noting, by way of comparison, that <a href="https://ethresear.ch/t/how-to-hard-fork-to-save-most-users-funds-in-a-quantum-emergency/18901" target="_blank">Vitalik Buterin's proposed solution</a> to Ethereum's quantum vulnerability is quite different from the approach in this BIP.</p>
 <p>His plan involves a hard fork of the chain, reverting all blocks after some sufficient amount of theft, and using STARKs based on BIP 32 seeds to act as the authoritative secret when signing. We believe rollbacks of any kind are an untenable approach for Bitcoin and would likely be impractical to implement.</p>
 <p>That said, we believe the use of STARKs (which are quantum-resistant) may prove useful as a method of proving access to external private keys, in the event that the community chooses to burn vulnerable coins as proposed by Jameson Lopp and others in <a href="https://qbip.org/" target="_blank">QBIP</a>.</p>
 <p>Discussions related to the burning of coins, and other attempts to slow a potential supply shock caused by quantum-retrieval of vulnerable coins, are out of scope for this proposal. That said, members of our team have separately proposed <a href="https://github.com/cryptoquick/bips/blob/hourglass/bip-hourglass.mediawiki" target="_blank">Hourglass</a> to address this concern and are continuing research on this subject.</p>
 <h2>Conclusion</h2>
-<p>In this proposal, we adopt a &quot;prepared not scared&quot; approach to the possible advancement of quantum computing and offer Bitcoin users an option for increased protection if they so choose. This BIP does not take a position on any specific quantum computing timeline, but rather proposes a flexible and unobtrusive option for users that wish to mitigate this risk according to their own estimate of the timeline.</p>
+<p>In this proposal, we adopt a "prepared not scared" approach to the possible advancement of quantum computing and offer Bitcoin users an option for increased protection if they so choose. This BIP does not take a position on any specific quantum computing timeline, but rather proposes a flexible and unobtrusive option for users that wish to mitigate this risk according to their own estimate of the timeline.</p>
 <p>This is an issue that has been discussed with some regularity in <a href="https://bitcointalk.org/index.php?topic=133425.0" target="_blank">Bitcoin forums</a> since at least 2012, and there is clearly user demand for increased quantum protection.</p>
 <h2>Glossary</h2>
 <p><strong>Quantum Key Recovery</strong></p>

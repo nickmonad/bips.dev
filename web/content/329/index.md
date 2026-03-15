@@ -65,35 +65,35 @@ This allows a document to be split, streamed, or incrementally added to, and lim
 It is also a convenient format for command-line processing, which is often line-oriented.
 
 Further to the JSON Lines specification, an export of labels from a wallet must be a UTF-8 encoded text file, containing one record per line consisting of a valid JSON object.
-Lines are separated by <tt>\n</tt>. Multiline values are not permitted.
+Lines are separated by `\n`. Multiline values are not permitted.
 Each JSON object must contain 3 or 4 key/value pairs, defined as follows:
 
 
 |Key|Description|
 |-|-|
-|<tt>type</tt>|One of <tt>tx</tt>, <tt>addr</tt>, <tt>pubkey</tt>, <tt>input</tt>, <tt>output</tt> or <tt>xpub</tt>|
-|<tt>ref</tt>|Reference to the transaction, address, public key, input, output or extended public key|
-|<tt>label</tt>|The label applied to the reference|
-|<tt>origin</tt>|Optional key origin information referencing the wallet associated with the label|
-|<tt>spendable</tt>|One of <tt>true</tt> or <tt>false</tt>, denoting if an output should be spendable by the wallet|
+|`type`|One of `tx`, `addr`, `pubkey`, `input`, `output` or `xpub`|
+|`ref`|Reference to the transaction, address, public key, input, output or extended public key|
+|`label`|The label applied to the reference|
+|`origin`|Optional key origin information referencing the wallet associated with the label|
+|`spendable`|One of `true` or `false`, denoting if an output should be spendable by the wallet|
 
 
-The reference is defined for each <tt>type</tt> as follows:
+The reference is defined for each `type` as follows:
 
 
 |Type|Description|Example|
 |-|-|-|
-|<tt>tx</tt>|Transaction id in hexadecimal format|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd</tt>|
-|<tt>addr</tt>|Address in base58 or bech32 format|<tt>bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c</tt>|
-|<tt>pubkey</tt>|32, 33 or 65 byte public key in hexadecimal format|<tt>0283409659355b6d1cc3c32decd5d561abaac86c37a353b52895a5e6c196d6f448</tt>|
-|<tt>input</tt>|Transaction id and input index separated by a colon|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0</tt>|
-|<tt>output</tt>|Transaction id and output index separated by a colon|<tt>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1</tt>|
-|<tt>xpub</tt>|Extended public key as defined by BIP32|<tt>xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8Nq...</tt>|
+|`tx`|Transaction id in hexadecimal format|`f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd`|
+|`addr`|Address in base58 or bech32 format|`bc1q34aq5drpuwy3wgl9lhup9892qp6svr8ldzyy7c`|
+|`pubkey`|32, 33 or 65 byte public key in hexadecimal format|`0283409659355b6d1cc3c32decd5d561abaac86c37a353b52895a5e6c196d6f448`|
+|`input`|Transaction id and input index separated by a colon|`f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0`|
+|`output`|Transaction id and output index separated by a colon|`f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1`|
+|`xpub`|Extended public key as defined by BIP32|`xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8Nq...`|
 
 
-Each JSON object must contain both <tt>type</tt> and <tt>ref</tt> properties. The <tt>label</tt>, <tt>origin</tt> and <tt>spendable</tt> properties are optional. If the <tt>label</tt> or <tt>spendable</tt> properties are omitted, the importing wallet should not alter these values. The <tt>spendable</tt> property should only appear where type is <tt>output</tt>.
+Each JSON object must contain both `type` and `ref` properties. The `label`, `origin` and `spendable` properties are optional. If the `label` or `spendable` properties are omitted, the importing wallet should not alter these values. The `spendable` property should only appear where type is `output`.
 
-If present, the optional <tt>origin</tt> property must contain an abbreviated output descriptor (as defined by BIP380<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
+If present, the optional `origin` property must contain an abbreviated output descriptor (as defined by BIP380<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
 This property should be used to disambiguate transaction labels from different wallets contained in the same export, particularly when exporting multiple accounts derived from the same seed.
 
 Care should be taken when exporting due to the privacy sensitive nature of the data.
@@ -145,53 +145,53 @@ but should be given if they are readily available.
 <h3> Transactions </h3>
 
 
-*  <tt>height</tt>: An integer giving the block height where this fully confirmed transaction can be found. For transactions that are confirmed by less than 6 blocks, omit this field or provide a value of zero.  (Background: Until it is fully confirmed, the "height" of a transaction is in flux and may vary due to chain reorgs. However, the consumer of the labels, may not know the current block height, so it cannot know if the height is "real" (firm, fixed) or just transitory. Therefore, it is important to omit the height unless the generating wallet considers the transaction to be confirmed.)
+*  `height`: An integer giving the block height where this fully confirmed transaction can be found. For transactions that are confirmed by less than 6 blocks, omit this field or provide a value of zero.  (Background: Until it is fully confirmed, the "height" of a transaction is in flux and may vary due to chain reorgs. However, the consumer of the labels, may not know the current block height, so it cannot know if the height is "real" (firm, fixed) or just transitory. Therefore, it is important to omit the height unless the generating wallet considers the transaction to be confirmed.)
 
 
-*  <tt>time</tt>: ISO-8601 formatted timestamp of the block given by the "height" field, preferably in UTC, although ISO-8601 can represent local times. Example: <tt>2025-01-23T11:40:35Z</tt>.
+*  `time`: ISO-8601 formatted timestamp of the block given by the "height" field, preferably in UTC, although ISO-8601 can represent local times. Example: `2025-01-23T11:40:35Z`.
 
 
-*  <tt>fee</tt>: Integer giving the number of Satoshis that went to the miner for this transaction.
+*  `fee`: Integer giving the number of Satoshis that went to the miner for this transaction.
 
 
-*  <tt>value</tt>: Signed integer giving the number of Satoshis that came into the wallet by this transaction. Will be negative when sats leave the wallet. Could be zero if it is a consolidation transaction that moves from old UTXO to new. 
+*  `value`: Signed integer giving the number of Satoshis that came into the wallet by this transaction. Will be negative when sats leave the wallet. Could be zero if it is a consolidation transaction that moves from old UTXO to new. 
 
 
-*  <tt>rate</tt>: Exchange rate at time of transaction. This is the value of a Bitcoin, expressed in another currency, at the time of the transaction, based on user preferences for data source. Multiple currencies can be given. Keys are ISO 4217 currency codes where possible. Example: <tt>"rate": { "USD":  105620.00 }</tt>
+*  `rate`: Exchange rate at time of transaction. This is the value of a Bitcoin, expressed in another currency, at the time of the transaction, based on user preferences for data source. Multiple currencies can be given. Keys are ISO 4217 currency codes where possible. Example: `"rate": { "USD":  105620.00 }`
 
 
 <h3> Address, Inputs, and Outputs </h3>
 
 
-*  <tt>keypath</tt>: The data needed to build full descriptor down to the specific address.  This extends <tt>origin</tt> with the final two components that are unhardened (in the typical case, assuming BIP-84).  Provide string <tt>/1/123</tt> for <tt>wpkh([d34db33f/84'/0'/0'/1/123])</tt>. If the first character is not <tt>/</tt>, then it should be interpreted as a full descriptor, independent of <tt>origin</tt> (if any).
+*  `keypath`: The data needed to build full descriptor down to the specific address.  This extends `origin` with the final two components that are unhardened (in the typical case, assuming BIP-84).  Provide string `/1/123` for `wpkh([d34db33f/84'/0'/0'/1/123])`. If the first character is not `/`, then it should be interpreted as a full descriptor, independent of `origin` (if any).
 
 
 <h3> Inputs and Outputs </h3>
 
 
-*  <tt>value</tt>: Integer with the number of Satoshis (<tt>nValue</tt>) of the input or output.
+*  `value`: Integer with the number of Satoshis (`nValue`) of the input or output.
 
 
-*  <tt>fmv</tt>: Fair market value of the input/output relative to some other currency, typically fiat. The value should be a mapping, from currency code to decimal number. Example: <tt>"fmv": { "USD":  1233.45 }</tt>. Most situations will have only a single currency value, and it represents the real price of the goods/services expressed in some fiat currency. This is not an exchange *rate*, but an absolute value. By dividing by the <tt>value</tt> (above), it is possible to calculate an effective change rate for the transaction.
+*  `fmv`: Fair market value of the input/output relative to some other currency, typically fiat. The value should be a mapping, from currency code to decimal number. Example: `"fmv": { "USD":  1233.45 }`. Most situations will have only a single currency value, and it represents the real price of the goods/services expressed in some fiat currency. This is not an exchange *rate*, but an absolute value. By dividing by the `value` (above), it is possible to calculate an effective change rate for the transaction.
 
 
-*  <tt>height</tt> and <tt>time</tt>: Same definition as defined in Transactions.
+*  `height` and `time`: Same definition as defined in Transactions.
 
 
 <h3> Address </h3>
 
 
-*  <tt>heights</tt>: a list of block heights that contain any activity related to this address, include outputs that deposit to the address, and transactions that spend UTXOs of this address. Omit heights for transactions that are not fully confirmed. An empty array indicates the address is unused for confirmed transactions.
+*  `heights`: a list of block heights that contain any activity related to this address, include outputs that deposit to the address, and transactions that spend UTXOs of this address. Omit heights for transactions that are not fully confirmed. An empty array indicates the address is unused for confirmed transactions.
 
 
 <h2> Comment on Types in JSON </h2>
 
 
 JSON can serialize a number of basic types, including string, integer
-and boolean (true/false).  Decimal values (<tt>123.45</tt>) can
+and boolean (true/false).  Decimal values (`123.45`) can
 also be serialized, but some parsing libraries may interpret them as floating
 point values, which is generally not what we want in financial applications.
-When hand-crafting JSON data, be careful not to write <tt>"false"</tt> (with quotes),
+When hand-crafting JSON data, be careful not to write `"false"` (with quotes),
 since that is a string with 5 characters and not a boolean.
 
 <h2>Reference Implementation</h2>

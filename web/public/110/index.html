@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 110
   Layer: Consensus (soft fork)
   Title: Reduced Data Temporary Softfork
@@ -144,11 +144,11 @@
 <p>Inputs spending UTXOs that were created before the activation height are exempt from the new rules.
 Once the softfork expires, UTXOs of all heights are once again unrestricted.</p>
 <h3>GetBlockTemplate</h3>
-<p>This deployment uses the GBT deployment name &quot;reduced_data&quot; as defined in <a href="/9" target="_blank">BIP 9</a>. During mandatory signaling, the deployment's bit is included in &quot;vbrequired&quot;.</p>
+<p>This deployment uses the GBT deployment name "reduced_data" as defined in <a href="/9" target="_blank">BIP 9</a>. During mandatory signaling, the deployment's bit is included in "vbrequired".</p>
 <h2>Motivation</h2>
 <p>In order to protect Bitcoin's intended function as the Internet's native money, the Bitcoin community has historically treated techniques for embedding arbitrary data into Bitcoin transactions with antagonism.</p>
 <p>Such data embedding must be resisted at all times in order to ensure it doesn't become load-bearing and start to produce negative externalities, especially for node operators.</p>
-<p>Starting with the &quot;inscription&quot; hack first exploited in 2022, a trend has emerged around embedding arbitrary data into Bitcoin transactions, creating significant unnecessary burdens on node operators and diverting development focus and incentives away from Bitcoin's fundamental purpose of being sound, permissionless, borderless money.</p>
+<p>Starting with the "inscription" hack first exploited in 2022, a trend has emerged around embedding arbitrary data into Bitcoin transactions, creating significant unnecessary burdens on node operators and diverting development focus and incentives away from Bitcoin's fundamental purpose of being sound, permissionless, borderless money.</p>
 <p>This BIP aims to set Bitcoin back on the path to becoming the world's money by rejecting the standardization of data storage as a supported use case at the consensus level.</p>
 <p>It achieves this by temporarily invalidating several of the most harmful methods of data abuse by consensus, while preserving all known monetary use cases.</p>
 <p>Specifically, this proposal invalidates all methods of embedding contiguous arbitrary data larger than 256 bytes; it also invalidates large scriptPubKey and Tapleaf formats that are abused almost exclusively for data embedding; and finally, it restores, in consensus, the long-established 83-byte policy limit on OP_RETURN outputs.</p>
@@ -156,7 +156,7 @@ Once the softfork expires, UTXOs of all heights are once again unrestricted.</p>
 <p>Activation of these new rules thus sends a clear message that arbitrary data storage will continue to be actively resisted, and that such unsupported usage should not be permitted to derail network priorities.</p>
 <p>It also reinforces Bitcoin's core function as a censorship-resistant payment system, because data storage competes unfairly with payments, making Bitcoin payments unnecessarily costly. This encourages reliance on third-party payment processors, making Bitcoin payments easier to censor.</p>
 <p>Finally, it improves decentralization of the node network by re-establishing the long-held commitment towards minimizing the cost (financial or otherwise) of operating a node.</p>
-<p>Bitcoin should &quot;do one thing, and do it well&quot;. By rejecting data storage, this BIP liberates Bitcoin developers from endless scope creep, enabling them to focus on what's really important: Bitcoin's success as money.</p>
+<p>Bitcoin should "do one thing, and do it well". By rejecting data storage, this BIP liberates Bitcoin developers from endless scope creep, enabling them to focus on what's really important: Bitcoin's success as money.</p>
 <h2>Rationale</h2>
 <h3>Specification nuance</h3>
 <p><strong>Why limit scriptPubKeys to 34 bytes?</strong></p>
@@ -164,7 +164,7 @@ Once the softfork expires, UTXOs of all heights are once again unrestricted.</p>
 Fast storage (usually RAM) is much more costly per byte than slower, non-volatile storage, so as the UTXO set size increases, the burden on node operators increases, harming decentralization.
 They are also a direct cost to the sender rather than the receiver.
 For these reasons, modern usage is all 34 bytes or smaller in practice; actual spending conditions have been moved to the witness, and the scriptPubKey simply commits to them in advance with a hash.
-Furthermore, large scriptPubKeys, in addition to being a data embedding vector, can be abused to create malicious transactions and blocks (&quot;poison blocks&quot;) that take a long time to validate.
+Furthermore, large scriptPubKeys, in addition to being a data embedding vector, can be abused to create malicious transactions and blocks ("poison blocks") that take a long time to validate.
 Large scriptPubKeys, thus carrying a large abuse potential and no benefit, are invalidated by this BIP.</p>
 <p><strong>What about OP_RETURN? Why not get rid of it entirely?</strong></p>
 <p>OP_RETURN outputs are provably unspendable, and nodes do not need to store them in the UTXO set.
@@ -176,11 +176,11 @@ However, to avoid breaking legacy protocols that still include such outputs, thi
 <p>256 bytes (2048 bits) is also more than sufficient for reasonably large numbers that might be potentially needed in legitimate cryptography, reinforcing Bitcoin's intended purpose as a monetary network.</p>
 <p><strong>Won't spammers just spread their data over multiple fields?</strong></p>
 <p>While it is impossible to fully prevent steganography, limiting data sizes ensures such abuses are non-contiguous and obfuscated within another intended meaning (script code, structure, etc).
-As far as Bitcoin is concerned, the data has some meaning other than the spammers' misinterpretation, and any external code to &quot;reassemble&quot; the unintended data is responsible for producing it
+As far as Bitcoin is concerned, the data has some meaning other than the spammers' misinterpretation, and any external code to "reassemble" the unintended data is responsible for producing it
 (it is possible to write code that transforms <em>any</em> data into any other data - what matters is that Bitcoin has a well-defined meaning that is distinct from the unsupported one).
 Requiring users to divide their files into chunks of at most 256 bytes, raising the cost both in fees and in effort, sends a clear message that data storage abuses in general are unwelcome rather than sanctioned or supported.</p>
 <p><span id="script-argument-witness-items"></span>
-<strong>What are &quot;script argument witness items&quot;, referred to in rule 2?</strong></p>
+<strong>What are "script argument witness items", referred to in rule 2?</strong></p>
 <p>Script argument witness items are the witness stack elements that are placed on the script interpreter's stack as inputs before the script is executed - the witness equivalent of data pushes in scriptSigs.</p>
 <p>The following witness stack elements are <strong>not</strong> script argument witness items, and are thus excluded from rule 2 (though some are limited/invalidated by other rules):</p>
 <ul>
@@ -296,7 +296,7 @@ In the event that these new rules are activated, there will be at least a two-we
 <p>Conversely, the fee for a data storage transaction still goes only to the miner who includes the data in a block, but the burden of storing the data falls on all node operators, who never received even a part of the fee, yet are forced to continue downloading, storing, and serving the data forever.</p>
 <p>In this case, the miner accepts a one-time fee, and in exchange, the priceless service of highly-available, uncensorable data storage is provided in perpetuity <em>for free</em> by node operators.</p>
 <p>The problem becomes even worse when the data is objectionable to node operators, as this represents an even larger, unexpected cost for them.</p>
-<p><strong>How about OP_RETURN2/&quot;blobspace&quot; making the data optional for nodes?</strong></p>
+<p><strong>How about OP_RETURN2/"blobspace" making the data optional for nodes?</strong></p>
 <p>This has been attempted multiple times in the past.
 There is perhaps no harm in trying yet again, and this proposal does not prevent doing so,
 but ultimately these schemes depend on the cooperation of the sender, who usually wants to explicitly force the content on non-consenting node operators

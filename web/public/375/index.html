@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 375
   Layer: Applications
   Title: Sending Silent Payments with PSBTs
@@ -136,28 +136,28 @@ which adds support for sending to silent payments as described in BIP352.</p>
 <h3>Copyright</h3>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
 <h3>Motivation</h3>
-<p>Partially Signed Bitcoin Transaction Version 2 as described in BIP370 is not compatible with sending to silent payments as described in BIP352. 
+<p>Partially Signed Bitcoin Transaction Version 2 as described in BIP370 is not compatible with sending to silent payments as described in BIP352.
 In particular, the output script of a silent payment cannot be computed until after all transaction inputs have been added.
 Additionally, the silent payment outputs computed by a signer must be verifiable by other entities, otherwise funds could be sent to an incorrect output script.
 Therefore, new fields and role responsibilities must be added to carry, compute, and verify the silent payment data.</p>
 <h2>Specification</h2>
 <p>This document specifies new fields and new field inclusion/exclusion requirements.</p>
 <p>The new global types are defined as follows:</p>
-<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>Silent Payment Global ECDH Share</td><td><tt>PSBT_GLOBAL_SP_ECDH_SHARE = 0x07</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this ECDH share is for.</td><td><tt>&lt;33 byte share&gt;</tt></td><td>An ECDH share for a scan key. The ECDH shared is computed with <em>a * B_scan</em>, where <em>a</em> is the sum of all private keys of all eligible inputs, and <em>B_scan</em> is the scan key of a recipient.</td><td></td><td>0</td><td>2</td></tr>
-<tr><td>Silent Payment Global DLEQ Proof</td><td><tt>PSBT_GLOBAL_SP_DLEQ = 0x08</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this proof covers.</td><td><tt>&lt;64-byte proof&gt;</tt></td><td>A BIP374 DLEQ proof computed for the matching ECDH share.</td><td></td><td>0</td><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><code>&lt;keytype&gt;</code></th><th><code>&lt;keydata&gt;</code></th><th><code>&lt;keydata&gt;</code> Description</th><th><code>&lt;valuedata&gt;</code></th><th><code>&lt;valuedata&gt;</code> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Silent Payment Global ECDH Share</td><td><code>PSBT_GLOBAL_SP_ECDH_SHARE = 0x07</code></td><td><code>&lt;33 byte scan key&gt;</code></td><td>The scan key that this ECDH share is for.</td><td><code>&lt;33 byte share&gt;</code></td><td>An ECDH share for a scan key. The ECDH shared is computed with <em>a * B_scan</em>, where <em>a</em> is the sum of all private keys of all eligible inputs, and <em>B_scan</em> is the scan key of a recipient.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Silent Payment Global DLEQ Proof</td><td><code>PSBT_GLOBAL_SP_DLEQ = 0x08</code></td><td><code>&lt;33 byte scan key&gt;</code></td><td>The scan key that this proof covers.</td><td><code>&lt;64-byte proof&gt;</code></td><td>A BIP374 DLEQ proof computed for the matching ECDH share.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
 <p>The new per-input types are defined as follows:</p>
-<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>Silent Payment Input ECDH Share</td><td><tt>PSBT_IN_SP_ECDH_SHARE = 0x1d</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this ECDH share is for.</td><td><tt>&lt;33 byte share&gt;</tt></td><td>An ECDH share for a scan key. The ECDH shared is computed with <em>a * B_scan</em>, where <em>a</em> is the private key of the corresponding prevout public key, and <em>B_scan</em> is the scan key of a recipient.</td><td></td><td>0</td><td>2</td></tr>
-<tr><td>Silent Payment Input DLEQ Proof</td><td><tt>PSBT_IN_SP_DLEQ = 0x1e</tt></td><td><tt>&lt;33 byte scan key&gt;</tt></td><td>The scan key that this proof covers.</td><td><tt>&lt;64-byte proof&gt;</tt></td><td>A BIP374 DLEQ proof computed for the matching ECDH share.</td><td></td><td>0</td><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><code>&lt;keytype&gt;</code></th><th><code>&lt;keydata&gt;</code></th><th><code>&lt;keydata&gt;</code> Description</th><th><code>&lt;valuedata&gt;</code></th><th><code>&lt;valuedata&gt;</code> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Silent Payment Input ECDH Share</td><td><code>PSBT_IN_SP_ECDH_SHARE = 0x1d</code></td><td><code>&lt;33 byte scan key&gt;</code></td><td>The scan key that this ECDH share is for.</td><td><code>&lt;33 byte share&gt;</code></td><td>An ECDH share for a scan key. The ECDH shared is computed with <em>a * B_scan</em>, where <em>a</em> is the private key of the corresponding prevout public key, and <em>B_scan</em> is the scan key of a recipient.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Silent Payment Input DLEQ Proof</td><td><code>PSBT_IN_SP_DLEQ = 0x1e</code></td><td><code>&lt;33 byte scan key&gt;</code></td><td>The scan key that this proof covers.</td><td><code>&lt;64-byte proof&gt;</code></td><td>A BIP374 DLEQ proof computed for the matching ECDH share.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
 <p>The new per-output types are defined as follows:</p>
-<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>Silent Payment Data</td><td><tt>PSBT_OUT_SP_V0_INFO = 0x09</tt></td><td>None</td><td>No key data</td><td><tt>&lt;33 byte scan key&gt; &lt;33 byte spend key&gt;</tt></td><td>The scan and spend public keys from the silent payments address.</td><td></td><td>0</td><td>2</td></tr>
-<tr><td>Silent Payment Label</td><td><tt>PSBT_OUT_SP_V0_LABEL = 0x0a</tt></td><td>None</td><td>No key data</td><td><tt>&lt;32-bit little endian uint label&gt;</tt></td><td>The label to use to compute the spend key of the silent payments address to verify change.</td><td></td><td>0</td><td>2</td></tr>
+<table><thead><tr><th>Name</th><th><code>&lt;keytype&gt;</code></th><th><code>&lt;keydata&gt;</code></th><th><code>&lt;keydata&gt;</code> Description</th><th><code>&lt;valuedata&gt;</code></th><th><code>&lt;valuedata&gt;</code> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>Silent Payment Data</td><td><code>PSBT_OUT_SP_V0_INFO = 0x09</code></td><td>None</td><td>No key data</td><td><code>&lt;33 byte scan key&gt; &lt;33 byte spend key&gt;</code></td><td>The scan and spend public keys from the silent payments address.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Silent Payment Label</td><td><code>PSBT_OUT_SP_V0_LABEL = 0x0a</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint label&gt;</code></td><td>The label to use to compute the spend key of the silent payments address to verify change.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
-<p><tt>PSBT_OUT_SCRIPT</tt> is modified to be optional for outputs in silent payments capable PSBTs. If this field is not included in the output, then the field PSBT_OUT_SP_V0_INFO must be included.
+<p><code>PSBT_OUT_SCRIPT</code> is modified to be optional for outputs in silent payments capable PSBTs. If this field is not included in the output, then the field PSBT_OUT_SP_V0_INFO must be included.
 If a PSBT_OUT_SCRIPT is not present for an output, then that output is being sent to a silent payment address represented by PSBT_OUT_SP_V0_INFO but the script has not yet been computed.
 If both PSBT_OUT_SCRIPT and PSBT_OUT_SP_V0_INFO are present for an output, then the PSBT_OUT_SCRIPT is the computed output script corresponding to the silent payment address in PSBT_OUT_SP_V0_INFO.
 If only PSBT_OUT_SCRIPT is present for an output, then the output is not being sent to a silent payment address.</p>

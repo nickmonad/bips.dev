@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 121
   Layer: Applications
   Title: Proof of Payment URI scheme
@@ -137,44 +137,44 @@ in QR images or be sent over NFC in order to transfer it to the wallet.</p>
 <p>The specification is the same as BIP0021, with the following
 differences:</p>
 <ul>
-<li>The URI scheme is <tt>btcpop</tt> instead of <tt>bitcoin</tt></li>
+<li>The URI scheme is <code>btcpop</code> instead of <code>bitcoin</code></li>
 <li>The path component, i.e. the address part, is always empty.</li>
-<li>A mandatory <tt>p</tt> parameter whose value contains the destination for the PoP. This could for example be a <tt>https:</tt> URL or a <tt>mailto:</tt> URI.</li>
-<li>A mandatory <tt>n</tt> parameter representing the nonce, base58 encoded.</li>
-<li>An optional <tt>txid</tt> parameter containing the Base58 encoded hash of the transaction to prove.</li>
+<li>A mandatory <code>p</code> parameter whose value contains the destination for the PoP. This could for example be a <code>https:</code> URL or a <code>mailto:</code> URI.</li>
+<li>A mandatory <code>n</code> parameter representing the nonce, base58 encoded.</li>
+<li>An optional <code>txid</code> parameter containing the Base58 encoded hash of the transaction to prove.</li>
 </ul>
 <p>Just as in BIP0021, elements of the query component may contain
 characters outside the valid range. These must first be encoded
 according to UTF-8, and then each octet of the corresponding UTF-8
 sequence must be percent-encoded as described in RFC 3986.</p>
-<p>All parameters except <tt>p</tt> and <tt>n</tt> are hints to the
+<p>All parameters except <code>p</code> and <code>n</code> are hints to the
 wallet on which transaction to create a PoP for.</p>
 <p>The extensibility of BIP0021 applies to this scheme as well. For
-example, a <tt>date</tt> parameter or a <tt>toaddr</tt> parameter
-might be useful. <tt>req-<em></tt> parameters are also allowed and obey
-the same rules as in BIP0021, clients not supporting a <tt>req-</em></tt>
+example, a <code>date</code> parameter or a <code>toaddr</code> parameter
+might be useful. <code>req-*</code> parameters are also allowed and obey
+the same rules as in BIP0021, clients not supporting a <code>req-*</code>
 parameter must consider the URI invalid.</p>
 <h3> Keep URIs short </h3>
 <p>Implementations should keep the URIs as short as possible. This is
 because it makes QR decoding more stable. A camera with a scratched
 lens or low resolution may run into problems scanning huge QR
-codes. This is why the <tt>txid</tt> parameter is encoded in Base58
+codes. This is why the <code>txid</code> parameter is encoded in Base58
 instead of the classic hex encoded string. We get away with 44
-characters instead of 64. Also, the <tt>nonce</tt> parameter is Base58
+characters instead of 64. Also, the <code>nonce</code> parameter is Base58
 encoded for the same reason.</p>
 <h2> Interpretation </h2>
 <h3> Transaction hints </h3>
 <p>The wallet processing the URI must use the hints in the PoP request to
-filter its transaction set. The <tt>label</tt>, <tt>amount</tt> and
-<tt>message</tt> parameters must, if present in the URI, exactly match
+filter its transaction set. The <code>label</code>, <code>amount</code> and
+<code>message</code> parameters must, if present in the URI, exactly match
 the data associated with the original payment according to the
 following table:</p>
-<table><thead><tr><th><tt>btcpop:</tt> URI parameter</th><th><tt>bitcoin:</tt> URI parameter</th><th>BIP70 PaymentDetails data</th></tr></thead><tbody>
-<tr><td><tt>label</tt></td><td><tt>label</tt></td><td><tt>memo</tt></td></tr>
-<tr><td><tt>amount</tt></td><td><tt>amount</tt></td><td><tt>sum of outputs.amount</tt></td></tr>
-<tr><td><tt>message</tt></td><td><tt>message</tt></td><td><tt>-</tt></td></tr>
+<table><thead><tr><th><code>btcpop:</code> URI parameter</th><th><code>bitcoin:</code> URI parameter</th><th>BIP70 PaymentDetails data</th></tr></thead><tbody>
+<tr><td><code>label</code></td><td><code>label</code></td><td><code>memo</code></td></tr>
+<tr><td><code>amount</code></td><td><code>amount</code></td><td><code>sum of outputs.amount</code></td></tr>
+<tr><td><code>message</code></td><td><code>message</code></td><td><code>-</code></td></tr>
 </tbody></table>
-<p>The <tt>txid</tt> parameter value must match the transaction hash of
+<p>The <code>txid</code> parameter value must match the transaction hash of
 the payment.</p>
 <p>After filtering, the resulting transaction set is displayed to the
 user who selects one of them to prove. An implementation could also
@@ -189,33 +189,33 @@ transaction from the wallet regardless of the transaction hints. This
 can be useful if the metadata of the wallet is lost, possibly due to a
 restore from backup.</p>
 <h3> PoP destination <tt>p</tt> </h3>
-<p>The <tt>p</tt> parameter value is the destination where to send the
-PoP to. This destination is typically a <tt>https:</tt> URL or a
-<tt>http:</tt> URL, but it could be any type of URI, for example
-<tt>mailto:</tt>. To keep <tt>btcpop:</tt> URIs short, users should
-not make their <tt>p</tt> parameter unnecessarily long.</p>
+<p>The <code>p</code> parameter value is the destination where to send the
+PoP to. This destination is typically a <code>https:</code> URL or a
+<code>http:</code> URL, but it could be any type of URI, for example
+<code>mailto:</code>. To keep <code>btcpop:</code> URIs short, users should
+not make their <code>p</code> parameter unnecessarily long.</p>
 <h4> <tt>http:</tt> and <tt>https:</tt> URLs </h4>
-<p>Wallet implementations must support the <tt>http:</tt> and
-<tt>https:</tt> schemes in which case <tt>POST</tt> method must be
+<p>Wallet implementations must support the <code>http:</code> and
+<code>https:</code> schemes in which case <code>POST</code> method must be
 used. The PoP is sent as a binary serialized transaction. The content
 type of the POST request must be set to
-<tt>application/bitcoin-pop</tt></p>
+<code>application/bitcoin-pop</code></p>
 <h2> Examples </h2>
-<p>Send PoP for a transaction with label &quot;video 42923&quot; to
+<p>Send PoP for a transaction with label "video 42923" to
 <nowiki>https://www.example.com/pop/352</nowiki>, using nonce
-<tt>0x73 0xd5 0x1a 0xbb 0xd8 0x9c</tt>:</p>
+<code>0x73 0xd5 0x1a 0xbb 0xd8 0x9c</code>:</p>
 <pre><code> btcpop:?p=https:&#x2F;&#x2F;www.example.com&#x2F;pop&#x2F;352&amp;n=zgWTm8yH&amp;label=video%2042923
 </code></pre>
 <p>Send PoP through mail using
 <nowiki>mailto:pop@example.com?subject=pop444</nowiki>, amount
-is 13370000 satoshis, nonce is <tt>0x6f 0xe 0xfb 0x68 0x92 0xf9</tt>.
-Note that the <tt>?</tt> before <tt>subject</tt> is OK according to RFC3986,
-since the query part starts from the first <tt>?</tt>:</p>
+is 13370000 satoshis, nonce is <code>0x6f 0xe 0xfb 0x68 0x92 0xf9</code>.
+Note that the <code>?</code> before <code>subject</code> is OK according to RFC3986,
+since the query part starts from the first <code>?</code>:</p>
 <pre><code> btcpop:?p=mailto:pop@example.com?subject%3Dpop444&amp;n=xJdKmEbr&amp;amount=0.1337
 </code></pre>
 <p>Send PoP for transaction with id
-<tt>cca7507897abc89628f450e8b1e0c6fca4ec3f7b34cccf55f3f531c659ff4d79</tt>
-to pizza place at <nowiki>http://pizza.example.com/pop/laszlo111</nowiki> using nonce <tt>0xfc 0xcc 0x2c 0x35 0xf0 0xb8</tt></p>
+<code>cca7507897abc89628f450e8b1e0c6fca4ec3f7b34cccf55f3f531c659ff4d79</code>
+to pizza place at <nowiki>http://pizza.example.com/pop/laszlo111</nowiki> using nonce <code>0xfc 0xcc 0x2c 0x35 0xf0 0xb8</code></p>
 <pre><code> btcpop:?p=http:&#x2F;&#x2F;pizza.example.com&#x2F;pop&#x2F;laszlo111&amp;n=3AtNpVrPh&amp;txid=Emt9MPvt1joznqHy5eEHkNtcuQuYWXzYJBQZN6BJm6NL
 </code></pre>
 <h2> Reference implementation </h2>

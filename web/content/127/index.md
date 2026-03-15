@@ -106,7 +106,7 @@ characteristics:
 *  The first input (the "commitment input")
     *  MUST have the txid part of the previous outpoint set to the SHA-256 hash of the commitment message prefixed with "Proof-of-Reserves: "<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> and index 0.
 *  The remaining inputs
-    *  MUST have signatures that commit to the commitment input (e.g. using <tt>SIGHASH_ALL</tt>).
+    *  MUST have signatures that commit to the commitment input (e.g. using `SIGHASH_ALL`).
 *  The transaction MUST have a single output that is the exact sum of all the inputs, assuming the commitment input to have 0 value; this means the transaction has no miner fee.
 
 
@@ -184,7 +184,7 @@ message ProofOfReserves {
 }
 ```
 
-The last field, <tt>pending_proofs</tt>, leaves open some space in the same
+The last field, `pending_proofs`, leaves open some space in the same
 file that can be used by proof-construction tools.  This allows them to
 construct different proofs incrementally without having to switch between file
 formats.
@@ -194,7 +194,7 @@ formats.
 
 
 The "commitment input" detailed in the proof format section does not spend an
-existing UTXO and thus shouldn't be signed (empty <tt>scriptSig</tt> and
+existing UTXO and thus shouldn't be signed (empty `scriptSig` and
 witness).  This can cause some problems when signing this type of transactions.
 For example, hardware wallets often require the signer to provide information
 about all inputs of transactions they are signing, such as the previous output
@@ -211,13 +211,13 @@ lines of "Are you sure you want to send XXX BTC to address [...]?".  This is
 not the best user experience.
 
 An addition to the BIP 174 PSBT format could help signing devices to recognize proof-of-reserve transactions.
-The following field is added to the BIP 174 <tt>INPUT</tt> map:
+The following field is added to the BIP 174 `INPUT` map:
 
-*  Type: Proof-of-reserves commitment <tt>PSBT_IN_POR_COMMITMENT = 0x09</tt>
+*  Type: Proof-of-reserves commitment `PSBT_IN_POR_COMMITMENT = 0x09`
     *  Key: None. The key must only contain the 1 byte type.
-        *  <tt>{0x09}</tt>
+        *  `{0x09}`
     *  Value: The UTF-8 encoded commitment message string for the proof-of-reserves.
-        *  <tt>{porCommitment}</tt>
+        *  `{porCommitment}`
 
 
 Wallets processing an input that has this field set
@@ -225,7 +225,7 @@ Wallets processing an input that has this field set
 *  MUST assume the input value to be 0 (without requiring the previous output or transaction to be provided);
 *  SHOULD display the commitment message to ask the user for confirmation before signing any inputs;
 *  SHOULD only provide signatures with a signature hash that commits to this input;
-*  SHOULD accept an empty <tt>scriptSig</tt> for this input (as if the <tt>scriptPubKey</tt> was <tt>OP_TRUE</tt>).
+*  SHOULD accept an empty `scriptSig` for this input (as if the `scriptPubKey` was `OP_TRUE`).
 
 
 
@@ -244,7 +244,7 @@ backwards compatible.
 
 A proof-of-concept implementation of the PSBT extension in the
 <a href="https://github.com/rust-bitcoin/rust-bitcoin" target="_blank">rust-bitcoin</a> project can be
-found in the <tt>psbt-por</tt> branch here:
+found in the `psbt-por` branch here:
 https://github.com/stevenroose/rust-bitcoin/tree/psbt-por
 
 A work-in-progress implementation of a tool that produces and verifies proofs
@@ -256,5 +256,5 @@ An implementation of the custom proof PSBTs is part of the <a href="https://bitc
 <h2> Footnotes </h2>
 
 
-1. [^](#cite_ref_1) If the message is "Some Message", the txid part should be <tt>SHA-256("Proof-of-Reserves: Some Message")</tt> with the string encoded as UTF-8.
+1. [^](#cite_ref_1) If the message is "Some Message", the txid part should be `SHA-256("Proof-of-Reserves: Some Message")` with the string encoded as UTF-8.
 2. [^](#cite_ref_2) https://github.com/protocolbuffers/protobuf/

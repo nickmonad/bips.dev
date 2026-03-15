@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 388
   Layer: Applications
   Title: Wallet Policies for Descriptor Wallets
@@ -127,7 +127,7 @@
   Discussion: 2022-05-10: https:&#x2F;&#x2F;lists.linuxfoundation.org&#x2F;pipermail&#x2F;bitcoin-dev&#x2F;2022-May&#x2F;020423.html
 </code></pre>
 <h2> Abstract </h2>
-<p>Software wallets and hardware signing devices typically partition funds into separate &quot;accounts&quot;. When signing or visualizing a transaction, aggregate flows of funds of all accounts affected by the transaction may (and should) be displayed to the user.</p>
+<p>Software wallets and hardware signing devices typically partition funds into separate "accounts". When signing or visualizing a transaction, aggregate flows of funds of all accounts affected by the transaction may (and should) be displayed to the user.</p>
 <p>Wallet policies build on top of output script descriptors to represent such accounts in a compact, reviewable way.
 An account encompasses a logical group of receive and change addresses, and each wallet policy represents all descriptors necessary to describe an account in its entirety.</p>
 <p>We simplify the language to suit devices with limited memory, where even keeping the entire descriptor in memory could be a major hurdle, by reducing the generality of descriptors to just the essential features and by separating the extended pubkeys and other key information from the descriptor.</p>
@@ -152,7 +152,7 @@ An account encompasses a logical group of receive and change addresses, and each
 <p>Hardware signing devices strive to guarantee that no action can be performed without the user’s consent as long as the user correctly verifies the information that is shown on the device’s screen before approving.</p>
 <p>This must hold even in scenarios where the attacker has full control of the machine that is connected to the signing device, and can execute arbitrary requests, or tamper with the legitimate user's requests.</p>
 <p>Therefore, it is not at all trivial to allow complex scripts, especially if they contain keys that belong to third parties.
-The hardware signing device must guarantee that the user knows precisely what &quot;policy&quot; is being used to spend the funds, and that any &quot;unspent&quot; funds (if any) that is sent to a change address will be protected by the same policy.</p>
+The hardware signing device must guarantee that the user knows precisely what "policy" is being used to spend the funds, and that any "unspent" funds (if any) that is sent to a change address will be protected by the same policy.</p>
 <p>This makes it impossible for an attacker to surreptitiously modify the policy, therefore stealing or burning the user's funds.</p>
 <h4> Avoiding key reuse </h4>
 <p>Reusing public keys within a script is a source of malleability when using miniscript policies, which has potential security implications.</p>
@@ -175,7 +175,7 @@ The hardware signing device must guarantee that the user knows precisely what &q
 <li>The software wallet initiates a <em>wallet policy registration</em> on the hardware signing device; the information should include the wallet policy, but also a unique <em>name</em> that identifies the policy.</li>
 <li>The device shows the wallet policy to the user using the secure screen.</li>
 <li>After inspecting the policy and comparing it with a trusted source (for example a printed backup), the user approves the policy.</li>
-<li>If stateful, the hardware signing device persists the policy in its permanent memory; if stateless, it returns a &quot;proof of registration&quot;.</li>
+<li>If stateful, the hardware signing device persists the policy in its permanent memory; if stateless, it returns a "proof of registration".</li>
 </ol>
 <p>The <strong>proof of registration</strong> will allow the hardware signer to verify that a certain policy was indeed previously approved by the user, and is therefore safe to use without repeating the expensive user verification procedure. The details of how to create a proof of registration are out of scope for this document; using a Message Authentication Code on a hash committing to the wallet policy, its name and any additional metadata is an effective solution if correctly executed.</p>
 <p>Once a policy is registered, the hardware signing device can perform the typical operations securely:</p>
@@ -194,7 +194,7 @@ The hardware signing device must guarantee that the user knows precisely what &q
 <li>a script tree with 11 leaves:
 <ul>
 <li>10 different scripts using a 3-of-3 MuSig2 aggregated key, plus</li>
-<li>a final leaf with a fallback 3-of-5 multisig using <tt>multi_a</tt> (in case interactive signing is not available).</li>
+<li>a final leaf with a fallback 3-of-5 multisig using <code>multi_a</code> (in case interactive signing is not available).</li>
 </ul>
 </li>
 </ul>
@@ -205,61 +205,61 @@ The hardware signing device must guarantee that the user knows precisely what &q
 <h3> Formal definition </h3>
 <p>A <em>wallet policy</em> is composed of a <em>wallet descriptor template</em>, together with a vector of <em>key information items</em>.</p>
 <h4> Wallet descriptor template </h4>
-<p>A <em>wallet descriptor template</em> is a <tt>SCRIPT</tt> expression.</p>
-<p><tt>SCRIPT</tt> expressions:</p>
+<p>A <em>wallet descriptor template</em> is a <code>SCRIPT</code> expression.</p>
+<p><code>SCRIPT</code> expressions:</p>
 <ul>
-<li><tt>sh(SCRIPT)</tt> (top level only): P2SH embed the argument.</li>
-<li><tt>wsh(SCRIPT)</tt> (top level or inside <tt>sh</tt> only): P2WSH embed the argument.</li>
-<li><tt>pkh(KEY)</tt> (not inside <tt>tr</tt>): P2PKH output for the given public key.</li>
-<li><tt>wpkh(KEY)</tt> (top level or inside <tt>sh</tt> only): P2WPKH output for the given compressed pubkey.</li>
-<li><tt>multi(k,KEY_1,KEY_2,...,KEY_n)</tt> (inside <tt>sh</tt> or <tt>wsh</tt> only): <em>k</em>-of-<em>n</em> multisig script.</li>
-<li><tt>sortedmulti(k,KEY_1,KEY_2,...,KEY_n)</tt> (inside <tt>sh</tt> or <tt>wsh</tt> only): <em>k</em>-of-<em>n</em> multisig script with keys sorted lexicographically in the resulting script.</li>
-<li><tt>tr(KEY)</tt> or <tt>tr(KEY,TREE)</tt> (top level only): P2TR output with the specified key as internal key, and optionally a tree of script paths.</li>
-<li>any valid miniscript template (inside <tt>wsh</tt> or <tt>tr</tt> only).</li>
+<li><code>sh(SCRIPT)</code> (top level only): P2SH embed the argument.</li>
+<li><code>wsh(SCRIPT)</code> (top level or inside <code>sh</code> only): P2WSH embed the argument.</li>
+<li><code>pkh(KEY)</code> (not inside <code>tr</code>): P2PKH output for the given public key.</li>
+<li><code>wpkh(KEY)</code> (top level or inside <code>sh</code> only): P2WPKH output for the given compressed pubkey.</li>
+<li><code>multi(k,KEY_1,KEY_2,...,KEY_n)</code> (inside <code>sh</code> or <code>wsh</code> only): <em>k</em>-of-<em>n</em> multisig script.</li>
+<li><code>sortedmulti(k,KEY_1,KEY_2,...,KEY_n)</code> (inside <code>sh</code> or <code>wsh</code> only): <em>k</em>-of-<em>n</em> multisig script with keys sorted lexicographically in the resulting script.</li>
+<li><code>tr(KEY)</code> or <code>tr(KEY,TREE)</code> (top level only): P2TR output with the specified key as internal key, and optionally a tree of script paths.</li>
+<li>any valid miniscript template (inside <code>wsh</code> or <code>tr</code> only).</li>
 </ul>
-<p>See <a href="bip-0379.md" target="_blank">BIP-379</a> for a precise specification of all the valid miniscript <tt>SCRIPT</tt> expressions.</p>
-<p><tt>TREE</tt> expressions:</p>
+<p>See <a href="bip-0379.md" target="_blank">BIP-379</a> for a precise specification of all the valid miniscript <code>SCRIPT</code> expressions.</p>
+<p><code>TREE</code> expressions:</p>
 <ul>
-<li>any <tt>SCRIPT</tt> expression</li>
-<li>An open brace <tt>{</tt>, a <tt>TREE</tt> expression, a comma <tt>,</tt>, a <tt>TREE</tt> expression, and a closing brace <tt>}</tt></li>
+<li>any <code>SCRIPT</code> expression</li>
+<li>An open brace <code>{</code>, a <code>TREE</code> expression, a comma <code>,</code>, a <code>TREE</code> expression, and a closing brace <code>}</code></li>
 </ul>
-<p><tt>KEY</tt> expressions consist of</p>
+<p><code>KEY</code> expressions consist of</p>
 <ul>
-<li>a <tt>KP</tt> expression</li>
+<li>a <code>KP</code> expression</li>
 <li><em>always</em> followed by either:
 <ul>
-<li>the string  <tt>/**</tt>, or</li>
-<li>a string of the form <tt>/&lt;NUM;NUM&gt;/*</tt>, for two distinct decimal numbers <tt>NUM</tt> representing unhardened derivations, or</li>
+<li>the string  <code>/**</code>, or</li>
+<li>a string of the form <code>/&lt;NUM;NUM&gt;/*</code>, for two distinct decimal numbers <code>NUM</code> representing unhardened derivations, or</li>
 <li>any of the additional, implementation-specific valid derivation path patterns (see <a href=" optional-derivation-paths" target="_blank">Optional derivation paths</a> below).</li>
 </ul>
 </li>
 </ul>
-<p><tt>KP</tt> expressions (key placeholders) consist of either:</p>
+<p><code>KP</code> expressions (key placeholders) consist of either:</p>
 <ul>
-<li>a <tt>KI</tt> (key index) expression, or</li>
-<li>(only inside <tt>tr</tt>): <tt>musig(KI_1,KI_2,...,KI_n)</tt></li>
+<li>a <code>KI</code> (key index) expression, or</li>
+<li>(only inside <code>tr</code>): <code>musig(KI_1,KI_2,...,KI_n)</code></li>
 </ul>
-<p>A <tt>KI</tt> (key index) expression consists of:</p>
+<p>A <code>KI</code> (key index) expression consists of:</p>
 <ul>
-<li>a single character <tt>@</tt></li>
-<li>followed by a non-negative decimal number, with no leading zeros (except for <tt>@0</tt>)</li>
+<li>a single character <code>@</code></li>
+<li>followed by a non-negative decimal number, with no leading zeros (except for <code>@0</code>)</li>
 </ul>
-<p>The <tt>/**</tt> in the placeholder template represents commonly used paths for receive/change addresses, and is equivalent to <tt>/&lt;0;1&gt;/*</tt>.</p>
-<p>Note that while <a href="/389" target="_blank">BIP-389</a> allows multipath <tt>/&lt;NUM;NUM;...;NUM&gt;</tt> expressions with an arbitrary number of options, this specification restricts it to exactly 2 choices (with the typical meaning of receive/change addresses).</p>
-<p><tt>SCRIPT</tt>, <tt>TREE</tt> and <tt>KEY</tt> expressions map directly to the corresponding concepts defined in <a href="/380" target="_blank">BIP-380</a> for output script descriptors.</p>
-<p>Each <tt>KEY</tt> expression always corresponds to a precise public key in the final bitcoin Script. Therefore, all the derivation steps in the BIP-32 hierarchy are included in a <tt>KEY</tt> expression.</p>
-<p>Each <tt>KP</tt> (key placeholder) expression, on the other hand, maps to the root of all the corresponding public keys for all the possible UTXOs that belong to the account represented in the wallet policy. Therefore, no derivation steps are allowed in a <tt>KP</tt> expression.</p>
-<p>A <tt>KI</tt> (key index) <tt>@i</tt> for some number <em>i</em> represents the <em>i</em>-th key in the vector of key information items (which must be of size at least <em>i + 1</em>, or the wallet policy is invalid).</p>
-<p>Note: while descriptor templates for miniscript are not formally defined in this version of the document (pending standardization), it is straightforward to adapt this approach by adding additional <tt>SCRIPT</tt> expressions.</p>
+<p>The <code>/**</code> in the placeholder template represents commonly used paths for receive/change addresses, and is equivalent to <code>/&lt;0;1&gt;/*</code>.</p>
+<p>Note that while <a href="/389" target="_blank">BIP-389</a> allows multipath <code>/&lt;NUM;NUM;...;NUM&gt;</code> expressions with an arbitrary number of options, this specification restricts it to exactly 2 choices (with the typical meaning of receive/change addresses).</p>
+<p><code>SCRIPT</code>, <code>TREE</code> and <code>KEY</code> expressions map directly to the corresponding concepts defined in <a href="/380" target="_blank">BIP-380</a> for output script descriptors.</p>
+<p>Each <code>KEY</code> expression always corresponds to a precise public key in the final bitcoin Script. Therefore, all the derivation steps in the BIP-32 hierarchy are included in a <code>KEY</code> expression.</p>
+<p>Each <code>KP</code> (key placeholder) expression, on the other hand, maps to the root of all the corresponding public keys for all the possible UTXOs that belong to the account represented in the wallet policy. Therefore, no derivation steps are allowed in a <code>KP</code> expression.</p>
+<p>A <code>KI</code> (key index) <code>@i</code> for some number <em>i</em> represents the <em>i</em>-th key in the vector of key information items (which must be of size at least <em>i + 1</em>, or the wallet policy is invalid).</p>
+<p>Note: while descriptor templates for miniscript are not formally defined in this version of the document (pending standardization), it is straightforward to adapt this approach by adding additional <code>SCRIPT</code> expressions.</p>
 <h4> Key information vector </h4>
-<p>Each element of the key origin information vector is a <tt>KEY_INFO</tt> expression, containing an extended public key, and (optionally) its key origin.</p>
+<p>Each element of the key origin information vector is a <code>KEY_INFO</code> expression, containing an extended public key, and (optionally) its key origin.</p>
 <ul>
 <li>Optionally, key origin information, consisting of:
 <ul>
-<li>An open bracket <tt>[</tt></li>
+<li>An open bracket <code>[</code></li>
 <li>Exactly 8 hex characters for the fingerprint of the master key from which this key is derived from (see <a href="/32" target="_blank">BIP-32</a> for details)</li>
-<li>Followed by zero or more <tt>/NUM'</tt> or <tt>/NUM</tt> path elements to indicate hardened or unhardened derivation steps between the fingerprint and the xpub that follows</li>
-<li>A closing bracket <tt>]</tt></li>
+<li>Followed by zero or more <code>/NUM'</code> or <code>/NUM</code> path elements to indicate hardened or unhardened derivation steps between the fingerprint and the xpub that follows</li>
+<li>A closing bracket <code>]</code></li>
 </ul>
 </li>
 <li>Followed by the actual key, which is a serialized extended public key (as defined in <a href="/32" target="_blank">BIP-32</a>).</li>
@@ -267,50 +267,50 @@ The hardware signing device must guarantee that the user knows precisely what &q
 <h4> Additional rules </h4>
 <p>A wallet policy must have at least one key placeholder and the corresponding key.</p>
 <p>The public keys obtained by deserializing elements of the key information vector must be pairwise distinct<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup>.</p>
-<p>If two <tt>KEY</tt> are <tt>KP/&lt;M;N&gt;/<em></tt> and <tt>KP/&lt;P;Q&gt;/</em></tt> for the same key placeholder <tt>KP</tt>, then the sets <tt>{M, N}</tt> and <tt>{P, Q}</tt> must be disjoint. Two <tt>musig</tt> key placeholders are the same if they have exactly the same set of key indexes (regardless of the order).</p>
-<p>Repeated <tt>KI</tt> expressions are not allowed inside a <tt>musig</tt> placeholder.</p>
-<p>The key information vector should be ordered so that placeholder <tt>@i</tt> never appears for the first time before an occurrence of <tt>@j</tt>  for some <tt>j &lt; i</tt>; for example, the first placeholder is always <tt>@0</tt>, the next one is <tt>@1</tt>, etc.</p>
+<p>If two <code>KEY</code> are <code>KP/&lt;M;N&gt;/*</code> and <code>KP/&lt;P;Q&gt;/*</code> for the same key placeholder <code>KP</code>, then the sets <code>{M, N}</code> and <code>{P, Q}</code> must be disjoint. Two <code>musig</code> key placeholders are the same if they have exactly the same set of key indexes (regardless of the order).</p>
+<p>Repeated <code>KI</code> expressions are not allowed inside a <code>musig</code> placeholder.</p>
+<p>The key information vector should be ordered so that placeholder <code>@i</code> never appears for the first time before an occurrence of <code>@j</code>  for some <code>j &lt; i</code>; for example, the first placeholder is always <code>@0</code>, the next one is <code>@1</code>, etc.</p>
 <h3> Descriptor derivation </h3>
 <p>From a wallet descriptor template (and the associated vector of key information items), one can therefore obtain the corresponding multipath descriptor by:</p>
 <ul>
 <li>replacing each key placeholder with the corresponding key origin information;</li>
-<li>replacing every <tt>/**</tt> with <tt>/&lt;0;1&gt;/*</tt>.</li>
+<li>replacing every <code>/**</code> with <code>/&lt;0;1&gt;/*</code>.</li>
 </ul>
-<p>For example, the wallet descriptor <tt>pkh(@0/**)</tt> with key information
-<tt>[&quot;[d34db33f/44'/0'/0']xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL&quot;]</tt>
+<p>For example, the wallet descriptor <code>pkh(@0/**)</code> with key information
+<code>["[d34db33f/44'/0'/0']xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL"]</code>
 produces the following multipath descriptor:</p>
-<p><tt>pkh([d34db33f/44'/0'/0']xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/&lt;0;1&gt;/*)</tt></p>
+<p><code>pkh([d34db33f/44'/0'/0']xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/&lt;0;1&gt;/*)</code></p>
 <h3> Implementation guidelines </h3>
 <p>It is acceptable to implement only a subset of the possible wallet policies defined by this standard. It is recommended that any limitations are clearly documented.</p>
 <p>Implementations can add additional metadata that is stored together with the wallet policy for the purpose of wallet policy registration and later usage. Metadata can be vendor-specific and is out of the scope of this document.</p>
 <p>Any implementation in a software wallet that allows wallet policies not matching any of the specifications in <a href="/44" target="_blank">BIP-44</a>, <a href="/49" target="_blank">BIP-49</a>, <a href="/84" target="_blank">BIP-84</a>, <a href="/86" target="_blank">BIP-86</a> (especially if involving external cosigners) should put great care into a process for backing up the wallet policy that represents the account. In fact, unlike standard single-signature scenarios, the seed alone is no longer enough to discover wallet policies with existing funds, and the loss of the backup is likely to lead to permanent loss of funds. Unlike the seed, leaking such backups only affects the privacy of the user, but it does not allow the attacker to steal funds.</p>
 <h3> Optional derivation paths </h3>
-<p>In order to allow supporting legacy derivation schemes (for example, using simply <tt>/<em></tt> instead of the more common <tt>/&lt;M;N&gt;/</em></tt> scheme most software wallets use today), or other schemes that are not covered in this document, implementations might choose to permit additional derivation patterns for the key placeholder (<tt>KP</tt>) expressions.</p>
+<p>In order to allow supporting legacy derivation schemes (for example, using simply <code>/*</code> instead of the more common <code>/&lt;M;N&gt;/*</code> scheme most software wallets use today), or other schemes that are not covered in this document, implementations might choose to permit additional derivation patterns for the key placeholder (<code>KP</code>) expressions.</p>
 <p>However, care needs to be taken in view of the following considerations:</p>
 <ul>
-<li>Allowing derivation schemes with a different length or cardinality in the same wallet policy would make it difficult to guarantee that there are no repeated pubkeys for every possible address generated by the policy. For example, <tt>@0/&lt;0;1&gt;/<em></tt> and <tt>@1/</em></tt> would generate the same pubkeys if the second public key in the key information vector is one of the first two unhardened children of the first public key. This could cause malleability with potential security implications (for example, in policies containing miniscript).</li>
-<li>Allowing naked pubkeys with no <tt>/<em></tt> suffix (for example a descriptor template like <tt>wsh(multi(2,@0,@1/&lt;0;1&gt;/</em>))</tt>) would cause a pubkey to be repeated in every output generated from the policy, which would result in a total loss of privacy.</li>
+<li>Allowing derivation schemes with a different length or cardinality in the same wallet policy would make it difficult to guarantee that there are no repeated pubkeys for every possible address generated by the policy. For example, <code>@0/&lt;0;1&gt;/*</code> and <code>@1/*</code> would generate the same pubkeys if the second public key in the key information vector is one of the first two unhardened children of the first public key. This could cause malleability with potential security implications (for example, in policies containing miniscript).</li>
+<li>Allowing naked pubkeys with no <code>/*</code> suffix (for example a descriptor template like <code>wsh(multi(2,@0,@1/&lt;0;1&gt;/*))</code>) would cause a pubkey to be repeated in every output generated from the policy, which would result in a total loss of privacy.</li>
 </ul>
 <h2> Examples </h2>
 <p>In the examples in this section, the vector of key information items is omitted. See the test vectors below for complete examples.</p>
 <p>Common single-signature account patterns:</p>
 <ul>
-<li><tt>pkh(@0/**)</tt> (legacy).</li>
-<li><tt>wpkh(@0/**)</tt> (native segwit).</li>
-<li><tt>sh(wpkh(@0/**))</tt> (nested segwit).</li>
-<li><tt>tr(@0/**)</tt> (taproot single-signature account).</li>
+<li><code>pkh(@0/**)</code> (legacy).</li>
+<li><code>wpkh(@0/**)</code> (native segwit).</li>
+<li><code>sh(wpkh(@0/**))</code> (nested segwit).</li>
+<li><code>tr(@0/**)</code> (taproot single-signature account).</li>
 </ul>
 <p>Common multisig schemes:</p>
 <ul>
-<li><tt>wsh(multi(2,@0/<strong>,@1/</strong>))</tt> - SegWit 2-of-2 multisig, keys in order.</li>
-<li><tt>sh(sortedmulti(2,@0/<strong>,@1/</strong>,@2/**))</tt> - Legacy 2-of-3 multisig, sorted keys.</li>
-<li><tt>tr(musig(@0,@1)/**)</tt> - MuSig2 2-of-2 in the taproot keypath</li>
+<li><code>wsh(multi(2,@0/**,@1/**))</code> - SegWit 2-of-2 multisig, keys in order.</li>
+<li><code>sh(sortedmulti(2,@0/**,@1/**,@2/**))</code> - Legacy 2-of-3 multisig, sorted keys.</li>
+<li><code>tr(musig(@0,@1)/**)</code> - MuSig2 2-of-2 in the taproot keypath</li>
 </ul>
-<p>Some miniscript policies in <tt>wsh</tt>:</p>
+<p>Some miniscript policies in <code>wsh</code>:</p>
 <ul>
-<li><tt>wsh(and_v(v:pk(@0/<strong>),or_d(pk(@1/</strong>),older(12960))))</tt> - Trust-minimized second factor, degrading to a single signature after about 90 days.</li>
-<li><tt>wsh(thresh(3,pk(@0/<strong>),s:pk(@1/</strong>),s:pk(@2/**),sln:older(12960)))</tt> - A 3-of-3 wallet that becomes a 2-of-3 if coins are not spent for about 90 days.</li>
-<li><tt>wsh(or_d(pk(@0/<strong>),and_v(v:multi(2,@1/</strong>,@2/<strong>,@3/</strong>),older(65535))))</tt> - A singlesig wallet with automatic inheritance to a timelocked 2-of-3 multisig of family members.</li>
+<li><code>wsh(and_v(v:pk(@0/**),or_d(pk(@1/**),older(12960))))</code> - Trust-minimized second factor, degrading to a single signature after about 90 days.</li>
+<li><code>wsh(thresh(3,pk(@0/**),s:pk(@1/**),s:pk(@2/**),sln:older(12960)))</code> - A 3-of-3 wallet that becomes a 2-of-3 if coins are not spent for about 90 days.</li>
+<li><code>wsh(or_d(pk(@0/**),and_v(v:multi(2,@1/**,@2/**,@3/**),older(65535))))</code> - A singlesig wallet with automatic inheritance to a timelocked 2-of-3 multisig of family members.</li>
 </ul>
 <h2> Test Vectors </h2>
 <h3> Valid policies </h3>
@@ -366,19 +366,19 @@ produces the following multipath descriptor:</p>
 <h3> Invalid policies </h3>
 <p>The following descriptor templates are invalid:</p>
 <ul>
-<li><tt>pkh(@0)</tt>: Key placeholder with no path following it</li>
-<li><tt>pkh(@0/0/**)</tt>: Key placeholder with an explicit path present</li>
-<li><tt>sh(multi(1,@1/<strong>,@0/</strong>))</tt>: Key placeholders out of order</li>
-<li><tt>sh(multi(1,@0/<strong>,@2/</strong>))</tt>: Skipped key placeholder <tt>@1</tt></li>
-<li><tt>sh(multi(1,@0/<strong>,@0/</strong>))</tt>: Repeated keys with the same path expression</li>
-<li><tt>sh(multi(1,@0/&lt;0;1&gt;/<em>,@0/&lt;1;2&gt;/</em>))</tt>: Non-disjoint multipath expressions (<tt>@0/1/*</tt> appears twice)</li>
-<li><tt>sh(multi(1,@0/**,xpub6AHA9hZDN11k2ijHMeS5QqHx2KP9aMBRhTDqANMnwVtdyw2TDYRmF8PjpvwUFcL1Et8Hj59S3gTSMcUQ5gAqTz3Wd8EsMTmF3DChhqPQBnU/&lt;0;1&gt;/*))</tt>: Expression with a non-KP key present</li>
-<li><tt>pkh(@0/&lt;0;1;2&gt;/*)</tt>: Allowed cardinality &gt; 2</li>
-<li><tt>tr(musig(@0/<strong>,@1/</strong>))</tt>: Derivation before aggregation is not allowed in wallet policies (despite being allowed in <a href="/390" target="_blank">BIP-390</a>)</li>
+<li><code>pkh(@0)</code>: Key placeholder with no path following it</li>
+<li><code>pkh(@0/0/**)</code>: Key placeholder with an explicit path present</li>
+<li><code>sh(multi(1,@1/**,@0/**))</code>: Key placeholders out of order</li>
+<li><code>sh(multi(1,@0/**,@2/**))</code>: Skipped key placeholder <code>@1</code></li>
+<li><code>sh(multi(1,@0/**,@0/**))</code>: Repeated keys with the same path expression</li>
+<li><code>sh(multi(1,@0/&lt;0;1&gt;/*,@0/&lt;1;2&gt;/*))</code>: Non-disjoint multipath expressions (<code>@0/1/*</code> appears twice)</li>
+<li><code>sh(multi(1,@0/**,xpub6AHA9hZDN11k2ijHMeS5QqHx2KP9aMBRhTDqANMnwVtdyw2TDYRmF8PjpvwUFcL1Et8Hj59S3gTSMcUQ5gAqTz3Wd8EsMTmF3DChhqPQBnU/&lt;0;1&gt;/*))</code>: Expression with a non-KP key present</li>
+<li><code>pkh(@0/&lt;0;1;2&gt;/*)</code>: Allowed cardinality &gt; 2</li>
+<li><code>tr(musig(@0/**,@1/**))</code>: Derivation before aggregation is not allowed in wallet policies (despite being allowed in <a href="/390" target="_blank">BIP-390</a>)</li>
 </ul>
 <p>Remark: some of the examples of invalid descriptor templates may be valid via optional extensions.</p>
 <h2> Backwards Compatibility </h2>
-<p>The <tt>@</tt> character used for key placeholders is not part of the syntax of output script descriptors, therefore any valid descriptor with at least one <tt>KEY</tt> expression is not a valid descriptor template. Vice versa, any descriptor template with at least one key placeholder is not a valid output script descriptor.</p>
+<p>The <code>@</code> character used for key placeholders is not part of the syntax of output script descriptors, therefore any valid descriptor with at least one <code>KEY</code> expression is not a valid descriptor template. Vice versa, any descriptor template with at least one key placeholder is not a valid output script descriptor.</p>
 <p>Adoption of wallet policies in software and hardware wallets is opt-in. Conversion from wallet policies to the corresponding descriptors is programmatically extremely easy, and conversion from descriptors to wallet policies (when respecting the required patterns) can be automated. See the reference implementation below for some examples of conversion.</p>
 <p>Software wallets are recommended to allow exporting plain descriptors for the purposes of interoperability with software not using wallet policies.</p>
 <h2> Reference Implementation </h2>
@@ -388,7 +388,7 @@ produces the following multipath descriptor:</p>
 <li>the <a href="https://github.com/digitalbitbox/bitbox02-firmware" target="_blank">BitBox02 firmware</a> since version v9.15.0;</li>
 <li><a href="https://github.com/Blockstream/Jade" target="_blank">Blockstream Jade</a> since version v1.0.24, via <a href="https://github.com/ElementsProject/libwally-core" target="_blank">libwally-core</a> v1.0.0.</li>
 <li><a href="https://github.com/btcpayserver/btcpayserver" target="_blank">BTCPay Server</a> from version <a href="https://github.com/btcpayserver/btcpayserver/pull/6684" target="_blank">v2.1.1</a>. (Currently only a limited subset of singlesig and multisig policies)</li>
-<li><a href="https://github.com/MetacoSA/NBitcoin/" target="_blank">NBitcoin</a> through <tt>Miniscript.Parse</tt>.</li>
+<li><a href="https://github.com/MetacoSA/NBitcoin/" target="_blank">NBitcoin</a> through <code>Miniscript.Parse</code>.</li>
 </ul>
 <p>For development and testing purposes, we provide a <a href="https://github.com/bitcoin/bips/blob/master/bip-0388/wallet_policies.py" target="_blank">Python 3.7 reference implementation</a> of simple classes to handle wallet policies, and the conversion to/from output script descriptors.
 The reference implementation is for demonstration purposes only and not to be used in production environments.</p>
@@ -396,7 +396,7 @@ The reference implementation is for demonstration purposes only and not to be us
 <ul>
 <li><strong>1.1.0</strong> (2024-11):
 <ul>
-<li>Added support for <tt>musig</tt> key placeholders in descriptor templates.</li>
+<li>Added support for <code>musig</code> key placeholders in descriptor templates.</li>
 </ul>
 </li>
 <li><strong>1.0.0</strong> (2024-05):

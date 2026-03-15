@@ -56,23 +56,23 @@ to carry the information necessary to produce a valid signature with MuSig2.
 The new per-input types are defined as follows:
 
 
-|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><valuedata></tt>|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|Name|`<keytype>`|`<keydata>`|`<valuedata>`|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|
-|MuSig2 Participant Public Keys|<tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS = 0x1a</tt>|<tt><33 byte aggregate pubkey (compressed)></tt>|<tt><33 byte participant pubkey (compressed)>*</tt>|||0, 2|
+|MuSig2 Participant Public Keys|`PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS = 0x1a`|`<33 byte aggregate pubkey (compressed)>`|`<33 byte participant pubkey (compressed)>*`|||0, 2|
 |The MuSig2 aggregate public key (compressed) <ref>**Why the compressed aggregate public key instead of x-only?**|A list of the compressed public keys of the participants in the MuSig2 aggregate key in the order|
-|MuSig2 Public Nonce|<tt>PSBT_IN_MUSIG2_PUB_NONCE = 0x1b</tt>|<tt><33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted></tt>|<tt><66 byte public nonce></tt>|||0, 2|
-|The compressed public key of the participant providing this nonce, followed by the compressed aggregate public|The public nonce produced by the <tt>NonceGen</tt> algorithm.|
-|MuSig2 Participant Partial Signature|<tt>PSBT_IN_MUSIG2_PARTIAL_SIG = 0x1c</tt>|<tt><33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted></tt>|<tt><32 byte partial signature></tt>|||0, 2|
-|The compressed public key of the participant providing this partial signature, followed by the|The partial signature produced by the <tt>Sign</tt> algorithm.|
+|MuSig2 Public Nonce|`PSBT_IN_MUSIG2_PUB_NONCE = 0x1b`|`<33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted>`|`<66 byte public nonce>`|||0, 2|
+|The compressed public key of the participant providing this nonce, followed by the compressed aggregate public|The public nonce produced by the `NonceGen` algorithm.|
+|MuSig2 Participant Partial Signature|`PSBT_IN_MUSIG2_PARTIAL_SIG = 0x1c`|`<33 byte participant pubkey (compressed)> <33 byte aggregate pubkey (compressed)> <32 byte hash or omitted>`|`<32 byte partial signature>`|||0, 2|
+|The compressed public key of the participant providing this partial signature, followed by the|The partial signature produced by the `Sign` algorithm.|
 
 
 The new per-output types are defined as follows:
 
 
-|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><valuedata></tt>|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|Name|`<keytype>`|`<keydata>`|`<valuedata>`|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|
-|MuSig2 Participant Public Keys|<tt>PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS = 0x08</tt>|<tt><33 byte aggregate pubkey (compressed)></tt>|<tt><33 byte participant pubkey (compressed)>*</tt>|||0, 2|
-|The MuSig2 compressed aggregate public key from the <tt>KeyAgg</tt> algorithm. This key may or may not|A list of the compressed public keys of the participants in the MuSig2 aggregate key in the order|
+|MuSig2 Participant Public Keys|`PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS = 0x08`|`<33 byte aggregate pubkey (compressed)>`|`<33 byte participant pubkey (compressed)>*`|||0, 2|
+|The MuSig2 compressed aggregate public key from the `KeyAgg` algorithm. This key may or may not|A list of the compressed public keys of the participants in the MuSig2 aggregate key in the order|
 
 
 <h2>Roles</h2>
@@ -82,58 +82,58 @@ The new per-output types are defined as follows:
 
 
 When an updater observes a Taproot output which involves a MuSig2 aggregate public key that it is
-aware of, it can add a <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt> field containing the public keys
+aware of, it can add a `PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS` field containing the public keys
 of the participants. This aggregate public key may be directly in the script, the Taproot internal
 key, the Taproot output key, or a public key from which the key in the script was derived from.
 
 An aggregate public key that appears directly in the script or internal key may be from the result
 of deriving child pubkeys from participant xpubs. If the updater has this derivation information, it
-should also add <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> for each participant public key.
+should also add `PSBT_IN_TAP_BIP32_DERIVATION` for each participant public key.
 
 If the public key found was derived from an aggregate public key, then all MuSig2 PSBT fields for
 that public key should contain the aggregate public key rather than the found pubkey itself. The
-updater should also add <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> that contains the derivation path used
+updater should also add `PSBT_IN_TAP_BIP32_DERIVATION` that contains the derivation path used
 to derive the found pubkey from the aggregate pubkey.
 Derivation from the aggregate pubkey can be assumed to follow <a href="/328" target="_blank">BIP 328</a>
-if there is no <tt>PSBT_GLOBAL_XPUB</tt> that specifies the synthetic xpub for the aggregate
+if there is no `PSBT_GLOBAL_XPUB` that specifies the synthetic xpub for the aggregate
 public key.
 
-Updaters should add <tt>PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS</tt> and
-<tt>PSBT_OUT_TAP_BIP32_DERIVATION</tt> similarly to inputs to aid in change detection.
+Updaters should add `PSBT_OUT_MUSIG2_PARTICIPANT_PUBKEYS` and
+`PSBT_OUT_TAP_BIP32_DERIVATION` similarly to inputs to aid in change detection.
 
 <h3>Signer</h3>
 
 
 To determine whether a signer is a participant in the MuSig2 aggregate key, the signer should first
-look at all <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt> and see if any key which it knows the
+look at all `PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS` and see if any key which it knows the
 private key for appears as a participant in any aggregate pubkey. Signers should also check whether
-any of the keys in <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> belong to it, and if any of those keys
-appear in as a participant in <tt>PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS</tt>.
+any of the keys in `PSBT_IN_TAP_BIP32_DERIVATION` belong to it, and if any of those keys
+appear in as a participant in `PSBT_IN_MUSIG2_PARTICIPANT_PUBKEYS`.
 
 For each aggregate public key that the signer is a participant of that it wants
 to produce a signature for, if the signer does not find an existing
-<tt>PSBT_IN_MUSIG2_PUB_NONCE</tt> field for its key, then it should add one using
-the <tt>NonceGen</tt> algorithm (or one of its variations) to produce a public
-nonce that is added in a <tt>PSBT_IN_MUSIG2_PUB_NONCE</tt> field. However
+`PSBT_IN_MUSIG2_PUB_NONCE` field for its key, then it should add one using
+the `NonceGen` algorithm (or one of its variations) to produce a public
+nonce that is added in a `PSBT_IN_MUSIG2_PUB_NONCE` field. However
 signers must keep in mind that **improper nonce usage can compromise private
 keys.** Please see <a href="/327" target="_blank">BIP 327</a> for best practices on nonce generation and usage.
 
-Once all signers have added their <tt>PSBT_IN_MUSIG2_PUB_NONCE</tt> fields, each signer will perform
-the <tt>NonceAgg</tt> algorithm followed by the <tt>Sign</tt> algorithm in order to produce the
+Once all signers have added their `PSBT_IN_MUSIG2_PUB_NONCE` fields, each signer will perform
+the `NonceAgg` algorithm followed by the `Sign` algorithm in order to produce the
 partial signature for their key. The result will be added to the PSBT in a
-<tt>PSBT_IN_MUSIG2_PARTIAL_SIG</tt> field.
+`PSBT_IN_MUSIG2_PARTIAL_SIG` field.
 
 Signers must remember to apply any relevant tweaks such as a tweak that is the result of performing
 BIP 32 unhardened derivation with the aggregate public key as the parent key.
 
-If all other signers have provided a <tt>PSBT_IN_MUSIG2_PARTIAL_SIG</tt>, then the final signer may
-perform the <tt>PartialSigAgg</tt> algorithm and produce a <a href="/340" target="_blank">BIP 340</a> compatible signature that can be
-placed into a <tt>PSBT_IN_TAP_KEY_SIG</tt> or a <tt>PSBT_IN_TAP_SCRIPT_SIG</tt>.
+If all other signers have provided a `PSBT_IN_MUSIG2_PARTIAL_SIG`, then the final signer may
+perform the `PartialSigAgg` algorithm and produce a <a href="/340" target="_blank">BIP 340</a> compatible signature that can be
+placed into a `PSBT_IN_TAP_KEY_SIG` or a `PSBT_IN_TAP_SCRIPT_SIG`.
 
 <h3>Finalizer</h3>
 
 
-A finalizer may perform the same <tt>PartialSigAgg</tt> step as the final signer if it has not
+A finalizer may perform the same `PartialSigAgg` step as the final signer if it has not
 already been done.
 
 Otherwise, the resulting signature is a <a href="/340" target="_blank">BIP 340</a> compatible signature and finalizers should treat it
@@ -145,7 +145,7 @@ as such.
 These are simply new fields added to the existing PSBT format. Because PSBT is designed to be
 extensible, old software will ignore the new fields.
 
-Reusing <tt>PSBT_IN_TAP_BIP32_DERIVATION</tt> to provide derivation paths for participant public
+Reusing `PSBT_IN_TAP_BIP32_DERIVATION` to provide derivation paths for participant public
 keys may cause software unaware of MuSig2 to produce a signature for that public key. This is still
 safe. If that public key does not directly appear in the leaf script that was signed, then the
 signature produced will not be useful and so cannot be replayed. If the public key does directly
@@ -158,12 +158,12 @@ case, producing a signature does not give rise to the possibility of losing fund
 
 The following are valid PSBTs
 
-All of the following test cases use the aggregate pubkey <tt>030b58e337aa4d3852a8c29387c42408d8cfbe3a613a5e397e0a9f01a5fb7107d4</tt>
+All of the following test cases use the aggregate pubkey `030b58e337aa4d3852a8c29387c42408d8cfbe3a613a5e397e0a9f01a5fb7107d4`
 which has the following participant keys:
 
-1.  <tt>02346B99593357107C9D3459E9DEBA8D3EAF44E6636C85C7F853EB90BA52E8CD00</tt>, <tt>L2XJhGmS9rkNwzn1eFJVD5ydKpA5K5p54uk9qqWpURj85VkEPuNE</tt>, <tt>cStJABmHavSe7SFH2f7caQUgx3TUyXum8wtcxFyKyYP8LEqnMiEh</tt>
-1.  <tt>024fafd65f8169186fc2bfdb2233c77e630d10be280a24c7165c09a27611775c2c</tt>, <tt>L19kEzCkrce5E3v7CWKn9pTceVzFwwdorjNXfqtUc5nKLXz4qXSX</tt>, <tt>cRWjhuCcHgLLPVPNav8uX8xgGjHfcPjVvmWznGLz7CSKbGzmfvRQ</tt>
-1.  <tt>02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9</tt>, <tt>KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU74sHUHy8S</tt>, <tt>cMahea7zqjxrtgAbB7LSGbcQUr1uX1ojuat9jZodMN87KcLPVfXz</tt>
+1.  `02346B99593357107C9D3459E9DEBA8D3EAF44E6636C85C7F853EB90BA52E8CD00`, `L2XJhGmS9rkNwzn1eFJVD5ydKpA5K5p54uk9qqWpURj85VkEPuNE`, `cStJABmHavSe7SFH2f7caQUgx3TUyXum8wtcxFyKyYP8LEqnMiEh`
+1.  `024fafd65f8169186fc2bfdb2233c77e630d10be280a24c7165c09a27611775c2c`, `L19kEzCkrce5E3v7CWKn9pTceVzFwwdorjNXfqtUc5nKLXz4qXSX`, `cRWjhuCcHgLLPVPNav8uX8xgGjHfcPjVvmWznGLz7CSKbGzmfvRQ`
+1.  `02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9`, `KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU74sHUHy8S`, `cMahea7zqjxrtgAbB7LSGbcQUr1uX1ojuat9jZodMN87KcLPVfXz`
 
 
 *  Case: Spend of a Taproot output where the output key is a MuSig2 Aggregate Pubkey

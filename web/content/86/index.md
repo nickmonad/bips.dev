@@ -64,10 +64,10 @@ but with a different purpose value for the script type.
 m / purpose' / coin_type' / account' / change / address_index
 ```
 
-For the <tt>purpose</tt>-path level it uses <tt>86'</tt>.
+For the `purpose`-path level it uses `86'`.
 The rest of the levels are used as defined in BIPs 44, 49, and 84.
 
-A key derived with this derivation path pattern will be referred to as <tt>derived_key</tt> further
+A key derived with this derivation path pattern will be referred to as `derived_key` further
 in this document.
 
 <h3>Address derivation</h3>

@@ -451,6 +451,7 @@ fn render_line(line: &str, refs: &mut Vec<String>) -> Result<String, Infallible>
         .and_then(replace_bold)
         .and_then(replace_italic)
         .and_then(replace_code_tag)
+        .and_then(replace_tt_tag)
 }
 
 fn replace_nop(line: String) -> Result<String, Infallible> {
@@ -459,6 +460,10 @@ fn replace_nop(line: String) -> Result<String, Infallible> {
 
 fn replace_code_tag(line: String) -> Result<String, Infallible> {
     Ok(line.replace("<code>", "`").replace("</code>", "`"))
+}
+
+fn replace_tt_tag(line: String) -> Result<String, Infallible> {
+    Ok(line.replace("<tt>", "`").replace("</tt>", "`"))
 }
 
 fn replace_bold(line: String) -> Result<String, Infallible> {
@@ -945,6 +950,32 @@ mod test {
         assert_eq!(
             render_line("this is some ''italic'' text", &mut Vec::default()).unwrap(),
             "this is some _italic_ text".to_string(),
+        )
+    }
+
+    // tags
+
+    #[test]
+    fn tag_code() {
+        assert_eq!(
+            render_line(
+                "this is some <code>print()</code> text",
+                &mut Vec::default()
+            )
+            .unwrap(),
+            "this is some `print()` text".to_string(),
+        )
+    }
+
+    #[test]
+    fn tag_tt() {
+        assert_eq!(
+            render_line(
+                "this is some <tt>xprv(somestuff*)</tt> text",
+                &mut Vec::default()
+            )
+            .unwrap(),
+            "this is some `xprv(somestuff*)` text".to_string(),
         )
     }
 

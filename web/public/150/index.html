@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 150
   Layer: Peer Services
   Title: Peer Authentication
@@ -143,13 +143,13 @@
 <p>The authentication scheme proposed in this BIP uses ECDSA, <strong>secrets will never be transmitted</strong>.</p>
 <p><strong>Authentication initialization must only happen if encrypted channels have been established (according to BIP-151 [1]).</strong></p>
 <p>The <strong>encryption-session-ID</strong> is available once channels are encrypted (according to BIP-151 [1]).</p>
-<p>The identity-public-keys used for the authentication must be pre-shared over a different channel (mail/PGP, physical paper exchange, etc.). This BIP does not cover a &quot;trust on first use&quot; (TOFU) concept.</p>
+<p>The identity-public-keys used for the authentication must be pre-shared over a different channel (mail/PGP, physical paper exchange, etc.). This BIP does not cover a "trust on first use" (TOFU) concept.</p>
 <p>The authentication state must be kept until the encryption/connection terminates.</p>
 <p>Only one authentication process is allowed per connection. Re-authentication require re-establishing the connection.</p>
 <h3> Known-peers and authorized-peers database </h3>
-<p>Each peer that supports p2p authentication must provide two user-editable &quot;databases&quot;.</p>
+<p>Each peer that supports p2p authentication must provide two user-editable "databases".</p>
 <ol>
-<li><strong>known-peers</strong> contains known identity-public-keys together with a network identifier (IP &amp; port), similar to the &quot;known-host&quot; file supported by openssh.</li>
+<li><strong>known-peers</strong> contains known identity-public-keys together with a network identifier (IP &amp; port), similar to the "known-host" file supported by openssh.</li>
 <li><strong>authorized-peers</strong> contains authorized identity-public-keys</li>
 </ol>
 <h3> Local identity key management </h3>
@@ -216,7 +216,7 @@ The base58check identity byte is <code>0x0F</code> followed by an identity-addre
     [32 bytes, hash(encryption-session-ID || &quot;i&quot; || &lt;remote-peers-expected-identity-public-key&gt;)]
 </code></pre>
 <ol>
-<li>Responding peer does create the same hash <code>(encryption-session-ID || &quot;i&quot; || &lt;remote-peers-expected-identity-public-key&gt;)</code> with its local identity-public-key</li>
+<li>Responding peer does create the same hash <code>(encryption-session-ID || "i" || &lt;remote-peers-expected-identity-public-key&gt;)</code> with its local identity-public-key</li>
 <li>If the hash does not match, response with an <code>AUTHREPLY</code> message containing 64bytes of zeros.</li>
 <li>In case of a match, response with an <code>AUTHREPLY</code> message</li>
 </ol>

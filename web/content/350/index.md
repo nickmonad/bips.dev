@@ -185,32 +185,32 @@ On the other hand, the Bech32m proposal breaks forward-compatibility for sending
 
 
 The following strings are valid Bech32m:
-*  <tt>A1LQFN3A</tt>
-*  <tt>a1lqfn3a</tt>
-*  <tt>an83characterlonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber11sg7hg6</tt>
-*  <tt>abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx</tt>
-*  <tt>11llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllludsr8</tt>
-*  <tt>split1checkupstagehandshakeupstreamerranterredcaperredlc445v</tt>
-*  <tt>?1v759aa</tt>
+*  `A1LQFN3A`
+*  `a1lqfn3a`
+*  `an83characterlonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber11sg7hg6`
+*  `abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx`
+*  `11llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllludsr8`
+*  `split1checkupstagehandshakeupstreamerranterredcaperredlc445v`
+*  `?1v759aa`
 
 
 No string can be simultaneously valid Bech32 and Bech32m, so the above examples also serve as invalid test vectors for Bech32.
 
 The following string are not valid Bech32m (with reason for invalidity):
-*  0x20 + <tt>1xj0phk</tt>: HRP character out of range
-*  0x7F + <tt>1g6xzxy</tt>: HRP character out of range
-*  0x80 + <tt>1vctc34</tt>: HRP character out of range
-*  <tt>an84characterslonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber11d6pts4</tt>: overall max length exceeded
-*  <tt>qyrz8wqd2c9m</tt>: No separator character
-*  <tt>1qyrz8wqd2c9m</tt>: Empty HRP
-*  <tt>y1b0jsk6g</tt>: Invalid data character
-*  <tt>lt1igcx5c0</tt>: Invalid data character
-*  <tt>in1muywd</tt>: Too short checksum
-*  <tt>mm1crxm3i</tt>: Invalid character in checksum
-*  <tt>au1s5cgom</tt>: Invalid character in checksum
-*  <tt>M1VUXWEZ</tt>: checksum calculated with uppercase form of HRP
-*  <tt>16plkw9</tt>: empty HRP
-*  <tt>1p2gdwpf</tt>: empty HRP
+*  0x20 + `1xj0phk`: HRP character out of range
+*  0x7F + `1g6xzxy`: HRP character out of range
+*  0x80 + `1vctc34`: HRP character out of range
+*  `an84characterslonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber11d6pts4`: overall max length exceeded
+*  `qyrz8wqd2c9m`: No separator character
+*  `1qyrz8wqd2c9m`: Empty HRP
+*  `y1b0jsk6g`: Invalid data character
+*  `lt1igcx5c0`: Invalid data character
+*  `in1muywd`: Too short checksum
+*  `mm1crxm3i`: Invalid character in checksum
+*  `au1s5cgom`: Invalid character in checksum
+*  `M1VUXWEZ`: checksum calculated with uppercase form of HRP
+*  `16plkw9`: empty HRP
+*  `1p2gdwpf`: empty HRP
 
 
 <h3>Test vectors for v0-v16 native segregated witness addresses</h3>
@@ -218,33 +218,33 @@ The following string are not valid Bech32m (with reason for invalidity):
 
 The following list gives valid segwit addresses and the scriptPubKey that they
 translate to in hex.
-*  <tt>BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4</tt>: <tt>0014751e76e8199196d454941c45d1b3a323f1433bd6</tt>
-*  <tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</tt>: <tt>00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262</tt>
-*  <tt>bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kt5nd6y</tt>: <tt>5128751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6</tt>
-*  <tt>BC1SW50QGDZ25J</tt>: <tt>6002751e</tt>
-*  <tt>bc1zw508d6qejxtdg4y5r3zarvaryvaxxpcs</tt>: <tt>5210751e76e8199196d454941c45d1b3a323</tt>
-*  <tt>tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy</tt>: <tt>0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433</tt>
-*  <tt>tb1pqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesf3hn0c</tt>: <tt>5120000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433</tt>
-*  <tt>bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0</tt>: <tt>512079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798</tt>
+*  `BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4`: `0014751e76e8199196d454941c45d1b3a323f1433bd6`
+*  `tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7`: `00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262`
+*  `bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kt5nd6y`: `5128751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6`
+*  `BC1SW50QGDZ25J`: `6002751e`
+*  `bc1zw508d6qejxtdg4y5r3zarvaryvaxxpcs`: `5210751e76e8199196d454941c45d1b3a323`
+*  `tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy`: `0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433`
+*  `tb1pqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesf3hn0c`: `5120000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433`
+*  `bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0`: `512079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798`
 
 
 The following list gives invalid segwit addresses and the reason for
 their invalidity.
-*  <tt>tc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq5zuyut</tt>: Invalid human-readable part
-*  <tt>bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqh2y7hd</tt>: Invalid checksum (Bech32 instead of Bech32m)
-*  <tt>tb1z0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqglt7rf</tt>: Invalid checksum (Bech32 instead of Bech32m)
-*  <tt>BC1S0XLXVLHEMJA6C4DQV22UAPCTQUPFHLXM9H8Z3K2E72Q4K9HCZ7VQ54WELL</tt>: Invalid checksum (Bech32 instead of Bech32m)
-*  <tt>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kemeawh</tt>: Invalid checksum (Bech32m instead of Bech32)
-*  <tt>tb1q0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq24jc47</tt>: Invalid checksum (Bech32m instead of Bech32)
-*  <tt>bc1p38j9r5y49hruaue7wxjce0updqjuyyx0kh56v8s25huc6995vvpql3jow4</tt>: Invalid character in checksum
-*  <tt>BC130XLXVLHEMJA6C4DQV22UAPCTQUPFHLXM9H8Z3K2E72Q4K9HCZ7VQ7ZWS8R</tt>: Invalid witness version
-*  <tt>bc1pw5dgrnzv</tt>: Invalid program length (1 byte)
-*  <tt>bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7v8n0nx0muaewav253zgeav</tt>: Invalid program length (41 bytes)
-*  <tt>BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P</tt>: Invalid program length for witness version 0 (per BIP141)
-*  <tt>tb1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq47Zagq</tt>: Mixed case
-*  <tt>bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7v07qwwzcrf</tt>: zero padding of more than 4 bits
-*  <tt>tb1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vpggkg4j</tt>: Non-zero padding in 8-to-5 conversion
-*  <tt>bc1gmk9yu</tt>: Empty data section
+*  `tc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq5zuyut`: Invalid human-readable part
+*  `bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqh2y7hd`: Invalid checksum (Bech32 instead of Bech32m)
+*  `tb1z0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqglt7rf`: Invalid checksum (Bech32 instead of Bech32m)
+*  `BC1S0XLXVLHEMJA6C4DQV22UAPCTQUPFHLXM9H8Z3K2E72Q4K9HCZ7VQ54WELL`: Invalid checksum (Bech32 instead of Bech32m)
+*  `bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kemeawh`: Invalid checksum (Bech32m instead of Bech32)
+*  `tb1q0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq24jc47`: Invalid checksum (Bech32m instead of Bech32)
+*  `bc1p38j9r5y49hruaue7wxjce0updqjuyyx0kh56v8s25huc6995vvpql3jow4`: Invalid character in checksum
+*  `BC130XLXVLHEMJA6C4DQV22UAPCTQUPFHLXM9H8Z3K2E72Q4K9HCZ7VQ7ZWS8R`: Invalid witness version
+*  `bc1pw5dgrnzv`: Invalid program length (1 byte)
+*  `bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7v8n0nx0muaewav253zgeav`: Invalid program length (41 bytes)
+*  `BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P`: Invalid program length for witness version 0 (per BIP141)
+*  `tb1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq47Zagq`: Mixed case
+*  `bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7v07qwwzcrf`: zero padding of more than 4 bits
+*  `tb1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vpggkg4j`: Non-zero padding in 8-to-5 conversion
+*  `bc1gmk9yu`: Empty data section
 
 
 

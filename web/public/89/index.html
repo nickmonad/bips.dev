@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 89
   Layer: Applications
   Title: Chain Code Delegation
@@ -137,10 +137,10 @@
 <h2> Terminology </h2>
 <p>In CCD, the chain code is the object of delegation—not signing authority. A participant who gives up their chain code delegates it to another.</p>
 <ul>
-<li>A &quot;Delegator&quot; is a participant who delegates their chain code to another party. They hold only a non-extended keypair and receive scalar tweaks from the delegatee when asked to sign.</li>
-<li>A &quot;Delegatee&quot; is a participant who receives and retains a delegated chain code for another participant's public key, and computes derivation tweaks for that participant.</li>
-<li>A &quot;Participant&quot; is any key holder that can co-sign for UTXOs in the wallet (including delegators and delegatees).</li>
-<li>A &quot;Non-hardened derivation&quot; is a BIP32 child derivation where index &lt; 2^31.</li>
+<li>A "Delegator" is a participant who delegates their chain code to another party. They hold only a non-extended keypair and receive scalar tweaks from the delegatee when asked to sign.</li>
+<li>A "Delegatee" is a participant who receives and retains a delegated chain code for another participant's public key, and computes derivation tweaks for that participant.</li>
+<li>A "Participant" is any key holder that can co-sign for UTXOs in the wallet (including delegators and delegatees).</li>
+<li>A "Non-hardened derivation" is a BIP32 child derivation where index &lt; 2^31.</li>
 </ul>
 <h2> Overview </h2>
 <p>CCD operates by having Delegatees deprive Delegators of BIP32 chain codes during setup and later conveying the aggregated scalar tweak computed as the sum of non-hardened derivation tweaks along the remaining path to the child key used by a given input or change output. A Delegator uses the tweak to compute the child keys for verification and signing without being able to derive or recognize keys for other paths.</p>
@@ -216,8 +216,8 @@ Algorithm _ComputeBIP32Tweak(P, I)_:
 </div>
 <p>Any attempt to apply a hardened derivation (index ≥ 2<sup>31</sup>) MUST fail. Delegatees MAY discard P′ after extracting t if it is not otherwise required.</p>
 <h3> Delegation Bundle </h3>
-<p>CCD requires the delegatee to provide per-participant tweaks for inputs and (optionally) change outputs. Tweaks for change outputs are only required if a delegator wants to be able to compute the amount of bitcoin they are spending. </p>
-<p>A delegatee MUST provide each delegator with, for every signing context, a collection of tuples (P<sub>i</sub>, t<sub>i</sub>) where P<sub>i</sub> is the participant's base public key disclosed to the delegator and t<sub>i</sub> is the aggregated tweak returned by <em>ComputeBIP32Tweak</em>. The scalar t<sub>i</sub> MUST be encoded as a 32-byte big-endian integer. </p>
+<p>CCD requires the delegatee to provide per-participant tweaks for inputs and (optionally) change outputs. Tweaks for change outputs are only required if a delegator wants to be able to compute the amount of bitcoin they are spending.</p>
+<p>A delegatee MUST provide each delegator with, for every signing context, a collection of tuples (P<sub>i</sub>, t<sub>i</sub>) where P<sub>i</sub> is the participant's base public key disclosed to the delegator and t<sub>i</sub> is the aggregated tweak returned by <em>ComputeBIP32Tweak</em>. The scalar t<sub>i</sub> MUST be encoded as a 32-byte big-endian integer.</p>
 <p>The transport that carries this bundle is out of scope for this proposal; implementers MAY use PSBT proprietary keys, RPC payloads, or bespoke messages as long as the delegator can authenticate the origin of the data. Delegatees SHOULD attach the witness script (or sufficient script template information) built with the tweaked keys when the delegator is expected to verify the input or enforce spending policy on change outputs.</p>
 <p>Delegators use the supplied CCD tweak bundle during verification (see <em>Delegator input and change verification</em>) and signature generation (see <em>DelegatorSign</em>). The message to be signed is provided separately as part of the standard signing protocol and is not part of the CCD-specific bundle.</p>
 <h3> Signing Modes </h3>
@@ -230,7 +230,7 @@ Algorithm _ComputeBIP32Tweak(P, I)_:
 <h4>Non-Blinded Signing</h4>
 <p>For non-blinded signing, the delegator can produce signatures as usual using the tweaked key.</p>
 <h5>Delegator input and change verification (Optional)</h5>
-<p>A delegator MAY validate the data it receives before producing signatures. </p>
+<p>A delegator MAY validate the data it receives before producing signatures.</p>
 <p>For example, input verification reassures the delegator that every tweaked key they are asked to sign for corresponds to a wallet input they recognise. Change verification lets them establish the net outflow and enforce spending policy.</p>
 <p>Both checks rely on the same delegated tweak bundle described above.</p>
 <h5>Input verification</h5>
@@ -301,7 +301,7 @@ Algorithm _DelegatorSign(t, x, m)_:
 <li>The accumulated tweak <em>tacc</em>: an integer with <em>0 ≤ tacc &lt; n</em></li>
 <li>The value <em>gacc</em> : 1 or -1 mod n</li>
 </ul>
-<p>We write &quot;Let <em>(Q, gacc, tacc) = tweak_ctx</em>&quot; to assign names to the elements of a Tweak Context.</p>
+<p>We write "Let <em>(Q, gacc, tacc) = tweak_ctx</em>" to assign names to the elements of a Tweak Context.</p>
 <div>
 Algorithm _TweakCtxInit(pk)_:
 *  Input:
@@ -365,7 +365,7 @@ Algorithm _BlindNonceGen(sk, pk, aggpk, m, extra_in)_:
 <li>The tweaks <em>tweak<sub>1..v</sub></em>: <em>v</em> 32-byte arrays</li>
 <li>The tweak modes <em>is_xonly_t<sub>1..v</sub></em> : <em>v</em> booleans</li>
 </ul>
-<p>We write &quot;Let <em>(pk, blindfactor, challenge, pubnonce, v, tweak<sub>1..v</sub>, is_xonly_t<sub>1..v</sub>) = session_ctx</em>&quot; to assign names to the elements of a Session Context.</p>
+<p>We write "Let <em>(pk, blindfactor, challenge, pubnonce, v, tweak<sub>1..v</sub>, is_xonly_t<sub>1..v</sub>) = session_ctx</em>" to assign names to the elements of a Session Context.</p>
 <div>
 Algorithm _GetSessionValues(session_ctx)_:
 *  Let _(pk, blindfactor, challenge, pubnonce, v, tweak<sub>1..v</sub>, is_xonly_t<sub>1..v</sub>) = session_ctx_
@@ -478,7 +478,7 @@ a265da139aea27386085a2a8760f8698e1bda64e]).</p>
 <ul>
 <li><strong>0.1.3</strong> (2026-02-02): Upgrade secp256k1lab and add license file; fix type checker and linter issues; clarify Delegator/Delegatee terminology, derivation constraints, signing modes, and verification scope.</li>
 <li><strong>0.1.2</strong> (2025-12-03): Updated to reflect BIP number assignment.</li>
-<li><strong>0.1.1</strong> (2025-11-30): Fix acknowledgments spelling, BIP3 formatting, and use &quot;Chain Code&quot; with a space throughout.</li>
+<li><strong>0.1.1</strong> (2025-11-30): Fix acknowledgments spelling, BIP3 formatting, and use "Chain Code" with a space throughout.</li>
 <li><strong>0.1.0</strong> (2025-10-14): Publication of draft BIP</li>
 </ul>
 <h2> Acknowledgements </h2>

@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 442
   Layer: Consensus (soft fork)
   Title: OP_PAIRCOMMIT
@@ -205,8 +205,10 @@ OP_ENDIF
 </code></pre>
 <p>These constructions ensure both parties sign the same pair hash, requiring inclusion of both update and settlement hashes in the witness. <sup class="footnote-reference"><a href="#4">4</a></sup> <sup class="footnote-reference"><a href="#5">5</a></sup></p>
 <div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
-<p><code>state-n-hash</code> commits to a specific <code>nLockTime</code> value for the transaction through <code>OP_CHECKTEMPLATEVERIFY</code>; <code>OP_CHECKLOCKTIMEVERIFY</code> ensures that the state progression can only go forward (the transaction needs to have greater <code>nLockTime</code> value than the intermediate state 
-<sup class="footnote-reference"><a href="#5">5</a></sup>: <code>OP_0NOTEQUAL</code> can be omitted (any non-zero value left on the stack would be accepted by the script interpreter).</p>
+<p><code>state-n-hash</code> commits to a specific <code>nLockTime</code> value for the transaction through <code>OP_CHECKTEMPLATEVERIFY</code>; <code>OP_CHECKLOCKTIMEVERIFY</code> ensures that the state progression can only go forward (the transaction needs to have greater <code>nLockTime</code> value than the intermediate state</p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><code>OP_0NOTEQUAL</code> can be omitted (any non-zero value left on the stack would be accepted by the script interpreter).</p>
 </div>
 <h3 id="In_MATT">In MATT</h3>
 <p>The Merklize All The Things (<a rel="noopener" target="_blank" href="https://merkle.fun">MATT</a>) framework uses <code>OP_CAT</code> to combine items for commitments. <code>OP_PAIRCOMMIT</code> provides a more ergonomic and secure alternative<sup class="footnote-reference"><a href="#6">6</a></sup>.</p>
@@ -227,9 +229,13 @@ OP_ENDIF
 <li><code>OP_RETURN</code><sup class="footnote-reference"><a href="#8">9</a></sup></li>
 </ul>
 <div class="footnote-definition" id="7"><sup class="footnote-definition-label">8</sup>
-<p>Committing to the taproot annex allows one additional item, but it is not accessible to script.
-<sup class="footnote-reference"><a href="#8">9</a></sup>: <code>OP_RETURN</code> can commit to additional data, but is costly and not accessible to script.
-<sup class="footnote-reference"><a href="#9">7</a></sup>: <code>OP_PAIRCOMMIT</code> enables useful scripts without the risks of <code>OP_CAT</code> (see <a rel="noopener" target="_blank" href="https://medium.com/blockstream/cat-and-schnorr-tricks-i-faf1b59bd298">CAT-tricks-I</a>, <a rel="noopener" target="_blank" href="https://medium.com/blockstream/cat-and-schnorr-tricks-ii-2f6ede3d7bb5">CAT-tricks-II</a>).</p>
+<p>Committing to the taproot annex allows one additional item, but it is not accessible to script.</p>
+</div>
+<div class="footnote-definition" id="8"><sup class="footnote-definition-label">9</sup>
+<p><code>OP_RETURN</code> can commit to additional data, but is costly and not accessible to script.</p>
+</div>
+<div class="footnote-definition" id="9"><sup class="footnote-definition-label">7</sup>
+<p><code>OP_PAIRCOMMIT</code> enables useful scripts without the risks of <code>OP_CAT</code> (see <a rel="noopener" target="_blank" href="https://medium.com/blockstream/cat-and-schnorr-tricks-i-faf1b59bd298">CAT-tricks-I</a>, <a rel="noopener" target="_blank" href="https://medium.com/blockstream/cat-and-schnorr-tricks-ii-2f6ede3d7bb5">CAT-tricks-II</a>).</p>
 </div>
 <h2 id="Reference_Implementation">Reference Implementation</h2>
 <h3 id="Code">Code</h3>

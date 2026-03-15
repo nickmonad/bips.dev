@@ -93,21 +93,21 @@ This BIP defines the two needed steps to derive multiple deterministic addresses
 <h3> Public key derivation </h3>
 
 
-To derive a public key from the root account, this BIP uses a similar account-structure as defined in BIP <a href="/84" target="_blank">44</a> but with <tt>change</tt> set to <tt>2</tt>.
+To derive a public key from the root account, this BIP uses a similar account-structure as defined in BIP <a href="/84" target="_blank">44</a> but with `change` set to `2`.
 
 ```
 m / 84' / 0' / 0' / 2 / index
 ```
 
-A key derived with this derivation path pattern will be referred to as <tt>derived_key</tt> further
+A key derived with this derivation path pattern will be referred to as `derived_key` further
 in this document.
 
-For <tt>index</tt>, addresses are numbered from 0 in a sequentially increasing manner with a fixed upper bound: The index only goes up to <tt>959</tt> inclusive. Only 960 addresses can be derived for a given BIP32 master key. Furthermore there is no concept of a gap limit, instead wallets must always generate all 960 addresses and check for all of them if they have a balance and history.
+For `index`, addresses are numbered from 0 in a sequentially increasing manner with a fixed upper bound: The index only goes up to `959` inclusive. Only 960 addresses can be derived for a given BIP32 master key. Furthermore there is no concept of a gap limit, instead wallets must always generate all 960 addresses and check for all of them if they have a balance and history.
 
 <h3> Timelock derivation </h3>
 
 
-The timelock used in the time-locked address is derived from the <tt>index</tt>. The timelock is a unix time. It is always at the start of the first second at the beginning of the month (see <a href="#Test vectors" target="_blank">Test vectors</a>). The <tt>index</tt> counts upwards the months from January 2020, ending in December 2099. At 12 months per year for 80 years this totals 960 timelocks. Note that care must be taken with the year 2038 problem on 32-bit systems.
+The timelock used in the time-locked address is derived from the `index`. The timelock is a unix time. It is always at the start of the first second at the beginning of the month (see <a href="#Test vectors" target="_blank">Test vectors</a>). The `index` counts upwards the months from January 2020, ending in December 2099. At 12 months per year for 80 years this totals 960 timelocks. Note that care must be taken with the year 2038 problem on 32-bit systems.
 
 ```
 year = 2020 + index // 12
@@ -118,7 +118,7 @@ month = 1 + index % 12
 <h3> Address derivation </h3>
 
 
-To derive the address from the above calculated public key and timelock, we create a <tt>witness script</tt> which locks the funds until the <tt>timelock</tt>, and then checks the signature of the <tt>derived_key</tt>. The <tt>witness script</tt> is hashed with SHA256 to produce a 32-byte hash value that forms the <tt>witness program</tt> in the output script of the P2WSH address.
+To derive the address from the above calculated public key and timelock, we create a `witness script` which locks the funds until the `timelock`, and then checks the signature of the `derived_key`. The `witness script` is hashed with SHA256 to produce a 32-byte hash value that forms the `witness program` in the output script of the P2WSH address.
 
 ```
     witnessScript: <timelock> OP_CHECKLOCKTIMEVERIFY OP_DROP <derived_key> OP_CHECKSIG
@@ -138,7 +138,7 @@ The certificate message is defined as `"fidelity-bond-cert" || "|" || cert_pubke
 
 The certificate expiry `cert_expiry` is the number of the 2016-block period after which the certificate is no longer valid. For example, if `cert_expiry` is 330 then the certificate will become invalid after block height 665280 (:=330x2016). The purpose of the expiry parameter is so that in case the certificate keypair is compromised, the attacker can only impersonate the fidelity bond for a limited amount of time.
 
-A certificate message can be created by another application external to this standard. It is then prepended with the string `0x18 || "Bitcoin Signed Message:\n"` and a byte denoting the length of the certificate message. The whole thing is then signed with the private key of the <tt>derived_key</tt>. This part is identical to the "Sign Message" function which many wallets already implement.
+A certificate message can be created by another application external to this standard. It is then prepended with the string `0x18 || "Bitcoin Signed Message:\n"` and a byte denoting the length of the certificate message. The whole thing is then signed with the private key of the `derived_key`. This part is identical to the "Sign Message" function which many wallets already implement.
 
 Almost all wallets implementing this standard can use their already-existing "Sign Message" function to sign the certificate message. As the certificate message itself is always an ASCII string, the wallet may not need to specially implement this section at all but just rely on users copypasting their certificate message into the already-existing "Sign Message" user interface. This works as long as the wallet knows how to use the private key of the timelocked address for signing messages.
 

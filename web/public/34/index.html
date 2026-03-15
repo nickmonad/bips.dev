@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 34
   Layer: Consensus (soft fork)
   Title: Block v2, Height in Coinbase
@@ -134,9 +134,9 @@
 <h2>Specification</h2>
 <ol>
 <li>Treat transactions with a version greater than 1 as non-standard (official Satoshi client will not mine or relay them).</li>
-<li>Add height as the first item in the coinbase transaction's scriptSig, and increase block version to 2. The format of the height is &quot;minimally encoded serialized CScript&quot; -- first byte is number of bytes in the number (will be 0x03 on main net for the next 150 or so years with 2<sup>23</sup>-1 blocks), following bytes are little-endian representation of the number (including a sign bit).  Height is the height of the mined block in the block chain, where the genesis block is height zero (0).</li>
+<li>Add height as the first item in the coinbase transaction's scriptSig, and increase block version to 2. The format of the height is "minimally encoded serialized CScript" -- first byte is number of bytes in the number (will be 0x03 on main net for the next 150 or so years with 2<sup>23</sup>-1 blocks), following bytes are little-endian representation of the number (including a sign bit).  Height is the height of the mined block in the block chain, where the genesis block is height zero (0).</li>
 <li>75% rule: If 750 of the last 1,000 blocks are version 2 or greater, reject invalid version 2 blocks. (testnet3: 51 of last 100)</li>
-<li>95% rule (&quot;Point of no return&quot;): If 950 of the last 1,000 blocks are version 2 or greater, reject all version 1 blocks. (testnet3: 75 of last 100)</li>
+<li>95% rule ("Point of no return"): If 950 of the last 1,000 blocks are version 2 or greater, reject all version 1 blocks. (testnet3: 75 of last 100)</li>
 </ol>
 <h2>Backward compatibility</h2>
 <p>All older clients are compatible with this change. Users and merchants should not be impacted. Miners are strongly recommended to upgrade to version 2 blocks. Once 95% of the miners have upgraded to version 2, the remainder will be orphaned if they fail to upgrade.</p>

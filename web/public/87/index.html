@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 87
   Layer: Applications
   Title: Hierarchy for Deterministic Multisig Wallets
@@ -141,7 +141,7 @@ A modern standardization is needed for multisig derivation paths.  There are som
 <pre><code>m &#x2F; purpose&#x27; &#x2F; cosigner_index &#x2F; change &#x2F; address_index
 </code></pre>
 <p>BIP45 unnecessarily demands a single script type (here, P2SH).  In addition, BIP45 sets <code>cosigner_index</code> in order to sort the <code>purpose'</code> public keys of each cosigner.  This too is redundant, as descriptors can set the order of the public keys with <code>multi</code> or have them sorted lexicographically (as described in <a href="/67" target="_blank">BIP67</a>) with <code>sortedmulti</code>.  Sorting public keys between cosigners in order to create the full derivation path, prior to sending the key record to the coordinator to create the descriptor, merely adds additional unnecessary communication rounds.</p>
-<p>The second multisignature &quot;standard&quot; in use is m/48', which specifies:</p>
+<p>The second multisignature "standard" in use is m/48', which specifies:</p>
 <pre><code>m &#x2F; purpose&#x27; &#x2F; coin_type&#x27; &#x2F; account&#x27; &#x2F; script_type&#x27; &#x2F; change &#x2F; address_index
 </code></pre>
 <p>Rather than following in BIP 44/49/84's path and having a separate BIP per script after P2SH (BIP45), vendors decided to insert <code>script_type'</code> into the derivation path (where P2SH-P2WSH=1, P2WSH=2, Future_Script=3, etc). As described previously, this is unnecessary, as the descriptor sets the script.  While it attempts to reduce maintenance work by getting rid of new BIPs-per-script, it still requires maintaining an updated, redundant, <code>script_type</code> list.</p>

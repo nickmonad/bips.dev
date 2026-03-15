@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 128
   Layer: Applications
   Title: Timelock-Recovery Storage Format
@@ -165,7 +165,7 @@ recovery-mechanism automatically applies to new funds received into the wallet.<
 pre-signed transactions:</p>
 <ul>
 <li>Script-based wallets are harder to implement correctly by hardware wallets, and harder to backup properly (i.e. users may forget to backup wallet-descriptors even for basic multisig wallets).</li>
-<li>As of the time of writing, scripts can limit when secondary-keys can be used, but not how they can be used: if the user doesn't touch the wallets' UTXOs for long-enough time, the secondary key will eventually become useable and could move the funds anywhere. This is true whether we measure the time in absolute terms (OP_CHECKLOCKTIMEVERIFY) or relative terms compared to when the wallets' UTXOs were created (OP_CHECKSEQUENCEVERIFY). This means that even in the happy-flow scenario of an untouched wallet, where no recovery is needed, the user must periodically &quot;renew&quot; the recovery-mechanism by spending the UTXO to a new wallet/address. This may be inconvenient in ultra-cold-storage scenarios (i.e. multisig with main keys hidden in different geographic locations). New opcode suggestions, such as OP_CHECKTEMPLATEVERIFY (<a href="/119" target="_blank">BIP-119</a>) and OP_CHECKCONTRACTVERIFY (<a href="/443" target="_blank">BIP-443</a>), discuss possible recovery-mechanisms in which in order for a secondary key to have full control over the funds, some onchain operations must be performed, with a required time-gap between them - giving the user enough time to revoke the whole process and move the funds elsewhere (assuming they still have the main key and the recovery-mechanism was triggered unintentionally). However, these suggestions are still in the discussion phase and even if ever implemented, their adoption may be slow.</li>
+<li>As of the time of writing, scripts can limit when secondary-keys can be used, but not how they can be used: if the user doesn't touch the wallets' UTXOs for long-enough time, the secondary key will eventually become useable and could move the funds anywhere. This is true whether we measure the time in absolute terms (OP_CHECKLOCKTIMEVERIFY) or relative terms compared to when the wallets' UTXOs were created (OP_CHECKSEQUENCEVERIFY). This means that even in the happy-flow scenario of an untouched wallet, where no recovery is needed, the user must periodically "renew" the recovery-mechanism by spending the UTXO to a new wallet/address. This may be inconvenient in ultra-cold-storage scenarios (i.e. multisig with main keys hidden in different geographic locations). New opcode suggestions, such as OP_CHECKTEMPLATEVERIFY (<a href="/119" target="_blank">BIP-119</a>) and OP_CHECKCONTRACTVERIFY (<a href="/443" target="_blank">BIP-443</a>), discuss possible recovery-mechanisms in which in order for a secondary key to have full control over the funds, some onchain operations must be performed, with a required time-gap between them - giving the user enough time to revoke the whole process and move the funds elsewhere (assuming they still have the main key and the recovery-mechanism was triggered unintentionally). However, these suggestions are still in the discussion phase and even if ever implemented, their adoption may be slow.</li>
 <li>New Bitcoiners today typically don't think of such recovery-mechanisms in advance, and start with a P2WPKH wallet. They can pre-sign transactions with this wallet, but to utilize script-based features they would need to create a new wallet and move the funds there - an operation that might seem intimidating for large amounts.</li>
 </ul>
 <h2> Specification </h2>
@@ -209,7 +209,7 @@ allocated for the relative-locktime, and is not supported.</p>
 object.</p>
 <p>The JSON object will have the following fields:</p>
 <ul>
-<li>kind (mandatory): must be &quot;timelock-recovery-plan&quot;.</li>
+<li>kind (mandatory): must be "timelock-recovery-plan".</li>
 <li>id (mandatory): a non-empty string of up to 100 characters, to represent the plan uniquely (i.e. a UUID, or a server generated ID).</li>
 <li>name (optional): a name for the plan, decided by the user. A string of up to 200 characters.</li>
 <li>description (optional): a description for the plan, decided by the user. A string of up to 10,000 characters.</li>
@@ -222,7 +222,7 @@ object.</p>
 <li>anchor_amount_sats (mandatory): The amount in satoshis sent to each anchor address in the <code>Alert Transaction</code>. We recommend using 600 sats, which is above the dust limit.</li>
 <li>anchor_addresses (mandatory): An array of up to 10,000 Bitcoin addresses that receive the anchor amount in the <code>Alert Transaction</code>. Each address is a string of up to 100 characters.</li>
 <li>alert_address (mandatory): The Bitcoin address that receives the majority of funds in the <code>Alert Transaction</code>. A string of up to 100 characters.</li>
-<li>alert_inputs (mandatory): An array of up to 2439 inputs spent by the <code>Alert Transaction</code>. Each input is a string in the format &quot;txid:vout&quot; where txid is a 64-character lowercase hexadecimal string and vout is a decimal number of up to 6 digits. The maximal length of 2439 is calculated from a standard transaction of 400,000 wu where each input contains at least 41 bytes.</li>
+<li>alert_inputs (mandatory): An array of up to 2439 inputs spent by the <code>Alert Transaction</code>. Each input is a string in the format "txid:vout" where txid is a 64-character lowercase hexadecimal string and vout is a decimal number of up to 6 digits. The maximal length of 2439 is calculated from a standard transaction of 400,000 wu where each input contains at least 41 bytes.</li>
 <li>alert_tx (mandatory): The raw <code>Alert Transaction</code> in uppercase hexadecimal format. A string of up to 800,000 characters.</li>
 <li>alert_txid (mandatory): The transaction ID of the <code>Alert Transaction</code>. A 64-character lowercase hexadecimal string.</li>
 <li>alert_fee (mandatory): The total fee paid by the <code>Alert Transaction</code> in satoshis. A non-negative integer.</li>
@@ -231,7 +231,7 @@ object.</p>
 <li>recovery_txid (mandatory): The transaction ID of the <code>Recovery Transaction</code>. A 64-character lowercase hexadecimal string.</li>
 <li>recovery_fee (mandatory): The total fee paid by the <code>Recovery Transaction</code> in satoshis. A non-negative integer.</li>
 <li>recovery_weight (mandatory): The weight of the <code>Recovery Transaction</code>. A positive integer, not higher than 400,000.</li>
-<li>recovery_outputs (mandatory): An array of up to 10,000 outputs from the <code>Recovery Transaction</code>. Each output is a tuple containing: <code>&lt;a href=&quot;address,&quot; target=&quot;_blank&quot;&gt;amount_sats, label?&lt;/a&gt;</code> where:
+<li>recovery_outputs (mandatory): An array of up to 10,000 outputs from the <code>Recovery Transaction</code>. Each output is a tuple containing: <code>&lt;a href="address," target="_blank"&gt;amount_sats, label?&lt;/a&gt;</code> where:
 <ul>
 <li>address is a mandatory Bitcoin address string (up to 100 characters).</li>
 <li>amount_sats is a mandatory positive integer representing the amount in satoshis.</li>
@@ -246,7 +246,7 @@ object.</p>
 arrays.
 This is intentional, so a conversion of the values to JSON strings will be deterministic.</p>
 <p>The checksum is calculated by converting the top-level JSON object to an array of
-<code>&lt;a href=&quot;key,&quot; target=&quot;_blank&quot;&gt;value&lt;/a&gt;</code> pairs, sorting the array, stringifying, calculating the
+<code>&lt;a href="key," target="_blank"&gt;value&lt;/a&gt;</code> pairs, sorting the array, stringifying, calculating the
 SHA256 hash of the result in lowercase hexadecimal format, and taking a prefix of at least 8
 characters.</p>
 <p>For example:</p>

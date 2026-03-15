@@ -1,9 +1,12 @@
 name: update-and-publish
 
 on:
+  push:
+    branches:
+      - master
+
   schedule:
-  # run every 12 hours
-  - cron: '0 */12 * * *'
+    - cron: '0 */12 * * *' # every 12 hours
 
 env:
   CARGO_TERM_COLOR: always
@@ -15,33 +18,38 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4
 
-    - name: generate
+    - name: install just
+      uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
+
+    - name: install dependencies
+      run: |
+        just install
+
+    - name: generate markdown
       run: |
         git config --global --add safe.directory '*'
-        ./scripts/install-tailwind.sh
-        ./scripts/install-pagefind.sh
-        ./scripts/bips.sh
-        ./scripts/tailwind.sh
-        ./scripts/static.sh
-        ./scripts/generate.sh
+        just bips
+        just tailwind
+        just static
+        just generate
 
-    - name: zola
+    - name: build site
       run: |
-        wget -q https://github.com/getzola/zola/releases/download/v0.18.0/zola-v0.18.0-x86_64-unknown-linux-gnu.tar.gz
+        wget -q https://github.com/getzola/zola/releases/download/v0.21.0/zola-v0.21.0-x86_64-unknown-linux-gnu.tar.gz
         tar xzf zola*.tar.gz
         cd web
         ../zola build
         cd ..
         rm -rf zola*
 
-    - name: pagefind
+    - name: run pagefind
       run: |
-        pagefind --site web/public
+        just pagefind
 
     - name: commit and push
       uses: EndBug/add-and-commit@v7.2.0
       with:
         default_author: github_actions
         branch: master
-        message: 'cron: update bips submodule and build'
+        message: 'update bips submodule and build'
         push: true

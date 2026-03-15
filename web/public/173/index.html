@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 173
   Layer: Applications
   Title: Base32 address format for native v0-16 witness outputs
@@ -132,7 +132,7 @@
 </code></pre>
 <h2>Introduction</h2>
 <h3>Abstract</h3>
-<p>This document proposes a checksummed base32 format, &quot;Bech32&quot;, and a standard for native segregated witness output addresses using it.</p>
+<p>This document proposes a checksummed base32 format, "Bech32", and a standard for native segregated witness output addresses using it.</p>
 <h3>Copyright</h3>
 <p>This BIP is licensed under the 2-clause BSD license.</p>
 <h3>Motivation</h3>
@@ -153,7 +153,7 @@ However, both the character set and the checksum algorithm have limitations:</p>
 <p>Included in the Segregated Witness proposal are a new class of outputs
 (witness programs, see
 <a href="/141" target="_blank">BIP141</a>),
-and two instances of it (&quot;P2WPKH&quot; and &quot;P2WSH&quot;, see
+and two instances of it ("P2WPKH" and "P2WSH", see
 <a href="/143" target="_blank">BIP143</a>).
 Their functionality is available indirectly to older clients by embedding in P2SH
 outputs, but for optimal efficiency and security it is best to use it
@@ -166,13 +166,13 @@ and was previously discussed
 <a href="https://bitcoincore.org/en/meetings/2016/05/20/#error-correcting-codes-for-future-address-types" target="_blank">here</a>).</p>
 <h3>Examples</h3>
 <p>All examples use public key
-<tt>0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</tt>.
-The P2WSH examples use <tt>key OP_CHECKSIG</tt> as script.</p>
+<code>0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</code>.
+The P2WSH examples use <code>key OP_CHECKSIG</code> as script.</p>
 <ul>
-<li>Mainnet P2WPKH: <tt>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4</tt></li>
-<li>Testnet P2WPKH: <tt>tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx</tt></li>
-<li>Mainnet P2WSH: <tt>bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3</tt></li>
-<li>Testnet P2WSH: <tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</tt></li>
+<li>Mainnet P2WPKH: <code>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4</code></li>
+<li>Testnet P2WPKH: <code>tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx</code></li>
+<li>Mainnet P2WSH: <code>bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3</code></li>
+<li>Testnet P2WSH: <code>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</code></li>
 </ul>
 <h2>Specification</h2>
 <p>We first describe the general checksummed base32<ref><strong>Why use base32 at all?</strong> The lack of mixed case makes it more
@@ -180,11 +180,11 @@ efficient to read out loud or to put into QR codes. It does come with a 15% leng
 increase, but that does not matter when copy-pasting addresses.</ref> format called
 <em>Bech32</em> and then define Segregated Witness addresses using it.</p>
 <h3>Bech32</h3>
-<p>A Bech32<ref><strong>Why call it Bech32?</strong> &quot;Bech&quot; contains the characters BCH (the error
-detection algorithm used) and sounds a bit like &quot;base&quot;.</ref> string is at most 90 characters long and consists of:</p>
+<p>A Bech32<ref><strong>Why call it Bech32?</strong> "Bech" contains the characters BCH (the error
+detection algorithm used) and sounds a bit like "base".</ref> string is at most 90 characters long and consists of:</p>
 <ul>
 <li>The <strong>human-readable part</strong>, which is intended to convey the type of data, or anything else that is relevant to the reader. This part MUST contain 1 to 83 US-ASCII characters, with each character having a value in the range [33-126]. HRP validity may be further restricted by specific applications.</li>
-<li>The <strong>separator</strong>, which is always &quot;1&quot;. In case &quot;1&quot; is allowed inside the human-readable part, the last one in the string is the separator<ref><strong>Why include a separator in addresses?</strong> That way the human-readable</li>
+<li>The <strong>separator</strong>, which is always "1". In case "1" is allowed inside the human-readable part, the last one in the string is the separator<ref><strong>Why include a separator in addresses?</strong> That way the human-readable</li>
 </ul>
 <p>part is unambiguously separated from the data part, avoiding potential
 collisions with other human-readable parts that share a prefix. It also
@@ -194,7 +194,7 @@ complicate copy-pasting of addresses (with no double-click selection in
 several applications). Therefore an alphanumeric character outside the normal character set
 was chosen.</ref>.</p>
 <ul>
-<li>The <strong>data part</strong>, which is at least 6 characters long and only consists of alphanumeric characters excluding &quot;1&quot;, &quot;b&quot;, &quot;i&quot;, and &quot;o&quot;<ref><strong>Why not use an existing character set like <a href="http://www.faqs.org/rfcs/rfc3548.html" target="_blank">RFC3548</a> or <a href="https://philzimmermann.com/docs/human-oriented-base-32-encoding.txt" target="_blank">z-base-32</a></strong>?</li>
+<li>The <strong>data part</strong>, which is at least 6 characters long and only consists of alphanumeric characters excluding "1", "b", "i", and "o"<ref><strong>Why not use an existing character set like <a href="http://www.faqs.org/rfcs/rfc3548.html" target="_blank">RFC3548</a> or <a href="https://philzimmermann.com/docs/human-oriented-base-32-encoding.txt" target="_blank">z-base-32</a></strong>?</li>
 </ul>
 <p>The character set is chosen to minimize ambiguity according to
 <a href="https://hissa.nist.gov/~black/GTLD/" target="_blank">this</a> visual similarity data, and
@@ -213,10 +213,10 @@ error models.</ref>.</p>
 <p>The last six characters of the data part form a checksum and contain no
 information. Valid strings MUST pass the criteria for validity specified
 by the Python3 code snippet below. The function
-<tt>bech32_verify_checksum</tt> must return true when its arguments are:</p>
+<code>bech32_verify_checksum</code> must return true when its arguments are:</p>
 <ul>
-<li><tt>hrp</tt>: the human-readable part as a string</li>
-<li><tt>data</tt>: the data part as a list of integers representing the characters after conversion using the table above</li>
+<li><code>hrp</code>: the human-readable part as a string</li>
+<li><code>data</code>: the data part as a list of integers representing the characters after conversion using the table above</li>
 </ul>
 <pre><code>def bech32_polymod(values):
   GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3]
@@ -277,7 +277,7 @@ addresses) are ever introduced, having a fully generic old address type availabl
 permit reinterpreting the resulting scriptPubKeys using the old address
 format, with lost funds as a result if bitcoins are sent to them.</ref> is a Bech32 encoding of:</p>
 <ul>
-<li>The human-readable part &quot;bc&quot;<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> for mainnet, and &quot;tb&quot;<ref><strong>Why use 'tb' as human-readable part for testnet?</strong> It was chosen to</li>
+<li>The human-readable part "bc"<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> for mainnet, and "tb"<ref><strong>Why use 'tb' as human-readable part for testnet?</strong> It was chosen to</li>
 </ul>
 <p>be of the same length as the mainnet counterpart (to simplify
 implementations' assumptions about lengths), but still be visually
@@ -299,7 +299,7 @@ distinct.</ref> for testnet.</p>
 <p><strong>Decoding</strong></p>
 <p>Software interpreting a segwit address:</p>
 <ul>
-<li>MUST verify that the human-readable part is &quot;bc&quot; for mainnet and &quot;tb&quot; for testnet.</li>
+<li>MUST verify that the human-readable part is "bc" for mainnet and "tb" for testnet.</li>
 <li>MUST verify that the first decoded data value (the witness version) is between 0 and 16, inclusive.</li>
 <li>Convert the rest of the data to bytes:
 <ul>
@@ -356,55 +356,55 @@ P2PKH addresses can be used.</p>
 <h3>Test vectors</h3>
 <p>The following strings are valid Bech32:</p>
 <ul>
-<li><tt>A12UEL5L</tt></li>
-<li><tt>a12uel5l</tt></li>
-<li><tt>an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1tt5tgs</tt></li>
-<li><tt>abcdef1qpzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw</tt></li>
-<li><tt>11qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqc8247j</tt></li>
-<li><tt>split1checkupstagehandshakeupstreamerranterredcaperred2y9e3w</tt></li>
-<li><tt>?1ezyfcl</tt> WARNING: During conversion to US-ASCII some encoders may set unmappable characters to a valid US-ASCII character, such as '?'. For example:</li>
+<li><code>A12UEL5L</code></li>
+<li><code>a12uel5l</code></li>
+<li><code>an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1tt5tgs</code></li>
+<li><code>abcdef1qpzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw</code></li>
+<li><code>11qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqc8247j</code></li>
+<li><code>split1checkupstagehandshakeupstreamerranterredcaperred2y9e3w</code></li>
+<li><code>?1ezyfcl</code> WARNING: During conversion to US-ASCII some encoders may set unmappable characters to a valid US-ASCII character, such as '?'. For example:</li>
 </ul>
 <pre><code>&gt;&gt;&gt; bech32_encode(&#x27;\x80&#x27;.encode(&#x27;ascii&#x27;, &#x27;replace&#x27;).decode(&#x27;ascii&#x27;), [])
 &#x27;?1ezyfcl&#x27;
 </code></pre>
 <p>The following string are not valid Bech32 (with reason for invalidity):</p>
 <ul>
-<li>0x20 + <tt>1nwldj5</tt>: HRP character out of range</li>
-<li>0x7F + <tt>1axkwrx</tt>: HRP character out of range</li>
-<li>0x80 + <tt>1eym55h</tt>: HRP character out of range</li>
-<li><tt>an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx</tt>: overall max length exceeded</li>
-<li><tt>pzry9x0s0muk</tt>: No separator character</li>
-<li><tt>1pzry9x0s0muk</tt>: Empty HRP</li>
-<li><tt>x1b4n0q5v</tt>: Invalid data character</li>
-<li><tt>li1dgmt3</tt>: Too short checksum</li>
-<li><tt>de1lg7wt</tt> + 0xFF: Invalid character in checksum</li>
-<li><tt>A1G7SGD8</tt>: checksum calculated with uppercase form of HRP</li>
-<li><tt>10a06t8</tt>: empty HRP</li>
-<li><tt>1qzzfhee</tt>: empty HRP</li>
+<li>0x20 + <code>1nwldj5</code>: HRP character out of range</li>
+<li>0x7F + <code>1axkwrx</code>: HRP character out of range</li>
+<li>0x80 + <code>1eym55h</code>: HRP character out of range</li>
+<li><code>an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx</code>: overall max length exceeded</li>
+<li><code>pzry9x0s0muk</code>: No separator character</li>
+<li><code>1pzry9x0s0muk</code>: Empty HRP</li>
+<li><code>x1b4n0q5v</code>: Invalid data character</li>
+<li><code>li1dgmt3</code>: Too short checksum</li>
+<li><code>de1lg7wt</code> + 0xFF: Invalid character in checksum</li>
+<li><code>A1G7SGD8</code>: checksum calculated with uppercase form of HRP</li>
+<li><code>10a06t8</code>: empty HRP</li>
+<li><code>1qzzfhee</code>: empty HRP</li>
 </ul>
 <p>The following list gives valid segwit addresses and the scriptPubKey that they
 translate to in hex.</p>
 <ul>
-<li><tt>BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4</tt>: <tt>0014751e76e8199196d454941c45d1b3a323f1433bd6</tt></li>
-<li><tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</tt>: <tt>00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262</tt></li>
-<li><tt>bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx</tt>: <tt>5128751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6</tt></li>
-<li><tt>BC1SW50QA3JX3S</tt>: <tt>6002751e</tt></li>
-<li><tt>bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj</tt>: <tt>5210751e76e8199196d454941c45d1b3a323</tt></li>
-<li><tt>tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy</tt>: <tt>0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433</tt></li>
+<li><code>BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4</code>: <code>0014751e76e8199196d454941c45d1b3a323f1433bd6</code></li>
+<li><code>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</code>: <code>00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262</code></li>
+<li><code>bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx</code>: <code>5128751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6</code></li>
+<li><code>BC1SW50QA3JX3S</code>: <code>6002751e</code></li>
+<li><code>bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj</code>: <code>5210751e76e8199196d454941c45d1b3a323</code></li>
+<li><code>tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy</code>: <code>0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433</code></li>
 </ul>
 <p>The following list gives invalid segwit addresses and the reason for
 their invalidity.</p>
 <ul>
-<li><tt>tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty</tt>: Invalid human-readable part</li>
-<li><tt>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5</tt>: Invalid checksum</li>
-<li><tt>BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2</tt>: Invalid witness version</li>
-<li><tt>bc1rw5uspcuh</tt>: Invalid program length</li>
-<li><tt>bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90</tt>: Invalid program length</li>
-<li><tt>BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P</tt>: Invalid program length for witness version 0 (per BIP141)</li>
-<li><tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7</tt>: Mixed case</li>
-<li><tt>bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du</tt>: zero padding of more than 4 bits</li>
-<li><tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv</tt>: Non-zero padding in 8-to-5 conversion</li>
-<li><tt>bc1gmk9yu</tt>: Empty data section</li>
+<li><code>tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty</code>: Invalid human-readable part</li>
+<li><code>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5</code>: Invalid checksum</li>
+<li><code>BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2</code>: Invalid witness version</li>
+<li><code>bc1rw5uspcuh</code>: Invalid program length</li>
+<li><code>bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90</code>: Invalid program length</li>
+<li><code>BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P</code>: Invalid program length for witness version 0 (per BIP141)</li>
+<li><code>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7</code>: Mixed case</li>
+<li><code>bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du</code>: zero padding of more than 4 bits</li>
+<li><code>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv</code>: Non-zero padding in 8-to-5 conversion</li>
+<li><code>bc1gmk9yu</code>: Empty data section</li>
 </ul>
 <h3>Checksum design</h3>
 <p><strong>Design choices</strong></p>

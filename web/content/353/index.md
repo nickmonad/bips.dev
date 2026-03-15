@@ -114,9 +114,9 @@ Wallets accepting payment information from external devices (e.g. hardware walle
 When validating the contained proof, clients MUST enforce the inception on all contained RRSigs is no later than the current time and that the expiry of all RRSigs is no earlier than an hour in the past. Clients MAY allow for an expiry up to an hour in the past to allow for delays between PSBT construction and signing only if such a delay is likely to occur in their intended usecase.
 
 
-|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><valuedata></tt>|<tt><valuedata></tt> Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|Name|`<keytype>`|`<keydata>`|`<valuedata>`|`<valuedata>` Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|-|
-|BIP 353 DNSSEC proof|<tt>PSBT_OUT_DNSSEC_PROOF = 0x35</tt>|None|<tt><1-byte-length-prefixed BIP 353 human-readable name without the ₿ prefix><RFC 9102-formatted DNSSEC Proof></tt>|A BIP 353 human-readable name (without the ₿ prefix), prefixed by a 1-byte length.|||0, 2|
+|BIP 353 DNSSEC proof|`PSBT_OUT_DNSSEC_PROOF = 0x35`|None|`<1-byte-length-prefixed BIP 353 human-readable name without the ₿ prefix><RFC 9102-formatted DNSSEC Proof>`|A BIP 353 human-readable name (without the ₿ prefix), prefixed by a 1-byte length.|||0, 2|
 
 
 <h2> Rationale </h2>

@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 372
   Layer: Applications
   Title: Pay-to-contract tweak fields for PSBT
@@ -159,13 +159,13 @@ not have any information about such commitment. This proposal addresses this
 issue by adding relevant fields to the PSBT input information.</p>
 <p>The proposal abstracts details of specific P2C protocols and provides a universal
 method for spending previous outputs containing P2C tweaks, applied to the public
-key contained within any standard form of the <tt>scriptPubkey</tt>, including
+key contained within any standard form of the <code>scriptPubkey</code>, including
 bare scripts and P2PK, P2PKH, P2SH, witness v0 P2WPKH, P2WSH, nested witness v0
 P2WPKH-P2SH, P2WSH-P2SH and witness v1 P2TR outputs.</p>
 <h2>Design</h2>
 <p>P2C-tweaked public keys are already exposed in the
-<tt>PSBT_IN_REDEEM_SCRIPT</tt>, <tt>PSBT_IN_WITNESS_SCRIPT</tt>,
-<tt>PSBT_IN_TAP_INTERNAL_KEY</tt> and <tt>PSBT_IN_TAP_LEAF_SCRIPT</tt> fields;
+<code>PSBT_IN_REDEEM_SCRIPT</code>, <code>PSBT_IN_WITNESS_SCRIPT</code>,
+<code>PSBT_IN_TAP_INTERNAL_KEY</code> and <code>PSBT_IN_TAP_LEAF_SCRIPT</code> fields;
 the only information signer is needed to recognize which keys it should sign
 with is from which of the original keys they were generated. This is achieved by
 introducing a new <code>PSBT_IN_P2C_TWEAK</code> field, which has the original key as a field
@@ -175,8 +175,8 @@ and use this information to apply tweaks for the corresponding private keys and
 produce valid signatures.</p>
 <h2>Specification</h2>
 <p>The new per-input type is defined as follows:</p>
-<table><thead><tr><th>Name</th><th><tt><keytype></tt></th><th><tt><keydata></tt></th><th><tt><keydata></tt> Description</th><th><tt><valuedata></tt></th><th><tt><valuedata></tt> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>P2C Key Tweak</td><td><tt>PSBT_IN_P2C_TWEAK = 0x19</tt></td><td><tt><pubkey></tt></td><td>33 bytes of compact public key serialization specifying to which keys the</td><td><tt><tweak></tt></td><td>The 32 byte value which MUST be added to a private key to produce a correct</td><td></td><td></td><td>0, 2</td></tr>
+<table><thead><tr><th>Name</th><th><code>&lt;keytype&gt;</code></th><th><code>&lt;keydata&gt;</code></th><th><code>&lt;keydata&gt;</code> Description</th><th><code>&lt;valuedata&gt;</code></th><th><code>&lt;valuedata&gt;</code> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
+<tr><td>P2C Key Tweak</td><td><code>PSBT_IN_P2C_TWEAK = 0x19</code></td><td><code>&lt;pubkey&gt;</code></td><td>33 bytes of compact public key serialization specifying to which keys the</td><td><code>&lt;tweak&gt;</code></td><td>The 32 byte value which MUST be added to a private key to produce a correct</td><td></td><td></td><td>0, 2</td></tr>
 </tbody></table>
 <h2>Security considerations</h2>
 <p>The scope of this proposal is deliberately kept narrow; it addresses

@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 86
   Layer: Applications
   Title: Key Derivation for Single Key P2TR Outputs
@@ -146,15 +146,15 @@ defined in BIPs <a href="/44" target="_blank">44</a>, <a href="/49" target="_bla
 but with a different purpose value for the script type.</p>
 <pre><code>m &#x2F; purpose&#x27; &#x2F; coin_type&#x27; &#x2F; account&#x27; &#x2F; change &#x2F; address_index
 </code></pre>
-<p>For the <tt>purpose</tt>-path level it uses <tt>86'</tt>.
+<p>For the <code>purpose</code>-path level it uses <code>86'</code>.
 The rest of the levels are used as defined in BIPs 44, 49, and 84.</p>
-<p>A key derived with this derivation path pattern will be referred to as <tt>derived_key</tt> further
+<p>A key derived with this derivation path pattern will be referred to as <code>derived_key</code> further
 in this document.</p>
 <h3>Address derivation</h3>
-<p><a href="/341" target="_blank">BIP 341</a> states: &quot;If the spending conditions do not require a
+<p><a href="/341" target="_blank">BIP 341</a> states: "If the spending conditions do not require a
 script path, the output key should commit to an unspendable script path instead of having no
 script path. This can be achieved by computing the output key point as
-<em>Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G</em>.&quot; Thus:</p>
+<em>Q = P + int(hash<sub>TapTweak</sub>(bytes(P)))G</em>." Thus:</p>
 <pre><code>internal_key:       lift_x(derived_key)
 32_byte_output_key: internal_key + int(HashTapTweak(bytes(internal_key)))G
 </code></pre>

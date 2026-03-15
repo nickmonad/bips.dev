@@ -60,31 +60,31 @@ This document specifies new fields and new field inclusion/exclusion requirement
 The new global types are defined as follows:
 
 
-|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><keydata></tt> Description|<tt><valuedata></tt>|<tt><valuedata></tt> Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|Name|`<keytype>`|`<keydata>`|`<keydata>` Description|`<valuedata>`|`<valuedata>` Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|-|-|
-|Silent Payment Global ECDH Share|<tt>PSBT_GLOBAL_SP_ECDH_SHARE = 0x07</tt>|<tt><33 byte scan key></tt>|The scan key that this ECDH share is for.|<tt><33 byte share></tt>|An ECDH share for a scan key. The ECDH shared is computed with _a * B_scan_, where _a_ is the sum of all private keys of all eligible inputs, and _B_scan_ is the scan key of a recipient.||0|2|
-|Silent Payment Global DLEQ Proof|<tt>PSBT_GLOBAL_SP_DLEQ = 0x08</tt>|<tt><33 byte scan key></tt>|The scan key that this proof covers.|<tt><64-byte proof></tt>|A BIP374 DLEQ proof computed for the matching ECDH share.||0|2|
+|Silent Payment Global ECDH Share|`PSBT_GLOBAL_SP_ECDH_SHARE = 0x07`|`<33 byte scan key>`|The scan key that this ECDH share is for.|`<33 byte share>`|An ECDH share for a scan key. The ECDH shared is computed with _a * B_scan_, where _a_ is the sum of all private keys of all eligible inputs, and _B_scan_ is the scan key of a recipient.||0|2|
+|Silent Payment Global DLEQ Proof|`PSBT_GLOBAL_SP_DLEQ = 0x08`|`<33 byte scan key>`|The scan key that this proof covers.|`<64-byte proof>`|A BIP374 DLEQ proof computed for the matching ECDH share.||0|2|
 
 
 The new per-input types are defined as follows:
 
 
-|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><keydata></tt> Description|<tt><valuedata></tt>|<tt><valuedata></tt> Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|Name|`<keytype>`|`<keydata>`|`<keydata>` Description|`<valuedata>`|`<valuedata>` Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|-|-|
-|Silent Payment Input ECDH Share|<tt>PSBT_IN_SP_ECDH_SHARE = 0x1d</tt>|<tt><33 byte scan key></tt>|The scan key that this ECDH share is for.|<tt><33 byte share></tt>|An ECDH share for a scan key. The ECDH shared is computed with _a * B_scan_, where _a_ is the private key of the corresponding prevout public key, and _B_scan_ is the scan key of a recipient.||0|2|
-|Silent Payment Input DLEQ Proof|<tt>PSBT_IN_SP_DLEQ = 0x1e</tt>|<tt><33 byte scan key></tt>|The scan key that this proof covers.|<tt><64-byte proof></tt>|A BIP374 DLEQ proof computed for the matching ECDH share.||0|2|
+|Silent Payment Input ECDH Share|`PSBT_IN_SP_ECDH_SHARE = 0x1d`|`<33 byte scan key>`|The scan key that this ECDH share is for.|`<33 byte share>`|An ECDH share for a scan key. The ECDH shared is computed with _a * B_scan_, where _a_ is the private key of the corresponding prevout public key, and _B_scan_ is the scan key of a recipient.||0|2|
+|Silent Payment Input DLEQ Proof|`PSBT_IN_SP_DLEQ = 0x1e`|`<33 byte scan key>`|The scan key that this proof covers.|`<64-byte proof>`|A BIP374 DLEQ proof computed for the matching ECDH share.||0|2|
 
 
 The new per-output types are defined as follows:
 
 
-|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><keydata></tt> Description|<tt><valuedata></tt>|<tt><valuedata></tt> Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|Name|`<keytype>`|`<keydata>`|`<keydata>` Description|`<valuedata>`|`<valuedata>` Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|-|-|
-|Silent Payment Data|<tt>PSBT_OUT_SP_V0_INFO = 0x09</tt>|None|No key data|<tt><33 byte scan key> <33 byte spend key></tt>|The scan and spend public keys from the silent payments address.||0|2|
-|Silent Payment Label|<tt>PSBT_OUT_SP_V0_LABEL = 0x0a</tt>|None|No key data|<tt><32-bit little endian uint label></tt>|The label to use to compute the spend key of the silent payments address to verify change.||0|2|
+|Silent Payment Data|`PSBT_OUT_SP_V0_INFO = 0x09`|None|No key data|`<33 byte scan key> <33 byte spend key>`|The scan and spend public keys from the silent payments address.||0|2|
+|Silent Payment Label|`PSBT_OUT_SP_V0_LABEL = 0x0a`|None|No key data|`<32-bit little endian uint label>`|The label to use to compute the spend key of the silent payments address to verify change.||0|2|
 
 
-<tt>PSBT_OUT_SCRIPT</tt> is modified to be optional for outputs in silent payments capable PSBTs. If this field is not included in the output, then the field PSBT_OUT_SP_V0_INFO must be included.
+`PSBT_OUT_SCRIPT` is modified to be optional for outputs in silent payments capable PSBTs. If this field is not included in the output, then the field PSBT_OUT_SP_V0_INFO must be included.
 If a PSBT_OUT_SCRIPT is not present for an output, then that output is being sent to a silent payment address represented by PSBT_OUT_SP_V0_INFO but the script has not yet been computed.
 If both PSBT_OUT_SCRIPT and PSBT_OUT_SP_V0_INFO are present for an output, then the PSBT_OUT_SCRIPT is the computed output script corresponding to the silent payment address in PSBT_OUT_SP_V0_INFO.
 If only PSBT_OUT_SCRIPT is present for an output, then the output is not being sent to a silent payment address.

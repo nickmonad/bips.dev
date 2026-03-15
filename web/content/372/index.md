@@ -75,7 +75,7 @@ issue by adding relevant fields to the PSBT input information.
 
 The proposal abstracts details of specific P2C protocols and provides a universal
 method for spending previous outputs containing P2C tweaks, applied to the public
-key contained within any standard form of the <tt>scriptPubkey</tt>, including
+key contained within any standard form of the `scriptPubkey`, including
 bare scripts and P2PK, P2PKH, P2SH, witness v0 P2WPKH, P2WSH, nested witness v0
 P2WPKH-P2SH, P2WSH-P2SH and witness v1 P2TR outputs.
 
@@ -84,8 +84,8 @@ P2WPKH-P2SH, P2WSH-P2SH and witness v1 P2TR outputs.
 
 
 P2C-tweaked public keys are already exposed in the
-<tt>PSBT_IN_REDEEM_SCRIPT</tt>, <tt>PSBT_IN_WITNESS_SCRIPT</tt>,
-<tt>PSBT_IN_TAP_INTERNAL_KEY</tt> and <tt>PSBT_IN_TAP_LEAF_SCRIPT</tt> fields;
+`PSBT_IN_REDEEM_SCRIPT`, `PSBT_IN_WITNESS_SCRIPT`,
+`PSBT_IN_TAP_INTERNAL_KEY` and `PSBT_IN_TAP_LEAF_SCRIPT` fields;
 the only information signer is needed to recognize which keys it should sign
 with is from which of the original keys they were generated. This is achieved by
 introducing a new `PSBT_IN_P2C_TWEAK` field, which has the original key as a field
@@ -101,9 +101,9 @@ produce valid signatures.
 The new per-input type is defined as follows:
 
 
-|Name|<tt><keytype></tt>|<tt><keydata></tt>|<tt><keydata></tt> Description|<tt><valuedata></tt>|<tt><valuedata></tt> Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
+|Name|`<keytype>`|`<keydata>`|`<keydata>` Description|`<valuedata>`|`<valuedata>` Description|Versions Requiring Inclusion|Versions Requiring Exclusion|Versions Allowing Inclusion|
 |-|-|-|-|-|-|-|-|-|
-|P2C Key Tweak|<tt>PSBT_IN_P2C_TWEAK = 0x19</tt>|<tt><pubkey></tt>|33 bytes of compact public key serialization specifying to which keys the|<tt><tweak></tt>|The 32 byte value which MUST be added to a private key to produce a correct|||0, 2|BIP-P2C|
+|P2C Key Tweak|`PSBT_IN_P2C_TWEAK = 0x19`|`<pubkey>`|33 bytes of compact public key serialization specifying to which keys the|`<tweak>`|The 32 byte value which MUST be added to a private key to produce a correct|||0, 2|BIP-P2C|
 
 
 

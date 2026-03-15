@@ -281,11 +281,11 @@ Test 2:
 
 
 Test 3:
-* Passphrase ϓ␀𐐀💩 (<tt>\u03D2\u0301\u0000\U00010400\U0001F4A9</tt>; <a href="http://codepoints.net/U+03D2" target="_blank">GREEK UPSILON WITH HOOK</a>, <a href="http://codepoints.net/U+0301" target="_blank">COMBINING ACUTE ACCENT</a>, <a href="http://codepoints.net/U+0000" target="_blank">NULL</a>, <a href="http://codepoints.net/U+10400" target="_blank">DESERET CAPITAL LETTER LONG I</a>, <a href="http://codepoints.net/U+1F4A9" target="_blank">PILE OF POO</a>)
+* Passphrase ϓ␀𐐀💩 (`\u03D2\u0301\u0000\U00010400\U0001F4A9`; <a href="http://codepoints.net/U+03D2" target="_blank">GREEK UPSILON WITH HOOK</a>, <a href="http://codepoints.net/U+0301" target="_blank">COMBINING ACUTE ACCENT</a>, <a href="http://codepoints.net/U+0000" target="_blank">NULL</a>, <a href="http://codepoints.net/U+10400" target="_blank">DESERET CAPITAL LETTER LONG I</a>, <a href="http://codepoints.net/U+1F4A9" target="_blank">PILE OF POO</a>)
 * Encrypted key: 6PRW5o9FLp4gJDDVqJQKJFTpMvdsSGJxMYHtHaQBF3ooa8mwD69bapcDQn
 * Bitcoin Address: 16ktGzmfrurhbhi6JGqsMWf7TyqK9HNAeF
 * Unencrypted private key (WIF): 5Jajm8eQ22H3pGWLEVCXyvND8dQZhiQhoLJNKjYXk9roUFTMSZ4
-*  _Note:_ The non-standard UTF-8 characters in this passphrase should be NFC normalized to result in a passphrase of <tt>0xcf9300f0909080f09f92a9</tt> before further processing
+*  _Note:_ The non-standard UTF-8 characters in this passphrase should be NFC normalized to result in a passphrase of `0xcf9300f0909080f09f92a9` before further processing
 
 
 <h3>Compression, no EC multiply</h3>

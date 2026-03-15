@@ -81,13 +81,13 @@ and was previously discussed
 
 
 All examples use public key
-<tt>0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</tt>.
-The P2WSH examples use <tt>key OP_CHECKSIG</tt> as script.
+`0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798`.
+The P2WSH examples use `key OP_CHECKSIG` as script.
 
-*  Mainnet P2WPKH: <tt>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4</tt>
-*  Testnet P2WPKH: <tt>tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx</tt>
-*  Mainnet P2WSH: <tt>bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3</tt>
-*  Testnet P2WSH: <tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</tt>
+*  Mainnet P2WPKH: `bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4`
+*  Testnet P2WPKH: `tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx`
+*  Mainnet P2WSH: `bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3`
+*  Testnet P2WSH: `tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7`
 
 
 <h2>Specification</h2>
@@ -139,9 +139,9 @@ error models.</ref>.
 The last six characters of the data part form a checksum and contain no
 information. Valid strings MUST pass the criteria for validity specified
 by the Python3 code snippet below. The function
-<tt>bech32_verify_checksum</tt> must return true when its arguments are:
-*  <tt>hrp</tt>: the human-readable part as a string
-*  <tt>data</tt>: the data part as a list of integers representing the characters after conversion using the table above
+`bech32_verify_checksum` must return true when its arguments are:
+*  `hrp`: the human-readable part as a string
+*  `data`: the data part as a list of integers representing the characters after conversion using the table above
 
 
 ```
@@ -298,13 +298,13 @@ SatoshiLabs maintains a full list of registered human-readable parts for other c
 
 
 The following strings are valid Bech32:
-*  <tt>A12UEL5L</tt>
-*  <tt>a12uel5l</tt>
-*  <tt>an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1tt5tgs</tt>
-*  <tt>abcdef1qpzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw</tt>
-*  <tt>11qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqc8247j</tt>
-*  <tt>split1checkupstagehandshakeupstreamerranterredcaperred2y9e3w</tt>
-*  <tt>?1ezyfcl</tt> WARNING: During conversion to US-ASCII some encoders may set unmappable characters to a valid US-ASCII character, such as '?'. For example:
+*  `A12UEL5L`
+*  `a12uel5l`
+*  `an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1tt5tgs`
+*  `abcdef1qpzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw`
+*  `11qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqc8247j`
+*  `split1checkupstagehandshakeupstreamerranterredcaperred2y9e3w`
+*  `?1ezyfcl` WARNING: During conversion to US-ASCII some encoders may set unmappable characters to a valid US-ASCII character, such as '?'. For example:
 
 
 ```
@@ -313,42 +313,42 @@ The following strings are valid Bech32:
 ```
 
 The following string are not valid Bech32 (with reason for invalidity):
-*  0x20 + <tt>1nwldj5</tt>: HRP character out of range
-*  0x7F + <tt>1axkwrx</tt>: HRP character out of range
-*  0x80 + <tt>1eym55h</tt>: HRP character out of range
-*  <tt>an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx</tt>: overall max length exceeded
-*  <tt>pzry9x0s0muk</tt>: No separator character
-*  <tt>1pzry9x0s0muk</tt>: Empty HRP
-*  <tt>x1b4n0q5v</tt>: Invalid data character
-*  <tt>li1dgmt3</tt>: Too short checksum
-*  <tt>de1lg7wt</tt> + 0xFF: Invalid character in checksum
-*  <tt>A1G7SGD8</tt>: checksum calculated with uppercase form of HRP
-*  <tt>10a06t8</tt>: empty HRP
-*  <tt>1qzzfhee</tt>: empty HRP
+*  0x20 + `1nwldj5`: HRP character out of range
+*  0x7F + `1axkwrx`: HRP character out of range
+*  0x80 + `1eym55h`: HRP character out of range
+*  `an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx`: overall max length exceeded
+*  `pzry9x0s0muk`: No separator character
+*  `1pzry9x0s0muk`: Empty HRP
+*  `x1b4n0q5v`: Invalid data character
+*  `li1dgmt3`: Too short checksum
+*  `de1lg7wt` + 0xFF: Invalid character in checksum
+*  `A1G7SGD8`: checksum calculated with uppercase form of HRP
+*  `10a06t8`: empty HRP
+*  `1qzzfhee`: empty HRP
 
 
 The following list gives valid segwit addresses and the scriptPubKey that they
 translate to in hex.
-*  <tt>BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4</tt>: <tt>0014751e76e8199196d454941c45d1b3a323f1433bd6</tt>
-*  <tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7</tt>: <tt>00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262</tt>
-*  <tt>bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx</tt>: <tt>5128751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6</tt>
-*  <tt>BC1SW50QA3JX3S</tt>: <tt>6002751e</tt>
-*  <tt>bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj</tt>: <tt>5210751e76e8199196d454941c45d1b3a323</tt>
-*  <tt>tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy</tt>: <tt>0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433</tt>
+*  `BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4`: `0014751e76e8199196d454941c45d1b3a323f1433bd6`
+*  `tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7`: `00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262`
+*  `bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx`: `5128751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6`
+*  `BC1SW50QA3JX3S`: `6002751e`
+*  `bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj`: `5210751e76e8199196d454941c45d1b3a323`
+*  `tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy`: `0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433`
 
 
 The following list gives invalid segwit addresses and the reason for
 their invalidity.
-*  <tt>tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty</tt>: Invalid human-readable part
-*  <tt>bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5</tt>: Invalid checksum
-*  <tt>BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2</tt>: Invalid witness version
-*  <tt>bc1rw5uspcuh</tt>: Invalid program length
-*  <tt>bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90</tt>: Invalid program length
-*  <tt>BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P</tt>: Invalid program length for witness version 0 (per BIP141)
-*  <tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7</tt>: Mixed case
-*  <tt>bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du</tt>: zero padding of more than 4 bits
-*  <tt>tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv</tt>: Non-zero padding in 8-to-5 conversion
-*  <tt>bc1gmk9yu</tt>: Empty data section
+*  `tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty`: Invalid human-readable part
+*  `bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5`: Invalid checksum
+*  `BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2`: Invalid witness version
+*  `bc1rw5uspcuh`: Invalid program length
+*  `bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90`: Invalid program length
+*  `BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P`: Invalid program length for witness version 0 (per BIP141)
+*  `tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7`: Mixed case
+*  `bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du`: zero padding of more than 4 bits
+*  `tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv`: Non-zero padding in 8-to-5 conversion
+*  `bc1gmk9yu`: Empty data section
 
 
 <h3>Checksum design</h3>

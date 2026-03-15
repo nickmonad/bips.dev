@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
             <pre><code>  BIP: 346
   Layer: Consensus (soft fork)
   Title: OP_TXHASH
@@ -210,15 +210,15 @@ signature hashing modes and those defined in <a href="https://bips.dev/346/bip-0
 <tr><td style="text-align: left"><code>ALL</code></td><td style="text-align: left"><code>0b11111111</code></td></tr>
 <tr><td style="text-align: left"><code>SINGLE</code></td><td style="text-align: left"><code>0b11110111</code></td></tr>
 <tr><td style="text-align: left"><code>NONE</code></td><td style="text-align: left"><code>0b11110011</code></td></tr>
-<tr><td style="text-align: left"><code>ALL\|ANYONECANPAY</code></td><td style="text-align: left"><code>0b11111101</code></td></tr>
-<tr><td style="text-align: left"><code>SINGLE\|ANYONECANPAY</code></td><td style="text-align: left"><code>0b11110101</code></td></tr>
-<tr><td style="text-align: left"><code>NONE\|ANYONECANPAY</code></td><td style="text-align: left"><code>0b11110001</code></td></tr>
-<tr><td style="text-align: left"><code>ALL\|ANYPREVOUT</code></td><td style="text-align: left"><code>0b11101101</code></td></tr>
-<tr><td style="text-align: left"><code>SINGLE\|ANYPREVOUT</code></td><td style="text-align: left"><code>0b11100101</code></td></tr>
-<tr><td style="text-align: left"><code>NONE\|ANYPREVOUT</code></td><td style="text-align: left"><code>0b11100001</code></td></tr>
-<tr><td style="text-align: left"><code>ALL\|ANYPREVOUTANYSCRIPT</code></td><td style="text-align: left"><code>0b11001101</code></td></tr>
-<tr><td style="text-align: left"><code>SINGLE\|ANYPREVOUTANYSCRIPT</code></td><td style="text-align: left"><code>0b11000101</code></td></tr>
-<tr><td style="text-align: left"><code>NONE\|ANYPREVOUTANYSCRIPT</code></td><td style="text-align: left"><code>0b11000001</code></td></tr>
+<tr><td style="text-align: left"><code>ALL|ANYONECANPAY</code></td><td style="text-align: left"><code>0b11111101</code></td></tr>
+<tr><td style="text-align: left"><code>SINGLE|ANYONECANPAY</code></td><td style="text-align: left"><code>0b11110101</code></td></tr>
+<tr><td style="text-align: left"><code>NONE|ANYONECANPAY</code></td><td style="text-align: left"><code>0b11110001</code></td></tr>
+<tr><td style="text-align: left"><code>ALL|ANYPREVOUT</code></td><td style="text-align: left"><code>0b11101101</code></td></tr>
+<tr><td style="text-align: left"><code>SINGLE|ANYPREVOUT</code></td><td style="text-align: left"><code>0b11100101</code></td></tr>
+<tr><td style="text-align: left"><code>NONE|ANYPREVOUT</code></td><td style="text-align: left"><code>0b11100001</code></td></tr>
+<tr><td style="text-align: left"><code>ALL|ANYPREVOUTANYSCRIPT</code></td><td style="text-align: left"><code>0b11001101</code></td></tr>
+<tr><td style="text-align: left"><code>SINGLE|ANYPREVOUTANYSCRIPT</code></td><td style="text-align: left"><code>0b11000101</code></td></tr>
+<tr><td style="text-align: left"><code>NONE|ANYPREVOUTANYSCRIPT</code></td><td style="text-align: left"><code>0b11000001</code></td></tr>
 </tbody></table>
 <ul>
 <li>
@@ -238,7 +238,7 @@ has its 8 bits assigned as follows, from lowest to highest:</p>
 </li>
 <li>
 <p>The highest bit of the first byte (<code>TXFS_CONTROL</code>), we will call the
-&quot;control bit&quot;, and it can be used to control the behavior of the opcode. For
+"control bit", and it can be used to control the behavior of the opcode. For
 <code>OP_TXHASH</code>, the control bit is used to determine
 whether the TxFieldSelector itself has to be included in the resulting hash.
 (For potential other uses of the TxFieldSelector (like a hypothetical
@@ -280,41 +280,41 @@ The 8 bits are assigned the following variables, from lowest to highest:</p>
 <p>For both inputs and then outputs, expect an additional byte as follows:</p>
 <ul>
 <li>
-<p>The highest bit (<code>TXFS_INOUT_NUMBER</code>) indicates whether the &quot;number of
-in-/outputs&quot; should be committed to.</p>
+<p>The highest bit (<code>TXFS_INOUT_NUMBER</code>) indicates whether the "number of
+in-/outputs" should be committed to.</p>
 </li>
 <li>
 <p>For the remaining bits, there are three exceptional values:</p>
 <ul>
-<li>0x00 (<code>TXFS_INOUT_SELECTION_NONE</code>) means &quot;no in/outputs&quot; (hence only the
+<li>0x00 (<code>TXFS_INOUT_SELECTION_NONE</code>) means "no in/outputs" (hence only the
 number of them as <code>0x80</code> (<code>TXFS_INOUT_NUMBER</code>)).</li>
-<li><code>0x40</code> (<code>TXFS_INOUT_SELECTION_CURRENT</code>) means &quot;select only the in/output
-of the current input index&quot; (it is invalid when current index exceeds
+<li><code>0x40</code> (<code>TXFS_INOUT_SELECTION_CURRENT</code>) means "select only the in/output
+of the current input index" (it is invalid when current index exceeds
 number of outputs).</li>
-<li><code>0x3f</code> (<code>TXFS_INOUT_SELECTION_ALL</code>) means &quot;select all in/outputs&quot;.</li>
+<li><code>0x3f</code> (<code>TXFS_INOUT_SELECTION_ALL</code>) means "select all in/outputs".</li>
 </ul>
 </li>
 <li>
-<p>The second highest bit (<code>TXFS_INOUT_SELECTION_MODE</code>) is the &quot;specification mode&quot;:</p>
+<p>The second highest bit (<code>TXFS_INOUT_SELECTION_MODE</code>) is the "specification mode":</p>
 <ul>
-<li>Set to 0 it means &quot;leading mode&quot;.</li>
-<li>Set to 1 it means &quot;individual mode&quot;.</li>
+<li>Set to 0 it means "leading mode".</li>
+<li>Set to 1 it means "individual mode".</li>
 </ul>
 </li>
 <li>
-<p>In &quot;leading mode&quot;, the third highest bit (<code>TXFS_INOUT_LEADING_SIZE</code>) is
-used to indicate the &quot;index size&quot;, i.e. the number of bytes will be used to
+<p>In "leading mode", the third highest bit (<code>TXFS_INOUT_LEADING_SIZE</code>) is
+used to indicate the "index size", i.e. the number of bytes will be used to
 represent the number of in/output.</p>
 <ul>
-<li>With &quot;index size&quot; set to 0, the remaining lowest 5 bits of the first byte
+<li>With "index size" set to 0, the remaining lowest 5 bits of the first byte
 will be interpreted as the number of leading in/outputs to select.</li>
-<li>With &quot;index size&quot; set to 1, the remaining lowest 5 bits of the first byte
+<li>With "index size" set to 1, the remaining lowest 5 bits of the first byte
 together with the 8 bits of the next byte will be interpreted as the
 number of leading in/outputs to select.</li>
 </ul>
 </li>
 <li>
-<p>In &quot;individual mode&quot;, the third highest bit (<code>TXFS_INOUT_INDIVIDUAL_MODE</code>)
+<p>In "individual mode", the third highest bit (<code>TXFS_INOUT_INDIVIDUAL_MODE</code>)
 indicates whether we are passing absolute indices (0) or indices relative
 to the current input (1), the remaining lowest 5 bits will be interpreted
 as <code>n</code>, the number of individual in/outputs follow.</p>
@@ -389,21 +389,21 @@ to get the hash.</p>
 <ul>
 <li>in/output selector byte</li>
 </ul>
-<p>&quot;leading 3 in/outputs&quot;</p>
+<p>"leading 3 in/outputs"</p>
 <pre><code>1 0 0 0 0 0 1 1
 | | | &lt;-------&gt; integer 0b00011 == 3
 | | ^ index size: single byte
 | ^ leading mode
 ^ commit the number of in&#x2F;outputs
 </code></pre>
-<p>&quot;leading 257 in/outputs&quot;</p>
+<p>"leading 257 in/outputs"</p>
 <pre><code>1 0 1 0 0 0 0 1  0 0 0 0 0 0 0 1
 | | | &lt;------------------------&gt; integer 0b00001 00000001 == 257
 | | ^ index size 1: two bytes
 | ^ leading mode
 ^ commit the number of in&#x2F;outputs
 </code></pre>
-<p>&quot;indices 1 and 3&quot;</p>
+<p>"indices 1 and 3"</p>
 <pre><code>0 1 0 0 0 0 1 0  0 0 0 0 0 0 0 1  0 0 0 0 0 0 1 1
 | | | |                           &lt;--------------&gt; second idx: 3
 | | | |          &lt;-------------&gt; first idx: 1
@@ -423,16 +423,16 @@ to get the hash.</p>
  ^ all regular fields
 </code></pre>
 <h2 id="Resource_limits">Resource limits</h2>
-<p>Using the same validation budget (&quot;sigops budget&quot;) introduced in BIP-0342,
+<p>Using the same validation budget ("sigops budget") introduced in BIP-0342,
 each TransactionHash decreases the validation budget by 25. If this brings the
 budget below zero, the script fails immediately.<br>The following
 considerations should be made:</p>
 <ul>
 <li>All fields that can be of arbitrary size are cacheable as TransactionHash
 always hashes their hashed values.</li>
-<li>In &quot;individual mode&quot;, a user can at most commit 32 inputs or outputs,
+<li>In "individual mode", a user can at most commit 32 inputs or outputs,
 which we don't consider excessive for potential repeated use.</li>
-<li>In &quot;leading mode&quot;, a caching strategy can be used where the SHA256 context
+<li>In "leading mode", a caching strategy can be used where the SHA256 context
 is stored every N in/outputs so that multiple executions of the
 TransactionHash function can use the caches and only have to hash an
 additional N-1 items at most.</li>
@@ -478,7 +478,7 @@ Script.</p>
 </li>
 <li>
 <p>Like mentioned above, <code>SIGHASH_ANYPREVOUT</code> can be emulated using <code>OP_TXHASH</code>
-when combined with <code>OP_CHECKSIGFROMSTACK</code>: 
+when combined with <code>OP_CHECKSIGFROMSTACK</code>:
 <code>&lt;txfs&gt; OP_TXHASH &lt;pubkey&gt; OP_CHECKSIGFROMSTACK</code> effectively emulates <code>SIGHASH_ANYPREVOUT</code>.</p>
 </li>
 </ul>
@@ -491,7 +491,7 @@ implementation.</p>
 and improvements. Some considerations that were made but could be revisited:</p>
 <ul>
 <li>The <code>0b10</code> in/output selector for the shorthand is unused.
-Could possibly be filled in with &quot;current + next&quot;, &quot;current + previous&quot; or
+Could possibly be filled in with "current + next", "current + previous" or
 any other semantics.</li>
 <li>The individual index selection semantics allow for absolute indices up to ~32k
 and relative ones up to +/- ~16k, which is probably excessive. When removing
