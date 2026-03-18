@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 446: OP_TEMPLATEHASH" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 446: OP_TEMPLATEHASH" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 446: OP_TEMPLATEHASH</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 446: OP_TEMPLATEHASH</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2026-02-06</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0446.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 446
+  Layer: Consensus (soft fork)
+  Title: OP_TEMPLATEHASH
+  Authors: Gregory Sanders &lt;gsanders87@gmail.com&gt;
+           Antoine Poinsot &lt;mail@antoinep.com&gt;
+           Steven Roose &lt;steven@stevenroose.org&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2026-02-06
+  License: CC0-1.0
+</code></pre>
+<h2 id="Abstract">Abstract</h2>
+<p>This document proposes a new operation for <a href="https://bips.dev/446/bip-0342.mediawiki">Tapscript</a>: <code>OP_TEMPLATEHASH</code>. It introduces the ability to
+push on the stack a hash of the transaction spending an output.</p>
+<h2 id="Motivation">Motivation</h2>
+<p><code>OP_TEMPLATEHASH</code> can be used to commit to the transaction spending an output<sup class="footnote-reference"><a href="#commit-exact-tx">1</a></sup>. This capability
+can replace the use of pre-signed transactions in second-layer protocols. By reducing interactivity it makes such
+protocols simpler, safer, and sometimes notably more efficient. For instance it can remove the need to share HTLC
+signatures in the Lightning Network protocol's <a rel="noopener" target="_blank" href="https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#committing-updates-so-far-commitment_signed"><code>commitment_signed</code> message</a><sup class="footnote-reference"><a href="#ln-second-stage">2</a></sup>, make
+receiving an Ark "VTXO" <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/the-ark-case-for-ctv/1528">non-interactive</a>, and <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/ln-symmetry-project-recap/359">reduces roundtrips</a> in the implementation
+of LN-Symmetry. It is also a <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAH5Bsr2vxL3FWXnJTszMQj83jTVdRvvuVpimEfY7JpFCyP1AZA@mail.gmail.com">significant optimisation</a> for <a rel="noopener" target="_blank" href="https://bitcoinops.org/en/topics/discreet-log-contracts">Discreet Log Contracts</a>.</p>
+<h2 id="Specification">Specification</h2>
+<p><code>OP_TEMPLATEHASH</code> redefines <code>OP_SUCCESS206</code> (0xce) in the Tapscript execution context with further restrictions.</p>
+<p>Upon execution of the opcode, the template hash of the transaction in context is pushed onto the stack as defined below,
+and script execution continues.</p>
+<p>The template hash uses a tagged hash as introduced by <a href="https://bips.dev/446/bip-0340.mediawiki">BIP340</a> and <a href="https://bips.dev/446/bip-0341.mediawiki">BIP341</a>. We use a new tag
+for this purpose: <em>TemplateHash</em>.</p>
+<p>The template hash re-uses the <em>sha_sequences</em>, <em>sha_outputs</em> and <em>sha_annex</em> pre-computed transaction data introduced in
+BIP341. Numerical values in 4-byte are encoded in little-endian.</p>
+<p>The template hash is the <em>hash<sub>TemplateHash</sub></em> of the following transaction fields concatenated:</p>
+<ul>
+<li>Transaction data:
+<ul>
+<li><em>nVersion</em> (4): the version of the transaction.</li>
+<li><em>nLockTime</em> (4): the locktime of the transaction.</li>
+<li><em>sha_sequences</em> (32): the SHA256 of the serialization of all input sequence, as per BIP341.</li>
+<li><em>sha_outputs</em> (32): the SHA256 of the serialization of all outputs in <code>CTxOut</code> format, as per BIP341.</li>
+</ul>
+</li>
+<li>Data about this input:
+<ul>
+<li><em>annex_present</em> (1): as defined in BIP341 (0 if no annex is present, or 1 otherwise).</li>
+<li><em>input_index</em> (4): index of this input in the transaction input vector. Index of the first input is 0.</li>
+<li>If an annex is present:
+<ul>
+<li><em>sha_annex</em> (32): the SHA256 of the annex, as per BIP341.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Rationale">Rationale</h2>
+<p>The template hash follows BIP341's signature message format, with minimal necessary deviations. This reuses a
+tried-and-proven approach to hashed messages, and importantly makes it possible to reuse the pre-computed subfields
+introduced by BIP341 to prevent quadratic hashing. Besides the hash tags, this results in at most 109 bytes being hashed
+upon execution of the operation<sup class="footnote-reference"><a href="#hashed-msg-max-size">3</a></sup>. This is strictly less hashing than is necessary for other
+existing operations.</p>
+<p>The specific fields from the BIP341 signature message that are ommitted when computing the template hash are the
+following:</p>
+<ul>
+<li><em>hash_type</em>: refers to the sighash type identifier in the context of BIP341 signatures. The input for <code>OP_TEMPLATEHASH</code> is fixed, so there
+is no need for a mechanism to modify the hash composition.</li>
+<li><em>spend_type</em>: this value is defined by BIP341 as <em>2*ext_flag + annex_present</em>. Since no extension is appended to the
+signature message, <em>ext_flag</em> is set to 0. Therefore we commit directly to <em>annex_present</em>.</li>
+<li><em>sha_prevouts</em> / <em>sha_scriptpubkeys</em>: committing to these fields as is would introduce a hash cycle when the hash is
+committed in the output itself. Committing to all other prevouts or scriptpubkeys would introduce hashing a quantity
+of data quadratic in the number of inputs. It would also prevent spending two coins encumbered by a template hash
+check in the same transaction. Finally, the flexibility of not committing to the specific coins spent is also
+desirable to recover from mistakes<sup class="footnote-reference"><a href="#no-commit-other-coins">4</a></sup>.</li>
+<li><em>sha_amounts</em>: the BIP341 rationale for committing to the amounts of all spent coins is to be able to prove to an offline
+signer the fees of a transaction. Although <code>OP_TEMPLATEHASH</code> can be used as a building block for rebindable
+signatures, the utility of committing to spent amounts but not spent scriptpubkeys <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAB3F3Dv1kuJdu8veNUHa4b58TvWy=BT6zfxdhqEPBQ8rjDfWtA@mail.gmail.com">is
+limited</a>. Still for rebindable signatures, committing to spent amounts can be justified
+as defense-in-depth against implementation mistakes<sup class="footnote-reference"><a href="#commit-spent-amounts">5</a></sup>. However, the lack of flexibility this
+introduces also makes it harder to recover from a mistake in committing to the next
+transaction<sup class="footnote-reference"><a href="#no-commit-other-coins">4</a></sup>. Furthermore, committing to all spent amounts also makes overcommitting funds to
+such a script result in the output being forever unspendable instead of the excess just going to fees at spend time.</li>
+</ul>
+<p>The design of <code>OP_TEMPLATEHASH</code> was inspired by the design of <a href="https://bips.dev/446/bip-0119.mediawiki">BIP119</a> <code>OP_CHECKTEMPLATEVERIFY</code> but differs in
+several important ways.</p>
+<p>First of all, <code>OP_TEMPLATEHASH</code> is only defined for Tapscript, as modifying legacy Script comes with an unnecessarily
+increased risk surface. In addition, sticking to Tapscript allows leveraging more powerful upgrade hooks (<code>OP_SUCCESS</code>s
+instead of <code>OP_NOP</code>s) which make it possible to push the template hash on the stack instead of being constrained to
+strict assertions with no stack modification. Pushing the template hash on the stack substantially improves the
+efficiency of using <code>OP_TEMPLATEHASH</code> as a building block for rebindable signatures.</p>
+<p>Unlike <code>OP_TEMPLATEHASH</code>, <code>OP_CHECKTEMPLATEVERIFY</code> also commits to the scriptSig of all inputs of the spending
+transaction. <code>OP_CHECKTEMPLATEVERIFY</code> gives txid stability when the committed spending transaction has a single input,
+and when the scriptSig of this single input has been committed by the hash.
+Taproot scriptSigs must be empty and therefore under the single input case <code>OP_TEMPLATEHASH</code> has no requirement
+to commit to scriptSigs to achieve txid stability.</p>
+<p>Finally, BIP119 <code>OP_CHECKTEMPLATEVERIFY</code> does not commit to the Taproot annex (or its absence). <code>OP_TEMPLATEHASH</code> does.
+Deviating from other operations which do commit to the annex would be unnecessary and surprising. Committing to the
+annex also makes usage of <code>OP_TEMPLATEHASH</code> forward compatible with potential future meaning that it could be given. Not
+committing to it would also prevent using <code>OP_TEMPLATEHASH</code> in conjunction with annex-based proof of publication
+techniques unless additional signatures are included, as used for instance <a rel="noopener" target="_blank" href="https://github.com/instagibbs/bolts/blob/eltoo_draft/XX-eltoo-transactions.md#update-transaction">in the LN-Symmetry demo</a>.</p>
+<p>Programmable transaction introspection capabilities have been proposed as an alternative to a primitive which only
+allows committing to the exact next transaction. It remains to be shown that these more flexible capabilities do
+enable important use cases which justify each proposed change's specific semantics and implementation complexity. It
+has been suggested that the new primitive should have its own upgrade hook from which to softfork in additional
+consensus meaning for more flexible introspection at some future point. We have not done so due to the fact that Taproot
+and Tapscript already presents plentiful upgrade hooks for the future.</p>
+<h2 id="Backward_compatibility">Backward compatibility</h2>
+<p>This document proposes to give meaning to a Tapscript <code>OP_SUCCESS</code> operation. The presence of an <code>OP_SUCCESS</code> in a
+Tapscript would previously make it unconditionally succeed. This proposal therefore only tightens the block validation
+rules: there is no block that is valid under the rules proposed in this BIP but not under the existing Bitcoin consensus
+rules. As a consequence these changes are backward-compatible with non-upgraded node software. That said, the authors
+strongly encourage node operators to upgrade in order to fully validate all consensus rules.</p>
+<h2 id="Implementation">Implementation</h2>
+<ul>
+<li>https://github.com/instagibbs/bitcoin/tree/2025-07-op_templatehash</li>
+</ul>
+<h2 id="Test_Vectors">Test Vectors</h2>
+<p>For development and testing purposes, we provide a <a href="https://bips.dev/446/bip-0446/">collection of test vectors</a>. The test
+vectors are separated into two JSON files. The <a href="https://bips.dev/446/bip-0446/basics.json">first one</a> is a short list of
+simple test cases exercising the various fields of a transaction committed to when using <code>OP_TEMPLATEHASH</code>. The <a href="https://bips.dev/446/bip-0446/script_assets_test.json">second
+one</a> is a more exhaustive suite of tests exercising <code>OP_TEMPLATEHASH</code>
+under a large number of different conditions. It reuses the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/v29.0/test/functional/feature_taproot.py">Bitcoin Core Taproot test framework</a>
+introduced with the implementation of BIP341. Format details and usage demonstration are available
+<a href="https://bips.dev/446/bip-0446/README.md">here</a>.</p>
+<h2 id="Acknowledgements">Acknowledgements</h2>
+<p>Credit to Jeremy Rubin for his leadership and perseverance in defending how a simple primitive which
+allows committing to the entire spending transaction is useful for reducing
+interactivity in second layer protocols. This BIP draws on the design of BIP119 and is
+heavily inspired by his exploration of the potential uses for such a primitive.</p>
+<h2 id="Copyright">Copyright</h2>
+<p>This document is licensed under the Creative Commons CC0 1.0 Universal license.</p>
+<div class="footnote-definition" id="ln-second-stage"><sup class="footnote-definition-label">2</sup>
+<p>Second-stage HTLC transactions are currently enforced through a 2-of-2 multisig between the channel
+partners. Committing to the HTLC transaction directly in the commitment transaction's HTLC output is a drop-in
+replacement for the multisig, which has the advantage of not requiring Lightning nodes to transmit and store signatures
+for every HTLC at every state it is still active for.</p>
+</div>
+<div class="footnote-definition" id="commit-exact-tx"><sup class="footnote-definition-label">1</sup>
+<p>All the transaction's fields are committed to except the inputs' prevout. This means the output must
+be spent by this exact transaction, although the other spent outputs may vary.</p>
+</div>
+<div class="footnote-definition" id="no-commit-other-coins"><sup class="footnote-definition-label">4</sup>
+<p>It is possible to commit to an underfunded transaction to spend a coin. If the transaction
+commits to more than one input, it is possible to recover from the mistake by creating a separate coin of an appropriate
+value and spending it along with the encumbered coin. Committing to other inputs this transaction must spend or their
+input removes the ability to recover from such a mistake.</p>
+</div>
+<div class="footnote-definition" id="commit-spent-amounts"><sup class="footnote-definition-label">5</sup>
+<p>Adding commitments to the spent amounts may offer extra protection when reusing a public key
+previously associate with a rebindable signature. See <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0118.mediawiki#cite_note-3">BIP118's rationale</a> for more about this.</p>
+</div>
+<div class="footnote-definition" id="hashed-msg-max-size"><sup class="footnote-definition-label">3</sup>
+<p>If no annex is committed, 77 bytes are hashed: 72 bytes of transaction data + 5 bytes of data
+about this input. Committing to an annex adds 32 additional bytes of data about this input, bringing the total to 109.</p>
+</div>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-03-18</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
