@@ -10,7 +10,7 @@ install-tailwind:
     mv tailwindcss* bin/tailwindcss
 
 install-pagefind:
-    cargo install pagefind
+    cargo install pagefind@1.4.0
 
 install: install-tailwind install-pagefind
 
