@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 440: Varops Budget For Script Runtime Constraint" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 440: Varops Budget For Script Runtime Constraint" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 440: Varops Budget For Script Runtime Constraint</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 440: Varops Budget For Script Runtime Constraint</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2026-03-25</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0440.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 440
+  Layer: Consensus (soft fork)
+  Title: Varops Budget For Script Runtime Constraint
+  Authors: Rusty Russell &lt;rusty@rustcorp.com.au&gt;
+           Julian Moik &lt;julianmoik@gmail.com&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2026-03-25
+  License: BSD-3-Clause
+  Discussion: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;GisTcPb8Jco&#x2F;m&#x2F;8znWcWwKAQAJ
+              https:&#x2F;&#x2F;delvingbitcoin.org&#x2F;t&#x2F;benchmarking-bitcoin-script-evaluation-for-the-varops-budget-great-script-restoration&#x2F;2094
+  Version: 0.2.0
+</code></pre>
+<h2>Introduction</h2>
+<h3>Abstract</h3>
+<p>This BIP defines a "varops budget", which generalizes the "sigops budget" introduced in <a href="/342" target="_blank">BIP342</a> to non-signature operations.</p>
+<p>This BIP is a useful framework for other BIPs to draw upon, and provides opcode examples which are always less restrictive than current rules.</p>
+<h3>Copyright</h3>
+<p>This document is licensed under the 3-clause BSD license.</p>
+<h3>Motivation</h3>
+<p>Since Bitcoin v0.3.1 (addressing CVE-2010-5137), Bitcoin's scripting capabilities have been significantly restricted to mitigate known vulnerabilities related to excessive computational time and memory usage.  These early safeguards were necessary to prevent denial-of-service attacks and ensure the stability and reliability of the Bitcoin network.</p>
+<p>However, as Bitcoin usage becomes more sophisticated, these limitations are becoming more salient.  New proposals often must explicitly address potential performance pitfalls by severely limiting their scope, introducing specialized caching strategies to mitigate execution costs, or using the existing sigops budget in ad-hoc ways to enforce dynamic execution limits.</p>
+<p>This BIP introduces a simple, systematic and explicit cost framework for evaluating script operations based on stack data interactions, using worst-case behavior as the limiting factor.  Even with these pessimistic assumptions, large classes of scripts can be shown to be within budget (for all possible inputs) by static analysis.</p>
+<h3>A Model For Opcodes Dealing With Stack Data</h3>
+<p>Without an explicit and low limit on the size of stack operands, the bottleneck for script operations is based on the time taken to process the stack data it accesses (with the exception of signature operations).  The cost model uses the length of the stack inputs (or occasionally, outputs), hence the term "varops".</p>
+<ul>
+<li>We assume that the manipulation of the stack vector itself (e.g. OP_DROP) is negligible (with the exception of OP_ROLL)</li>
+<li>We assume that memory allocation and deallocation overhead is negligible.</li>
+<li>We do not consider the cost of the script interpretation itself, which is necessarily limited by block size.</li>
+<li>We assume implementations use simple linear arrays/vectors of contiguous memory.</li>
+<li>We assume implementations use linear accesses to stack data (perhaps multiple times): random accesses would require an extension to the model.</li>
+<li>We assume object size is limited to the entire transaction (4,000,000 bytes, worst-case).</li>
+<li>Costs are based on the worst-case behavior of each opcode.</li>
+</ul>
+<p>The last two assumptions make a large difference in practice: normal usage on small, cache-hot objects is much faster than this model suggests.  But an implementation which is more efficient than the versions modeled does not introduce any problems (though a future soft-fork version may want to reflect this in reduced costings): only an implementation with a significantly worse worst-case behavior would be problematic.</p>
+<h2>Design</h2>
+<p>A per-transaction integer "varops budget" is determined by multiplying the total transaction weight by the fixed factor 10,000 (chosen to make operation costs all integer values). The budget is transaction-wide (rather than per-input) to allow for cross-input introspection: a small input may reasonably access larger inputs.</p>
+<p>Opcodes consume budget as they are executed, based on the length (not generally the value) of their parameters as detailed below.  A transaction which exceeds its budget fails to validate.</p>
+<h3>Derivation of Costs</h3>
+<p>The costs of opcodes were determined by benchmarking on a variety of platforms.</p>
+<p>As each block can contain 80,000 Schnorr signature checks, we used this as a reasonable upper bound for maximally slow block processing.</p>
+<p>To estimate a conservative maximum runtime for each opcode, we consider scripts with two constraints:</p>
+<ol>
+<li>the script size is limited by the existing weight limit of 4,000,000 units and</li>
+<li>the script can only consume the varops budget of a whole block: 10,000 * 4,000,000 (40b).</li>
+</ol>
+<p>The script is assumed to execute in a single thread and acts on initial stack elements that are not included in the limits for conservatism.</p>
+<p>Ideally, on each platform we tested, the worst case time for each opcode would be no worse than the Schnorr signature upper bound: i.e. the block would get no slower.  And while CHECKSIG can be batched and/or done in parallel, it also involves hashing, which is not taken into account here (the worst-case being significantly slower than the signature validations themselves).</p>
+<p>The signature cost is simply carried across from the existing <a href="/342" target="_blank">BIP-342</a> limit: 50 weight units allow you one signature.  Since each transaction gets varops budget for the entire transaction (not just the current input's witness), and each input has at least 41 bytes (164 weight), this is actually slightly more generous than the sigops budget (which was 50 + witness weight), but still limits the entire block to 80,000 signatures.</p>
+<h3>Benchmarks</h3>
+<p>The costs were validated by constructing maximally expensive scripts for every opcode (filling a full block with worst-case operands) and measuring wall-clock execution time across 14 machines spanning x86_64, ARM64, Linux, macOS, and Windows:</p>
+<p>Apple M1 Pro, Apple M2, Apple M4 Pro (macOS + Linux/Docker), AMD Ryzen 5 3600, AMD Ryzen 7 5800U, AMD Ryzen 9 9950X, Intel i5-12500, Intel i7-7700, Intel i7-8700, Intel i9-9900K, Intel N150 (Umbrel), Raspberry Pi 5.</p>
+<p>For each machine, the ratio of the GSR worst-case block time to the existing (pre-GSR) worst-case block time was computed.  A ratio below 1.0 means GSR does not introduce a new worst case.  On all 14 tested machines, the ratio is below 1.0.</p>
+<p>Without GSR, the slowest blocks are dominated by:</p>
+<ul>
+<li>Schnorr signature validation (80,000 signatures per block)</li>
+<li>Repeated hashing of 520-byte elements (3DUP + HASH256, 3DUP + RIPEMD160)</li>
+</ul>
+<p>With GSR enabled, the slowest blocks restricted by the varops budget depend on the machine but usually include:</p>
+<ul>
+<li>Schnorr signature validation (80,000 signatures per block)</li>
+<li>Repeated hashing of 520-byte elements (3DUP + HASH256, 3DUP + RIPEMD160)</li>
+<li>Small-element multiplication (MUL on 1-byte operands)</li>
+<li>Large-element left-shift with copying (2DUP + LSHIFT on 10KB elements)</li>
+<li>Hashing of 1KB elements (HASH256)</li>
+<li>Stack rolling at maximum depth (ROLL)</li>
+<li>Large-element copying (TUCK, CAT on 100KB–2MB elements)</li>
+</ul>
+<p>The raw benchmark data, analysis scripts, and visualized results are available at https://github.com/jmoik/varopsData. This repository also provides instructions for running the benchmarks on your own machine.</p>
+<h3>Cost Categories</h3>
+<p>We divided operations into six speed categories:</p>
+<ol>
+<li>Signature operations.</li>
+<li>Hashing operations.</li>
+<li>OP_ROLL, which does a large-scale stack movement.</li>
+<li>Fast operations: comparing bytes, comparing bytes against zero, and zeroing bytes.  Empirically, these have been shown to be well-optimized.</li>
+<li>Copying bytes: slightly more expensive than fast operations due to memory allocation overhead.</li>
+<li>Everything else.</li>
+</ol>
+<p>Each class then has the following costs.</p>
+<ol>
+<li>Signature operations cost 500,000 (10,000 * 50) units each, this resembles the cost of the existing sigops budget.</li>
+<li>Hashing costs 50 units per byte hashed.</li>
+<li>OP_ROLL costs an additional 48 units (24 bytes per std::vector * 2 units per byte) per stack entry moved (i.e. the value of its operand).</li>
+<li>Fast operations cost 2 units per byte output.</li>
+<li>Copying operations cost 3 units per byte output.</li>
+<li>Arithmetic operations (which don't pipeline as well due to the overflow between words) cost 6 units per byte output.</li>
+<li>Other operations cost 4 units per byte output.</li>
+</ol>
+<h3>Variable Opcode Budget</h3>
+<p>We use the following annotations to indicate the derivation for each opcode:</p>
+<p>;COMPARING
+Comparing two objects: cost = 2 per byte compared.
+;COMPARINGZERO
+Comparing an object against zeroes: cost = 2 per byte compared.
+;ZEROING
+Zeroing out bytes: cost = 2 per byte zeroed.
+;COPYING
+Copying bytes: cost = 3 per byte copied.
+;LENGTHCONV
+Converting an operand to a length value, including verifying that trailing bytes are zero: cost = 2 per byte examined.
+;ARITH
+Arithmetic operations which have carry operations: cost = 6 per byte examined.
+;SIGCHECK
+Checking a signature is a flat cost: cost = 500,000.
+;HASH
+cost = 50 per byte hashed.
+;ROLL
+cost = 48 per stack element moved.
+;OTHER
+all other operations which take a variable-length parameter: cost = 4 per byte written.</p>
+<p>Note that COMPARINGZERO is a subset of COMPARING: an implementation must examine every byte of a stack element to determine if the value is 0.  This can be done efficiently using existing comparison techniques, e.g. check the first byte, then <code>memcmp(first, first+1, len-1)</code>.</p>
+<p>Note that LENGTHCONV is used where script interprets a value as a length.  Without explicit limits on number size, such (little-endian) values might have to be examined in their entirety to ensure any trailing bytes are zero, implying a COMPARINGZERO operation after the first few bytes.</p>
+<p>The top of stack is labeled A, with successive values B, C, etc.</p>
+<h2>Example Opcodes</h2>
+<p>The following opcodes demonstrate the approach, with an analysis of how the costs apply:</p>
+<h3>Example: Control And Simple Examination Opcodes</h3>
+<table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th><th>Reason</th></tr></thead><tbody>
+<tr><td>OP_VERIFY</td><td>length(A) * 2</td><td>COMPARINGZERO</td></tr>
+<tr><td>OP_NOT</td><td>length(A) * 2</td><td>COMPARINGZERO</td></tr>
+<tr><td>OP_0NOTEQUAL</td><td>length(A) * 2</td><td>COMPARINGZERO</td></tr>
+<tr><td>OP_EQUAL</td><td>If length(A) != length(B): 0, otherwise length(A) * 2</td><td>COMPARING</td></tr>
+<tr><td>OP_EQUALVERIFY</td><td>If length(A) != length(B): 0, otherwise length(A) * 2</td><td>COMPARING</td></tr>
+</tbody></table>
+<h4>Rationale</h4>
+<p>OP_IF and OP_NOTIF in Tapscript require minimal values, so do not take variable length parameters, hence are not considered here.</p>
+<p>OP_EQUAL and OP_EQUALVERIFY don't have to examine any data (and the Bitcoin Core implementation does not) if the lengths are different.</p>
+<h3>Example: Stack Manipulation</h3>
+<table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th><th>Reason</th></tr></thead><tbody>
+<tr><td>OP_2DUP</td><td>(length(A) + length(B)) * 3</td><td>COPYING</td></tr>
+<tr><td>OP_3DUP</td><td>(length(A) + length(B) + length(C)) * 3</td><td>COPYING</td></tr>
+<tr><td>OP_2OVER</td><td>(length(C) + length(D)) * 3</td><td>COPYING</td></tr>
+<tr><td>OP_IFDUP</td><td>length(A) * 5</td><td>COMPARINGZERO + COPYING</td></tr>
+<tr><td>OP_DUP</td><td>length(A) * 3</td><td>COPYING</td></tr>
+<tr><td>OP_OVER</td><td>length(B) * 3</td><td>COPYING</td></tr>
+<tr><td>OP_PICK</td><td>length(A) * 2 + length(A-th-from-top) * 3</td><td>LENGTHCONV + COPYING</td></tr>
+<tr><td>OP_TUCK</td><td>length(A) * 3</td><td>COPYING</td></tr>
+<tr><td>OP_ROLL</td><td>length(A) * 2 + 48 * Value of A</td><td>LENGTHCONV + ROLL</td></tr>
+<tr><td></td><td></td><td></td></tr>
+</tbody></table>
+<h4>Rationale</h4>
+<p>These operators copy a stack entry and write to another.  OP_IFDUP has the same worst-case cost as OP_IF + OP_DUP.</p>
+<p>OP_ROLL needs to read its operand, then move that many elements on the stack.  It is the only opcode for which the stack manipulation cost is variable (and, regretfully, non-trivial), so we need to limit it.</p>
+<p>A reasonable implementation (and the current bitcoind C++ implementation) is to use 24 bytes for each stack element (a pointer, a size and a maximum capacity), and this value works reasonably in practice.</p>
+<h3>Example: Comparison Operators</h3>
+<table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th></tr></thead><tbody>
+<tr><td>OP_BOOLAND</td><td>(length(A) + length(B)) * 2</td></tr>
+<tr><td>OP_BOOLOR</td><td>(length(A) + length(B)) * 2</td></tr>
+<tr><td>OP_NUMEQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
+<tr><td>OP_NUMEQUALVERIFY</td><td>MAX(length(A), length(B)) * 2</td></tr>
+<tr><td>OP_NUMNOTEQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
+<tr><td>OP_LESSTHAN</td><td>MAX(length(A), length(B)) * 2</td></tr>
+<tr><td>OP_GREATERTHAN</td><td>MAX(length(A), length(B)) * 2</td></tr>
+<tr><td>OP_LESSTHANOREQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
+<tr><td>OP_GREATERTHANOREQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
+<tr><td>OP_MIN</td><td>MAX(length(A), length(B)) * 4</td></tr>
+<tr><td>OP_MAX</td><td>MAX(length(A), length(B)) * 4</td></tr>
+<tr><td>OP_WITHIN</td><td>(MAX(length(C), length(B)) + MAX(length(C), length(A))) * 2</td></tr>
+</tbody></table>
+<h4>Rationale</h4>
+<p>Numerical comparison in little-endian numbers involves a byte-by-byte comparison, then if one is longer, checking that the remainder is all zero bytes.</p>
+<p>However, OP_MAX and OP_MIN also normalize their result, which means they can't use the optimized comparison routine but must instead track the final non-zero byte to perform truncation.</p>
+<h3>Example: Hash Operators</h3>
+<table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th><th>Reason</th></tr></thead><tbody>
+<tr><td>OP_SHA256</td><td>(Length of the operand) * 50</td><td>HASH</td></tr>
+<tr><td>OP_HASH160</td><td>(Length of the operand) * 50</td><td>HASH</td></tr>
+<tr><td>OP_HASH256</td><td>(Length of the operand) * 50</td><td>HASH</td></tr>
+</tbody></table>
+<h4>Rationale</h4>
+<p>SHA256 has been well-optimized for current hardware, as it is already critical to Bitcoin's operation.  Additional once-off steps such as the final SHA round, and RIPEMD or a second SHA256 are not proportional to the input, so are not included in the cost model.</p>
+<p>A model for other hash operations (OP_SHA1, OP_RIPEMD160) is possible, but we have not done so.  They are not generally optimized, and if they were permitted on large inputs, this would have to be done.</p>
+<h2>Reference Implementation</h2>
+<p>Work in progress:</p>
+<pre><code>https:&#x2F;&#x2F;github.com&#x2F;jmoik&#x2F;bitcoin&#x2F;tree&#x2F;gsr
+</code></pre>
+<h2>Changelog</h2>
+<ul>
+<li>0.2.0: 2026-02-21: increase in cost for hashing and copying based on benchmark results.</li>
+<li>0.1.0: 2025-09-27: first public posting</li>
+</ul>
+<h2>Thanks</h2>
+<p>This BIP would not exist without the thoughtful contributions of coders who considered all the facets carefully and thoroughly, and also my inspirational wife Alex and my kids who have been tirelessly supportive of my esoteric-seeming endeavors such as this!</p>
+<p>In alphabetical order:</p>
+<ul>
+<li>Anthony Towns</li>
+<li>Brandon Black (aka Reardencode)</li>
+<li>John Light</li>
+<li>Jonas Nick</li>
+<li>Mark "Murch" Erhardt</li>
+<li>Rijndael (aka rot13maxi)</li>
+<li>Steven Roose</li>
+<li>FIXME: your name here!</li>
+</ul>
+<h2> Footnotes </h2>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-04-08</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

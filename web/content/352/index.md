@@ -410,7 +410,7 @@ If each of the checks in _<a href="#scanning-silent-payment-eligible-transaction
                                                                 *  Add _P<sub>k</sub> + label_ to the wallet
                                                                 *  Remove _output_ from _outputs_to_check_ and rescan _outputs_to_check_ with _k++_
                                 *  If a label is not found, negate _output_ and check a second time<ref name="negate_output">** Why negate the output?** Unfortunately taproot outputs are X-only, meaning we don't know what the correct Y coordinate is. This causes this specific calculation to fail 50% of the time, so we need to repeat it with the other Y coordinate by negating the output.</ref>
-        *  If no matches are found, stop
+        *  If no matches are found, stop<ref name="always_continue_scanning_after_match">**WARNING:** The decision to continue scanning (increment _k_) must be based on whether a cryptographic match was found, not on whether the wallet considers the output spendable or relevant. A match that is later filtered by wallet policy (e.g. dust) must still trigger a rescan with _k++_; stopping early may cause subsequent outputs for the same sender to be missed.</ref>
 
 
 <h4> Spending </h4>

@@ -313,6 +313,7 @@ All available expression types are listed in this table.
 |Script|`SCRIPT`|380|
 |Key|`KEY`|380|
 |Tree|`TREE`|<a href="/386" target="_blank">386</a>|
+|Annotation|`ANNOT`|<a href="bip-descriptorannotations.mediawiki" target="_blank">?</a>|
 
 
 <h2>Appendix B: Index of Script Expressions</h2>
