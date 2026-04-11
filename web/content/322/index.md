@@ -47,6 +47,18 @@ Ultimately no message signing protocol can actually prove control of funds, both
 
 This BIP specifies three formats for signing messages: _legacy_, _simple_ and _full_. Additionally, a variant of the _full_ format can be used to demonstrate control over a set of UTXOs.
 
+
+||Compatible script types|Signature format|
+|-|-|-|
+|Legacy|`P2PKH`, `P2SH-P2WPKH`<sup>1</sup>, `P2WPKH`<sup>1</sup>|compact, public key recoverable ECDSA signature, base64-encoded|
+|Simple|`P2WPKH`, `P2WSH`<sup>2</sup>, `P2TR`<sup>2</sup> <br/>|witness stack, consensus encoded and base64-encoded|
+|Full|`all`|full `to_sign` transaction, consensus and base64-encoded|
+|Full (PoF)|`all`|full `to_sign` transaction, consensus and base64-encoded|
+
+
+<sup>1</sup>: Possible on a technical level but should NOT be used anymore in the context of this BIP.<br/>
+<sup>2</sup>: Excluding time lock scripts.
+
 <h3> Legacy </h3>
 
 
@@ -98,6 +110,7 @@ The `to_sign` transaction is:
     vin[0].prevout.hash = to_spend.txid
     vin[0].prevout.n = 0
     vin[0].nSequence = 0 or (FULL format only) as appropriate (for time locks)
+    vin[0].scriptSig = [] or (FULL format only) as appropriate (for non segwit-native transactions)
     vin[0].scriptWitness = message_signature
     vout[0].nValue = 0
     vout[0].scriptPubKey = OP_RETURN
@@ -206,40 +219,8 @@ This document is licensed under the Creative Commons CC0 1.0 Universal license.
 <h2> Test vectors </h2>
 
 
-<h3> Message hashing </h3>
+Basic test vectors for message hashing, transaction hashes and "simple" variant test cases can be found in <a href="https://github.com/bitcoin/bips/blob/master/bip-0322/basic-test-vectors.json" target="_blank">`basic-test-vectors.json`</a>.
 
+Generated test vectors for more "simple" and "full" variant test cases can be found in <a href="https://github.com/bitcoin/bips/blob/master/bip-0322/generated-test-vectors.json" target="_blank">`generated-test-vectors.json`</a>.
 
-Message hashes are BIP340-tagged hashes of a message, i.e. sha256_tag(m), where tag = `BIP0322-signed-message`, and m is the message as is without length prefix or null terminator:
-
-*  Message = "" (empty string): `c90c269c4f8fcbe6880f72a721ddfbf1914268a794cbb21cfafee13770ae19f1`
-*  Message = "Hello World": `f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a`
-
-
-<h3> Message signing </h3>
-
-
-Given below parameters:
-
-*  private key `L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k`
-*  corresponding address `bc1q9vza2e8x573nczrlzms0wvx3gsqjx7vavgkx0l`
-
-
-Produce signatures:
-
-*  Message = "" (empty string): `AkcwRAIgM2gBAQqvZX15ZiysmKmQpDrG83avLIT492QBzLnQIxYCIBaTpOaD20qRlEylyxFSeEA2ba9YOixpX8z46TSDtS40ASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=` or `AkgwRQIhAPkJ1Q4oYS0htvyuSFHLxRQpFAY56b70UvE7Dxazen0ZAiAtZfFz1S6T6I23MWI2lK/pcNTWncuyL8UL+oMdydVgzAEhAsfxIAMZZEKUPYWI4BruhAQjzFT8FSFSajuFwrDL1Yhy`
-*  Message = "Hello World": `AkcwRAIgZRfIY3p7/DoVTty6YZbWS71bc5Vct9p9Fia83eRmw2QCICK/ENGfwLtptFluMGs2KsqoNSk89pO7F29zJLUx9a/sASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=` or `AkgwRQIhAOzyynlqt93lOKJr+wmmxIens//zPzl9tqIOua93wO6MAiBi5n5EyAcPScOjf1lAqIUIQtr3zKNeavYabHyR8eGhowEhAsfxIAMZZEKUPYWI4BruhAQjzFT8FSFSajuFwrDL1Yhy`
-
-
-<h3> Transaction Hashes </h3>
-
-
-to_spend:
-
-*  Message = "" (empty string): `c5680aa69bb8d860bf82d4e9cd3504b55dde018de765a91bb566283c545a99a7`
-*  Message = "Hello World": `b79d196740ad5217771c1098fc4a4b51e0535c32236c71f1ea4d61a2d603352b`
-
-
-to_sign:
-
-*  Message = "" (empty string): `1e9654e951a5ba44c8604c4de6c67fd78a27e81dcadcfe1edf638ba3aaebaed6`
-*  Message = "Hello World": `88737ae86f2077145f93cc4b153ae9a1cb8d56afa511988c149c5c8c9d93bddf`
+They were generated using <a href="https://github.com/guggero/btcd/blob/f0d8719873ac70412dd813ef6e81358864c4eaa3/btcutil/bip322/bip322_test.go#L910" target="_blank">this code</a>.

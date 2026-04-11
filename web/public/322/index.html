@@ -135,6 +135,14 @@
 <p>Ultimately no message signing protocol can actually prove control of funds, both because a signature is obsolete as soon as it is created, and because the possessor of a secret key may be willing to sign messages on others' behalf even if it would not sign actual transactions. No signmessage protocol can fix these limitations.</p>
 <h2> Types of Signatures </h2>
 <p>This BIP specifies three formats for signing messages: <em>legacy</em>, <em>simple</em> and <em>full</em>. Additionally, a variant of the <em>full</em> format can be used to demonstrate control over a set of UTXOs.</p>
+<table><thead><tr><th></th><th>Compatible script types</th><th>Signature format</th></tr></thead><tbody>
+<tr><td>Legacy</td><td><code>P2PKH</code>, <code>P2SH-P2WPKH</code><sup>1</sup>, <code>P2WPKH</code><sup>1</sup></td><td>compact, public key recoverable ECDSA signature, base64-encoded</td></tr>
+<tr><td>Simple</td><td><code>P2WPKH</code>, <code>P2WSH</code><sup>2</sup>, <code>P2TR</code><sup>2</sup> <br/></td><td>witness stack, consensus encoded and base64-encoded</td></tr>
+<tr><td>Full</td><td><code>all</code></td><td>full <code>to_sign</code> transaction, consensus and base64-encoded</td></tr>
+<tr><td>Full (PoF)</td><td><code>all</code></td><td>full <code>to_sign</code> transaction, consensus and base64-encoded</td></tr>
+</tbody></table>
+<p><sup>1</sup>: Possible on a technical level but should NOT be used anymore in the context of this BIP.<br/>
+<sup>2</sup>: Excluding time lock scripts.</p>
 <h3> Legacy </h3>
 <p>New proofs should use the new format for all invoice address formats, including P2PKH.</p>
 <p>The legacy format MAY be used, but must be restricted to the legacy P2PKH invoice address format.</p>
@@ -167,6 +175,7 @@
     vin[0].prevout.hash = to_spend.txid
     vin[0].prevout.n = 0
     vin[0].nSequence = 0 or (FULL format only) as appropriate (for time locks)
+    vin[0].scriptSig = [] or (FULL format only) as appropriate (for non segwit-native transactions)
     vin[0].scriptWitness = message_signature
     vout[0].nValue = 0
     vout[0].scriptPubKey = OP_RETURN
@@ -258,34 +267,9 @@
 <h2> Copyright </h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal license.</p>
 <h2> Test vectors </h2>
-<h3> Message hashing </h3>
-<p>Message hashes are BIP340-tagged hashes of a message, i.e. sha256_tag(m), where tag = <code>BIP0322-signed-message</code>, and m is the message as is without length prefix or null terminator:</p>
-<ul>
-<li>Message = "" (empty string): <code>c90c269c4f8fcbe6880f72a721ddfbf1914268a794cbb21cfafee13770ae19f1</code></li>
-<li>Message = "Hello World": <code>f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a</code></li>
-</ul>
-<h3> Message signing </h3>
-<p>Given below parameters:</p>
-<ul>
-<li>private key <code>L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k</code></li>
-<li>corresponding address <code>bc1q9vza2e8x573nczrlzms0wvx3gsqjx7vavgkx0l</code></li>
-</ul>
-<p>Produce signatures:</p>
-<ul>
-<li>Message = "" (empty string): <code>AkcwRAIgM2gBAQqvZX15ZiysmKmQpDrG83avLIT492QBzLnQIxYCIBaTpOaD20qRlEylyxFSeEA2ba9YOixpX8z46TSDtS40ASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=</code> or <code>AkgwRQIhAPkJ1Q4oYS0htvyuSFHLxRQpFAY56b70UvE7Dxazen0ZAiAtZfFz1S6T6I23MWI2lK/pcNTWncuyL8UL+oMdydVgzAEhAsfxIAMZZEKUPYWI4BruhAQjzFT8FSFSajuFwrDL1Yhy</code></li>
-<li>Message = "Hello World": <code>AkcwRAIgZRfIY3p7/DoVTty6YZbWS71bc5Vct9p9Fia83eRmw2QCICK/ENGfwLtptFluMGs2KsqoNSk89pO7F29zJLUx9a/sASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=</code> or <code>AkgwRQIhAOzyynlqt93lOKJr+wmmxIens//zPzl9tqIOua93wO6MAiBi5n5EyAcPScOjf1lAqIUIQtr3zKNeavYabHyR8eGhowEhAsfxIAMZZEKUPYWI4BruhAQjzFT8FSFSajuFwrDL1Yhy</code></li>
-</ul>
-<h3> Transaction Hashes </h3>
-<p>to_spend:</p>
-<ul>
-<li>Message = "" (empty string): <code>c5680aa69bb8d860bf82d4e9cd3504b55dde018de765a91bb566283c545a99a7</code></li>
-<li>Message = "Hello World": <code>b79d196740ad5217771c1098fc4a4b51e0535c32236c71f1ea4d61a2d603352b</code></li>
-</ul>
-<p>to_sign:</p>
-<ul>
-<li>Message = "" (empty string): <code>1e9654e951a5ba44c8604c4de6c67fd78a27e81dcadcfe1edf638ba3aaebaed6</code></li>
-<li>Message = "Hello World": <code>88737ae86f2077145f93cc4b153ae9a1cb8d56afa511988c149c5c8c9d93bddf</code></li>
-</ul>
+<p>Basic test vectors for message hashing, transaction hashes and "simple" variant test cases can be found in <a href="https://github.com/bitcoin/bips/blob/master/bip-0322/basic-test-vectors.json" target="_blank"><code>basic-test-vectors.json</code></a>.</p>
+<p>Generated test vectors for more "simple" and "full" variant test cases can be found in <a href="https://github.com/bitcoin/bips/blob/master/bip-0322/generated-test-vectors.json" target="_blank"><code>generated-test-vectors.json</code></a>.</p>
+<p>They were generated using <a href="https://github.com/guggero/btcd/blob/f0d8719873ac70412dd813ef6e81358864c4eaa3/btcutil/bip322/bip322_test.go#L910" target="_blank">this code</a>.</p>
 
         </article>
     </div>
@@ -296,7 +280,7 @@
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-04-10</p>
+                    <p class="font-bold">2026-04-11</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
