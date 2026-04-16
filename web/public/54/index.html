@@ -171,7 +171,7 @@ T<sub>N−1</sub> − 7200);</li>
 or equal to the value of the timestamp of the block at height <code>N-2015</code> (T<sub>N</sub> ≥
 T<sub>N−2015</sub>).</li>
 </ul>
-<p>A limit is set on the number of potentially executed signature operations in validating a
+<p>A limit is set on the number of signature operations present in the scripts used to validate a
 transaction. It applies to all transactions in the block except the coinbase transaction<sup class="footnote-reference"><a href="#1">2</a></sup>. For
 each input in the transaction, count the number of <code>CHECKSIG</code> and <code>CHECKMULTISIG</code> in the input
 scriptSig and previous output's scriptPubKey, including the P2SH redeemScript. If the total summed
@@ -224,7 +224,10 @@ validation will need to be re-activated from block 1,983,702. A simple way to pr
 mandate that future coinbase transactions vary from coinbase transactions before <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a>
 activation. There are multiple ways of achieving this, but setting and enforcing the timelock for
 the coinbase transaction makes it so all coinbase transactions past Consensus Cleanup activation
-could not have been valid before this height and therefore cannot be a duplicate<sup class="footnote-reference"><a href="#11">12</a></sup>.</p>
+could not have been valid before this height and therefore cannot be a duplicate<sup class="footnote-reference"><a href="#11">12</a></sup>. This
+simplifies both reasoning and client implementation, since the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> check can be
+skipped entirely past Consensus Cleanup activation, regardless of the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation
+status<sup class="footnote-reference"><a href="#12">13</a></sup>.</p>
 <h2 id="Backward_compatibility">Backward compatibility</h2>
 <p>This proposal only tightens the block validation rules: there is no block that is valid under the
 rules proposed in this BIP but not under the existing Bitcoin consensus rules. As a consequence
@@ -322,6 +325,11 @@ coinbase transactions as not having duplicate past Consensus Cleanup activation 
 for any implementation which enforces <code>nLockTime</code> from the genesis block, which is the behaviour
 notably of Bitcoin Core but also of all other implementations the authors are aware of.</p>
 </div>
+<div class="footnote-definition" id="12"><sup class="footnote-definition-label">13</sup>
+<p>For instance Bitcoin Core only disables <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation for a specific chain
+where <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> violations have been manually inspected (see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/390e7d61bd531505bb3d13f38316c282b85ed1dd/src/validation.cpp#L2401-L2459">here</a>). Without the guarantee given by enforcing the timelock on coinbase transactions, this would
+have to be perpetuated for the Consensus Cleanup.</p>
+</div>
 
         </article>
     </div>
@@ -332,7 +340,7 @@ notably of Bitcoin Core but also of all other implementations the authors are aw
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-04-15</p>
+                    <p class="font-bold">2026-04-16</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
