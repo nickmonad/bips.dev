@@ -207,7 +207,7 @@ A full test suite with additional vectors can be found at the Bitcoin <a href="h
 
 
 *  __1.0.0__ (2026-03-01) - Marked as complete.
-*  __0.3.1__ (2026-01-23) - Made compliant with BIP 003, use cases added. 
+*  __0.3.1__ (2026-01-23) - Made compliant with <a href="bip-0003.md" target="_blank">BIP 3</a>, use cases added.
 *  __0.3.0__ (2024-05-06) - Merged to BIP repo
 *  __0.2.0__ (2024-04-24) - Assigned BIP number
 *  __0.1.0__ (2023-12-11) - Initial draft posted
