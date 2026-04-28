@@ -41,7 +41,7 @@ This BIP is licensed under the BSD 2-clause license.
 
 The export and import of funds across different Bitcoin wallet applications is well defined through standards such as BIP39, BIP32, BIP44 etc.
 These standards are well supported and allow users to move easily between different wallets.
-There is, however, no defined standard to transfer any labels the user may have applied to the transactions, addresses, public keys, inputs, outputs or xpubs in their wallet.
+There is, however, no defined standard to transfer any labels the user may have applied to the transactions, addresses, public keys, inputs, outputs, xpubs or spscans in their wallet.
 The UTXO model that Bitcoin uses makes these labels particularly valuable as they may indicate the source of funds, whether received externally or as a result of change from a prior transaction.
 In both cases, care must be taken when spending to avoid undesirable leaks of private information.
 
@@ -71,8 +71,8 @@ Each JSON object must contain 3 or 4 key/value pairs, defined as follows:
 
 |Key|Description|
 |-|-|
-|`type`|One of `tx`, `addr`, `pubkey`, `input`, `output` or `xpub`|
-|`ref`|Reference to the transaction, address, public key, input, output or extended public key|
+|`type`|One of `tx`, `addr`, `pubkey`, `input`, `output`, `xpub` or `spscan`|
+|`ref`|Reference to the transaction, address, public key, input, output, extended public key or silent payments scan key expression|
 |`label`|The label applied to the reference|
 |`origin`|Optional key origin information referencing the wallet associated with the label|
 |`spendable`|One of `true` or `false`, denoting if an output should be spendable by the wallet|
@@ -89,6 +89,7 @@ The reference is defined for each `type` as follows:
 |`input`|Transaction id and input index separated by a colon|`f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0`|
 |`output`|Transaction id and output index separated by a colon|`f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1`|
 |`xpub`|Extended public key as defined by BIP32|`xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8Nq...`|
+|`spscan`|Key expression for the single argument form of a silent payments output descriptor as defined by BIP392|`spscan1q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5...`|
 
 
 Each JSON object must contain both `type` and `ref` properties. The `label`, `origin` and `spendable` properties are optional. If the `label` or `spendable` properties are omitted, the importing wallet should not alter these values. The `spendable` property should only appear where type is `output`.
@@ -126,6 +127,7 @@ The following fragment represents a wallet label export:
 { "type": "input", "ref": "f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0", "label": "Input" }
 { "type": "output", "ref": "f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1", "label": "Output", "spendable": false }
 { "type": "xpub", "ref": "xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8", "label": "Extended Public Key" }
+{ "type": "spscan", "ref": "spscan1q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zsq9q6qjevn2kmdrnpuxt0v6h2kr2a2epkr0g6nk55ftf0xcxtddazgkrth3e", "label": "Silent Payments Scan Key Expression" }
 { "type": "tx", "ref": "f546156d9044844e02b181026a1a407abfca62e7ea1159f87bbeaa77b4286c74", "label": "Account #1 Transaction", "origin": "wpkh([d34db33f/84'/0'/1'])" }
 ```
 
@@ -154,7 +156,7 @@ but should be given if they are readily available.
 *  `fee`: Integer giving the number of Satoshis that went to the miner for this transaction.
 
 
-*  `value`: Signed integer giving the number of Satoshis that came into the wallet by this transaction. Will be negative when sats leave the wallet. Could be zero if it is a consolidation transaction that moves from old UTXO to new. 
+*  `value`: Signed integer giving the number of Satoshis that came into the wallet by this transaction. Will be negative when sats leave the wallet. Could be zero if it is a consolidation transaction that moves from old UTXO to new.
 
 
 *  `rate`: Exchange rate at time of transaction. This is the value of a Bitcoin, expressed in another currency, at the time of the transaction, based on user preferences for data source. Multiple currencies can be given. Keys are ISO 4217 currency codes where possible. Example: `"rate": { "USD":  105620.00 }`

@@ -132,7 +132,7 @@
 <h2>Motivation</h2>
 <p>The export and import of funds across different Bitcoin wallet applications is well defined through standards such as BIP39, BIP32, BIP44 etc.
 These standards are well supported and allow users to move easily between different wallets.
-There is, however, no defined standard to transfer any labels the user may have applied to the transactions, addresses, public keys, inputs, outputs or xpubs in their wallet.
+There is, however, no defined standard to transfer any labels the user may have applied to the transactions, addresses, public keys, inputs, outputs, xpubs or spscans in their wallet.
 The UTXO model that Bitcoin uses makes these labels particularly valuable as they may indicate the source of funds, whether received externally or as a result of change from a prior transaction.
 In both cases, care must be taken when spending to avoid undesirable leaks of private information.</p>
 <p>Labels provide valuable guidance in this regard, and have even become mandatory when spending in several Bitcoin wallets.
@@ -151,8 +151,8 @@ It is also a convenient format for command-line processing, which is often line-
 Lines are separated by <code>\n</code>. Multiline values are not permitted.
 Each JSON object must contain 3 or 4 key/value pairs, defined as follows:</p>
 <table><thead><tr><th>Key</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>type</code></td><td>One of <code>tx</code>, <code>addr</code>, <code>pubkey</code>, <code>input</code>, <code>output</code> or <code>xpub</code></td></tr>
-<tr><td><code>ref</code></td><td>Reference to the transaction, address, public key, input, output or extended public key</td></tr>
+<tr><td><code>type</code></td><td>One of <code>tx</code>, <code>addr</code>, <code>pubkey</code>, <code>input</code>, <code>output</code>, <code>xpub</code> or <code>spscan</code></td></tr>
+<tr><td><code>ref</code></td><td>Reference to the transaction, address, public key, input, output, extended public key or silent payments scan key expression</td></tr>
 <tr><td><code>label</code></td><td>The label applied to the reference</td></tr>
 <tr><td><code>origin</code></td><td>Optional key origin information referencing the wallet associated with the label</td></tr>
 <tr><td><code>spendable</code></td><td>One of <code>true</code> or <code>false</code>, denoting if an output should be spendable by the wallet</td></tr>
@@ -165,6 +165,7 @@ Each JSON object must contain 3 or 4 key/value pairs, defined as follows:</p>
 <tr><td><code>input</code></td><td>Transaction id and input index separated by a colon</td><td><code>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0</code></td></tr>
 <tr><td><code>output</code></td><td>Transaction id and output index separated by a colon</td><td><code>f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1</code></td></tr>
 <tr><td><code>xpub</code></td><td>Extended public key as defined by BIP32</td><td><code>xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8Nq...</code></td></tr>
+<tr><td><code>spscan</code></td><td>Key expression for the single argument form of a silent payments output descriptor as defined by BIP392</td><td><code>spscan1q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5...</code></td></tr>
 </tbody></table>
 <p>Each JSON object must contain both <code>type</code> and <code>ref</code> properties. The <code>label</code>, <code>origin</code> and <code>spendable</code> properties are optional. If the <code>label</code> or <code>spendable</code> properties are omitted, the importing wallet should not alter these values. The <code>spendable</code> property should only appear where type is <code>output</code>.</p>
 <p>If present, the optional <code>origin</code> property must contain an abbreviated output descriptor (as defined by BIP380<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup>) describing a BIP32 compatible originating wallet, including all key origin information but excluding any actual keys, any child path elements, or a checksum.
@@ -190,6 +191,7 @@ However, importing wallets complying to this specification should ignore types n
 { &quot;type&quot;: &quot;input&quot;, &quot;ref&quot;: &quot;f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:0&quot;, &quot;label&quot;: &quot;Input&quot; }
 { &quot;type&quot;: &quot;output&quot;, &quot;ref&quot;: &quot;f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd:1&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;spendable&quot;: false }
 { &quot;type&quot;: &quot;xpub&quot;, &quot;ref&quot;: &quot;xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8&quot;, &quot;label&quot;: &quot;Extended Public Key&quot; }
+{ &quot;type&quot;: &quot;spscan&quot;, &quot;ref&quot;: &quot;spscan1q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zsq9q6qjevn2kmdrnpuxt0v6h2kr2a2epkr0g6nk55ftf0xcxtddazgkrth3e&quot;, &quot;label&quot;: &quot;Silent Payments Scan Key Expression&quot; }
 { &quot;type&quot;: &quot;tx&quot;, &quot;ref&quot;: &quot;f546156d9044844e02b181026a1a407abfca62e7ea1159f87bbeaa77b4286c74&quot;, &quot;label&quot;: &quot;Account #1 Transaction&quot;, &quot;origin&quot;: &quot;wpkh([d34db33f&#x2F;84&#x27;&#x2F;0&#x27;&#x2F;1&#x27;])&quot; }
 </code></pre>
 <h2>Additional Fields</h2>
@@ -266,7 +268,7 @@ since that is a string with 5 characters and not a boolean.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-04-27</p>
+                    <p class="font-bold">2026-04-28</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
