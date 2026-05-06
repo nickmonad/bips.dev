@@ -57,7 +57,7 @@ BIP authors are responsible for collecting community feedback on both the initia
 
 It is highly recommended that a single BIP contain a single key proposal or new idea. The more focused the BIP, the more successful it tends to be. If in doubt, split your BIP into several well-focused ones.
 
-The BIP editors assign BIP numbers and change their status. Please send all BIP-related email to the BIP editor, which is listed under <a href="#BIP_Editors" target="_blank">BIP Editors</a> below. Also see <a href="#BIP_Editor_Responsibilities__Workflow" target="_blank">BIP Editor Responsibilities & Workflow</a>. The BIP editor reserves the right to reject BIP proposals if they appear too unfocused or too broad.
+The BIP editors assign BIP numbers and change their status. Please send all BIP-related email to the BIP editor, which is listed under <a href="#bip-editors" target="_blank">BIP Editors</a> below. Also see <a href="#bip-editor-responsibilities--workflow" target="_blank">BIP Editor Responsibilities & Workflow</a>. The BIP editor reserves the right to reject BIP proposals if they appear too unfocused or too broad.
 
 Authors MUST NOT self assign BIP numbers, but should use an alias such as "bip-johndoe-infinitebitcoins" which includes the author's name/nick and the BIP subject.
 

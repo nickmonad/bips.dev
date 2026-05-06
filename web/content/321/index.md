@@ -99,7 +99,7 @@ The bitcoinaddress body MUST be either a base58 P2SH or P2PKH address, bech32 Se
 The following keys are defined generally and apply to any URI regardless of payment instructions:
 
 * label: Label for the recipient (e.g. name of receiver)
-* message: message that describes the transaction to the user (<a href=" Examples" target="_blank">see examples below</a>)
+* message: message that describes the transaction to the user (<a href=" examples" target="_blank">see examples below</a>)
 * pop: a URI which the Bitcoin Wallet may return to in order to provide the application which initiated the payment with proof that a payment was completed.
 
 

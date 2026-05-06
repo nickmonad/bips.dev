@@ -93,7 +93,7 @@ The scheme component ("bitcoin:") is case-insensitive, and implementations must 
 
 * label: Label for that address (e.g. name of receiver)
 * address: bitcoin address
-* message: message that describes the transaction to the user (<a href=" Examples" target="_blank">see examples below</a>)
+* message: message that describes the transaction to the user (<a href=" examples" target="_blank">see examples below</a>)
 * (others): optional, for future extensions
 
 

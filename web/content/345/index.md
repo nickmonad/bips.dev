@@ -315,7 +315,7 @@ where
 
 After the stack is parsed, the following validation checks are performed:
 
-*  Decrement the per-script sigops budget (see <a href="/342" target="_blank">user-content-Resource_limits BIP-0342</a>) by 60<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>; if the budget is brought below zero, script execution MUST fail and terminate immediately.
+*  Decrement the per-script sigops budget (see <a href="/342" target="_blank">resource-limits BIP-0342</a>) by 60<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>; if the budget is brought below zero, script execution MUST fail and terminate immediately.
 *  Let the output designated by `<trigger-vout-idx>` be called _triggerOut_.
 *  If the scriptPubKey of _triggerOut_ is not a version 1 witness program, script execution MUST fail and terminate immediately.
 *  Let the script constructed by taking the `<leaf-update-script-body>` and prefixing it with minimally-encoded data pushes of the `<push-count>` leaf-update script data items be called the _leaf-update-script_.

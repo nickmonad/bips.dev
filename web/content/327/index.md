@@ -733,7 +733,7 @@ Algorithm _ApplyXonlyTweak(P, t)_:
 <h3> Negation Of The Secret Key When Signing </h3>
 
 
-In order to produce a partial signature for an X-only aggregate public key that is an aggregate of _u_ individual public keys and tweaked _v_ times (X-only or plain), the _<a href="#Sign negation" target="_blank">Sign</a>_ algorithm may need to negate the secret key during the signing process.
+In order to produce a partial signature for an X-only aggregate public key that is an aggregate of _u_ individual public keys and tweaked _v_ times (X-only or plain), the _<a href="#sign-negation" target="_blank">Sign</a>_ algorithm may need to negate the secret key during the signing process.
 
 <poem>
 The following elliptic curve points arise as intermediate steps when creating a signature:
@@ -812,7 +812,7 @@ Then we have
 ```
 
 
-Intuitively, _gacc<sub>i</sub>_ tracks accumulated sign flipping and _tacc<sub>i</sub>_ tracks the accumulated tweak value after applying the first _i_ individual tweaks. Additionally, _g<sub>v</sub>_ indicates whether _Q<sub>v</sub>_ needed to be negated to produce the final X-only result. Thus, signer _i_ multiplies its secret key _d<sub>i</sub>' _ with _g<sub>v</sub>⋅gacc<sub>v</sub>_ in the _<a href="#Sign negation" target="_blank">Sign</a>_ algorithm.
+Intuitively, _gacc<sub>i</sub>_ tracks accumulated sign flipping and _tacc<sub>i</sub>_ tracks the accumulated tweak value after applying the first _i_ individual tweaks. Additionally, _g<sub>v</sub>_ indicates whether _Q<sub>v</sub>_ needed to be negated to produce the final X-only result. Thus, signer _i_ multiplies its secret key _d<sub>i</sub>' _ with _g<sub>v</sub>⋅gacc<sub>v</sub>_ in the _<a href="#sign-negation" target="_blank">Sign</a>_ algorithm.
 
 <h4> Negation Of The Individual Public Key When Partially Verifying </h4>
 
@@ -827,7 +827,7 @@ when producing a partial signature to ensure that the aggregate signature will c
 </poem>
 
 <poem>
-The _<a href="#SigVerify negation" target="_blank">PartialSigVerifyInternal</a>_ algorithm is supposed to check
+The _<a href="#sigverify-negation" target="_blank">PartialSigVerifyInternal</a>_ algorithm is supposed to check
 ```
   ''s⋅G = Re<sub>⁎</sub> + e⋅a⋅d⋅G''.
 </poem>

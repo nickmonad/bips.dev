@@ -49,15 +49,15 @@ Something can be said to have BIP 23 Level 1 support if it implements at least:
 *  <a href="http://json-rpc.org/wiki/specification" target="_blank">JSON-RPC 1.0</a>
 *  <a href="/22" target="_blank">BIP 22 (non-optional sections)</a>
 *  <a href="/22" target="_blank">BIP 22 Long Polling</a>
-*  <a href=" Basic Pool Extensions" target="_blank">BIP 23 Basic Pool Extensions</a>
-*  <a href=" Mutations" target="_blank">BIP 23 Mutation "coinbase/append"</a>
-*  <a href=" Submission Abbreviation" target="_blank">BIP 23 Submission Abbreviation "submit/coinbase"</a>
-*  <a href=" Mutations" target="_blank">BIP 23 Mutation "time/increment"</a> (only required for servers)
+*  <a href=" basic-pool-extensions" target="_blank">BIP 23 Basic Pool Extensions</a>
+*  <a href=" mutations" target="_blank">BIP 23 Mutation "coinbase/append"</a>
+*  <a href=" submission-abbreviation" target="_blank">BIP 23 Submission Abbreviation "submit/coinbase"</a>
+*  <a href=" mutations" target="_blank">BIP 23 Mutation "time/increment"</a> (only required for servers)
 
 
 It can be said to have BIP 23 Level 2 support if it also implements:
-*  <a href=" Mutations" target="_blank">BIP 23 Mutation "transactions/add"</a>
-*  <a href=" Block Proposals" target="_blank">BIP 23 Block Proposals</a>
+*  <a href=" mutations" target="_blank">BIP 23 Mutation "transactions/add"</a>
+*  <a href=" block-proposals" target="_blank">BIP 23 Block Proposals</a>
 
 
 <h3>Basic Pool Extensions</h3>

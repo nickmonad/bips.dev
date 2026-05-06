@@ -140,13 +140,13 @@ BIPs should be written in mediawiki or markdown format.
 
 Each BIP should have the following parts:
 
-*  Preamble -- Headers containing metadata about the BIP (<a href=" BIP header preamble" target="_blank">see below</a>).
+*  Preamble -- Headers containing metadata about the BIP (<a href=" bip-header-preamble" target="_blank">see below</a>).
 
 
 *  Abstract -- A short (~200 word) description of the technical issue being addressed.
 
 
-*  Copyright -- The BIP must be explicitly licensed under acceptable copyright terms (<a href=" BIP licensing" target="_blank">see below</a>).
+*  Copyright -- The BIP must be explicitly licensed under acceptable copyright terms (<a href=" bip-licensing" target="_blank">see below</a>).
 
 
 *  Specification -- The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current Bitcoin platforms.

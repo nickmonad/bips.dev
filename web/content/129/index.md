@@ -103,7 +103,7 @@ The Signer is any software or hardware that controls the private keys and can si
 
 *  The Coordinator creates a new multisig wallet creation session. The Coordinator constructs the multisig script and its policy parameters, such as the required number of signatures and the total number of Signers (`M` and `N`).
 *  The session should expire after some time period determined by the Coordinator, e.g., 24 hours. The timeout allows the encryption key to have lower entropy.
-*  If encryption is enabled, the Coordinator distributes a secret `TOKEN` to each Signer over a secure channel. The Signer can use the `TOKEN` to derive an `ENCRYPTION_KEY`. Refer to the <a href=" Encryption" target="_blank"> Encryption</a> section below for details on the `TOKEN`, the key derivation function and the encryption scheme. Depending on the use case, the Coordinator can decide whether to share one common `TOKEN` for all Signers, or to have one per Signer.
+*  If encryption is enabled, the Coordinator distributes a secret `TOKEN` to each Signer over a secure channel. The Signer can use the `TOKEN` to derive an `ENCRYPTION_KEY`. Refer to the <a href=" encryption" target="_blank"> encryption</a> section below for details on the `TOKEN`, the key derivation function and the encryption scheme. Depending on the use case, the Coordinator can decide whether to share one common `TOKEN` for all Signers, or to have one per Signer.
 *  If encryption is disabled, the `TOKEN` is set to `0x00`, and all the encryption/decryption steps below can be skipped.
 
 
@@ -242,7 +242,7 @@ Also refer to <a href="https://github.com/BlockchainCommons/Research/blob/master
 
 This specification is not backwards compatible with existing multisig implementations.
 
-BSMS is opt-in, meaning existing multisig implementations can continue working as-is, with the caveat that they are likely to have various pitfalls. Some of the problems with existing solutions have been described in the <a href="#Motivation" target="_blank">#Motivation</a> section.
+BSMS is opt-in, meaning existing multisig implementations can continue working as-is, with the caveat that they are likely to have various pitfalls. Some of the problems with existing solutions have been described in the <a href="#motivation" target="_blank">#motivation</a> section.
 
 To comply with this standard, a Signer must be able to persist the descriptor record in its storage.
 

@@ -41,7 +41,7 @@ BIPs 34, 65 and 66 were deployed on mainnet using miner signaling using block ve
 1.  95% rule: If 950 of the prior 1000 blocks are version N+1 or higher, then blocks with version less than N+1 are invalid.
 
 
-Please see those <a href="#References" target="_blank">BIPs</a> for more details.
+Please see those <a href="#references" target="_blank">BIPs</a> for more details.
 
 Note that this trigger mechanism is dependent on the chain history.  To validate a block, we must test whether the trigger was met by looking at the previous 1000 blocks in the chain before it, which can be inefficient.
 

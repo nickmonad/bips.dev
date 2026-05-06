@@ -215,11 +215,11 @@
 <tr><td>pki_type</td><td>none / x509+sha256 / pgp+sha256 / ecdsa+sha256 (default: "none")</td></tr>
 <tr><td>pki_data</td><td>Depends on pki_type</td></tr>
 <tr><td>memo</td><td>Human-readable description of invoice request for the receiver</td></tr>
-<tr><td>notification_url</td><td>Secure (usually TLS-protected HTTP) location where an <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> SHOULD be sent when ready</td></tr>
+<tr><td>notification_url</td><td>Secure (usually TLS-protected HTTP) location where an <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> SHOULD be sent when ready</td></tr>
 <tr><td>signature</td><td>PKI-dependent signature</td></tr>
 </tbody></table>
 <h3>ProtocolMessageType Enum</h3>
-<p>This enum is used in the newly defined <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> and <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> messages to define the serialized message type. The <strong>ProtocolMessageType</strong> enum is defined in an extensible way to allow for new message type additions to the Payment Protocol.</p>
+<p>This enum is used in the newly defined <a href="#protocolmessage" target="_blank">ProtocolMessage</a> and <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> messages to define the serialized message type. The <strong>ProtocolMessageType</strong> enum is defined in an extensible way to allow for new message type additions to the Payment Protocol.</p>
 <pre><code>enum ProtocolMessageType {
     UNKNOWN_MESSAGE_TYPE = 0;
     INVOICE_REQUEST = 1;
@@ -280,11 +280,11 @@
 <h2>Payment Protocol Process with InvoiceRequests</h2>
 <p>The full process overview for using <strong>InvoiceRequests</strong> in the Payment Protocol is defined below.
 <br/><br/>
-All Payment Protocol messages MUST be encapsulated in either a <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> or <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a>. Once the process begins using <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> messages, all subsequent communications MUST use <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessages</a>.
+All Payment Protocol messages MUST be encapsulated in either a <a href="#protocolmessage" target="_blank">ProtocolMessage</a> or <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a>. Once the process begins using <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> messages, all subsequent communications MUST use <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessages</a>.
 <br/><br/>
-All Payment Protocol messages SHOULD be communicated using <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> encapsulating messages with the exception that an <a href="#InvoiceRequest" target="_blank">InvoiceRequest</a> MAY be communicated using the <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> if the receiver's public key is unknown.
+All Payment Protocol messages SHOULD be communicated using <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> encapsulating messages with the exception that an <a href="#invoicerequest" target="_blank">InvoiceRequest</a> MAY be communicated using the <a href="#protocolmessage" target="_blank">ProtocolMessage</a> if the receiver's public key is unknown.
 <br/><br/></p>
-<p>The process of creating encrypted Payment Protocol messages is enumerated in <a href="#Sending_Encrypted_Payment_Protocol_Messages_using_EncryptedProtocolMessages" target="_blank">Sending Encrypted Payment Protocol Messages using EncryptedProtocolMessages</a>, and the process of decrypting encrypted messages can be found under <a href="#Validating_and_Decrypting_Payment_Protocol_Messages_using_EncryptedProtocolMessages" target="_blank">Validating and Decrypting Payment Protocol Messages using EncryptedProtocolMessages</a>.</p>
+<p>The process of creating encrypted Payment Protocol messages is enumerated in <a href="#sending-encrypted-payment-protocol-messages-using-encryptedprotocolmessages" target="_blank">Sending Encrypted Payment Protocol Messages using EncryptedProtocolMessages</a>, and the process of decrypting encrypted messages can be found under <a href="#validating-and-decrypting-payment-protocol-messages-using-encryptedprotocolmessages" target="_blank">Validating and Decrypting Payment Protocol Messages using EncryptedProtocolMessages</a>.</p>
 <p>A standard exchange from start to finish would look like the following:</p>
 <ol>
 <li>Sender creates InvoiceRequest</li>
@@ -297,7 +297,7 @@ All Payment Protocol messages SHOULD be communicated using <a href="#EncryptedPr
 <li>Sender validates PaymentRequest retrieved from the EncryptedProtocolMessage</li>
 <li>The PaymentRequest is processed according to <a href="/70" target="_blank">BIP70</a>, including optional Payment and PaymentACK messages encapsulated in EncryptedProtocolMessage messages.</li>
 </ol>
-<p><strong>NOTE:</strong> See <a href="#Initial_Public_Key_Retrieval_for_InvoiceRequest_Encryption" target="_blank">Initial Public Key Retrieval for InvoiceRequest Encryption</a> for possible options to retrieve Receiver's public key.</p>
+<p><strong>NOTE:</strong> See <a href="#initial-public-key-retrieval-for-invoicerequest-encryption" target="_blank">Initial Public Key Retrieval for InvoiceRequest Encryption</a> for possible options to retrieve Receiver's public key.</p>
 <img src="bip-0075/encrypted-invoice-request-process.png" alt="Flow diagram of Encrypted InvoiceRequest">
 <h2>Message Interaction Details</h2>
 <h3>HTTP Content Types for New Message Types</h3>
@@ -308,7 +308,7 @@ All Payment Protocol messages SHOULD be communicated using <a href="#EncryptedPr
 <tr><td>EncryptedProtocolMessage</td><td>application/bitcoin-encrypted-paymentprotocol-message</td></tr>
 </tbody></table>
 <h3>Payment Protocol Status Communication</h3>
-<p>Every <a href="#ProtocolMessage" target="_blank">ProtocolMessage</a> or <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> MUST include a status code which conveys information about the last message received, if any (for the first message sent, use a status of 1 "OK" even though there was no previous message). In the case of an error that causes the Payment Protocol process to be stopped or requires that message be retried, a ProtocolMessage or EncryptedProtocolMessage SHOULD be returned by the party generating the error. The content of the message MUST contain the same <strong>serialized_message</strong> or <strong>encrypted_message</strong> and identifier (if present) and MUST have the status_code set appropriately.
+<p>Every <a href="#protocolmessage" target="_blank">ProtocolMessage</a> or <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> MUST include a status code which conveys information about the last message received, if any (for the first message sent, use a status of 1 "OK" even though there was no previous message). In the case of an error that causes the Payment Protocol process to be stopped or requires that message be retried, a ProtocolMessage or EncryptedProtocolMessage SHOULD be returned by the party generating the error. The content of the message MUST contain the same <strong>serialized_message</strong> or <strong>encrypted_message</strong> and identifier (if present) and MUST have the status_code set appropriately.
 <br/><br/>
 The status_message value SHOULD be set with a human readable explanation of the status code.</p>
 <h4>Payment Protocol Status Codes</h4>
@@ -340,17 +340,17 @@ If a participant to a transaction would like to inform the other party that a pr
 <p><strong>nonce</strong> MUST be set to a non-repeating number <strong>and</strong> MUST be chosen by the encryptor. The current epoch time in microseconds SHOULD be used, unless the creating device doesn't have access to a RTC (in the case of a smart card, for example). The service receiving the message containing the <strong>nonce</strong> MAY use whatever method to make sure that the <strong>nonce</strong> is never repeated.</p>
 <h3>InvoiceRequest Message Creation</h3>
 <ul>
-<li>Create an <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> message</li>
+<li>Create an <a href=" invoicerequest" target="_blank">InvoiceRequest</a> message</li>
 <li><strong>sender_public_key</strong> MUST be set to the public key of an EC keypair</li>
-<li><strong>amount</strong> is optional. If the amount is not specified by the <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a>, the Receiver MAY specify the amount in the returned PaymentRequest. If an amount is specified by the <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> and a PaymentRequest cannot be generated for that amount, the <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> SHOULD return the same <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> in a <a href=" ProtocolMessage" target="_blank">ProtocolMessage</a> or <a href=" EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> with the status_code and status_message fields set appropriately.</li>
+<li><strong>amount</strong> is optional. If the amount is not specified by the <a href=" invoicerequest" target="_blank">InvoiceRequest</a>, the Receiver MAY specify the amount in the returned PaymentRequest. If an amount is specified by the <a href=" invoicerequest" target="_blank">InvoiceRequest</a> and a PaymentRequest cannot be generated for that amount, the <a href=" invoicerequest" target="_blank">InvoiceRequest</a> SHOULD return the same <a href=" invoicerequest" target="_blank">InvoiceRequest</a> in a <a href=" protocolmessage" target="_blank">ProtocolMessage</a> or <a href=" encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> with the status_code and status_message fields set appropriately.</li>
 <li><strong>memo</strong> is optional. This MAY be set to a human readable description of the InvoiceRequest</li>
-<li>Set <strong>notification_url</strong> to URL that the Receiver will submit completed PaymentRequest (encapsulated in an <a href=" EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a>) to</li>
+<li>Set <strong>notification_url</strong> to URL that the Receiver will submit completed PaymentRequest (encapsulated in an <a href=" encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a>) to</li>
 <li>If NOT including certificate, set <strong>pki_type</strong> to "none"</li>
 <li>If including certificate:
 <ul>
 <li>Set <strong>pki_type</strong> to "x509+sha256"</li>
 <li>Set <strong>pki_data</strong> as it would be set in BIP-0070 (<a href="/70" target="_blank">Certificates Certificates</a>)</li>
-<li>Sign <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> with signature = "" using the X509 Certificate's private key</li>
+<li>Sign <a href=" invoicerequest" target="_blank">InvoiceRequest</a> with signature = "" using the X509 Certificate's private key</li>
 <li>Set <strong>signature</strong> value to the computed signature</li>
 </ul>
 </li>
@@ -359,13 +359,13 @@ If a participant to a transaction would like to inform the other party that a pr
 <ul>
 <li>Validate <strong>sender_public_key</strong> is a valid EC public key</li>
 <li>Validate <strong>notification_url</strong>, if set, contains characters deemed valid for a URL (avoiding XSS related characters, etc).</li>
-<li>If <strong>pki_type</strong> is None, <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> is VALID</li>
-<li>If <strong>pki_type</strong> is x509+sha256 and <strong>signature</strong> is valid for the serialized <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> where signature is set to "", <a href=" InvoiceRequest" target="_blank">InvoiceRequest</a> is VALID</li>
+<li>If <strong>pki_type</strong> is None, <a href=" invoicerequest" target="_blank">InvoiceRequest</a> is VALID</li>
+<li>If <strong>pki_type</strong> is x509+sha256 and <strong>signature</strong> is valid for the serialized <a href=" invoicerequest" target="_blank">InvoiceRequest</a> where signature is set to "", <a href=" invoicerequest" target="_blank">InvoiceRequest</a> is VALID</li>
 </ul>
 <h3>Sending Encrypted Payment Protocol Messages using EncryptedProtocolMessages</h3>
 <ul>
-<li>Encrypt the serialized Payment Protocol message using AES-256-GCM setup as described in <a href=" ECDH_Point_Generation_and_AES256_GCM_Mode_Setup" target="_blank">ECDH Point Generation and AES-256 (GCM Mode) Setup</a></li>
-<li>Create <a href=" EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> message</li>
+<li>Encrypt the serialized Payment Protocol message using AES-256-GCM setup as described in <a href=" ecdh-point-generation-and-aes256-gcm-mode-setup" target="_blank">ECDH Point Generation and AES-256 (GCM Mode) Setup</a></li>
+<li>Create <a href=" encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> message</li>
 <li>Set <strong>encrypted_message</strong> to be the encrypted value of the Payment Protocol message</li>
 <li><strong>version</strong> SHOULD be set to the highest version number the client understands (currently 1)</li>
 <li><strong>sender_public_key</strong> MUST be set to the public key of the Sender's EC keypair</li>
@@ -373,14 +373,14 @@ If a participant to a transaction would like to inform the other party that a pr
 <li><strong>nonce</strong> MUST be set to the nonce used in the AES-256-GCM encryption operation</li>
 <li>Set <strong>identifier</strong> to the identifier value received in the originating InvoiceRequest's ProtocolMessage or EncryptedProtocolMessage wrapper message</li>
 <li>Set <strong>signature</strong> to ""</li>
-<li>Sign the serialized <a href=" EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> message with the communicating party's EC public key</li>
+<li>Sign the serialized <a href=" encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> message with the communicating party's EC public key</li>
 <li>Set <strong>signature</strong> to the result of the signature operation above</li>
 </ul>
-<p><strong>SIGNATURE NOTE:</strong> <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> messages are signed with the public keys of the party transmitting the message. This allows a Store &amp; Forward server or other transmission system to prevent spam or other abuses. For those who are privacy conscious and don't want the server to track the interactions between two public keys, the Sender can generate a new public key for each interaction to keep their identity anonymous.</p>
+<p><strong>SIGNATURE NOTE:</strong> <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> messages are signed with the public keys of the party transmitting the message. This allows a Store &amp; Forward server or other transmission system to prevent spam or other abuses. For those who are privacy conscious and don't want the server to track the interactions between two public keys, the Sender can generate a new public key for each interaction to keep their identity anonymous.</p>
 <h3>Validating and Decrypting Payment Protocol Messages using EncryptedProtocolMessages</h3>
 <ul>
-<li>The <strong>nonce</strong> MUST not be repeated. The service receiving the <a href=" EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> MAY use whatever method to make sure that the nonce is never repeated.</li>
-<li>Decrypt the serialized Payment Protocol message using AES-256-GCM setup as described in <a href=" ECDH_Point_Generation_and_AES256_GCM_Mode_Setup" target="_blank">ECDH Point Generation and AES-256 (GCM Mode) Setup</a></li>
+<li>The <strong>nonce</strong> MUST not be repeated. The service receiving the <a href=" encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> MAY use whatever method to make sure that the nonce is never repeated.</li>
+<li>Decrypt the serialized Payment Protocol message using AES-256-GCM setup as described in <a href=" ecdh-point-generation-and-aes256-gcm-mode-setup" target="_blank">ECDH Point Generation and AES-256 (GCM Mode) Setup</a></li>
 <li>Deserialize the serialized Payment Protocol message</li>
 </ul>
 <h3>ECDH Point Generation and AES-256 (GCM Mode) Setup</h3>
@@ -410,7 +410,7 @@ If a participant to a transaction would like to inform the other party that a pr
 <h4>AES-256 GCM Additional Authenticated Data</h4>
 <p>When either <strong>status_code</strong> OR <strong>status_message</strong> are present, the AES-256 GCM authenticated data used in both the encrypt and decrypt operations MUST be: STRING(status_code) || status_message. Otherwise, there is no additional authenticated data. This provides that, while not encrypted, the status_code and status_message are authenticated.</p>
 <h3>Initial Public Key Retrieval for InvoiceRequest Encryption</h3>
-<p>Initial public key retrieval for <a href="#InvoiceRequest" target="_blank">InvoiceRequest</a> encryption via <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> encapsulation can be done in a number of ways including, but not limited to, the following:</p>
+<p>Initial public key retrieval for <a href="#invoicerequest" target="_blank">InvoiceRequest</a> encryption via <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> encapsulation can be done in a number of ways including, but not limited to, the following:</p>
 <ol>
 <li>Wallet Name public key asset type resolution - DNSSEC-validated name resolution returns Base64 encoded DER-formatted EC public key via TXT Record <a href="https://www.ietf.org/rfc/rfc5480.txt" target="_blank">RFC 5480</a></li>
 <li>Key Server lookup - Key Server lookup (similar to PGP's pgp.mit.edu) based on key server identifier (i.e., e-mail address) returns Base64 encoded DER-formatted EC public key <a href="https://www.ietf.org/rfc/rfc5480.txt" target="_blank">RFC 5480</a></li>
@@ -443,10 +443,10 @@ Clients SHOULD keep in mind Receivers can broadcast a transaction without return
 <img src="bip-0075/bip70-extension.png" alt="Flowchart explaining how this BIP extends BIP 70">
 <h2>Mobile to Mobile Examples</h2>
 <h3>Full Payment Protocol</h3>
-<p>The following diagram shows a sample flow in which one mobile client is sending value to a second mobile client with the use of an InvoiceRequest, a Store &amp; Forward server, PaymentRequest, Payment and PaymentACK. In this case, the PaymentRequest, Payment and PaymentACK messages are encrypted using <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> <strong>and</strong> the Receiver submits the transaction to the Bitcoin network.</p>
+<p>The following diagram shows a sample flow in which one mobile client is sending value to a second mobile client with the use of an InvoiceRequest, a Store &amp; Forward server, PaymentRequest, Payment and PaymentACK. In this case, the PaymentRequest, Payment and PaymentACK messages are encrypted using <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> <strong>and</strong> the Receiver submits the transaction to the Bitcoin network.</p>
 <img src="bip-0075/mobile-sf-ir-with-payment.png" alt="Payment Required flow diagram">
 <h3>Encrypting Initial InvoiceRequest via EncryptedProtocolMessage</h3>
-<p>The following diagram shows a sample flow in which one mobile client is sending value to a second mobile client using an <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> to transmit the InvoiceRequest using encryption, Store &amp; Forward server, and PaymentRequest. In this case, all Payment Protocol messages are encrypting using <a href="#EncryptedProtocolMessage" target="_blank">EncryptedProtocolMessage</a> <strong>and</strong> the Sender submits the transaction to the Bitcoin network.</p>
+<p>The following diagram shows a sample flow in which one mobile client is sending value to a second mobile client using an <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> to transmit the InvoiceRequest using encryption, Store &amp; Forward server, and PaymentRequest. In this case, all Payment Protocol messages are encrypting using <a href="#encryptedprotocolmessage" target="_blank">EncryptedProtocolMessage</a> <strong>and</strong> the Sender submits the transaction to the Bitcoin network.</p>
 <img src="bip-0075/mobile-sf-encrypted-ir-without-payment.png" alt="Encrypted InvoiceRequest without payment">
 <h2>References</h2>
 <ul>
@@ -468,7 +468,7 @@ Clients SHOULD keep in mind Receivers can broadcast a transaction without return
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-05-05</p>
+                    <p class="font-bold">2026-05-06</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

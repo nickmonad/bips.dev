@@ -57,7 +57,7 @@ Graphical bitcoin clients SHOULD register themselves as the handler for the "bit
 <h3> BNF grammar </h3>
 
 
-(See also <a href="#Simpler syntax" target="_blank">a simpler representation of syntax</a>)
+(See also <a href="#simpler-syntax" target="_blank">a simpler representation of syntax</a>)
 
 ```
  bitcoinurn      = "bitcoin:" bitcoinaddress [ ";version=" bitcoinversion ] [ "?" bitcoinparams ]
@@ -82,7 +82,7 @@ Graphical bitcoin clients SHOULD register themselves as the handler for the "bit
 * label: Label for that address (e.g. name of receiver)
 * address: bitcoin address
 * message: message that is shown to the user after scanning the QR code
-* size: amount of base bitcoin units (<a href=" Transfer amount/size" target="_blank">see below</a>)
+* size: amount of base bitcoin units (<a href=" transfer-amountsize" target="_blank">see below</a>)
 * send: used to send bitcoin, rather than to request them
 * (others): optional, for future extensions
 
@@ -132,7 +132,7 @@ Make it possible for later generations to improve our work, to mend our errors, 
 
 
 This section is non-normative and does not cover all possible syntax.
-Please see the <a href="#BNF grammar" target="_blank">BNF grammar</a> above for the normative syntax.
+Please see the <a href="#bnf-grammar" target="_blank">BNF grammar</a> above for the normative syntax.
 
 [foo] means optional, &lt;bar&gt; are placeholders
 

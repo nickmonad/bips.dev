@@ -44,7 +44,7 @@ Two new fields are added to the `version` command, after `extra_height`:
 
 |Field Size|Description|Data type|Comments|
 |-|-|-|-|
-|1+|service_count|<a href="Protocol_specification#Variable_length_integer" target="_blank">var_int</a>|Number of extra services|
+|1+|service_count|<a href="Protocol_specification#variable-length-integer" target="_blank">var_int</a>|Number of extra services|
 |?|service_list|service[]|List of service definitions|
 
 
@@ -53,9 +53,9 @@ The service definitions `service[]` are given in the following format:
 
 |Field Size|Description|Data type|Comments|
 |-|-|-|-|
-|?|service_name|<a href="#Variable length string" target="_blank">var_str</a>|Unique service identifier|
+|?|service_name|<a href="#variable-length-string" target="_blank">var_str</a>|Unique service identifier|
 |4|service_version|uint32_t|Identifies service version being used by the node|
-|?|service_data|<a href="#Variable length string" target="_blank">var_str</a>|Additional service-specific data|
+|?|service_data|<a href="#variable-length-string" target="_blank">var_str</a>|Additional service-specific data|
 
 
 A node MUST NOT announce two services with the same `service_name`. If a remote node sends such a `version` message the client MAY disconnect.

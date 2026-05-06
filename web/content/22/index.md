@@ -51,7 +51,7 @@ Block template creation can be influenced by various parameters:
 
 |Key|Required|Type|Description|
 |-|-|-|-|
-|capabilities|No|Array of Strings|SHOULD contain a list of the following, to indicate client-side support: <a href="#Optional: Long Polling" target="_blank">"longpoll"</a>, "coinbasetxn", "coinbasevalue", <a href="/23" target="_blank">"proposal"</a>, <a href="/23" target="_blank">"serverlist"</a>, "workid", and any of the <a href="/23" target="_blank">mutations</a>|
+|capabilities|No|Array of Strings|SHOULD contain a list of the following, to indicate client-side support: <a href="#optional-long-polling" target="_blank">"longpoll"</a>, "coinbasetxn", "coinbasevalue", <a href="/23" target="_blank">"proposal"</a>, <a href="/23" target="_blank">"serverlist"</a>, "workid", and any of the <a href="/23" target="_blank">mutations</a>|
 |mode|No|String|MUST be "template" or omitted|
 
 
@@ -65,12 +65,12 @@ getblocktemplate MUST return a JSON Object containing the following keys:
 |previousblockhash|Yes|String|the hash of the previous block, in big-endian hexadecimal|
 |sigoplimit|No|Number|number of sigops allowed in blocks|
 |sizelimit|No|Number|number of bytes allowed in blocks|
-|transactions|Should|Array of Objects|Objects containing <a href="#Transactions Object Format" target="_blank">information for Bitcoin transactions</a> (excluding coinbase)|
+|transactions|Should|Array of Objects|Objects containing <a href="#transactions-object-format" target="_blank">information for Bitcoin transactions</a> (excluding coinbase)|
 |version|Yes|Number|always 1 or 2 (at least for bitcoin) - clients MUST understand the implications of the version they use (eg, comply with <a href="/34" target="_blank">BIP 0034</a> for version 2)|
 |coinbaseaux|No|Object|data that SHOULD be included in the coinbase's scriptSig content. Only the values (hexadecimal byte-for-byte) in this Object should be included, not the keys. This does not include the block height, which is required to be included in the scriptSig by <a href="/34" target="_blank">BIP 0034</a>. It is advisable to encode values inside "PUSH" opcodes, so as to not inadvertently expend SIGOPs (which are counted toward limits, despite not being executed).|
-|coinbasetxn|this or ↓|Object|<a href="#Transactions Object Format" target="_blank">information for coinbase transaction</a>|
+|coinbasetxn|this or ↓|Object|<a href="#transactions-object-format" target="_blank">information for coinbase transaction</a>|
 |coinbasevalue|this or ↑|Number|total funds available for the coinbase (in Satoshis)|
-|workid|No|String|if provided, this value must be returned with results (see <a href="#Block Submission" target="_blank">Block Submission</a>)|
+|workid|No|String|if provided, this value must be returned with results (see <a href="#block-submission" target="_blank">Block Submission</a>)|
 
 
 <h4> Transactions Object Format </h4>
