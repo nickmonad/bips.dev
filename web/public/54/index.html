@@ -132,8 +132,7 @@ case block validation time, prevent Merkle tree weaknesses, and avoid duplicate 
 <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation.</p>
 <h2 id="Motivation">Motivation</h2>
 <p>This proposal addresses a number of long-standing vulnerabilities and weaknesses in the Bitcoin
-protocol. Bundling these fixes together allows to overcome the fixed cost of deploying a Bitcoin
-soft fork.</p>
+protocol. Bundling these fixes together amortizes the fixed cost of deploying a Bitcoin soft fork.</p>
 <p>The timewarp bug permits a majority hashrate attacker to arbitrarily increase the block rate,
 allowing them to steal block subsidy from future miners and increase validation costs to nodes that
 have to deal with the increased average transaction rate. By strategically setting the block
@@ -149,8 +148,8 @@ minutes up to more than an hour on lower-end devices. Long block validation time
 users, increasing the cost to independently fully validate the consensus rules. In addition they can
 be used by miners to attack their competition, creating perverse incentives, centralization
 pressures and leading to reduced network security.</p>
-<p>In computing a block's Merkle root, a 64-byte transaction can be interpreted as an intermediate
-node in the tree in addition to a leaf. This makes it possible to fake inclusion proofs by
+<p>In computing a block's Merkle root, a 64-byte transaction can be interpreted both as an intermediate
+node in the tree and as a leaf in the tree. This makes it possible to fake inclusion proofs by
 pretending a 64-byte block transaction is an inner node, as well as to pretend the inner nodes on
 one level of the tree are the actual block transactions.</p>
 <p>Since <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation, explicit <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation is not necessary until
@@ -192,23 +191,22 @@ the timewarp and Murch–Zawy vulnerabilities<sup class="footnote-reference"><a 
 extremely low risk to fix: the duration of an adjustment period has never been, and should never be,
 negative. The former is fixed by preventing the timestamp of the first block of a difficulty period
 from being lower than the previous block's, with a two-hour grace period. A <a rel="noopener" target="_blank" href="https://github.com/TheBlueMatt/bips/blob/7f9670b643b7c943a0cc6d2197d3eabe661050c2/bip-XXXX.mediawiki">previous
-proposal</a> to fix timewarp used a ten-minute grace period instead, also adopted for
-<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0094.mediawiki#time-warp-fix">testnet4</a>. Out of an abundance of caution and because it only trivially worsens the
+proposal</a> to fix the timewarp attack used a ten-minute grace period instead, and this
+approach has been adopted for <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0094.mediawiki#time-warp-fix">testnet4</a>. Out of an abundance of caution and because it only trivially worsens the
 block rate increase under attack, a two-hour grace period is used here<sup class="footnote-reference"><a href="#4">5</a></sup>.</p>
 <p>Disabling some Script operations and functionalities was <a rel="noopener" target="_blank" href="https://github.com/TheBlueMatt/bips/blob/7f9670b643b7c943a0cc6d2197d3eabe661050c2/bip-XXXX.mediawiki">previously proposed</a> to reduce
 the worst case block validation time but was met with resistance due to confiscation concerns<sup class="footnote-reference"><a href="#5">6</a></sup>. A
 delicate balance needs to be struck between minimizing the confiscation risks of a mitigation, even
 if merely theoretical, and bounding the costs one could impose on all other users of the system. To
-this effect a limit on the number of potentially executed signature operations pinpoints exactly the
-harmful behaviour, leaving maximum flexibility in how Script functionalities may have been used.
+that end, limiting potentially executed signature operations targets the exact harmful behaviour while
+preserving maximal flexibility in Script usage.
 Such a limit reduces the worst case block validation time by a factor of 40 and drastically
-increases the preparation cost of an attack to make it uneconomical for a miner<sup class="footnote-reference"><a href="#6">7</a></sup>. The maximum of
+increases the preparation cost of an attack, making it uneconomical for a miner<sup class="footnote-reference"><a href="#6">7</a></sup>. The maximum of
 2500 was chosen as the tightest value that did not make any non-pathological standard transaction
 invalid<sup class="footnote-reference"><a href="#7">8</a></sup>.</p>
 <p>In the presence of 64-byte transactions a block header's Merkle root may be valid for different sets
-of transactions. This is because in the Merkle tree construction a 64-byte transaction may be
-interpreted as the catenation of two 32-byte hashes, or the catenation of two 32-byte hashes may be
-interpreted as a transaction. The former allows to fake a block inclusion proof and the latter makes
+of transactions. This is because, in the Merkle tree construction, a 64-byte value may be
+interpreted either as a transaction or as the concatenation of two 32-byte hashes. The former allows faking a block inclusion proof and the latter makes
 it such that for a valid block the Merkle root in the block header is not a unique identifier for
 the corresponding list of valid transactions<sup class="footnote-reference"><a href="#8">9</a></sup>. 64-byte transactions can only contain a
 scriptPubKey that lets anyone spend the funds, or one that burns them. 64-byte transactions have
