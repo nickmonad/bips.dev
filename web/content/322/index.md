@@ -182,7 +182,7 @@ A _full_ signature consists of the variant-prefixed (`ful`) base64-encoding of t
 <h3> Full (Proof of Funds) </h3>
 
 
-The <a href="#full-proof-of-funds" target="_blank">Proof of Funds</a> variant extends the basic scheme: in addition to signing
+The Proof of Funds variant extends the basic scheme: in addition to signing
 a message under a single address's key, the signer proves control over an arbitrary set of UTXOs.
 This UTXO set is chosen freely by the signer and MAY be associated with the signing address
 (the `message_challenge`). For example, it may consist of outputs paid to that address,
@@ -284,7 +284,7 @@ Validation consists of the following steps:
 1.  Check the **upgradeable rules**
     1.  The version of `to_sign` must be 0 or 2.
     1.  The use of NOPs reserved for upgrades is forbidden.
-    1.  The use of Segwit versions greater than 1 are forbidden.
+    1.  The use of Segwit versions greater than 1 is forbidden.
     1.  If any of the above steps failed, the validator should stop and output the _inconclusive_ state.
 1.  Let _T_ be the nLockTime of `to_sign` and _S_ be the nSequence of the first input of `to_sign`. Output the state _valid at time T and age S_.
 
@@ -489,7 +489,7 @@ A **transaction finalizer** of a BIP322 PSBT must follow these steps:
 This specification is backwards-compatible with the legacy signmessage/verifymessage specification
 through the special case <a href="#legacy" target="_blank">as described above</a>.
 To support backward compatibility with implementations of this BIP before it was finalized, a
-verifier might assume the _simple' variant in the absence of a prefix.
+verifier might assume the _simple_ variant in the absence of a prefix.
 
 <h2> Reference implementation </h2>
 
@@ -533,7 +533,7 @@ and many others for their feedback on the specification.
     *  Mark Complete
     *  Breaking change: Add human-readable prefix to encoded signature
     *  Breaking change: format of "Proof of Funds" signatures to be base64-encoded finalized PSBT
-    *  Add new PSBT input field for PSBT-based signing
+    *  Add new PSBT global field for PSBT-based signing
 *  **0.0.1** (2018-09-10):
     *  Proposed as draft
 
