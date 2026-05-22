@@ -115,6 +115,15 @@ The style of communication is taken directly from PGP/GPG, which uses blocks of 
 
 A party receiving this TxDP can simply add their signature to the appropriate _TXINPUT_ line.  If that is the last signature required, they can broadcast it themselves.  Any software that implements this standard should be able to combine multiple TxDPs into a single TxDP.  However, even without the programmatic support, a user could manually combine them by copying the appropriate _SIG_ lines between serializations, though it is not the recommended method for combining TxDPs.
 
+<h2> Changelog </h2>
+
+
+*  2014-11-26:
+    *  Withdrawn after Armory stopped using BIP10 and no other projects were known to implement support (see <a href="https://github.com/bitcoin/bips/pull/125" target="_blank">bips 125</a>).
+*  2011-10-28:
+    *  Original Draft published.
+
+
 <h2> Reference Implementation </h2>
 
 

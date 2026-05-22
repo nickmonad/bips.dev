@@ -228,6 +228,9 @@ This document was derived heavily from Python's PEP-0001. In many places text wa
 <h2>Changelog</h2>
 
 
-10 Oct 2015 - Added clarifications about submission process and BIP number assignment.
-
-01 Jan 2016 - Clarified early stages of BIP idea championing, collecting community feedback, etc.
+*  2016-12-14:
+    *  Closed: <a href="https://github.com/bitcoin/bips/pull/478" target="_blank">Superseded by BIP2</a>
+*  2016-01-01:
+    *  Clarified early stages of BIP idea championing, collecting community feedback, etc.
+*  2015-10-10:
+    *  Added clarifications about submission process and BIP number assignment.

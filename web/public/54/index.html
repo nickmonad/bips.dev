@@ -133,21 +133,19 @@ case block validation time, prevent Merkle tree weaknesses, and avoid duplicate 
 <h2 id="Motivation">Motivation</h2>
 <p>This proposal addresses a number of long-standing vulnerabilities and weaknesses in the Bitcoin
 protocol. Bundling these fixes together amortizes the fixed cost of deploying a Bitcoin soft fork.</p>
-<p>The timewarp bug permits a majority hashrate attacker to arbitrarily increase the block rate,
-allowing them to steal block subsidy from future miners and increase validation costs to nodes that
-have to deal with the increased average transaction rate. By strategically setting the block
-timestamp, the <a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/75831/what-is-time-warp-attack-and-how-does-it-work-in-general/75834#75834">timewarp bug</a> lets miners bring down the difficulty to its minimum
-within 38 days of starting the attack. The existence of this bug not only significantly empowers a
-51% attacker, but also makes it notably harder to reason about miners' incentives. It could indeed
-be in the interest of short-sighted miners as well as short-sighted users to exploit this
-vulnerability in a small enough proportion to increase the block rate without fatally hurting the
-network, as the effectively increased block space would — all other things being equal — bring fee
-rates down for users.</p>
-<p>Specially crafted blocks may be expensive to process, with validation times ranging from a few
-minutes up to more than an hour on lower-end devices. Long block validation times are a nuisance to
-users, increasing the cost to independently fully validate the consensus rules. In addition they can
-be used by miners to attack their competition, creating perverse incentives, centralization
-pressures and leading to reduced network security.</p>
+<p>The <a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/75831/what-is-time-warp-attack-and-how-does-it-work-in-general/75834#75834">timewarp bug</a> makes it possible for a majority-hashrate attacker to arbitrarily
+lower mining difficulty, and therefore arbitrarily increase the block rate. In the worst case, an
+attacker can bring down the difficulty to its minimum within 38 days of starting the attack. Besides
+empowering a 51% attacker, the presence of this bug makes it harder to reason about miners'
+incentives. Accelerating the block rate allows an attacker to steal block subsidy from future
+miners and increases available block space. It may be in the interest of short-sighted users and
+miners to exploit this vulnerability to materially increase the block rate without fatally hurting
+the network.</p>
+<p>Specially crafted blocks may be expensive to process, <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/93">taking up to</a> several
+minutes to validate even on high-end devices, and up to a few hours on lower-end devices. Long block
+validation times are a nuisance to users, increasing the cost to independently fully validate the
+consensus rules. In addition they can be used by miners to attack their competition, creating
+perverse incentives, centralization pressures and leading to reduced network security.</p>
 <p>In computing a block's Merkle root, a transaction with exactly 64 bytes of non-witness data can be
 interpreted both as an intermediate node in the tree and as a leaf in the tree. This makes it
 possible to trick an SPV verifier into accepting an inclusion proof for a transaction that is not
@@ -156,12 +154,10 @@ part of a block, by pretending a 64-byte block transaction is actually an inner 
 any other user of Merkle proofs, to rely on one of the available workarounds<sup class="footnote-reference"><a href="#13">2</a></sup> or even to know one is
 necessary in the first place.</p>
 <p>Since <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation, explicit <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation is not necessary until
-block height 1,983,702<sup class="footnote-reference"><a href="#0">3</a></sup>.  Mandating new coinbase transactions be different from the early
-<a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> violations makes it possible to get rid of <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation forever.
-Besides its unnecessary cost, another downside of <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation is that it cannot be
-performed by Utreexo clients. Finally, leveraging the coinbase transaction's <code>nLockTime</code> field
-allows applications to recover the block height corresponding to a coinbase transaction without
-having to parse Script.</p>
+block height 1,983,702<sup class="footnote-reference"><a href="#0">3</a></sup>. Resuming <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation would unnecessarily increase block
+validation overhead and preclude alternative full node designs (such as <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/pull/1923">bip-0182</a> Utreexo).
+Enforcing that new coinbase transactions are different from the early <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> violations
+makes it possible to get rid of <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation forever.</p>
 <h2 id="Specification">Specification</h2>
 <p>For all blocks after activation the following new rules apply.</p>
 <p>Given a block at height <code>N</code>:</p>
@@ -216,17 +212,19 @@ tree depth in the header's version field<sup class="footnote-reference"><a href=
 vulnerability easier to deploy. The authors believe it is preferable to address the root cause by
 invalidating 64-byte transactions, fixing the vulnerability without Merkle proof users having to
 rely on any workaround or even know one is necessary in the first place. See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/41">this post</a> for an attempt at summarizing the arguments for both sides of this debate.</p>
-<p>Several blocks prior to <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation contain a coinbase transaction whose scriptSig
-contains a valid <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> commitment to a future block height. This offers an opportunity
-to duplicate these coinbase transactions in the future<sup class="footnote-reference"><a href="#10">12</a></sup> and for this reason <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a>
-validation will need to be re-activated from block 1,983,702. A simple way to prevent this is to
-mandate that future coinbase transactions vary from coinbase transactions before <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a>
-activation. There are multiple ways of achieving this, but setting and enforcing the timelock for
-the coinbase transaction makes it so all coinbase transactions past Consensus Cleanup activation
-could not have been valid before this height and therefore cannot be a duplicate<sup class="footnote-reference"><a href="#11">13</a></sup>. This
-simplifies both reasoning and client implementation, since the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> check can be
-skipped entirely past Consensus Cleanup activation, regardless of the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation
-status<sup class="footnote-reference"><a href="#12">14</a></sup>.</p>
+<p>The <code>nLockTime</code> field of transactions is a natural place to store a block height and is currently
+unused in coinbase transactions. Using it to enforce that new coinbase transactions differ from
+early <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> violations also allows applications to recover the block height without
+having to parse Script. Leveraging the existing timelock mechanism makes the check self-contained:
+the same coinbase transaction cannot have been valid in a previous block<sup class="footnote-reference"><a href="#11">12</a></sup>. This simplifies both
+reasoning and client implementation, since the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> check can be skipped entirely past
+Consensus Cleanup activation, regardless of the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation status<sup class="footnote-reference"><a href="#12">13</a></sup>. One person
+<a rel="noopener" target="_blank" href="https://groups.google.com/g/bitcoinminingdev/c/jlqlNHHNSNk">raised the concern</a> that the <code>nLockTime</code> field would be an ideal extranonce
+for ASIC controllers if such controllers ever became a bottleneck in mining operations. Others
+<a rel="noopener" target="_blank" href="https://groups.google.com/g/bitcoinminingdev/c/jlqlNHHNSNk">replied</a> that the same benefits could be achieved by using a dummy output
+instead, should that ever become necessary. The authors <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/UsKuvCXXhSAnNVx5a0K2UfP3srAr3slW9mcOjtYk9LnolaOXfWrW9jpqbxsQQPkyQuZogkhz2Hbfwii2VsTm79vRDpgKduxk35hpBu_t7Do=@protonmail.com/">believe</a> the
+benefits of using <code>nLockTime</code> to differentiate coinbase transactions outweigh the theoretical
+cost of making it unavailable for extranonce rolling by ASIC controllers.</p>
 <h2 id="Backward_compatibility">Backward compatibility</h2>
 <p>This proposal only tightens the block validation rules: there is no block that is valid under the
 rules proposed in this BIP but not under the existing Bitcoin consensus rules. As a consequence
@@ -318,18 +316,14 @@ Suhas Daftuar for a detailed explanation. Invalidating 64-byte transactions may 
 the issue is largely orthogonal to this proposal: it is fundamentally about caching validation
 status for malleable blocks.</p>
 </div>
-<div class="footnote-definition" id="10"><sup class="footnote-definition-label">12</sup>
-<p>See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/4">here</a> for a full list of the heights of historical blocks including a valid
-bip-0034 height commitment and the corresponding future block height.</p>
-</div>
-<div class="footnote-definition" id="11"><sup class="footnote-definition-label">13</sup>
+<div class="footnote-definition" id="11"><sup class="footnote-definition-label">12</sup>
 <p>Technically it could be argued a duplicate could in principle always be possible before block
 31,001 when <code>nLockTime</code> enforcement <a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/90229/nlocktime-in-bitcoin-core">was originally soft-forked</a>. But treating
 coinbase transactions as not having duplicate past Consensus Cleanup activation would be consistent
 for any implementation which enforces <code>nLockTime</code> from the genesis block, which is the behaviour
 notably of Bitcoin Core but also of all other implementations the authors are aware of.</p>
 </div>
-<div class="footnote-definition" id="12"><sup class="footnote-definition-label">14</sup>
+<div class="footnote-definition" id="12"><sup class="footnote-definition-label">13</sup>
 <p>For instance Bitcoin Core only disables <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation for a specific chain
 where <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> violations have been manually inspected (see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/390e7d61bd531505bb3d13f38316c282b85ed1dd/src/validation.cpp#L2401-L2459">here</a>). Without the guarantee given by enforcing the timelock on coinbase transactions, this would
 have to be perpetuated for the Consensus Cleanup.</p>
@@ -351,7 +345,7 @@ provided as the single-SHA256 of their preimage, instead of the double-SHA256. S
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-05-21</p>
+                    <p class="font-bold">2026-05-22</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
