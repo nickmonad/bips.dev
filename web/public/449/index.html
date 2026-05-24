@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 449: OP_TWEAKADD - x-only key tweak addition" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 449: OP_TWEAKADD - x-only key tweak addition" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 449: OP_TWEAKADD - x-only key tweak addition</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 449: OP_TWEAKADD - x-only key tweak addition</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2026-03-05</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0449.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 449
+  Layer: Consensus (soft fork)
+  Title: OP_TWEAKADD - x-only key tweak addition
+  Authors: Jeremy Rubin &lt;jeremy@char.network&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2026-03-05
+  License: BSD-3-Clause
+</code></pre>
+<h2 id="Abstract">Abstract</h2>
+<p>This proposal defines a new tapscript opcode, <code>OP_TWEAKADD</code>, that takes an x-only public key and a 32-byte integer <code>t</code> on the stack and pushes the x-only public key corresponding to <code>P + t*G</code>, where <code>P</code> is the lifted point for the input x-coordinate and <code>G</code> is the secp256k1 generator. The operation mirrors the Taproot tweak used by BIP340 signers and enables simple, verifiable key modifications inside script without revealing private keys or relying on hash locks.</p>
+<h2 id="Motivation">Motivation</h2>
+<p>Bitcoin already leverages x-only key tweaking when deriving Taproot output keys, but tapscript currently has no way to perform the same group operation inside script and continue using the derived key. Without such a primitive, protocols that depend on relations between keys must instead reveal preimages, commit to multiple full public keys, or perform additional signature checks at each step.</p>
+<p>Making key tweaking available in script enables several concrete constructions. These include tweak-reveal scripts built from <code>OP_TWEAKADD</code> together with proposed opcodes such as BIP 348 <code>OP_CHECKSIGFROMSTACK</code> and BIP 349 <code>OP_INTERNALKEY</code>, proof-of-signing-order constructions in which one signature commits to another signer acting later, delegation schemes in which one participant adjusts another participant's signing key, and target-tweak or key-reveal contracts that prove knowledge of a discrete logarithm by matching one tweaked key against another.</p>
+<p>In these constructions, the script commonly commits to the base key while the witness provides the scalar used to derive the spending key. <code>OP_TWEAKADD</code> therefore exposes only the elliptic-curve addition primitive and adopts an operand order that fits that pattern directly, while leaving hashing, Taproot-specific tweak construction, and higher-level protocol logic to script composition or future opcodes.</p>
+<h2 id="Specification">Specification</h2>
+<h3 id="Applicability_and_opcode_number">Applicability and opcode number</h3>
+<ul>
+<li>Context: Only valid in tapscript (witness version 1, leaf version 0xc0). In legacy or segwit v0 script, <code>OP_TWEAKADD</code> is disabled and causes script failure.</li>
+<li>Opcode: OP_TWEAKADD (0xBE, or TBD, any unused OP_SUCCESSx, preferably one which might never be restored in the future).</li>
+</ul>
+<h3 id="Stack_semantics">Stack semantics</h3>
+<pre><code>
+... [tweak32] [pubkey32] OP_TWEAKADD  -&gt; ... [pubkey32_out]
+
+</code></pre>
+<p>Input:</p>
+<ul>
+<li><code>pubkey32</code>: 32-byte x-only public key (big-endian x coordinate).</li>
+<li><code>tweak32</code>: 32-byte big-endian unsigned integer encoding scalar <code>t</code>.</li>
+</ul>
+<p>Output:</p>
+<ul>
+<li><code>pubkey32_out</code>: 32-byte x-only public key for <code>Q = P + t*G</code>.</li>
+</ul>
+<h4 id="Operation_and_failure_conditions">Operation and failure conditions</h4>
+<p>Let <code>n</code> be the secp256k1 curve order.</p>
+<ol>
+<li>If <code>tweak32</code> or <code>pubkey32</code> are not 32 bytes, fail.</li>
+<li>Parse <code>tweak32</code> as big-endian integer <code>t</code>. If <code>t &gt;= n</code>, fail.</li>
+<li>Interpret <code>pubkey32</code> as an x-coordinate and attempt the BIP340 even-Y lift:
+<ul>
+<li>If no curve point exists with that x, fail.</li>
+<li>Otherwise, obtain <code>P</code> with even Y.</li>
+</ul>
+</li>
+<li>Compute <code>Q = P + t*G</code>. If <code>Q</code> is the point at infinity, fail.</li>
+<li>Push <code>x(Q)</code> as a 32-byte big-endian value.</li>
+</ol>
+<p>Note: <code>t = 0</code> may fail if <code>pubkey32</code> is not valid.</p>
+<h4 id="Script_evaluation_rules">Script evaluation rules</h4>
+<ol>
+<li>If less than 2 stack elements, fail.</li>
+<li>Pop <code>pubkey32</code> and then <code>tweak32</code>.</li>
+<li>If either length is not 32, fail.</li>
+<li>Run <code>tweak_add</code> as above.</li>
+<li>Push the 32-byte x-only result.</li>
+</ol>
+<h3 id="Resource_usage">Resource usage</h3>
+<ul>
+<li>Performs one fixed-base EC scalar multiplication (<code>t*G</code>) plus one EC point addition (<code>P + t*G</code>).</li>
+<li>Costs should be aligned with <code>OP_CHECKSIG</code> operation, budget is decremented by 50.</li>
+</ul>
+<h2 id="Rationale">Rationale</h2>
+<h3 id="X-only_encoding_and_failure_conditions">X-only encoding and failure conditions</h3>
+<p>Using the BIP340 even-Y lift keeps the opcode aligned with the x-only key model already used by Taproot. Rejecting invalid lifts and the point at infinity ensures that <code>OP_TWEAKADD</code> never produces a value that cannot be interpreted as a usable x-only public key.</p>
+<p>The opcode also rejects scalars greater than or equal to the curve order instead of reducing them modulo the curve order. Modular reduction would permit distinct 32-byte inputs to encode the same effective tweak, introducing an unnecessary source of malleability. In constructions where the tweak is derived from witness data, for example <code>&lt;data&gt; OP_SHA256 &lt;P&gt; OP_TWEAKADD</code>, this would allow different witness elements to produce the same derived key while changing transaction weight and fee characteristics. More generally, protocols should not be able to infer equality of tweak encodings from equality of derived keys when two distinct tweak values could be congruent modulo the curve order. Rejecting non-canonical scalars avoids these ambiguities. Applications that derive scalars from 32-byte hashes already need to handle the negligible-probability case in which the resulting value is not a valid secp256k1 scalar.</p>
+<h3 id="Push_semantics">Push semantics</h3>
+<p><code>OP_TWEAKADD</code> pushes a derived key instead of directly verifying a signature. This keeps the opcode narrowly scoped and reusable. The derived key can feed into existing or proposed signature opcodes, equality checks, or other script logic, rather than forcing all uses through a single verification flow.</p>
+<h3 id="Raw_tweak_input">Raw tweak input</h3>
+<p>The opcode accepts a raw 32-byte scalar instead of internally hashing the input or computing a Taproot-specific tweak. This keeps the consensus rule minimal. Constructions that require a hashed tweak can apply <code>OP_SHA256</code> before <code>OP_TWEAKADD</code>. Constructions that require a BIP341 tweak to be computed entirely on-chain would require additional general-purpose opcodes that expose tapleaf hashes or taptree commitments to script.</p>
+<h3 id="Argument_order">Argument order</h3>
+<p>The chosen stack order puts the public key on top of the stack when <code>OP_TWEAKADD</code> executes. In the common pattern described above, the script pushes a fixed key and the witness supplies the scalar. This permits tweak-reveal, delegation, and proof-of-signing-order constructions to invoke <code>OP_TWEAKADD</code> without first inserting an <code>OP_SWAP</code>.</p>
+<h2 id="Compatibility">Compatibility</h2>
+<p>This is a soft-fork change which is tapscript-only. Un-upgraded nodes will continue
+to treat unknown tapscript opcode as OP_SUCCESSx.</p>
+<p>A future upgrade, such as <code>OP_CAT</code> or an opcode that exposes tapleaf hashes or taptree commitments to script, could prepare the 32-byte scalar required to derive BIP341-compatible Taproot output keys entirely on-chain.</p>
+<h2 id="Deployment">Deployment</h2>
+<p>TBD</p>
+<h2 id="Security_considerations">Security considerations</h2>
+<ul>
+<li>Scalar range check prevents overflow, ambiguity, and alternate encodings of the same effective tweak.</li>
+<li>Infinity guard ensures valid outputs only.</li>
+<li>Scripts must control <code>t</code> derivation securely, which in many applications is trivial.</li>
+<li>No new witness malleability is introduced by alternate tweak encodings because tweaks must be exactly 32 bytes, must encode scalars less than the curve order, and x-only keys admit a unique even-Y lift.</li>
+</ul>
+<h2 id="Reference_semantics_(pseudocode)">Reference semantics (pseudocode)</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">SECP256K1_ORDER = n  # 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+
+def tweak_add(pubkey32: bytes, tweak32: bytes) -&gt; bytes:
+    if len(pubkey32) != 32 or len(tweak32) != 32:
+        raise ValueError
+    t = int.from_bytes(tweak32, &#x27;big&#x27;)
+    if t &gt;= SECP256K1_ORDER:
+        raise ValueError
+    P = lift_x_even_y(pubkey32)  # BIP340 lift of x to the point with even Y
+    if P is None:
+        raise ValueError
+    Q = point_add(P, scalar_mul_G(t))  # Q = P + t*G
+    if Q is None:  # point at infinity
+        raise ValueError
+    return Q.x.to_bytes(32, &#x27;big&#x27;)
+</code></pre>
+<h2 id="Reference_implementation_notes">Reference implementation notes</h2>
+<ul>
+<li>Reuse BIP340 lift/encode helpers from Taproot verification.</li>
+<li>Implement <code>t*G</code> via fixed-base multiplication, then combine with <code>P</code> using point addition.</li>
+<li>Serialize the result as 32-byte x-only.</li>
+<li>Charge EC op budget as 50, like <code>OP_CHECKSIGADD</code>.</li>
+</ul>
+<h2 id="Protocol_Design_Note:_Scalar_Adjustment">Protocol Design Note: Scalar Adjustment</h2>
+<p>When working with x-only keys, it is important to remember that each 32-byte value encodes the equivalence class <code>{P, −P}</code>.
+BIP340 defines the canonical lift as <strong>the point with even Y</strong>. As a result:</p>
+<ul>
+<li>If an off-chain protocol describes an x-only key as "the point <code>s·G</code>," then in consensus terms the actual key is <code>adj(s)·G</code>, where:</li>
+</ul>
+<pre><code>
+adj(s) = s        if y(s·G) is even
+       = n − s    if y(s·G) is odd
+
+</code></pre>
+<ul>
+<li>Consequently, <code>OP_TWEAKADD(x(s·G), t)</code> always computes:</li>
+</ul>
+<pre><code>
+result = x(adj(s)·G + t·G)
+
+</code></pre>
+<p>not simply <code>x(s·G + t·G)</code>.</p>
+<p>This distinction is invisible when signing or verifying against BIP340 keys, because both <code>s</code> and <code>n − s</code> yield the same x-only key.
+But it matters when a protocol tries to relate "a tweak applied at the base" (<code>x(G), t = s</code>) to "a tweak applied at a derived key" (<code>x(s·G), t = 1</code>). In general those will differ unless the original point already had even Y.</p>
+<ul>
+<li>If you want consistent algebraic relations across different ways of composing tweaks, <strong>normalize scalars off-chain</strong> before pushing them into script.</li>
+<li>That is: replace every candidate tweak <code>s</code> with <code>adj(s)</code>, so that <code>adj(s)·G</code> has even Y.</li>
+<li>A simple library function can perform this parity check and adjustment using libsecp256k1 without a consensus modification or opcode.</li>
+</ul>
+<p>If the tweak is derived from inflexible state, such as a transaction hash or a signature, it may be infeasible to depend on commutativity of tweaking.
+Protocols such as LN-Symmetry may simply grind the tx if even-y of tweak is required.</p>
+<h2 id="Protocol_Design_Note:_Algebraic_Limits">Protocol Design Note: Algebraic Limits</h2>
+<p><code>OP_TWEAKADD</code> implements only:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">x(lift_x(X) + t*G)
+</code></pre>
+<p>If <code>X = x(G)</code>, then because the secp256k1 generator has even Y, this becomes:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">x(G + t*G) = x((t + 1)*G)
+</code></pre>
+<p>This may suggest that repeated applications of <code>OP_TWEAKADD</code> can emulate an x-only scalar-multiplication opcode. In general this is not correct. After each application, the 32-byte x-only output is interpreted again using the BIP340 even-Y lift before the next tweak is added. Consequently:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">OP_TWEAKADD(OP_TWEAKADD(x(G), t), n - 1)
+= x(adj(t + 1)*G - G)
+</code></pre>
+<p>which equals <code>x(t*G)</code> only when <code>(t + 1)*G</code> already has even Y.</p>
+<p>More generally, <code>OP_TWEAKADD</code> does not provide a generic <code>OP_ECMUL_XONLY</code> or <code>OP_ECADD</code> for hidden points. The opcode only adds multiples of the fixed generator <code>G</code>; it does not multiply an arbitrary point by a scalar, and x-only encodings do not retain the sign information needed to compose arbitrary point additions without additional data. As a result, <code>OP_TWEAKADD</code> is useful for expressing relations to a known base key or to generator-derived tweaks, but it does not subsume generic elliptic-curve arithmetic or signature verification primitives. For example, checking a Schnorr relation <code>s*G = R + e*P</code> requires scalar multiplication of an arbitrary public key <code>P</code> by <code>e</code> and point addition with <code>R</code>, neither of which can be implemented from <code>OP_TWEAKADD</code> alone without revealing additional information outside the x-only model.</p>
+<h2 id="Illustrative_Constructions">Illustrative Constructions</h2>
+<p>The following sketches are non-normative examples. Some of them compose <code>OP_TWEAKADD</code> with other proposed opcodes, notably BIP 348 <code>OP_CHECKSIGFROMSTACK</code> and BIP 349 <code>OP_INTERNALKEY</code>.</p>
+<h3 id="Tweak-reveal_scripts">Tweak-reveal scripts</h3>
+<p>A tapscript may commit to a base key and accept a witness-provided scalar that must be revealed to derive the signing key. One such construction composes <code>OP_TWEAKADD</code> with BIP 348 <code>OP_CHECKSIGFROMSTACK</code> and BIP 349 <code>OP_INTERNALKEY</code>. When the construction requires the scalar to be hashed before use, the script can express that explicitly:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;sig&gt; &lt;msg&gt; &lt;tweak&gt;
+script:  OP_SHA256 OP_INTERNALKEY OP_TWEAKADD OP_CHECKSIGFROMSTACK
+</code></pre>
+<p>Alternatively, with <code>OP_CHECKSIG</code>:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;sig&gt; &lt;tweak&gt;
+script:  OP_SHA256 OP_INTERNALKEY OP_TWEAKADD OP_CHECKSIG
+</code></pre>
+<p>Applying <code>OP_SHA256</code> to the witness-provided scalar in these constructions prevents key cancellation.</p>
+<h3 id="Proof_of_signing_order_and_transaction_refinement">Proof of signing order and transaction refinement</h3>
+<p><code>OP_TWEAKADD</code> can bind one signer's authorization to another signer's signature by tweaking key <code>A</code> with <code>SHA256(sig_B)</code>. The second signature then proves that <code>A</code> signed only after seeing <code>B</code>'s complete signature, so <code>B</code> can fix transaction details first and <code>A</code> can refine them later:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;sig_A&gt; &lt;sig_B&gt;
+script:  DUP TOALT &lt;B&gt; CHECKSIGVERIFY FROMALT SHA256 &lt;A&gt; OP_TWEAKADD OP_CHECKSIG
+</code></pre>
+<p>In this construction, <code>A</code> is bound to <code>B</code>'s complete signature. <code>B</code> may use any sighash flag combination, so <code>A</code> refines <code>B</code>'s signature rather than the reverse.</p>
+<p>For example, <code>B</code> may sign with <code>SIGHASH_SINGLE|SIGHASH_ANYONECANPAY</code> to commit only to one particular output paying <code>B</code>, while leaving input selection, fee payment, and change outputs unspecified. <code>A</code> may then sign the completed transaction with <code>SIGHASH_ALL</code>, selecting the concrete inputs, fee arrangement, and any additional outputs while remaining bound to that exact authorization from <code>B</code>. In this sense, <code>A</code> refines <code>B</code>'s partial authorization into authorization for one fully specified transaction.</p>
+<h3 id="Delegation">Delegation</h3>
+<p>A delegation protocol may allow <code>A</code> to delegate broad authority to key <code>B</code>. The predicate enforced by this script is that <code>B</code> produced a valid signature and that <code>A</code> authorized delegation to <code>B</code> by signing for the key derived from base key <code>A</code> and scalar <code>SHA256(B)</code>. The script verifies <code>B</code>'s signature first and then checks <code>A</code>'s delegation authorization. This verification order is chosen to avoid <code>OP_SWAP</code>; it does not imply that <code>B</code> must have signed before <code>A</code> authorized delegation.</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;sig_A&gt; &lt;sig_B&gt; &lt;B&gt;
+script:  DUP TOALT CHECKSIGVERIFY FROMALT SHA256 &lt;A&gt; OP_TWEAKADD OP_CHECKSIG
+</code></pre>
+<p>If <code>A</code> uses a weak sighash mode such as <code>SIGHASH_NONE</code>, <code>A</code> need only authorize delegation to <code>B</code> and does not materially constrain the final transaction. <code>B</code> may then choose the concrete inputs, outputs, and fees, and provide the transaction signature that refines <code>A</code>'s permissive authorization into authorization for one fully specified transaction.</p>
+<p>Unlike the signing-order construction above, this construction does not require <code>OP_CHECKSIGFROMSTACK</code>, because <code>A</code> need only be bound to <code>B</code>'s public key rather than to <code>B</code>'s eventual signature bytes.</p>
+<h3 id="Target-tweak_and_key-reveal_contracts">Target-tweak and key-reveal contracts</h3>
+<p>In its simplest form, <code>OP_TWEAKADD</code> can prove knowledge of a scalar <code>t</code> such that <code>tG + k1G = k2G</code>:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;t&gt;
+script:  &lt;k1G&gt; OP_TWEAKADD &lt;k2G&gt; OP_EQUAL
+</code></pre>
+<p>If the construction requires the scalar to be hashed first, the script can express that directly:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;t&gt;
+script:  OP_SHA256 &lt;k1G&gt; OP_TWEAKADD &lt;k2G&gt; OP_EQUAL
+</code></pre>
+<p>If <code>k2G</code> is used as a Taproot output key, this construction can force disclosure of the scalar needed to account for the corresponding Taproot tweak.</p>
+<p>A key-reveal contract is a special case of the target-tweak construction. Given <code>T = tG</code>, the script can require disclosure of <code>t</code> by checking that <code>G + tG = T + G</code>:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;t&gt;
+script:  &lt;G&gt; OP_TWEAKADD &lt;T_plus_G&gt; OP_EQUAL
+</code></pre>
+<h3 id="Merkleized_commitments">Merkleized commitments</h3>
+<p><code>OP_TWEAKADD</code> can also be used to commit to the root of a Merkleized data structure by treating the root hash as a tweak scalar. Let <code>K_root = tweak(P, H(root))</code>, where <code>root</code> is the Merkle root of some application state or set of valid transitions and <code>H(root)</code> is interpreted as a secp256k1 scalar when valid. Revealing the root can then be checked with:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;root&gt;
+script:  OP_SHA256 &lt;P&gt; OP_TWEAKADD &lt;K_root&gt; OP_EQUAL
+</code></pre>
+<p>This permits a script to commit to a large data structure using one derived key while deferring disclosure of the underlying tree to the witness. If the script also has a way to compute parent hashes from child hashes, for example <code>OP_CAT OP_SHA256</code>, then a Merkle branch can be verified by iteratively recomputing <code>root</code> from a revealed leaf and its sibling path, and then checking the resulting root against the committed key above. In that setting, <code>OP_TWEAKADD</code> provides the bridge from a Merkle root to a key that can be consumed by the rest of the script, allowing Merkleized state or transition commitments in the style of constructions such as MATT.</p>
+<p>Even without arbitrary concatenation opcodes, <code>OP_TWEAKADD</code> can be used to build a Merkle-like authenticated tree over 32-byte node commitments. Let <code>B_leaf = x(2G)</code> and <code>B_node = x(3G)</code> be distinct fixed x-only public keys, and define:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">Leaf(x)   = tweak(B_leaf, SHA256(x))
+Node(L,R) = tweak(tweak(B_node, HASH256(L)), SHA256(HASH256(R)))
+</code></pre>
+<p>Here the point input is always either a fixed valid x-only key or the output of a prior <code>OP_TWEAKADD</code>, so no hash-to-point grinding is required. The different hash constructions separate the left-child and right-child roles, while the distinct base keys separate leaf commitments from internal-node commitments.</p>
+<p>One parent reduction can be expressed directly in script:</p>
+<pre data-lang="text" class="language-text "><code class="language-text" data-lang="text">witness: &lt;L&gt; &lt;R&gt;
+script:  OP_TOALTSTACK OP_HASH256 &lt;B_node&gt; OP_TWEAKADD
+         OP_FROMALTSTACK OP_HASH256 OP_SHA256 OP_SWAP OP_TWEAKADD
+</code></pre>
+<p>A branch proof starts from <code>Leaf(x)</code> for the revealed leaf value <code>x</code>, then iteratively combines it with each sibling commitment using the appropriate left or right parent rule until the committed root key is reconstructed.</p>
+<p>This construction should be understood as an ordered binary commitment tree rather than as a general Merkle compression opcode. The recursive use of <code>SHA256</code>, <code>HASH256</code>, and <code>SHA256(HASH256(.))</code> separates roles, but it does not by itself define a canonical tree shape. A protocol using this pattern should therefore also fix the tree arity, proof length, and any empty-subtree or append rules so that the same application state cannot be represented by multiple tree layouts.</p>
+<p>For comparison, BIP 442 <code>OP_PAIRCOMMIT</code> is purpose-built for pair commitments and yields simpler and cheaper Merkleized constructions in practice. The construction above is therefore best understood as a potentially useful tree-commitment technique if <code>OP_TWEAKADD</code> were deployed on its own, rather than as a primary reason to add <code>OP_TWEAKADD</code> when a dedicated pair-commitment opcode is available.</p>
+<h2 id="Test_vectors_(Generated)">Test vectors (Generated)</h2>
+<p>Curve order n = fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141</p>
+<h3 id="Passing_cases">Passing cases</h3>
+<ol>
+<li>Identity tweak (t = 0)</li>
+</ol>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000000
+  expect      =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000000&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_EQUAL
+</code></pre>
+<ol start="2">
+<li>Increment by 1</li>
+</ol>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000001
+  expect      =  c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000001&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD &lt;c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5&gt; OP_EQUAL
+</code></pre>
+<ol start="3">
+<li>Increment by 2</li>
+</ol>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000002
+  expect      =  f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000002&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD &lt;f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9&gt; OP_EQUAL
+</code></pre>
+<ol start="4">
+<li>Increment by 5</li>
+</ol>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000005
+  expect      =  fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000005&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD &lt;fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556&gt; OP_EQUAL
+</code></pre>
+<ol start="5">
+<li>Input x(2G), t = 3</li>
+</ol>
+<pre><code>  pubkey32    =  c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000003
+  expect      =  2f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000003&gt; &lt;c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5&gt; OP_TWEAKADD &lt;2f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4&gt; OP_EQUAL
+</code></pre>
+<ol start="6">
+<li>Input x(7G), t = 9</li>
+</ol>
+<pre><code>  pubkey32    =  5cbdf0646e5db4eaa398f365f2ea7a0e3d419b7e0330e39ce92bddedcac4f9bc
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000009
+  expect      =  e60fce93b59e9ec53011aabc21c23e97b2a31369b87a5ae9c44ee89e2a6dec0a
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000009&gt; &lt;5cbdf0646e5db4eaa398f365f2ea7a0e3d419b7e0330e39ce92bddedcac4f9bc&gt; OP_TWEAKADD &lt;e60fce93b59e9ec53011aabc21c23e97b2a31369b87a5ae9c44ee89e2a6dec0a&gt; OP_EQUAL
+</code></pre>
+<ol start="7">
+<li>Input x(h(1) G), t = 1</li>
+</ol>
+<pre><code>  pubkey32    =  d415b187c6e7ce9da46ac888d20df20737d6f16a41639e68ea055311e1535dd9
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000001
+  expect      =  c6713b2ac2495d1a879dc136abc06129a7bf355da486cd25f757e0a5f6f40f74
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000001&gt; &lt;d415b187c6e7ce9da46ac888d20df20737d6f16a41639e68ea055311e1535dd9&gt; OP_TWEAKADD &lt;c6713b2ac2495d1a879dc136abc06129a7bf355da486cd25f757e0a5f6f40f74&gt; OP_EQUAL
+</code></pre>
+<ol start="8">
+<li>Input x(h(2) G), t = 1</li>
+</ol>
+<pre><code>  pubkey32    =  d27cd27dbff481bc6fc4aa39dd19405eb6010237784ecba13bab130a4a62df5d
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000001
+  expect      =  136f23e6c2efcaa13b37f0c22cd6cfb0d4e6e9eddccefe17e747f5cf440bb785
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000001&gt; &lt;d27cd27dbff481bc6fc4aa39dd19405eb6010237784ecba13bab130a4a62df5d&gt; OP_TWEAKADD &lt;136f23e6c2efcaa13b37f0c22cd6cfb0d4e6e9eddccefe17e747f5cf440bb785&gt; OP_EQUAL
+</code></pre>
+<ol start="9">
+<li>Input x(h(7) G), t = 1</li>
+</ol>
+<pre><code>  pubkey32    =  ddc399701a78edd5ea56429b2b7b6cd11f7d1e4015e7830b4f5e07eb25058768
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000001
+  expect      =  0e27b02714b3f2344f2bfa6d821654f2bd9f0ef497ec541b653b8dcb3a915faf
+
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000001&gt; &lt;ddc399701a78edd5ea56429b2b7b6cd11f7d1e4015e7830b4f5e07eb25058768&gt; OP_TWEAKADD &lt;0e27b02714b3f2344f2bfa6d821654f2bd9f0ef497ec541b653b8dcb3a915faf&gt; OP_EQUAL
+</code></pre>
+<ol start="10">
+<li>Input x(G), t = 1</li>
+</ol>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a
+  expect      =  c6713b2ac2495d1a879dc136abc06129a7bf355da486cd25f757e0a5f6f40f74
+
+  script      =  &lt;4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD &lt;c6713b2ac2495d1a879dc136abc06129a7bf355da486cd25f757e0a5f6f40f74&gt; OP_EQUAL
+</code></pre>
+<ol start="11">
+<li>Input x(G), t = h(2)</li>
+</ol>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986
+  expect      =  136f23e6c2efcaa13b37f0c22cd6cfb0d4e6e9eddccefe17e747f5cf440bb785
+
+  script      =  &lt;dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD &lt;136f23e6c2efcaa13b37f0c22cd6cfb0d4e6e9eddccefe17e747f5cf440bb785&gt; OP_EQUAL
+</code></pre>
+<ol start="12">
+<li>Input x(G), t = h(7) (Note: differs from 9)</li>
+</ol>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  ca358758f6d27e6cf45272937977a748fd88391db679ceda7dc7bf1f005ee879
+  expect      =  00b152fb17d249541e3b2f51455269e02d76507ad7857aaa98e3c51ee5da5b1d
+
+  script      =  &lt;ca358758f6d27e6cf45272937977a748fd88391db679ceda7dc7bf1f005ee879&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD &lt;00b152fb17d249541e3b2f51455269e02d76507ad7857aaa98e3c51ee5da5b1d&gt; OP_EQUAL
+</code></pre>
+<h3 id="Failing_cases">Failing cases</h3>
+<p>A) Scalar out of range (t = n)</p>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+  expect      =  fail
+  script      =  &lt;fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD OP_DROP OP_1
+</code></pre>
+<p>B) Invalid x (x = 0), t = 1</p>
+<pre><code>  pubkey32    =  0000000000000000000000000000000000000000000000000000000000000000
+  tweak32     =  0000000000000000000000000000000000000000000000000000000000000001
+  expect      =  fail
+  script      =  &lt;0000000000000000000000000000000000000000000000000000000000000001&gt; &lt;0000000000000000000000000000000000000000000000000000000000000000&gt; OP_TWEAKADD OP_DROP OP_1
+</code></pre>
+<p>C) Infinity result (x(G), t = n-1)</p>
+<pre><code>  pubkey32    =  79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  tweak32     =  fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140
+  expect      =  fail
+  script      =  &lt;fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140&gt; &lt;79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&gt; OP_TWEAKADD OP_DROP OP_1
+</code></pre>
+<h2 id="Acknowledgements">Acknowledgements</h2>
+<p>This proposal extends the Taproot tweak mechanism (BIP340/341) into script, inspired by prior work on scriptless scripts and key-evolution constructions. There has been various discussion of OP_TWEAKADD over the years, including by Russell O'Connor and Steven Roose.</p>
+<h2 id="References">References</h2>
+<ul>
+<li><a rel="noopener" target="_blank" href="https://groups.google.com/g/bitcoindev/c/-_geIB25zrg/m/bDpv822yAAAJ">Bitcoin Dev Mailing List Discussion</a></li>
+<li><a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/catt-thoughts-about-an-alternative-covenant-softfork-proposal/125">CATT: Thoughts about an alternative covenant softfork proposal</a></li>
+<li><a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/e98d76f2-6f2c-9c3a-6a31-bccb34578c31@roose.io/">Draft BIP: OP_TXHASH and OP_CHECKTXHASHVERIFY</a></li>
+<li><a rel="noopener" target="_blank" href="https://rubin.io/bitcoin/2021/12/05/advent-8/">Advent 8: Scriptless Scripts and Key Tweaks</a></li>
+<li><a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMZUoKnVLRLgL1rcq8DYHRjM--8VEUC5kjUbzbY5S860QSbk5w@mail.gmail.com/">Re: [bitcoin-dev] Unlimited covenants, was Re: CHECKSIGFROMSTACK/{Verify} BIP for Bitcoin</a></li>
+<li><a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMZUoKkAUodCT+2aQG71xwHYD8KXeTAdQq4NmXZ4GBe0pcD=9A@mail.gmail.com/">Re: [bitcoin-dev] Unlimited covenants, was Re: CHECKSIGFROMSTACK/{Verify} BIP for Bitcoin</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/ElementsProject/elements/blob/master/doc/tapscript_opcodes.md#new-opcodes-for-additional-functionality">ElementsProject: Tapscript opcodes documentation</a></li>
+<li><a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMhCMoH9uZPeAE_2tWH6rf0RndqV+ypjbNzazpFwFnLUpPsZ7g@mail.gmail.com/">[bitcoin-dev] Merkleize All The Things</a></li>
+<li><a rel="noopener" target="_blank" href="https://github.com/alpenlabs/Technical-Whitepaper/tree/76d5279e62fe3f157ae94ffc0514ad2a95c6dbcf">Alpen Labs Technical-Whitepaper</a></li>
+</ul>
+<h2 id="Copyright">Copyright</h2>
+<p>This BIP is licensed under the <a rel="noopener" target="_blank" href="https://opensource.org/licenses/BSD-3-Clause">BSD-3-Clause License</a>.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-05-24</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
