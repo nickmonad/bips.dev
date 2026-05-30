@@ -317,7 +317,7 @@ bool CheckSequenceLocks(const CTransaction &amp;tx, int flags)
 <p>As can be seen from the specification section, a number of bits are undefined by this BIP to allow for other use cases by setting bit (1 &lt;&lt; 31) as the remaining 31 bits have no meaning under this BIP. Additionally, bits (1 &lt;&lt; 23) through (1 &lt;&lt; 30) inclusive have no meaning at all when bit (1 &lt;&lt; 31) is unset.</p>
 <p>Additionally, this BIP specifies only 16 bits to actually encode relative lock-time meaning a further 6 are unused (1 &lt;&lt; 16 through 1 &lt;&lt; 21 inclusive). This allows the possibility to increase granularity by soft-fork, or for increasing the maximum possible relative lock-time in the future.</p>
 <p>The most efficient way to calculate sequence number from relative lock-time is with bit masks and shifts:</p>
-<pre><code>    &#x2F;&#x2F; 0 &lt;= nHeight &lt; 65,535 blocks (1.25 years)
+<pre><code>    &#x2F;&#x2F; 0 &lt;= nHeight &lt;= 65,535 blocks (1.25 years)
     nSequence = nHeight;
     nHeight = nSequence &amp; 0x0000ffff;
 
@@ -341,7 +341,7 @@ bool CheckSequenceLocks(const CTransaction &amp;tx, int flags)
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-05-29</p>
+                    <p class="font-bold">2026-05-30</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
