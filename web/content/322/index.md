@@ -239,7 +239,7 @@ output with prevout `000...000:FFFFFFFF` does not exist.
 <h3> Verification </h3>
 
 
-A validator is given as input an address _A_ (which may be omitted in a proof-of-funds), signature
+A validator is given as input an address _A_, signature
 _s_ and message _m_, and outputs one of three states:
 
 <ul>
@@ -287,6 +287,8 @@ Validation consists of the following steps:
     1.  The use of Segwit versions greater than 1 is forbidden.
     1.  If any of the above steps failed, the validator should stop and output the _inconclusive_ state.
 1.  Let _T_ be the nLockTime of `to_sign` and _S_ be the nSequence of the first input of `to_sign`. Output the state _valid at time T and age S_.
+    1.  For _full Proof of Funds_ signatures, a validator MAY additionally report any non-zero nSequence values on the Proof of Funds inputs (i.e., `vin[1..n]`), and MAY verify them against the current chain state when the UTXO set is available; such checks are advisory and do not affect the output state.
+
 
 
 <h3> Signing </h3>
@@ -529,10 +531,12 @@ and many others for their feedback on the specification.
 <h2> Changelog </h2>
 
 
+*  **1.0.1** (2026-06-04):
+    *  Clarify that the message_challenge is _not_ optional for "Proof of Funds".
 *  **1.0.0** (2026-04-15):
     *  Mark Complete
     *  Breaking change: Add human-readable prefix to encoded signature
-    *  Breaking change: format of "Proof of Funds" signatures to be base64-encoded finalized PSBT
+    *  Breaking change: Format of "Proof of Funds" signatures to be base64-encoded finalized PSBT
     *  Add new PSBT global field for PSBT-based signing
 *  **0.0.1** (2018-09-10):
     *  Proposed as draft

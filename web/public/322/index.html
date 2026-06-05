@@ -281,7 +281,7 @@ address.</p>
 transactions must be valid transactions which pass all consensus checks, except of course that the
 output with prevout <code>000...000:FFFFFFFF</code> does not exist.</p>
 <h3> Verification </h3>
-<p>A validator is given as input an address <em>A</em> (which may be omitted in a proof-of-funds), signature
+<p>A validator is given as input an address <em>A</em>, signature
 <em>s</em> and message <em>m</em>, and outputs one of three states:</p>
 <ul>
 <li>
@@ -344,7 +344,11 @@ output with prevout <code>000...000:FFFFFFFF</code> does not exist.</p>
 <li>If any of the above steps failed, the validator should stop and output the <em>inconclusive</em> state.</li>
 </ol>
 </li>
-<li>Let <em>T</em> be the nLockTime of <code>to_sign</code> and <em>S</em> be the nSequence of the first input of <code>to_sign</code>. Output the state <em>valid at time T and age S</em>.</li>
+<li>Let <em>T</em> be the nLockTime of <code>to_sign</code> and <em>S</em> be the nSequence of the first input of <code>to_sign</code>. Output the state <em>valid at time T and age S</em>.
+<ol>
+<li>For <em>full Proof of Funds</em> signatures, a validator MAY additionally report any non-zero nSequence values on the Proof of Funds inputs (i.e., <code>vin[1..n]</code>), and MAY verify them against the current chain state when the UTXO set is available; such checks are advisory and do not affect the output state.</li>
+</ol>
+</li>
 </ol>
 <h3> Signing </h3>
 <p>Signers who control an address <em>A</em> who wish to sign a message <em>m</em> act as follows:</p>
@@ -541,11 +545,16 @@ and many others for their feedback on the specification.</p>
 ```
 <h2> Changelog </h2>
 <ul>
+<li><strong>1.0.1</strong> (2026-06-04):
+<ul>
+<li>Clarify that the message_challenge is <em>not</em> optional for "Proof of Funds".</li>
+</ul>
+</li>
 <li><strong>1.0.0</strong> (2026-04-15):
 <ul>
 <li>Mark Complete</li>
 <li>Breaking change: Add human-readable prefix to encoded signature</li>
-<li>Breaking change: format of "Proof of Funds" signatures to be base64-encoded finalized PSBT</li>
+<li>Breaking change: Format of "Proof of Funds" signatures to be base64-encoded finalized PSBT</li>
 <li>Add new PSBT global field for PSBT-based signing</li>
 </ul>
 </li>
@@ -573,7 +582,7 @@ found in <a href="https://github.com/bitcoin/bips/blob/master/bip-0322/basic-tes
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-06-04</p>
+                    <p class="font-bold">2026-06-05</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
