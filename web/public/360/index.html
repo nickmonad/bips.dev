@@ -126,7 +126,7 @@
   Type: Specification
   Assigned: 2024-12-18
   License: BSD-3-Clause
-  Version: 0.11.0
+  Version: 0.12.0
   Requires: 340, 341, 342
 </code></pre>
 <h2>Introduction</h2>
@@ -194,10 +194,11 @@ control block = [control byte, 32*m byte Merkle path] # m is the depth of the sc
 <p>The initial stack elements of P2MR follow the same rules as P2TR script path spends.
 That is, they place elements on the stack to be evaluated by the leaf script.</p>
 <p>The control block is a <em>1 + 32 * m</em> byte array, where the first byte is the control byte and the next <em>32 * m</em> bytes are the Merkle path to the leaf script. The control byte is the same as the control byte in a P2TR control block, including the 7 bits which are used to specify the leaf version. The parity bit of the control byte is always 1, since P2MR does not have a key path spend. Unlike P2TR, we omit the public key from the control block as it is not needed in P2MR. We maintain support for the optional annex in the witness (see Specification section below for more details).</p>
+<p>Unlike P2TR, script trees of depth 0 - those with a single leaf script - are considered anyone-can-spend in P2MR, which discourages the use of depth-zero script trees today while still allowing them to be repurposed in a future soft-fork.</p>
 <h2>Rationale</h2>
 <p>Design of the P2MR output type is guided by the following intentions:</p>
 <ol>
-<li>Minimize changes to the network. We should reuse existing Bitcoin code and preserve existing software behavior, workflows, user expectations and compatibility whenever possible.</li>
+<li>Minimize changes to the network. We should reuse existing Bitcoin code and preserve existing software behavior, workflows, user expectations, incentives, and compatibility whenever possible.</li>
 </ol>
 <p>P2MR leverages the battle tested P2TR, tapleaf and tapscript code already in Bitcoin, reducing the implementation burden on wallets, exchanges, and libraries that can reuse code they already have. This approach reduces complexity and minimizes implementation risks.</p>
 <ol start="2">
@@ -205,15 +206,32 @@ That is, they place elements on the stack to be evaluated by the leaf script.</p
 </ol>
 <p>Importantly, we are proposing a script tree output, i.e. an output type that supports tapscript, that is resistant to long exposure attacks. While some existing output types are already resistant to long exposure attacks (e.g. P2WSH), no such output type supports tapscript — a feature that may be required for practical implementation of post-quantum signature opcodes.</p>
 <p>P2WSH, for instance, does not support tapscript and as such does not support the OP_SUCCESSx opcode update path that will be critical for the integration of post-quantum OP_CHECKSIG opcodes into Bitcoin.<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup></p>
+<p>P2MR encourages script trees of depth 1 or more, so that P2MR addresses contain at least two spending paths, even if one is not used. This is intended to incentivize the use of a post-quantum-secure leaf script once available, and to better align P2MR's privacy profile with P2TR.</p>
 <ol start="3">
 <li>Facilitate gradual integration of quantum resistant features that can be carried out iteratively as quantum computers evolve. This approach encourages responsiveness to the current threat-level, while avoiding heavy-handedness in our reactions to a potential threat.</li>
 </ol>
 <p>We designed P2MR with an eye towards integrating post-quantum signatures in the future, without proposing more complex changes while CRQCs are still in their infancy.</p>
 <h3>P2MR Trade-Offs</h3>
 <p>While P2TR outputs (and the use of key path spend) will remain an option for folks wishing to use them, we aim to be clear about the tradeoffs of using P2MR outputs, which disable the key path spend for the benefit of quantum resistance.</p>
-<p>The witness to a P2MR spend is always larger than the witness to a P2TR key path spend. This is because a P2TR key path spend requires only a Schnorr signature in the witness. For P2MR, the witness must include the chosen leaf script, the initial stack, and a control block consisting of the control byte and Merkle path (if any).</p>
+<p>The witness to a P2MR spend is always larger than the witness to a P2TR key path spend. This is because a P2TR key path spend requires only a Schnorr signature in the witness. For P2MR, the witness must include the chosen leaf script, the initial stack, and a control block consisting of the control byte and Merkle path.</p>
 <p>That said, the witness to a P2MR spend will always be smaller than the witness to an equivalent P2TR script path spend, because there is no longer any internal key in P2MR that must be revealed in the control block. For a more complete comparison of output type transaction sizes, the "Transaction Size and Fees" section may be reviewed later in this proposal.</p>
-<p>Additionally, there is a privacy tradeoff when comparing P2MR and P2TR, which is that users reveal they are spending to a script tree whenever they are using P2MR outputs, since P2MR outputs can only be spent via script path spend. In P2TR when you spend an output as a key path spend, you don't reveal if you have any script path spends. This trade-off only exists when comparing P2TR key path spends to P2MR script path spends; P2TR and P2MR provide the same level of privacy when both are script path spends.</p>
+<p>P2MR and P2TR share a nearly equivalent privacy profile with respect to the information leaked by spending.</p>
+<ul>
+<li>A P2MR address has at least two spending paths, defined by script leaves.
+<ul>
+<li>Spending any leaf script reveals a lower bound on the total number of valid leaf scripts available. E.g. spending a depth-1 leaf reveals there is at least one valid spending path: the sibling node may be disabled or it may contain thousands of child script leaves.</li>
+<li>Leaf scripts below depth-1 are unlikely to be disabled, so revealing a depth <em>d &gt; 0</em> leaf script implies there are likely at least <em>d+1</em> leaf scripts available in total.</li>
+</ul>
+</li>
+<li>A P2TR address has at least two spending paths: one defined by key-spending and the rest defined by script leaves.
+<ul>
+<li>Spending the key path reveals P2TR's key path is usable. The script path may be disabled.</li>
+<li>Spending the script path reveals P2TR's script path is usable. The key path spend may be disabled. Spending any leaf script reveals a lower bound on the total number of leaf scripts available. E.g. spending a depth-1 leaf reveals there are likely at least two leaf scripts. In general, revealing a depth <em>d</em> leaf script implies there are likely at least <em>d+1</em> leaf scripts available in total.</li>
+</ul>
+</li>
+</ul>
+<p>In both P2MR and P2TR, the only way for an observer to put a reasonable upper bound on the potential number of spending paths is to learn every leaf script, or in P2TR if the observer learns the script path is disabled through external means.</p>
+<p>The only major difference is that in P2TR, a sender can reveal and enforce a script at depth zero to spend, while in P2MR depth-zero trees are discouraged because they are anyone-can-spend.</p>
 <p><strong>Note:</strong> P2MR and P2TR both provide greater script privacy than P2SH <a href="/16" target="_blank">BIP 16</a> because unused script paths are not revealed.</p>
 <h2>Specification</h2>
 <p>We define the Pay-to-Merkle-Root (P2MR) output structure as follows:</p>
@@ -257,6 +275,7 @@ A P2MR output is then a SegWit version 2 byte followed by the Merkle root of the
 </li>
 <li>Let <em>r = k<sub>m</sub></em>.</li>
 <li>If <em>q ≠ r</em>, fail.</li>
+<li>If <em>m = 0</em>, succeed immediately.</li>
 <li>Execute the script, according to the script rules specified in BIP 342, using the witness stack elements excluding the script <em>s</em>, the control block <em>c</em>, and the annex <em>a</em> if present, as initial stack. This implies that for the future leaf versions (non-<em>0xC0</em>) the execution must succeed.</li>
 </ul>
 </li>
@@ -266,6 +285,7 @@ A P2MR output is then a SegWit version 2 byte followed by the Merkle root of the
 <li>The witness program is the the Merkle root of the script tree and not a tweaked public key. This means that we skip directly to the BIP 341 script path validation.</li>
 <li>We compute the script tree Merkle root <em>r</em> and compare it directly to the witness program <em>q</em>.</li>
 <li>The control block is <em>1 + 32*m</em> bytes, instead of <em>33 + 32*m</em> bytes.</li>
+<li>If the leaf script is at depth zero, script execution is skipped and validation automatically succeeds.</li>
 </ul>
 <h3>Common Signature Message Construction</h3>
 <p>The <a href="https://learnmeabitcoin.com/technical/upgrades/taproot/#common-signature-message" target="_blank">common signature message</a> construction for P2MR outputs is exactly the same procedure as defined in <a href="/342" target="_blank">BIP342 Common Signature Message</a>.</p>
@@ -274,22 +294,21 @@ A P2MR output is then a SegWit version 2 byte followed by the Merkle root of the
 <h3>Transaction Size and Fees</h3>
 <p>All P2MR and P2TR outputs are always the same size. P2MR inputs can be slightly larger or smaller than their equivalent P2TR inputs, depending on the use of key path vs script path spend in the case of P2TR. Let's consider the cases.</p>
 <h4>Comparison with P2TR key path spend</h4>
-<p>A P2MR witness will be larger than a P2TR witness when the P2TR output is spent via the key path spend. A witness to a P2TR key path spend is simply a signature. P2MR quantum resistance comes from removing the P2TR key path spend. Every P2MR spend is a P2TR script path spend and so requires a script, its input stack and a control block. Consequently, P2MR loses this size advantage of P2TR key path spends in order to gain quantum resistance. If the script tree only has a single leaf script, no Merkle path is needed in the control block, giving us a minimal size control block of 1 byte.</p>
-<p>P2MR witness for depth-0 tree (103 bytes):</p>
+<p>A P2MR witness will be larger than a P2TR witness when the P2TR output is spent via the key path spend. A witness to a P2TR key path spend is simply a signature. P2MR quantum resistance comes from removing the P2TR key path spend. Every P2MR spend is a P2TR script path spend and so requires a script, its input stack and a control block. Consequently, P2MR loses this size advantage of P2TR key path spends in order to gain quantum resistance.</p>
+<p>P2MR witness for a depth-1 tree (135 bytes):</p>
 <pre><code>[count] (1 byte), # Number of elements in the witness
 [size] signature (1 + 64 bytes = 65 bytes),
 leaf script = [size] [OP_PUSHBYTES_32, 32-byte public key, OP_CHECKSIG] (1 + 1 + 32 + 1 bytes = 35 bytes),
-control block = [size] [control byte] [merkle path (empty)] (1 + 1 + 0 bytes = 2 bytes)
+control block = [size] [control byte] [merkle path (empty)] (1 + 1 + 32 bytes = 34 bytes)
 </code></pre>
 <p>P2TR key path spend witness (66 bytes):</p>
 <pre><code>[count] (1 byte), # Number of elements in the witness
 [size] signature (1 + 64 bytes = 65 bytes)
 </code></pre>
-<p>Thus, the P2MR witness would be 103 - 66 = 37 bytes larger than a P2TR key path spend witness.</p>
-<p>If the Merkle tree has more than a single leaf, then the Merkle path must be included in the control block, increasing the size by <em>32 * m</em> bytes, where m is the depth of the Merkle tree.
-While script trees do support leaf scripts of different depths, here we assume the Merkle tree has been constructed such that each leaf is at the same depth.
+<p>Thus, the P2MR witness would be 135 - 66 = 69 bytes larger than a P2TR key path spend witness.</p>
+<p>The P2MR Merkle path must be included in the control block, increasing the size by <em>32 * m</em> bytes, where m is the depth of the leaf script.
 This would make such witness 37 + 32 * m bytes larger than a P2TR key path spend witness.<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup></p>
-<p>P2MR witness <em>(103 + 32*m bytes)</em>:</p>
+<p>P2MR witness, general case <em>(103 + 32*m bytes)</em>:</p>
 <pre><code>[count] (1 byte), # Number of elements in the witness
 [size] signature (64 + 1 bytes = 65 bytes),
 leaf script = [size] [OP_PUSHBYTES_32, 32-byte public key, OP_CHECKSIG] (34 + 1 bytes = 35 bytes),
@@ -300,7 +319,7 @@ control block = [size] [control byte] [Merkle path] (1 + 1 + 32*m = 2 + 32*m byt
 <h2>Performance Impact</h2>
 <p>P2MR is slightly more computationally performant than P2TR script path spends, as the operations to spend a P2MR output is a strict subset of the operations needed to perform a script path spend on a P2TR output.</p>
 <h2>Backward Compatibility</h2>
-<p>Older wallets and nodes that have not been made compatible with SegWit version 2 and P2MR will not understand these outputs. Per <a href="/350" target="_blank">BIP 350</a> older wallets should be able to spend funds to SegWit version 2 outputs. Users should ensure they are using updated wallets and nodes to receive P2MR outputs and validate transactions using P2MR outputs. P2MR is fully compatible with tapscript and existing tapscript programs can be used in P2MR outputs without modification. P2MR can also support future scripts with new leaf versions.</p>
+<p>Older wallets and nodes that have not been made compatible with SegWit version 2 and P2MR will not understand these outputs. Per <a href="/350" target="_blank">BIP 350</a> older wallets should be able to spend funds to SegWit version 2 outputs. Users should ensure they are using updated wallets and nodes to receive P2MR outputs and validate transactions using P2MR outputs. P2MR is fully compatible with tapscript and existing tapscript programs can be used in P2MR outputs mostly without modification (but depth-zero script trees will be anyone-can-spend in P2MR!). P2MR can also support future script upgrades with new leaf versions.</p>
 <h2>Security</h2>
 <p>P2MR outputs provide the same tapscript functionality as P2TR outputs, but with the quantum-vulnerable key path spend removed. The similarity between these output types enables users to easily migrate script trees from P2TR outputs to P2MR outputs for protection against long exposure quantum attacks. Wallets supporting only P2TR key path spends would need to migrate to using script trees. This is a straightforward migration as it only requires moving to a simple OP_CHECKSIG leaf script.</p>
 <p>Protection from long exposure quantum attacks does not depend on the activation of post-quantum signatures in Bitcoin, but requires that users do not expose their public keys to attackers via public key reuse or other unsafe practices.</p>
@@ -359,6 +378,7 @@ control block = [size] [control byte] [Merkle path] (1 + 1 + 32*m = 2 + 32*m byt
 <h2>Changelog</h2>
 <p>To help implementers understand updates to this BIP, we keep a list of substantial changes.</p>
 <ul>
+<li><strong>0.12.0</strong>  (2026-06-18) - Make depth-zero script trees anyone-can-spend.</li>
 <li><strong>0.11.0</strong>  (2026-02-10) - Rename BIP from Pay-to-Tapscript-Hash (P2TSH) to Pay-to-Merkle-Root (P2MR)</li>
 <li><strong>0.10.3</strong>  (2026-02-06) - Rename tapscript-native output type to script tree output type.</li>
 <li><strong>0.10.2</strong>  (2026-01-23) - Fix bug in verification, minor review comments and adopt <a href="bip-0003.md" target="_blank">BIP 3</a> conventions.</li>
