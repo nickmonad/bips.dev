@@ -120,7 +120,7 @@
   Layer: Consensus (soft fork)
   Title: Reduced Data Temporary Softfork
   Authors: Dathon Ohm &lt;dathonohm+bip@proton.me&gt;
-  Status: Draft
+  Status: Complete
   Type: Specification
   Assigned: 2025-12-03
   License: BSD-3-Clause
@@ -141,7 +141,10 @@
 <li>Tapscripts including OP_SUCCESS* opcodes anywhere (even unexecuted) are invalid.</li>
 <li>Tapscripts executing the OP_IF or OP_NOTIF instruction (regardless of result) are invalid.</li>
 </ol>
-<p>Inputs spending UTXOs that were created before the activation height are exempt from the new rules.
+<h3>UTXO grandfathering</h3>
+<p><strong>Inputs spending UTXOs that were created before the activation height are exempt from all of the new rules.</strong>
+This grandfathering ensures that no existing coins can be frozen or rendered unspendable by this softfork: any UTXO confirmed before activation can always be spent exactly as it could before, throughout the entire deployment.
+The new rules apply only to UTXOs created at or after the activation height.
 Once the softfork expires, UTXOs of all heights are once again unrestricted.</p>
 <h3>GetBlockTemplate</h3>
 <p>This deployment uses the GBT deployment name "reduced_data" as defined in <a href="/9" target="_blank">BIP 9</a>. During mandatory signaling, the deployment's bit is included in "vbrequired".</p>
@@ -241,7 +244,7 @@ by deploying these simpler restrictions now, we avoid making the perfect the ene
 <ol>
 <li>Limiting Taproot control blocks to 257 bytes directly constrains the size of the on-chain, consensus-enforced script tree. This could complicate or possibly even impede advanced smart contracting like BitVM, which relies on a large number of executable scripts. In the worst case scenario, these use cases may just need to wait until this softfork expires. As they are still in early development, testnet and sidechains should be sufficient for the next year while a more scalable rule is implemented.</li>
 <li>Upgrade hooks are not available for other softforks. As softforks adding new opcodes typically need at least a year to activate, this shouldn't be a practical issue.</li>
-<li>Some wallet software such as Miniscript habitually creates Tapleaves containing OP_IF. To mitigate the risk of these funds being frozen for a year, this proposal exempts inputs that spend outputs that were created before activation, and provides a two-week grace period between lock-in and activation, to give users time to prepare.</li>
+<li>Despite there being no known use case that requires it, some wallet software such as Miniscript habitually creates Tapleaves containing OP_IF, which in some hypothetical cases can require less data than the equivalent construction using additional Tapscripts. If such a use case is discovered, this simply increases the fee for that construction until the softfork expires.</li>
 </ol>
 <p><strong>Isn't the limit on Taproot control blocks too restrictive?</strong></p>
 <p>Possibly.
@@ -336,6 +339,13 @@ Pains have been taken to avoid breaking monetary use cases, and it is unlikely t
 <p>All other known use cases are not affected.</p>
 <h2>Reference implementation</h2>
 <p>https://github.com/bitcoinknots/bitcoin/compare/29.x-knots...dathonohm:bitcoin:uasf-modified-bip9</p>
+<h2>Test vectors</h2>
+<p>Test coverage specific to these rules is provided by the reference implementation's functional test suite:</p>
+<ul>
+<li><a href="https://github.com/dathonohm/bitcoin/blob/uasf-modified-bip9/test/functional/feature_rdts.py" target="_blank">feature_rdts.py</a> exercises all seven consensus rules, including their boundaries and the script-type exemptions to rule 2 (BIP16 redeemScripts, witness scripts, and Tapleaf scripts).</li>
+<li><a href="https://github.com/dathonohm/bitcoin/blob/uasf-modified-bip9/test/functional/feature_reduced_data_utxo_height.py" target="_blank">feature_reduced_data_utxo_height.py</a> covers the grandfathering of UTXOs created before the activation height.</li>
+</ul>
+<p>In addition, a set of transaction-level test vectors generated and verified against the reference implementation is provided in <a href="https://github.com/bitcoin/bips/blob/master/bip-0110/test-vectors.json" target="_blank">test-vectors.json</a>. Each vector gives the spent output(s), the spending (or output-creating) transaction, and whether a block containing it is valid while these rules are active; the <code>rule</code> and <code>spent_utxo</code> fields identify which numbered rule is exercised and whether the spent UTXO is grandfathered. These vectors were produced by <a href="https://github.com/bitcoin/bips/blob/master/bip-0110/test-vectors.py" target="_blank">test-vectors.py</a>, which submits each case to a regtest node enforcing the rules and emits the verified result; see that file for reproduction instructions.</p>
 <h2>Deployment</h2>
 <p>This deployment uses a modified version of BIP9 with the following parameters:</p>
 <ul>
@@ -365,6 +375,37 @@ Pains have been taken to avoid breaking monetary use cases, and it is unlikely t
 <p>The FAILED state is never reached because timeout is disabled. EXPIRED is the final state; there are no transitions after it. Miner signaling after expiry has no effect because the deployment is no longer in the STARTED state, and miner signaling only governs the STARTED -&gt; LOCKED_IN transition.</p>
 <h2>Credits</h2>
 <p>Original draft and advice: Luke-Jr</p>
+<h2>Changelog</h2>
+<ul>
+<li><strong>1.0.0</strong> (2026-06-25):
+<ul>
+<li>Advance to Complete</li>
+</ul>
+</li>
+<li><strong>0.0.4</strong> (2026-02-04):
+<ul>
+<li>Update to BIP-3</li>
+<li>Add EXPIRED state</li>
+</ul>
+</li>
+<li><strong>0.0.3</strong> (2025-11-25):
+<ul>
+<li>Switch to a modified BIP9 deployment with active_duration, max_activation_height, and a 55% threshold</li>
+<li>Move the activation deadline block height from 934864 (2026-02-01) to 965664 (2026-09-01)</li>
+</ul>
+</li>
+<li><strong>0.0.2</strong> (2025-11-05):
+<ul>
+<li>Add UTXO grandfathering</li>
+<li>Remove the reactive activation method</li>
+</ul>
+</li>
+<li><strong>0.0.1</strong> (2025-10-24):
+<ul>
+<li>Initial Draft</li>
+</ul>
+</li>
+</ul>
 
         </article>
     </div>
@@ -375,7 +416,7 @@ Pains have been taken to avoid breaking monetary use cases, and it is unlikely t
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-06-28</p>
+                    <p class="font-bold">2026-06-29</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
