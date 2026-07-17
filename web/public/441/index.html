@@ -126,7 +126,7 @@
   Assigned: 2026-03-25
   License: BSD-3-Clause
   Discussion: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;GisTcPb8Jco&#x2F;m&#x2F;8znWcWwKAQAJ
-  Version: 0.2.1
+  Version: 0.2.2
   Requires: 440
 </code></pre>
 <h2>Introduction</h2>
@@ -250,6 +250,12 @@ stack as arbitrary-length little-endian values (instead of CScriptNum):</p>
 <li>OP_IFDUP</li>
 <li>OP_CHECKSIGADD</li>
 </ol>
+<p>For OP_CHECKLOCKTIMEVERIFY and OP_CHECKSEQUENCEVERIFY, the operand is decoded
+and costed as an arbitrary-length unsigned integer.  However, the decoded
+value MUST be less than 2<sup>32</sup>, because it is compared against the
+32-bit nLockTime or nSequence transaction field.  OP_CHECKSEQUENCEVERIFY
+performs this range check before disable-flag handling or BIP68 masking, so
+any non-zero bits above bit 31 cause failure.</p>
 <p>These opcodes are redefined in 0xC2 Tapscript to write numbers to the stack as
 minimal-length little-endian values (instead of CScriptNum):</p>
 <ol>
@@ -264,6 +270,10 @@ integer value (not <code>CastToBool()</code>):</p>
 <p><code>4. (ii) If the execution results in anything but exactly one element on the stack which evaluates to true with `CastToBool()`, fail.</code></p>
 <p>Now:</p>
 <p><code>4. (ii) If the execution results in anything but exactly one element on the stack which contains one or more non-zero bytes, fail.</code></p>
+<p>This final success check consumes varops budget as <code>wordspan(A) * 2</code>
+(COMPARINGZERO), where <code>A</code> is the remaining stack element. If this
+cost exceeds the remaining transaction varops budget, fail before performing
+the non-zero-byte check.</p>
 <h3>Enabled Opcodes</h3>
 <p>Fifteen opcodes that were removed in v0.3.1 are re-enabled in 0xC2 Tapscript.</p>
 <p>If there are fewer than the required number of stack elements, these opcodes
@@ -272,25 +282,33 @@ i.e. <nowiki>[A B]</nowiki> means pop B off the stack, then pop A off the
 stack.</p>
 <p>See <a href="/440" target="_blank">BIP440</a> for the meaning of the
 annotations in the varops cost field.</p>
+<h4>Byte Lengths and Word Spans</h4>
+<p>This BIP uses the <code>length(...)</code> and <code>wordspan(...)</code>
+convention from <a href="/440" target="_blank">BIP440</a>: <code>length(X)</code> is the
+script-visible byte length of stack element <code>X</code>, while
+<code>wordspan(X)</code> is that length rounded up to the 64-bit word span used
+for numeric and bit-vector work.  Some formulas intentionally mix the two when
+an opcode performs both word-rounded interpretation and exact byte movement.</p>
 <h4>Splice Opcodes</h4>
 <table><thead><tr><th>Mnemonic</th><th>Opcode</th><th>Input Stack</th><th>Description</th><th>Definition</th><th>Varops Cost</th><th>Varops Reason</th></tr></thead><tbody>
 <tr><td>OP_CAT</td><td>126</td><td><nowiki>[A B]</nowiki></td><td>Append B to A</td><td></td><td>(length(A) + length(B)) * 3</td><td>COPYING</td></tr>
-<tr><td>OP_SUBSTR</td><td>127</td><td><nowiki>[A BEGIN LEN]</nowiki></td><td>Extract bytes BEGIN through BEGIN+LEN of A</td><td></td><td>(length(LEN) + length(BEGIN)) * 2 + MIN(Value of LEN, MAX(length(A) - Value of BEGIN, 0)) * 3</td><td>LENGTHCONV + COPYING</td></tr>
-<tr><td>OP_LEFT</td><td>128</td><td><nowiki>[A OFFSET]</nowiki></td><td>Extract the left OFFSET bytes of A</td><td></td><td>length(OFFSET) * 2</td><td>LENGTHCONV</td></tr>
-<tr><td>OP_RIGHT</td><td>129</td><td><nowiki>[A OFFSET]</nowiki></td><td>Extract the right bytes of A, from OFFSET onwards</td><td></td><td>length(OFFSET) * 2 + value of OFFSET * 3</td><td>LENGTHCONV + COPYING</td></tr>
+<tr><td>OP_SUBSTR</td><td>127</td><td><nowiki>[A BEGIN LEN]</nowiki></td><td>Extract bytes BEGIN through BEGIN+LEN of A</td><td></td><td>(wordspan(LEN) + wordspan(BEGIN)) * 2 + MIN(Value of LEN, MAX(length(A) - Value of BEGIN, 0)) * 3</td><td>LENGTHCONV + COPYING</td></tr>
+<tr><td>OP_LEFT</td><td>128</td><td><nowiki>[A OFFSET]</nowiki></td><td>Extract the left OFFSET bytes of A</td><td></td><td>wordspan(OFFSET) * 2</td><td>LENGTHCONV</td></tr>
+<tr><td>OP_RIGHT</td><td>129</td><td><nowiki>[A OFFSET]</nowiki></td><td>Extract the rightmost OFFSET bytes of A</td><td></td><td>wordspan(OFFSET) * 2 + MIN(Value of OFFSET, length(A)) * 3</td><td>LENGTHCONV + COPYING</td></tr>
 </tbody></table>
 <h5>Rationale</h5>
 <p>OP_CAT may require a reallocation of A (hence, COPYING A) before appending B.</p>
 <p>OP_SUBSTR may have to copy LEN bytes, but also needs to read its two numeric
 operands.  LEN is limited to the length of the operand minus BEGIN.</p>
 <p>OP_LEFT only needs to read its OFFSET operand (truncation is free), whereas
-OP_RIGHT must copy the bytes, which depends on the OFFSET value.</p>
+OP_RIGHT must copy the rightmost bytes, which depends on the bounded OFFSET
+value.</p>
 <h4>Bit Operation Opcodes</h4>
 <table><thead><tr><th>Mnemonic</th><th>Opcode</th><th>Input Stack</th><th>Description</th><th>Definition</th><th>Varops Cost</th><th>Varops Reason</th></tr></thead><tbody>
-<tr><td>OP_INVERT</td><td>131</td><td><nowiki>[A]</nowiki></td><td>Bitwise invert A</td><td></td><td>length(A) * 4</td><td>OTHER</td></tr>
-<tr><td>OP_AND</td><td>132</td><td><nowiki>[A B]</nowiki></td><td>Binary AND of A and B</td><td></td><td>(length(A) + length(B)) * 2</td><td>OTHER + ZEROING</td></tr>
-<tr><td>OP_OR</td><td>133</td><td><nowiki>[A B]</nowiki></td><td>Binary OR of A and B</td><td></td><td>MIN(length(A), length(B)) * 4</td><td>OTHER</td></tr>
-<tr><td>OP_XOR</td><td>134</td><td><nowiki>[A B]</nowiki></td><td>Binary exclusive-OR of A and B</td><td></td><td>MIN(length(A), length(B)) * 4</td><td>OTHER</td></tr>
+<tr><td>OP_INVERT</td><td>131</td><td><nowiki>[A]</nowiki></td><td>Bitwise invert A</td><td></td><td>wordspan(A) * 4</td><td>OTHER</td></tr>
+<tr><td>OP_AND</td><td>132</td><td><nowiki>[A B]</nowiki></td><td>Binary AND of A and B</td><td></td><td>(wordspan(A) + wordspan(B)) * 2</td><td>OTHER + ZEROING</td></tr>
+<tr><td>OP_OR</td><td>133</td><td><nowiki>[A B]</nowiki></td><td>Binary OR of A and B</td><td></td><td>MIN(wordspan(A), wordspan(B)) * 4</td><td>OTHER</td></tr>
+<tr><td>OP_XOR</td><td>134</td><td><nowiki>[A B]</nowiki></td><td>Binary exclusive-OR of A and B</td><td></td><td>MIN(wordspan(A), wordspan(B)) * 4</td><td>OTHER</td></tr>
 </tbody></table>
 <h5>Rationale</h5>
 <p>OP_AND, OP_OR and OP_XOR are assumed to fold the results into the longer of
@@ -304,8 +322,8 @@ shifts in Bitcoin v0.3.0, and as such they also do not truncate trailing
 zeroes from results: they are renamed OP_UPSHIFT (née OP_LSHIFT) and
 OP_DOWNSHIFT (née OP_RSHIFT).</p>
 <table><thead><tr><th>Mnemonic</th><th>Opcode</th><th>Input Stack</th><th>Description</th><th>Definition</th><th>Varops Cost</th><th>Varops Reason</th></tr></thead><tbody>
-<tr><td>OP_UPSHIFT</td><td>152</td><td><nowiki>[A BITS]</nowiki></td><td>Move bits of A right by BITS (numerically increase)</td><td></td><td>length(BITS) * 2 + (Value of BITS) / 8 * 2 + length(A) * 3.  If BITS % 8 != 0, add length(A) * 4</td><td>LENGTHCONV + ZEROING + COPYING. If BITS % 8 != 0, + OTHER.</td></tr>
-<tr><td>OP_DOWNSHIFT</td><td>153</td><td><nowiki>[A BITS]</nowiki></td><td>Move bits of A left by BITS (numerically decrease)</td><td></td><td>length(BITS) * 2 + MAX((length(A) - (Value of BITS) / 8), 0) * 3</td><td>LENGTHCONV + COPYING</td></tr>
+<tr><td>OP_UPSHIFT</td><td>152</td><td><nowiki>[A BITS]</nowiki></td><td>Move bits of A right by BITS (numerically increase)</td><td></td><td>wordspan(BITS) * 2 + (Value of BITS) / 8 * 2 + length(A) * 3.  If BITS % 8 != 0, add wordspan(length(A) + (Value of BITS) / 8) * 4</td><td>LENGTHCONV + ZEROING + COPYING. If BITS % 8 != 0, + OTHER over the shifted result length.</td></tr>
+<tr><td>OP_DOWNSHIFT</td><td>153</td><td><nowiki>[A BITS]</nowiki></td><td>Move bits of A left by BITS (numerically decrease)</td><td></td><td>wordspan(BITS) * 2 + MAX((length(A) - (Value of BITS) / 8), 0) * 3</td><td>LENGTHCONV + COPYING</td></tr>
 </tbody></table>
 <h5>Rationale</h5>
 <p>DOWNSHIFT needs to read the value of the second operand BITS.  It then needs
@@ -321,11 +339,11 @@ the practical advantage of being able to share the same downward bitshift
 routine as OP_DOWNSHIFT.</p>
 <h4>Multiply and Divide Opcodes</h4>
 <table><thead><tr><th>Mnemonic</th><th>Opcode</th><th>Input Stack</th><th>Description</th><th>Definition</th><th>Varops Cost</th><th>Varops Reason</th></tr></thead><tbody>
-<tr><td>OP_2MUL</td><td>141</td><td><nowiki>[A]</nowiki></td><td>Multiply A by 2</td><td></td><td>length(A) * 7</td><td>OTHER + COPYING</td></tr>
-<tr><td>OP_2DIV</td><td>142</td><td><nowiki>[A]</nowiki></td><td>Divide A by 2</td><td></td><td>length(A) * 4</td><td>OTHER</td></tr>
-<tr><td>OP_MUL</td><td>149</td><td><nowiki>[A B]</nowiki></td><td>Multiply A by B</td><td></td><td>(length(A) + length(B)) * 3 + (length(A) + 7) / 8 * length(B) * 27  (BEWARE OVERFLOW)</td><td>See Appendix</td></tr>
-<tr><td>OP_DIV</td><td>150</td><td><nowiki>[A B]</nowiki></td><td>Divide A by (non-zero) B</td><td></td><td>length(A) * 18 + length(B) * 4 + length(A)^2 * 2 / 3  (BEWARE OVERFLOW)</td><td>See Appendix</td></tr>
-<tr><td>OP_MOD</td><td>151</td><td><nowiki>[A B]</nowiki></td><td>Replace A with remainder when A divided by (non-zero) B</td><td></td><td>length(A) * 18 + length(B) * 4 + length(A)^2 * 2 / 3  (BEWARE OVERFLOW)</td><td>See Appendix</td></tr>
+<tr><td>OP_2MUL</td><td>141</td><td><nowiki>[A]</nowiki></td><td>Multiply A by 2</td><td></td><td>wordspan(A) * 7</td><td>OTHER + COPYING</td></tr>
+<tr><td>OP_2DIV</td><td>142</td><td><nowiki>[A]</nowiki></td><td>Divide A by 2</td><td></td><td>wordspan(A) * 4</td><td>OTHER</td></tr>
+<tr><td>OP_MUL</td><td>149</td><td><nowiki>[A B]</nowiki></td><td>Multiply A by B</td><td></td><td>(length(A) + length(B)) * 3 + wordspan(A) / 8 * wordspan(B) * 27  (BEWARE OVERFLOW)</td><td>See Appendix</td></tr>
+<tr><td>OP_DIV</td><td>150</td><td><nowiki>[A B]</nowiki></td><td>Divide A by (non-zero) B</td><td></td><td>wordspan(A) * 18 + wordspan(B) * 4 + wordspan(A)^2 * 2 / 3  (BEWARE OVERFLOW)</td><td>See Appendix</td></tr>
+<tr><td>OP_MOD</td><td>151</td><td><nowiki>[A B]</nowiki></td><td>Replace A with remainder when A divided by (non-zero) B</td><td></td><td>wordspan(A) * 18 + wordspan(B) * 4 + wordspan(A)^2 * 2 / 3  (BEWARE OVERFLOW)</td><td>See Appendix</td></tr>
 </tbody></table>
 <h5>Rationale</h5>
 <p>These opcodes can be computationally intensive, which is why the varops budget must be checked before operations.  OP_2MUL and OP_2DIV are far simpler, equivalent to OP_UPSHIFT and OP_DOWNSHIFT by 1 bit, except truncating the most-significant zero bytes.</p>
@@ -335,10 +353,10 @@ routine as OP_DOWNSHIFT.</p>
 <h3>Extended Opcodes</h3>
 <p>The opcodes OP_ADD, OP_SUB, OP_1ADD and OP_1SUB are redefined in 0xC2 Tapscript to operate on variable-length unsigned integers.  These always produce minimal values (no trailing zero bytes).</p>
 <table><thead><tr><th>Mnemonic</th><th>Opcode</th><th>Input Stack</th><th>Description</th><th>Definition</th><th>Varops Cost</th><th>Varops Reason</th></tr></thead><tbody>
-<tr><td>OP_ADD</td><td>147</td><td><nowiki>[A B]</nowiki></td><td>Add A and B</td><td></td><td>MAX(length(A), length(B)) * 9</td><td>ARITH + COPYING</td></tr>
-<tr><td>OP_1ADD</td><td>139</td><td><nowiki>[A]</nowiki></td><td>Add one to A</td><td></td><td>MAX(1, length(A)) * 9</td><td>ARITH + COPYING</td></tr>
-<tr><td>OP_SUB</td><td>148</td><td><nowiki>[A B]</nowiki></td><td>Subtract B from A where B is &lt;= A</td><td></td><td>MAX(length(A), length(B)) * 6</td><td>ARITH</td></tr>
-<tr><td>OP_1SUB</td><td>140</td><td><nowiki>[A]</nowiki></td><td>Subtract 1 from (non-zero) A</td><td></td><td>MAX(1, length(A)) * 6</td><td>ARITH</td></tr>
+<tr><td>OP_ADD</td><td>147</td><td><nowiki>[A B]</nowiki></td><td>Add A and B</td><td></td><td>MAX(wordspan(A), wordspan(B)) * 9</td><td>ARITH + COPYING</td></tr>
+<tr><td>OP_1ADD</td><td>139</td><td><nowiki>[A]</nowiki></td><td>Add one to A</td><td></td><td>MAX(wordspan(1), wordspan(A)) * 9</td><td>ARITH + COPYING</td></tr>
+<tr><td>OP_SUB</td><td>148</td><td><nowiki>[A B]</nowiki></td><td>Subtract B from A where B is &lt;= A</td><td></td><td>MAX(wordspan(A), wordspan(B)) * 6</td><td>ARITH</td></tr>
+<tr><td>OP_1SUB</td><td>140</td><td><nowiki>[A]</nowiki></td><td>Subtract 1 from (non-zero) A</td><td></td><td>MAX(wordspan(1), wordspan(A)) * 6</td><td>ARITH</td></tr>
 </tbody></table>
 <h4>Rationale</h4>
 <p>Note that the basic cost for ADD is six times the maximum operand length
@@ -349,9 +367,9 @@ failure, as mathematicians agree the result would not be natural.</p>
 <h3>Misc Operators</h3>
 <p>The following opcodes have costs below:</p>
 <table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th><th>Varops Reason</th></tr></thead><tbody>
-<tr><td>OP_CHECKLOCKTIMEVERIFY</td><td>Length of operand * 2</td><td>LENGTHCONV</td></tr>
-<tr><td>OP_CHECKSEQUENCEVERIFY</td><td>Length of operand * 2</td><td>LENGTHCONV</td></tr>
-<tr><td>OP_CHECKSIGADD</td><td>MAX(1, length(number operand)) * 9 + 500,000</td><td>ARITH + COPYING + SIGCHECK</td></tr>
+<tr><td>OP_CHECKLOCKTIMEVERIFY</td><td>wordspan(operand) * 2</td><td>LENGTHCONV</td></tr>
+<tr><td>OP_CHECKSEQUENCEVERIFY</td><td>wordspan(operand) * 2</td><td>LENGTHCONV</td></tr>
+<tr><td>OP_CHECKSIGADD</td><td>MAX(wordspan(1), wordspan(number operand)) * 9 + 500,000</td><td>ARITH + COPYING + SIGCHECK</td></tr>
 <tr><td>OP_CHECKSIG</td><td>500,000</td><td>SIGCHECK</td></tr>
 <tr><td>OP_CHECKSIGVERIFY</td><td>500,000</td><td>SIGCHECK</td></tr>
 </tbody></table>
@@ -402,6 +420,7 @@ version, for backwards compatibility.</p>
 </code></pre>
 <h2>Changelog</h2>
 <ul>
+<li>0.2.2: 2026-06-15: clarify wordspan costs, OP_RIGHT semantics, OP_UPSHIFT unaligned cost, CLTV/CSV bounds, and final success-check cost.</li>
 <li>0.2.1: 2023-03-27: fix OP_MUL cost to round length(B) up</li>
 <li>0.2.0: 2025-02-21: change costs to match those in varops budget</li>
 <li>0.1.0: 2025-09-27: first public posting</li>
@@ -436,28 +455,29 @@ using multiple instructions).</p>
 <li>Allocate and zero the result: cost = (length(A) + length(B)) * 2 (ZEROING)</li>
 <li>For each word in A:
 <ul>
-<li>Multiply by each word in B, into a scratch vector: cost = 6 * ((length(B) + 7) / 8) * 8 (ARITH)</li>
-<li>Sum scratch vector at the word offset into the result: cost = 6 * ((length(B) + 7) / 8) * 8 (ARITH)</li>
+<li>Multiply by each word in B, into a scratch vector: cost = 6 * wordspan(B) (ARITH)</li>
+<li>Sum scratch vector at the word offset into the result: cost = 6 * wordspan(B) (ARITH)</li>
 </ul>
 </li>
 </ol>
-<p>We increase the length of B here to the next word boundary, using
-"((length(B) + 7) / 8) * 8", as the multiplication below makes the
-difference of that from the simple "length(B)" significant.</p>
+<p>We increase the operand lengths to the next word boundary for the word-span
+loops, using <code>wordspan(n)</code> from <a href="/440" target="_blank">BIP440</a>, as
+the multiplication below makes the difference from the simple byte length
+significant.</p>
 <p>Note: we do not assume Karatsuba, Toom-Cook or other optimizations.</p>
-<p>The theoretical cost is: (length(A) + length(B)) * 2 + (length(A) + 7) / 8 * ((length(B) + 7) / 8) * 8 * 12.</p>
+<p>The theoretical cost is: (length(A) + length(B)) * 2 + wordspan(A) / 8 * wordspan(B) * 12.</p>
 <p>However, benchmarking reveals that the inner loop overhead (branch
 misprediction, cache effects on small elements) is undercosted by the
 theoretical model.  A 2.25× multiplier on the quadratic term accounts for
-this, giving a cost of: (length(A) + length(B)) * 3 + (length(A) + 7) / 8 *
-((length(B) + 7) / 8) * 8 * 27.</p>
+this, giving a cost of: (length(A) + length(B)) * 3 + wordspan(A) / 8 *
+wordspan(B) * 27.</p>
 <p>This is slightly asymmetric: in practice an implementation usually finds that
 CPU pipelining means choosing B as the larger operand is optimal.</p>
 <h3>Division Cost</h3>
 <p>For division, the steps break down like so:</p>
 <ol>
 <li>
-<p>Bit shift both operands to set top bit of B (OP_UPSHIFT, without overflow for B): cost = length(A) * 6 + length(B) * 4</p>
+<p>Bit shift both operands to set top bit of B (OP_UPSHIFT, without overflow for B): cost = wordspan(A) * 6 + wordspan(B) * 4</p>
 </li>
 <li>
 <p>Trim trailing bytes.  This costs according to the number of byte removed, but since that is subtractive on future costs, we ignore it.</p>
@@ -466,34 +486,34 @@ CPU pipelining means choosing B as the larger operand is optimal.</p>
 <p>If B is longer, the answer is 0 already.  So assume A is longer from now on (or equal length).</p>
 </li>
 <li>
-<p>Compare: cost = length(A) * 2 (COMPARING)</p>
+<p>Compare: cost = wordspan(A) * 2 (COMPARING)</p>
 </li>
 <li>
-<p>Subtract: cost = length(A) * 6 (ARITH)</p>
+<p>Subtract: cost = wordspan(A) * 6 (ARITH)</p>
 </li>
 <li>
-<p>for (length(A) - NormalizedLength(B)) in words:</p>
+<p>for (wordspan(A) - NormalizedLength(B)) in words:</p>
 <ol>
 <li>Multiply word by B -&gt; scratch: cost = NormalizedLength(B) * 6 (ARITH)</li>
-<li>Subtract scratch from A: cost = length(A) * 6 (ARITH)</li>
-<li>Add B into A (no overflow): cost = length(A) * 6 (ARITH)</li>
+<li>Subtract scratch from A: cost = wordspan(A) * 6 (ARITH)</li>
+<li>Add B into A (no overflow): cost = wordspan(A) * 6 (ARITH)</li>
 <li>Shrink A by 1 word.</li>
 </ol>
 </li>
 <li>
-<p>OP_MOD: shift A down, trim trailing zeroes: cost = length(A) * 4</p>
+<p>OP_MOD: shift A down, trim trailing zeroes: cost = wordspan(A) * 4</p>
 </li>
 <li>
-<p>OP_DIV: trim trailing zeros: cost = length(A) * 4</p>
+<p>OP_DIV: trim trailing zeros: cost = wordspan(A) * 4</p>
 </li>
 </ol>
 <p>Note that the loop at step 6 shrinks A every time, so the <em>average</em> cost of
-each iteration is (NormalizedLength(B) * 6 + length(A) * 12) / 2.  The cost of
+each iteration is (NormalizedLength(B) * 6 + wordspan(A) * 12) / 2.  The cost of
 step 6 is:</p>
-<pre><code>(length(A) - NormalizedLength(B)) &#x2F; 8 * (NormalizedLength(B) * 6 + length(A) * 12) &#x2F; 2
+<pre><code>(wordspan(A) - NormalizedLength(B)) &#x2F; 8 * (NormalizedLength(B) * 6 + wordspan(A) * 12) &#x2F; 2
 </code></pre>
-<p>The worst case is when NormalizedLength(B) is 0: length(A) * length(A) * 2 / 3.</p>
-<p>The cost for all the steps is: length(A) * 18 + length(B) * 4 + length(A) * length(A) * 2 / 3.</p>
+<p>The worst case is when NormalizedLength(B) is 0: wordspan(A) * wordspan(A) * 2 / 3.</p>
+<p>The cost for all the steps is: wordspan(A) * 18 + wordspan(B) * 4 + wordspan(A) * wordspan(A) * 2 / 3.</p>
 
         </article>
     </div>
@@ -504,7 +524,7 @@ step 6 is:</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-07-16</p>
+                    <p class="font-bold">2026-07-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

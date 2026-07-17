@@ -339,8 +339,13 @@ The Combiner must remove any duplicate key-value pairs, in accordance with the s
 A Combiner must not combine two different PSBTs. PSBTs can be uniquely identified by <code>0x00</code> global transaction typed key-value pair.
 For every type that a Combiner understands, it may refuse to combine PSBTs if it detects that there will be inconsistencies or conflicts for that type in the combined PSBT.</p>
 <p>The Combiner does not need to know how to interpret scripts in order to combine PSBTs. It can do so without understanding scripts or the network serialization format.</p>
-<p>In general, the result of a Combiner combining two PSBTs from independent participants A and B should be functionally equivalent to a result obtained from processing the original PSBT by A and then B in a sequence.
-Or, for participants performing fA(psbt) and fB(psbt): Combine(fA(psbt), fB(psbt)) == fA(fB(psbt)) == fB(fA(psbt))</p>
+<p>In general, the result of a Combiner combining two PSBTs from independent participants A and B will be functionally equivalent to a result obtained from processing the original PSBT by A and then B in a sequence.
+Or, for participants performing fA(psbt) and fB(psbt) where fA() and fB() only add unique fields to the PSBT: Combine(fA(psbt), fB(psbt)) == fA(fB(psbt)) == fB(fA(psbt))
+Combining two PSBTs is commutative unless the PSBTs have conflicting fields, i.e., fields with duplicated keys but differing values.</p>
+<p>As discussed in <a href="Handling Duplicated Keys" target="_blank">Handling Duplicated Keys</a>, when a combiner is asked to combine PSBTs with conflicting fields,
+the combiner may arbitrarily choose the value for the combined PSBT from any of the original PSBTs.
+Alternatively, the combiner may refuse to combine PSBTs with conflicting content.
+In this case, the previously discussed commutative property no longer holds.</p>
 <h3>Input Finalizer</h3>
 <p>The Input Finalizer must only accept a PSBT.
 For each input, the Input Finalizer determines if the input has enough data to pass validation. If it does, it must construct the <code>0x07</code> Finalized scriptSig and <code>0x08</code> Finalized scriptWitness and place them into the input key-value map. If the input has a <code>PSBT_IN_SIGHASH_TYPE</code> field, the Input Finalizer must fail to finalize that input if any signature does not match the specified sighash type.
@@ -818,7 +823,7 @@ and suggestions for improving this proposal.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-07-16</p>
+                    <p class="font-bold">2026-07-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

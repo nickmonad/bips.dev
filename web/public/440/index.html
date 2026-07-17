@@ -127,7 +127,7 @@
   License: BSD-3-Clause
   Discussion: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;GisTcPb8Jco&#x2F;m&#x2F;8znWcWwKAQAJ
               https:&#x2F;&#x2F;delvingbitcoin.org&#x2F;t&#x2F;benchmarking-bitcoin-script-evaluation-for-the-varops-budget-great-script-restoration&#x2F;2094
-  Version: 0.2.0
+  Version: 0.2.1
 </code></pre>
 <h2>Introduction</h2>
 <h3>Abstract</h3>
@@ -227,6 +227,20 @@ cost = 50 per byte hashed.
 cost = 48 per stack element moved.
 ;OTHER
 all other operations which take a variable-length parameter: cost = 4 per byte written.</p>
+<h4>Byte Lengths and Word Spans</h4>
+<p>Cost formulas distinguish script-visible byte lengths from 64-bit word spans.
+<code>length(X)</code> is the script-visible byte length of stack element
+<code>X</code>.  <code>wordspan(n) = ((n + 7) / 8) * 8</code> is a byte count
+rounded up to the next 8-byte boundary; when the argument is a stack element,
+<code>wordspan(X)</code> means <code>wordspan(length(X))</code>.</p>
+<p>Unless a formula explicitly uses <code>wordspan(...)</code>,
+<code>length(X)</code> refers to the script-visible byte length of <code>X</code>.
+Formulas use <code>wordspan(...)</code> only when the modeled operation
+examines or writes the padded 64-bit word span, for example integer
+conversion, zero testing, numeric comparison, arithmetic with carry, or bit
+operations over words.  Costs remain based on script-visible byte lengths when the
+operation copies, hashes, limits, truncates, prepends, or otherwise produces
+exactly the script-visible bytes.</p>
 <p>Note that COMPARINGZERO is a subset of COMPARING: an implementation must examine every byte of a stack element to determine if the value is 0.  This can be done efficiently using existing comparison techniques, e.g. check the first byte, then <code>memcmp(first, first+1, len-1)</code>.</p>
 <p>Note that LENGTHCONV is used where script interprets a value as a length.  Without explicit limits on number size, such (little-endian) values might have to be examined in their entirety to ensure any trailing bytes are zero, implying a COMPARINGZERO operation after the first few bytes.</p>
 <p>The top of stack is labeled A, with successive values B, C, etc.</p>
@@ -234,9 +248,9 @@ all other operations which take a variable-length parameter: cost = 4 per byte w
 <p>The following opcodes demonstrate the approach, with an analysis of how the costs apply:</p>
 <h3>Example: Control And Simple Examination Opcodes</h3>
 <table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th><th>Reason</th></tr></thead><tbody>
-<tr><td>OP_VERIFY</td><td>length(A) * 2</td><td>COMPARINGZERO</td></tr>
-<tr><td>OP_NOT</td><td>length(A) * 2</td><td>COMPARINGZERO</td></tr>
-<tr><td>OP_0NOTEQUAL</td><td>length(A) * 2</td><td>COMPARINGZERO</td></tr>
+<tr><td>OP_VERIFY</td><td>wordspan(A) * 2</td><td>COMPARINGZERO</td></tr>
+<tr><td>OP_NOT</td><td>wordspan(A) * 2</td><td>COMPARINGZERO</td></tr>
+<tr><td>OP_0NOTEQUAL</td><td>wordspan(A) * 2</td><td>COMPARINGZERO</td></tr>
 <tr><td>OP_EQUAL</td><td>If length(A) != length(B): 0, otherwise length(A) * 2</td><td>COMPARING</td></tr>
 <tr><td>OP_EQUALVERIFY</td><td>If length(A) != length(B): 0, otherwise length(A) * 2</td><td>COMPARING</td></tr>
 </tbody></table>
@@ -248,12 +262,12 @@ all other operations which take a variable-length parameter: cost = 4 per byte w
 <tr><td>OP_2DUP</td><td>(length(A) + length(B)) * 3</td><td>COPYING</td></tr>
 <tr><td>OP_3DUP</td><td>(length(A) + length(B) + length(C)) * 3</td><td>COPYING</td></tr>
 <tr><td>OP_2OVER</td><td>(length(C) + length(D)) * 3</td><td>COPYING</td></tr>
-<tr><td>OP_IFDUP</td><td>length(A) * 5</td><td>COMPARINGZERO + COPYING</td></tr>
+<tr><td>OP_IFDUP</td><td>wordspan(A) * 2 + length(A) * 3</td><td>COMPARINGZERO + COPYING</td></tr>
 <tr><td>OP_DUP</td><td>length(A) * 3</td><td>COPYING</td></tr>
 <tr><td>OP_OVER</td><td>length(B) * 3</td><td>COPYING</td></tr>
-<tr><td>OP_PICK</td><td>length(A) * 2 + length(A-th-from-top) * 3</td><td>LENGTHCONV + COPYING</td></tr>
+<tr><td>OP_PICK</td><td>wordspan(A) * 2 + length(A-th-from-top) * 3</td><td>LENGTHCONV + COPYING</td></tr>
 <tr><td>OP_TUCK</td><td>length(A) * 3</td><td>COPYING</td></tr>
-<tr><td>OP_ROLL</td><td>length(A) * 2 + 48 * Value of A</td><td>LENGTHCONV + ROLL</td></tr>
+<tr><td>OP_ROLL</td><td>wordspan(A) * 2 + 48 * Value of A</td><td>LENGTHCONV + ROLL</td></tr>
 <tr><td></td><td></td><td></td></tr>
 </tbody></table>
 <h4>Rationale</h4>
@@ -262,21 +276,21 @@ all other operations which take a variable-length parameter: cost = 4 per byte w
 <p>A reasonable implementation (and the current bitcoind C++ implementation) is to use 24 bytes for each stack element (a pointer, a size and a maximum capacity), and this value works reasonably in practice.</p>
 <h3>Example: Comparison Operators</h3>
 <table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th></tr></thead><tbody>
-<tr><td>OP_BOOLAND</td><td>(length(A) + length(B)) * 2</td></tr>
-<tr><td>OP_BOOLOR</td><td>(length(A) + length(B)) * 2</td></tr>
-<tr><td>OP_NUMEQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
-<tr><td>OP_NUMEQUALVERIFY</td><td>MAX(length(A), length(B)) * 2</td></tr>
-<tr><td>OP_NUMNOTEQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
-<tr><td>OP_LESSTHAN</td><td>MAX(length(A), length(B)) * 2</td></tr>
-<tr><td>OP_GREATERTHAN</td><td>MAX(length(A), length(B)) * 2</td></tr>
-<tr><td>OP_LESSTHANOREQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
-<tr><td>OP_GREATERTHANOREQUAL</td><td>MAX(length(A), length(B)) * 2</td></tr>
-<tr><td>OP_MIN</td><td>MAX(length(A), length(B)) * 4</td></tr>
-<tr><td>OP_MAX</td><td>MAX(length(A), length(B)) * 4</td></tr>
-<tr><td>OP_WITHIN</td><td>(MAX(length(C), length(B)) + MAX(length(C), length(A))) * 2</td></tr>
+<tr><td>OP_BOOLAND</td><td>(wordspan(A) + wordspan(B)) * 2</td></tr>
+<tr><td>OP_BOOLOR</td><td>(wordspan(A) + wordspan(B)) * 2</td></tr>
+<tr><td>OP_NUMEQUAL</td><td>MAX(wordspan(A), wordspan(B)) * 2</td></tr>
+<tr><td>OP_NUMEQUALVERIFY</td><td>MAX(wordspan(A), wordspan(B)) * 2</td></tr>
+<tr><td>OP_NUMNOTEQUAL</td><td>MAX(wordspan(A), wordspan(B)) * 2</td></tr>
+<tr><td>OP_LESSTHAN</td><td>MAX(wordspan(A), wordspan(B)) * 2</td></tr>
+<tr><td>OP_GREATERTHAN</td><td>MAX(wordspan(A), wordspan(B)) * 2</td></tr>
+<tr><td>OP_LESSTHANOREQUAL</td><td>MAX(wordspan(A), wordspan(B)) * 2</td></tr>
+<tr><td>OP_GREATERTHANOREQUAL</td><td>MAX(wordspan(A), wordspan(B)) * 2</td></tr>
+<tr><td>OP_MIN</td><td>MAX(wordspan(A), wordspan(B)) * 4</td></tr>
+<tr><td>OP_MAX</td><td>MAX(wordspan(A), wordspan(B)) * 4</td></tr>
+<tr><td>OP_WITHIN</td><td>(MAX(wordspan(C), wordspan(B)) + MAX(wordspan(C), wordspan(A))) * 2</td></tr>
 </tbody></table>
 <h4>Rationale</h4>
-<p>Numerical comparison in little-endian numbers involves a byte-by-byte comparison, then if one is longer, checking that the remainder is all zero bytes.</p>
+<p>Numerical comparison in little-endian numbers involves comparing the padded word spans, then if one is longer, checking that the remainder is all zero.</p>
 <p>However, OP_MAX and OP_MIN also normalize their result, which means they can't use the optimized comparison routine but must instead track the final non-zero byte to perform truncation.</p>
 <h3>Example: Hash Operators</h3>
 <table><thead><tr><th>Opcode</th><th>Varops Budget Cost</th><th>Reason</th></tr></thead><tbody>
@@ -293,6 +307,7 @@ all other operations which take a variable-length parameter: cost = 4 per byte w
 </code></pre>
 <h2>Changelog</h2>
 <ul>
+<li>0.2.1: 2026-06-15: define wordspan notation and clarify byte-length versus word-span costs.</li>
 <li>0.2.0: 2026-02-21: increase in cost for hashing and copying based on benchmark results.</li>
 <li>0.1.0: 2025-09-27: first public posting</li>
 </ul>
@@ -320,7 +335,7 @@ all other operations which take a variable-length parameter: cost = 4 per byte w
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-07-16</p>
+                    <p class="font-bold">2026-07-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
