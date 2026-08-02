@@ -126,7 +126,7 @@
   Type: Specification
   Assigned: 2024-12-18
   License: BSD-3-Clause
-  Version: 0.12.0
+  Version: 0.12.1
   Requires: 340, 341, 342
 </code></pre>
 <h2>Introduction</h2>
@@ -299,7 +299,7 @@ A P2MR output is then a SegWit version 2 byte followed by the Merkle root of the
 <pre><code>[count] (1 byte), # Number of elements in the witness
 [size] signature (1 + 64 bytes = 65 bytes),
 leaf script = [size] [OP_PUSHBYTES_32, 32-byte public key, OP_CHECKSIG] (1 + 1 + 32 + 1 bytes = 35 bytes),
-control block = [size] [control byte] [merkle path (empty)] (1 + 1 + 32 bytes = 34 bytes)
+control block = [size] [control byte] [merkle path] (1 + 1 + 32 bytes = 34 bytes)
 </code></pre>
 <p>P2TR key path spend witness (66 bytes):</p>
 <pre><code>[count] (1 byte), # Number of elements in the witness
@@ -332,9 +332,9 @@ control block = [size] [control byte] [Merkle path] (1 + 1 + 32*m = 2 + 32*m byt
 <p>Quantum-resistant signature algorithms (e.g. ML-DSA or SLH-DSA) offer different levels of protection and should be scrutinized before use. We are currently researching options for the potential proposal of post-quantum signatures into Bitcoin and encourage others to engage in this research as well.</p>
 <p>We also imagine the possibility of introducing multiple post-quantum signatures for redundancy. Balancing the risks of additional complexity with the benefits of signature-type redundancy will be the challenge here.</p>
 <h2>Test Vectors and Reference Code</h2>
-<p>Test vector data for creation of P2MR UTXOs can be found <a href="https://github.com/bitcoin/bips/blob/master/bip-0360/ref-impl/common/tests/data/P2MR_construction.json" target="_blank">here</a>.</p>
+<p>Test vector data for creation of P2MR UTXOs can be found <a href="https://github.com/bitcoin/bips/blob/master/bip-0360/ref-impl/common/tests/data/p2mr_construction.json" target="_blank">here</a>.</p>
 <p>These test vectors build off of the test vectors for <a href="/341" target="_blank">BIP 341</a> (Taproot). One important distinction is that the P2MR test vectors do not include keypath spend scenarios.</p>
-<p>Also included are test vectors in <a href="https://github.com/bitcoin/bips/tree/master/bip-0360/ref-impl/rust" target="_blank">rust implementation</a> and <a href="https://github.com/bitcoin/bips/tree/master/bip-0360/ref-impl/python" target="_blank">python implementation</a>. One of these tests demonstrates a tapscript that requires a secp256k1 signature to spend the P2MR UTXO (modeled after one of the extremely valuable examples provided by <a href="https://learnmeabitcoin.com/technical/upgrades/taproot/#example-3-script-path-spend-signature" target="_blank">this Taproot script path spend example</a>. Similar to BIP 341 test vectors, all signatures are created with an all-zero (0x0000...0000) <a href="/340" target="_blank">BIP 340</a> auxiliary randomness array.</p>
+<p>Also included is a <a href="https://github.com/bitcoin/bips/tree/master/bip-0360/ref-impl/python" target="_blank">python implementation</a>. One of its tests demonstrates a tapscript that requires a secp256k1 signature to spend the P2MR UTXO (modeled after one of the extremely valuable examples provided by <a href="https://learnmeabitcoin.com/technical/upgrades/taproot/#example-3-script-path-spend-signature" target="_blank">this Taproot script path spend example</a>. Similar to BIP 341 test vectors, all signatures are created with an all-zero (0x0000...0000) <a href="/340" target="_blank">BIP 340</a> auxiliary randomness array.</p>
 <h2>Related Work</h2>
 <p>Below we attempt to summarize some of the ideas discussed on the Bitcoin Development Mailing List that relate to P2MR.</p>
 <p>The idea of Taproot with key path spend removed has been discussed a number of times in the Bitcoin community.</p>
@@ -421,7 +421,7 @@ control block = [size] [control byte] [Merkle path] (1 + 1 + 32*m = 2 + 32*m byt
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-08-01</p>
+                    <p class="font-bold">2026-08-02</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
