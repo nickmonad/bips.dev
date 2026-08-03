@@ -315,7 +315,7 @@ leaf script = [size] [OP_PUSHBYTES_32, 32-byte public key, OP_CHECKSIG] (34 + 1 
 control block = [size] [control byte] [Merkle path] (1 + 1 + 32*m = 2 + 32*m bytes)
 </code></pre>
 <h4>Comparison with P2TR script path spend</h4>
-<p>A P2MR witness will be smaller than the witness to an equivalent P2TR script path spend. This is because P2MR does not require inclusion of an internal public key in the control block to unlock and spend an output. For this reason, a P2MR witness will always be 32 bytes smaller than an equivalent P2TR script path spend witness.</p>
+<p>A P2MR witness will be smaller than the witness to an equivalent P2TR script path spend. This is because P2MR does not require inclusion of an internal public key in the control block to unlock and spend an output. For this reason, a P2MR witness will be 32 bytes smaller than an equivalent P2TR script path spend witness, except at <em>m = 7</em>, where the two control blocks fall on opposite sides of the compact size boundary and the saving is 34 bytes.</p>
 <h2>Performance Impact</h2>
 <p>P2MR is slightly more computationally performant than P2TR script path spends, as the operations to spend a P2MR output is a strict subset of the operations needed to perform a script path spend on a P2TR output.</p>
 <h2>Backward Compatibility</h2>

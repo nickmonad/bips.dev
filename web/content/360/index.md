@@ -312,7 +312,7 @@ control block = [size] [control byte] [Merkle path] (1 + 1 + 32*m = 2 + 32*m byt
 <h4>Comparison with P2TR script path spend</h4>
 
 
-A P2MR witness will be smaller than the witness to an equivalent P2TR script path spend. This is because P2MR does not require inclusion of an internal public key in the control block to unlock and spend an output. For this reason, a P2MR witness will always be 32 bytes smaller than an equivalent P2TR script path spend witness.
+A P2MR witness will be smaller than the witness to an equivalent P2TR script path spend. This is because P2MR does not require inclusion of an internal public key in the control block to unlock and spend an output. For this reason, a P2MR witness will be 32 bytes smaller than an equivalent P2TR script path spend witness, except at _m = 7_, where the two control blocks fall on opposite sides of the compact size boundary and the saving is 34 bytes.
 
 <h2>Performance Impact</h2>
 

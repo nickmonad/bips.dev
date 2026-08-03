@@ -184,6 +184,8 @@ Any existing BIP 21 implementation should automatically be fully compliant with 
 <h3> Examples </h3>
 
 
+Note: The addresses used in these examples are intentionally invalid to prevent accidental transactions.
+
 <h4> URIs </h4>
 
 
@@ -261,20 +263,20 @@ Some future version that has variables which are (currently) not understood but 
 
 Multiple segwit addresses may be included for various versions of segwit, note that the human-readable part for all of them is `bc`
 ```
- bitcoin:?bc=bc1qufgy354j3kmvuch987xe4s40836x3h0lg8f5n2&bc=bc1p5swkugezn97763tl0yty6556856uug0q6jflljvep9m4p7339x5qzyrh4g
+ bitcoin:?bc=bc1qufgy354j3kmvuch987xe4s40836x3h0lg8f5nq&bc=bc1p5swkugezn97763tl0yty6556856uug0q6jflljvep9m4p7339x5qzyrh4q
 ```
 
 
 Many QR codes utilize all-uppercase URIs, which should be handled fine
 ```
- BITCOIN:BC1QUFGY354J3KMVUCH987XE4S40836X3H0LG8F5N2?BC=BC1P5SWKUGEZN97763TL0YTY6556856UUG0Q6JFLLJVEP9M4P7339X5QZYRH4G
- BITCOIN:?BC=BC1QUFGY354J3KMVUCH987XE4S40836X3H0LG8F5N2&BC=BC1P5SWKUGEZN97763TL0YTY6556856UUG0Q6JFLLJVEP9M4P7339X5QZYRH4G
+ BITCOIN:BC1QUFGY354J3KMVUCH987XE4S40836X3H0LG8F5NQ?BC=BC1P5SWKUGEZN97763TL0YTY6556856UUG0Q6JFLLJVEP9M4P7339X5QZYRH4Q
+ BITCOIN:?BC=BC1QUFGY354J3KMVUCH987XE4S40836X3H0LG8F5NQ&BC=BC1P5SWKUGEZN97763TL0YTY6556856UUG0Q6JFLLJVEP9M4P7339X5QZYRH4Q
 ```
 
 
 A testnet segwit addresses must be included in the `tb` parameter
 ```
- bitcoin:?tb=tb1qghfhmd4zh7ncpmxl3qzhmq566jk8ckq4gafnmg
+ bitcoin:?tb=tb1qghfhmd4zh7ncpmxl3qzhmq566jk8ckq4gafnmq
 ```
 
 
@@ -309,7 +311,7 @@ Multiple proof of payment URIs must not appear, even if they are sometimes prefi
 
 A testnet segwit addresses must be included in the `tb` parameter, not the `bc` parameter.
 ```
- bitcoin:?bc=tb1qghfhmd4zh7ncpmxl3qzhmq566jk8ckq4gafnmg
+ bitcoin:?bc=tb1qghfhmd4zh7ncpmxl3qzhmq566jk8ckq4gafnmq
 ```
 
 
