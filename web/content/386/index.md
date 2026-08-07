@@ -124,6 +124,7 @@ Valid descriptors followed by the scripts they produce. Descriptors involving de
     *  `512017cf18db381d836d8923b1bdb246cfcd818da1a9f0e6e7907f187f0b2f937754`
 *  `tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd,{pk(xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334/0),{{pk(xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL),pk(02df12b7035bdac8e3bab862a3a83d06ea6b17b6753d52edecba9be46f5d09e076)},pk(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1)}})`
     *  `512071fff39599a7b78bc02623cbe814efebf1a404f5d8ad34ea80f213bd8943f574`
+*  `tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd,pkh(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1))`
 
 
 Invalid Descriptors
@@ -132,7 +133,6 @@ Invalid Descriptors
 *  Uncompressed public key: `tr(04a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235)`
 *  `tr()` nested in `wsh`: `wsh(tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))`
 *  `tr()` nested in `sh`: `sh(tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd))`
-*  `pkh()` nested in `tr`: `tr(a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd, pkh(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1))`
 
 
 <h2>Backwards Compatibility</h2>
@@ -143,8 +143,9 @@ As these are a set of wholly new descriptors, they are not compatible with any i
 However the scripts produced are standard scripts so existing software are likely to be familiar with them.
 
 Tree Expressions are largely incompatible with existing script expressions due to the restrictions in those expressions.
-As of 2021-06-27, the only allowed script expression that can be used in a tree expression is `pk()`.
-However there will be future BIPs that specify script expressions that can be used in tree expressions.
+Of the script expressions that existed when this BIP was written, only `pk()` can be used in a tree expression.
+Script expressions specified since then that can be used in a tree expression are the Miniscript expressions of <a href="bip-0379.md" target="_blank">379</a>, which
+include a `pkh()` fragment, and the `multi_a()` and `sortedmulti_a()` expressions of <a href="/387" target="_blank">387</a>.
 
 <h2>Reference Implementation</h2>
 

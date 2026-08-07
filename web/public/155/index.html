@@ -124,7 +124,7 @@
   Type: Specification
   Assigned: 2019-02-27
   License: BSD-2-Clause
-  Version: 2.0.0
+  Version: 2.1.0
 </code></pre>
 <h2>Introduction</h2>
 <h3>Abstract</h3>
@@ -176,6 +176,7 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 <p>Clients SHOULD NOT gossip addresses from unknown networks because they have no means to validate those addresses and so can be tricked to gossip invalid addresses.</p>
 <p>Further network ID numbers MUST be reserved in a new BIP document.</p>
 <p>Clients SHOULD reject messages that contain addresses that have a different length than specified in this table for a specific network ID, as these are meaningless.</p>
+<p>Some ranges of the <code>IPV6</code> address space are reserved for embedding addresses of other networks (for example the IPv4-in-IPv6 range <code>::ffff:0:0/96</code>). Such addresses already have a canonical encoding under their own network ID and MUST NOT be sent with the <code>IPV6</code> network ID. Clients SHOULD ignore <code>IPV6</code> addresses that fall into these reserved ranges on receive, since the same address received under two network IDs would otherwise be treated as two distinct peers.</p>
 <p>See the appendices for the address encodings to be used for the various networks.</p>
 <h2>Signaling support and compatibility</h2>
 <p>Introduce a new message type <code>sendaddrv2</code>. Sending such a message indicates that a node can understand and prefers to receive <code>addrv2</code> messages instead of <code>addr</code> messages. I.e. "Send me addrv2". Sending or not sending this message does not imply any preference with respect to receiving unrequested address messages.</p>
@@ -219,6 +220,11 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
 <p>Yggdrasil addresses are simply IPv6 addresses in the <code>0200::/7</code> range<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup>. They MUST be sent with the <code>YGGDRASIL</code> network ID.</p>
 <h2> Changelog </h2>
 <ul>
+<li>2.1.0 (2026-08-03):
+<ul>
+<li>Document that IPv4-in-IPv6 range MUST NOT be sent with the IPV6 network ID and SHOULD be ignored on receive.</li>
+</ul>
+</li>
 <li>2.0.0 (2025-10-01):
 <ul>
 <li>Add note that Tor v2 is no longer operational.</li>
@@ -249,7 +255,7 @@ Clients SHOULD reject messages with longer addresses, irrespective of the networ
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-08-06</p>
+                    <p class="font-bold">2026-08-07</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>

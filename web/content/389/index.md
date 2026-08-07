@@ -60,12 +60,12 @@ For extended keys and their derivations paths in a Key Expression, BIP 380 state
 This is modified to state:
 
 *  `xpub` encoded extended public key or `xprv` encoded extended private key (as defined in BIP 32)
-    *  Followed by zero or more `/NUM` (may be followed by `h`, `H`, or `'` to indicate a hardened step) path elements indicating BIP 32 derivation steps to be taken after the given extended key.
-    *  Followed by zero or one `/<NUM;NUM` (each `NUM` may be followed by `h`, `H`, or `'` to indicate a hardened step) path element indicating a tuple of BIP 32 derivation steps to be taken after the given extended key.
-        *  Followed by zero or more `;NUM` (may be followed by `h`, `H`, or `'` to indicate a hardened step) additional tuple values of BIP 32 derivation steps
+    *  Followed by zero or more `/NUM` (may be followed by `h` or `'` to indicate a hardened step) path elements indicating BIP 32 derivation steps to be taken after the given extended key.
+    *  Followed by zero or one `/<NUM;NUM` (each `NUM` may be followed by `h` or `'` to indicate a hardened step) path element indicating a tuple of BIP 32 derivation steps to be taken after the given extended key.
+        *  Followed by zero or more `;NUM` (may be followed by `h` or `'` to indicate a hardened step) additional tuple values of BIP 32 derivation steps
         *  Followed by a single `>/`
-    *  Followed by zero or more `/NUM` (may be followed by `h`, `H`, or `'` to indicate a hardened step) path elements indicating BIP 32 derivation steps to be taken after the given extended key.
-    *  Optionally followed by a single `/*` (may be followed by `h`, `H`, or `'` to indicate a hardened step) final step to denote all direct unhardened or hardened children.
+    *  Followed by zero or more `/NUM` (may be followed by `h` or `'` to indicate a hardened step) path elements indicating BIP 32 derivation steps to be taken after the given extended key.
+    *  Optionally followed by a single `/*` (may be followed by `h` or `'` to indicate a hardened step) final step to denote all direct unhardened or hardened children.
 
 
 When a `/<NUM;NUM;...;NUM>` is encountered, parsers should account for a presence of multiple descriptors where the first descriptor uses the first `NUM`, and a second descriptor uses the second `NUM`, and so on, until each `NUM` is accounted for in the production of public keys, scripts, and addresses, as well as descriptor import and export operations.
@@ -89,7 +89,7 @@ Valid multipath descriptors followed by the descriptors they expand into as sub-
 *  `pkh(xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/<2147483647h;0>/0)`
     *  `pkh(xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/2147483647h/0)`
     *  `pkh(xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U/0/0)`
-*  `wpkh([ffffffff/13h]xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/<1;3>/2/*`
+*  `wpkh([ffffffff/13h]xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/<1;3>/2/*)`
     *  `wpkh([ffffffff/13h]xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/1/2/*)`
     *  `wpkh([ffffffff/13h]xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH/3/2/*)`
 *  `multi(2,xpub6ERApfZwUNrhLCkDtcHTcxd75RbzS1ed54G1LkBUHQVHQKqhMkhgbmJbZRkrgZw4koxb5JaHWkY4ALHY2grBGRjaDMzQLcgJvLJuZZvRcEL/<1;2>/*,xpub68NZiKmJWnxxS6aaHmn81bvJeTESw724CRDs6HbuccFQN9Ku14VQrADWgqbhhTHBaohPX4CjNLf9fq9MYo6oDaPPLPxSb7gwQN3ih19Zm4Y/<3;4>/0/*)`
