@@ -44,7 +44,7 @@ Blocks during a temporary, one-year deployment are checked with these additional
 
 1.  New output scriptPubKeys exceeding 34 bytes are invalid, unless the first opcode is OP_RETURN, in which case up to 83 bytes are valid.
 1.  OP_PUSHDATA* payloads and <a href="#script-argument-witness-items" target="_blank">script argument witness items</a> exceeding 256 bytes are invalid, except for the redeemScript push in BIP16 scriptSigs.
-1.  Spending undefined witness (or Tapleaf) versions (ie, not Witness v0/BIP 141, Taproot/BIP 341, or P2A) is invalid. (Creating outputs with undefined witness versions is still valid.)
+1.  Spending undefined witness (or Tapleaf) versions (ie, anything not listed under <a href="#defined-witness-versions" target="_blank">Defined witness versions</a> below) is invalid. (Creating outputs with undefined witness versions is still valid.)
 1.  Witness stacks with a Taproot annex are invalid.
 1.  Taproot control blocks larger than 257 bytes (a merkle tree with 128 script leaves) are invalid.
 1.  Tapscripts including OP_SUCCESS* opcodes anywhere (even unexecuted) are invalid.
@@ -58,6 +58,19 @@ Blocks during a temporary, one-year deployment are checked with these additional
 This grandfathering ensures that no existing coins can be frozen or rendered unspendable by this softfork: any UTXO confirmed before activation can always be spent exactly as it could before, throughout the entire deployment.
 The new rules apply only to UTXOs created at or after the activation height.
 Once the softfork expires, UTXOs of all heights are once again unrestricted.
+
+<span id="defined-witness-versions"></span>
+<h3>Defined witness versions</h3>
+
+
+For the purposes of rule 3, these are the witness versions (and the one Tapleaf version) that are defined as of this BIP:
+
+*  **Witness v0** with a 20-byte program (P2WPKH) or a 32-byte program (P2WSH), as defined in <a href="/141" target="_blank">BIP 141</a>. Other v0 program lengths are already invalid under BIP 141 itself.
+*  **Witness v1** with a 32-byte program (Taproot/P2TR), as defined in <a href="/341" target="_blank">BIP 341</a>. In a script path spend, the only defined Tapleaf version is 0xc0 (Tapscript), as defined in <a href="/342" target="_blank">BIP 342</a>.
+
+
+*  **Witness v1** with the 2-byte program 0x4e73 (P2A, as defined in <a href="/433" target="_blank">BIP 433</a>), and only when spent with an empty witness stack.
+
 
 <h3>GetBlockTemplate</h3>
 
