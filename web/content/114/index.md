@@ -451,6 +451,11 @@ uint256 ComputeMerkleRootFromBranch(const uint256& leaf, const std::vector<uint2
 * <a href="/141" target="_blank">BIP141 Segregated Witness (Consensus layer)</a>
 
 
+<h2> Footnotes </h2>
+
+
+1. [^](#cite_ref_1) If the version byte is 1, but the witness program is not 32 bytes, no further interpretation of the witness program or witness stack happens. This is reserved for future extensions.
+2. [^](#cite_ref_2) In BIPXXX, it is proposed that CHECKLOCKTIMEVERIFY and CHECKSEQUENCEVERIFY will pop the top stack item
 <h2> Copyright </h2>
 
 This document is placed in the public domain.

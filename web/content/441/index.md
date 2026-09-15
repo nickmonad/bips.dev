@@ -454,6 +454,10 @@ Work in progress:
 *  0.1.0: 2025-09-27: first public posting
 
 
+<h2>Footnotes</h2>
+
+
+1. [^](#cite_ref_1) There seems little reason to allow large hashing with SHA1 and RIPEMD, and they are not as optimized as SHA256, so we restrict their usage to the older byte limit.
 <h2>Thanks</h2>
 
 

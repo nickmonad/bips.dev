@@ -468,6 +468,12 @@ You may also find example code of CCD in action <a href="https://github.com/jurv
 *  **0.1.0** (2025-10-14): Publication of draft BIP
 
 
+<h2> Footnotes </h2>
+
+
+1. [^](#cite_ref_1) The random data is hashed (with a unique tag) as a precaution against situations where the randomness may be correlated with the secret signing key itself. It is xored with the secret key (rather than combined with it in a hash) to reduce the number of operations exposed to the actual secret key.
+2. [^](#cite_ref_2)  This helps prevent accidental nonce reuse. A zeroed _blindsecnonce_ MUST cause subsequent _BlindSign_ calls to fail.
+3. [^](#cite_ref_3)  This check holds except with negligible probability.
 <h2> Acknowledgements </h2>
 
 *  Arik Sosman and Wilmer Paulino for the initial discussions and validation of this idea.  
