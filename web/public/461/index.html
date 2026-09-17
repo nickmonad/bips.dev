@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 461: Deterministic ECDSA Signatures" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 461: Deterministic ECDSA Signatures" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 461: Deterministic ECDSA Signatures</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 461: Deterministic ECDSA Signatures</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2026-08-12</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0461.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 461
+  Layer: Applications
+  Title: Deterministic ECDSA Signatures
+  Authors: Liam Gilligan &lt;liamdgilligan@gmail.com&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2026-08-12
+  License: CC0-1.0
+  Discussion: 2026-06-09: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;boEZRlqczvw
+</code></pre>
+<h2 id="Abstract">Abstract</h2>
+<p>This document specifies an ECDSA signing algorithm whose output is fully determined by the secret key and the message being signed. Its signatures are at most 70 bytes when DER encoded, rather than 72 for an arbitrary valid ECDSA signature.</p>
+<h2 id="Motivation">Motivation</h2>
+<p>Under current consensus rules, a valid ECDSA signature of any message under any key has two degrees of freedom: the signer's free choice of nonce fixes <em>r</em><sup class="footnote-reference"><a href="#rchoice">1</a></sup>, and two possible values of <em>s</em> follow from a specific <em>r</em>. A malicious signer can exploit that freedom to generate signatures that leak key material<sup class="footnote-reference"><a href="#darkskippy">2</a></sup>, but a standardized, deterministic signing algorithm removes that freedom. Signers expected to comply with such an algorithm cannot leak key material without risking detection: a key holder can load the same secret key into two independent signers, sign the same message on both, and compare the results, as any difference reveals that at least one signer is not following this specification.</p>
+<p>The standardization of the deterministic algorithm is what enables leak detection, as a nonstandard algorithm has no other implementations to cross-check against.</p>
+<h2 id="Definitions">Definitions</h2>
+<ul>
+<li>The value <em>(n - 1) / 2</em> is the <strong>half curve order</strong>, where <em>n</em> is the order of the secp256k1 curve.</li>
+<li>A given signature <em>(r, s)</em> is considered <strong>low-<em>r</em></strong> when <em>r &lt; 2<sup>255</sup></em>, and is otherwise considered <strong>high-<em>r</em></strong>.</li>
+<li>A given signature <em>(r, s)</em> is considered <strong>low-<em>s</em></strong> when <em>s</em> is less than or equal to the half curve order, and is otherwise considered <strong>high-<em>s</em></strong>.</li>
+<li><strong>Low-<em>r</em> grinding</strong> is the process of regenerating a signature with a new nonce until it is a low-<em>r</em> signature.</li>
+<li><strong>Low-<em>s</em> normalization</strong> is the process of replacing a signature <em>(r, s)</em> with the equivalent signature <em>(r, n - s)</em> if <em>(r, s)</em> is high-<em>s</em>.<sup class="footnote-reference"><a href="#lowsnormalization">3</a></sup></li>
+</ul>
+<h2 id="Specification">Specification</h2>
+<h3 id="Notation">Notation</h3>
+<p>The following conventions are used, with constants as defined for <a rel="noopener" target="_blank" href="https://www.secg.org/sec2-v2.pdf">secp256k1</a>.</p>
+<ul>
+<li>
+<p>Lowercase variables represent integers, byte arrays, or signatures:</p>
+<ul>
+<li>The constant <em>p</em> refers to the field size, <em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F</em>.</li>
+<li>The constant <em>n</em> refers to the curve order, <em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141</em>.</li>
+<li>The constant <em>half_order</em> refers to the half curve order, <em>(n - 1) / 2</em>.</li>
+<li>The constant <em>empty_bytestring</em> refers to the byte array of length zero.</li>
+<li>An ECDSA signature <em>sig</em> can be represented literally by an integer pair <em>(r, s)</em>, with <em>0 &lt; r, s &lt; n</em>.</li>
+</ul>
+</li>
+<li>
+<p>Points on the curve with equation <em>y<sup>2</sup> = x<sup>3</sup> + 7</em> over the integers modulo <em>p</em>:</p>
+<ul>
+<li>The point at infinity is the identity element of the curve group, and is the only point without X and Y coordinates.</li>
+<li>The function <em>is_infinite(P)</em> returns whether or not <em>P</em> is the point at infinity.</li>
+<li><em>x(P)</em> and <em>y(P)</em> are integers in the range <em>0..p-1</em> and refer to the X and Y coordinates of a point <em>P</em> (assuming it is not infinity).</li>
+<li>The constant <em>G</em> refers to the base point, for which <em>x(G) = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</em> and <em>y(G) = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8</em>.</li>
+<li>Addition of points refers to the usual <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Elliptic_curve#The_group_law">elliptic curve group operation</a>.</li>
+<li><a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication">Multiplication (⋅) of an integer and a point</a> refers to the repeated application of the group operation.</li>
+</ul>
+</li>
+<li>
+<p>Functions and operations:</p>
+<ul>
+<li><em>||</em> refers to byte array concatenation.</li>
+<li>The function <em>int(x)</em>, where <em>x</em> is a 32-byte array, returns the 256-bit unsigned integer whose most significant byte first encoding is <em>x</em>.</li>
+<li>The function <em>bytes(l, x)</em>, where <em>x</em> is an integer, returns the <em>l</em>-byte encoding of <em>x</em>, most significant byte first.</li>
+<li>The function <em>bytes_le(l, x)</em>, where <em>x</em> is an integer, returns the <em>l</em>-byte encoding of <em>x</em>, least significant byte first.</li>
+<li>The function <em>fill_bytes(l, x)</em>, where <em>x</em> is a byte, returns the length <em>l</em> byte array in which every byte is <em>x</em>.</li>
+<li>The function <em>hmac(k, m)</em>, where <em>k</em> and <em>m</em> are byte arrays, returns HMAC-SHA256<sup class="footnote-reference"><a href="#hmac">4</a></sup> with key <em>k</em> over message <em>m</em>.</li>
+<li><em>x<sup>-1</sup></em> refers to the modular multiplicative inverse of the integer <em>x</em> modulo <em>n</em>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Algorithms">Algorithms</h3>
+<p>This section specifies the following algorithms:</p>
+<ul>
+<li><em>nonce_rfc6979(sk, msghash, extra, count)</em> derives a nonce deterministically.</li>
+<li><em>sign(sk, msghash, extra)</em> produces an ECDSA signature under a given additional data input.</li>
+<li><em>verify(sig, P, msghash)</em> checks an ECDSA signature.</li>
+<li><em>DeterministicSign(sk, msghash)</em> grinds <em>sign</em> until <em>r</em> is low and normalizes <em>s</em>.</li>
+</ul>
+<h4 id="Nonce_Derivation">Nonce Derivation</h4>
+<p>Input:</p>
+<ul>
+<li>The secret key <em>sk</em>: a 32-byte array</li>
+<li>The message hash <em>msghash</em>: a 32-byte array</li>
+<li>The additional data <em>extra</em>: a byte array, possibly empty</li>
+<li>The attempt counter <em>count</em>: an integer, <em>count &gt;= 0</em></li>
+</ul>
+<p>The algorithm <em>nonce_rfc6979(sk, msghash, extra, count)</em> is defined as:<sup class="footnote-reference"><a href="#kv">5</a></sup></p>
+<ul>
+<li>Let <em>h = bytes(32, int(msghash) mod n)</em><sup class="footnote-reference"><a href="#bits2octets">6</a></sup></li>
+<li>Let <em>V = fill_bytes(32, 0x01)</em></li>
+<li>Let <em>K = fill_bytes(32, 0x00)</em></li>
+<li>Let <em>K = hmac(K, V || 0x00 || sk || h || extra)</em></li>
+<li>Let <em>V = hmac(K, V)</em></li>
+<li>Let <em>K = hmac(K, V || 0x01 || sk || h || extra)</em></li>
+<li>Let <em>V = hmac(K, V)</em></li>
+<li>Let <em>V = hmac(K, V)</em></li>
+<li>For <em>j = 1, ..., count</em>:
+<ul>
+<li>Let <em>K = hmac(K, V || 0x00)</em></li>
+<li>Let <em>V = hmac(K, V)</em></li>
+<li>Let <em>V = hmac(K, V)</em></li>
+</ul>
+</li>
+<li>Return <em>V</em></li>
+</ul>
+<h4 id="ECDSA_Signing">ECDSA Signing</h4>
+<p>Input:</p>
+<ul>
+<li>The secret key <em>sk</em>: a 32-byte array</li>
+<li>The message hash <em>msghash</em>: a 32-byte array</li>
+<li>The additional data <em>extra</em>: a byte array, possibly empty</li>
+</ul>
+<p>The algorithm <em>sign(sk, msghash, extra)</em> is defined as:</p>
+<ul>
+<li>Let <em>d = int(sk)</em></li>
+<li>Fail if <em>d = 0</em> or <em>d &gt;= n</em></li>
+<li>For <em>count = 0, 1, ..., 2<sup>32</sup> - 1</em>:<sup class="footnote-reference"><a href="#attempt">7</a></sup>
+<ul>
+<li>Let <em>nonce = nonce_rfc6979(sk, msghash, extra, count)</em></li>
+<li>Let <em>k = int(nonce)</em></li>
+<li>Continue if <em>k = 0</em> or <em>k &gt;= n</em></li>
+<li>Let <em>R = k⋅G</em></li>
+<li>Let <em>r = x(R) mod n</em></li>
+<li>Continue if <em>r = 0</em></li>
+<li>Let <em>s = k<sup>-1</sup> * (d * r + int(msghash)) mod n</em></li>
+<li>Continue if <em>s = 0</em></li>
+<li>Return <em>(r, s)</em></li>
+</ul>
+</li>
+<li>Fail</li>
+</ul>
+<h4 id="ECDSA_Verification">ECDSA Verification</h4>
+<p>Input:</p>
+<ul>
+<li>The signature <em>sig</em>: <em>(r, s)</em></li>
+<li>The public key <em>P</em>: a point</li>
+<li>The message hash <em>msghash</em>: a 32-byte array</li>
+</ul>
+<p>The algorithm <em>verify(sig, P, msghash)</em> is defined as:</p>
+<ul>
+<li>If <em>is_infinite(P)</em>:
+<ul>
+<li>Return <em>false</em></li>
+</ul>
+</li>
+<li>If <em>y(P)<sup>2</sup> ≠ x(P)<sup>3</sup> + 7 mod p</em>:
+<ul>
+<li>Return <em>false</em></li>
+</ul>
+</li>
+<li>Let <em>(r, s) = sig</em></li>
+<li>If <em>r &lt;= 0</em> or <em>r &gt;= n</em>:
+<ul>
+<li>Return <em>false</em></li>
+</ul>
+</li>
+<li>If <em>s &lt;= 0</em> or <em>s &gt;= n</em>:
+<ul>
+<li>Return <em>false</em></li>
+</ul>
+</li>
+<li>Let <em>w = s<sup>-1</sup></em></li>
+<li>Let <em>u<sub>1</sub> = w * int(msghash) mod n</em></li>
+<li>Let <em>u<sub>2</sub> = w * r mod n</em></li>
+<li>Let <em>R = u<sub>1</sub>⋅G + u<sub>2</sub>⋅P</em></li>
+<li>If <em>is_infinite(R)</em>:
+<ul>
+<li>Return <em>false</em></li>
+</ul>
+</li>
+<li>If <em>x(R) mod n ≠ r</em>:
+<ul>
+<li>Return <em>false</em></li>
+</ul>
+</li>
+<li>Return <em>true</em></li>
+</ul>
+<h4 id="Deterministic_Signing">Deterministic Signing</h4>
+<p>Input:</p>
+<ul>
+<li>The secret key <em>sk</em>: a 32-byte array</li>
+<li>The message hash <em>msghash</em>: a 32-byte array</li>
+</ul>
+<p>The algorithm <em>DeterministicSign(sk, msghash)</em> is defined as follows. The <strong>grind counter</strong> is <em>0</em> for the initial call to <em>sign</em>, which supplies no additional data, and takes the value of the loop variable <em>i</em> for every subsequent call.</p>
+<ul>
+<li>Fail if <em>int(sk) = 0</em> or <em>int(sk) &gt;= n</em></li>
+<li>Let <em>(r, s) = sign(sk, msghash, empty_bytestring)</em><sup class="footnote-reference"><a href="#ndata">8</a></sup></li>
+<li>Let <em>i = 1</em></li>
+<li>While <em>r &gt;= 2<sup>255</sup></em>:<sup class="footnote-reference"><a href="#geometric">9</a></sup>
+<ul>
+<li>If <em>i &gt;= 2<sup>32</sup></em>:
+<ul>
+<li>Fail</li>
+</ul>
+</li>
+<li>Let <em>extra = bytes_le(4, i) || fill_bytes(28, 0x00)</em><sup class="footnote-reference"><a href="#core">10</a></sup></li>
+<li>Let <em>(r, s) = sign(sk, msghash, extra)</em></li>
+<li>Let <em>i = i + 1</em></li>
+</ul>
+</li>
+<li>If <em>s &gt; half_order</em>:<sup class="footnote-reference"><a href="#lows">11</a></sup>
+<ul>
+<li>Let <em>s = n - s</em></li>
+</ul>
+</li>
+<li>Let <em>P = int(sk)⋅G</em></li>
+<li>If <em>verify((r, s), P, msghash)</em> returns <em>false</em>, abort<sup class="footnote-reference"><a href="#verifysign">12</a></sup></li>
+<li>Return <em>(r, s)</em></li>
+</ul>
+<p>The predicate <em>r &gt;= 2<sup>255</sup></em> is equivalent to testing that the most significant byte of <em>bytes(32, r)</em> is greater than or equal to <em>0x80</em>.</p>
+<h2 id="Rationale">Rationale</h2>
+<p>Bitcoin encodes ECDSA signatures in a strict DER form with an additional 1-byte sighash flag, which serializes <em>r</em> and <em>s</em> as arbitrary-length big-endian signed integers<sup class="footnote-reference"><a href="#bip66">13</a></sup>. Their encoding being signed means that even though every value of <em>r</em> and <em>s</em> can be encoded in 32 bytes or less as an unsigned integer, a null byte must be prepended if the most significant bit is set, raising the maximum size to 33 bytes each. The maximum size of a DER encoded ECDSA signature is 72 bytes, or 73 with the sighash flag.</p>
+<p>The signing algorithm as specified makes use of low-<em>r</em> grinding and low-<em>s</em> normalization<sup class="footnote-reference"><a href="#lowspolicy">14</a></sup> to exclusively produce low-<em>r</em> and low-<em>s</em> signatures. This produces signatures with a maximum DER encoding size of 70 bytes, or 71 with the sighash flag.<sup class="footnote-reference"><a href="#bip62size">15</a></sup> Against a signer that normalizes <em>s</em> but does not grind, low-<em>r</em> grinding saves on average 0.5 vbytes per signature in legacy inputs and 0.125 vbytes in v0 segwit inputs.<sup class="footnote-reference"><a href="#optech">16</a></sup> In 2-of-3 P2SH inputs it saves 2.5 vbytes on average, as a single high-<em>r</em> signature pushes the input script's length indicator from one byte to three. The cost is rather cheap: low-<em>r</em> grinding requires an additional signing operation and low-<em>s</em> normalization requires a scalar subtraction. Uniform adoption is worthwhile independently of the savings, as a signer that does not grind is identifiable on-chain by its high-<em>r</em> signatures.<sup class="footnote-reference"><a href="#review">17</a></sup></p>
+<h3 id="Low-r_Grinding">Low-<em>r</em> Grinding</h3>
+<h4 id="Why_RFC_6979">Why RFC 6979</h4>
+<p>Grinding requires a nonce derivation that is deterministic in the secret key and message, and that additionally accepts a counter, so that a fresh and unrelated nonce can be derived for the same key and message.<sup class="footnote-reference"><a href="#noncereq">18</a></sup> RFC 6979 provides exactly this: it is the IETF's standard deterministic nonce derivation for ECDSA, and its section 3.6 admits an additional data input, for which it names a signature counter as an example:<sup class="footnote-reference"><a href="#rfc6979">19</a></sup></p>
+<blockquote>
+<p>It suffices that the additional data k' is non-repeating (e.g., a signature counter or a monotonic clock) to ensure "random-looking" signatures are indistinguishable, in a cryptographic way, from plain (EC)DSA signatures.</p>
+</blockquote>
+<h4 id="Potential_Alternate_Grinding_Methods">Potential Alternate Grinding Methods</h4>
+<p><strong>A fresh random nonce on each attempt.</strong> Drawing each candidate nonce from a cryptographically secure random source also yields unrelated nonces, and is a valid means of producing low-<em>r</em> signatures. Such a method is not adopted because the resulting signatures are not reproducible, which reopens the exfiltration problem described in the Motivation. Randomness would buy some protection against fault injection, which is why <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP 340</a> recommends it for Schnorr signatures. Deterministic derivation is nonetheless established practice for ECDSA in Bitcoin, as RFC 6979 is libsecp256k1's default nonce function and Bitcoin Core requests it explicitly.<sup class="footnote-reference"><a href="#deterministictoday">20</a></sup></p>
+<p><strong>Grinding for smaller <em>r</em>.</strong> In order for a lower <em>r</em> value to save any space, it must be an entire byte smaller, and thus must have the leading 9 bits unset rather than just the leading bit. Computing such an <em>r</em> value would take 512 signing operations on average, as opposed to the two of regular low-<em>r</em> grinding.<sup class="footnote-reference"><a href="#geometric">9</a></sup> Grinding for a smaller <em>r</em> was deemed too expensive to be adopted widely. Because few signers would do so, the signers that did would be identifiable on-chain.<sup class="footnote-reference"><a href="#pr13666">21</a></sup></p>
+<p><strong>Speeding up grinding with the <em>λ</em> endomorphism.</strong> It was suggested to use secp256k1's <em>λ</em> endomorphism to quickly compute alternative nonces.<sup class="footnote-reference"><a href="#endomorphism">22</a></sup> Low-<em>r</em> grinding as specified takes only two point multiplications on average. The added complexity of using the <em>λ</em> endomorphism cannot meaningfully improve on that.<sup class="footnote-reference"><a href="#endospeedup">23</a></sup></p>
+<h2 id="Backward_Compatibility">Backward Compatibility</h2>
+<p>Signatures generated under this specification are normal valid signatures and will verify under existing consensus rules, and thus are fully backward compatible.</p>
+<h2 id="Copyright">Copyright</h2>
+<p>This BIP is licensed under the CC0-1.0 license.</p>
+<div class="footnote-definition" id="rchoice"><sup class="footnote-definition-label">1</sup>
+<p>Technically a signer selects a nonce <em>k</em>, from which <em>r = x(k⋅G) mod n</em> follows. It cannot target a particular <em>r</em> without solving the discrete logarithm problem, and only about half the integers modulo <em>n</em> occur as an <em>r</em> at all, since <em>r</em> must be the x-coordinate of a curve point. What the signer has is free choice of <em>k</em>, and so free choice among the <em>r</em> values that result.</p>
+</div>
+<div class="footnote-definition" id="darkskippy"><sup class="footnote-definition-label">2</sup>
+<p><a rel="noopener" target="_blank" href="https://darkskippy.com/">Dark Skippy</a> is a method by which malicious signing device firmware embeds seed material in the nonces of otherwise valid signatures, from which an attacker who observes those signatures on-chain can recover the seed. Raised in the context of this document by Craig Raw; see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/pull/2224#issuecomment-5114943404">this comment</a>.</p>
+</div>
+<div class="footnote-definition" id="lowsnormalization"><sup class="footnote-definition-label">3</sup>
+<p>Low-<em>s</em> normalization preserves signature validity: Let <em>(r, s)</em> be a high-<em>s</em> signature that <em>verify</em> accepts for a public key <em>P</em> and message hash <em>msghash</em>. Let <em>(r, s')</em> be a low-<em>s</em> signature with <em>s' = n - s</em>, and let us consider whether <em>verify</em> will accept it under <em>P</em> and <em>msghash</em>. The checks on <em>P</em>, <em>msghash</em>, and <em>r</em> do not involve <em>s</em> and are unchanged, and <em>s'</em> passes the range check because <em>0 &lt; s &lt; n</em> implies <em>0 &lt; n - s &lt; n</em>. Since <em>s' ≡ -s (mod n)</em>, <em>w' = -w</em>, so <em>u<sub>1</sub>' = -u<sub>1</sub></em>, <em>u<sub>2</sub>' = -u<sub>2</sub></em>, and consequently <em>R' = -R</em>. The x-coordinate of a finite point is invariant under negation, so <em>x(R') mod n = r</em>, and thus <em>verify</em> accepts <em>(r, n - s)</em> and low-<em>s</em> normalization preserves validity.</p>
+</div>
+<div class="footnote-definition" id="hmac"><sup class="footnote-definition-label">4</sup>
+<p><a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc2104">RFC 2104: HMAC: Keyed-Hashing for Message Authentication</a>, instantiated with SHA-256 as specified in <a rel="noopener" target="_blank" href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS 180-4</a>.</p>
+</div>
+<div class="footnote-definition" id="kv"><sup class="footnote-definition-label">5</sup>
+<p><em>K</em> and <em>V</em> are the internal state variables of the HMAC-based generator specified in <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc6979#section-3.2">RFC 6979 section 3.2</a>, and carry its names. Both are 32-byte arrays rather than curve points, and <em>K</em> is unrelated to the nonce <em>k</em>.</p>
+</div>
+<div class="footnote-definition" id="bits2octets"><sup class="footnote-definition-label">6</sup>
+<p>This reduction is RFC 6979's <em>bits2octets(h1)</em>, required by <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc6979#section-3.2">section 3.2d</a>. It has no effect unless <em>int(msghash) &gt;= n</em>, which occurs with probability about 1.27 · 2<sup>-128</sup>. libsecp256k1 performs it as <code>msgmod32</code> in <code>nonce_function_rfc6979</code>; see <a rel="noopener" target="_blank" href="https://github.com/bitcoin-core/secp256k1/blob/master/src/secp256k1.c">libsecp256k1 <code>src/secp256k1.c</code></a>. Bitcoin Core acquired the reduction in v24.0, having fed the unreduced hash from v0.17.0 through v23.0.</p>
+</div>
+<div class="footnote-definition" id="attempt"><sup class="footnote-definition-label">7</sup>
+<p><em>count</em> advances the RFC 6979 generator without changing <em>extra</em>, and is distinct from the grind counter <em>i</em>. libsecp256k1 increments the same counter whenever the derived nonce falls outside <em>[1, n-1]</em>, or the resulting <em>r</em> or <em>s</em> is zero; see <code>secp256k1_ecdsa_sign_inner</code> in <a rel="noopener" target="_blank" href="https://github.com/bitcoin-core/secp256k1/blob/master/src/secp256k1.c">libsecp256k1 <code>src/secp256k1.c</code></a>, which retries in both cases rather than failing. Each of those conditions has probability on the order of 2<sup>-128</sup> or less, so <em>count</em> is 0 for every signature produced in practice. Because <em>sign</em> rejects an out-of-range secret key, and <em>DeterministicSign</em> rejects one before the loop is entered, no secret key makes every attempt fail, so the loop's <em>Fail</em> branch is unreachable in practice. An implementation may therefore omit the retry and fail on the first unusable nonce instead. Retrying is recommended and costs nothing, and neither choice affects the test vectors or interoperability.</p>
+</div>
+<div class="footnote-definition" id="ndata"><sup class="footnote-definition-label">8</sup>
+<p>Omitting the additional data makes RFC 6979 hash a 64-byte seed rather than a 96-byte one, so grind counter <em>0</em> does not produce the nonce that 32 null bytes would. See <a rel="noopener" target="_blank" href="https://github.com/bitcoin-core/secp256k1/blob/master/src/secp256k1.c">libsecp256k1 <code>src/secp256k1.c</code></a>, <code>nonce_function_rfc6979</code>, which notes that the argument mixtures have distinct lengths and so cannot emulate one another.</p>
+</div>
+<div class="footnote-definition" id="geometric"><sup class="footnote-definition-label">9</sup>
+<p>For an event of probability <em>q</em>, the expected number of attempts before the first success is 1/<em>q</em>. A low <em>r</em> arises with probability approximately 1/2, so grinding as specified takes two attempts on average, needs more than <em>j</em> attempts with probability 2<sup>-j</sup>, and terminates with probability 1; Bitcoin Core allots a 32-bit counter, which cannot be exhausted in practice. Grinding for an <em>r</em> a whole byte smaller instead has <em>q</em> = 2<sup>-9</sup>, giving 512 attempts on average. That threshold is nine bits rather than eight because DER restores the padding byte whenever the leading content byte has its most significant bit set, so <em>r</em> must fall below 2<sup>247</sup> rather than 2<sup>248</sup>.</p>
+</div>
+<div class="footnote-definition" id="core"><sup class="footnote-definition-label">10</sup>
+<p>The little-endian counter is an artifact of <code>CKey::Sign</code> writing the counter into a 32-byte entropy buffer with <code>WriteLE32</code>; see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/master/src/key.cpp">Bitcoin Core <code>src/key.cpp</code></a>.</p>
+</div>
+<div class="footnote-definition" id="lows"><sup class="footnote-definition-label">11</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin-core/secp256k1/blob/master/src/ecdsa_impl.h">libsecp256k1 <code>src/ecdsa_impl.h</code></a>, <code>secp256k1_ecdsa_sig_sign</code>: <code>high = secp256k1_scalar_is_high(sigs); secp256k1_scalar_cond_negate(sigs, high);</code></p>
+</div>
+<div class="footnote-definition" id="verifysign"><sup class="footnote-definition-label">12</sup>
+<p>Verifying the signature before leaving the signer prevents random or attacker provoked computation errors. This prevents publishing invalid signatures which may leak information about the secret key. It is recommended, but can be omitted if the computation cost is prohibitive, at the cost of detecting faults in the signing computation. The preceding wording is taken from the equivalent step in the signing algorithm of <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP 340</a>, which is licensed under BSD-2-Clause. Bitcoin Core performs the check unconditionally in <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/master/src/key.cpp"><code>CKey::Sign</code></a>. Because the check cannot alter the returned signature, omitting it affects neither the test vectors nor interoperability.</p>
+</div>
+<div class="footnote-definition" id="bip66"><sup class="footnote-definition-label">13</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki">BIP 66: Strict DER signatures</a>.</p>
+</div>
+<div class="footnote-definition" id="lowspolicy"><sup class="footnote-definition-label">14</sup>
+<p>Note that transactions with high-<em>s</em> signatures are valid but currently will not be relayed based on standard policy: see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/master/src/policy/policy.h">Bitcoin Core <code>src/policy/policy.h</code></a>.</p>
+</div>
+<div class="footnote-definition" id="bip62size"><sup class="footnote-definition-label">15</sup>
+<p>A signer that normalizes <em>s</em> but does not grind falls between the two bounds, at 71 bytes of DER. <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki">BIP 62</a>, "DER encoding", gives that case as "the total signature size being at most 72 bytes (and on average 71.494 bytes)", counting the sighash flag. The average falls slightly below 71.5 because <em>r</em> occasionally encodes in fewer than 32 bytes.</p>
+</div>
+<div class="footnote-definition" id="optech"><sup class="footnote-definition-label">16</sup>
+<p><a rel="noopener" target="_blank" href="https://bitcoinops.org/en/topics/low-r-grinding/">Bitcoin Optech: Low-r grinding</a>.</p>
+</div>
+<div class="footnote-definition" id="review"><sup class="footnote-definition-label">17</sup>
+<p>See, e.g., <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/13666#issuecomment-406053492">this comment</a> and the surrounding discussion in the pull request that introduced grinding to Bitcoin Core.</p>
+</div>
+<div class="footnote-definition" id="noncereq"><sup class="footnote-definition-label">18</sup>
+<p>Two published signatures whose nonces stand in a relation an attacker can find will leak the secret key. Neither the intermediate attempts of a grind nor the counter that produced the successful one is published, so the constraint binds across messages rather than within a single grind loop; RFC 6979 satisfies it in both directions in any case. A fresh nonce from a cryptographically secure random source on each attempt also satisfies it, though the resulting signatures are not reproducible.</p>
+</div>
+<div class="footnote-definition" id="rfc6979"><sup class="footnote-definition-label">19</sup>
+<p><a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc6979">RFC 6979: Deterministic Usage of the Digital Signature Algorithm (DSA) and Elliptic Curve Digital Signature Algorithm (ECDSA)</a>. The additional data input and the non-repetition requirement are given in <a rel="noopener" target="_blank" href="https://www.rfc-editor.org/rfc/rfc6979#section-3.6">section 3.6</a>.</p>
+</div>
+<div class="footnote-definition" id="deterministictoday"><sup class="footnote-definition-label">20</sup>
+<p><code>secp256k1_nonce_function_default</code> is <code>nonce_function_rfc6979</code>; see <a rel="noopener" target="_blank" href="https://github.com/bitcoin-core/secp256k1/blob/master/src/secp256k1.c">libsecp256k1 <code>src/secp256k1.c</code></a>. Bitcoin Core passes <code>secp256k1_nonce_function_rfc6979</code> to <code>secp256k1_ecdsa_sign</code> in <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/master/src/key.cpp"><code>CKey::Sign</code></a>.</p>
+</div>
+<div class="footnote-definition" id="pr13666"><sup class="footnote-definition-label">21</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/13666">Bitcoin Core PR #13666, "Always create signatures with Low R values"</a>, released in <a rel="noopener" target="_blank" href="https://bitcoincore.org/en/releases/0.17.0/">Bitcoin Core v0.17.0</a>. The review discussion also considered grinding for even smaller <em>r</em> values; see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/13666#issuecomment-405116700">this comment</a>.</p>
+</div>
+<div class="footnote-definition" id="endomorphism"><sup class="footnote-definition-label">22</sup>
+<p><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/13666#issuecomment-405116700">Suggested during review of the pull request that introduced grinding to Bitcoin Core</a>; the replies that follow discuss the nonce distribution it would produce.</p>
+</div>
+<div class="footnote-definition" id="endospeedup"><sup class="footnote-definition-label">23</sup>
+<p>A single point multiplication for the nonce <em>k</em> also yields the <em>r</em> values belonging to <em>λk</em> and <em>λ</em><sup>2</sup><em>k</em>, where <em>λ</em> is a primitive cube root of unity modulo the group order; see <a rel="noopener" target="_blank" href="https://github.com/bitcoin-core/secp256k1/blob/master/src/scalar_impl.h">libsecp256k1 <code>src/scalar_impl.h</code></a>, <code>secp256k1_const_lambda</code>. Since a signer must compute one point multiplication in any case, this saves at most one per signature, and capturing it requires curve arithmetic outside the signing routine.</p>
+</div>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-09-17</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
