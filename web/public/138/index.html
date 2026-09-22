@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 138: Compact Encryption Scheme for Non-seed Wallet Data" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 138: Compact Encryption Scheme for Non-seed Wallet Data" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 138: Compact Encryption Scheme for Non-seed Wallet Data</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 138: Compact Encryption Scheme for Non-seed Wallet Data</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2026-05-11</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0138.md" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 138
+  Layer: Applications
+  Title: Compact Encryption Scheme for Non-seed Wallet Data
+  Authors: Pyth &lt;pythcoiner@wizardsardine.com&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2026-05-11
+  License: BSD-2-Clause
+  Discussion: https:&#x2F;&#x2F;delvingbitcoin.org&#x2F;t&#x2F;a-simple-backup-scheme-for-wallet-accounts&#x2F;1607
+              https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;5NgJbpVDgEc&#x2F;m&#x2F;TtGK9sF9BgAJ
+              https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;pull&#x2F;1951
+  Requires: 32, 340, 380, 388, 389
+</code></pre>
+<h2 id="Introduction">Introduction</h2>
+<h3 id="Abstract">Abstract</h3>
+<p>This BIP defines a compact encryption scheme for <strong>output script descriptors</strong> (BIP-0380),
+<strong>wallet policies</strong> (BIP-0388), and other wallet metadata.
+The payload must not contain any private key material.</p>
+<p>Users can store encrypted backups on untrusted media or cloud services without leaking
+addresses, script structures, or cosigner counts. The encryption key derives from the
+lexicographically-sorted public keys in the descriptor, allowing any keyholder to decrypt
+without additional secrets.</p>
+<p>Though designed for descriptors and policies, the scheme works equally well for labels
+and backup metadata.</p>
+<h3 id="Copyright">Copyright</h3>
+<p>This BIP is licensed under the BSD 2-Clause License.<br />
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the above copyright notice and this permission notice appear
+in all copies.</p>
+<h3 id="Motivation">Motivation</h3>
+<p>Losing the <strong>wallet descriptor</strong> (or <strong>wallet policy</strong>) is almost as catastrophic as
+losing the seed itself. The seed lets you sign, but the descriptor maps you to your coins.
+For multisig or miniscript wallets, keys alone are insufficient: without the descriptor, you
+can't reconstruct the script.</p>
+<p>Multisig setups can be designed to retain access to coins even if one of the
+seeds is lost, for example a 3-of-3 MuSig2 keypath with a script path that lets
+2-of-3 recover. But when one seed is lost, its public key may also be lost,
+rendering the coins inaccessible. This risk is not intuitive.</p>
+<p>Offline storage of descriptors has two practical obstacles:</p>
+<ol>
+<li>
+<p><strong>Descriptors are hard to store offline.</strong><br />
+Descriptors can be much longer than a 12/24-word seed. Paper and steel backups
+become impractical or error-prone, while USB sticks and other offline digital
+storage solutions degrade over time and are unlikely to survive flood or fire.</p>
+</li>
+<li>
+<p><strong>Online redundancy carries privacy risk.</strong><br />
+Phones and cloud storage solve the length problem but expose your wallet
+structure. Plaintext descriptors leak your pubkeys and script details.
+Cloud storage is often unencrypted, and even cloud encryption could be compromised,
+depending on (often opaque) implementation details. Its security also reduces to
+that of the weakest device with cloud access. Each copy increases the attack surface.</p>
+</li>
+</ol>
+<p>This BIP therefore proposes an <strong>encrypted</strong>, compact backup format that:</p>
+<ul>
+<li>can be <strong>safely stored in multiple places</strong>, including untrusted online services,</li>
+<li>can be <strong>decrypted only by intended holders</strong> of specified <em>public</em> keys,</li>
+</ul>
+<p>See the original <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/a-simple-backup-scheme-for-wallet-accounts/1607/31">Delving post</a>
+for more background.</p>
+<h3 id="Expected_properties">Expected properties</h3>
+<ul>
+<li><strong>Encrypted</strong>: safe to store with untrusted cloud providers or backup services</li>
+<li><strong>Access controlled</strong>:
+<ul>
+<li>only designated cosigners can decrypt, using their xpub</li>
+<li>can't be decrypted using public keys revealed on chain</li>
+</ul>
+</li>
+<li><strong>Easy to implement</strong>:
+<ul>
+<li>it should not require any sophisticated tools/libraries</li>
+<li>it should not require access to private key material, which secure signing systems may not yield</li>
+</ul>
+</li>
+<li><strong>Vendor-neutral</strong>: works with any hardware signer</li>
+</ul>
+<h3 id="Scope">Scope</h3>
+<p>This proposal targets output script descriptors (BIP-0380) and policies (BIP-0388), but the
+scheme also works for labels (BIP-0329) and other wallet metadata like
+wallet backup metadata (BIP-0139).</p>
+<p>Private key material MUST be removed before encrypting any payload.
+This is because the use of <em>public key</em> material for decryption makes the
+scheme unsuitable for storing private key material.</p>
+<h2 id="Specification">Specification</h2>
+<p>Note: in the following sections, the operator ⊕ refers to the bitwise XOR operation.</p>
+<h3 id="Secret_generation">Secret generation</h3>
+<ul>
+<li>Let $p_1, p_2, \dots, p_n$, be the public keys in the descriptor/wallet policy, in
+increasing lexicographical order. The scheme is defined for any $n \geq 1$,
+in particular it supports single-signature descriptors ($n = 1$). Each $p_i$
+is the x-only-normalized root public key of one <em>allowed</em> key expression
+(see <a href="https://bips.dev/138/#descriptor-key-requirements">Descriptor key requirements</a>).</li>
+<li>Let $s$ = tagged_hash("BIP138_DECRYPTION_SECRET", $p_1$ | $p_2$ | ... | $p_n$)</li>
+<li>Let $s_i$ = tagged_hash("BIP138_INDIVIDUAL_SECRET", $p_i$)</li>
+<li>Let $c_i$ = $s$ ⊕ $s_i$</li>
+</ul>
+<p>where tagged_hash(tag, m) = sha256(sha256(tag) | sha256(tag) | m) is the tagged
+hash construction from <a href="https://bips.dev/138/bip-0340.mediawiki#design">BIP340</a>.</p>
+<p>Because $s$ and $s_i$ use distinct domain-separation tags, $s \neq s_i$ and
+therefore $c_i$ is never the all-zero string.</p>
+<p>Keys published on chain are already kept out of ${p_1, \dots, p_n}$ by the
+<a href="https://bips.dev/138/#descriptor-key-requirements">Descriptor key requirements</a>.
+Implementations MUST exclude the key with x coordinate
+<code>50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0</code> (the BIP341 NUMS
+point). Applications MAY exclude any further key they know to be public.</p>
+<p>Applications that exclude keys beyond the NUMS point SHOULD document which keys they
+exclude, so that users know which keys cannot open the backup. A cosigner holding an
+excluded key will simply fail to decrypt, while the cosigners holding the keys that
+remain in ${p_1, \dots, p_n}$ can still decrypt the backup.</p>
+<p><strong>Note:</strong> A key is <em>publicly known</em> when a third party can learn it without the wallet
+owner disclosing it. There is no registry of such keys. In practice they come from two
+sources: the blockchain, and well-known constants.</p>
+<p><strong>Warning:</strong> An xpub can be known to a third party without ever appearing on chain.
+Some single-signature wallets, such as the Ledger and Trezor desktop apps, send the
+BIP44/49/84/86 account xpub to a server, the server then derive every key from
+that xpub. For a single-signature descriptor this leaks little the server does not
+already know, but reusing such an xpub as a key of a multisig descriptor lets that
+server decrypt every backup of the multisig. Users SHOULD build a multisig from
+accounts whose xpub was never sent to such a server, such as BIP48 or BIP87 accounts.</p>
+<h3 id="Descriptor_key_requirements">Descriptor key requirements</h3>
+<p>Only key expressions of the extended-public-key type with a trailing
+derivation step or wildcard contribute to ${p_1, \dots, p_n}$. Without
+that derivation, the xpub's root pubkey, used to seed $s$, would also be
+the on-chain pubkey of every spend, so observing one spend would let
+anyone recompute $s$ and decrypt the backup.<sup class="footnote-reference"><a href="#trailing-derivation">1</a></sup> The
+rule generalizes to any network prefix (<code>xpub</code>/<code>tpub</code>/<code>Vpub</code>/...).</p>
+<div class="footnote-definition" id="trailing-derivation"><sup class="footnote-definition-label">1</sup>
+<p><strong>Why require trailing derivation?</strong>
+Any trailing derivation step, or the implicit child derivation forced by
+a wildcard, breaks the identity between the xpub root pubkey and the
+on-chain pubkey. Fixed-derivation expressions like <code>xpub.../0/5</code> are
+allowed because the on-chain key (<code>xpub/0/5</code>) already differs from the
+encryption seed (the xpub root). Literal pubkeys and bare xpubs are
+disallowed for the same reason: the literal value is exactly what goes
+on-chain, so $s$ would become recoverable from a single observed spend.</p>
+</div>
+<p>Allowed forms (origin information <code>[...]</code> is optional and orthogonal):</p>
+<table><thead><tr><th>Form</th><th>Example</th></tr></thead><tbody>
+<tr><td><code>&lt;xpub&gt;/&lt;path&gt;</code> (fixed derivation, no wildcard)</td><td><code>xpub.../0/5</code></td></tr>
+<tr><td><code>&lt;xpub&gt;/*</code> (wildcard only)</td><td><code>xpub.../*</code></td></tr>
+<tr><td><code>&lt;xpub&gt;/&lt;path&gt;/*</code> (fixed derivation followed by a wildcard)</td><td><code>xpub.../0/*</code></td></tr>
+<tr><td><code>&lt;xpub&gt;/&lt;a;b;...&gt;</code> (multipath, no wildcard)</td><td><code>xpub.../&lt;0;1&gt;</code></td></tr>
+<tr><td><code>&lt;xpub&gt;/&lt;a;b;...&gt;/*</code> (multipath followed by a wildcard)</td><td><code>xpub.../&lt;0;1&gt;/*</code></td></tr>
+</tbody></table>
+<p>Implementations:</p>
+<ul>
+<li>MUST exclude every other form (literal pubkeys, bare xpubs, ...) from
+${p_1, \dots, p_n}$.</li>
+<li>MUST refuse to encode a backup if the resulting set is empty.</li>
+<li>MUST make the user aware of each excluded expression, since the
+cosigner holding that key will be unable to decrypt the backup with
+their key.</li>
+</ul>
+<h3 id="Key_Normalization">Key Normalization</h3>
+<p>For each allowed expression, take the root extended public key (ignoring
+origin information, the trailing derivation path, the wildcard, and any
+multipath specifiers) and extract its x-coordinate. The result is the
+32-byte <strong>x-only public key</strong> $p_i$.<sup class="footnote-reference"><a href="#x-only">2</a></sup></p>
+<div class="footnote-definition" id="x-only"><sup class="footnote-definition-label">2</sup>
+<p><strong>Why x-only keys?</strong>
+X-only public keys are 32 bytes, a natural size for cryptographic operations.
+This format is also used in BIP340 (Schnorr signatures) and BIP341 (Taproot).</p>
+</div>
+<h3 id="Encryption">Encryption</h3>
+<p>The format uses CHACHA20_POLY1305 (RFC 8439) as the encryption algorithm,
+with a 96-bit random nonce and a 128-bit authentication tag to provide confidentiality
+and integrity.<sup class="footnote-reference"><a href="#chacha-default">3</a></sup></p>
+<div class="footnote-definition" id="chacha-default"><sup class="footnote-definition-label">3</sup>
+<p><strong>Why CHACHA20-POLY1305 ?</strong>
+ChaCha20-Poly1305 is already used in Bitcoin Core (e.g., BIP324) and is widely
+available in cryptographic libraries. It performs well in software without
+hardware acceleration, making it suitable for hardware wallets and embedded devices.</p>
+</div>
+<ul>
+<li>let $nonce$ = random(96 bits)</li>
+<li>let $ciphertext$ = encrypt($payload$, $secret$, $nonce$)</li>
+</ul>
+<p>The $nonce$ MUST NOT be all zero. If the random source yields an all-zero nonce,
+the encoder MUST generate a new one.</p>
+<h3 id="Decryption">Decryption</h3>
+<p>In order to decrypt the payload of a backup, the owner of a certain public key p
+computes:</p>
+<ul>
+<li>let $s_i$ = tagged_hash("BIP138_INDIVIDUAL_SECRET", $p$)</li>
+<li>for each <code>individual_secret_i</code> generate <code>reconstructed_secret_i</code> =
+<code>individual_secret_i</code> ⊕ <code>si</code></li>
+<li>for each <code>reconstructed_secret_i</code> process $payload$ =
+decrypt($ciphertext$, $secret$, $nonce$)</li>
+</ul>
+<p>Decryption will succeed if and only if <strong>p</strong> was one of the keys in the
+descriptor/wallet policy.</p>
+<h3 id="Encoding">Encoding</h3>
+<p>The encrypted backup must be encoded as follows:</p>
+<p><code>MAGIC</code> <code>VERSION</code> <code>DERIVATION_PATHS</code> <code>INDIVIDUAL_SECRETS</code> <code>ENCRYPTION</code>
+<code>ENCRYPTED_PAYLOAD</code></p>
+<h4 id="Magic">Magic</h4>
+<p><code>MAGIC</code>: 6 bytes which are ASCII/UTF-8 representation of <strong>BIP138</strong>.</p>
+<h4 id="Version">Version</h4>
+<p><code>VERSION</code>: 1 byte unsigned integer representing the format version. The current
+specification defines version <code>0x01</code>.</p>
+<h4 id="Derivation_Paths">Derivation Paths</h4>
+<p>Derivation paths are optional; they can be useful to simplify the recovery process
+if one has used a non-common derivation path to derive his key.<sup class="footnote-reference"><a href="#derivation-optional">4</a></sup></p>
+<p>All implementations that can fetch xpubs from a signing device SHOULD try the following
+common paths automatically:</p>
+<ul>
+<li><code>m/44h/&lt;coin&gt;h/{0..9}h</code></li>
+<li><code>m/49h/&lt;coin&gt;h/{0..9}h</code></li>
+<li><code>m/84h/&lt;coin&gt;h/{0..9}h</code></li>
+<li><code>m/86h/&lt;coin&gt;h/{0..9}h</code></li>
+<li><code>m/87h/&lt;coin&gt;h/{0..9}h</code></li>
+<li><code>m/48h/&lt;coin&gt;h/{0..9}h/1h</code></li>
+<li><code>m/48h/&lt;coin&gt;h/{0..9}h/2h</code></li>
+</ul>
+<p><code>&lt;coin&gt;</code> is the BIP44 coin type of the network being recovered: <code>0</code> for mainnet
+and <code>1</code> for test networks. <code>{0..9}h</code> covers accounts 0 through 9.</p>
+<p>Some signing devices can fail or require confirmation when fetching xpubs for
+some of these paths. This list is not exhaustive: an implementation MAY treat a
+path as allowed to fail for any device it supports, in particular
+<code>m/87h/&lt;coin&gt;h/{0..9}h</code>, which is widely under-supported. Implementations SHOULD
+at least classify these:<sup class="footnote-reference"><a href="#common-derivation-paths">5</a></sup></p>
+<ul>
+<li>BitBox02: <code>m/44h/&lt;coin&gt;h/{0..9}h</code>, <code>m/87h/&lt;coin&gt;h/{0..9}h</code></li>
+<li>Ledger: <code>m/87h/&lt;coin&gt;h/{0..9}h</code></li>
+</ul>
+<p>If fetching an xpub for one of these common paths fails or times out and
+decryption fails, implementations SHOULD warn the user.</p>
+<div class="footnote-definition" id="derivation-optional"><sup class="footnote-definition-label">4</sup>
+<p><strong>Why are derivation paths optional?</strong>
+When standard derivation paths are used, they are easily discoverable, making
+them straightforward to brute-force. Omitting them enhances privacy by reducing
+the information shared publicly about the descriptor scheme.</p>
+</div>
+<div class="footnote-definition" id="common-derivation-paths"><sup class="footnote-definition-label">5</sup>
+<p><strong>Why this restricted list?</strong>
+The list covers common account paths for the network being recovered, accounts 0
+through 9. Some signing devices reject or display some of these paths before
+exporting an xpub, so implementations should treat the listed paths for that
+device as optional rather than aborting recovery.</p>
+</div>
+<p><code>DERIVATION_PATH</code> follows this format:</p>
+<p><code>COUNT</code><br />
+<code>CHILD_COUNT</code> <code>CHILD</code> <code>...</code> <code>CHILD</code><br />
+<code>...</code><br />
+<code>CHILD_COUNT</code> <code>CHILD</code> <code>...</code> <code>CHILD</code></p>
+<p><code>COUNT</code>: 1-byte unsigned integer (0–255) indicating how many derivation paths are
+included.<br />
+<code>CHILD_COUNT</code>: 1-byte unsigned integer (1–255) indicating how many children are in
+the current path.<br />
+<code>CHILD</code>: 4-byte big-endian unsigned integer representing a child index per BIP-32.</p>
+<p>The derivation-path vector SHOULD be encoded in lexicographic order. This avoids
+leaking information through implementation-specific ordering. The vector SHOULD NOT
+contain duplicates. Implementations SHOULD deduplicate paths during encoding or
+parsing.</p>
+<h4 id="Individual_Secrets">Individual Secrets</h4>
+<p>At least one individual secret must be supplied.<sup class="footnote-reference"><a href="#no-fingerprints">6</a></sup></p>
+<div class="footnote-definition" id="no-fingerprints"><sup class="footnote-definition-label">6</sup>
+<p><strong>Why no fingerprints in plaintext encoding?</strong>
+Including fingerprints would leak direct information about the descriptor
+participants, which compromises privacy.</p>
+</div>
+<p>The <code>INDIVIDUAL_SECRETS</code> section follows this format:</p>
+<p><code>COUNT</code><br />
+<code>INDIVIDUAL_SECRET</code><br />
+<code>INDIVIDUAL_SECRET</code></p>
+<p><code>COUNT</code>: 1-byte unsigned integer (1–255) indicating how many secrets are included.<br />
+<code>INDIVIDUAL_SECRET</code>: 32-byte serialization of the derived individual secret.</p>
+<p>The individual secrets vector SHOULD be encoded in lexicographic order. This avoids
+leaking information through implementation-specific ordering. The vector SHOULD NOT
+contain duplicates. Implementations SHOULD deduplicate secrets during encoding or
+parsing.</p>
+<p>Encoders SHOULD append random decoy <code>INDIVIDUAL_SECRET</code> entries to hide the exact
+number of real decryption keys. The total count SHOULD be rounded up to the
+smallest bucket greater than or equal to the real count, starting at 5 and doubling
+for each following bucket: 5, 10, 20, and so on. The bucket sequence saturates at
+the 255 <code>COUNT</code> limit: when the smallest fitting bucket would exceed 255, encoders
+SHOULD pad to 255 instead. Decoders do not distinguish real
+entries from decoys; they try each entry until one decrypts the payload.</p>
+<h4 id="Encryption-1">Encryption</h4>
+<p><code>ENCRYPTION</code>: 1-byte unsigned integer identifying the encryption algorithm.</p>
+<table><thead><tr><th style="text-align: left">Value</th><th style="text-align: left">Definition</th></tr></thead><tbody>
+<tr><td style="text-align: left">0x00</td><td style="text-align: left">Reserved</td></tr>
+<tr><td style="text-align: left">0x01</td><td style="text-align: left">CHACHA20_POLY1305</td></tr>
+</tbody></table>
+<h4 id="Payload_Size_Limits">Payload Size Limits</h4>
+<p>CHACHA20_POLY1305 (per RFC 8439) supports plaintext up to 2^38 - 64 bytes.
+Implementations MAY impose stricter limits based on platform constraints
+(e.g., limiting to 2^32 - 1 bytes on 32-bit architectures).</p>
+<p>Implementations MUST reject empty payloads.</p>
+<h4 id="Ciphertext">Ciphertext</h4>
+<p><code>CIPHERTEXT</code> is the encrypted data resulting from encryption of <code>PAYLOAD</code> with algorithm
+defined in <code>ENCRYPTION</code> where <code>PAYLOAD</code> is encoded following this format:</p>
+<p><code>CONTENT_TYPE</code> <code>CONTENT_LENGTH</code> <code>CONTENT</code> (<code>CONTENT_TYPE</code> <code>CONTENT_LENGTH</code> <code>CONTENT</code> ...) (<code>PADDING</code>)</p>
+<p><code>CONTENT_LENGTH</code>: variable-length integer representing the length of <code>CONTENT</code> in bytes.
+It MUST be present.</p>
+<p><code>CONTENT</code>: the <code>CONTENT_LENGTH</code> bytes of payload data.</p>
+<p><code>PADDING</code>: OPTIONAL bytes after the final <code>CONTENT</code>, up to the end of the decrypted
+<code>PAYLOAD</code>. Parsers MUST consume exactly <code>CONTENT_LENGTH</code> bytes of each <code>CONTENT</code>. The padding
+bytes are reserved for size padding (see Padding) and/or vendor-specific data, the same
+way trailing bytes after <code>CIPHERTEXT</code> are reserved and ignored.</p>
+<h4 id="Padding">Padding</h4>
+<p>Backups that are updated over time can leak information through their size even when the
+contents are encrypted. A wallet that uploads a new backup after every received transaction
+can reveal activity to the storage provider through changing payload sizes. This is relevant
+for mutable payloads such as BIP-329 or BIP-0139.<sup class="footnote-reference"><a href="#padding-privacy">7</a></sup></p>
+<p>Padding is OPTIONAL and is an encoder concern only: decoders ignore the <code>PADDING</code> bytes and
+MUST NOT validate any bucket. Because the padding sits inside <code>CIPHERTEXT</code>, the
+<code>ENCRYPTED_PAYLOAD</code> <code>LENGTH</code> reveals only the padded size, not the real <code>PAYLOAD</code> size.</p>
+<p>Encoders that pad SHOULD zero-fill <code>PAYLOAD</code> up to the smallest bucket <code>S_n</code> that fits it,
+with <code>S_0 = 10240</code> (10 KiB) and <code>S_n = floor(S_0 * (5 / 4)^n)</code>. Payloads of 10 KiB or less
+are padded to 10 KiB. This keeps padding overhead under 25% above the smallest fitting bucket
+while coarsening the observable size. Padding is RECOMMENDED for mutable payloads and
+unnecessary for static ones such as BIP-380 descriptors and BIP-388 wallet policies.</p>
+<div class="footnote-definition" id="padding-privacy"><sup class="footnote-definition-label">7</sup>
+<p><strong>Why pad inside the ciphertext?</strong>
+Padding the encrypted payload, rather than appending bytes after the backup, hides the
+real payload size from anyone who parses the backup, not just from someone who measures
+the file size. The size field a parser sees is the padded <code>ENCRYPTED_PAYLOAD</code> <code>LENGTH</code>.</p>
+</div>
+<h4 id="Integer_Encodings">Integer Encodings</h4>
+<p>All variable-length integers are encoded as
+<a rel="noopener" target="_blank" href="https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer">compact size</a>.</p>
+<h4 id="Content_Type">Content Type</h4>
+<p><code>CONTENT_TYPE</code> is a variable length field defining the type of the <code>CONTENT</code> that follows
+it. It follows this format:</p>
+<p><code>TYPE</code> (<code>TYPE_LENGTH</code>) <code>TYPE_PARAMS</code></p>
+<p>A <code>PAYLOAD</code> carries one or more <code>CONTENT_TYPE CONTENT_LENGTH CONTENT</code> items, each <code>CONTENT_TYPE</code>
+describing the <code>CONTENT</code> immediately following it. The sequence ends at the first
+<code>TYPE</code> byte equal to <code>0x00</code>, or at the end of the <code>PAYLOAD</code>, whichever comes first; all
+remaining bytes are <code>PADDING</code>. A <code>PAYLOAD</code> MUST contain at least one item (see
+<a href="https://bips.dev/138/#payload-size-limits">Payload Size Limits</a>).</p>
+<p><code>TYPE</code>: 1-byte unsigned integer identifying how to interpret <code>TYPE_PARAMS</code>.</p>
+<table><thead><tr><th style="text-align: left">Value</th><th style="text-align: left">Definition</th></tr></thead><tbody>
+<tr><td style="text-align: left">0x00</td><td style="text-align: left">End of content items; padding follows</td></tr>
+<tr><td style="text-align: left">0x01</td><td style="text-align: left">BIP Number (big-endian uint16)</td></tr>
+<tr><td style="text-align: left">0x02</td><td style="text-align: left">Vendor-Specific Opaque Tag</td></tr>
+<tr><td style="text-align: left">0x03</td><td style="text-align: left">String</td></tr>
+</tbody></table>
+<p><code>TYPE_LENGTH</code>: variable-length integer representing the length of <code>TYPE_PARAMS</code> in bytes.</p>
+<p>For all <code>TYPE</code> values except <code>0x01</code>, <code>TYPE_LENGTH</code> MUST be present.<sup class="footnote-reference"><a href="#length-required">8</a></sup></p>
+<div class="footnote-definition" id="length-required"><sup class="footnote-definition-label">8</sup>
+<p><strong>Why is <code>TYPE_LENGTH</code> mandatory?</strong>
+<code>TYPE_LENGTH</code> is what lets a parser skip a content type it does not implement and still
+read the items that follow; without it, the parser cannot know where <code>TYPE_PARAMS</code> ends.
+A string note placed before a descriptor, for example, must not stop an
+implementation that only handles descriptors from recovering that descriptor. A
+type whose <code>TYPE_PARAMS</code> is always empty still carries a zero <code>TYPE_LENGTH</code> for this reason.
+<code>0x01</code> is exempt because every implementation handles it, so it is never skipped
+blindly.</p>
+</div>
+<p><code>TYPE_PARAMS</code>: variable-length field whose encoding depends on <code>TYPE</code>.</p>
+<p>For <code>TYPE</code> values defined above:</p>
+<ul>
+<li>0x00: parsers MUST stop reading content items and treat the remaining bytes as
+padding.</li>
+<li>0x01: <code>TYPE_LENGTH</code> MUST be omitted and <code>TYPE_PARAMS</code> is a 2-byte big-endian unsigned integer
+representing the BIP number that defines it.</li>
+<li>0x02: <code>TYPE_PARAMS</code> MUST be <code>TYPE_LENGTH</code> bytes of opaque, vendor-specific data.</li>
+<li>0x03: <code>TYPE_PARAMS</code> MUST be empty, and the following <code>CONTENT</code> is the string itself,
+which MUST be valid UTF-8.</li>
+</ul>
+<p>For all <code>TYPE</code> values except <code>0x01</code>, parsers MUST reject <code>CONTENT_TYPE</code> if <code>TYPE_LENGTH</code> exceeds
+the remaining payload bytes.</p>
+<p>For an unknown <code>TYPE</code> less than <code>0x80</code>, parsers MUST consume its <code>TYPE_LENGTH</code> bytes of
+<code>TYPE_PARAMS</code>, treat the content type as unknown, consume the following payload
+<code>CONTENT_LENGTH</code> and <code>CONTENT</code>, and continue with the next item.</p>
+<p>For an unknown <code>TYPE</code> greater than or equal to <code>0x80</code>, parsers MUST reject the
+payload.<sup class="footnote-reference"><a href="#type-upgrade">9</a></sup></p>
+<div class="footnote-definition" id="type-upgrade"><sup class="footnote-definition-label">9</sup>
+<p><strong>Why the 0x80 threshold?</strong>
+The <code>TYPE &gt;= 0x80</code> rule keeps the encoding upgradeable. A future version can
+define a new content type at or above <code>0x80</code> that older parsers reject rather
+than misread, while types below <code>0x80</code> stay backward compatible.</p>
+</div>
+<h4 id="BIP380_Descriptor_Backup_Content">BIP380 Descriptor Backup Content</h4>
+<p>When <code>CONTENT_TYPE</code> is <code>TYPE = 0x01</code> with <code>TYPE_PARAMS = 0x017c</code> (BIP380), <code>CONTENT</code> is a
+UTF-8 BIP380 descriptor backup. It is either a single bare descriptor string, or
+a JSON descriptor backup document (for several descriptors) when the first
+character is <code>{</code>.</p>
+<p>Test vectors are in
+<a href="https://bips.dev/138/./bip-0138/test_vectors/bip380_descriptor_backup.json"><code>bip380_descriptor_backup.json</code></a>.</p>
+<p>Descriptor strings MUST NOT contain private key material and SHOULD include a
+checksum.</p>
+<h5 id="JSON_Descriptor_Backup_Documents">JSON Descriptor Backup Documents</h5>
+<p>The descriptor backup document is a JSON object with the following fields:</p>
+<ul>
+<li><code>version</code>: integer. This specification defines version <code>1</code>.</li>
+<li><code>descriptor_sets</code>: array of descriptor set objects.</li>
+</ul>
+<p>Each descriptor set describes BIP380 output script descriptors belonging to one
+logical account or script family.</p>
+<h5 id="Descriptor_Set_Fields">Descriptor Set Fields</h5>
+<p><code>descriptor</code> is a required string containing a BIP380 output script descriptor.</p>
+<p>For BIP389 multipath descriptors, <code>/&lt;0;1&gt;</code> means receive and change,
+respectively. The <code>change_descriptor</code> field MUST NOT be used.</p>
+<p>For descriptors without BIP389 multipath key expressions, <code>descriptor</code> is the
+receive descriptor and <code>change_descriptor</code> is the change descriptor.</p>
+<p>If optional boolean <code>archived</code> is <code>true</code>, importing wallets SHOULD NOT use the
+descriptor set for new address generation.</p>
+<p><code>range</code> is an optional two-element array <code>[start, end]</code>, inclusive, describing
+the ranged derivation indexes covered by the descriptor set.</p>
+<p><code>birth_time</code> is an optional integer Unix timestamp in seconds, indicating a
+lower bound for when the descriptor set may have received funds. Importing
+wallets MAY use this value as a scanning hint.</p>
+<h4 id="BIP388_Wallet_Policy_Backup_Content">BIP388 Wallet Policy Backup Content</h4>
+<p>When <code>CONTENT_TYPE</code> is <code>TYPE = 0x01</code> with <code>TYPE_PARAMS = 0x0184</code> (BIP388), <code>CONTENT</code> is a
+UTF-8 JSON wallet policy backup document. A BIP388 wallet policy is a descriptor
+template plus a vector of key information items, as defined in BIP388.</p>
+<p>Test vectors are in
+<a href="https://bips.dev/138/./bip-0138/test_vectors/bip388.json"><code>bip388.json</code></a>.</p>
+<p>The document is one of two forms:</p>
+<ul>
+<li>A single policy, a JSON object <code>{ "keys": [...], "policy": "&lt;template&gt;" }</code>.</li>
+<li>Multiple policies, a JSON object <code>{ "version": 1, "policy_sets": [...] }</code>.</li>
+</ul>
+<p>Parsers select the form by structure: an object with a <code>policy_sets</code> field is the
+multiple form, an object with a <code>policy</code> field is the single form.</p>
+<h5 id="Policy_Fields">Policy Fields</h5>
+<p><code>keys</code> is a required array of BIP388 key information items, each a serialized
+extended public key with optional key origin (<code>[fingerprint/path]xpub</code>). It MUST
+contain at least one key. Keys MUST NOT contain private key material.</p>
+<p><code>policy</code> is a required non-empty string containing a BIP388 wallet descriptor
+template, with <code>@i</code> key placeholders referring to <code>keys</code>.</p>
+<h5 id="Policy_Set_Fields">Policy Set Fields</h5>
+<p>A policy set has the same <code>keys</code> and <code>policy</code> fields as the single form, plus the
+optional metadata fields:</p>
+<p>If optional boolean <code>archived</code> is <code>true</code>, importing wallets SHOULD NOT use the
+policy for new address generation.</p>
+<p><code>range</code> is an optional two-element array <code>[start, end]</code>, inclusive, describing the
+ranged derivation indexes covered by the policy.</p>
+<p><code>birth_time</code> is an optional integer Unix timestamp in seconds, indicating a lower
+bound for when the policy may have received funds. Importing wallets MAY use this
+value as a scanning hint.</p>
+<h5 id="Multiple_Policies_Document">Multiple Policies Document</h5>
+<p>The multiple form is a JSON object with the following fields:</p>
+<ul>
+<li><code>version</code>: integer. This specification defines version <code>1</code>.</li>
+<li><code>policy_sets</code>: array of policy set objects.</li>
+</ul>
+<h4 id="Encrypted_Payload">Encrypted Payload</h4>
+<p><code>ENCRYPTED_PAYLOAD</code> follows this format:</p>
+<p><code>NONCE</code> <code>LENGTH</code> <code>CIPHERTEXT</code></p>
+<p><code>NONCE</code>: 12-byte (96-bit) nonce. Parsers MUST reject a backup whose <code>NONCE</code> is all zero.
+<code>LENGTH</code>: variable-length integer representing ciphertext length.
+<code>CIPHERTEXT</code>: variable-length ciphertext.</p>
+<p>Note: <code>CIPHERTEXT</code> is followed by the end of the <code>ENCRYPTED_PAYLOAD</code> section.<br />
+Compliant parsers MUST stop reading after consuming <code>LENGTH</code> bytes of ciphertext;
+additional trailing bytes are reserved for vendor-specific extensions and MUST
+be ignored.</p>
+<h3 id="Text_Representation">Text Representation</h3>
+<p>Implementations SHOULD encode and decode the backup using Base64 (RFC 4648).<sup class="footnote-reference"><a href="#psbt-base64">10</a></sup></p>
+<div class="footnote-definition" id="psbt-base64"><sup class="footnote-definition-label">10</sup>
+<p><strong>Why Base64?</strong>
+PSBT (BIP174) is commonly exchanged as a Base64 string, so wallet software
+likely already supports this representation.</p>
+</div>
+<h3 id="File_Extension">File Extension</h3>
+<p>Backups saved to a file SHOULD use the <code>.bip138</code> file extension for the raw binary
+encoding and the <code>.txt</code> extension for the Base64 text representation, so that the
+extension tells implementations which encoding to expect.</p>
+<h2 id="Rationale">Rationale</h2>
+<p>See footnotes throughout the specification for design rationale.</p>
+<h3 id="Future_Extensions">Future Extensions</h3>
+<p>The version field enables possible future enhancements:</p>
+<ul>
+<li>Additional encryption algorithms</li>
+<li>Support for threshold-based decryption</li>
+<li>Hiding number of participants</li>
+<li>bech32m export</li>
+</ul>
+<h3 id="Implementation">Implementation</h3>
+<ul>
+<li>Rust <a rel="noopener" target="_blank" href="https://github.com/pythcoiner/bip138">implementation</a></li>
+</ul>
+<h3 id="Test_Vectors">Test Vectors</h3>
+<p><a href="https://bips.dev/138/./bip-0138/test_vectors/keys_types.json">key_types.json</a> contains test
+vectors for key serialisations.<br />
+<a href="https://bips.dev/138/./bip-0138/test_vectors/content_type.json">content_type.json</a> contains test
+vectors for content types serialisations.<br />
+<a href="https://bips.dev/138/./bip-0138/test_vectors/derivation_path.json">derivation_path.json</a> contains
+test vectors for derivation paths serialisations.<br />
+<a href="https://bips.dev/138/./bip-0138/test_vectors/individual_secrets.json">individual_secrets.json</a>
+contains test vectors for individual secrets serialization.<br />
+<a href="https://bips.dev/138/./bip-0138/test_vectors/encryption_secret.json">encryption_secret.json</a>
+contains test vectors for generation of encryption secret.<br />
+<a href="https://bips.dev/138/./bip-0138/test_vectors/chacha20poly1305_encryption.json">chacha20poly1305_encryption.json</a>
+contains test vectors for ciphertexts generated using CHACHA20-POLY1305.
+<a href="https://bips.dev/138/./bip-0138/test_vectors/encrypted_backup.json">encrypted_backup.json</a>
+contains test vectors for generation of complete encrypted backups, including
+BIP380 and BIP388 content, a multi-content payload, and an all-zero-nonce backup
+that parsers MUST reject.<br />
+<a href="https://bips.dev/138/./bip-0138/test_vectors/bip380_descriptor_backup.json">bip380_descriptor_backup.json</a>
+contains test vectors for BIP380 descriptor backup documents.<br />
+<a href="https://bips.dev/138/./bip-0138/test_vectors/bip388.json">bip388.json</a>
+contains test vectors for BIP388 wallet policy backup documents.</p>
+<h2 id="Backward_Compatibility">Backward Compatibility</h2>
+<p>This BIP defines a new format and changes no existing one. Liana wallet uses an early
+version of this BIP, which is not compatible: its magic is <code>BEB</code> rather than <code>BIP138</code>.</p>
+<h2 id="Acknowledgements">Acknowledgements</h2>
+<p>This BIP builds on the backup scheme proposed by @bigspider on
+<a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/a-simple-backup-scheme-for-wallet-accounts/1607">Delving Bitcoin</a>,
+who also suggested the payload padding design.</p>
+<p>Thanks to @Sjors for extensive reviews, many design contributions to the payload
+encoding, and a proof-of-concept implementation on top of Bitcoin Core. Thanks
+also to @murchandamus, @jonatack, @craigraw, @jp1ac4, and @torkelrogstad for
+their reviews and suggestions.</p>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-09-22</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
