@@ -112,7 +112,7 @@ The Input Finalizer MUST verify that a `PSBT_IN_TAP_KEY_SIG` field is present fo
 
 The Input Finalizer MUST construct the `PSBT_IN_FINAL_SCRIPTWITNESS` containing the single witness element from `PSBT_IN_TAP_KEY_SIG`, as per the BIP 341 key path spending rule.
 
-The Input Finalizer MUST remove the `PSBT_IN_SP_TWEAK`, `PSBT_IN_SP_SPEND_BIP32_DERIVATION`, `PSBT_IN_TAP_KEY_SIG`, and `PSBT_IN_WITNESS_UTXO` fields for any input where the `PSBT_IN_FINAL_SCRIPTWITNESS` is present.
+The Input Finalizer MUST remove the `PSBT_IN_SP_TWEAK`, `PSBT_IN_SP_SPEND_BIP32_DERIVATION`, and `PSBT_IN_TAP_KEY_SIG` fields for any input where the `PSBT_IN_FINAL_SCRIPTWITNESS` is present.
 
 <h2> Rationale </h2>
 
