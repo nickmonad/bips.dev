@@ -221,6 +221,9 @@ The same number of inputs and outputs must be added before those inputs and thei
 If the Signer added a signature that does not use SIGHASH_ANYONECANPAY, the Input Modifiable flag must be set to False.
 If the Signer added a signature that does not use SIGHASH_NONE, the Outputs Modifiable flag must be set to False.
 If the Signer added a signature that uses SIGHASH_SINGLE, the Has SIGHASH_SINGLE flag must be set to True.</p>
+<h3>Input Finalizer</h3>
+<p>For PSBTv2s, when the Input Finalizer clears a finalized input's fields as BIP 174 asks, it must keep PSBT_IN_PREVIOUS_TXID, PSBT_IN_OUTPUT_INDEX, PSBT_IN_SEQUENCE, PSBT_IN_REQUIRED_TIME_LOCKTIME and PSBT_IN_REQUIRED_HEIGHT_LOCKTIME.
+The Transaction Extractor constructs the transaction from these fields, and an input missing either PSBT_IN_PREVIOUS_TXID or PSBT_IN_OUTPUT_INDEX is invalid.</p>
 <h3>Transaction Extractor</h3>
 <p>For PSBTv2s, the transaction is constructed using the PSBTv2 fields.
 The lock time for this transaction is determined as described in the Determining Lock Time section.
@@ -606,7 +609,7 @@ transaction from the PSBTv2 fields.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-09-23</p>
+                    <p class="font-bold">2026-09-24</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
