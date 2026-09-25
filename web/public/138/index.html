@@ -127,6 +127,7 @@
   Discussion: https:&#x2F;&#x2F;delvingbitcoin.org&#x2F;t&#x2F;a-simple-backup-scheme-for-wallet-accounts&#x2F;1607
               https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;5NgJbpVDgEc&#x2F;m&#x2F;TtGK9sF9BgAJ
               https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;pull&#x2F;1951
+  Version: 0.1.2
   Requires: 32, 340, 380, 388, 389
 </code></pre>
 <h2 id="Introduction">Introduction</h2>
@@ -294,8 +295,9 @@ hardware acceleration, making it suitable for hardware wallets and embedded devi
 </div>
 <ul>
 <li>let $nonce$ = random(96 bits)</li>
-<li>let $ciphertext$ = encrypt($payload$, $secret$, $nonce$)</li>
+<li>let $ciphertext$ = encrypt($payload$, $secret$, $nonce$, $aad$)</li>
 </ul>
+<p>The additional authenticated data ($aad$) is empty.</p>
 <p>The $nonce$ MUST NOT be all zero. If the random source yields an all-zero nonce,
 the encoder MUST generate a new one.</p>
 <h3 id="Decryption">Decryption</h3>
@@ -306,7 +308,7 @@ computes:</p>
 <li>for each <code>individual_secret_i</code> generate <code>reconstructed_secret_i</code> =
 <code>individual_secret_i</code> ⊕ <code>si</code></li>
 <li>for each <code>reconstructed_secret_i</code> process $payload$ =
-decrypt($ciphertext$, $secret$, $nonce$)</li>
+decrypt($ciphertext$, $secret$, $nonce$, $aad$)</li>
 </ul>
 <p>Decryption will succeed if and only if <strong>p</strong> was one of the keys in the
 descriptor/wallet policy.</p>
@@ -407,7 +409,7 @@ entries from decoys; they try each entry until one decrypts the payload.</p>
 <p>CHACHA20_POLY1305 (per RFC 8439) supports plaintext up to 2^38 - 64 bytes.
 Implementations MAY impose stricter limits based on platform constraints
 (e.g., limiting to 2^32 - 1 bytes on 32-bit architectures).</p>
-<p>Implementations MUST reject empty payloads.</p>
+<p>Implementations MUST reject empty payloads (i.e. zero content items).</p>
 <h4 id="Ciphertext">Ciphertext</h4>
 <p><code>CIPHERTEXT</code> is the encrypted data resulting from encryption of <code>PAYLOAD</code> with algorithm
 defined in <code>ENCRYPTION</code> where <code>PAYLOAD</code> is encoded following this format:</p>
@@ -458,7 +460,7 @@ remaining bytes are <code>PADDING</code>. A <code>PAYLOAD</code> MUST contain at
 <tr><td style="text-align: left">0x03</td><td style="text-align: left">String</td></tr>
 </tbody></table>
 <p><code>TYPE_LENGTH</code>: variable-length integer representing the length of <code>TYPE_PARAMS</code> in bytes.</p>
-<p>For all <code>TYPE</code> values except <code>0x01</code>, <code>TYPE_LENGTH</code> MUST be present.<sup class="footnote-reference"><a href="#length-required">8</a></sup></p>
+<p>For all <code>TYPE</code> values except <code>0x00</code> and <code>0x01</code>, <code>TYPE_LENGTH</code> MUST be present.<sup class="footnote-reference"><a href="#length-required">8</a></sup></p>
 <div class="footnote-definition" id="length-required"><sup class="footnote-definition-label">8</sup>
 <p><strong>Why is <code>TYPE_LENGTH</code> mandatory?</strong>
 <code>TYPE_LENGTH</code> is what lets a parser skip a content type it does not implement and still
@@ -467,20 +469,19 @@ A string note placed before a descriptor, for example, must not stop an
 implementation that only handles descriptors from recovering that descriptor. A
 type whose <code>TYPE_PARAMS</code> is always empty still carries a zero <code>TYPE_LENGTH</code> for this reason.
 <code>0x01</code> is exempt because every implementation handles it, so it is never skipped
-blindly.</p>
+blindly. <code>0x00</code> is a terminator rather than a content item.</p>
 </div>
 <p><code>TYPE_PARAMS</code>: variable-length field whose encoding depends on <code>TYPE</code>.</p>
 <p>For <code>TYPE</code> values defined above:</p>
 <ul>
-<li>0x00: parsers MUST stop reading content items and treat the remaining bytes as
-padding.</li>
+<li>0x00: parsers MUST stop immediately and treat the remaining bytes as padding.</li>
 <li>0x01: <code>TYPE_LENGTH</code> MUST be omitted and <code>TYPE_PARAMS</code> is a 2-byte big-endian unsigned integer
 representing the BIP number that defines it.</li>
 <li>0x02: <code>TYPE_PARAMS</code> MUST be <code>TYPE_LENGTH</code> bytes of opaque, vendor-specific data.</li>
 <li>0x03: <code>TYPE_PARAMS</code> MUST be empty, and the following <code>CONTENT</code> is the string itself,
 which MUST be valid UTF-8.</li>
 </ul>
-<p>For all <code>TYPE</code> values except <code>0x01</code>, parsers MUST reject <code>CONTENT_TYPE</code> if <code>TYPE_LENGTH</code> exceeds
+<p>For all <code>TYPE</code> values except <code>0x00</code> and <code>0x01</code>, parsers MUST reject <code>CONTENT_TYPE</code> if <code>TYPE_LENGTH</code> exceeds
 the remaining payload bytes.</p>
 <p>For an unknown <code>TYPE</code> less than <code>0x80</code>, parsers MUST consume its <code>TYPE_LENGTH</code> bytes of
 <code>TYPE_PARAMS</code>, treat the content type as unknown, consume the following payload
@@ -515,14 +516,18 @@ logical account or script family.</p>
 <p>For BIP389 multipath descriptors, <code>/&lt;0;1&gt;</code> means receive and change,
 respectively. The <code>change_descriptor</code> field MUST NOT be used.</p>
 <p>For descriptors without BIP389 multipath key expressions, <code>descriptor</code> is the
-receive descriptor and <code>change_descriptor</code> is the change descriptor.</p>
+receive descriptor. The optional <code>change_descriptor</code> string can be omitted for a
+receive-only set.</p>
 <p>If optional boolean <code>archived</code> is <code>true</code>, importing wallets SHOULD NOT use the
 descriptor set for new address generation.</p>
 <p><code>range</code> is an optional two-element array <code>[start, end]</code>, inclusive, describing
-the ranged derivation indexes covered by the descriptor set.</p>
+the <a href="https://bips.dev/138/bip-0032.mediawiki">BIP32</a> non-hardened child indexes covered by the
+descriptor set, with <code>start &lt;= end</code>.</p>
 <p><code>birth_time</code> is an optional integer Unix timestamp in seconds, indicating a
 lower bound for when the descriptor set may have received funds. Importing
-wallets MAY use this value as a scanning hint.</p>
+wallets MAY use this value as a scanning hint.
+If <code>0</code> or omitted, no lower bound is known. Importers SHOULD scan from the wallet
+birthday if known, otherwise from genesis.</p>
 <h4 id="BIP388_Wallet_Policy_Backup_Content">BIP388 Wallet Policy Backup Content</h4>
 <p>When <code>CONTENT_TYPE</code> is <code>TYPE = 0x01</code> with <code>TYPE_PARAMS = 0x0184</code> (BIP388), <code>CONTENT</code> is a
 UTF-8 JSON wallet policy backup document. A BIP388 wallet policy is a descriptor
@@ -547,11 +552,14 @@ template, with <code>@i</code> key placeholders referring to <code>keys</code>.<
 optional metadata fields:</p>
 <p>If optional boolean <code>archived</code> is <code>true</code>, importing wallets SHOULD NOT use the
 policy for new address generation.</p>
-<p><code>range</code> is an optional two-element array <code>[start, end]</code>, inclusive, describing the
-ranged derivation indexes covered by the policy.</p>
+<p><code>range</code> is an optional two-element array <code>[start, end]</code>, inclusive, describing
+the <a href="https://bips.dev/138/bip-0032.mediawiki">BIP32</a> non-hardened child indexes covered by the
+policy, with <code>start &lt;= end</code>.</p>
 <p><code>birth_time</code> is an optional integer Unix timestamp in seconds, indicating a lower
 bound for when the policy may have received funds. Importing wallets MAY use this
-value as a scanning hint.</p>
+value as a scanning hint.
+If <code>0</code> or omitted, no lower bound is known. Importers SHOULD scan from the wallet
+birthday if known, otherwise from genesis.</p>
 <h5 id="Multiple_Policies_Document">Multiple Policies Document</h5>
 <p>The multiple form is a JSON object with the following fields:</p>
 <ul>
@@ -598,7 +606,10 @@ extension tells implementations which encoding to expect.</p>
 vectors for key serialisations.<br />
 <a href="https://bips.dev/138/./bip-0138/test_vectors/content_type.json">content_type.json</a> contains test
 vectors for content types serialisations.<br />
-<a href="https://bips.dev/138/./bip-0138/test_vectors/derivation_path.json">derivation_path.json</a> contains
+<a href="https://bips.dev/138/./bip-0138/test_vectors/payload.json">payload.json</a> contains test vectors for payload parsing.
+<code>payload</code> and each item's <code>content</code> are hexadecimal bytes; <code>type</code> is the numeric
+type byte, and <code>items</code> lists the content items before the terminator.</p>
+<p><a href="https://bips.dev/138/./bip-0138/test_vectors/derivation_path.json">derivation_path.json</a> contains
 test vectors for derivation paths serialisations.<br />
 <a href="https://bips.dev/138/./bip-0138/test_vectors/individual_secrets.json">individual_secrets.json</a>
 contains test vectors for individual secrets serialization.<br />
@@ -625,6 +636,26 @@ who also suggested the payload padding design.</p>
 encoding, and a proof-of-concept implementation on top of Bitcoin Core. Thanks
 also to @murchandamus, @jonatack, @craigraw, @jp1ac4, and @torkelrogstad for
 their reviews and suggestions.</p>
+<h2 id="Changelog">Changelog</h2>
+<ul>
+<li><strong>0.1.2</strong> (2026-09-24):
+<ul>
+<li>Specify empty AEAD associated data.</li>
+<li>Clarify that <code>0x00</code> ends payload parsing and add test vectors.</li>
+</ul>
+</li>
+<li><strong>0.1.1</strong> (2026-09-23):
+<ul>
+<li>Clarify derivation range bounds and zero or omitted birth-time semantics for descriptors and policies.</li>
+<li>Clarify receive-only descriptor sets and add a corresponding test vector.</li>
+</ul>
+</li>
+<li><strong>0.1.0</strong> (2026-09-21):
+<ul>
+<li>Initial publication.</li>
+</ul>
+</li>
+</ul>
 
         </article>
     </div>
@@ -635,7 +666,7 @@ their reviews and suggestions.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-09-24</p>
+                    <p class="font-bold">2026-09-25</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
