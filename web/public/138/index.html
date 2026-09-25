@@ -127,8 +127,8 @@
   Discussion: https:&#x2F;&#x2F;delvingbitcoin.org&#x2F;t&#x2F;a-simple-backup-scheme-for-wallet-accounts&#x2F;1607
               https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;5NgJbpVDgEc&#x2F;m&#x2F;TtGK9sF9BgAJ
               https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;pull&#x2F;1951
-  Version: 0.1.2
-  Requires: 32, 340, 380, 388, 389
+  Version: 0.1.3
+  Requires: 32, 340, 380, 388, 389, 390
 </code></pre>
 <h2 id="Introduction">Introduction</h2>
 <h3 id="Abstract">Abstract</h3>
@@ -207,7 +207,8 @@ scheme unsuitable for storing private key material.</p>
 <p>Note: in the following sections, the operator ⊕ refers to the bitwise XOR operation.</p>
 <h3 id="Secret_generation">Secret generation</h3>
 <ul>
-<li>Let $p_1, p_2, \dots, p_n$, be the public keys in the descriptor/wallet policy, in
+<li>Let $p_1, p_2, \dots, p_n$, be the distinct public keys across all descriptor
+and policy sets and all content items in the payload, in
 increasing lexicographical order. The scheme is defined for any $n \geq 1$,
 in particular it supports single-signature descriptors ($n = 1$). Each $p_i$
 is the x-only-normalized root public key of one <em>allowed</em> key expression
@@ -220,8 +221,8 @@ is the x-only-normalized root public key of one <em>allowed</em> key expression
 hash construction from <a href="https://bips.dev/138/bip-0340.mediawiki#design">BIP340</a>.</p>
 <p>Because $s$ and $s_i$ use distinct domain-separation tags, $s \neq s_i$ and
 therefore $c_i$ is never the all-zero string.</p>
-<p>Keys published on chain are already kept out of ${p_1, \dots, p_n}$ by the
-<a href="https://bips.dev/138/#descriptor-key-requirements">Descriptor key requirements</a>.
+<p>The <a href="https://bips.dev/138/#descriptor-key-requirements">Descriptor key requirements</a> exclude
+keys exposed by literal or bare-xpub expressions in the backed-up scripts.
 Implementations MUST exclude the key with x coordinate
 <code>50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0</code> (the BIP341 NUMS
 point). Applications MAY exclude any further key they know to be public.</p>
@@ -240,8 +241,8 @@ already know, but reusing such an xpub as a key of a multisig descriptor lets th
 server decrypt every backup of the multisig. Users SHOULD build a multisig from
 accounts whose xpub was never sent to such a server, such as BIP48 or BIP87 accounts.</p>
 <h3 id="Descriptor_key_requirements">Descriptor key requirements</h3>
-<p>Only key expressions of the extended-public-key type with a trailing
-derivation step or wildcard contribute to ${p_1, \dots, p_n}$. Without
+<p>Outside <code>musig()</code>, only key expressions of the extended-public-key type with a
+trailing derivation step or wildcard contribute to ${p_1, \dots, p_n}$. Without
 that derivation, the xpub's root pubkey, used to seed $s$, would also be
 the on-chain pubkey of every spend, so observing one spend would let
 anyone recompute $s$ and decrypt the backup.<sup class="footnote-reference"><a href="#trailing-derivation">1</a></sup> The
@@ -252,9 +253,9 @@ Any trailing derivation step, or the implicit child derivation forced by
 a wildcard, breaks the identity between the xpub root pubkey and the
 on-chain pubkey. Fixed-derivation expressions like <code>xpub.../0/5</code> are
 allowed because the on-chain key (<code>xpub/0/5</code>) already differs from the
-encryption seed (the xpub root). Literal pubkeys and bare xpubs are
-disallowed for the same reason: the literal value is exactly what goes
-on-chain, so $s$ would become recoverable from a single observed spend.</p>
+encryption seed (the xpub root). Outside <code>musig()</code>, literal pubkeys and
+bare xpubs are disallowed for the same reason: the literal value is exactly
+what goes on-chain, so $s$ would become recoverable from a single observed spend.</p>
 </div>
 <p>Allowed forms (origin information <code>[...]</code> is optional and orthogonal):</p>
 <table><thead><tr><th>Form</th><th>Example</th></tr></thead><tbody>
@@ -263,15 +264,25 @@ on-chain, so $s$ would become recoverable from a single observed spend.</p>
 <tr><td><code>&lt;xpub&gt;/&lt;path&gt;/*</code> (fixed derivation followed by a wildcard)</td><td><code>xpub.../0/*</code></td></tr>
 <tr><td><code>&lt;xpub&gt;/&lt;a;b;...&gt;</code> (multipath, no wildcard)</td><td><code>xpub.../&lt;0;1&gt;</code></td></tr>
 <tr><td><code>&lt;xpub&gt;/&lt;a;b;...&gt;/*</code> (multipath followed by a wildcard)</td><td><code>xpub.../&lt;0;1&gt;/*</code></td></tr>
+<tr><td><code>&lt;xpub&gt;</code> (only as a <code>musig()</code> participant)</td><td><code>xpub...</code></td></tr>
 </tbody></table>
+<p>Within a <a href="https://bips.dev/138/bip-0390.mediawiki">BIP390</a> <code>musig()</code> expression, participant xpubs
+are allowed with or without trailing derivation: the aggregate on-chain key
+does not reveal the individual participant keys. For encryption, use each
+participant's xpub root rather than the aggregate key. Literal public-key
+participants remain excluded.</p>
+<p>A candidate root MUST be excluded if its x-coordinate matches a literal key
+or a bare xpub root used outside <code>musig()</code> in any descriptor or resolved
+policy in the payload. For example,
+<code>wsh(or_i(pk(X/0/*),pk(X)))</code> exposes the root of xpub <code>X</code> on spending, so that
+root must be excluded even though <code>X/0/*</code> is otherwise eligible.</p>
 <p>Implementations:</p>
 <ul>
-<li>MUST exclude every other form (literal pubkeys, bare xpubs, ...) from
-${p_1, \dots, p_n}$.</li>
+<li>MUST exclude every other form (literal pubkeys, bare xpubs outside <code>musig()</code>,
+...) from ${p_1, \dots, p_n}$.</li>
 <li>MUST refuse to encode a backup if the resulting set is empty.</li>
-<li>MUST make the user aware of each excluded expression, since the
-cosigner holding that key will be unable to decrypt the backup with
-their key.</li>
+<li>MUST make the user aware of each excluded expression and candidate root,
+since its holder may be unable to decrypt the backup with that key.</li>
 </ul>
 <h3 id="Key_Normalization">Key Normalization</h3>
 <p>For each allowed expression, take the root extended public key (ignoring
@@ -602,9 +613,11 @@ extension tells implementations which encoding to expect.</p>
 <li>Rust <a rel="noopener" target="_blank" href="https://github.com/pythcoiner/bip138">implementation</a></li>
 </ul>
 <h3 id="Test_Vectors">Test Vectors</h3>
-<p><a href="https://bips.dev/138/./bip-0138/test_vectors/keys_types.json">key_types.json</a> contains test
-vectors for key serialisations.<br />
-<a href="https://bips.dev/138/./bip-0138/test_vectors/content_type.json">content_type.json</a> contains test
+<p><a href="https://bips.dev/138/./bip-0138/test_vectors/recipient_keys.json">recipient_keys.json</a> contains
+test vectors for recipient selection. <code>descriptors</code> lists the payload's descriptor
+strings; <code>expected_keys</code> lists the sorted, deduplicated x-only recipient roots
+before application-specific exclusions. <code>null</code> requires refusing to encode.</p>
+<p><a href="https://bips.dev/138/./bip-0138/test_vectors/content_type.json">content_type.json</a> contains test
 vectors for content types serialisations.<br />
 <a href="https://bips.dev/138/./bip-0138/test_vectors/payload.json">payload.json</a> contains test vectors for payload parsing.
 <code>payload</code> and each item's <code>content</code> are hexadecimal bytes; <code>type</code> is the numeric
@@ -638,6 +651,13 @@ also to @murchandamus, @jonatack, @craigraw, @jp1ac4, and @torkelrogstad for
 their reviews and suggestions.</p>
 <h2 id="Changelog">Changelog</h2>
 <ul>
+<li><strong>0.1.3</strong> (2026-09-24):
+<ul>
+<li>Rename, generalize and expand the key-selection test vectors.</li>
+<li>Clarify MuSig participant eligibility and recipient selection across the payload.</li>
+<li>Exclude roots exposed by another key expression.</li>
+</ul>
+</li>
 <li><strong>0.1.2</strong> (2026-09-24):
 <ul>
 <li>Specify empty AEAD associated data.</li>
