@@ -213,11 +213,11 @@ The remaining four (4) hashes are provided at runtime to be verified by the proo
 
 The serialization begins with the VarInt encoded number of inner nodes, `0x06`, followed by the tree serialization itself, `0xbd8440`.
 Next the number of SKIP hashes is VarInt encoded, `0x03`, followed by the three (3) hashes in sequence.
-The resulting 101 byte proof, encoded in base64:.
+The resulting 101 byte proof, encoded in base64:
 
 ```
     Br2EQAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGZmZmZmZmZmZmZmZmZmZmZmZmZm
-    ZmZmZmZmZmZmZmZmREREREREREREREREREREREREREREREREREREREREREQ=
+    ZmZmZmZmZmZmZmZmIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiI=
 ```
 
 

@@ -100,7 +100,7 @@ In order to allow Alice to create more than one output for Bob<ref name="why_mor
 *  Let _P<sub>0</sub> = B + hash(a·B || k)·G_
 *  For additional outputs:
     *  Increment _k_ by one (_k++_)
-    *  Let _P<sub>i</sub> = B + hash(a·B || k)·G_
+    *  Let _P<sub>k</sub> = B + hash(a·B || k)·G_
 
 
 Bob detects this output the same as before by searching for _P<sub>0</sub> = B + hash(b·A || 0)·G_. Once he detects the first output, he must:
@@ -114,7 +114,7 @@ Since Bob will only perform these subsequent checks after a transaction with at 
 
 ** Preventing address reuse **
 
-If Alice were to use a different UTXO from the same public key _A_ for a subsequent payment to Bob, she would end up deriving the same destinations _P<sub>i</sub>_. To prevent this, Alice should include an input hash in the following manner:
+If Alice were to use a different UTXO from the same public key _A_ for a subsequent payment to Bob, she would end up deriving the same destinations _P<sub>k</sub>_. To prevent this, Alice should include an input hash in the following manner:
 
 *  Let _input_hash = hash(outpoint || A)_<ref name="why_include_A">**Why include A in the input hash calculation?** By committing to A in input hash, this ensures that the sender cannot maliciously choose a private key _a&prime;_ in a subsequent transaction where _a&prime; = input_hash·a / input_hash&prime;_, which would force address reuse in the protocol.</ref>
 *  Let _P<sub>0</sub> = B + hash(input_hash·a·B || 0)·G_
@@ -129,7 +129,8 @@ In our simplified example we have been referring to Alice's transactions as havi
 Alice performs the tweak with the sum of her input private keys in the following manner:
 
 *  Let _a = a<sub>1</sub> + a<sub>2</sub> + ... + a<sub>n</sub>_
-*  Let _input_hash = hash(outpoint<sub>L</sub> || (a·G))_, where _outpoint<sub>L</sub>_ is the smallest outpoint lexicographically<ref name="why_smallest_outpoint">**Why use the lexicographically smallest outpoint for the hash?** Recall that the purpose of including the input hash is so that the sender and receiver can both come up with a deterministic nonce that ensures that a unique address is generated each time, even when reusing the same scriptPubKey as an input. Choosing the smallest outpoint lexicographically satisfies this requirement, while also ensuring that the generated output is not dependent on the final ordering of inputs in the transaction. Using a single outpoint also works well with memory constrained devices (such as hardware signing devices) as it does not require the device to have the entire transaction in memory in order to generate the silent payment output.</ref>
+*  Let _A = a·G_
+*  Let _input_hash = hash(outpoint<sub>L</sub> || A)_, where _outpoint<sub>L</sub>_ is the smallest outpoint lexicographically<ref name="why_smallest_outpoint">**Why use the lexicographically smallest outpoint for the hash?** Recall that the purpose of including the input hash is so that the sender and receiver can both come up with a deterministic nonce that ensures that a unique address is generated each time, even when reusing the same scriptPubKey as an input. Choosing the smallest outpoint lexicographically satisfies this requirement, while also ensuring that the generated output is not dependent on the final ordering of inputs in the transaction. Using a single outpoint also works well with memory constrained devices (such as hardware signing devices) as it does not require the device to have the entire transaction in memory in order to generate the silent payment output.</ref>
 *  Let _P<sub>0</sub> = B + hash(input_hash·a·B || 0)·G_
 
 
