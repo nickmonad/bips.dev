@@ -164,20 +164,20 @@ makes it possible to get rid of <a rel="noopener" target="_blank" href="https://
 <ul>
 <li>if <code>N % 2016</code> is equal to 0, the timestamp of the block must be set to a value higher than or
 equal to the value of the timestamp of block at height <code>N-1</code> minus 7200 (T<sub>N</sub> ≥
-T<sub>N−1</sub> − 7200);</li>
+T<sub>N−1</sub> − 7200) seconds;</li>
 <li>if <code>N % 2016</code> is equal to 2015, the timestamp of the block must be set to a value higher than
 or equal to the value of the timestamp of the block at height <code>N-2015</code> (T<sub>N</sub> ≥
 T<sub>N−2015</sub>).</li>
 </ul>
 <p>A limit is set on the number of signature operations present in the scripts used to validate a
 transaction. It applies to all transactions in the block except the coinbase transaction<sup class="footnote-reference"><a href="#1">4</a></sup>. For
-each input in the transaction, count the number of <code>CHECKSIG</code> and <code>CHECKMULTISIG</code> in the input
+each input in the transaction, count the number of signature operations from <code>CHECKSIG</code>(<code>VERIFY</code>) and <code>CHECKMULTISIG</code>(<code>VERIFY</code>) in the input
 scriptSig and previous output's scriptPubKey, including the P2SH redeemScript. If the total summed
 over all transaction inputs is strictly higher than 2500, the transaction is invalid. The accounting is the
 same as for <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki#specification">bip-0016</a>, evaluating the scriptSig, scriptPubKey, and P2SH redeemScript
 separately:</p>
 <ol>
-<li><code>CHECKSIG</code> and <code>CHECKSIGVERIFY</code> count as 1 signature operation, whether or not they are evaluated.</li>
+<li><code>CHECKSIG</code> and <code>CHECKSIGVERIFY</code> each count as 1 signature operation, whether or not they are evaluated.</li>
 <li><code>CHECKMULTISIG</code> and <code>CHECKMULTISIGVERIFY</code> immediately preceded by <code>OP_1</code> through <code>OP_16</code> are counted as 1 to 16 signature operations, whether or not they are evaluated.</li>
 <li>All other <code>CHECKMULTISIG</code> and <code>CHECKMULTISIGVERIFY</code> are counted as 20 signature operations, whether or not they are evaluated.</li>
 </ol>
