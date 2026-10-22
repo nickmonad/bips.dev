@@ -91,7 +91,7 @@ Input:
 *  The secret key _a_: a 256-bit unsigned integer
 *  The public key _B_: a point on the curve
 *  Auxiliary random data _r_: a 32-byte array<ref name="why_include_auxiliary_random_data"> ** Why include auxiliary random data?** The auxiliary random data should be set to fresh randomness for each proof. The same rationale and recommendations from <a href="/340" target="_blank">default-signing BIP340</a> should be applied.</ref> 
-*  The generator point _G_: a point on the curve<ref name="why_include_G"> ** Why include the generator point G as an input?** While all other BIPs have used the generator point from secp256k1, passing it as an input here lets this algorithm be used for other curves.</ref>
+*  The generator point _G_: a point on the curve<ref name="why_include_G"> ** Why include the generator point G as an input?** While all other BIPs have used the generator point from secp256k1, passing it as an input here lets this algorithm be used for other generators on secp256k1.</ref>
 *  An optional message _m_: a 32-byte array<ref name="why_include_a_message"> ** Why include a message as an input?** This could be useful for protocols that want to authorize on a compound statement, not just knowledge of a scalar. This allows the protocol to combine knowledge of the scalar and the statement.</ref>
 
 
@@ -117,15 +117,15 @@ The algorithm _GenerateProof(a, B, r, G, m)_ is defined as:
 <h3> DLEQ Proof Verification </h3>
 
 
-The following verifies the proof generated in the previous section. If the following algorithm succeeds, the points _A_ and _C_ were both generated from the same scalar. The former from multiplying by _G_, and the latter from multiplying by _B_.
+The following verifies the proof generated in the previous section. If the following algorithm succeeds, the points _A_ and _C_ were both generated from the same scalar _a_, i.e. _A = a⋅G_ and _C = a⋅B_.
 
 Input:
 *  The public key of the secret key used in the proof generation _A_: a point on the curve
 *  The public key used in the proof generation _B_: a point on the curve
 *  The result of multiplying the secret and public keys used in the proof generation _C_: a point on the curve
 *  A proof _proof_: a 64-byte array
-*  The generator point used in the proof generation _G_: a point on the curve<ref name="why_include_G"> ** Why include the generator point G as an input?** While all other BIPs have used the generator point from Secp256k1, passing it as an input here lets this algorithm be used for other curves.</ref>
-*  An optional message _m_: a 32-byte array<ref name="why_include_a_message"> ** Why include a message as an input?** This could be useful for protocols that want to authorize on a compound statement, not just knowledge of a scalar. This allows the protocol to combine knowledge of the scalar and the statement.</ref>
+*  The generator point used in the proof generation _G_: a point on the curve<ref name="why_include_G" />
+*  An optional message _m_: a 32-byte array<ref name="why_include_a_message" />
 
 
 The algorithm _VerifyProof(A, B, C, proof, G, m)_ is defined as:
