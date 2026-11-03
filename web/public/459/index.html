@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Read BIPs like a pro." />
+    <meta name="keywords" content="bitcoin, bitcoin improvement proposals, bip, bips, static, share" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="BIP 459: DahLIAS fully aggregated signatures for secp256k1" />
+    <meta property="og:description" content="Read BIPs like a pro." />
+    <meta property="og:image" content="https://bips.dev/og-bips-dev.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BIP 459: DahLIAS fully aggregated signatures for secp256k1" />
+    <meta name="twitter:description" content="Read BIPs like a pro." />
+    <meta name="twitter:creator" content="@nickmonad" />
+    <meta name="twitter:image" content="https://bips.dev/og-bips-dev.png" />
+
+    <title>BIP 459: DahLIAS fully aggregated signatures for secp256k1</title>
+
+    
+        <link rel="stylesheet" href="/style.css" />
+    
+
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script src="/pagefind/pagefind-ui.js"></script>
+
+    <script defer data-domain="bips.dev" src="/js/script.js"></script>
+    <script>
+        // setup plausible function for custom events
+        window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+
+        // setup and initialize dark mode
+        // https://tailwindcss.com/docs/dark-mode
+        window.setTheme = function() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        }
+        window.setTheme();
+
+        // searching via
+        // https://pagefind.app
+        window.addEventListener('DOMContentLoaded', function(event) {
+            new PagefindUI({
+                element: "#search",
+                hightlightParam: "highlight",
+                showImages: false,
+                showSubResults: true,
+                translations: {
+                    placeholder: "Search BIPs"
+                },
+                processTerm: function(term) {
+                    plausible('Search');
+                    return term;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* variables to override on pagefind */
+        /* https://pagefind.app/docs/ui-usage/#customising-the-styles */
+        /* values are from tailwind: https://tailwindcss.com/docs/customizing-colors */
+        :root {
+            --pagefind-ui-primary: #334155;
+            --pagefind-ui-text: #334155;
+            --pagefind-ui-background: #ffffff;
+            --pagefind-ui-border-width: 1px;
+            --pagefind-ui-border-radius: 4px;
+        }
+
+        html.dark {
+            --pagefind-ui-primary: #d1d5db;
+            --pagefind-ui-text: #d1d5db;
+            --pagefind-ui-background: #18181b;
+            --pagefind-ui-border: #152028;
+        }
+
+        mark {
+            background-color: #ff9900 !important;
+            color: #6b7280 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-zinc-900">
+    <div class="container mx-auto flex justify-center">
+        <div data-pagefind-body class="min-w-full max-w-full lg:min-w-[1000px] lg:max-w-[1000px] px-6 py-10 space-y-10 text-slate-700 dark:text-gray-300">
+            
+    <div class="flex flex-col space-y-4 pt-4 md:pt-8">
+        <div class="flex justify-between">
+            <a href="/">Back to BIPs</a>
+            <div class="flex">
+                <svg id="toggleDark_light" class="hidden dark:flex w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'light'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="toggleDark_dark" class="flex dark:hidden w-6 h-6 hover:cursor-pointer" onclick="localStorage.theme = 'dark'; window.setTheme()"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div data-pagefind-weight="10" class="text-2xl font-extrabold">BIP 459: DahLIAS fully aggregated signatures for secp256k1</div>
+            <div class="flex justify-between">
+                <div class="text-xl font-semibold">2026-07-10</div>
+                <a href="https:&#x2F;&#x2F;github.com&#x2F;bitcoin&#x2F;bips&#x2F;blob&#x2F;master&#x2F;bip-0459.mediawiki" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+
+        <article class="max-w-none prose prose-lg prose-zinc prose-p:leading-relaxed prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:decoration-bitcoin prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-200 prose-pre:text-zinc-800 dark:prose-invert dark:prose-pre:bg-zinc-600 dark:prose-pre:text-white">
+            <pre><code>  BIP: 459
+  Layer: Applications
+  Title: DahLIAS fully aggregated signatures for secp256k1
+  Authors: Fabian Jahr &lt;fjahr@protonmail.com&gt;
+  Status: Draft
+  Type: Specification
+  Assigned: 2026-07-10
+  License: CC0-1.0 OR MIT
+  Discussion: 2025-04-17: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;eothFkxAvK0&#x2F;m&#x2F;IZVGezcdDAAJ
+              2026-07-06: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;TF5mPfy58RQ&#x2F;m&#x2F;lvSC2FdYAAAJ
+  Requires: 340
+</code></pre>
+<h2> Introduction </h2>
+<h3> Abstract </h3>
+<p>This document describes <em>full-aggregation</em>, a standard for Schnorr-style aggregate signatures based on the DahLIAS<sup id="cite_ref_1"><a href="#cite_ref_1">1</a></sup> interactive aggregate signature scheme.
+Full-aggregation is an interactive process in which a group of signers produces a single aggregate signature for a collection of public key and message pairs.
+The resulting aggregate signature has the same size as a single BIP 340 signature (64 bytes), regardless of the number of signers.</p>
+<h3> Copyright </h3>
+<p>This document, along with the <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/reference.py" target="_blank">reference implementation</a> and <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/vectors/" target="_blank">test vectors</a>, is licensed under CC0-1.0 or the MIT License, at your option. The vendored copy of the secp256k1lab library in <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/secp256k1lab/" target="_blank">bip-0459/secp256k1lab</a> is licensed under the MIT License only, as stated in its <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/secp256k1lab/COPYING" target="_blank">COPYING</a> file.</p>
+<h3> Motivation </h3>
+<p>Full-aggregation applies whenever a verifier must check multiple signatures.
+The signers jointly produce a single constant-size aggregate signature, and verifying the aggregate gives the same assurance as verifying an individual signature for each public key and message pair.</p>
+<p>The primary purpose is to reduce the amount of data sent to the verifier.
+While <em>n</em> BIP 340 signatures are <em>64*n</em> bytes, a fully aggregated signature is always 64 bytes.
+Verifying the aggregate is also faster than verifying each signature separately.
+One application is cross-input signature aggregation (CISA) within the Bitcoin consensus protocol, which reduces the size and verification cost of multi-input transactions.
+Deploying CISA requires a consensus change that this document does not specify.
+This document only specifies the signature scheme and consensus integration is left to a future proposal.</p>
+<p>Full-aggregation is interactive.
+It requires cooperation among all signers, following a two-round protocol whose first round can be preprocessed before the messages to be signed are known.
+This makes full-aggregation unsuitable for scenarios where signers cannot coordinate.
+However, when all input owners already cooperate to construct and sign a transaction, the interaction is not a significant burden.
+Historical average transactions would see an <a href="https://hrf.org/latest/cisa-research-paper/" target="_blank">average size reduction of 20.5% and a weight reduction of 7.3%</a>.
+Full-aggregation is particularly beneficial for large transactions such as CoinJoins, PayJoins and consolidations, because the savings grow with the number of inputs.
+For example, a hypothetical CoinJoin of 300 inputs and 300 outputs would see a size reduction of 42.7% and a weight reduction of 15.9%.
+A typical consolidation transaction of 150 inputs and one output would see a weight reduction of 27.4%.
+CISA with full-aggregation can even reduce the cost of privacy since participating in CoinJoin and PayJoin transactions can become cheaper than sending individual transactions.</p>
+<p>Unlike interactive multisignature schemes such as MuSig2 (<a href="/327" target="_blank">BIP 327</a>), in which signers cooperate to produce a single signature under a single aggregate public key for a single message, full-aggregation does not combine the signers' keys.
+Each signer signs their own message under their own public key, and the aggregate signature is verified against the list of individual public key and message pairs.</p>
+<h2> Overview </h2>
+<p>Implementers must make sure to understand this section thoroughly to avoid subtle mistakes that may lead to catastrophic failure.</p>
+<h3> General Signing Flow </h3>
+<p>The signing protocol involves <em>u</em> signers, each with their own secret key, public key, and message, and a <em>coordinator</em> who aggregates their contributions.</p>
+<p>The basic order of operations to create a fully aggregated signature is as follows:</p>
+<p><strong>First broadcast round:</strong>
+The signers start the signing session by running <em>NonceGen</em> to compute <em>secnonce</em> and <em>pubnonce</em>.<sup id="cite_ref_2"><a href="#cite_ref_2">2</a></sup>
+Then, the signers send their <em>pubnonce</em> to the coordinator.
+The coordinator runs <em>NonceAgg</em> to compute an aggregate nonce <em>aggnonce</em> and sends it back to the signers, along with the ordered list of all <em>(pk, m, pubnonce)</em> triples.</p>
+<p><strong>Second broadcast round:</strong>
+At this point, every signer has the required data to sign.
+Every signer computes a partial signature by running <em>Sign</em> with their secret key, their <em>secnonce</em>, the message they intend to sign, and the session parameters.
+Then, the signers send their partial signatures to the coordinator, who runs <em>SigAgg</em> to obtain the final 64-byte aggregate signature.
+If all signers behaved honestly, the result passes <em>Verify</em>.
+If the aggregate signature is invalid, the coordinator can run <em>PartialSigVerify</em> on each partial signature to identify the disruptive signer.</p>
+<p><strong>IMPORTANT</strong>: The <em>Sign</em> algorithm must <strong>not</strong> be executed twice with the same <em>secnonce</em>.
+Otherwise, it is possible to extract the signer's secret key from the partial signatures output by three executions of <em>Sign</em> in different sessions (see <a href="#nonce-generation" target="_blank">Nonce Generation</a>).
+To avoid accidental reuse of <em>secnonce</em>, an implementation may securely erase the <em>secnonce</em> argument by overwriting it with 64 zero bytes after it has been read by <em>Sign</em>.
+A <em>secnonce</em> consisting of only zero bytes is invalid for <em>Sign</em> and will cause it to fail.</p>
+<p>To simplify the specification of the algorithms, some intermediary values are unnecessarily recomputed from scratch, e.g., when executing <em>GetSessionValues</em> multiple times.
+Actual implementations can cache these values.
+As a result, the session parameters may look different in implementations or may not exist as an explicit data structure.
+However, computation of <em>GetSessionValues</em> and storage of the result must be protected against modification from an untrusted third party.</p>
+<h3> Nonce Generation </h3>
+<p><strong>IMPORTANT</strong>: <em>NonceGen</em> must have access to a high-quality random generator to draw an unbiased, uniformly random value _rand' _.
+In contrast to BIP 340 signing, the nonce values <strong>must not be derived deterministically</strong> from the signing key and message because otherwise active adversaries can trick the victim into reusing a nonce.<sup id="cite_ref_3"><a href="#cite_ref_3">3</a></sup></p>
+<p>The optional arguments to <em>NonceGen</em> enable a defense-in-depth mechanism that may prevent secret key exposure if _rand' _ is accidentally not drawn uniformly at random.
+If the value _rand' _ was identical in two <em>NonceGen</em> invocations but any other argument was different, the <em>secnonce</em> would still be different, avoiding accidental nonce reuse.
+Therefore, it is recommended to provide the optional argument <em>sk</em> if available during nonce generation.
+The auxiliary input <em>extra_in</em> can contain additional contextual data that has a chance of changing between <em>NonceGen</em> runs, e.g., a session identifier or a counter.
+However, the protection provided by the optional arguments should only be viewed as a last resort.</p>
+<p>In some applications, it is beneficial to generate and send a <em>pubnonce</em> before the other signers, their public keys, or the messages to sign are known.
+In this case, the <em>NonceGen</em> algorithm is run during a preprocessing phase, and the <em>Sign</em> algorithm can be run immediately when the messages and set of signers are determined.
+This way, the final signature is created quicker and with fewer round trips.
+However, applications that use this method presumably store the nonces for a longer time and must therefore be even more careful not to reuse them.</p>
+<p>In general, signers are stateful in the sense that they first generate <em>secnonce</em> and then need to store it until they receive the coordinator's response containing the aggregate nonce and session parameters.
+However, it is possible for one of the signers to be stateless: this signer waits until it receives the <em>pubnonce</em> of all other signers and until session parameters are determined.
+Then, the signer can run <em>NonceGen</em>, <em>NonceAgg</em>, and <em>Sign</em> in sequence and send out its <em>pubnonce</em> along with its partial signature.</p>
+<h3> Role of the Coordinator </h3>
+<p>Instead of every signer sending their nonce and partial signature to every other signer, it is possible to use an untrusted <em>coordinator</em> to reduce the communication complexity from quadratic to linear in the number of signers.
+In each of the two rounds, the coordinator collects all signers' contributions (nonces or partial signatures), processes them, and sends the results back to the signers.
+A malicious coordinator can force the signing session to fail to produce a valid aggregate signature but cannot negatively affect the unforgeability of the scheme, i.e., even a malicious coordinator colluding with all but one signer cannot forge a signature.</p>
+<p>If there is no dedicated coordinator, one of the signers can act as the coordinator.</p>
+<p>Unlike BIP 327 where the coordinator only needs to send the aggregate nonce back to signers, the coordinator in this scheme must also send each signer the individual public nonces (specifically, the <em>R<sub>2</sub></em> components) of all signers.
+This is because each signer must verify that their own <em>R<sub>2</sub></em> value appears exactly once in the session context (see <a href="#sign" target="_blank">Sign</a>).
+In many applications, the signers already know the list of public keys and messages before the signing session starts and only the <em>aggnonce</em> and individual public nonces need to be communicated.</p>
+<h3> List Ordering </h3>
+<p>The aggregate signature depends on the order of the list of public key and message pairs.
+A signature valid for a list <em>L</em> will not be valid for any non-trivial permutation of <em>L</em> (except with negligible probability).
+If an application does not have a natural ordering of signers, the list should be sorted using a predetermined order before being provided to the coordinator, and the verifier must use the same order.</p>
+<h2> Specification </h2>
+<h3> Notation </h3>
+<p>The following conventions are used, with constants as defined for <a href="https://www.secg.org/sec2-v2.pdf" target="_blank">secp256k1</a>. We note that adapting this specification to other elliptic curves is not straightforward and can result in an insecure scheme<sup id="cite_ref_4"><a href="#cite_ref_4">4</a></sup>.</p>
+<ul>
+<li>Lowercase variables represent integers or byte arrays.
+<ul>
+<li>The constant <em>p</em> refers to the field size, <em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F</em>.</li>
+<li>The constant <em>n</em> refers to the curve order, <em>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141</em>.</li>
+</ul>
+</li>
+<li>Uppercase variables refer to points on the curve with equation <em>y<sup>2</sup> = x<sup>3</sup> + 7</em> over the integers modulo <em>p</em>.
+<ul>
+<li><em>is_infinite(P)</em> returns whether or not <em>P</em> is the point at infinity.</li>
+<li><em>x(P)</em> and <em>y(P)</em> are integers in the range <em>0..p-1</em> and refer to the X and Y coordinates of a point <em>P</em> (assuming it is not infinity).</li>
+<li>The constant <em>G</em> refers to the base point, for which <em>x(G) = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</em> and <em>y(G) = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8</em>.</li>
+<li>Addition of points refers to the usual <a href="https://en.wikipedia.org/wiki/Elliptic_curve" target="_blank">The_group_law elliptic curve group operation</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication" target="_blank">Multiplication (⋅) of an integer and a point</a> refers to the repeated application of the group operation.</li>
+</ul>
+</li>
+<li>Functions and operations:
+<ul>
+<li><em>||</em> refers to byte array concatenation.</li>
+<li>The function <em>x[i:j]</em>, where <em>x</em> is a byte array and <em>i, j ≥ 0</em>, returns a <em>(j - i)</em>-byte array with a copy of the <em>i</em>-th byte (inclusive) to the <em>j</em>-th byte (exclusive) of <em>x</em>.</li>
+<li>The function <em>bytes(x)</em>, where <em>x</em> is an integer, returns the 32-byte encoding of <em>x</em>, most significant byte first.</li>
+<li>The function <em>xbytes(P)</em>, where <em>P</em> is a point for which <em>not is_infinite(P)</em>, returns <em>bytes(x(P))</em>.</li>
+<li>The function <em>cbytes(P)</em>, where <em>P</em> is a point for which <em>not is_infinite(P)</em>, returns the 33-byte encoding consisting of the single byte <em>0x02</em> if <em>has_even_y(P)</em>, or <em>0x03</em> otherwise, prepended to <em>bytes(x(P))</em>.</li>
+<li>The function <em>len(x)</em> where <em>x</em> is a byte array returns the length of the array.</li>
+<li>The function <em>int(x)</em>, where <em>x</em> is a 32-byte array, returns the 256-bit unsigned integer whose most significant byte first encoding is <em>x</em>.</li>
+<li>The function <em>has_even_y(P)</em>, where <em>P</em> is a point for which <em>not is_infinite(P)</em>, returns <em>y(P) mod 2 = 0</em>.</li>
+<li>The function <em>lift_x(x)</em>, where <em>x</em> is a 256-bit unsigned integer, returns the point <em>P</em> for which <em>x(P) = x</em> and <em>has_even_y(P)</em>, or fails if <em>x ≥ p</em> or no such point exists. The function <em>lift_x(x)</em> is equivalent to the following pseudocode:
+<ul>
+<li>Fail if <em>x ≥ p</em>.</li>
+<li>Let <em>c = x<sup>3</sup> + 7 mod p</em>.</li>
+<li>Let <em>y = c<sup>(p+1)/4</sup> mod p</em>.</li>
+<li>Fail if <em>c ≠ y<sup>2</sup> mod p</em>.</li>
+<li>Return the unique point <em>P</em> such that <em>x(P) = x</em> and <em>y(P) = y</em> if <em>y mod 2 = 0</em> or <em>y(P) = p - y</em> otherwise.</li>
+</ul>
+</li>
+<li>The function <em>cpoint(x)</em>, where <em>x</em> is a 33-byte array, sets <em>P</em> to the point on the curve whose X coordinate is <em>int(x[1:33])</em>. Fail if <em>x[0]</em> is not <em>0x02</em> or <em>0x03</em>, if <em>int(x[1:33]) ≥ p</em>, or if no point with that X coordinate exists on the curve. If <em>x[0] = 0x02</em>, return the point with even y; if <em>x[0] = 0x03</em>, return the point with odd y.</li>
+<li>The function <em>hash<sub>tag</sub>(x)</em> where <em>tag</em> is a UTF-8 encoded tag name and <em>x</em> is a byte array returns the 32-byte hash <em>SHA256(SHA256(tag) || SHA256(tag) || x)</em>.</li>
+</ul>
+</li>
+<li>Other:
+<ul>
+<li>Tuples are written by listing the elements within parentheses and separated by commas. For example, <em>(2, 3, 1)</em> is a tuple.</li>
+</ul>
+</li>
+</ul>
+<p>In the <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/reference.py" target="_blank">reference implementation</a>, these operations map to the following <a href="https://github.com/secp256k1lab/secp256k1lab" target="_blank">secp256k1lab</a> library methods, where <em>GE</em> and <em>Scalar</em> represent points and scalars:</p>
+<table><thead><tr><th>Notation</th><th>secp256k1lab</th></tr></thead><tbody>
+<tr><td><em>lift_x(int(x))</em></td><td><em>GE.from_bytes_xonly(x)</em></td></tr>
+<tr><td><em>cpoint(x)</em></td><td><em>GE.from_bytes_compressed(x)</em></td></tr>
+<tr><td><em>int(x)</em>, failing if <em>≥ n</em></td><td><em>Scalar.from_bytes_checked(x)</em></td></tr>
+<tr><td><em>int(x) mod n</em></td><td><em>Scalar.from_bytes_wrapping(x)</em></td></tr>
+<tr><td><em>xbytes(P)</em></td><td><em>P.to_bytes_xonly()</em></td></tr>
+<tr><td><em>cbytes(P)</em></td><td><em>P.to_bytes_compressed()</em></td></tr>
+<tr><td><em>bytes(s)</em></td><td><em>s.to_bytes()</em></td></tr>
+<tr><td><em>has_even_y(P)</em></td><td><em>P.has_even_y()</em></td></tr>
+<tr><td><em>hash<sub>tag</sub>(x)</em></td><td><em>tagged_hash(tag, x)</em></td></tr>
+</tbody></table>
+<h3> Algorithms </h3>
+<p>The following specification of the algorithms has been written with a focus on clarity.
+As a result, the specified algorithms are not always optimal in terms of computation and space.
+In particular, some values are recomputed but can be cached in actual implementations (see <a href="#general-signing-flow" target="_blank">General Signing Flow</a>).</p>
+<p>Unless noted otherwise, any of the <em>pk<sub>0..u-1</sub></em>, <em>m<sub>0..u-1</sub></em>, <em>pubnonce<sub>0..u-1</sub></em>, and <em>psig<sub>0..u-1</sub></em> arrays that an algorithm takes have the same length <em>u</em>, with <em>u ≥ 1</em>, and the algorithm fails otherwise.
+Each message is a 32-byte array, and an algorithm fails on any message of a different length.</p>
+<h4> NonceGen </h4>
+<p><em>NonceGen</em> generates a secret nonce and a corresponding public nonce for a single signer.</p>
+<p>Input:</p>
+<ul>
+<li><em>sk</em>: a 32-byte secret key (optional argument)</li>
+<li><em>extra_in</em>: a byte array (optional argument)</li>
+</ul>
+<p><strong>_NonceGen(sk, extra_in)</strong>_<sup id="cite_ref_5"><a href="#cite_ref_5">5</a></sup>:</p>
+<ul>
+<li>Let _rand' _ be a 32-byte array freshly drawn uniformly at random.</li>
+<li>If the optional argument <em>sk</em> is present:
+<ul>
+<li>Let <em>rand</em> be the byte-wise xor of <em>sk</em> and <em>hash<sub>BIP0459/aux</sub>(rand')</em>.</li>
+</ul>
+</li>
+<li>Else:
+<ul>
+<li>Let _rand = rand' _.</li>
+</ul>
+</li>
+<li>If the optional argument <em>extra_in</em> is not present:
+<ul>
+<li>Let <em>extra_in</em> be an empty byte array.</li>
+</ul>
+</li>
+<li>Let <em>r<sub>1</sub> = int(hash<sub>BIP0459/nonce</sub>(rand || extra_in || 0x00)) mod n</em>; fail if <em>r<sub>1</sub> = 0</em>.</li>
+<li>Let <em>r<sub>2</sub> = int(hash<sub>BIP0459/nonce</sub>(rand || extra_in || 0x01)) mod n</em>; fail if <em>r<sub>2</sub> = 0</em>.</li>
+<li>Let <em>R<sub>1</sub> = r<sub>1</sub>⋅G</em>.</li>
+<li>Let <em>R<sub>2</sub> = r<sub>2</sub>⋅G</em>.</li>
+<li>Let <em>secnonce = bytes(r<sub>1</sub>) || bytes(r<sub>2</sub>)</em>.</li>
+<li>Let <em>pubnonce = cbytes(R<sub>1</sub>) || cbytes(R<sub>2</sub>)</em>.</li>
+<li>Return <em>(secnonce, pubnonce)</em>.</li>
+</ul>
+<h4> NonceAgg </h4>
+<p><em>NonceAgg</em> aggregates all signers' public nonces into a single aggregate nonce.</p>
+<p>Input:</p>
+<ul>
+<li><em>pubnonce<sub>0..u-1</sub></em>: an array of <em>u</em> 66-byte public nonces</li>
+</ul>
+<p><strong>_NonceAgg(pubnonce<sub>0..u-1</sub>)</strong>_:</p>
+<ul>
+<li>For <em>i = 0 .. u-1</em>:
+<ul>
+<li>Let <em>R<sub>1,i</sub> = cpoint(pubnonce<sub>i</sub>[0:33])</em>; fail if that fails.</li>
+<li>Let <em>R<sub>2,i</sub> = cpoint(pubnonce<sub>i</sub>[33:66])</em>; fail if that fails.</li>
+</ul>
+</li>
+<li>Let <em>R<sub>1</sub> = R<sub>1,0</sub> + R<sub>1,1</sub> + ... + R<sub>1,u-1</sub></em>.</li>
+<li>Let <em>R<sub>2</sub> = R<sub>2,0</sub> + R<sub>2,1</sub> + ... + R<sub>2,u-1</sub></em>.</li>
+<li>Fail if <em>is_infinite(R<sub>1</sub>)</em> or <em>is_infinite(R<sub>2</sub>)</em>.</li>
+<li>Let <em>aggnonce = cbytes(R<sub>1</sub>) || cbytes(R<sub>2</sub>)</em>.</li>
+<li>Return <em>aggnonce</em>.</li>
+</ul>
+<h4> GetSessionValues </h4>
+<p><em>GetSessionValues</em> is a helper function that computes the derived values shared by <em>Sign</em>, <em>SigAgg</em>, and <em>PartialSigVerify</em>.</p>
+<p>Input:</p>
+<ul>
+<li><em>aggnonce</em>: a 66-byte aggregate nonce</li>
+<li><em>pk<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte public keys</li>
+<li><em>m<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte messages</li>
+<li><em>pubnonce<sub>0..u-1</sub></em>: an array of <em>u</em> 66-byte public nonces</li>
+</ul>
+<p><strong>_GetSessionValues(aggnonce, pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, pubnonce<sub>0..u-1</sub>)</strong>_:</p>
+<ul>
+<li>Let <em>R<sub>1</sub> = cpoint(aggnonce[0:33])</em>; fail if that fails.</li>
+<li>Let <em>R<sub>2</sub> = cpoint(aggnonce[33:66])</em>; fail if that fails.</li>
+<li>For <em>i = 0 .. u-1</em>:
+<ul>
+<li>Let <em>R<sub>2,i</sub> = cpoint(pubnonce<sub>i</sub>[33:66])</em>; fail if that fails.</li>
+</ul>
+</li>
+<li>Let <em>nonce_data = cbytes(R<sub>1</sub>) || cbytes(R<sub>2</sub>)</em></li>
+<li>For <em>i = 0 .. u-1</em>:
+<ul>
+<li>Let <em>nonce_data = nonce_data || pk<sub>i</sub> || m<sub>i</sub> || cbytes(R<sub>2,i</sub>)</em></li>
+</ul>
+</li>
+<li>Let <em>b = int(hash<sub>BIP0459/noncecoef</sub>(nonce_data)) mod n</em></li>
+<li>Let <em>R = R<sub>1</sub> + b⋅R<sub>2</sub></em></li>
+<li>Fail if <em>is_infinite(R)</em>.</li>
+<li>Return <em>(R, b)</em></li>
+</ul>
+<h4> Sign </h4>
+<p><em>Sign</em> produces a partial signature for a signer.
+Only the signer's own entry in the list of public key and message pairs is checked, but the resulting aggregate signature is valid for exactly this list.
+Any condition the caller requires of the other entries, such as the list matching one agreed upon before the session, must therefore be checked by the caller before invoking <em>Sign</em>.</p>
+<p>Input:</p>
+<ul>
+<li><em>secnonce</em>: a 64-byte secret nonce</li>
+<li><em>sk</em>: a 32-byte secret key</li>
+<li><em>m</em>: the 32-byte message this signer intends to sign</li>
+<li><em>aggnonce</em>: a 66-byte aggregate nonce</li>
+<li><em>pk<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte public keys</li>
+<li><em>m<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte messages</li>
+<li><em>pubnonce<sub>0..u-1</sub></em>: an array of <em>u</em> 66-byte public nonces</li>
+</ul>
+<p><strong>_Sign(secnonce, sk, m, aggnonce, pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, pubnonce<sub>0..u-1</sub>)</strong>_:</p>
+<ul>
+<li>Let <em>r<sub>1</sub> = int(secnonce[0:32])</em>; fail if <em>r<sub>1</sub> = 0</em> or <em>r<sub>1</sub> ≥ n</em>.</li>
+<li>Let <em>r<sub>2</sub> = int(secnonce[32:64])</em>; fail if <em>r<sub>2</sub> = 0</em> or <em>r<sub>2</sub> ≥ n</em>.</li>
+<li>Let <em>d = int(sk)</em>; fail if <em>d = 0</em> or <em>d ≥ n</em>.</li>
+<li>Let <em>P = d⋅G</em>.</li>
+<li>Let <em>R<sub>2</sub> = r<sub>2</sub>⋅G</em>.</li>
+<li><strong>Index lookup and uniqueness check</strong>: Find the unique index <em>j</em> in <em>0..u-1</em> such that <em>pubnonce<sub>j</sub>[33:66] = cbytes(R<sub>2</sub>)</em>. Fail if no such index exists or if more than one such index exists.<sup id="cite_ref_6"><a href="#cite_ref_6">6</a></sup></li>
+<li>Fail if <em>pk<sub>j</sub> ≠ xbytes(P)</em> or <em>m<sub>j</sub> ≠ m</em>, i.e., the public key or message at the signer's position does not match the signer's secret key or intended message.</li>
+<li>Let <em>(R, b) = GetSessionValues(aggnonce, pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, pubnonce<sub>0..u-1</sub>)</em>; fail if that fails.</li>
+<li>Let <em>e = 1</em> if <em>has_even_y(R)</em>, otherwise let <em>e = n - 1</em>.</li>
+<li>Let <em>d' = d</em> if <em>has_even_y(P)</em>, otherwise let <em>d' = n - d</em>.</li>
+<li>Let <em>L = pk<sub>0</sub> || m<sub>0</sub> || ... || pk<sub>u-1</sub> || m<sub>u-1</sub></em>.</li>
+<li>Let <em>c<sub>j</sub> = int(hash<sub>BIP0459/sig</sub>(L || xbytes(R) || pk<sub>j</sub> || m<sub>j</sub>)) mod n</em>.</li>
+<li>Let <em>s<sub>j</sub> = (e⋅(r<sub>1</sub> + b⋅r<sub>2</sub>) + c<sub>j</sub>⋅d') mod n</em>.</li>
+<li>Let <em>psig = bytes(s<sub>j</sub>)</em>.</li>
+<li>Return <em>psig</em>.</li>
+</ul>
+<h4> SigAgg </h4>
+<p><em>SigAgg</em> aggregates all partial signatures into a final 64-byte aggregate signature.</p>
+<p>Input:</p>
+<ul>
+<li><em>aggnonce</em>: a 66-byte aggregate nonce</li>
+<li><em>pk<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte public keys</li>
+<li><em>m<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte messages</li>
+<li><em>pubnonce<sub>0..u-1</sub></em>: an array of <em>u</em> 66-byte public nonces</li>
+<li><em>psig<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte partial signatures</li>
+</ul>
+<p><strong>_SigAgg(aggnonce, pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, pubnonce<sub>0..u-1</sub>, psig<sub>0..u-1</sub>)</strong>_:</p>
+<ul>
+<li>Let <em>(R, b) = GetSessionValues(aggnonce, pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, pubnonce<sub>0..u-1</sub>)</em>; fail if that fails.</li>
+<li>For <em>i = 0 .. u-1</em>:
+<ul>
+<li>Let <em>s<sub>i</sub> = int(psig<sub>i</sub>)</em>; fail if <em>s<sub>i</sub> ≥ n</em>.</li>
+</ul>
+</li>
+<li>Let <em>s = (s<sub>0</sub> + s<sub>1</sub> + ... + s<sub>u-1</sub>) mod n</em>.</li>
+<li>Let <em>sig = xbytes(R) || bytes(s)</em>.</li>
+<li>Return <em>sig</em>.</li>
+</ul>
+<h4> PartialSigVerify </h4>
+<p><em>PartialSigVerify</em> verifies a single signer's partial signature and is used to identify disruptive signers.
+It recomputes the aggregate nonce from the public nonces rather than taking it as an argument, so its result cannot be influenced by the coordinator.
+If the public nonces are received over authenticated channels and <em>PartialSigVerify</em> succeeds for the partial signatures of all <em>u</em> signers, then <em>SigAgg</em> called with <em>aggnonce = NonceAgg(pubnonce<sub>0..u-1</sub>)</em> produces a valid aggregate signature.</p>
+<p>Input:</p>
+<ul>
+<li><em>psig</em>: a 32-byte partial signature</li>
+<li><em>pk<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte public keys</li>
+<li><em>m<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte messages</li>
+<li><em>pubnonce<sub>0..u-1</sub></em>: an array of <em>u</em> 66-byte public nonces</li>
+<li><em>signer_index</em>: the index of the signer in the list (integer in <em>0..u-1</em>)</li>
+</ul>
+<p><strong>_PartialSigVerify(psig, pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, pubnonce<sub>0..u-1</sub>, signer_index)</strong>_:</p>
+<ul>
+<li>Let <em>i = signer_index</em>.</li>
+<li>Fail if <em>i &lt; 0</em> or <em>i ≥ u</em>.</li>
+<li>Let <em>s = int(psig)</em>; fail if <em>s ≥ n</em>.</li>
+<li>Let <em>R<sub>1,i</sub> = cpoint(pubnonce<sub>i</sub>[0:33])</em>; fail if that fails.</li>
+<li>Let <em>R<sub>2,i</sub> = cpoint(pubnonce<sub>i</sub>[33:66])</em>; fail if that fails.</li>
+<li>Let <em>P<sub>i</sub> = lift_x(int(pk<sub>i</sub>))</em>; fail if that fails.</li>
+<li>Let <em>aggnonce = NonceAgg(pubnonce<sub>0..u-1</sub>)</em>; fail if that fails.</li>
+<li>Let <em>(R, b) = GetSessionValues(aggnonce, pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, pubnonce<sub>0..u-1</sub>)</em>; fail if that fails.</li>
+<li>Let <em>e = 1</em> if <em>has_even_y(R)</em>, otherwise let <em>e = n - 1</em>.</li>
+<li>Let <em>L = pk<sub>0</sub> || m<sub>0</sub> || ... || pk<sub>u-1</sub> || m<sub>u-1</sub></em>.</li>
+<li>Let <em>c<sub>i</sub> = int(hash<sub>BIP0459/sig</sub>(L || xbytes(R) || pk<sub>i</sub> || m<sub>i</sub>)) mod n</em>.</li>
+<li>Let <em>R'<sub>i</sub> = R<sub>1,i</sub> + b⋅R<sub>2,i</sub></em>.</li>
+<li>Fail if <em>s⋅G ≠ e⋅R'<sub>i</sub> + c<sub>i</sub>⋅P<sub>i</sub></em>.</li>
+<li>Return success iff no failure occurred before reaching this point.</li>
+</ul>
+<h4> Verify </h4>
+<p><em>Verify</em> verifies a given 64-byte aggregate signature against an ordered list of public key and message pairs.
+The inputs to <em>Verify</em> are the only data required by a verifier.
+No nonces or other session data are needed.</p>
+<p>Input:</p>
+<ul>
+<li><em>pk<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte public keys</li>
+<li><em>m<sub>0..u-1</sub></em>: an array of <em>u</em> 32-byte messages</li>
+<li><em>sig</em>: a 64-byte aggregate signature</li>
+</ul>
+<p><strong>_Verify(pk<sub>0..u-1</sub>, m<sub>0..u-1</sub>, sig)</strong>_<sup id="cite_ref_7"><a href="#cite_ref_7">7</a></sup>:</p>
+<ul>
+<li>Let <em>r = sig[0:32]</em>.</li>
+<li>Let <em>s = int(sig[32:64])</em>; fail if <em>s ≥ n</em>.</li>
+<li>Let <em>R = lift_x(int(r))</em>; fail if that fails.</li>
+<li>For <em>i = 0 .. u-1</em>:
+<ul>
+<li>Let <em>P<sub>i</sub> = lift_x(int(pk<sub>i</sub>))</em>; fail if that fails.</li>
+</ul>
+</li>
+<li>Let <em>L = pk<sub>0</sub> || m<sub>0</sub> || ... || pk<sub>u-1</sub> || m<sub>u-1</sub></em>.</li>
+<li>For <em>i = 0 .. u-1</em>:
+<ul>
+<li>Let <em>c<sub>i</sub> = int(hash<sub>BIP0459/sig</sub>(L || r || pk<sub>i</sub> || m<sub>i</sub>)) mod n</em>.</li>
+</ul>
+</li>
+<li>Fail if <em>s⋅G ≠ R + c<sub>0</sub>⋅P<sub>0</sub> + c<sub>1</sub>⋅P<sub>1</sub> + ... + c<sub>u-1</sub>⋅P<sub>u-1</sub></em>.</li>
+<li>Return success iff no failure occurred before reaching this point.</li>
+</ul>
+<h3> Key Tweaking </h3>
+<p>The scheme supports additive key tweaking, allowing signers to use tweaked key pairs without changes to the verification algorithm.
+A tweak <em>t</em> is a 256-bit integer with <em>0 ≤ t &lt; 2<sup>256</sup></em>.
+In both variants below, tweaking fails if <em>t ≥ n</em> or if <em>is_infinite(P')</em>.
+The tweaked public key <em>xbytes(P')</em> appears in the public key list provided to <em>Verify</em>, and the signer uses _sk' _ as its secret key in <em>Sign</em>.</p>
+<p><strong>Plain tweaking</strong> modifies a key pair <em>(sk, P)</em> with <em>P = sk⋅G</em> and is used for BIP 32 unhardened derivation, where <em>t</em> is the child offset:</p>
+<ul>
+<li><em>sk' = (sk + t) mod n</em></li>
+<li><em>P' = P + t⋅G</em></li>
+</ul>
+<p><strong>X-only tweaking</strong> is used for BIP 341 Taproot key path spending.
+Because an X-only public key denotes the point with even Y, the input key is first normalized to even Y.
+Let <em>d = sk</em> if <em>has_even_y(P)</em>, otherwise <em>d = n - sk</em>, so that <em>d⋅G = lift_x(x(P))</em>.
+Then:</p>
+<ul>
+<li><em>sk' = (d + t) mod n</em></li>
+<li><em>P' = lift_x(x(P)) + t⋅G</em></li>
+</ul>
+<p>For BIP 341, <em>t = int(hash<sub>TapTweak</sub>(xbytes(P) || merkle_root))</em> where <em>xbytes(P)</em> is the X-only internal public key.
+The resulting _P' _ may have odd Y.</p>
+<h2> Rationale </h2>
+<p>DahLIAS is the first aggregate signature scheme with constant-size signatures based directly on discrete logarithms in pairing-free groups.</p>
+<ul>
+<li>A fully aggregated signature has the same shape as a standard Schnorr signature: a pair <em>(R, s)</em> serialized as 64 bytes. The verification algorithm is different from BIP 340 verification and takes a <em>list</em> of public key and message pairs as input rather than a single pair.</li>
+<li>Every message is exactly 32 bytes. This is the size of a transaction sighash, the intended input for cross-input signature aggregation. Fixing the length also keeps the encoding of the list <em>L</em> unambiguous, since the challenge binds to the entire list rather than to a single message as in BIP 340 and BIP 327. An application that needs to sign data of a different size should pre-hash it to a 32-byte digest, for example with a tagged hash.</li>
+<li>Since the challenge binds to the entire list, <em>L || xbytes(R)</em> is a common prefix of every challenge hash input. Verifiers should hash this prefix into a single hash state once and finalize a copy of that state with <em>pk<sub>i</sub> || m<sub>i</sub></em> for each <em>i</em>, which keeps the hashing linear in the number of signers instead of quadratic.</li>
+<li>Each signer contributes two nonces rather than one. A single nonce per signer would leave the scheme open to the <a href="https://eprint.iacr.org/2020/945" target="_blank">ROS attack</a> mounted across many concurrent signing sessions. Deriving the common nonce as <em>R = R<sub>1</sub> + b⋅R<sub>2</sub></em>, with <em>b</em> bound to the full session context, prevents this, following MuSig2 (<a href="/327" target="_blank">BIP 327</a>). A variant of the attack that exploits a signer signing multiple messages is in turn prevented by the <em>R<sub>2</sub></em> uniqueness and message checks in <em>Sign</em> (see <a href=" security" target="_blank">Security</a>).</li>
+<li>A single nonce coefficient <em>b</em> is applied uniformly to all signers' second nonce contributions. This keeps signing cost constant per signer (three group exponentiations) rather than requiring a multi-exponentiation of size <em>u</em>. The trade-off is the need for a uniqueness check on the second nonce component <em>R<sub>2</sub></em> during signing.</li>
+<li>The scheme supports additive key tweaking, enabling compatibility with BIP 32 key derivation and BIP 341 Taproot outputs.</li>
+<li>This document does not specify an optimized signing algorithm for a single party that knows all secret keys, e.g., a wallet spending several of its own inputs. Such a party can act as all signers and the coordinator and run the protocol locally. A more efficient method <a href="https://groups.google.com/g/bitcoindev/c/eothFkxAvK0/m/PgRaFPovEQAJ" target="_blank">has been outlined</a> in the mailing list discussion but requires additional security analysis before it can be specified.</li>
+</ul>
+<p>A non-interactive alternative is half-aggregation (<a href="/458" target="_blank">BIP 458</a>), which requires no cooperation between the signers but compresses <em>n</em> signatures to <em>32*n + 32</em> bytes rather than to a constant 64 bytes.</p>
+<h2> Security </h2>
+<p><strong>Nonce generation and reuse.</strong> As detailed in <a href="#nonce-generation" target="_blank">Nonce Generation</a> and <a href="#general-signing-flow" target="_blank">General Signing Flow</a>, <em>NonceGen</em> must draw _rand' _ from a high-quality random number generator, nonces must not be derived deterministically, and a <em>secnonce</em> must never be used in more than one <em>Sign</em> invocation.
+Violating any of these can allow an adversary to extract the signer's secret key.</p>
+<p><strong>Signer verification checks.</strong> The checks performed by <em>Sign</em> after recomputing <em>R<sub>2</sub></em> are security-critical.
+The signer locates its position by finding the unique index <em>j</em> whose <em>R<sub>2</sub></em> matches its own.
+These <em>R<sub>2</sub></em> values act as ephemeral identifiers that distinguish signers even when they share a public key, and omitting the uniqueness check enables key extraction.
+The signer must also confirm that <em>both</em> the public key and the message at index <em>j</em> match its own.
+Verifying only the public key would let a malicious coordinator substitute a different message at the signer's position.
+These checks cover only the signer's own entry, so any requirement on the other entries of the list must be verified by the caller before invoking <em>Sign</em> (see <a href="#sign" target="_blank">Sign</a>).</p>
+<p><strong>Partial signatures.</strong> A partial signature is <em>not</em> a signature.
+By choosing its nonces accordingly, an adversary can produce a partial signature that verifies for any public key.
+<em>PartialSigVerify</em> therefore serves only to identify disruptive signers and does not prove that a signer knows the corresponding secret key.</p>
+<p><strong>Untrusted coordinator.</strong> The coordinator can cause a signing session to abort but cannot forge a signature, even when colluding with all but one signer (see <a href="#role-of-the-coordinator" target="_blank">Role of the Coordinator</a>).</p>
+<p><strong>Security model.</strong> The scheme is proven secure in the concurrent setting, including when signers use key tweaking, under the algebraic one-more discrete logarithm (AOMDL) assumption, the same assumption used for <a href="/327" target="_blank">BIP 327</a>.<sup id="cite_ref_8"><a href="#cite_ref_8">8</a></sup>
+AOMDL is a falsifiable and weaker variant of the well-studied OMDL problem.
+The proof models <em>hash<sub>BIP0459/sig</sub></em> as a random oracle and requires only that <em>hash<sub>BIP0459/noncecoef</sub></em> be collision-resistant.
+The scheme is also strongly binding, meaning it is infeasible to produce a single signature valid for two distinct lists of public key and message pairs.<sup id="cite_ref_9"><a href="#cite_ref_9">9</a></sup></p>
+<h2> Backward Compatibility </h2>
+<p>Full-aggregation specifies a new, optional interactive signing protocol for producing an aggregate signature for a list of BIP 340 public key and message pairs.
+It does not change the validation of individual BIP 340 signatures and does not affect any existing Bitcoin consensus rules or protocol behavior.
+Therefore, this BIP introduces no backward compatibility concerns.</p>
+<h2> Test Vectors and Reference Code </h2>
+<p>A reference implementation in Python is provided in <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/reference.py" target="_blank">reference.py</a>.
+Note that the reference implementation depends on a vendored copy of the <a href="https://github.com/secp256k1lab/secp256k1lab" target="_blank">secp256k1lab library</a>.</p>
+<p>Test vectors are provided in <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/vectors/" target="_blank">vectors</a> and are generated with a <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/gen_test_vectors.py" target="_blank">generator script</a>.
+The reference implementation can be executed with the test vectors by running <a href="https://github.com/bitcoin/bips/blob/master/bip-0459/run_test_vectors.py" target="_blank">the run_test_vectors script</a>.</p>
+<h2> Acknowledgements </h2>
+<p>The scheme specified in this document is DahLIAS (Discrete Logarithm-Based Interactive Aggregate Signatures) by Jonas Nick, Tim Ruffing, and Yannick Seurin.
+Thanks to waxwing for his feedback on the mailing list, which, among other things, led to clarifying the uniqueness check in <em>Sign</em> and adding test vectors for it.
+Thanks to w0xlt for reviewing and contributing additional test vectors.</p>
+<h2> Footnotes </h2>
+<ol>
+<li><a href="https://bips.dev/459/#cite_ref_1">^</a> Jonas Nick, Tim Ruffing, Yannick Seurin: <em>DahLIAS: Discrete Logarithm-Based Interactive Aggregate Signatures</em>. Cryptology ePrint Archive, Report 2025/692. https://eprint.iacr.org/2025/692</li>
+<li><a href="https://bips.dev/459/#cite_ref_2">^</a> We treat the <em>secnonce</em> and <em>pubnonce</em> as grammatically singular even though they include serializations of two scalars and two elliptic curve points, respectively.</li>
+<li><a href="https://bips.dev/459/#cite_ref_3">^</a> An attacker who participates as a co-signer can run multiple signing sessions with the victim for the same message while varying its own nonce contributions. With deterministic derivation the victim reuses its secret nonces across these sessions while the aggregate nonce and therefore the nonce coefficient <em>b</em> and the challenge change. Three such sessions yield a system of linear equations that reveals the victim's secret key. Deriving the nonces from additional session data does not prevent this since the other signers' nonces are unknown to the victim when its nonces are generated. This threat is not limited to sessions with malicious co-signers. With deterministic derivation, the nonce is reused whenever the same key and message are signed again in a session whose other public keys, messages, or nonces have changed. Any party who observes the resulting partial signatures, such as a coordinator, can then extract the secret key after three such sessions. Re-signing the same message in a changed session can arise naturally, for example when a transaction signed with <em>SIGHASH_ANYONECANPAY</em> is modified for a fee bump and signed again.</li>
+<li><a href="https://bips.dev/459/#cite_ref_4">^</a> Among other pitfalls, using the specification with a curve whose order is not close to the size of the range of the nonce derivation function is insecure.</li>
+<li><a href="https://bips.dev/459/#cite_ref_5">^</a> See <a href="#nonce-generation" target="_blank">Nonce Generation</a> in the Overview for important security requirements regarding randomness and nonce reuse.</li>
+<li><a href="https://bips.dev/459/#cite_ref_6">^</a> The uniqueness check applies to the <em>R<sub>2</sub></em> value alone. Checking instead that the combination of public key, message, and <em>R<sub>2</sub></em> occurs exactly once is not sufficient. If the signer's <em>R<sub>2</sub></em> appears at a second index with a different public key or message, <em>Sign</em> must fail, because signing such a session enables a key extraction attack (see Section 4.2 of the <a href="https://eprint.iacr.org/2025/692" target="_blank">DahLIAS paper</a>).</li>
+<li><a href="https://bips.dev/459/#cite_ref_7">^</a> An <a href="https://bitcoin.stackexchange.com/a/80702/109853" target="_blank">efficient algorithm for computing a sum of multiple EC multiplications</a> can significantly speed up verification.</li>
+<li><a href="https://bips.dev/459/#cite_ref_8">^</a> The precise notion is cosigners-aware existential unforgeability (co-EUF-CMA) as defined in the DahLIAS paper. Each signer sees the entire list of public key and message pairs before finalizing its contribution, and unforgeability guarantees that no valid aggregate signature can attribute to an honest signer a message and cosigner list it never agreed to sign. This all-or-nothing guarantee over the whole list distinguishes interactive aggregate signatures from multisignatures like MuSig2, which produce a signature for a single message under a single aggregate key.</li>
+<li><a href="https://bips.dev/459/#cite_ref_9">^</a> DahLIAS strong binding additionally requires the verifier to reject any public key equal to the point at infinity. This condition is satisfied implicitly in this specification: public keys are 32-byte X-only values that are decoded with <em>lift_x</em>, which never yields the point at infinity, so no such public key can appear in the list.</li>
+</ol>
+
+        </article>
+    </div>
+
+
+            <hr class="border-slate-700" />
+
+            <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
+                <div class="flex items-center space-x-2">
+                    <p class="font-bold">Updated</p>
+                    <p class="font-bold">2026-11-03</p>
+                </div>
+                <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
+                <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
+                <p><a href="/">bips.dev</a> is presented by <a href="https://nickmonad.blog" target="_blank">nickmonad</a></p>
+                <p class="pt-4 text-sm">All content is owned and licensed by the respective author(s). This website makes no claim of ownership.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
