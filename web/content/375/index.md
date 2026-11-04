@@ -306,4 +306,8 @@ Use the provided <a href="https://github.com/bitcoin/bips/blob/master/bip-0375/t
 <h2>Reference implementation</h2>
 
 
-Todo
+A Python validation reference is provided in <a href="https://github.com/bitcoin/bips/blob/master/bip-0375/README.md" target="_blank">bip-0375/</a>.
+It implements the four sequential checks described in the Test Vectors section
+(PSBT structure, ECDH coverage via BIP374 DLEQ, input eligibility, and output
+script derivation) and is exercised by <a href="https://github.com/bitcoin/bips/blob/master/bip-0375/test_runner.py" target="_blank">test_runner.py</a>
+against <a href="https://github.com/bitcoin/bips/blob/master/bip-0375/bip375_test_vectors.json" target="_blank">bip375_test_vectors.json</a>.
