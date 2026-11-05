@@ -128,7 +128,7 @@
   Assigned: 2025-01-08
   License: BSD-2-Clause
   Discussion: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;5G5wzqUXyk4
-  Version: 0.1.2
+  Version: 0.1.3
   Requires: 352, 370, 374
 </code></pre>
 <h2>Introduction</h2>
@@ -156,7 +156,7 @@ Therefore, new fields and role responsibilities must be added to carry, compute,
 </tbody></table>
 <p>The new per-output types are defined as follows:</p>
 <table><thead><tr><th>Name</th><th><code>&lt;keytype&gt;</code></th><th><code>&lt;keydata&gt;</code></th><th><code>&lt;keydata&gt;</code> Description</th><th><code>&lt;valuedata&gt;</code></th><th><code>&lt;valuedata&gt;</code> Description</th><th>Versions Requiring Inclusion</th><th>Versions Requiring Exclusion</th><th>Versions Allowing Inclusion</th></tr></thead><tbody>
-<tr><td>Silent Payment Data</td><td><code>PSBT_OUT_SP_V0_INFO = 0x09</code></td><td>None</td><td>No key data</td><td><code>&lt;33 byte scan key&gt; &lt;33 byte spend key&gt;</code></td><td>The scan and spend public keys from the silent payments address.</td><td></td><td>0</td><td>2</td></tr>
+<tr><td>Silent Payment Data</td><td><code>PSBT_OUT_SP_V0_INFO = 0x09</code></td><td>None</td><td>No key data</td><td><code>&lt;33 byte scan key&gt; &lt;33 byte spend key&gt;</code></td><td>The scan and spend public keys from the silent payments address, referred to in this document as a <em>silent payment code</em>. For a labeled address, the spend key is the labeled spend key <em>B<sub>m</sub></em>.</td><td></td><td>0</td><td>2</td></tr>
 <tr><td>Silent Payment Label</td><td><code>PSBT_OUT_SP_V0_LABEL = 0x0a</code></td><td>None</td><td>No key data</td><td><code>&lt;32-bit little endian uint label&gt;</code></td><td>The label to use to compute the spend key of the silent payments address to verify change.</td><td></td><td>0</td><td>2</td></tr>
 </tbody></table>
 <p><code>PSBT_OUT_SCRIPT</code> is modified to be optional for outputs in silent payments capable PSBTs. If this field is not included in the output, then the field PSBT_OUT_SP_V0_INFO must be included.
@@ -165,7 +165,7 @@ If both PSBT_OUT_SCRIPT and PSBT_OUT_SP_V0_INFO are present for an output, then 
 If only PSBT_OUT_SCRIPT is present for an output, then the output is not being sent to a silent payment address.</p>
 <h3>Unique Identification</h3>
 <p>Silent payment capable PSBTs can be uniquely identified the same way as PSBTv2s, except when including silent payment outputs. If an output contains the PSBT_OUT_SP_V0_INFO field, it must use that field instead of PSBT_OUT_SCRIPT as the output script when creating the unsigned transaction used for unique identification.<ref name="why_use_sp_info_field"> ** Why use PSBT_OUT_SP_V0_INFO when serializing for a unique identifier?** Since the same silent payment capable PSBT is valid whether or not a PSBT_OUT_SCRIPT is included in an output that has PSBT_OUT_SP_V0_INFO set, using the PSBT_OUT_SCRIPT if present for the unique identifier will cause malleability. The identifier will be different depending on whether PSBT_OUT_SCRIPT is present, so always using PSBT_OUT_SP_V0_INFO if it exists makes sure the PSBT is always identified uniquely.</ref>
-The PSBT_OUT_SP_V0_INFO should be serialized as a zero byte for the version, followed by the 33 bytes of the scan key and then 33 bytes for the spend key.</p>
+In that unsigned transaction, each silent payment output's script is serialized as a 0x00 version byte, the 33-byte scan key, then the 33-byte spend key.</p>
 <h2>Roles</h2>
 <p>This document modifies some existing roles.</p>
 <h3>Constructor</h3>
@@ -280,7 +280,7 @@ Validation is performed in 4 sequential checks. This <a href="https://github.com
 <tr><td>Can Finalize</td><td>three sp outputs (different scan keys) with multiple global ECDH shares</td></tr>
 <tr><td>Can Finalize</td><td>one P2WPKH input / two mixed outputs - labeled sp output and BIP 32 change</td></tr>
 <tr><td>Can Finalize</td><td>one input / two sp outputs - output 0 has no label / output 1 uses label=0 convention for sp change</td></tr>
-<tr><td>Can Finalize</td><td>two sp outputs - output 0 uses label=3 / output 1 uses label=1</td></tr>
+<tr><td>Can Finalize</td><td>three sp outputs (same scan key) - output 0 uses label=1, outputs 1 and 2 uses label=2 (same spend key)</td></tr>
 <tr><td>Can Finalize</td><td>two inputs using per-input ECDH shares - only eligible inputs contribute shares (P2SH excluded)</td></tr>
 <tr><td>Can Finalize</td><td>two inputs using global ECDH share - only eligible inputs contribute shares (P2SH excluded)</td></tr>
 <tr><td>Can Finalize</td><td>two mixed input types - only eligible inputs contribute ECDH shares (NUMS internal key excluded)</td></tr>
@@ -294,6 +294,11 @@ Validation is performed in 4 sequential checks. This <a href="https://github.com
 </tbody></table>
 <h2> Changelog </h2>
 <ul>
+<li><strong>0.1.3</strong> (2026-09-29):
+<ul>
+<li>Correct labeled test vectors and reference: include labeled-spend key in PSBT_OUT_SP_V0_INFO.</li>
+</ul>
+</li>
 <li><strong>0.1.2</strong> (2026-09-27):
 <ul>
 <li>Validate PSBT_OUT_SP_V0_LABEL is exactly 4 bytes; add invalid test vector for wrong length.</li>

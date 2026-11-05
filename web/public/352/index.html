@@ -258,6 +258,7 @@
 <h3> Scanning silent payment eligible transactions </h3>
 <p>For silent payments v0 a transaction MUST be scanned if and only if all of the following are true:</p>
 <ul>
+<li>The transaction is consensus-valid</li>
 <li>The transaction contains at least one BIP341 taproot output (note: spent transactions optionally can be skipped by only considering transactions with at least one unspent taproot output)</li>
 <li>The transaction has at least one input from the <em><a href=" inputs-for-shared-secret-derivation" target="_blank">Inputs For Shared Secret Derivation</a></em> list</li>
 <li>The transaction does not spend an output with SegWit version &gt; 1<ref name="skip_txs_with_unknown_prevouts"><strong>Why skip transactions that spend SegWit version &gt; 1?</strong> Skipping transactions that spend unknown output scripts allows us to have a clean upgrade path for silent payments by avoiding the need to scan the same transaction multiple times with different rule sets. If a new SegWit version is added in the future and silent payments v1 is released with support, we would want to avoid having to first scan the transaction with the silent payment v0 rules and then again with the silent payment v1 rules. Note: this restriction only applies to the inputs of a transaction.</ref></li>
