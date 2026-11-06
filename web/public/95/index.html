@@ -126,7 +126,7 @@
   Assigned: 2026-06-22
   License: CC0-1.0
   Discussion: 2026-06-02: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;kGUMTxOvdJA
-  Version: 0.2.0
+  Version: 0.3.0
   Requires: 54
   Replaces: 94
 </code></pre>
@@ -173,31 +173,35 @@ corresponding to a minimum difficulty of approximately 1,000,000.</p>
 recent of these being the Taproot softfork. Additionally, the rules of BIP 54 are enforced
 from block 1, as specified above.</p>
 <h3 id="Genesis_Block">Genesis Block</h3>
-<p>TODO: Mine the block. The values below are placeholders inherited from Testnet 4. They are
-the genesis block's header fields together with the <code>Message</code> and <code>Pubkey</code> of its coinbase
-transaction. Notes for the miner:</p>
+<p>TODO: Mine the block. The values below are placeholders. They are
+the genesis block's header fields together with the <code>Message</code> and
+<code>scriptPubKey</code> of its coinbase transaction. Notes for the miner:</p>
 <ul>
-<li><code>Pubkey</code> is the public key in the coinbase transaction's pay-to-public-key (P2PK) output. Use a
-recent Bitcoin mainnet block hash.<sup class="footnote-reference"><a href="#pubkey-methodology">1</a></sup></li>
-<li><code>Message</code> is an arbitrary string in the coinbase input script, like the newspaper headline in
-Bitcoin's mainnet genesis block. Testnet 4 used it to carry the anti-pre-mine commitment, but
-Testnet 5 places that in the <code>Pubkey</code> instead, so the <code>Message</code> should be left empty, which also
-avoids bike shedding over its content.</li>
-<li><code>Time stamp</code> time of mining or that of the block which hash is used in <code>Pubkey</code></li>
-<li><code>nBits</code>: <code>0x1a0fffff</code>, per the raised minimum difficulty.</li>
-<li><code>Version: 1</code></li>
+<li><code>scriptPubKey</code> is the script public key in the coinbase transaction's
+output. It is <code>OP_RETURN</code> followed by a push of 8-bytes of extranonce
+space, as it is unspendable in any event, and this avoids bike shedding
+over its content.</li>
+<li><code>Message</code> is a string in the coinbase input script, and carries a
+recent Bitcoin mainnet block hash as an anti-pre-mine commitment,
+serving the same purpose as the newspaper headline in Bitcoin's mainnet
+genesis block.</li>
+<li><code>Time stamp</code> is the time of mining or that of the block which hash is
+used in <code>Message</code></li>
+<li><code>nBits</code> is <code>0x1a0fffff</code>, per the raised minimum difficulty.</li>
+<li><code>Version</code> is used for version-rolling to meet the difficulty.</li>
 </ul>
-<p>Testnet 4 placeholders:</p>
+<p>Placeholders:</p>
 <blockquote>
+<p>(Note, these values have the wrong nBits value (too low difficulty) and are pre-mined so are not suitable for use)</p>
 <ul>
-<li>Message: <code>03/May/2024 000000000000000000001ebd58c244970b3aa9d783bb001011fbe8ea8e98e00e</code></li>
-<li>Pubkey: <code>000000000000000000000000000000000000000000000000000000000000000000</code></li>
-<li>Time stamp: 1714777860</li>
-<li>Nonce: 393743547</li>
-<li>Difficulty: <code>0x1d00ffff</code></li>
-<li>Version: 1</li>
+<li>Message: "2026-11-03 974343 00000000000000000000a86d6da2c1563d08668d9ec18cce58cb8c865d4a31c8"</li>
+<li>scriptPubKey: <code>0x6a089763e96a00000000</code></li>
+<li>Time stamp: 1793680278</li>
+<li>Nonce: <code>0x73ba1699</code></li>
+<li>nBits: <code>0x1b07fff8</code></li>
+<li>Version: <code>0x201c4000</code></li>
 </ul>
-<p>The resulting Genesis block hash is <code>00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043</code>, and the block hex is <code>0100000000000000000000000000000000000000000000000000000000000000000000004e7b2b9128fe0291db0693af2ae418b767e657cd407e80cb1434221eaea7a07a046f3566ffff001dbb0c78170101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5504ffff001d01044c4c30332f4d61792f323032342030303030303030303030303030303030303030303165626435386332343439373062336161396437383362623030313031316662653865613865393865303065ffffffff0100f2052a010000002321000000000000000000000000000000000000000000000000000000000000000000ac00000000</code>.</p>
+<p>The resulting Genesis block hash is <code>000000000001bd3ade1e24d07c1a3677d4868c34f2f1696fa419e3b9f061b1e0</code>, and the block hex is <code>00401c200000000000000000000000000000000000000000000000000000000000000000de48bbaa869592873fc4e5042f2931f9b42bb7e8ddeccd373df845d80983409b9663e96af8ff071b9916ba730101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5b04ffff001d01044c52323032362d31312d3033203937343334332030303030303030303030303030303030303030306138366436646132633135363364303836363864396563313863636535386362386338363564346133316338ffffffff0100f2052a010000000a6a089763e96a0000000000000000</code>.</p>
 </blockquote>
 <h3 id="Message_Start">Message Start</h3>
 <p>The message start (also known as the network magic) is defined as <code>0x46495645</code>. These four bytes spell <code>FIVE</code> when
@@ -249,6 +253,11 @@ additionally enforce the BIP 54 rules while not permitting any of the difficulty
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal license.</p>
 <h2 id="Changelog">Changelog</h2>
 <ul>
+<li><strong>0.3.0</strong> (2026-11-05):
+<ul>
+<li>Move commitment back to scriptSig, and use <code>OP_RETURN</code> for output.</li>
+</ul>
+</li>
 <li><strong>0.2.0</strong> (2026-11-05):
 <ul>
 <li>Change default P2P port from 18335 to 18353</li>
@@ -260,13 +269,6 @@ additionally enforce the BIP 54 rules while not permitting any of the difficulty
 </ul>
 </li>
 </ul>
-<div class="footnote-definition" id="pubkey-methodology"><sup class="footnote-definition-label">1</sup>
-<p>The <code>Pubkey</code> field is the public key placed in the coinbase transaction's
-output as a pay-to-public-key (P2PK) script. Setting it to a recent Bitcoin mainnet block hash
-serves two purposes: the resulting output is provably unspendable, and the referenced block hash
-acts as an anti-pre-mine commitment, since the genesis block cannot have been created before that
-mainnet block existed.</p>
-</div>
 
         </article>
     </div>
@@ -277,7 +279,7 @@ mainnet block existed.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-11-05</p>
+                    <p class="font-bold">2026-11-06</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
