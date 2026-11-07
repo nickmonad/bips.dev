@@ -338,4 +338,5 @@ This Table lists all available Script expressions and the BIPs specifying them.
 |`tr(KEY)`, `tr(KEY, TREE)`|<a href="/386" target="_blank">386</a>|
 |`musig(KEY, KEY, ..., KEY)`|<a href="/390" target="_blank">390</a>|
 |`sp(KEY)`, `sp(KEY, KEY)`|<a href="/392" target="_blank">392</a>|
+|`rawtr(KEY)`|<a href="/394" target="_blank">394</a>|
 
