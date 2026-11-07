@@ -254,6 +254,7 @@ Use the provided <a href="https://github.com/bitcoin/bips/blob/master/bip-0375/t
 |ECDH Coverage|input 1 missing ECDH share for output 1 with two inputs / two sp outputs (different scan keys)|
 |ECDH Coverage|input 1 missing ECDH share for scan key with two inputs / one sp output|
 |Input Eligibility|segwit version greater than 1 in transaction inputs with sp output|
+|Input Eligibility|segwit version greater than 1 supplied via PSBT_IN_NON_WITNESS_UTXO with sp output|
 |Input Eligibility|non-SIGHASH_ALL signature on input with sp output|
 |Output Scripts|P2TR input with NUMS internal key cannot derive sp output|
 |Output Scripts|PSBT_OUT_SCRIPT does not match derived sp output|
