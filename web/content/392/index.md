@@ -105,8 +105,8 @@ Valid descriptors:
 *  `sp([deadbeef/352h/0h/0h]spscan1q...)` - With key origin
 *  `sp(spspend1q...)` - Using spspend encoded key (full wallet)
 *  `sp(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1,0260b2003c386519fc9eadf2b5cf124dd8eea4c4e68d5e154050a9346ea98ce600)` - WIF scan key with compressed public spend key (watch-only)
-*  `sp([deadbeef/352h/0h/0h]xprv.../0h,xpub.../0h)` - Extended private scan key with extended public spend key (watch-only)
-*  `sp([deadbeef/352h/0h/0h]xprv.../0h,xprv.../0h)` - Extended private keys for both scan and spend (full wallet)
+*  `sp([deadbeef/352h/0h/0h/1h]xprv.../0,[deadbeef/352h/0h/0h/0h]xpub.../0)` - Extended private scan key with extended public spend key (watch-only)
+*  `sp([deadbeef/352h/0h/0h]xprv.../1h/0,[deadbeef/352h/0h/0h]xprv.../0h/0)` - Extended private keys for both scan and spend (full wallet)
 *  `sp(L4rK1yDtCWekvXuE6oXD9jCYfFNV2cWRpVuPLBcCU2z8TrisoyY1,musig(03dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659,023590a94e768f8e1815c2f24b4d80a8e3149316c3518ce7b7ad338368d038ca66))` - WIF scan key with MuSig2 aggregate spend key (watch-only)
 
 
