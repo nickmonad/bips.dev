@@ -477,7 +477,98 @@ satisfaction:</p>
 <p>A static analysis can be performed on a Miniscript to verify if none, all or any of the spending
 paths hit any of the limits.</p>
 <h2 id="Test_Vectors">Test Vectors</h2>
-<p>TBD</p>
+<h3 id="Conventions">Conventions</h3>
+<p>Text files have one vector per line, no comments. <code>*.txt</code> is space separated,
+<code>*.tsv</code> tab separated. Expressions contain no whitespace. A key argument is a letter
+<code>A</code>..<code>Z</code> standing for the public key of the secret key <code>0x00…01</code> … <code>0x00…1a</code>,
+serialized compressed in P2WSH and x-only in Tapscript. The limit vectors need more
+distinct keys than that and write <code>K</code> followed by the secret key in decimal instead
+(<code>K1</code>, <code>K2</code>, …). Hash arguments are literal hex. A type string is the basic type
+(<code>B</code>/<code>V</code>/<code>K</code>/<code>W</code>) plus its properties (<code>zondumsfe</code>) in arbitrary order, so compare
+sorted. Files with a <code>_tap</code> suffix are Tapscript (<code>multi_a</code>, x-only, Schnorr), the
+others P2WSH.</p>
+<h3 id="Files">Files</h3>
+<table><thead><tr><th>File</th><th>Lines</th><th>Line format</th><th>Asserts</th></tr></thead><tbody>
+<tr><td><code>valid_from_alloy.txt</code></td><td>5,896</td><td><code>&lt;expr&gt; &lt;type&gt;</code></td><td>parses, is a valid top level, has that type</td></tr>
+<tr><td><code>valid_8f1e8_from_alloy.txt</code></td><td>3,492</td><td>same</td><td>same, corpus of an earlier upstream revision</td></tr>
+<tr><td><code>malleable_from_alloy.txt</code></td><td>7,024</td><td>same</td><td>parses, has that type, but has no <code>m</code> property, i.e. is not sane</td></tr>
+<tr><td><code>conflict_from_alloy.txt</code></td><td>1,773</td><td>same</td><td>parses and has that type; combines height- and time-based <code>after()</code>, on one spending path in 1,586 lines (not sane) and on alternative <code>andor</code> branches in the other 187 (sane)</td></tr>
+<tr><td><code>edge_cases.txt</code></td><td>42</td><td><code>&lt;expr&gt;</code></td><td>a hand-written file: <code>thresh</code> at <code>k=1</code>/<code>k=n</code>, <code>multi</code> with 1 and 20 keys, all four hash fragments, the timelock boundaries (<code>499999999</code>/<code>500000000</code>, <code>4194304</code>/<code>4194305</code>), and the sugar forms</td></tr>
+<tr><td><code>invalid.txt</code></td><td>5,574</td><td><code>&lt;expr&gt;</code></td><td>must be rejected (mostly type-check failures)</td></tr>
+<tr><td><code>opcodes.txt</code></td><td>18,185</td><td><code>&lt;expr&gt; &lt;type&gt; &lt;ops&gt;</code></td><td>as above, plus the op count of a satisfaction, see <code>op_count</code> below</td></tr>
+<tr><td><code>limits.txt</code>, <code>limits_tap.txt</code></td><td>8, 2</td><td><code>&lt;expr&gt; &lt;limit&gt; &lt;verdict&gt;</code></td><td>hand-written files: each resource limit at its boundary, <code>limit</code> being one of <code>ops</code>, <code>script_size</code>, <code>witness_elements</code> and <code>stack</code>. A <code>within</code> expression is sane; an <code>over</code> expression exceeds that limit by one and must be rejected, by the parser or by the sanity checks</td></tr>
+<tr><td><code>props_from_rust[_tap].tsv</code></td><td>8,198 + header</td><td><code>expr script_size op_count sat_witness_elements exec_stack mixed_timelocks non_malleable requires_sig sat_size</code></td><td>the static analysis, with the columns described below. A two-field row ending in <code>PARSE_ERR</code> must be rejected (1,470 of them in the Tapscript file, from the <code>multi</code>→<code>multi_a</code> substitution)</td></tr>
+<tr><td><code>scripts_from_rust[_tap].tsv</code></td><td>8,198</td><td><code>&lt;expr&gt;\t&lt;script hex&gt;</code></td><td>the translation table byte for byte, incl. <code>v:</code> collapsing into the <code>VERIFY</code> opcode and minimal number encoding. <code>ERR</code> = no encoding in that context</td></tr>
+<tr><td><code>redeem.json</code></td><td>46 cases</td><td>JSON</td><td>optional satisfaction vectors: <code>{miniscript, valid, can_sign_N, …}</code> plus an <code>identifiers</code> map of keys, preimages and hashes</td></tr>
+</tbody></table>
+<h3 id="Resource_Columns">Resource Columns</h3>
+<p>This document specifies the resource limits, but not how to count the quantities
+they bound, and implementations count them differently. The resource columns of
+<code>props_from_rust[_tap].tsv</code> and <code>opcodes.txt</code> count them as rust-miniscript does:</p>
+<ul>
+<li><code>script_size</code>: the size of the script in bytes, which the translation table
+determines, so it does not depend on the implementation.</li>
+<li><code>op_count</code> (<code>&lt;ops&gt;</code> in <code>opcodes.txt</code>): the non-push opcodes of the script plus the
+keys of every <code>CHECKMULTISIG</code> a satisfaction executes, i.e. the quantity the 201-op
+limit bounds. Tapscript has no op limit, so there the column has no meaning; it
+counts a <code>multi_a</code> as no ops at all.</li>
+<li><code>sat_witness_elements</code>: the number of witness elements of a satisfaction, plus one
+in both contexts. The 100-element limit of P2WSH applies to this column minus one.</li>
+<li><code>sat_size</code>: the size in bytes of a satisfaction, each element including its length
+prefix, without the element count. Signatures are assumed to be 73 bytes for ECDSA
+and 66 bytes for Schnorr, each including its length prefix.</li>
+<li><code>exec_stack</code>: rust-miniscript's estimate of how many elements the script pushes
+above its witness. It is not the exact peak: for a <code>thresh</code> it depends on the
+order of the sub expressions, and for <code>or_d</code> and <code>multi</code> it falls short.</li>
+</ul>
+<p><code>op_count</code>, <code>sat_witness_elements</code> and <code>sat_size</code> are the maximum over every
+satisfaction the fragment rules allow, including malleable ones, such as the
+dissatisfaction of a hash fragment with a 32-byte value that is not the preimage.
+Bitcoin Core counts only non-malleable satisfactions, which never dissatisfy a hash
+fragment, and does not count the witness script as a witness element. An
+implementation that counts like Core reproduces every other column, but differs on
+<code>sat_witness_elements</code> in every row that has a satisfaction, and on roughly one in
+ten op counts and one in five <code>sat_size</code> values.</p>
+<p>The limits themselves do not depend on how these quantities are counted, as this
+document says what each of them includes: <code>limits[_tap].txt</code> puts each limit at its
+boundary, with expressions that contain no hash fragment.</p>
+<h3 id="Execution">Execution</h3>
+<p>There is a Golang based minimal harness available that executes all test vectors against
+the <a rel="noopener" target="_blank" href="https://github.com/btcsuite/btcd/pull/2568">Go implementation</a>. It compares every
+column of every file except <code>exec_stack</code>, as the Go implementation computes the exact
+peak instead, and the Tapscript <code>op_count</code>. The <code>mixed_timelocks</code>, <code>non_malleable</code> and
+<code>requires_sig</code> columns are compared through the sanity checks, which must reject an
+expression that any of them disqualifies.</p>
+<p>With at least <code>Go 1.25.0</code> installed, they can be run with:</p>
+<pre data-lang="shell" class="language-shell "><code class="language-shell" data-lang="shell">$ cd bip-0379
+$ go run main.go
+</code></pre>
+<h3 id="Provenance">Provenance</h3>
+<p>The <code>*.txt</code> corpora, except the limit vectors, come from rust-miniscript's
+<code>src/miniscript/ms_tests.rs</code> at <code>698b97f</code>. The <code>*.tsv</code> tables were extracted from
+the same, unmodified commit by a program that prints what the crate computes for
+each expression, and cross-checked against an
+<a rel="noopener" target="_blank" href="https://github.com/btcsuite/btcd/pull/2568">independent Go implementation</a>.</p>
+<p><code>redeem.json</code> comes from the Go implementation's end-to-end spend tests.</p>
+<p><code>limits[_tap].txt</code> were written for this document, and their verdicts checked
+against Bitcoin Core, rust-miniscript and the Go implementation. rust-miniscript
+counts the witness script towards the 100-element limit, so it rejects the
+<code>within</code> vector of that limit.</p>
+<h2 id="Gaps">Gaps</h2>
+<p>The generated static-analysis corpora are dominated by <code>multi</code>, <code>sha256</code>, <code>after</code>,
+<code>andor</code> and <code>or_d</code>; <code>older()</code>, <code>ripemd160()</code>, <code>hash256()</code>, <code>hash160()</code> and <code>and_n()</code> occur
+only in the 42 hand-written lines, never in composition.</p>
+<p>The following cases are still missing from the static-analysis corpora:</p>
+<ol>
+<li><code>older()</code> alongside <code>after()</code> in the positions <code>after()</code> appears in, since
+the two differ in the relative/absolute timelock analysis, and the generated
+corpora only ever use <code>after()</code>.</li>
+<li>The 1,000 stack element limit in P2WSH, and in Tapscript a <code>multi_a</code> at that
+limit, which needs a script of 33 KB that not every implementation accepts.</li>
+<li>The four timelock-mixing combinations of the BIP's own wording (absolute
+height with absolute time, relative height with relative time, and the two
+legal mixes), which <code>conflict_from_alloy.txt</code> covers only for <code>after()</code>.</li>
+</ol>
 <h2 id="Backwards_Compatibility">Backwards Compatibility</h2>
 <p>Miniscript's syntax is compatible with BIP 380 Output Script Descriptors, and should be considered
 an extension to it that provides a new type of Script expression that is only valid in
@@ -507,7 +598,7 @@ version 26.0.</p>
             <div data-pagefind-ignore class="w-full flex flex-col items-center space-y-2 text-center">
                 <div class="flex items-center space-x-2">
                     <p class="font-bold">Updated</p>
-                    <p class="font-bold">2026-11-16</p>
+                    <p class="font-bold">2026-11-17</p>
                 </div>
                 <p>See an issue with rendering or formatting? Submit an issue on <a href="https://github.com/nickmonad/bips.dev" target="_blank">GitHub</a></p>
                 <p>Do you find this site useful? Please consider <a href="https://buy.tryspeed.com/plink_live_lyek4a2yW2Sn2wfA" target="_blank">donating</a> some sats to support ongoing development.</p>
