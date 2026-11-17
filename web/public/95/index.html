@@ -121,12 +121,12 @@
   Title: Testnet 5
   Authors: Pol Espinasa &lt;polespinasa@protonmail.com&gt;
            Fabian Jahr &lt;fjahr@protonmail.com&gt;
-  Status: Draft
+  Status: Deployed
   Type: Specification
   Assigned: 2026-06-22
   License: CC0-1.0
   Discussion: 2026-06-02: https:&#x2F;&#x2F;groups.google.com&#x2F;g&#x2F;bitcoindev&#x2F;c&#x2F;kGUMTxOvdJA
-  Version: 0.3.0
+  Version: 1.0.0
   Requires: 54
   Replaces: 94
 </code></pre>
@@ -173,36 +173,15 @@ corresponding to a minimum difficulty of approximately 1,000,000.</p>
 recent of these being the Taproot softfork. Additionally, the rules of BIP 54 are enforced
 from block 1, as specified above.</p>
 <h3 id="Genesis_Block">Genesis Block</h3>
-<p>TODO: Mine the block. The values below are placeholders. They are
-the genesis block's header fields together with the <code>Message</code> and
-<code>scriptPubKey</code> of its coinbase transaction. Notes for the miner:</p>
 <ul>
-<li><code>scriptPubKey</code> is the script public key in the coinbase transaction's
-output. It is <code>OP_RETURN</code> followed by a push of 8-bytes of extranonce
-space, as it is unspendable in any event, and this avoids bike shedding
-over its content.</li>
-<li><code>Message</code> is a string in the coinbase input script, and carries a
-recent Bitcoin mainnet block hash as an anti-pre-mine commitment,
-serving the same purpose as the newspaper headline in Bitcoin's mainnet
-genesis block.</li>
-<li><code>Time stamp</code> is the time of mining or that of the block which hash is
-used in <code>Message</code></li>
-<li><code>nBits</code> is <code>0x1a0fffff</code>, per the raised minimum difficulty.</li>
-<li><code>Version</code> is used for version-rolling to meet the difficulty.</li>
+<li>Message: "2026-11-14 975744 0000000000000000000123e2681e2f82acdcb9430a15eec24cc85b400691d479"</li>
+<li>scriptPubKey: <code>6a0895ebf76a02000000</code></li>
+<li>Time stamp: 1794632593</li>
+<li>Nonce: <code>0x653d9131</code></li>
+<li>nBits: <code>0x1a0fffff</code></li>
+<li>Version: <code>0x2230c000</code></li>
 </ul>
-<p>Placeholders:</p>
-<blockquote>
-<p>(Note, these values have the wrong nBits value (too low difficulty) and are pre-mined so are not suitable for use)</p>
-<ul>
-<li>Message: "2026-11-03 974343 00000000000000000000a86d6da2c1563d08668d9ec18cce58cb8c865d4a31c8"</li>
-<li>scriptPubKey: <code>0x6a089763e96a00000000</code></li>
-<li>Time stamp: 1793680278</li>
-<li>Nonce: <code>0x73ba1699</code></li>
-<li>nBits: <code>0x1b07fff8</code></li>
-<li>Version: <code>0x201c4000</code></li>
-</ul>
-<p>The resulting Genesis block hash is <code>000000000001bd3ade1e24d07c1a3677d4868c34f2f1696fa419e3b9f061b1e0</code>, and the block hex is <code>00401c200000000000000000000000000000000000000000000000000000000000000000de48bbaa869592873fc4e5042f2931f9b42bb7e8ddeccd373df845d80983409b9663e96af8ff071b9916ba730101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5b04ffff001d01044c52323032362d31312d3033203937343334332030303030303030303030303030303030303030306138366436646132633135363364303836363864396563313863636535386362386338363564346133316338ffffffff0100f2052a010000000a6a089763e96a0000000000000000</code>.</p>
-</blockquote>
+<p>The resulting Genesis block hash is <code>00000000000008c1637e7d3252dc1c333d4546fd6fff6a474b200d674a91d497</code>, and the block hex is <code>00c0302200000000000000000000000000000000000000000000000000000000000000008de2a6b556ecb56779c34481ede767f09b2ae214f37ab1ad34085b5cb699588c91ebf76affff0f1a31913d650101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5b04ffff001d01044c52323032362d31312d3134203937353734342030303030303030303030303030303030303030313233653236383165326638326163646362393433306131356565633234636338356234303036393164343739ffffffff0100f2052a010000000a6a0895ebf76a0200000000000000</code>.</p>
 <h3 id="Message_Start">Message Start</h3>
 <p>The message start (also known as the network magic) is defined as <code>0x46495645</code>. These four bytes spell <code>FIVE</code> when
 interpreted as ASCII.</p>
@@ -227,6 +206,32 @@ argument no longer applies. A minimum difficulty of approximately 1,000,000 stri
 between dampening the quick mining of large numbers of blocks shortly after launch, before the
 difficulty has adjusted to the available hash power, and keeping a low barrier so that a handful
 of at-home miners or a single ASIC can keep the network usable.</p>
+<h3 id="Choice_of_genesis_parameters">Choice of genesis parameters</h3>
+<p>The genesis block parameters were chosen according to the following
+structure:</p>
+<ul>
+<li>
+<p>The <code>Message</code> in the coinbase was the date and hash of the mainnet
+block beginning the next retarget period. That height was chosen and
+<a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/avINnoG-1r242rAw@erisian.com.au/T/">announced</a> roughly a week prior to when it was mined. This
+served as an anti-pre-mine commitment, similar to the newspaper
+headline in the mainnet genesis block.</p>
+</li>
+<li>
+<p>The <code>scriptPubKey</code> used for the output is an <code>OP_RETURN</code> with an 8 byte
+push, used as extranonce data for mining the block. The <code>OP_RETURN</code>
+type was chosen as the output is unspendable anyway, and to avoid
+bike-shedding over its content.</p>
+</li>
+<li>
+<p>The block time stamp was chosen by the mining software, ending
+up slightly later than the timestamp in the mainnet block.</p>
+</li>
+<li>
+<p>The block version used <a href="https://bips.dev/95/bip-0320.mediawiki">BIP 320</a> version rolling for additional
+nonce space making it easier to meet the minimum difficulty.</p>
+</li>
+</ul>
 <h2 id="Backward_Compatibility">Backward Compatibility</h2>
 <p>Testnet 5's consensus rules are not compatible with those of Testnet 3 and Testnet 4. The
 consensus rules differ in both directions: Testnet 5 enforces the BIP 54 consensus rules from
@@ -244,15 +249,22 @@ additionally enforce the BIP 54 rules while not permitting any of the difficulty
 <li><a href="https://bips.dev/95/bip-0030.mediawiki">BIP 30</a>: Duplicate transactions</li>
 <li><a href="https://bips.dev/95/bip-0054.md">BIP 54</a>: Consensus Cleanup</li>
 <li><a href="https://bips.dev/95/bip-0094.mediawiki">BIP 94</a>: Testnet 4</li>
+<li><a href="https://bips.dev/95/bip-0320.mediawiki">BIP 320</a>: nVersion bits for general purpose use</li>
 <li><a rel="noopener" target="_blank" href="https://blog.lopp.net/the-block-storms-of-bitcoins-testnet/">The block storms of Bitcoin's Testnet</a></li>
 <li><a rel="noopener" target="_blank" href="https://bitcointalk.org/index.php?topic=5569103.0">Testnet 4 difficulty exception analysis and discussion (Bitcointalk)</a></li>
 <li><a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/bitcoin-inqusition-29-2/2236">BIP 54 enforcement on signet via Bitcoin Inquisition</a></li>
 <li><a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/pull/31117">Discussion on changing the Testnet 4 rules (Bitcoin Core PR #31117)</a></li>
+<li><a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/avINnoG-1r242rAw@erisian.com.au/T/">Testnet 5 launch (bitcoindev list)</a></li>
 </ul>
 <h2 id="Copyright">Copyright</h2>
 <p>This document is licensed under the Creative Commons CC0 1.0 Universal license.</p>
 <h2 id="Changelog">Changelog</h2>
 <ul>
+<li><strong>1.0.0</strong> (2026-11-17):
+<ul>
+<li>Include testnet5 genesis block parameters.</li>
+</ul>
+</li>
 <li><strong>0.3.0</strong> (2026-11-05):
 <ul>
 <li>Move commitment back to scriptSig, and use <code>OP_RETURN</code> for output.</li>
