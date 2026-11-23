@@ -192,24 +192,24 @@ negative. The former is fixed by preventing the timestamp of the first block of 
 from being lower than the previous block's, with a two-hour grace period. A <a rel="noopener" target="_blank" href="https://github.com/TheBlueMatt/bips/blob/7f9670b643b7c943a0cc6d2197d3eabe661050c2/bip-XXXX.mediawiki">previous
 proposal</a> to fix the timewarp attack used a ten-minute grace period instead, and this
 approach has been adopted for <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0094.mediawiki#time-warp-fix">testnet4</a>. Out of an abundance of caution and because it only trivially worsens the
-block rate increase under attack, a two-hour grace period is used here<sup class="footnote-reference"><a href="#4">7</a></sup>.</p>
+block rate increase under attack, a two-hour grace period is used here<sup class="footnote-reference"><a href="#4">7</a></sup><sup class="footnote-reference"><a href="#15">8</a></sup>.</p>
 <p>Disabling some Script operations and functionalities was <a rel="noopener" target="_blank" href="https://github.com/TheBlueMatt/bips/blob/7f9670b643b7c943a0cc6d2197d3eabe661050c2/bip-XXXX.mediawiki">previously proposed</a> to reduce
-the worst case block validation time but was met with resistance due to confiscation concerns<sup class="footnote-reference"><a href="#5">8</a></sup>. A
+the worst case block validation time but was met with resistance due to confiscation concerns<sup class="footnote-reference"><a href="#5">9</a></sup>. A
 delicate balance needs to be struck between minimizing the confiscation risks of a mitigation, even
 if merely theoretical, and bounding the costs one could impose on all other users of the system. To
 that end, limiting potentially executed signature operations targets the exact harmful behaviour while
 preserving maximal flexibility in Script usage.
 Such a limit reduces the worst case block validation time by a factor of 40 and drastically
-increases the preparation cost of an attack, making it uneconomical for a miner<sup class="footnote-reference"><a href="#6">9</a></sup>. The maximum of
+increases the preparation cost of an attack, making it uneconomical for a miner<sup class="footnote-reference"><a href="#6">10</a></sup>. The maximum of
 2500 was chosen as the tightest value that did not make any non-pathological standard transaction
-invalid<sup class="footnote-reference"><a href="#7">10</a></sup>.</p>
+invalid<sup class="footnote-reference"><a href="#7">11</a></sup>.</p>
 <p>64-byte transactions can only contain a scriptPubKey that lets anyone spend the funds, or one that
 burns them. They have also been non-standard since 2019 and never been used since 2016.  Several
 alternatives to invalidating them were previously proposed. Some believe the improvements for users
 of Merkle proofs are too marginal to be worth introducing a discontinuity in the set of valid
 witness-stripped transaction sizes (discussion <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/41">here</a>). Others have suggested instead committing to the Merkle
-tree depth in the header's version field<sup class="footnote-reference"><a href="#8">11</a></sup>, or even invalidating Merkle tree nodes that correspond
-to a valid serialisation for a Bitcoin transaction<sup class="footnote-reference"><a href="#14">12</a></sup>. These options make some of the available
+tree depth in the header's version field<sup class="footnote-reference"><a href="#8">12</a></sup>, or even invalidating Merkle tree nodes that correspond
+to a valid serialisation for a Bitcoin transaction<sup class="footnote-reference"><a href="#14">13</a></sup>. These options make some of the available
 workarounds<sup class="footnote-reference"><a href="#13">2</a></sup> easier to deploy. The authors believe it is preferable to address the root cause by
 invalidating 64-byte transactions. This fixes the vulnerability for users relying on Merkle proofs
 of non-64-byte transactions, without requiring a workaround.</p>
@@ -217,9 +217,9 @@ of non-64-byte transactions, without requiring a workaround.</p>
 unused in coinbase transactions. Using it to enforce that new coinbase transactions differ from
 early <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> violations also allows applications to recover the block height without
 having to parse Script. Leveraging the existing timelock mechanism makes the check self-contained:
-the same coinbase transaction cannot have been valid in a previous block<sup class="footnote-reference"><a href="#11">13</a></sup>. This simplifies both
+the same coinbase transaction cannot have been valid in a previous block<sup class="footnote-reference"><a href="#11">14</a></sup>. This simplifies both
 reasoning and client implementation, since the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> check can be skipped entirely past
-Consensus Cleanup activation, regardless of the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation status<sup class="footnote-reference"><a href="#12">14</a></sup>. One person
+Consensus Cleanup activation, regardless of the <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> activation status<sup class="footnote-reference"><a href="#12">15</a></sup>. One person
 <a rel="noopener" target="_blank" href="https://groups.google.com/g/bitcoinminingdev/c/jlqlNHHNSNk">raised the concern</a> that the <code>nLockTime</code> field would be an ideal extranonce
 for ASIC controllers if such controllers ever became a bottleneck in mining operations. Others
 <a rel="noopener" target="_blank" href="https://groups.google.com/g/bitcoinminingdev/c/jlqlNHHNSNk">replied</a> that the same benefits could be achieved by using a dummy output
@@ -292,19 +292,19 @@ period. Some <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/
 mainnet. Using a grace period of 2 hours instead of 10 minutes only reduces the expected block
 interval time under attack by ~2.2 seconds. See <a rel="noopener" target="_blank" href="https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/66">this post</a> for more.</p>
 </div>
-<div class="footnote-definition" id="5"><sup class="footnote-definition-label">8</sup>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">9</sup>
 <p>The argument is about someone having a timelocked presigned transaction using some of those
 features in its output script. The transaction cannot be mined before activation. Such outputs would
 not be covered by an amnesty for old UTxOs. See for instance <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMZUoKneArC+YZ36YFwxNTKsDtJhEz5P2cosXKxJS8Rf_3Nyuw@mail.gmail.com">here</a> and
 <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/CAMZUoK=1kgZLR1YZ+cJgzwmEOwrABYFs=2Ri=xGX=BCr+w=VQw@mail.gmail.com">here</a> for discussions on this topic.</p>
 </div>
-<div class="footnote-definition" id="6"><sup class="footnote-definition-label">9</sup>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">10</sup>
 <p>It is important to reduce the worst case block validation time as well as the ratio of
 validation time imposed over preparation cost. The former is to limit the damages an externally
 motivated attacker can do. The latter is to disincentivize miners slowing down their competition by
 mining expensive blocks. See <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/VsltJ2PHqWfzG4BU9YETTXjL7fYBbJhjVXKZQyItemySIA1okvNee9kf0zAOyLMeJ4Nqv1VOrYbWns5nP4TANCWvPJYu1ew_yxQSaudizzk=@protonmail.com">this thread</a> for more.</p>
 </div>
-<div class="footnote-definition" id="7"><sup class="footnote-definition-label">10</sup>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">11</sup>
 <p>A non-pathological transaction would have a public key per signature operation and at least
 one signature per input. Per standardness a single P2SH input may not have more than 15 signature
 operations. Even by using 1-of-15 <code>CHECKMULTISIG</code>s a transaction would bump against the maximum
@@ -313,7 +313,7 @@ introduced limit but not the transaction size a transaction would need to spend 
 redeem script similar to <code>CHECKSIG DROP CHECKSIG DROP ...</code>. This type of redeem script serves no
 purpose beyond increasing its validation cost, which is exactly what this proposal aims to mitigate.</p>
 </div>
-<div class="footnote-definition" id="8"><sup class="footnote-definition-label">11</sup>
+<div class="footnote-definition" id="8"><sup class="footnote-definition-label">12</sup>
 <p>By Sergio Demian Lerner in a <a rel="noopener" target="_blank" href="https://bitslog.com/2018/06/09/leaf-node-weakness-in-bitcoin-merkle-tree-design">blog post</a>.</p>
 </div>
 <div class="footnote-definition" id="9"><sup class="footnote-definition-label">1</sup>
@@ -325,14 +325,14 @@ Suhas Daftuar for a detailed explanation. Invalidating 64-byte transactions may 
 the issue is largely orthogonal to this proposal: it is fundamentally about caching validation
 status for malleable blocks.</p>
 </div>
-<div class="footnote-definition" id="11"><sup class="footnote-definition-label">13</sup>
+<div class="footnote-definition" id="11"><sup class="footnote-definition-label">14</sup>
 <p>Technically it could be argued a duplicate could in principle always be possible before block
 31,001 when <code>nLockTime</code> enforcement <a rel="noopener" target="_blank" href="https://bitcoin.stackexchange.com/questions/90229/nlocktime-in-bitcoin-core">was originally soft-forked</a>. But treating
 coinbase transactions as not having duplicate past Consensus Cleanup activation would be consistent
 for any implementation which enforces <code>nLockTime</code> from the genesis block, which is the behaviour
 notably of Bitcoin Core but also of all other implementations the authors are aware of.</p>
 </div>
-<div class="footnote-definition" id="12"><sup class="footnote-definition-label">14</sup>
+<div class="footnote-definition" id="12"><sup class="footnote-definition-label">15</sup>
 <p>For instance Bitcoin Core only disables <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki">bip-0030</a> validation for a specific chain
 where <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki">bip-0034</a> violations have been manually inspected (see <a rel="noopener" target="_blank" href="https://github.com/bitcoin/bitcoin/blob/390e7d61bd531505bb3d13f38316c282b85ed1dd/src/validation.cpp#L2401-L2459">here</a>). Without the guarantee given by enforcing the timelock on coinbase transactions, this would
 have to be perpetuated for the Consensus Cleanup.</p>
@@ -344,8 +344,19 @@ depth of the Merkle tree. The second is to reject Merkle proofs in which any inn
 valid serialisation of a Bitcoin transaction. More details about these are available <a rel="noopener" target="_blank" href="https://bitslog.com/2018/06/09/leaf-node-weakness-in-bitcoin-merkle-tree-design">here</a>. A third workaround is to change the Merkle proof structure by requiring inner nodes to be
 provided as the single-SHA256 of their preimage, instead of the double-SHA256. See <a rel="noopener" target="_blank" href="https://bitslog.com/2018/08/21/simple-change-to-the-bitcoin-merkleblock-command-to-protect-from-leaf-node-weakness-in-transaction-merkle-tree/">here</a> for a full description.</p>
 </div>
-<div class="footnote-definition" id="14"><sup class="footnote-definition-label">12</sup>
+<div class="footnote-definition" id="14"><sup class="footnote-definition-label">13</sup>
 <p><a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/f97afcc5-54ba-4284-8e9b-e8c35c7101f6n@googlegroups.com/">Jeremy Rubin "Prohibit Merkle Internal Node Preimages That Encode Minimal 64-Byte Transactions" (mailing list)</a>.</p>
+</div>
+<div class="footnote-definition" id="15"><sup class="footnote-definition-label">8</sup>
+<p>The timestamp constraints introduced to mitigate the timewarp attack limit miner
+timestamp malleability across difficulty-adjustment period boundaries. This precludes
+scaling designs that depend on deliberately exploiting that malleability to accelerate
+block production. One such design is the "<a rel="noopener" target="_blank" href="https://freico.in/forward-blocks-scalingbitcoin-paper.pdf">forward blocks</a>"
+proposal by Mark Friedenbach (Scaling Bitcoin 2018), which pairs a higher-capacity "forward"
+chain with a "compatibility" chain whose block rate is increased via timestamp manipulation
+so that legacy nodes can still observe the transaction history. With the timestamp seam strongly
+diminished, that particular acceleration technique is no longer feasible. Related discussion
+appears on the bitcoin-dev mailing list <a rel="noopener" target="_blank" href="https://gnusha.org/pi/bitcoindev/1KbVdD952_XRfsKzMKaX-y4lrPOxYiknn8xXOMDQGt2Qz2fHFM-KoSplL-A_GRE1yuUkgNMeoEBHZiEDlMYwiqOiITFQTKEm5u1p1oVlL9I=@protonmail.com/">ML thread forward block</a>.</p>
 </div>
 
         </article>
